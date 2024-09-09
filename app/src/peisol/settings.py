@@ -61,7 +61,7 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-ROOT_URLCONF = 'kosmo.urls'
+ROOT_URLCONF = 'peisol.urls'
 
 TEMPLATES = [
     {
@@ -80,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'kosmo.wsgi.application'
+WSGI_APPLICATION = 'peisol.wsgi.application'
 
 
 # Database
