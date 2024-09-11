@@ -7,52 +7,29 @@ class Partner(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
-    code = models.CharField(
-        'Código',
-        max_length=50,
-        unique=True
-    )
     business_tax_id = models.CharField(
         'RUC',
         max_length=15,
         unique=True
     )
-    partner = models.ManyToManyField(
-        "self",
-        blank=True,
-    )
     name = models.CharField(
         'Nombre',
         max_length=255
     )
-    address = models.CharField(
-        'Dirección',
+    email = models.EmailField(
+        'Correo Electrónico',
         max_length=255
-    )
-    city = models.CharField(
-        'Ciudad',
-        max_length=50
-    )
-    website = models.CharField(
-        'Sitio Web',
-        max_length=255,
-        blank=True,
-        null=True
     )
     phone = models.CharField(
         'Teléfono',
-        max_length=20,
-        blank=True,
-        null=True
+        max_length=20
     )
-    cargo_reference = models.CharField(
-        'Referencia de Carga',
+    name_contact = models.CharField(
+        'Nombre de Contacto',
         max_length=255,
         blank=True,
         null=True
     )
 
     def __str__(self):
-        if self.type_partner == 'client':
-            return f'C: {self.name}'
-        return f'S: {self.name}'
+        return self.name
