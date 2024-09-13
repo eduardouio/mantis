@@ -14,25 +14,12 @@ ROLE_CHOICES = (
     ('TECNICO', 'TECNICO'),
 )
 
-POSITION_CHOICES = (
-    ('Administrativo', 'Administrativo'),
-    ('Tecnico', 'Tecnico'),
-)
-
 
 class CustomUserModel(AbstractUser):
     username = None
     email = models.EmailField(
         'correo electrónico',
         unique=True
-    )
-    dni = models.CharField(
-        'Cédula',
-        max_length=15
-    )
-    nro_phone = models.CharField(
-        'Número de Celular',
-        max_length=15
     )
     picture = models.ImageField(
         'imagen de perfil',
@@ -49,26 +36,11 @@ class CustomUserModel(AbstractUser):
         'notas',
         blank=True
     )
-    position = models.CharField(
-        'cargo',
-        max_length=255,
-        choices=POSITION_CHOICES,
-    )
     roles = models.CharField(
         'Role',
         choices=ROLE_CHOICES,
         default='sales',
         max_length=20
-    )
-    days_to_work = models.PositiveSmallIntegerField(
-        'días a trabajar',
-        default=22,
-        help_text='Días a trabajar por mes'
-    )
-    days_free = models.PositiveSmallIntegerField(
-        'días libres',
-        default=8,
-        help_text='Días libres por mes'
     )
 
     USERNAME_FIELD = 'email'
