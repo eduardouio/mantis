@@ -11,6 +11,11 @@ CHOICES_CODE = (
     ('PSL-AP', 'PSL-AP'),
     ('PSL-TA', 'PSL-TA')
 )
+STATUS_CHOICES = (
+    ('OPERATIVO', 'OPERATIVO'),
+    ('DANADO', 'DANADO'),
+    ('EN REPARACIÓN', 'EN REPARACIÓN'),
+)
 
 
 class Equipment(BaseModel):
@@ -71,24 +76,29 @@ class Equipment(BaseModel):
         blank=True,
         null=True
     )
-    is_available = models.BooleanField(
-        'Disponible',
-        default=True
+    status = models.CharField(
+        'Estado',
+        max_length=255,
+        choices=STATUS_CHOICES,
+        default='OPERATIVO'
     )
-    current_location = models.CharField(
+    # Estos campos se actualizan cada vez que el equipo cambia de proyecto
+    # o de ubicación, no se actualiza manualmente
+    # se libera cuando un proyecto termina, o libera el equipo
+    _current_location = models.CharField(
         'Ubicación Actual',
         max_length=255
     )
-    current_project = models.CharField(
+    _current_project = models.CharField(
         'Proyecto Actual',
         max_length=255
     )
-    date_commitment = models.DateField(
+    _date_commitment = models.DateField(
         'Fecha de Compromiso',
         blank=True,
         null=True
     )
-    date_free = models.DateField(
+    _date_free = models.DateField(
         'Fecha de Liberación',
         blank=True,
         null=True
