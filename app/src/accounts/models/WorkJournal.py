@@ -3,7 +3,7 @@ from .CustomUserModel import CustomUserModel
 from common import BaseModel
 
 
-class Journaly(BaseModel):
+class WorkJournal(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
@@ -17,4 +17,3 @@ class Journaly(BaseModel):
     date_end = models.DateField(
         'fecha de fin',
     )
-    
