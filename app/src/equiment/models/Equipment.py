@@ -2,6 +2,17 @@ from django.db import models
 from common import BaseModel
 
 
+CHOICES_CODE = (
+    ('PSL-BT-FP', 'PSL-BT-FP'),
+    ('PSL-BT-TPL', 'PSL-BT-TPL'),
+    ('PSL-LV-PJ', 'PSL-LV-PJ'),
+    ('PSL-UO-TPL', 'PSL-UO-TPL'),
+    ('PSL-AR', 'PSL-AR'),
+    ('PSL-AP', 'PSL-AP'),
+    ('PSL-TA', 'PSL-TA')
+)
+
+
 class Equipment(BaseModel):
     id_equipment = models.AutoField(
         primary_key=True
@@ -17,6 +28,12 @@ class Equipment(BaseModel):
     )
     model = models.CharField(
         'Modelo',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    code = models.CharField(
+        'Código',
         max_length=255,
         blank=True,
         null=True
