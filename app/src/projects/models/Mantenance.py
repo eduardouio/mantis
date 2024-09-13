@@ -2,7 +2,7 @@ from django.db import models
 from common import BaseModel
 from projects.models import Project
 from equiment.models import Equipment, Vehicle
-from accounts.models.CustomUserModel import CustomUserModel
+from accounts.models import Tecnical
 
 
 CHOICES_VOLUME_AGUA_RESIDUAL = (
@@ -41,7 +41,7 @@ class Mantenance(BaseModel):
         on_delete=models.CASCADE
     )
     technician = models.ForeignKey(
-        CustomUserModel,
+        Tecnical,
         on_delete=models.CASCADE
     )
     vehicle = models.ForeignKey(

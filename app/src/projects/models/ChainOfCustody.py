@@ -31,11 +31,15 @@ class ChainOfCustody(BaseModel):
         'Responsable',
         max_length=255
     )
+    vehicle = models.ForeignKey(
+        Vehicle,
+        on_delete=models.RESTRICT
+    )
     observation = models.TextField(
         'Observaciones'
     )
     nro_dni = models.CharField(
-        'Nro. DNI',
+        'Nro. Cedula',
         max_length=8
     )
     type_license = models.CharField(
