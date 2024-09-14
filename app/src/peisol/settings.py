@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'accounts',
-    #'equipment',
-    #'projects',
+    'equipment',
+    'projects',
     
 ]
 

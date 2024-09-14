@@ -32,13 +32,11 @@ class Partner(BaseModel):
         blank=True,
         null=True
     )
-    authorized_vehicles = models.ManyToManyField(
-        Vehicle,
-        on_delete=models.CASCADE
-    )
     authorized_tehcnicals = models.ManyToManyField(
-        CustomUserModel,
-        on_delete=models.CASCADE
+        CustomUserModel
+    )
+    authorized_vehicles = models.ManyToManyField(
+        Vehicle
     )
 
     def __str__(self):

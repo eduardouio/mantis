@@ -1,4 +1,4 @@
-from djago.db import models
+from django.db import models
 from common import BaseModel
 
 CHOICES_TYPE_VEHICLE = (
@@ -56,4 +56,4 @@ class Vehicle(BaseModel):
     )
 
     def __str__(self):
-        return '{}[{}]'.format(self.name, self.no_plate)
+        return self.no_plate

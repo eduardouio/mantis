@@ -1,6 +1,6 @@
 from django.db import models
 from common import BaseModel
-from partners.models import Partner
+from projects.models import Partner
 from equipment.models import Equipment
 
 SERVICES_CHOICES = (
