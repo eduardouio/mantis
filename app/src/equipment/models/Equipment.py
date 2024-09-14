@@ -20,7 +20,7 @@ STATUS_CHOICES = (
 
 
 class Equipment(BaseModel):
-    id_equipment = models.AutoField(
+    id = models.AutoField(
         primary_key=True
     )
     name = models.CharField(

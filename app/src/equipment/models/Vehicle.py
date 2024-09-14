@@ -42,6 +42,11 @@ class Vehicle(BaseModel):
         'Tipo de Vehículo',
         max_length=255
     )
+    year = models.IntegerField(
+        'Año',
+        blank=True,
+        null=True
+    )
     no_plate = models.CharField(
         'Placa',
         max_length=10,

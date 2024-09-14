@@ -133,6 +133,9 @@ class Command(BaseCommand):
                 code_vehicle=faker.uuid4(),
                 model=faker.word(),
                 no_plate=faker.license_plate(),
+                year=random.choice([2012, 2013, 2014, 2015,
+                                    2016, 2017, 2018, 2019,
+                                    2020, 2021, 2022, 2023]),
                 type_vehicle=random.choice(['CAMION', 'VACCUM', 'CAMIONETA'])
             )
 

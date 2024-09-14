@@ -33,6 +33,9 @@ class SupplieStockMovment(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
+    date = models.DateField(
+        'Fecha'
+    )
     supplie = models.ForeignKey(
         Supplie,
         on_delete=models.CASCADE
@@ -41,7 +44,7 @@ class SupplieStockMovment(BaseModel):
         Mantenance,
         on_delete=models.CASCADE
     )
-    type_movement = models.CharField(
+    type_movment = models.CharField(
         'Tipo Movimiento',
         max_length=255,
         choices=(
