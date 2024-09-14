@@ -4,7 +4,6 @@ from equipment.models import Vehicle
 from accounts.models import CustomUserModel
 
 
-
 # todos los socios de negocio son clientes
 class Partner(BaseModel):
     id = models.AutoField(

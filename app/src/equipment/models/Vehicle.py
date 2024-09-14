@@ -29,9 +29,8 @@ class Vehicle(BaseModel):
     )
     code_vehicle = models.CharField(
         'Código de Vehículo',
-        max_length=255,
-        blank=True,
-        null=True
+        max_length=100,
+        unique=True
     )
     model = models.CharField(
         'Modelo',
@@ -46,13 +45,17 @@ class Vehicle(BaseModel):
     no_plate = models.CharField(
         'Placa',
         max_length=10,
-        blank=True,
-        null=True
+        unique=True
     )
     owner_transport = models.CharField(
         'Propietario',
         max_length=255,
-        choices=CHOICES_OWNER
+        choices=CHOICES_OWNER,
+        default='PEISOL'
+    )
+    is_active = models.BooleanField(
+        'Activo?',
+        default=True
     )
 
     def __str__(self):

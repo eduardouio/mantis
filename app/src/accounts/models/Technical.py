@@ -76,3 +76,6 @@ class Technical(BaseModel):
         'Activo?',
         default=False
     )
+
+    def __str__(self) -> str:
+        return f'{self.first_name} {self.last_name}'

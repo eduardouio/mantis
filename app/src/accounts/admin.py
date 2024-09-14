@@ -109,6 +109,7 @@ class WorkJournalAdmin(SimpleHistoryAdmin):
         'technical',
         'date_start',
         'date_end',
+        'type',
         'is_active',
     )
 
@@ -124,4 +125,4 @@ class WorkJournalAdmin(SimpleHistoryAdmin):
 admin.site.register(CustomUserModel, CustomUserModelAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(Technical, TechnicalAdmin)
-admin.site.register(WorkJournal)
+admin.site.register(WorkJournal, WorkJournalAdmin)
