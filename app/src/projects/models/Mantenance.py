@@ -1,7 +1,6 @@
 from django.db import models
 from common import BaseModel
-from projects.models import Project
-from equipment.models import Equipment, Vehicle
+from equipment.models import Equipment
 from accounts.models import Technical
 
 

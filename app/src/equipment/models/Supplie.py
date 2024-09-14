@@ -1,6 +1,6 @@
 from django.db import models
 from common import BaseModel
-from projects.models import Project
+from projects.models import Mantenance
 
 
 class Supplie(BaseModel):
@@ -10,12 +10,6 @@ class Supplie(BaseModel):
     name = models.CharField(
         'Nombre',
         max_length=255
-    )
-    project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True
     )
     description = models.TextField(
         'Descripción',
@@ -41,6 +35,10 @@ class SupplieStockMovment(BaseModel):
     )
     supplie = models.ForeignKey(
         Supplie,
+        on_delete=models.CASCADE
+    )
+    mantenance = models.ForeignKey(
+        Mantenance,
         on_delete=models.CASCADE
     )
     type_movement = models.CharField(
