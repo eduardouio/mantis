@@ -1,7 +1,7 @@
 from django.db import models
 from common import BaseModel
 from projects.models import Project
-from equiment.models import Equipment, Vehicle
+from equipment.models import Equipment, Vehicle
 from accounts.models import Tecnical
 
 
@@ -40,7 +40,7 @@ class Mantenance(BaseModel):
         Project,
         on_delete=models.CASCADE
     )
-    technician = models.ForeignKey(
+    tecnical = models.ForeignKey(
         Tecnical,
         on_delete=models.CASCADE
     )
@@ -55,11 +55,11 @@ class Mantenance(BaseModel):
         'Ubicación',
         max_length=255
     )
-    exit_hour = models.TimeField(
-        'Hora de Salida'
+    start_hour = models.DateTimeField(
+        'Hora de inicio'
     )
-    return_hour = models.TimeField(
-        'Hora de Retorno'
+    end_hour = models.DateTimeField(
+        'Hora de Salida'
     )
     total_hours = models.DecimalField(
         'Horas Totales',
@@ -102,12 +102,14 @@ class Mantenance(BaseModel):
         'Volumen Transportado',
         max_length=255,
     )
-
     unit = models.CharField(
         'Unidad',
         max_length=255,
         choices=UNIT
     )
+
+    def __str__(self):
+        return self.project
 
 
 class MantenanceSupplies(BaseModel):

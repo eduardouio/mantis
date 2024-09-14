@@ -1,6 +1,6 @@
 from django.db import models
 from common import BaseModel
-from accounts.models import CustomUserModel
+from accounts.models.CustomUserModel import CustomUserModel
 
 
 POSITION_CHOICES = (
@@ -52,6 +52,10 @@ class Technical(BaseModel):
     )
     days_free = models.PositiveSmallIntegerField(
         'días libres',
-        default=8,
+        default=7,
         help_text='Días libres por mes'
+    )
+    is_active = models.BooleanField(
+        'Activo?',
+        default=False
     )

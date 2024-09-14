@@ -1,3 +1,2 @@
-# mantis
-
-sistema para el manejo de mantenimiento de equipos
+# generamos las migraciones
+python manage.py makemigrations accounts

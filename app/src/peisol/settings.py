@@ -37,17 +37,21 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'user_sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
     'rest_framework',
     'accounts',
-    'partners',
+    #'equipment',
+    #'projects',
+    
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'user_sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,6 +60,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+SESSION_ENGINE = 'user_sessions.backends.db'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -148,6 +154,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Modelo de usuario Peronalizado
 AUTH_USER_MODEL = 'accounts.CustomUserModel'
+
 AUTHENTICATION_BACKENDS = [
     'common.EmailBackEndAuth.EmailBackEndAuth'
 ]

@@ -54,7 +54,6 @@ class BaseModel(models.Model):
         default=True,
         help_text='Estado del registro.'
     )
-
     id_user_created = models.PositiveIntegerField(
         'usuario creador',
         default=0,

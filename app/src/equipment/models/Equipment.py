@@ -44,7 +44,10 @@ class Equipment(BaseModel):
         null=True
     )
     date_purchase = models.DateField(
-        'Fecha de Compra'
+        'Fecha de Compra',
+        blank=True,
+        null=True,
+        default=None
     )
     id_code = models.CharField(
         'Identificaor de Equipo',
@@ -54,33 +57,46 @@ class Equipment(BaseModel):
     height = models.DecimalField(
         'Altura',
         max_digits=5,
-        decimal_places=2
+        decimal_places=2,
+        blank=True,
+        null=True,
     )
     width = models.DecimalField(
         'Ancho',
         max_digits=5,
-        decimal_places=2
-    )
-    weight = models.DecimalField(
-        'Peso',
-        max_digits=5,
-        decimal_places=2
+        decimal_places=2,
+        blank=True,
+        null=True
     )
     depth = models.DecimalField(
         'Profundidad',
         max_digits=5,
-        decimal_places=2
+        decimal_places=2,
+        blank=True,
+        null=True
+    )
+    weight = models.DecimalField(
+        'Peso',
+        max_digits=5,
+        decimal_places=2,
+        blank=True,
+        null=True
     )
     description = models.TextField(
         'Descripción',
         blank=True,
-        null=True
+        null=True,
+        default=None
     )
     status = models.CharField(
         'Estado',
         max_length=255,
         choices=STATUS_CHOICES,
         default='OPERATIVO'
+    )
+    is_active = models.BooleanField(
+        'Activo?',
+        default=False
     )
     # Estos campos se actualizan cada vez que el equipo cambia de proyecto
     # o de ubicación, no se actualiza manualmente

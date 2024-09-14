@@ -7,7 +7,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ObjectDoesNotExist
 from accounts.managers import CustomUserManager
-from accounts.models import License
+
+ROLE_CHOICES = (
+    ('manager', 'Manager'),
+    ('technical', 'Technical'),
+)
 
 
 class CustomUserModel(AbstractUser):
@@ -36,13 +40,6 @@ class CustomUserModel(AbstractUser):
         choices=ROLE_CHOICES,
         default='sales',
         max_length=20
-    )
-    license = models.OneToOneField(
-        License,
-        on_delete=models.CASCADE,
-        blank=True,
-        null=True,
-        default=None
     )
 
     USERNAME_FIELD = 'email'

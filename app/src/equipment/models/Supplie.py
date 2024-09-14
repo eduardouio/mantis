@@ -43,11 +43,24 @@ class SupplieStockMovment(BaseModel):
         Supplie,
         on_delete=models.CASCADE
     )
+    type_movement = models.CharField(
+        'Tipo Movimiento',
+        max_length=255,
+        choices=(
+            ('ENTRADA', 'ENTRADA'),
+            ('SALIDA', 'SALIDA')
+        )
+    )
     quantity = models.PositiveIntegerField(
-        'Stock',
+        'cantidad',
         default=0
     )
-
+    unit_cost = models.DecimalField(
+        'Costo Unitario',
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
 
     def __str__(self):
         return f'{self.supplie} - {self.stock}'

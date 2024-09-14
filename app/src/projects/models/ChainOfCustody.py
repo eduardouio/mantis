@@ -1,7 +1,7 @@
 from django.db import models
 from .Mantenance import Mantenance
 from common import BaseModel
-from equiment.models import Vehicle
+from equipment.models import Vehicle
 
 
 class ChainOfCustody(BaseModel):

@@ -1,7 +1,11 @@
 from django.db import models
-from django.utils import timezone
-from datetime import timedelta
 from common import BaseModel
+from accounts.models.CustomUserModel import CustomUserModel
+
+ROLE_CHOICES = (
+    ('manager', 'Manager'),
+    ('technical', 'Technical'),
+)
 
 
 class License(BaseModel):
@@ -33,13 +37,12 @@ class License(BaseModel):
         default='sales',
         max_length=20
     )
+    is_active = models.BooleanField(
+        'Activo?',
+        default=True
+    )
+    user = models.ForeignKey(
+        CustomUserModel,
+        on_delete=models.CASCADE
+    )
 
-    def activate(self):
-        """ Activa la licencia y asigna fechas de expiración """
-        self.is_active = True
-        self.activated_on = timezone.now()
-        self.expires_on = timezone.now() + timedelta(days=365)
-        self.save()
-
-    def __str__(self):
-        return f"Licencia de {self.user.username} - Activa: {self.is_active}"

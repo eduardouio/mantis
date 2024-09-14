@@ -1,7 +1,7 @@
 from django.db import models
 from common import BaseModel
 from partners.models import Partner
-from equiment.models import Equipment
+from equipment.models import Equipment
 
 SERVICES_CHOICES = (
     ('ALQUIKER DE EQUIPOS', 'ALQUILER DE EQUIPOS'),

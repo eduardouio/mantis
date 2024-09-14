@@ -1,6 +1,6 @@
 from django.db import models
 from common import BaseModel
-from equiment.models import Vehicle
+from equipment.models import Vehicle
 from accounts.models import CustomUserModel
 
 
