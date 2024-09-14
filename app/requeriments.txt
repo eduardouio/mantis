@@ -17,3 +17,4 @@ requests
 django_extensions
 psycopg2
 pillow
+django-user-sessions
