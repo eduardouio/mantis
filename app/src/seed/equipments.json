@@ -1,0 +1,622 @@
+[
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-181-X1",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-133",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-181-X2",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-195",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-204",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-154",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-201",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-187",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-154",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-192",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-151",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-162",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-202",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-148",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-156",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-139",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-184",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-179",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-167",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-136",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-123",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-193-X1",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-144",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-182",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-310",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-149",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-180",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-141",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-145",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-302",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-300",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-304",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-122",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-197",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-198",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-134",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-199",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-147",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-157",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-186",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-191",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-196",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-146",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-120-X1",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-113",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-126",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-127",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-303",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-305",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-306",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-307",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-308",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-309",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-159",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-160",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-161",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-163",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-164",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-165",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-166",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-168",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-169",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-170",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-171",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-172",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-174",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-175",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-176",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-177",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-178",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-100",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-104",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-115",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-116",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-117",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-120",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-122",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-127",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-128",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-132",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-133",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-138",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-109",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-110",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-100",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-111",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-116",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-117",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-119-X1",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-120-X2",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-121-X1",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-128",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-185",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-102",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-143",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-131",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-203",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-400",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "F0043F419",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "JOK00030F919",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-146",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "O45F919",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "O49F919",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-138",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-190",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-135",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "LV19-66881",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-139",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-137",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-142",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-136",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-146",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-181-X3",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-344",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-346",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-119-X2",
+      "status": "STAND BY"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-121-X2",
+      "status": "STAND BY"
+    },
+    {
+      "name": "ESTACION DE LAVAMANOS",
+      "code": "PSLLV-103",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-124",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-138",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-158",
+      "status": "OPERATIVO"
+    },
+    {
+      "name": "BATERIAS SANITARIAS",
+      "code": "PSLBT-193-X2",
+      "status": "OPERATIVO"
+    }
+  ]
