@@ -19,7 +19,6 @@ from django.conf import settings
 from django.urls import path, include
 from django.contrib.staticfiles.urls import static
 
-
 urlpatterns = [
     path('', include('user_sessions.urls', 'user_sessions')),
     path('grappelli/', include('grappelli.urls'), name='grappelli'),

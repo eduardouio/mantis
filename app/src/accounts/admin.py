@@ -5,6 +5,9 @@ from django.contrib.auth.admin import UserAdmin
 from accounts.models import CustomUserModel, License, Technical, WorkJournal
 from accounts.forms import CustomCreationForm, CustomChangeForm
 
+admin.site.site_header = "MANTIS GESTION DE MANTENIMIENTOS"
+admin.site.site_title = "MANTIS GESTION DE MANTENIMIENTOS"
+admin.site.index_title = "PEISOL SA"
 
 class CustomUserModelAdmin(UserAdmin):
     add_form = CustomCreationForm
