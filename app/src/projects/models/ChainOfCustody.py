@@ -51,6 +51,9 @@ class ChainOfCustody(BaseModel):
         max_length=255
     )
 
+    def __str__(self):
+        return self.mantenance
+
 
 ACCION_CHOICES = (
     ('ENVIO', 'ENVIO'),
@@ -89,3 +92,6 @@ class ChainOfCustodyPersonal(BaseModel):
         max_length=255,
         choices=ACCION_CHOICES
     )
+
+    def __str__(self):
+        return self.chain_of_custody

@@ -10,7 +10,7 @@ SERVICES_CHOICES = (
 
 
 class Project(BaseModel):
-    id_project = models.AutoField(
+    id = models.AutoField(
         primary_key=True
     )
     internal_code = models.CharField(

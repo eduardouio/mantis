@@ -151,3 +151,6 @@ class MantenanceSupplies(BaseModel):
         'Guantes',
         default=False
     )
+
+    def __str__(self):
+        return self.mantenance
