@@ -1,0 +1,60 @@
+en la hoja de mantenimiento se menciona dos veces al tecnico
+    1 en tecnico responsable
+    2 en tecnico que realizo el mantenimiento
+
+estos tecnico son siempre el mismo o existe la posibilidad de que sean diferentes?
+
+
+En el Mantenimieto se usa un VACCUM O CAAMION, se puede usar los dos o solo uno de ellos?
+En todos los mantenimientos se usa un VACCUM O CAAMION, o solo en algunos casos?
+
+
+La cadena de custodia puede ser mas de una viaje en un solo mantenimiento?
+
+Una hoja de mantenimiento puede tener varios equipos
+
+
+cual es la unidad de medida de los suministros de limpieza, en la hoja de mantenimiento
+tine solamente checks,  esto equivale a una unidad de medida o a una cantidad?
+
+
+donde van los costos de los mantenimientos y como se cobra el costo adicional de logistica
+
+
+en los insumos FUN es funda?
+
+EL AGUA RESIDUAL SUCCCIONADA EN QUE SE ESTA MIDIENDO, EN LITROS O EN GALONES?
+
+las autorizaciones son diferentes en los equipos y el el reporte completo?
+
+EN EL DOCUMENTO DE LOS mantenimientos,  en mi muestra de losproyectos tengo dos tipos de servicios
+SERVICES_CHOICES = (
+    ('ALQUIKER DE EQUIPOS', 'ALQUILER DE EQUIPOS'),
+    ('MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO', 'MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO'),
+)
+
+que pasa con los otros servicios, se hace una hoja de manteminiento diferente para la potabilizaci'on del agua y tratamiendo de aguas residuales?
+
+
+como se cobra el alquier y como el mantenimiento, en la planilla de cantidades de servicio menciona los valores de mantenimiento, entiendo yo. pero donde van los valores de renta
+
+los vehiculos tienen dos opciones uno que dice vehiculos propios y otro que dice vehiculos del contratante.
+
+en la parte de materiales transportados en la hoja de mantenimiento no se detallan las cantidades por cada tipo e material SOLAMENTE UN total del volumen
+
+
+cuantos estados de fisicos existen para la cadena de custodia, en mi ejemplo tengo liquidos, porque en los mantenimientos solo tengo aguas y lodos todos liquidos, en tipo de embalaje tengo vacuum 
+pero en el mantenimiento tengo vaccum y camion, que pasa si solo es cammion
+
+
+en la hoja de mantenimiento eciste un origen y destino del material transportado, porque esto no está en la cadena de custodia, lo podemos pasar?, 
+me hace mas sentido que esté en la cadena de custodia, o como se sabe en la hoja de mantenimiento?
+
+en la cadena de custodia en el trsporte de los materiales se menciona tres fechas en evia trasporta y recibe
+
+el que elabora es el mismo que hace el documento de cadna de custodia
+
+no se hace un sistema para gestionar el personal, solamente se majea las jornadas para las disponibilidades
+ en el listado de equipos que es el RIG
+
+ ver toda la infor que se rgistra del personal y vehiculos
