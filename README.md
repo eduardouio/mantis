@@ -4,7 +4,7 @@
 python manage.py makemigrations accounts
 python manage.py makemigrations equipment
 python manage.py makemigrations projects
-python migrate
+python manage.py migrate
 python manage.py sowseed
 
 
