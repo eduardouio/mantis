@@ -2,7 +2,7 @@ from django.db import models
 from common import BaseModel
 from projects.models import Project
 from equipment.models import Equipment, Vehicle
-from accounts.models import Tecnical
+from accounts.models import Technical
 
 
 CHOICES_VOLUME_AGUA_RESIDUAL = (
@@ -37,15 +37,15 @@ class Mantenance(BaseModel):
         primary_key=True
     )
     project = models.ForeignKey(
-        Project,
+        'projects.Project',
         on_delete=models.CASCADE
     )
     tecnical = models.ForeignKey(
-        Tecnical,
+        Technical,
         on_delete=models.CASCADE
     )
     vehicle = models.ForeignKey(
-        Vehicle,
+        'equipment.Vehicle',
         on_delete=models.CASCADE
     )
     date = models.DateField(

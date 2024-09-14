@@ -32,7 +32,7 @@ class ChainOfCustody(BaseModel):
         max_length=255
     )
     vehicle = models.ForeignKey(
-        Vehicle,
+        'equipment.Vehicle',
         on_delete=models.RESTRICT
     )
     observation = models.TextField(

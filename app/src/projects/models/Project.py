@@ -5,8 +5,7 @@ from equipment.models import Equipment
 
 SERVICES_CHOICES = (
     ('ALQUIKER DE EQUIPOS', 'ALQUILER DE EQUIPOS'),
-    ('MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO',
-     'MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO'),
+    ('MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO', 'MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO'),
 )
 
 
@@ -20,7 +19,7 @@ class Project(BaseModel):
         help_text='PSL-PS-000109-24'
     )
     partner = models.ForeignKey(
-        Partner,
+        'projects.Partner',
         on_delete=models.CASCADE
     )
     required_by = models.CharField(
@@ -40,7 +39,7 @@ class Project(BaseModel):
         blank=True,
         null=True
     )
-    palce = models.CharField(
+    place = models.CharField(
         'Lugar',
         max_length=255
     )
@@ -73,7 +72,7 @@ class Project(BaseModel):
     )
 
     def __str__(self):
-        return self.name
+        return self.project_name
 
 
 class ProjectEquipments(BaseModel):
@@ -123,5 +122,3 @@ class ProjectEquipments(BaseModel):
         null=True
     )
 
-    def __str__(self):
-        return self.project.project_name

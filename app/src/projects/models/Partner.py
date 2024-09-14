@@ -4,6 +4,7 @@ from equipment.models import Vehicle
 from accounts.models import CustomUserModel
 
 
+
 # todos los socios de negocio son clientes
 class Partner(BaseModel):
     id = models.AutoField(
@@ -35,8 +36,8 @@ class Partner(BaseModel):
     authorized_tehcnicals = models.ManyToManyField(
         CustomUserModel
     )
-    authorized_vehicles = models.ManyToManyField(
-        Vehicle
+    authorized_vehicle = models.ManyToManyField(
+        'equipment.Vehicle'
     )
 
     def __str__(self):
