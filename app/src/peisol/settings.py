@@ -153,3 +153,5 @@ AUTHENTICATION_BACKENDS = [
 ]
 # LOGIN = '/accounts/login/'
 
+# mis configuraciones
+URL_LICENCE = 'https://licences.dev-7.com/peisol/'

@@ -42,6 +42,11 @@ class CustomUserModel(AbstractUser):
         default='sales',
         max_length=20
     )
+    license_code = models.CharField(
+        'Código de Licencia',
+        max_length=255,
+        blank=True
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
