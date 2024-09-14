@@ -6,6 +6,7 @@ import json
 from datetime import timedelta
 from accounts.models import Technical, License, WorkJournal
 from equipment.models import Equipment, Supplie, SupplieStockMovment, Vehicle
+from projects.models import Partner
 
 
 class Command(BaseCommand):
@@ -25,6 +26,10 @@ class Command(BaseCommand):
         self.load_equipment(faker)
         print('creamos los insumos')
         self.load_supplies(faker)
+        print('creamos los vehiculos')
+        self.load_vehicle(faker)
+        print('creamos los proveedores')
+        self.load_suppliers(faker)
 
     def createSuperUser(self):
         user = CustomUserModel.get('eduardouio7@gmail.com')
@@ -108,11 +113,38 @@ class Command(BaseCommand):
             print('Ya existen los insumos')
             return True
 
-        with open('seed/supplies.json', 'r') as file:
+        with open('seed/supplie.json', 'r') as file:
             file_content = json.load(file)
 
         for supplie in file_content:
             Supplie.objects.create(
                 **supplie
             )
-        
+
+    def load_vehicle(self, faker):
+        if Vehicle.objects.exists():
+            print('Ya existen los vehiculos')
+            return True
+
+        for item in range(15):
+            Vehicle.objects.create(
+                name=faker.word(),
+                brand=faker.company(),
+                code_vehicle=faker.uuid4(),
+                model=faker.word(),
+                no_plate=faker.license_plate(),
+                type_vehicle=random.choice(['CAMION', 'VACCUM', 'CAMIONETA'])
+            )
+
+    def load_suppliers(self, faker):
+        if Partner.objects.exists():
+            print('Ya existen los proveedores')
+            return True
+
+        with open('seed/suppliers.json', 'r') as file:
+            file_content = json.load(file)
+
+        for supplier in file_content:
+            Partner.objects.create(
+                **supplier
+            )
