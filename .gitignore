@@ -154,3 +154,12 @@ app/src/accounts/models/__pycache__/__init__.cpython-312.pyc
 app/src/accounts/forms/__pycache__/CustomCreationForm.cpython-312.pyc
 /__pycache__/
 */__pycache__/*
+app/src/equipment/migrations/0001_initial.py
+migrations/*
+*/migrations/
+/migrations/*
+*/migrations/*
+app/src/equipment/migrations/0002_initial.py
+app/src/projects/migrations/0001_initial.py
+app/src/projects/migrations/0002_partner_authorized_vehicle.py
+.devdbrc
