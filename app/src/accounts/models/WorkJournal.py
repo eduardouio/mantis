@@ -2,6 +2,11 @@ from django.db import models
 from .Technical import Technical
 from common import BaseModel
 
+CHOICES = (
+    ('TRABAJO', 'TRABAJO'),
+    ('DESCANSO', 'DESCANSO'),
+)
+
 
 class WorkJournal(BaseModel):
     id = models.AutoField(
@@ -10,6 +15,12 @@ class WorkJournal(BaseModel):
     technical = models.ForeignKey(
         Technical,
         on_delete=models.RESTRICT,
+    )
+    type = models.CharField(
+        'Tipo',
+        max_length=10,
+        choices=CHOICES,
+        default='TRABAJO'
     )
     date_start = models.DateField(
         'fecha de inicio',

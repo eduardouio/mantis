@@ -3,15 +3,26 @@ from common import BaseModel
 from accounts.models.CustomUserModel import CustomUserModel
 
 
-POSITION_CHOICES = (
-    ('Administrativo', 'Administrativo'),
-    ('Tecnico', 'Tecnico'),
+ROLE_CHOICES = (
+    ('ADMINISTRATIVO', 'ADMINISTRATIVO'),
+    ('TECNICO', 'TECNICO'),
+)
+LOCATION_CHOICES = (
+    ('CAMPO BASE', 'CAMPO BASE'),
+    ('CHANANHUE', 'CHANANHUE'),
+    ('CPP', 'CPP'),
 )
 
 
 class Technical(BaseModel):
     id = models.AutoField(
         primary_key=True
+    )
+    date_joined = models.DateField(
+        'Fecha de Ingreso',
+        blank=True,
+        null=True,
+        default=None
     )
     first_name = models.CharField(
         'Nombres',
@@ -24,6 +35,12 @@ class Technical(BaseModel):
     email = models.EmailField(
         'Correo Electrónico',
         unique=True,
+    )
+    location = models.CharField(
+        'Ubicación',
+        max_length=255,
+        choices=LOCATION_CHOICES,
+        default='CAMPO BASE'
     )
     dni = models.CharField(
         'Cédula',
@@ -40,10 +57,10 @@ class Technical(BaseModel):
         'Número de Celular',
         max_length=15
     )
-    position = models.CharField(
+    role = models.CharField(
         'cargo',
         max_length=255,
-        choices=POSITION_CHOICES,
+        choices=ROLE_CHOICES,
     )
     days_to_work = models.PositiveSmallIntegerField(
         'días a trabajar',

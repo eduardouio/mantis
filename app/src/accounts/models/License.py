@@ -3,8 +3,8 @@ from common import BaseModel
 from accounts.models.CustomUserModel import CustomUserModel
 
 ROLE_CHOICES = (
-    ('manager', 'Manager'),
-    ('technical', 'Technical'),
+    ('ADMINISTRATIVO', 'ADMINISTRATIVO'),
+    ('TECNICO', 'TECNICO'),
 )
 
 
@@ -34,15 +34,14 @@ class License(BaseModel):
     role = models.CharField(
         'Role',
         choices=ROLE_CHOICES,
-        default='sales',
+        default='TECNICO',
         max_length=20
     )
     is_active = models.BooleanField(
         'Activo?',
-        default=True
+        default=False
     )
     user = models.ForeignKey(
         CustomUserModel,
         on_delete=models.CASCADE
     )
-

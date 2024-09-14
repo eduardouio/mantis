@@ -9,8 +9,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from accounts.managers import CustomUserManager
 
 ROLE_CHOICES = (
-    ('manager', 'Manager'),
-    ('technical', 'Technical'),
+    ('ADMINISTRATIVO', 'ADMINISTRATIVO'),
+    ('TECNICO', 'TECNICO'),
 )
 
 
@@ -35,10 +35,10 @@ class CustomUserModel(AbstractUser):
         'notas',
         blank=True
     )
-    roles = models.CharField(
+    role = models.CharField(
         'Role',
         choices=ROLE_CHOICES,
-        default='sales',
+        default='TECNICO',
         max_length=20
     )
 

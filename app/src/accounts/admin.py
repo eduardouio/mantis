@@ -4,7 +4,6 @@ from django.contrib.auth.admin import UserAdmin
 
 from accounts.models import CustomUserModel, License, Technical, WorkJournal
 from accounts.forms import CustomCreationForm, CustomChangeForm
-from user_sessions.models import Session
 
 
 class CustomUserModelAdmin(UserAdmin):
@@ -89,14 +88,14 @@ class TechnicalAdmin(SimpleHistoryAdmin):
         'email',
         'dni',
         'nro_phone',
-        'position',
+        'role',
         'days_to_work',
         'days_free',
         'is_active',
     )
 
     list_filter = (
-        'position',
+        'role',
         'is_active',
     )
 
