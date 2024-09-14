@@ -21,6 +21,10 @@ class Technical(BaseModel):
         'Apellidos',
         max_length=255
     )
+    email = models.EmailField(
+        'Correo Electrónico',
+        unique=True,
+    )
     dni = models.CharField(
         'Cédula',
         max_length=15
