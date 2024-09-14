@@ -1,5 +1,4 @@
 from django.db import models
-from accounts.models import CustomUserModel
 from django.utils import timezone
 from datetime import timedelta
 from common import BaseModel
@@ -8,10 +7,6 @@ from common import BaseModel
 class License(BaseModel):
     id = models.AutoField(
         primary_key=True
-    )
-    user = models.OneToOneField(
-        CustomUserModel,
-        on_delete=models.CASCADE
     )
     license_key = models.CharField(
         'clave de licencia',
@@ -31,6 +26,12 @@ class License(BaseModel):
         'Contenido de Licencia',
         null=True,
         blank=True
+    )
+    role = models.CharField(
+        'Role',
+        choices=ROLE_CHOICES,
+        default='sales',
+        max_length=20
     )
 
     def activate(self):

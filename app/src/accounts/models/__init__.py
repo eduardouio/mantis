@@ -1,4 +1,4 @@
 from .CustomUserModel import CustomUserModel
 from .License import License
-from .Tecnical import Tecnical
+from .Technical import Technical
 from .WorkJournal import WorkJournal
