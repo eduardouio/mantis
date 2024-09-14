@@ -14,6 +14,7 @@ CHOICES_CODE = (
 STATUS_CHOICES = (
     ('OPERATIVO', 'OPERATIVO'),
     ('DANADO', 'DANADO'),
+    ('STAND BY', 'STAND BY'),
     ('EN REPARACIÓN', 'EN REPARACIÓN'),
 )
 
@@ -35,13 +36,13 @@ class Equipment(BaseModel):
         'Modelo',
         max_length=255,
         blank=True,
-        null=True
+        null=True,
+        default=None
     )
     code = models.CharField(
-        'Código',
-        max_length=255,
-        blank=True,
-        null=True
+        'Código Equipo',
+        max_length=50,
+        unique=True
     )
     date_purchase = models.DateField(
         'Fecha de Compra',
@@ -49,38 +50,37 @@ class Equipment(BaseModel):
         null=True,
         default=None
     )
-    id_code = models.CharField(
-        'Identificaor de Equipo',
-        max_length=255,
-        unique=True
-    )
     height = models.DecimalField(
         'Altura',
         max_digits=5,
         decimal_places=2,
         blank=True,
         null=True,
+        default=None
     )
     width = models.DecimalField(
         'Ancho',
         max_digits=5,
         decimal_places=2,
         blank=True,
-        null=True
+        null=True,
+        default=None
     )
     depth = models.DecimalField(
         'Profundidad',
         max_digits=5,
         decimal_places=2,
         blank=True,
-        null=True
+        null=True,
+        default=None
     )
     weight = models.DecimalField(
         'Peso',
         max_digits=5,
         decimal_places=2,
         blank=True,
-        null=True
+        null=True,
+        default=None
     )
     description = models.TextField(
         'Descripción',
@@ -96,7 +96,7 @@ class Equipment(BaseModel):
     )
     is_active = models.BooleanField(
         'Activo?',
-        default=False
+        default=True
     )
     # Estos campos se actualizan cada vez que el equipo cambia de proyecto
     # o de ubicación, no se actualiza manualmente

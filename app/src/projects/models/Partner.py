@@ -21,11 +21,19 @@ class Partner(BaseModel):
     )
     email = models.EmailField(
         'Correo Electrónico',
-        max_length=255
+        max_length=255,
+        blank=True,
+        null=True
     )
     phone = models.CharField(
         'Teléfono',
-        max_length=20
+        max_length=20,
+        blank=True,
+        null=True
+    )
+    address = models.CharField(
+        'Dirección',
+        max_length=255
     )
     name_contact = models.CharField(
         'Nombre de Contacto',
@@ -38,6 +46,7 @@ class Partner(BaseModel):
     )
     authorized_vehicle = models.ManyToManyField(
         'equipment.Vehicle'
+
     )
 
     def __str__(self):
