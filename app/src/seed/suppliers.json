@@ -1,0 +1,814 @@
+[
+    {
+      "business_tax_id": "2290327183001",
+      "name": "ABARCA QUEZADA CONSTRUCCIONES Y SERVICIOS AQSERVIC CIA LTDA",
+      "phone": "062860363",
+      "email": "aabarca@hotmail.com",
+      "address": "AMBATO 66 Y RIO COCA"
+    },
+    {
+      "business_tax_id": "1792039703001",
+      "name": "ACCYEM PROYECTOS CIA LTDA",
+      "phone": "022311317",
+      "email": "bnovillo69@hotmail.com",
+      "address": "IGNACIO LECUMBERRY A16 Y NELA MARTINEZ"
+    },
+    {
+      "business_tax_id": "1792367107001",
+      "name": "ANDESUPPLY S A",
+      "phone": "0994728811",
+      "email": "compras1@andesupply.com",
+      "address": "AV PURUHAES Y AV EL INCA"
+    },
+    {
+      "business_tax_id": "1720344439001",
+      "name": "ARMAS HERRERA ALEXIS EDUARDO",
+      "phone": "0997351807",
+      "email": "marilazt1@gmail.com",
+      "address": "PICHINCHA  QUITO  SAN BARTOLO  S11 LINO CURIMA OE5-26 Y OE5 PIO DURE"
+    },
+    {
+      "business_tax_id": "1791240154001",
+      "name": "ASESORIA Y REPRESENTACIONES COMERCIALES ARCOLANDS CIALTDA",
+      "phone": "022261226",
+      "email": "mcorral@arcolands.com,asistentefinanciera@arcolands.com",
+      "address": "AV GENERAL RUMINAHUI  E ISLA ISABEL EDIFICIO SAN RAFAEL BUSINESS  CENTER"
+    },
+    {
+      "business_tax_id": "2101075352001",
+      "name": "ASPRILLA GONZALEZ KEVIN FRANCISCO",
+      "phone": "0989980916",
+      "email": "kevinasp@outlook.com",
+      "address": "BARRIO JARDINES DEL SUR 1"
+    },
+    {
+      "business_tax_id": "2100460613001",
+      "name": "ASTUDILLO CALVA WILSON ENRIQUE",
+      "phone": "0994638654",
+      "email": "enriqueastudillo08@gmail.com",
+      "address": "SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI  UNIDAD NACIONAL SN Y MEXICO"
+    },
+    {
+      "business_tax_id": "1792458692001",
+      "name": "AUMAPROC S A",
+      "phone": "0983785337",
+      "email": "",
+      "address": "HERNANDO DE LA CRUZ N32-152 Y AV ATAHUALPA"
+    },
+    {
+      "business_tax_id": "1891781837001",
+      "name": "AUTOELITE S A",
+      "phone": "0993333314",
+      "email": "scisneros@vehysa.com.ec",
+      "address": "LA MERCED ABDON CALDERON Y PRIMERA IMPRENTA"
+    },
+    {
+      "business_tax_id": ""0400490231001"",
+      "name": "BENITEZ VILLACORTE GUSTAVO RAMIRO",
+      "phone": "022425281",
+      "email": "marilazt1@gmail.com",
+      "address": "CIUDADELA CARAPUNGO JULIO MORENO Oe 11-220 Y PEDRO CARBO"
+    },
+    {
+      "business_tax_id": "1002978466001",
+      "name": "CALDERON GUERRERO CARLOS PATRICIO",
+      "phone": "0993988762",
+      "email": "carlospcalderon@gmail.com",
+      "address": "EL COCA CALLE QUITO Y RIO HUATARACO JUNTO AL HOTEL PAYAMINO"
+    },
+    {
+      "business_tax_id": "1792175461001",
+      "name": "CATSER FACILITIES MANAGEMENT CIA LTDA",
+      "phone": "023970900",
+      "email": "dnaranjo@hanaska.com",
+      "address": "LA CONCEPCION  ISAAC ALBENIZ E3-78 Y MOZART"
+    },
+    {
+      "business_tax_id": "2191773588001",
+      "name": "CIP CONSTRUCCIONESYSERVICIOS SAS",
+      "phone": "0000000000",
+      "email": "cipconstruccionesec@gmail.com",
+      "address": "LAGO AGRIO  CIRCUNVALACION Y 23 DE SEPTIEMBRE"
+    },
+    {
+      "business_tax_id": "1791808045001",
+      "name": "CNPC CHUANQING DRILLING ENGINEERING COMPANY LIMITED",
+      "phone": "0323800990",
+      "email": "factura@ccdc-ec.com",
+      "address": "AV SHYRIS E9 38 Y BELGICA"
+    },
+    {
+      "business_tax_id": "2190001795001",
+      "name": "COMITE DE EMPRESA DE TRABAJADORES DE PALMERAS DEL ECUADOR",
+      "phone": "0988888614",
+      "email": "joseolivero202045@gmail.com",
+      "address": "AV UNIDAD NACIONAL SN Y VENEZUELA GONZALEZ"
+    },
+    {
+      "business_tax_id": "2290316882001",
+      "name": "COMPANY PCA MANTENIMIENTO INDUSTRIAL S A",
+      "phone": "0982613915",
+      "email": "contabilidad@pcacompany.com.ec,comprobantes.electronicos@pcacompany.com.ec",
+      "address": "KM 2 VIA COCA LAGO AGRIO"
+    },
+    {
+      "business_tax_id": "1591709425001",
+      "name": "CONAGSOL CIA LTDA",
+      "phone": "062583073",
+      "email": "facturación@conagsol.com",
+      "address": "CARLOS JULIO AROSEMENA TOLA  JUMANDY SN Y PICHINCHA"
+    },
+    {
+      "business_tax_id": "1791768825001",
+      "name": "CONDUTO ECUADOR S A",
+      "phone": "023827740",
+      "email": "",
+      "address": "REPUBLICA DEL SALVADOR N35-204 Y SUECIA"
+    },
+    {
+      "business_tax_id": "1790870073001",
+      "name": "CONEXPET CIA LTDA",
+      "phone": "062366962",
+      "email": "compras.electronicas@conexpet.com",
+      "address": "PEDRO PONCE CARRASCO E8-06 Y AV DIEGO DE ALMAGRO"
+    },
+    {
+      "business_tax_id": "1791711238001",
+      "name": "CONSERDE MILLENIUM S A",
+      "phone": "062603147",
+      "email": "ventas@conserde.ec",
+      "address": "FRANCISCO DE ORELLANA N13-370 Y JUAN DE DIOS MARTINEZ"
+    },
+    {
+      "business_tax_id": "1792335574001",
+      "name": "CONSHORAMA CIA LTDA",
+      "phone": "099 071 9306",
+      "email": "sin.correo@correo.com",
+      "address": "ORELLANA  ORELLANA  NUEVO PARAISO CAB EN UNION CHIMBORAZO  PRINCIPAL SN Y SN"
+    },
+    {
+      "business_tax_id": "2191770113001",
+      "name": "CONSORCIO CRECER MAS",
+      "phone": "0981740392",
+      "email": "consorciocrecermas@outlook.com",
+      "address": "SUCUMBIOS  LAGO AGRIO NUEVA LOJA 18 DE NOVIEMBRE Y PROGRESO"
+    },
+    {
+      "business_tax_id": "1792983657001",
+      "name": "CONSORCIO NATIONAL OIL TRACTOREPUESTOS CIA LTDA",
+      "phone": "023520420",
+      "email": "contabilidad@consorciont.com",
+      "address": "AV DE LOS SHYRIS N35-174 Y SUECIA EDIF RENAZZO PLAZA PISO 2 OFIC 205"
+    },
+    {
+      "business_tax_id": "1792010721001",
+      "name": "CONSORCIO PETROLERO BLOQUE 17",
+      "phone": "0984012337",
+      "email": "gabriel.salgado@andespetro.com",
+      "address": "AV NN UU E10 44 Y REP EL SALVADOR"
+    },
+    {
+      "business_tax_id": "1792352363001",
+      "name": "CONSORCIO SHUSHUFINDI SA",
+      "phone": "023940100",
+      "email": "facturacion@cssfd.ec",
+      "address": "AV GRANADOS VIA NAYON TORRE 5 Y AV SIMON BOLIVAR CENTRO CORPORATIVO EKOPARK"
+    },
+    {
+      "business_tax_id": "1793100198001",
+      "name": "CONSORCIO TECNOGAS",
+      "phone": "022598050",
+      "email": "consorciotecnogas@hotmail.com",
+      "address": "PICHINCHA  QUITO LA CONCEPCION  FLORENCIO ESPINOZA N55-20 Y JUAN SAAMANO"
+    },
+    {
+      "business_tax_id": "1791982045001",
+      "name": "CONSPECCIME CIA LTDA",
+      "phone": "393 2240 / 393 2241",
+      "email": "lenny.valladares@cpm.com.ec",
+      "address": "PICHINCHA  QUITO  INAQUITO  PASAJE EL JARDIN E10-05 Y AV 6 DE DICIEMBRE"
+    },
+    {
+      "business_tax_id": "1791774345001",
+      "name": "CONSTRUCCIONES CUEVA CIMENTACION Y PUENTES CONCUCIP CIA LTDA",
+      "phone": "0994343713",
+      "email": "",
+      "address": "TARAPOA  PRINCIPAL SN Y SECUNDARIA"
+    },
+    {
+      "business_tax_id": "1792324750001",
+      "name": "CONSTRUCCIONES PROYECTREDES CIA LTDA",
+      "phone": "062812279",
+      "email": "facturacion@proyectredes.com.ec",
+      "address": "CALLE CUARTA TRANSVERSAL SN Y RIO JUBONES KM 8 VIA A QUITO"
+    },
+    {
+      "business_tax_id": "1792371694001",
+      "name": "CONSTRUCCIONES Y PRESTACIONES PETROLERAS SA CPP",
+      "phone": "022988700",
+      "email": "recfacturas@cpp.com.ec",
+      "address": "AV LA CORUNA N28-14 Y MANUEL ITURREY EDF SANTA FE 4TO PISO QUITO"
+    },
+    {
+      "business_tax_id": "2290337561001",
+      "name": "CONSTRUCCIONES Y SERVICIOS INTRESBUILD CIA LTDA",
+      "phone": "0981386793",
+      "email": "ronalespejo@gmail.com",
+      "address": "CALLE 10 DE AGOSTO Y CRISTOBAL COLON"
+    },
+    {
+      "business_tax_id": "2191728184001",
+      "name": "CONSTRUCTORA INGENIERIA CIVIL CAMNIETCONS CIA LTDA",
+      "phone": "0980116937",
+      "email": "nietoalfredo@hotmail.com",
+      "address": "SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  GENERAL ITURRALDE SN Y AMBATO"
+    },
+    {
+      "business_tax_id": "1792226864001",
+      "name": "CONSTRUCTORA VELASTEGUI CERON  ASOCIADOS CIA LTDA",
+      "phone": "024509108",
+      "email": "contabilidad@constructoravelasteguiceron.ec",
+      "address": "AV 6 DE DICIEMBRE N32-623 Y IGNACIO BOSSANO"
+    },
+    {
+      "business_tax_id": "1791326768001",
+      "name": "CONSTRUCTORA VILLACRECES ANDRADE CVA S A",
+      "phone": "02229244",
+      "email": "glogrono@elitcorp.com",
+      "address": "AV 12 DE OCTUBRE Y CORDERO"
+    },
+    {
+      "business_tax_id": "2191726238001",
+      "name": "CONSTRUMEGZONAS CIA LTDA",
+      "phone": "062814522",
+      "email": "construmegzonas@hotmail.com",
+      "address": "BARRIO UNION Y PROGRESO"
+    },
+    {
+      "business_tax_id": "2191724642001",
+      "name": "CONSTRUWAYRA CIA LTDA",
+      "phone": "099 991 9675",
+      "email": "infoconstruwayra@gmail.com",
+      "address": "SUCUMBIOS  LAGO AGRIO  PACAYACU  VIA GUARUMO SN"
+    },
+    {
+      "business_tax_id": "9999999999999",
+      "name": "CONSUMIDOR FINAL",
+      "phone": "0999999999",
+      "email": "sin.correo@correo.com",
+      "address": "ELOY ALFARO Y SHIRYS"
+    },
+    {
+      "business_tax_id": "1790590380001",
+      "name": "CORPORACION PARA LOS RECURSOS NATURALES CORENA SA",
+      "phone": "022508854",
+      "email": "acarvajal@corena.com.ec",
+      "address": "PICHINCHA  QUITO  LA CONCEPCION  ALPALLANA E6-178 Y WHYMPER"
+    },
+    {
+      "business_tax_id": "2100557905001",
+      "name": "CUEVA CANGO VERONICA MARLENE",
+      "phone": "062833205,0985444491",
+      "email": "servicontabls@hotmail.com",
+      "address": "SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  FRANCISCO MONTESDEOCA SN Y ESMERALDAS"
+    },
+    {
+      "business_tax_id": "1791804619001",
+      "name": "CYFOIL CIA LTDA",
+      "phone": "0999148123",
+      "email": "",
+      "address": "PUERTO FRANCISCO DE ORELLANA EL COCA  VIA LAGO AGRIO SN"
+    },
+    {
+      "business_tax_id": ""0601728553001"",
+      "name": "DAMIAN ESCUDERO ROSA DEL TRANCITO",
+      "phone": "0999999999",
+      "email": "sin.correo@correo.com",
+      "address": "CDLA PRIMERA CONSTITUYENTE CHILE 14 Y JUAN FELIX PROANO"
+    },
+    {
+      "business_tax_id": "1792284392001",
+      "name": "DESPROMETALING CIA LTDA",
+      "phone": "02251 5174",
+      "email": "ronal.arias@desprometaling.com",
+      "address": "PICHINCHA  RUMINAHUI  SANGOLQUI  CONCEPCION SN"
+    },
+    {
+      "business_tax_id": "1792837480001",
+      "name": "DRILLCOTEC CIALTDA",
+      "phone": "022894954",
+      "email": "facturacion@dc-tec.energy",
+      "address": "AV SIENA 318 Y CALLE A EDIFICIO MDX PISO 3 OFICINA 315 CUMBAYA QUITO"
+    },
+    {
+      "business_tax_id": "1792067111001",
+      "name": "EQUITRAMCOR CIA LTDA",
+      "phone": "062861026",
+      "email": "kfarinango@equitramcor.com",
+      "address": "KM 5 12 VIA COCA - LAGO AGRIO"
+    },
+    {
+      "business_tax_id": "1791768205001",
+      "name": "ERAZO CONSTRUCTORES SA",
+      "phone": "022443490",
+      "email": "administrador.02@erazoconstructores.com",
+      "address": "PICHINCHA  QUITO  RUMIPAMBA  BERNABE PESANTESCO N36-176 Y AV MANOSCA"
+    },
+    {
+      "business_tax_id": "2290312852001",
+      "name": "ESSOIL ECUATORIANA DE SERVICIOS Y SUMINISTROS PETROLEROS SA",
+      "phone": "062366962",
+      "email": "info.essoil@gruposixmotors.com",
+      "address": "DE ORELLANA EL COCA  AV ALEJANDRO LABAKA SN Y ANTONIO CABRERA"
+    },
+    {
+      "business_tax_id": "2191717824001",
+      "name": "FERRICASTH CIA LTDA",
+      "phone": "",
+      "email": "",
+      "address": "VIA TARAPOA SN"
+    },
+    {
+      "business_tax_id": "1791338243001",
+      "name": "GEOPETSA SERVICIOS PETROLEROS SA",
+      "phone": "023184880",
+      "email": "facturacionelectronica@geopetsa.com",
+      "address": "AV AMAZONAS N39-123 Y JOSE ARIZAGA ED AMAZONAS PLAZA PISO 8 OFC  61"
+    },
+    {
+      "business_tax_id": "1560000510001",
+      "name": "GOBIERNO MUNICIPAL DE LAGO AGRIO",
+      "phone": "062830144",
+      "email": "facturasgadmla@yahoo.com",
+      "address": "12 DE FEBRERO Y COFANES"
+    },
+    {
+      "business_tax_id": "1792985293001",
+      "name": "GRAN TIERRA ENERGY COLOMBIA GMBH",
+      "phone": "023810950",
+      "email": "grantierrabilling@ec.ey.com",
+      "address": "AV CORUNA N27-36 Y FCO DE ORELLANA"
+    },
+    {
+      "business_tax_id": "1719756700001",
+      "name": "GUAMAN MULLO HUGO RAMIRO",
+      "phone": "0999197610",
+      "email": "hugocristiano@hotmail.com",
+      "address": "EDUARDO MORLAI SECTOR LA VILLAFLORA"
+    },
+    {
+      "business_tax_id": "1792274966001",
+      "name": "GYRODATA ECUADOR LLC",
+      "phone": "0222240289",
+      "email": "factura.ecuador@gyrodata.com",
+      "address": "NORUEGA N33C Y SUIZA"
+    },
+    {
+      "business_tax_id": "1790528782001",
+      "name": "HALLIBURTON LATIN AMERICA SRL",
+      "phone": "023971700",
+      "email": "ecuadorinvoices@halliburton.com",
+      "address": "AVAMAZONAS  N37-29 Y UNION NACIONAL DE PERIODISTAS"
+    },
+    {
+      "business_tax_id": "1790069230001",
+      "name": "HARBERT INTERNATIONAL ESTABLISHMENT S DE RL",
+      "phone": "0999080482",
+      "email": "administracion@harbert.com.ec",
+      "address": "PICHINCHA - QUITO"
+    },
+    {
+      "business_tax_id": "1707457022001",
+      "name": "HEREDIA SANDOVAL LUIS",
+      "phone": "0998330024",
+      "email": "luish.cel@gmail.com",
+      "address": "AV LAS PALMERAS N47-65 Y DE LOS CAPULJES"
+    },
+    {
+      "business_tax_id": "1791994426001",
+      "name": "HIDROGEOCOL ECUADOR CIA LTDA",
+      "phone": "023238830,02323776",
+      "email": "karina_villavicencio@hge.com.ec",
+      "address": "PICHINCHA  QUITO  MARISCAL SUCRE  LA NINA E8-52 Y DIEGO DE ALMAGRO"
+    },
+    {
+      "business_tax_id": "1792184010001",
+      "name": "HILONG OIL SERVICE  ENGINEERING ECUADOR CIA LTDA",
+      "phone": "0999227990",
+      "email": "hse-coordinador@hilongecuador.com",
+      "address": "INAQUITO  REPUBLICA E7-197 Y DIEGO DE ALMAGRO"
+    },
+    {
+      "business_tax_id": "1791913027001",
+      "name": "HOERBIGER DEL ECUADOR SA",
+      "phone": "0993294980",
+      "email": "kmonterorienco@gmail.com",
+      "address": "AV 6 DE DICIEMBRE N33-382 Y ELOY ALFARO"
+    },
+    {
+      "business_tax_id": "1091782053001",
+      "name": "I-HELP SOLUCIONES INTEGRALES CA",
+      "phone": "097 975 4047",
+      "email": "dtulcanaza@ihelp-ec.com",
+      "address": "ORELLANA  ORELLANA  PUERTO FRANCISCO DE ORELLANA EL COCA  QUITO SN Y RIO HUATARACO"
+    },
+    {
+      "business_tax_id": "1707269526001",
+      "name": "IBARRA SALGUERO LENIN SILVERIO",
+      "phone": "062841145",
+      "email": "lenin.ibarra@yahoo.com",
+      "address": "SHUSHUFINDI  VIA AGUARICO 3 07-32 Y SHUARAS"
+    },
+    {
+      "business_tax_id": ""0993300160001"",
+      "name": "IBC STRUCTURES IBCSTRUCTURES SA",
+      "phone": 999999999,
+      "email": "",
+      "address": "GUAYAS - GUAYAQUIL CUMBRES BAJAS 21 MZ 803"
+    },
+    {
+      "business_tax_id": ""0992600292001"",
+      "name": "ILGUECORP SA",
+      "phone": "026020309",
+      "email": "diana.acuamain@hotmail.com",
+      "address": "AV ELOY ALFARO 1038 INTERSECCION LAS FUCSIAS"
+    },
+    {
+      "business_tax_id": "1792605229001",
+      "name": "INSPECCIONES TECNICAS PETROLERAS TECNIPETROLEOS S A",
+      "phone": "022262673",
+      "email": "vcorrea@itps.com.ec",
+      "address": "AV REPUBLICA DEL SALVADOR N35-146 Y SUECIA"
+    },
+    {
+      "business_tax_id": "1792270537001",
+      "name": "INYCOFYI INGENIERIA Y CONSTRUCCIONES SA",
+      "phone": "026008444",
+      "email": "kcedeño@fyi.com.ec",
+      "address": "SUCUMBIOS  CUYABENO  TARAPOA"
+    },
+    {
+      "business_tax_id": ""0601809627001"",
+      "name": "JARAMILLO GONZALES ALBERTO NICOLAS",
+      "phone": "0987459165",
+      "email": "anjg25@hotmail.es",
+      "address": "DIDONATO AYACUCHO 33 24 Y FRANCIA"
+    },
+    {
+      "business_tax_id": "2100767769001",
+      "name": "JIMENEZ IMAICELA STALYN FERNANDO",
+      "phone": "0999459680",
+      "email": "stalyn_jimenez@hotmail.com",
+      "address": "MARTHA ROLDOS SN Y MANUELITA SAENZ"
+    },
+    {
+      "business_tax_id": "2191716704001",
+      "name": "LAGOHANDLING CIA LTDA",
+      "phone": 999999999,
+      "email": "lagohandling@gmail.com",
+      "address": "24 DE MAYO Y 10 DE AGOSTO"
+    },
+    {
+      "business_tax_id": ""0924646060001"",
+      "name": "LOZA GUERRERO CARLA KARINA",
+      "phone": "0985401498",
+      "email": "servika2021@gmail.com",
+      "address": "SUCUMBIOS LAGO AGRIO NUEVA LOJA COLOMBIA 112 Y 10 DE AGOSTO"
+    },
+    {
+      "business_tax_id": "2191768534001",
+      "name": "LUNA ARCILA LUZ MILA",
+      "phone": "0960237687",
+      "email": "milita042018@gmail.com",
+      "address": "SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  PICHINCHA SN Y CANAR"
+    },
+    {
+      "business_tax_id": "2100105424001",
+      "name": "MASEIRA BERNAL JESSICA PAOLA",
+      "phone": "0989435255",
+      "email": "jekmaseira01@gmail.com",
+      "address": "LAGO AGRIO  NUEVA LOJA BELTRAN SN Y LA NINA"
+    },
+    {
+      "business_tax_id": "1205886557",
+      "name": "MAYORGA GUILLEN DORIS INES",
+      "phone": "099 608 4683",
+      "email": "dmayorga@danielcom.com",
+      "address": "QUITO"
+    },
+    {
+      "business_tax_id": "1792319293001",
+      "name": "MEGACON CONSULTORA Y CONSTRUCTORA SA",
+      "phone": "022461590",
+      "email": "gerencia@megacon.com.ec",
+      "address": "INAQUITO  AV 10 DE AGOSTO N35-19 Y PASAJE MANOSCA"
+    },
+    {
+      "business_tax_id": ""0802334029"",
+      "name": "MERCADO MINA FRANKLIN EDUARDO",
+      "phone": "",
+      "email": "pantro.fm85@gmail.com",
+      "address": "SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI CENTRAL"
+    },
+    {
+      "business_tax_id": "1791774647001",
+      "name": "MISSIONPETROLEUM SA",
+      "phone": "(02) 394-9380",
+      "email": "contabilidad@mission-petroleum.com",
+      "address": "PICHINCHA  QUITO  INAQUITO  AV DE LOS SHYRIS N36-188 Y NACIONES UNIDAS"
+    },
+    {
+      "business_tax_id": "1793189742001",
+      "name": "NORWEGIAN DRILLING COMPANY SUCURSAL ECUADOR SAS",
+      "phone": "0969030281",
+      "email": "purchase@engipetrol.com",
+      "address": "PICHINCHA  QUITO  PAUL RIVET 1002 Y WHYMPER"
+    },
+    {
+      "business_tax_id": "2191721333001",
+      "name": "OBRAS CIVILES CUYABENO SERVCUYAB CIA LTDA",
+      "phone": "",
+      "email": "servcuyabcialtda@gmail.com",
+      "address": "VIA TARAPOA SN"
+    },
+    {
+      "business_tax_id": "2191711761001",
+      "name": "OCIPAG CIA LTDA",
+      "phone": "0959591930",
+      "email": "compras@ocipag.com",
+      "address": "SUCUMBIOS  LAGO AGRIO  SANTA CECILIA  AV JORGE AGUILERA SN"
+    },
+    {
+      "business_tax_id": "2293525377001",
+      "name": "ONKIE-CONSTRUCTORA SAS",
+      "phone": "0993913446-0987873257",
+      "email": "info@onkieconstructora.com",
+      "address": "ORELLANA  ORELLANA  PUERTO FRANCISCO DE ORELLANA EL COCA  AV 09 DE OCTUBRE SN Y CUENCA"
+    },
+    {
+      "business_tax_id": "2100297189001",
+      "name": "ORELLANA SALAZAR ROMARIO SEGUNDO",
+      "phone": "0999999999",
+      "email": "sin.correo@correo.com",
+      "address": "SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  COFANES SN Y COLOMBIA PATRIA UNIDA"
+    },
+    {
+      "business_tax_id": "1792737737001",
+      "name": "ORIENDRILL SA",
+      "phone": "0997966727",
+      "email": "contabilidad@oriendrill.com",
+      "address": "LA JOYA DE LOS SACHAS  VIA AL COCA SN Y VIA SACHA"
+    },
+    {
+      "business_tax_id": "1792499038001",
+      "name": "ORIENTSERVICES SA",
+      "phone": "0983238107",
+      "email": "orientservice2014@hotmail.com",
+      "address": "LA JOYA DE LOS SACHAS  VIA COCA SN"
+    },
+    {
+      "business_tax_id": "1792198747001",
+      "name": "PANAMERICAN ENGINEERING PANAMPENSA SA",
+      "phone": "02",
+      "email": "c.macias@panamerican-eng.com",
+      "address": "CALLE DEL ESTABLO LOTE 50 Y DEL CHARRO EDIFICIO SITE CENTER TORRE 3 PB OFICINA 004 CUMBAYA"
+    },
+    {
+      "business_tax_id": "1792348005001",
+      "name": "PARDALISERVICES SA",
+      "phone": "022978400",
+      "email": "facturasproveedores.ecuador@tecpetrol.com",
+      "address": "AV 12 DE OCTUBRE N26-97 Y LINCOLN TORRE 1492 P2 QUITO ECUADOR"
+    },
+    {
+      "business_tax_id": "1790032337001",
+      "name": "PATE CA",
+      "phone": "023809790",
+      "email": "mtroya@iseyco.com",
+      "address": "PICHINCHA  QUITO  INAQUITO  AV DIEZ DE AGOSTO N37-288 Y VILLALENGUA"
+    },
+    {
+      "business_tax_id": "1793196495001",
+      "name": "PATTERSON-UTI INTERNATIONAL ECUADOR SAS",
+      "phone": "0992547625",
+      "email": "jortega@csv.ec,victoria.pedraza@patenergy.com,ltorrres@csv.ec",
+      "address": "PICHINCHA  QUITO  QUITO DISTRITO METROPOLITANO  DEL ESTABLO Y CALLE E"
+    },
+    {
+      "business_tax_id": "1791414594001",
+      "name": "PCR-ECUADOR SA",
+      "phone": "0994519847",
+      "email": "gsoria@pcr.energy",
+      "address": "PICHINCHA  QUITO  INAQUITO  AV REPUBLICA E7-61 Y CALLE E7A MARTIN CARRION"
+    },
+    {
+      "business_tax_id": "1791992571001",
+      "name": "PEC PROJECT CIA LTDA",
+      "phone": "022380660",
+      "email": "admi.ssfd@pecproject.com,asistente.contable@pecproject.com",
+      "address": "Manuel Maria Hidalgo km26 y Via Interoceanica lote 10 Pifo"
+    },
+    {
+      "business_tax_id": "1709463051",
+      "name": "PEREZ PASTOR MARTHA KATALINA",
+      "phone": "",
+      "email": "marthaperezpastor@yahoo.com",
+      "address": "QUITO - LA LUZ"
+    },
+    {
+      "business_tax_id": "1792014921001",
+      "name": "PETROBELL SA - GRANTMINING SA",
+      "phone": "023964600",
+      "email": "facturacion_electronica@pacifpetrol.com",
+      "address": "AV AMAZONAS N 44-105 Y RIO COCA EDIFICIO ETECO - PROMELSA"
+    },
+    {
+      "business_tax_id": ""0992527285001"",
+      "name": "PLANET EXPORT SA PLANETEXPORT",
+      "phone": 0,
+      "email": "planet-export@hotmail.com",
+      "address": "GUAYAQUIL"
+    },
+    {
+      "business_tax_id": "1791401492001",
+      "name": "PLUSPETROL ECUADOR BV",
+      "phone": 2501502,
+      "email": "capagarec@pluspetrol.net",
+      "address": "Av Diego de Almagro N 32-48 y Whymper Edf IBM piso 2 Quito Ecuador"
+    },
+    {
+      "business_tax_id": "1792322537001",
+      "name": "PMEC SA",
+      "phone": "0990590887",
+      "email": "kleber.chungandro@pmecsa.com",
+      "address": "AV GENERAL RUMINAHUI SN Y CALLE LAS MAGNOLIAS"
+    },
+    {
+      "business_tax_id": "1791259505001",
+      "name": "PROCOPET SA",
+      "phone": "022566185",
+      "email": "facturacion@procopet-sa.com",
+      "address": "TOLEDO N24-258 Y LUIS CORDERO"
+    },
+    {
+      "business_tax_id": "1791847776001",
+      "name": "PROYECTOS INTEGRALES DEL ECUADOR PIL SA",
+      "phone": "593-2-394-4560",
+      "email": "hector.viteri@pilautomation.com",
+      "address": "PICHINCHA  QUITO  INAQUITO  AV 12 DE OCTUBRE N26-97 Y ABRAHAM LINCOLN"
+    },
+    {
+      "business_tax_id": "1792477182001",
+      "name": "REVO CONSTRUCCIONES CIA LTDA",
+      "phone": "099 675 7337",
+      "email": "ligia.lopez@revo.ec",
+      "address": "PICHINCHA  QUITO  JIPIJAPA  DE LOS VINEDOS N45-102 Y ISLA ISABELA"
+    },
+    {
+      "business_tax_id": "2190003852001",
+      "name": "ROMAN HERMANOS SA",
+      "phone": "2364-884",
+      "email": "romanfacturacion@yahoo.es",
+      "address": "SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  AV QUITO SN Y CONDOR MIRADOR"
+    },
+    {
+      "business_tax_id": "1792011736001",
+      "name": "SEDEMI CONSTRUCCIONES ELECTROMECANICAS SCC",
+      "phone": "",
+      "email": "darwin_valdiviezo@sedemi.com",
+      "address": "SANGOLQUI"
+    },
+    {
+      "business_tax_id": "1791734920001",
+      "name": "SEDEMI SERVICIOS DE MECANICA INDUSTRIAL DISENO CONSTRUCCION Y MONTAJE SCC",
+      "phone": "",
+      "email": "",
+      "address": "Sangolqui Via Amaguana Km 4 12 Lotizacion El Carmen"
+    },
+    {
+      "business_tax_id": "1791263308001",
+      "name": "SERTECPET SA",
+      "phone": "023954900",
+      "email": "facturacion.electronica@sertecpet.net",
+      "address": "AV ELOY ALFARO N37-25 Y JOSE CORREA"
+    },
+    {
+      "business_tax_id": "2290352080001",
+      "name": "SERVICIOS PETROLEROS OIL FIELD-EQUIPMENT ECUADOR SAS",
+      "phone": "0996179807",
+      "email": "admin@oilfieldec.com",
+      "address": "ORELLANA  PUERTO FRANCISCO DE ORELLANA EL COCA  KM 11 Y VIA LAGO AGRIO"
+    },
+    {
+      "business_tax_id": "2191723905001",
+      "name": "SEVENARCONS CIA LTDA",
+      "phone": "",
+      "email": "",
+      "address": "PASAJE CELICA Y GENERAL SUBIA"
+    },
+    {
+      "business_tax_id": "2190000543001",
+      "name": "SINDICATO DE CHOFERES DE SHUSHUFINDI",
+      "phone": "062366962",
+      "email": "estacionsindicato@gmail.com",
+      "address": "RIO AGUARICO SN Y ORELLANA"
+    },
+    {
+      "business_tax_id": "1791858727001",
+      "name": "SINOPEC INTERNATIONAL PETROLEUM SERVICE ECUADOR SA",
+      "phone": "023934440",
+      "email": "facturasproveedores@sinopecservice-ec.com",
+      "address": "AV 6 DE DICIEMBRE N33-29 Y IGNACIO BOSSANO"
+    },
+    {
+      "business_tax_id": "1707979447001",
+      "name": "SUAREZ MANTILLA FRANKLIN GONZALO",
+      "phone": "0996601682",
+      "email": "franklin.suarez@celec.gob.ec",
+      "address": "QUITO SAN JUAN  SELVA ALEGRE 962 Y SOBRINO MINAYO"
+    },
+    {
+      "business_tax_id": "1791728882001",
+      "name": "TCONTROL SA",
+      "phone": "022802462",
+      "email": "apaez@tcontrolsa.com",
+      "address": "EUCALIPTOS Oe2-67 Y ELOY ALFARO"
+    },
+    {
+      "business_tax_id": "1711370401001",
+      "name": "TINITANA LUDENA DAYSI DORIS",
+      "phone": "0969795089",
+      "email": "restaurante.jireh@yahoo.es",
+      "address": "AV PERIMETRAL Y 7 DE AGOSTO"
+    },
+    {
+      "business_tax_id": "1891716989001",
+      "name": "TRACEOILFIELD SERVICES  EQUIPMENT LIMITED ECUADOR CIA LTDA",
+      "phone": "(06) 237-8013",
+      "email": "jefedebase@oilfieldec.com",
+      "address": "ORELLANA  ORELLANA  NUEVO PARAISO CAB EN UNION CHIMBORAZO"
+    },
+    {
+      "business_tax_id": "1791237986001",
+      "name": "TRANSPORTES NOROCCIDENTAL CIA LTDA",
+      "phone": "02 3520 420",
+      "email": "seguez@noroccidental.com",
+      "address": "ORELLANA  ORELLANA  PUERTO FRANCISCO DE ORELLANA EL COCA  VIA A LAGO AGRIO KM 6 Y SN"
+    },
+    {
+      "business_tax_id": "1791330943001",
+      "name": "TRIBOILGAS CIA LTDA",
+      "phone": "023956540",
+      "email": "facturacion.electronica@triboilgas.com",
+      "address": "PEDRO PONCE CARRASCO E8-06 YAV DIEGO DE ALMAGRO"
+    },
+    {
+      "business_tax_id": ""0104679485"",
+      "name": "TRUJILLO CADENA CARLOS EDUARDO",
+      "phone": "0999999999",
+      "email": "carlos_carlin24@hotmail.com",
+      "address": "EL COLIBRI"
+    },
+    {
+      "business_tax_id": "1792064082001",
+      "name": "TUSCANY PERFORACION PETROLERA TUSCANYPERF S A",
+      "phone": "023816330",
+      "email": "",
+      "address": "INAQUITO  AV DOCE DE OCTUBRE N24-660 Y FRANCISCO SALAZAR"
+    },
+    {
+      "business_tax_id": "2160071070001",
+      "name": "UNIDAD ADSCRITA DE DESARROLLO PRODUCTIVO AGROPECUARIO DE INDUSTRIALIZACION COMERCIALIZACION Y EMPRESARIAL CORPOSUCUMBI",
+      "phone": "022999000",
+      "email": "barcalejo@hotmail.com",
+      "address": "VIA QUITO KM 12 PB Y RIO CONEJO"
+    },
+    {
+      "business_tax_id": ""0502169683001"",
+      "name": "VILCA TIPAN MARCO GUSTAVO",
+      "phone": "0999999999",
+      "email": "sin.correo@correo.com",
+      "address": "SUCUMBIOS LAGO AGRIO NUEVA LOJA VIA A QUITO"
+    },
+    {
+      "business_tax_id": "1792522897001",
+      "name": "WELDING  VAYACONS CIA LTDA",
+      "phone": "022307053",
+      "email": "ealdaz@welding.ec",
+      "address": "STO DE CARRETAS PASAJE A  8 SECTOR CARCELEN"
+    },
+    {
+      "business_tax_id": "1792273064001",
+      "name": "WSO WORLDWIDE SECURITY OPTIONS SEGURIDAD INTEGRAL CIA LTDA",
+      "phone": "098 350 4707",
+      "email": "finanzas.ec@wso-security.com",
+      "address": "PICHINCHA  QUITO  INAQUITO  AV DE LOS SHYRIS N32-40 Y AV 6 DE DICIEMBRE"
+    },
+    {
+      "business_tax_id": "1792876745001",
+      "name": "YANAOILTECHNOLOGIES CIALTDA",
+      "phone": "0984238924",
+      "email": "karina.reyes@yanaoil.com",
+      "address": "KM 7 VIA COCA LAGO AGRIO"
+    }
+  ]
