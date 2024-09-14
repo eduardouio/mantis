@@ -8,6 +8,15 @@ media
 .vscode/
 .vscode/*
 .vscode
+*.pyc
+__pycache__
+*__pycache__
+*__pycache__*
+__pycache__/*
+*__pycache__/
+*__pycache__/*
+
+
 
 # Backup files # 
 *.bak 
