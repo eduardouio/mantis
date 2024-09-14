@@ -1,9 +1,11 @@
 from django.core.management.base import BaseCommand
 from accounts.models import CustomUserModel
-from decimal import Decimal
 import random
 from faker import Faker
 import json
+from datetime import timedelta
+from accounts.models import Technical, License, WorkJournal
+from equipment.models import Equipment, Supplie, SupplieStockMovment, Vehicle
 
 
 class Command(BaseCommand):
@@ -13,6 +15,16 @@ class Command(BaseCommand):
         faker = Faker()
         print('creamos el superuser')
         self.createSuperUser()
+        print('creamos los tecnicos')
+        self.load_technical(faker)
+        print('creamos los registros de jornadas')
+        self.load_work_journal(faker)
+        print('creamos las licencias')
+        self.load_license(faker)
+        print('creamos los equipos')
+        self.load_equipment(faker)
+        print('creamos los insumos')
+        self.load_supplies(faker)
 
     def createSuperUser(self):
         user = CustomUserModel.get('eduardouio7@gmail.com')
@@ -26,3 +38,81 @@ class Command(BaseCommand):
         )
         user.set_password('seguro')
         user.save()
+
+    def load_technical(self, faker):
+        if Technical.objects.exists():
+            print('Ya existen los tecnicos')
+            return True
+
+        with open('seed/technicals.json', 'r') as file:
+            file_content = json.load(file)
+
+        for technical in file_content:
+            Technical.objects.create(
+                **technical
+            )
+            CustomUserModel.objects.create(
+                email=technical['email'],
+                first_name=technical['first_name'],
+                last_name=technical['last_name'],
+                role=technical['role']
+            )
+
+    def load_work_journal(self, faker):
+        if WorkJournal.objects.exists():
+            print('Ya existen los registros')
+            return True
+        technicals = Technical.objects.all()
+
+        for technical in technicals:
+            start_date = faker.date_time_this_year()
+            WorkJournal.objects.create(
+                technical=technical,
+                date_start=start_date,
+                date_end=start_date + timedelta(days=22),
+                is_active=True
+            )
+
+    def load_license(self, faker):
+        if License.objects.exists():
+            print('Ya existen las licencias')
+            return True
+
+        users = CustomUserModel.objects.exclude(is_superuser=True)
+        for user in users:
+            License.objects.create(
+                license_key=faker.uuid4(),
+                user=user,
+                role=user.role,
+                activated_on=faker.date_time_this_year(),
+                expires_on=faker.future_datetime(),
+                is_active=True
+            )
+
+    def load_equipment(self, faker):
+        if Equipment.objects.exists():
+            print('Ya existen los equipos')
+            return True
+
+        with open('seed/equipments.json', 'r') as file:
+            file_content = json.load(file)
+
+        for equipment in file_content:
+            print(equipment['code'])
+            Equipment.objects.create(
+                **equipment
+            )
+
+    def load_supplies(self, faker):
+        if Supplie.objects.exists():
+            print('Ya existen los insumos')
+            return True
+
+        with open('seed/supplies.json', 'r') as file:
+            file_content = json.load(file)
+
+        for supplie in file_content:
+            Supplie.objects.create(
+                **supplie
+            )
+        
