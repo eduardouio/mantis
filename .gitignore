@@ -148,3 +148,9 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+app/src/peisol/__pycache__/urls.cpython-312.pyc
+app/src/common/__pycache__/BaseModel.cpython-312.pyc
+app/src/accounts/models/__pycache__/__init__.cpython-312.pyc
+app/src/accounts/forms/__pycache__/CustomCreationForm.cpython-312.pyc
+/__pycache__/
+*/__pycache__/*
