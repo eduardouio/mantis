@@ -172,3 +172,8 @@ app/src/accounts/migrations/__pycache__/0001_initial.cpython-312.pyc
 app/src/accounts/migrations/0001_initial.py
 app/src/accounts/migrations/__pycache__/0001_initial.cpython-312.pyc
 app/src/accounts/migrations/0001_initial.py
+
+app/src/accounts/migrations/0001_initial.py
+app/src/accounts/migrations/0002_technical_alter_customusermodel_roles_workjournal_and_more.py
+app/src/accounts/migrations/__pycache__/0001_initial.cpython-312.pyc
+app/src/accounts/migrations/__pycache__/__init__.cpython-312.pyc
