@@ -1,0 +1,114 @@
+[
+    {
+      "first_name": "AGUILAR LOZANO",
+      "last_name": "ANTHONI SAUl",
+      "dni": "0928004753",
+      "email": "aguilarlozanoanthonisaul@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "MERIZALDE MERIZALDE",
+      "last_name": "JACOBO ANA",
+      "dni": "2100147392",
+      "email": "merizaldemerizaldejacoboana@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "VERDEZOTO BARRAGAN",
+      "last_name": "JOSÉ LUIS",
+      "dni": "0603783713",
+      "email": "verdezotobarraganjoséluis@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "RUIZ FLORES",
+      "last_name": "ANGEL PATRICIO",
+      "dni": "",
+      "email": "ruizfloresangelpatricio@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "GUEVARA HIDALGO",
+      "last_name": "JOSE LUIS",
+      "dni": "",
+      "email": "guevarahidalgojoseluis@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "NARVAEZ CHASE",
+      "last_name": "JOSE QUENNI",
+      "dni": "2150119184",
+      "email": "narvaezchasejosequenni@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "PORTILLA LEITON",
+      "last_name": "FAUSTO EDIXON",
+      "dni": "1757630882",
+      "email": "portillaleitonfaustoedixon@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "UNUP YUMA",
+      "last_name": "JUAN JOSE",
+      "dni": "2100403555",
+      "email": "unupyumajuanjose@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "JUMBO MORENO",
+      "last_name": "XAVIER AGUSTIN",
+      "dni": "2100417480",
+      "email": "jumbomorenoxavieragustin@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "SARMIENTO ARGUELLO",
+      "last_name": "EDISON GUIL",
+      "dni": "2100493853",
+      "email": "sarmientoarguelloedisonguil@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "VERDEZOTO BARRAGAN",
+      "last_name": "JUAN GABRI",
+      "dni": "0603783697",
+      "email": "verdezotobarraganjuangabri@peisol.com",
+      "role": "TECNICO"
+    },
+    {
+      "first_name": "ANDRADE TELLO",
+      "last_name": "LISETH JOHANNA",
+      "dni": "0603908898",
+      "email": "andradetellolisethjohanna@peisol.com",
+      "role": "ADMINISTRATIVO"
+    },
+    {
+      "first_name": "TAPIA PONCE",
+      "last_name": "MARYURI MARLENE",
+      "dni": "2100647334",
+      "email": "tapiaponcemaryurimarlene@peisol.com",
+      "role": "ADMINISTRATIVO"
+    },
+    {
+      "first_name": "BURGOS PAREDES",
+      "last_name": "RAFAEL ALLBERTO",
+      "dni": "1206374439",
+      "email": "burgosparedesrafaelallberto@peisol.com",
+      "role": "ADMINISTRATIVO"
+    },
+    {
+      "first_name": "AROCA QUINTANILLA",
+      "last_name": "EDGAR PAUL",
+      "dni": "2101163984",
+      "email": "arocaquintanillaedgarpaul@peisol.com",
+      "role": "ADMINISTRATIVO"
+    },
+    {
+      "first_name": "ORTEGA OLGA",
+      "last_name": "MARIA",
+      "dni": "2100376572",
+      "email": "ortegaolgamaria@peisol.com",
+      "role": "ADMINISTRATIVO"
+    }
+  ]

@@ -411,7 +411,7 @@
     },
     {
       "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-138",
+      "code": "PSLLV-138-X1",
       "status": "OPERATIVO"
     },
     {
@@ -506,7 +506,7 @@
     },
     {
       "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-146",
+      "code": "PSLBT-146-X2",
       "status": "STAND BY"
     },
     {
@@ -521,7 +521,7 @@
     },
     {
       "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-138",
+      "code": "PSLLV-138-X2",
       "status": "OPERATIVO"
     },
     {
@@ -561,7 +561,7 @@
     },
     {
       "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-146",
+      "code": "PSLBT-146-X1",
       "status": "OPERATIVO"
     },
     {

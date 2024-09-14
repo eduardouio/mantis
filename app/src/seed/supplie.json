@@ -1,0 +1,32 @@
+[
+    {
+      "name": "Papel Higiénico",
+      "description": "Rollo de papel higiénico suave",
+      "min_stock": 20,
+      "max_stock": 100
+    },
+    {
+      "name": "Jabón Líquido",
+      "description": "Jabón líquido para manos con fragancia",
+      "min_stock": 10,
+      "max_stock": 50
+    },
+    {
+      "name": "Ambiental",
+      "description": "Spray ambientador para espacios cerrados",
+      "min_stock": 5,
+      "max_stock": 30
+    },
+    {
+      "name": "Fundas de Basura",
+      "description": "Fundas de plástico para basura de 50 litros",
+      "min_stock": 15,
+      "max_stock": 80
+    },
+    {
+      "name": "Químico",
+      "description": "Producto químico de limpieza concentrado",
+      "min_stock": 8,
+      "max_stock": 40
+    }
+  ]
