@@ -1,6 +1,6 @@
 from django.db import models
 from common import BaseModel
-from accounts.models.CustomUserModel import CustomUserModel
+from accounts.models import CustomUserModel
 
 ROLE_CHOICES = (
     ('ADMINISTRATIVO', 'ADMINISTRATIVO'),
@@ -26,20 +26,31 @@ class License(BaseModel):
         null=True,
         blank=True
     )
-    licence_file = models.TextField(
-        'Contenido de Licencia',
+    licence_file = models.Charfield(
+        'Licencia',
+        max_length=250,
         null=True,
         blank=True
     )
     role = models.CharField(
         'Role',
         choices=ROLE_CHOICES,
-        default='TECNICO',
+        default='USER',
         max_length=20
+    )
+    enterprise = models.CharField(
+        'Empresa',
+        max_length=50,
+        default='KOSMOFLOWERS'
     )
     is_active = models.BooleanField(
         'Activo?',
         default=False
+    )
+    url_server = models.URLField(
+        'URL del servidor',
+        null=True,
+        blank=True
     )
     user = models.ForeignKey(
         CustomUserModel,
