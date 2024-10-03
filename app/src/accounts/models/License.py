@@ -26,7 +26,7 @@ class License(BaseModel):
         null=True,
         blank=True
     )
-    licence_file = models.Charfield(
+    licence_file = models.CharField(
         'Licencia',
         max_length=250,
         null=True,
@@ -50,7 +50,8 @@ class License(BaseModel):
     url_server = models.URLField(
         'URL del servidor',
         null=True,
-        blank=True
+        blank=True,
+        default='https://dev-7.com/licenses/'
     )
     user = models.ForeignKey(
         CustomUserModel,

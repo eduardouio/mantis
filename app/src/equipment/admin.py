@@ -1,6 +1,6 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
-from .models import Equipment, Vehicle, Supplie, SupplieStockMovment
+from .models import Equipment, Vehicle
 
 
 class EquipmentAdmin(SimpleHistoryAdmin):
@@ -42,33 +42,5 @@ class VehicleAdmin(SimpleHistoryAdmin):
     )
 
 
-class SupplieAdmin(SimpleHistoryAdmin):
-    list_display = (
-        'id',
-        'name',
-        'description',
-        'min_stock',
-        'max_stock',
-    )
-
-    search_fields = (
-        'name',
-        'description',
-    )
-
-
-class SupplieStockMovmentAdmin(SimpleHistoryAdmin):
-    list_display = (
-        'id',
-        'supplie',
-        'mantenance',
-        'quantity',
-        'type_movment',
-        'date',
-    )
-
-
 admin.site.register(Equipment, EquipmentAdmin)
 admin.site.register(Vehicle, VehicleAdmin)
-admin.site.register(Supplie, SupplieAdmin)
-admin.site.register(SupplieStockMovment, SupplieStockMovmentAdmin)

@@ -4,8 +4,8 @@ from projects.models import Partner
 from equipment.models import Equipment
 
 SERVICES_CHOICES = (
-    ('ALQUIKER DE EQUIPOS', 'ALQUILER DE EQUIPOS'),
-    ('MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO', 'MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO'),
+    ('ALQUILER', 'ALQUILER DE EQUIPOS'),
+    ('MANTENIMIENTO', 'MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO'),
 )
 
 
@@ -121,4 +121,3 @@ class ProjectEquipments(BaseModel):
         blank=True,
         null=True
     )
-

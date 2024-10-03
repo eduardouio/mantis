@@ -30,6 +30,12 @@ UNIT = (
     ('BARRILES', 'BARRILES'),
 )
 
+ACCION_CHOICES = (
+    ('ENVIO_ORIGEN', 'ENVIO ORIGEN'),
+    ('TRANSPORTISTA', 'TRANSPORTISTA'),
+    ('DISPOSICION_FINAL', 'DISPOSICION FINAL'),
+)
+
 
 class Mantenance(BaseModel):
     id = models.AutoField(
@@ -65,17 +71,28 @@ class Mantenance(BaseModel):
         max_digits=5,
         decimal_places=2
     )
+    have_logistic = models.BooleanField(
+        'Tiene Logistica',
+        default=False
+    )
+    logistic_cost = models.DecimalField(
+        'Costo Logistica',
+        max_digits=10,
+        decimal_places=2
+    )
+    origin_site = models.CharField(
+        'Origen',
+        max_length=255,
+        null=True,
+        blank=True,
+        default=None
+    )
     destination_site = models.CharField(
         'Destino',
-        max_length=255
-    )
-    authorized_by = models.CharField(
-        'Autorizado por',
-        max_length=255
-    )
-    authorizing_position = models.CharField(
-        'Cargo Autorizador',
-        max_length=255
+        max_length=255,
+        null=True,
+        blank=True,
+        default=None
     )
     mat_transported_aguas_negras = models.BooleanField(
         'Aguas Negras',
@@ -111,7 +128,7 @@ class Mantenance(BaseModel):
         return self.project
 
 
-class MantenanceSupplies(BaseModel):
+class MantenanceEquipment(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
@@ -123,11 +140,11 @@ class MantenanceSupplies(BaseModel):
         Equipment,
         on_delete=models.CASCADE
     )
-    make_vaccum = models.BooleanField(
+    work_vaccum = models.BooleanField(
         'Succión',
         default=False
     )
-    make_cleaning = models.BooleanField(
+    work_cleaning = models.BooleanField(
         'Limpieza',
         default=False
     )
@@ -139,18 +156,54 @@ class MantenanceSupplies(BaseModel):
         'Papel Higiénico',
         default=False
     )
-    use_soap = models.BooleanField(
-        'Jabón',
+    use_tz = models.BooleanField(
+        'Toalla de papel',
         default=False
     )
-    use_disinfectant = models.BooleanField(
-        'Desinfectante',
+    use_soap = models.BooleanField(
+        'Jabón',
         default=False
     )
     use_trash_bag = models.BooleanField(
         'Guantes',
         default=False
     )
+    use_disinfectant = models.BooleanField(
+        'Desinfectante',
+        default=False
+    )
 
     def __str__(self):
         return self.mantenance
+
+
+class ChainOfCustodyPersonal(BaseModel):
+    id = models.AutoField(
+        primary_key=True
+    )
+    mantenance = models.ForeignKey(
+        Mantenance,
+        on_delete=models.CASCADE
+    )
+    date = models.DateField(
+        'Fecha'
+    )
+    name = models.CharField(
+        'Nombre del Personal',
+        max_length=255
+    )
+    nro_dni = models.CharField(
+        'Nro. DNI',
+        max_length=15
+    )
+    position = models.CharField(
+        'Cargo',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    accion = models.CharField(
+        'Acción',
+        max_length=255,
+        choices=ACCION_CHOICES
+    )

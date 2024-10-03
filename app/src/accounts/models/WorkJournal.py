@@ -32,3 +32,6 @@ class WorkJournal(BaseModel):
         'Activo?',
         default=False
     )
+
+    def __str__(self, *args, **kwargs):
+        return self.technical.first_name
