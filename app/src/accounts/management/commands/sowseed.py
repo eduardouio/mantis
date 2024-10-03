@@ -5,7 +5,7 @@ from faker import Faker
 import json
 from datetime import timedelta
 from accounts.models import Technical, License, WorkJournal
-from equipment.models import Equipment, Supplie, SupplieStockMovment, Vehicle
+from equipment.models import Equipment, Vehicle
 from projects.models import Partner
 
 
@@ -24,8 +24,6 @@ class Command(BaseCommand):
         self.load_license(faker)
         print('creamos los equipos')
         self.load_equipment(faker)
-        print('creamos los insumos')
-        self.load_supplies(faker)
         print('creamos los vehiculos')
         self.load_vehicle(faker)
         print('creamos los proveedores')
@@ -106,19 +104,6 @@ class Command(BaseCommand):
             print(equipment['code'])
             Equipment.objects.create(
                 **equipment
-            )
-
-    def load_supplies(self, faker):
-        if Supplie.objects.exists():
-            print('Ya existen los insumos')
-            return True
-
-        with open('seed/supplie.json', 'r') as file:
-            file_content = json.load(file)
-
-        for supplie in file_content:
-            Supplie.objects.create(
-                **supplie
             )
 
     def load_vehicle(self, faker):
