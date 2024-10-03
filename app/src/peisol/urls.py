@@ -20,6 +20,7 @@ from django.urls import path, include
 from django.contrib.staticfiles.urls import static
 
 urlpatterns = [
+    path('', include('accounts.urls', 'accounts')),
     path('', include('user_sessions.urls', 'user_sessions')),
     path('grappelli/', include('grappelli.urls'), name='grappelli'),
     path('admin/', admin.site.urls),
