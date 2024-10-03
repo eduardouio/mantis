@@ -1,149 +1,115 @@
-en la hoja de mantenimiento se menciona dos veces al tecnico
-    1 en tecnico responsable
-    2 en tecnico que realizo el mantenimiento
+Mantenimiento
+Técnico Responsable y Técnico de Mantenimiento:
 
-estos tecnico son siempre el mismo o existe la posibilidad de que sean diferentes? sinson diferentes 
+Se menciona al técnico dos veces en la hoja de mantenimiento:
+Técnico Responsable.
+Técnico que realizó el mantenimiento.
+¿Son siempre el mismo técnico o pueden ser diferentes?
+Pueden ser diferentes.
+Uso de Vacuum o Camión:
 
+¿Se usa siempre un Vacuum o también puede ser un camión?
+Siempre es un Vacuum, nunca un camión.
 
-En el Mantenimieto se usa un VACCUM O CAAMION, se puede usar los dos o solo uno de ellos?-- SOLO ES UNO DE ELLOS SIEMPRE ES VACCUM
-En todos los mantenimientos se usa un VACCUM O CAAMION, o solo en algunos casos? -- SOLO VA VACCUM
+¿Se usa Vacuum en todos los mantenimientos?
+Sí, solo se utiliza Vacuum en todos los mantenimientos.
+Cadena de Custodia:
 
+¿Puede haber más de un viaje en un solo mantenimiento?
+No, siempre es un solo viaje.
+Equipos en la Hoja de Mantenimiento:
 
-La cadena de custodia puede ser mas de una viaje en un solo mantenimiento?, -- SIEMPRE ES UN SOLO VIAJE 
+¿Puede haber varios equipos en una sola hoja?
+Sí, una hoja de mantenimiento puede tener varios equipos.
+Unidad de Medida de Suministros de Limpieza:
 
-Una hoja de mantenimiento puede tener varios equipos -- SI
+¿Cómo se miden los suministros de limpieza?
+Se usa un checklist en lugar de una unidad de medida o cantidad.
 
 
-cual es la unidad de medida de los suministros de limpieza, en la hoja de mantenimiento
-tine solamente checks,  esto equivale a una unidad de medida o a una cantidad? -- ES UN CHECK LIST
+Costos de Mantenimiento y Logística:
+¿Dónde se colocan los costos de mantenimiento y cómo se cobra la logística adicional?
+Los costos se ponen en los mantenimientos.
 
+Insumos FUN:
 
-donde van los costos de los mantenimientos y como se cobra el costo adicional de logistica  -- PONER EN LOS MANTENIMIENTOS
+¿FUN significa funda?
+Sí, FUN es funda.
 
+Medida del Agua Residual:
+¿Cómo se mide el agua residual succionada?
+Se mide en galones.
 
-en los insumos FUN es funda? -- SI
+Autorizaciones Diferentes:
+¿Las autorizaciones varían entre los equipos y el reporte completo?
+No especificado, pero se entiende que pueden ser diferentes.
+Servicios
 
-EL AGUA RESIDUAL SUCCCIONADA EN QUE SE ESTA MIDIENDO, EN LITROS O EN GALONES? -- GALONES
+Tipos de Servicios en los Proyectos:
+Existen dos tipos de servicios mencionados:
+Alquiler de Equipos.
+Mantenimiento y Limpieza de Equipos Sanitarios.
 
-las autorizaciones son diferentes en los equipos y el el reporte completo?
+¿Qué pasa con otros servicios, como potabilización de agua y tratamiento de aguas residuales?
+Se hace todo bajo un solo contrato por alquiler y se refleja en la planilla.
 
-EN EL DOCUMENTO DE LOS mantenimientos,  en mi muestra de losproyectos tengo dos tipos de servicios
-SERVICES_CHOICES = (
-    ('ALQUIKER DE EQUIPOS', 'ALQUILER DE EQUIPOS'),
-    ('MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO', 'MANTENIMIENTO Y LIMPIEZA DE EQUIPO SANITARIO'),
-)
+Cobro de Alquiler y Mantenimiento:
+¿Cómo se cobra el alquiler y cómo el mantenimiento?
+Los valores de renta se detallan en las cabeceras de los mantenimientos.
+Vehículos y Materiales Transportados
+Vehículos Propios y del Contratante:
 
-que pasa con los otros servicios, se hace una hoja de manteminiento diferente para la potabilizaci'on del agua y tratamiendo de aguas residuales? -- SOLO ES UN CONTRATO POR ALQUILER Y SE PLANILLA
+¿Los vehículos pueden ser tanto del contratante como propios?
+Sí, pueden ser de ambos.
 
+Materiales Transportados:
+¿Se detallan las cantidades de material transportado?
+No, solo se detalla el volumen total ya que todo el material se mezcla.
 
-como se cobra el alquier y como el mantenimiento, en la planilla de cantidades de servicio menciona los valores de mantenimiento, entiendo yo. pero donde van los valores de renta -- SE DETALLA EN LAS CABECERAS DE LOS MANTENIMIENTOS
+Cadena de Custodia y Transporte
+Estados Físicos en la Cadena de Custodia:
 
-··los vehiculos tienen dos opciones uno que dice vehiculos propios y otro que dice vehiculos del contratante -- SON DE LOS DOS
+¿Cuántos estados físicos existen para la cadena de custodia?
+En este caso, solo se manejan líquidos, 
+ya que en los mantenimientos se transportan aguas y lodos.
 
-en la parte de materiales transportados en la hoja de mantenimiento no se detallan las cantidades por cada tipo e material SOLAMENTE UN total del volumen -- TODO EL MATERIAL SE MEZCLA
 
+Origen y Destino del Material Transportado:
+¿Se puede incluir en la cadena de custodia?
+Debería estar en la cadena de custodia, ya que tiene más sentido en ese contexto.
 
-cuantos estados de fisicos existen para la cadena de custodia, en mi ejemplo tengo liquidos, porque en los mantenimientos solo tengo aguas y lodos todos liquidos, en tipo de embalaje tengo vacuum 
-pero en el mantenimiento tengo vaccum y camion, que pasa si solo es cammion -- LIQUIDOS
+Fechas en el Transporte de Materiales:
+¿Cuántas fechas se mencionan en el transporte de materiales?
+Se mencionan tres fechas: envío, transporte y recepción.
 
+Personal y Proyectos
+Gestión del Personal:
+No se gestiona un sistema completo para el personal, solo se manejan las jornadas 
+para disponibilidad.
 
-en la hoja de mantenimiento eciste un origen y destino del material transportado, porque esto no está en la cadena de custodia, lo podemos pasar?, 
-me hace mas sentido que esté en la cadena de custodia, o como se sabe en la hoja de mantenimiento?
 
-en la cadena de custodia en el trsporte de los materiales se menciona tres fechas en evia trasporta y recibe
+Técnicos por Proyectos:
+Los técnicos se asignan por proyectos, no por proveedores.
 
-el que elabora es el mismo que hace el documento de cadna de custodia
+Relación Cliente y Operadora:
+¿Qué relación existe entre cliente y operadora?
+La operadora (ENAP, ORION, Andes Petroleum) es dueña del campo, 
+pero no necesariamente todos los operadores y vehículos trabajan. 
+Los datos del cliente y la operadora se manejan en la ficha del proyecto.
 
-no se hace un sistema para gestionar el personal, solamente se majea las jornadas para las disponibilidades
- en el listado de equipos que es el RIG -- ACLARADO 
 
- ver toda la infor que se rgistra del personal y vehiculos
-
-
-
-
- 
- 
- -- apuntes reunion
-
- los tecnicos ingresan por proyectos. revisar la disponibildiad de tecnicos por proyectos
-
-21 días de trabajo y 7 de descans
-el tecnico no va ingresar la informacion de los mantenmientos al sistema.
-
-
-El consecutivo de los formatos es paramtrizable por proyecto
-
-el cliente llena la iformacion de la hoja de mantenimiento y el tecnico la firma, nro barrilles y placa del vehiculo
-
-
-agregar capacidad en la ficha de equipos
-documento de contanci de entrega de equispos
-
-
-
-
-### 
-proyecto, pondemos el acta de entrega de recepcionm
-
-el tecnico es asignado a los proyectos no por proveedor, y los vehiculos de la misma manera
-la operadora ENAP ORION ANdes petrolum es el dueno del campo (proyectos), no necesariamente todos los operadotes y vehiculos trabajan, pero se los ingresa por disponibilidad
-
-OPERADORA -> son lps datos de un cliente  tambien puede ser cliente
-CLIENTE -> usar la misma ficha del partner 
-
-
-PROYECTO -> el el proyecto se debe indicar la operadora
-
-
-fecha de vigencia de la relacion de los tecnicos y vehiculos, la operadora no es el mismo de la operadora 
-el cliente de peisol en quien hace el trabajo y la operadora es la dueña del campo
-
-
-en la ficha del proyecto
-Código Interno	
-PSL-PS-000109-24
-
-lugar, puede ser varios, se puede mover durante el contrato
-
-
-
-tratamiento y disposicion final de aguas residuales (grises y negras)
-logistica de equipos  -> solo se cobra la entrega de los equipos
-logistica de vaccum -> movilización de aguas negras
-
-
-
-costo de alquier de equipos es diario<
-
-
-
-frecuencia solamente en días. 
-
-en el mantenimiento va solo VACCUM, solo importa el total del liquido succionado porque todo se mezcla
-	Aguas Negras -ninguno de estos va
- 	Aguas Grises
- 	Agua Limpia
- 	Lodos Activos
- 	Agua Residual Tratada
-
-la ubicación es la del proyecto
-
-
-cambiar los costos de mantenimientos, en los mantenimientos
-
-
-ver la posibilidad de escanear al ssitema el informe del laboratorio
-
-
-EL CLIENTE puede tener las baterias sanitarias,
-
-PONER EN LOS EQUIPOS LA OPCION DE QUE LOS EQUIPOS SEAN DEL CLIENTE, EXISTE DE MANTENIMIENTO PREVENTIVO Y CORRECTIVO -: CAMBIAN DUCHAS, CAUCHOS, BOMBAS CAMBIO DE REPUESTOS.
-
-
-
-TIPO DE CONTRATO, MANTENIMINETO-ALQUILER- MANTENIMIENTO Y ALQUILER
-
-PONER EN LOS PROYECTOS, ITEMS TIPO SERVICIO  
-
-VENTAS DE EQUIPOS
+Otros Detalles Importantes
+Frecuencia de Mantenimiento:
+La frecuencia solo se indica en días.
+
+Tratamiento y Disposición Final de Aguas Residuales:
+Se cobra solo por la entrega de los equipos.
+Tipo de Contrato:
+
+Los contratos pueden ser de:
+Mantenimiento.
+Alquiler.
+Mantenimiento y Alquiler.
+Ventas de Equipos:
+
+Incluir opción de venta de equipos en los proyectos.
