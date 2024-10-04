@@ -158,7 +158,7 @@ AUTH_USER_MODEL = 'accounts.CustomUserModel'
 AUTHENTICATION_BACKENDS = [
     'common.EmailBackEndAuth.EmailBackEndAuth'
 ]
-# LOGIN = '/accounts/login/'
-
+LOGIN = '/accounts/login/'
+HOME = '/'
 # mis configuraciones
 URL_LICENCE = 'https://licences.dev-7.com/peisol/'
