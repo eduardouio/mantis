@@ -1,0 +1,146 @@
+<form method="POST" action="">
+    {% csrf_token %}
+    
+    <!-- Formulario del mantenimiento (maestro) -->
+    <div class="row">
+      <!-- Columna 1 -->
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label for="id_project" class="form-label">Proyecto</label>
+          <select class="form-select form-control-sm" id="id_project" name="project">
+            {% for project in projects %}
+            <option value="{{ project.id }}">{{ project.project_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="id_tecnical" class="form-label">Técnico</label>
+          <select class="form-select form-control-sm" id="id_tecnical" name="tecnical">
+            {% for tecnical in tecnicals %}
+            <option value="{{ tecnical.id }}">{{ tecnical.first_name }} {{ tecnical.last_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="id_vehicle" class="form-label">Vehículo</label>
+          <select class="form-select form-control-sm" id="id_vehicle" name="vehicle">
+            {% for vehicle in vehicles %}
+            <option value="{{ vehicle.id }}">{{ vehicle.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="id_date" class="form-label">Fecha</label>
+          <input type="date" class="form-control form-control-sm" id="id_date" name="date" required>
+        </div>
+      </div>
+  
+      <!-- Columna 2 -->
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label for="id_location" class="form-label">Ubicación</label>
+          <input type="text" class="form-control form-control-sm" id="id_location" name="location" maxlength="255" required>
+        </div>
+        <div class="mb-3">
+          <label for="id_start_hour" class="form-label">Hora de inicio</label>
+          <input type="datetime-local" class="form-control form-control-sm" id="id_start_hour" name="start_hour" required>
+        </div>
+        <div class="mb-3">
+          <label for="id_end_hour" class="form-label">Hora de Salida</label>
+          <input type="datetime-local" class="form-control form-control-sm" id="id_end_hour" name="end_hour" required>
+        </div>
+        <div class="mb-3">
+          <label for="id_total_hours" class="form-label">Horas Totales</label>
+          <input type="number" step="0.01" class="form-control form-control-sm" id="id_total_hours" name="total_hours" required>
+        </div>
+      </div>
+  
+      <!-- Columna 3 -->
+      <div class="col-md-4">
+        <div class="form-check mb-3">
+          <input type="checkbox" class="form-check-input form-control-sm" id="id_have_logistic" name="have_logistic">
+          <label class="form-check-label" for="id_have_logistic">Tiene Logística</label>
+        </div>
+        <div class="mb-3">
+          <label for="id_logistic_cost" class="form-label">Costo Logística</label>
+          <input type="number" step="0.01" class="form-control form-control-sm" id="id_logistic_cost" name="logistic_cost" required>
+        </div>
+        <div class="mb-3">
+          <label for="id_origin_site" class="form-label">Origen</label>
+          <input type="text" class="form-control form-control-sm" id="id_origin_site" name="origin_site" maxlength="255">
+        </div>
+        <div class="mb-3">
+          <label for="id_destination_site" class="form-label">Destino</label>
+          <input type="text" class="form-control form-control-sm" id="id_destination_site" name="destination_site" maxlength="255">
+        </div>
+      </div>
+    </div>
+  
+    <!-- Línea divisoria -->
+    <hr class="my-4">
+  
+    <!-- Formulario detalle 1 (MantenanceEquipments) -->
+    <h5>Equipos Relacionados al Mantenimiento</h5>
+    <div class="row">
+      {{ equipments_formset.management_form }}
+      {% for form in equipments_formset %}
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label for="{{ form.equipment.id_for_label }}" class="form-label">Equipo</label>
+            {{ form.equipment|as_widget:class="form-select form-control-sm" }}
+          </div>
+          <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input form-control-sm" id="{{ form.work_vaccum.id_for_label }}" name="{{ form.work_vaccum.name }}" {% if form.work_vaccum.value %}checked{% endif %}>
+            <label class="form-check-label" for="{{ form.work_vaccum.id_for_label }}">Succión</label>
+          </div>
+          <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input form-control-sm" id="{{ form.work_cleaning.id_for_label }}" name="{{ form.work_cleaning.name }}" {% if form.work_cleaning.value %}checked{% endif %}>
+            <label class="form-check-label" for="{{ form.work_cleaning.id_for_label }}">Limpieza</label>
+          </div>
+          <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input form-control-sm" id="{{ form.use_chemical.id_for_label }}" name="{{ form.use_chemical.name }}" {% if form.use_chemical.value %}checked{% endif %}>
+            <label class="form-check-label" for="{{ form.use_chemical.id_for_label }}">Desinfección</label>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  
+    <!-- Línea divisoria -->
+    <hr class="my-4">
+  
+    <!-- Formulario detalle 2 (ChainOfCustodyPersonal) -->
+    <h5>Personal de Cadena de Custodia</h5>
+    <div class="row">
+      {{ custody_formset.management_form }}
+      {% for form in custody_formset %}
+        <div class="col-md-4">
+          <div class="mb-3">
+            <label for="{{ form.name.id_for_label }}" class="form-label">Nombre del Personal</label>
+            {{ form.name|as_widget:class="form-control form-control-sm" }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.nro_dni.id_for_label }}" class="form-label">Nro. DNI</label>
+            {{ form.nro_dni|as_widget:class="form-control form-control-sm" }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.position.id_for_label }}" class="form-label">Cargo</label>
+            {{ form.position|as_widget:class="form-control form-control-sm" }}
+          </div>
+          <div class="mb-3">
+            <label for="{{ form.accion.id_for_label }}" class="form-label">Acción</label>
+            {{ form.accion|as_widget:class="form-select form-control-sm" }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  
+    <!-- Botones -->
+    <hr class="my-4">
+    
+    <div class="row mt-3">
+      <div class="col text-center d-flex justify-content-between">
+        <a href="#" class="btn btn-outline-secondary btn-sm">Cancelar</a>
+        <button type="submit" class="btn btn-outline-success btn-sm">Guardar</button>
+      </div>
+    </div>
+  </form>
