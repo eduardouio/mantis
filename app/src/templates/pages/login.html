@@ -40,7 +40,13 @@
                 <div class="container d-flex flex-column align-items-center shadow border border-success">
                     <img src="http://localhost:8000/static/img/logo.png" alt="Logo" class="m-5" width="350" height="auto">
                     <div class="login-form text-center">
-                        <form class="m-4">
+                        <form class="m-4" method="post">
+                            {% csrf_token %}
+                            {% if show_message %}
+                            <div class="alert alert-danger" role="alert">
+                                Ocurrio un error al iniciar sesion, por favor intentelo de nuevo.
+                              </div>
+                              {% endif %}
                             <div class="mb-3">
                                 <input type="text" class="form-control" placeholder="Email" required>
                             </div>

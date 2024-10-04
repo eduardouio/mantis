@@ -13,8 +13,7 @@ class LoginTV(TemplateView):
         page_data = {
             'title_page': 'Inicio Sesion',
             'module_name': 'Accounts',
-            'message': '',
-            'satus': 'not_logged_in',
+            'show_message': False,
         }
         if request.user.is_authenticated:
             page_data['status'] = 'logged_in'
@@ -37,8 +36,7 @@ class LoginTV(TemplateView):
             page_data = {
                 'title_page': 'Inicio Sesion',
                 'module_name': 'Accounts',
-                'message': 'Usuario o contraseña incorrecta',
-                'status': 'not_logged_in',
+                'show_message': True,
             }
             context = self.get_context_data(**kwargs)
             return self.render_to_response({**context, **page_data})
