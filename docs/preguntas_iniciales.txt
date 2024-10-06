@@ -24,7 +24,7 @@ Sí, una hoja de mantenimiento puede tener varios equipos.
 Unidad de Medida de Suministros de Limpieza:
 
 ¿Cómo se miden los suministros de limpieza?
-Se usa un checklist en lugar de una unidad de medida o cantidad.
+Se usa un checklist en lugar de una unidad de medida o cantidad.s
 
 
 Costos de Mantenimiento y Logística:
@@ -41,7 +41,7 @@ Medida del Agua Residual:
 Se mide en galones.
 
 Autorizaciones Diferentes:
-¿Las autorizaciones varían entre los equipos y el reporte completo?
+¿Las autorizaciones varían entre los equipos y el reporste completo?
 No especificado, pero se entiende que pueden ser diferentes.
 Servicios
 
@@ -113,3 +113,8 @@ Mantenimiento y Alquiler.
 Ventas de Equipos:
 
 Incluir opción de venta de equipos en los proyectos.
+
+
+firma electronica en las cadenas de custodia con el fin de 
+garantizar la autenticidad de los documentos para las cadenas de custodia
+

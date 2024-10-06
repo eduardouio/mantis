@@ -1,6 +1,5 @@
 from django.views.generic import TemplateView
 from django.contrib.auth import authenticate, login
-from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from accounts.models import CustomUserModel
 
@@ -13,13 +12,12 @@ class LoginTV(TemplateView):
         page_data = {
             'title_page': 'Inicio Sesion',
             'module_name': 'Accounts',
-            'show_message': False,
+            'message': '',
         }
         if request.user.is_authenticated:
             page_data['status'] = 'logged_in'
             page_data['message'] = 'Ya has iniciado sesion'
-            url = reverse_lazy('accounts:home')
-            return HttpResponseRedirect(url)
+            return HttpResponseRedirect('/')
 
         context = self.get_context_data(**kwargs)
         return self.render_to_response({**context, **page_data})
@@ -27,16 +25,15 @@ class LoginTV(TemplateView):
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(username=email, password=password)
+        user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
-            url = reverse_lazy('home')
-            return HttpResponseRedirect(url)
+            return HttpResponseRedirect('/')
         else:
             page_data = {
                 'title_page': 'Inicio Sesion',
                 'module_name': 'Accounts',
-                'show_message': True,
+                'message': 'Usuario o contraseña incorrecta',
             }
             context = self.get_context_data(**kwargs)
             return self.render_to_response({**context, **page_data})

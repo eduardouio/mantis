@@ -6,24 +6,11 @@
     <title>{{ title_page }}</title>
     <link href="/static/css/libs/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/libs/customicer.css" rel="stylesheet">
-    <style>
-       body {
-            background-image: url('http://localhost:8000/static/img/background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat, repeat;
-            height: 1200px;
-            background-color: rgba(255, 255, 255, 0.5);
-            background-blend-mode: overlay; 
-        }
-    </style>
-    {% block style %}
-    {% endblock %}
-    {% block files %}
+    {% block files_header %}
     {% endblock %}
   </head>
   <body>
-    {% if request.user.is_authenticated %}
+    {% if title_page != 'Inicio Sesion' %}
     <nav class="navbar navbar-expand-lg bg-success-subtle bg-gradient border-bottom">
       <div class="container-fluid">
         <a class="navbar-brand text-sm" href="#">
@@ -295,14 +282,14 @@
         </div>
       </div>
     </nav>
-    <div class="m-2">
-      {% if show_alet %}
+    {% endif %}
+      {% if show_alert  %}
       <div class="container-fluid">
         <div class="alert alert-warning" role="alert">
           Esta es una alerta del sistema
         </div>
-        {% endif %}
       </div>
+      {% endif %}
       {% if show_toolbar %}
       <div class="container-fluid bordered bg-gray m-1 p-1 mx-auto">
         <div class="row">
@@ -318,13 +305,9 @@
         </div>
       </div>
       {% endif %}
-      {% endif %}      
-      <div class="container-fluid shadow mx-auto">
-        {% block content  %}
+        {% block content %}
         {% endblock %}
-      </div>
-    </div>
-    {% if request.user.is_authenticated %}
+    {% if title_page != 'Inicio Sesion' %}
     <div class="container-fluid mx-auto border shadow rounded-end bg-secondary px-4">
       <footer class="d-flex flex-wrap justify-content-between align-items-center  mt-auto">
         <p class="col-md-4 mb-0 text-light">©PEISOL S.A Derechos Reservados</p>
@@ -366,9 +349,7 @@
     </div>
     {% endif %}
     <script src="/static/js/libs/bootstrap.bundle.min.js"></script>
-    {% block script_files %}
-    {% endblock %}
-    {% block script %}
+    {% block files_footer %}
     {% endblock %}
   </body>
 </html>
