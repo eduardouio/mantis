@@ -1,17 +1,33 @@
-{% extends 'base/base.html' %} {% block content %}
+{% extends 'base/base.html' %} 
+{% block style%}
+<style>
+   .login-bg {
+          background-image: url('/static/img/login_image.jpg');
+           background-size: cover;
+           background-position: center;
+           background-repeat: no-repeat;
+           height: 100vh; /* Asegura que el fondo solo ocupe la altura de la pantalla visible */
+           background-attachment: fixed; /* Hace que el fondo no se desplace */
+           background-blend-mode: overlay;
+           background-color: rgba(255, 255, 255, 0.2);
+           overflow: hidden; /* Evita el scroll innecesario */
+   }
+</style>
+{% endblock %}
+{% block content %}
 <div class="container-fluid min-vh-100 d-flex">
    <div class="row w-100">
       <div
-         class="col-6 d-flex justify-content-center align-items-center bg-secondary bg-gradient border-end border-success border-2 p-0"
+         class="login-bg col-6 d-flex justify-content-center align-items-center border-end border-success border-2 p-0"
          >
       </div>
       <div class="col-6 d-flex justify-content-center align-items-center">
          <div class="bg-success bg-gradient border rounded-4 shadow pt-2 pb-2">
             <div class="container d-flex flex-column align-items-center">
                <div
-                  class="login-form text-center border m-1 p-5 border-dark border-2 rounded-4 bg-light"
+                  class="text-center border m-1 p-2 border-dark border-2 rounded-4 bg-light"
                   >
-                  <main class="form-signin w-100 m-auto">
+                  <main class="form-signin w-80 m-auto">
                      <form method="post" action="">
                         {% csrf_token %} {% if message %}
                         <div class="alert alert-danger">
@@ -40,7 +56,7 @@
                         <div class="form-floating">
                            <input
                               type="password"
-                              class="form-control"
+                              class="form-control form-control-sm"
                               id="floatingPassword"
                               placeholder="Password"
                               name="password"
