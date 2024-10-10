@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
 {% block content %}
-    <div class="container container-xl mx-auto mt-3 mb-3 border rounded bg-opacity-50 m-2 p-2">
+<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
         <div class="d-flex justify-content-between">
         <span class="text-primary">
             Listado de Equipos
@@ -45,7 +45,7 @@
                 {% for item in object_list %}
                 <tr>
                     <td class="p-0">
-                        <a href="/equipos/ver/{{ item.id }}/" class="text-primary d-flex justify-content-center gap-2">
+                        <a href="/equipos/{{ item.id }}/" class="text-primary d-flex justify-content-center gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crosshair" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
