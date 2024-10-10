@@ -17,7 +17,7 @@ STATUS_CHOICES = (
     ('STAND BY', 'STAND BY'),
     ('EN REPARACION', 'EN REPARACION'),
     ('EN RENTA', 'EN RENTA'),
-    ('EN ALMACEN', 'EN ALMACEN'
+    ('EN ALMACEN', 'EN ALMACEN')
 )
 
 

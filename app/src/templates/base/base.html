@@ -15,9 +15,9 @@
            background-repeat: no-repeat;
            height: 100vh; /* Asegura que el fondo solo ocupe la altura de la pantalla visible */
            background-attachment: fixed; /* Hace que el fondo no se desplace */
-           background-color: rgba(255, 255, 255, 0.5);
+           background-color: rgba(255, 255, 255, 0.4);
            background-blend-mode: overlay;
-           overflow: hidden; /* Evita el scroll innecesario */
+           font-size: 0.85rem;
  }
    </style>
     {% block style%}
@@ -30,7 +30,7 @@
     <nav class="navbar navbar-expand-lg bg-peisol-secondary bg-gradient border-bottom p-0 ">
       <div class="container-fluid">
         <a class="navbar-brand text-sm" href="#">
-        <img src="/static/img/logo.png" alt="Logo" width="auto" height="30" class="">
+        <img src="/static/img/logo.png" alt="Logo" width="auto" height="30" class="rounded rounded-3">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -365,7 +365,31 @@
     {% endif %}
     <script src="/static/js/libs/jquery-3.7.1.min.js"></script>
     <script src="/static/js/libs/dataTables.min.js" ></script>
-    <script src="/static/js/libs/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/libs/bootstrap.min.js"></script>
+    <script>
+     $(document).ready(function() {
+    $('#myTable').DataTable(      
+      {
+        "pageLength": 15,
+        "lengthMenu": [15, 25, 50 ,100, 500, 1000, 5000],
+        "language": {
+          "lengthMenu": "_MENU_ registros por página",
+          "zeroRecords": "Sin registros",
+          "info": "Mostrando página _PAGE_ de _PAGES_",
+          "infoEmpty": "Sin registros",
+          "infoFiltered": "(filtrado de _MAX_ registros totales)",
+          "search": "Buscar:",
+          "paginate": {
+            "first": "Primero",
+            "last": "Último",
+            "next": "Siguiente",
+            "previous": "Anterior"
+          }
+        }
+      }
+    );
+  });
+    </script>
     {% block files_footer %}
     {% endblock %}
     {% block script %}
