@@ -58,3 +58,21 @@
 .text-white{
 	color: white;
 }
+
+a {
+    color: inherit; /* Cambia 'inherit' para que tome el color del elemento padre, o usa el color que desees */
+    text-decoration: none; /* Elimina la línea subrayada */
+}
+
+a:hover {
+    color: inherit; /* Mantiene el mismo color al pasar el ratón, puedes cambiar esto si lo deseas */
+    text-decoration: none; /* Mantiene el enlace sin subrayado al pasar el ratón */
+}
+
+td:hover {
+	background-color: #ffff99;
+}
+
+tr:hover {
+	color: cadetblue;
+}
