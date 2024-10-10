@@ -12,45 +12,47 @@ CHOICES_CODE = (
     ('PSL-TA', 'PSL-TA')
 )
 STATUS_CHOICES = (
-    ('OPERATIVO', 'OPERATIVO'),
+    ('DISPONIBLE', 'DISPONIBLE'),
     ('DANADO', 'DANADO'),
     ('STAND BY', 'STAND BY'),
-    ('EN REPARACIÓN', 'EN REPARACIÓN'),
+    ('EN REPARACION', 'EN REPARACION'),
+    ('EN RENTA', 'EN RENTA'),
+    ('EN ALMACEN', 'EN ALMACEN'
 )
 
 
 class Equipment(BaseModel):
-    id = models.AutoField(
+    id=models.AutoField(
         primary_key=True
     )
-    name = models.CharField(
+    name=models.CharField(
         'Nombre Equipo',
         max_length=255
     )
-    brand = models.CharField(
+    brand=models.CharField(
         'Marca',
         max_length=255,
         default='SIN MARCA'
     )
-    model = models.CharField(
+    model=models.CharField(
         'Modelo',
         max_length=255,
         blank=True,
         null=True,
-        default=None
+        default='N/A'
     )
-    code = models.CharField(
+    code=models.CharField(
         'Código Equipo',
         max_length=50,
         unique=True
     )
-    date_purchase = models.DateField(
+    date_purchase=models.DateField(
         'Fecha de Compra',
         blank=True,
         null=True,
         default=None
     )
-    height = models.DecimalField(
+    height=models.DecimalField(
         'Altura',
         max_digits=5,
         decimal_places=2,
@@ -58,7 +60,7 @@ class Equipment(BaseModel):
         null=True,
         default=None
     )
-    width = models.DecimalField(
+    width=models.DecimalField(
         'Ancho',
         max_digits=5,
         decimal_places=2,
@@ -66,7 +68,7 @@ class Equipment(BaseModel):
         null=True,
         default=None
     )
-    depth = models.DecimalField(
+    depth=models.DecimalField(
         'Profundidad',
         max_digits=5,
         decimal_places=2,
@@ -74,7 +76,7 @@ class Equipment(BaseModel):
         null=True,
         default=None
     )
-    weight = models.DecimalField(
+    weight=models.DecimalField(
         'Peso',
         max_digits=5,
         decimal_places=2,
@@ -82,39 +84,39 @@ class Equipment(BaseModel):
         null=True,
         default=None
     )
-    description = models.TextField(
+    description=models.TextField(
         'Descripción',
         blank=True,
         null=True,
         default=None
     )
-    status = models.CharField(
+    status=models.CharField(
         'Estado',
         max_length=255,
         choices=STATUS_CHOICES,
         default='OPERATIVO'
     )
-    is_active = models.BooleanField(
+    is_active=models.BooleanField(
         'Activo?',
         default=True
     )
     # Estos campos se actualizan cada vez que el equipo cambia de proyecto
     # o de ubicación, no se actualiza manualmente
     # se libera cuando un proyecto termina, o libera el equipo
-    _current_location = models.CharField(
+    bg_current_location=models.CharField(
         'Ubicación Actual',
         max_length=255
     )
-    _current_project = models.CharField(
+    bg_current_project=models.CharField(
         'Proyecto Actual',
         max_length=255
     )
-    _date_commitment = models.DateField(
+    bg_date_commitment=models.DateField(
         'Fecha de Compromiso',
         blank=True,
         null=True
     )
-    _date_free = models.DateField(
+    bg_date_free=models.DateField(
         'Fecha de Liberación',
         blank=True,
         null=True
