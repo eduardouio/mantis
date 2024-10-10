@@ -1,0 +1,163 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
+    <div class="row">
+        <div class="col-2">
+            <span class="text-primary">
+                Detalle de Equipo
+            </span>
+        </div>
+        <div class="col-4">
+            {% if name_deleted %}
+            <div class="bg-peisol-secondary bg-gradient p-2 rounded">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                    <path d="M9 12l2 2l4 -4" />
+                </svg>
+                Equipo <span class="text-muted">{{ name_deleted }}</span> Eliminado Correctamente
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-6 d-flex justify-content-end gap-3">
+            <a href="equipos/nuevo/" class="btn btn-sm btn-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M4 7l16 0" />
+                    <path d="M10 11l0 6" />
+                    <path d="M14 11l0 6" />
+                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                </svg>
+                Eliminar
+            </a>
+            <a href="equipos/nuevo/" class="btn btn-sm btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                    <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                    <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                    <path d="M16 5l3 3" />
+                </svg>
+                Editar
+            </a>
+            <a href="{% url 'equipment_create' %}" class="btn btn-sm btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                    <path d="M12 5l0 14" />
+                    <path d="M5 12l14 0" />
+                </svg>
+                Agregar
+            </a>
+            <a href="{% url 'equipment_list' %}" class="btn btn-sm btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                    <path d="M5 12l14 0" />
+                    <path d="M5 12l6 6" />
+                    <path d="M5 12l6 -6" />
+                </svg>
+                Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-2">
+    <!-- Información del Equipo -->
+    <div class="card mb-2">
+        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                <path d="M12 9h.01" />
+                <path d="M11 12h1v4h1" />
+            </svg>
+            Información del Equipo
+        </div>
+        <div class="card-body">
+          <form action="" method="post">
+            {{ form.errors }}
+            {% csrf_token %}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="code" class="text-muted">Código del Equipo:</label>
+                    {{ form.code }}
+                </div>
+                <div class="col-md-4">
+                    <label for="name" class="text-muted">Nombre del Equipo:</label>
+                    {{ form.name }}
+                </div>
+                <div class="col-md-4">
+                    <label for="brand" class="text-muted">Marca:</label>
+                    {{ form.brand }}
+                </div>
+
+                <div class="col-md-4">
+                    <label for="model" class="text-muted">Modelo:</label>
+                    {{ form.model }}
+                </div>
+
+                <div class="col-md-4">
+                    <label for="date_purchase" class="text-muted">Fecha de Compra:</label>
+                    {{ form.date_purchase }}
+                </div>
+
+                <div class="col-md-4">
+                    <label for="height" class="text-muted">Altura (cm):</label>
+                    {{ form.height }}
+                </div>
+
+                <div class="col-md-4">
+                    <label for="width" class="text-muted">Ancho (cm):</label>
+                    {{ form.width }}
+                </div>
+
+                <div class="col-md-4">
+                    <label for="depth" class="text-muted">Profundidad (cm):</label>
+                    {{ form.depth }}
+                </div>
+
+                <div class="col-md-4">
+                    <label for="weight" class="text-muted">Peso (kg):</label>
+                    {{ form.weight }}
+                </div>
+                <div class="row">
+                  <div class="col-md-4">
+                      <label for="status" class="text-muted">Estado:</label>
+                      {{ form.status }}
+                  </div>
+  
+                  <div class="col-md-4 d-flex align-items-center gap-3">
+                      <label for="is_active" class="text-muted">Activo:</label>
+                      <span>
+                        {{ form.is_active }}
+                      </span>
+                  </div>
+                <div class="col-md-6">
+                    <label for="description" class="text-muted">Descripción:</label>
+                    {{ form.description }}
+                </div>
+                <div class="col-md-6">
+                    <label for="notes" class="text-muted">Notas:</label>
+                    {{ form.notes }}
+                </div>
+            </div>
+        </div>
+        <div class="row bg-gray bg-gradient p-2 rounded border">
+            <div class="col text-end">
+              <button class="btn btn-sm btn-success">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                  <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                  <path d="M14 4l0 4l-6 0l0 -4" />
+                </svg>
+                Guardar
+              </button>
+            </div>
+        </div>
+      </form>
+    </div>
+    </div>
+</div>
+{% endblock %}

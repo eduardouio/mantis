@@ -84,8 +84,9 @@ class Equipment(BaseModel):
         null=True,
         default=None
     )
-    description = models.TextField(
+    description = models.CharField(
         'Descripción',
+        max_length=255,
         blank=True,
         null=True,
         default=None

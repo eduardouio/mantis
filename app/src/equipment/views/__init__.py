@@ -1,1 +1,1 @@
-from .Equipment import ListEquipment, DetailEquipment
+from .Equipment import ListEquipment, DetailEquipment, CreateEquipment
