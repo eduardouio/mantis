@@ -107,6 +107,10 @@
                     <span class="text-muted">Propietario:</span>
                     <p class="border px-3">{{ vehicle.get_owner_transport_display }}</p>
                 </div>
+                <div class="col-md-8">
+                    <span class="text-muted">Notas:</span>
+                    <p class="border px-3">{% if vehicle.notes %}{{ vehicle.notes }}{% endif %}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -138,7 +142,13 @@
                 </div>
                 <div class="col-md-4">
                     <span class="text-muted">Creado Por:</span>
-                    <p class="border px-3">{{ vehicle.created_by }}</p>
+                    <p class="border px-3">
+                        {% if vehicle.get_create_user  %}
+                            {{ vehicle.get_create_user }}
+                        {% else %}
+                            SYSTEM
+                        {% endif %}
+                    </p>
                 </div>
             </div>
         </div>

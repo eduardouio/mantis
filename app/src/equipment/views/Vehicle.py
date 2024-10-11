@@ -13,7 +13,7 @@ class VehicleForm(forms.ModelForm):
         model = Vehicle
         fields = [
             'name', 'brand', 'code_vehicle', 'model', 'type_vehicle', 'year',
-            'no_plate', 'owner_transport', 'is_active'
+            'no_plate', 'owner_transport', 'is_active', 'notes'
         ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),

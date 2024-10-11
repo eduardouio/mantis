@@ -40,7 +40,8 @@ class Vehicle(BaseModel):
     )
     type_vehicle = models.CharField(
         'Tipo de Vehículo',
-        max_length=255
+        max_length=255,
+        choices=CHOICES_TYPE_VEHICLE
     )
     year = models.IntegerField(
         'Año',
