@@ -25,6 +25,7 @@ class VehicleForm(forms.ModelForm):
             'no_plate': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'owner_transport': forms.Select(attrs={'class': 'form-select form-control-sm'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control form-control-sm', 'rows': 2}),
         }
 
 

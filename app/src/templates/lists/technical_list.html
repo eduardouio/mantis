@@ -36,7 +36,6 @@
                 <th class="bg-secondary bg-opacity-25">Correo Electrónico</th>
                 <th class="bg-secondary bg-opacity-25">Ubicación</th>
                 <th class="bg-secondary bg-opacity-25">Cargo</th>
-                <th class="bg-secondary bg-opacity-25">Activo</th>
             </tr>
         </thead>
         <tbody>
@@ -56,27 +55,27 @@
                         {{ forloop.counter }}
                     </a>
                 </td>
-                <td class="p-0">{{ item.first_name }}</td>
-                <td class="p-0">{{ item.last_name }}</td>
-                <td class="p-0">{{ item.email }}</td>
-                <td class="p-0">{{ item.get_location_display }}</td>
-                <td class="p-0">{{ item.get_role_display }}</td>
                 <td class="p-0">
-                    {% if item.is_active %}
+                    {% if item.is_active  %}
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
                         <path d="M9 12l2 2l4 -4" />
-                    </svg>
-                    {% else %}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      </svg>
+                      {% else %}
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <path d="M12 9v4" />
                         <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
                         <path d="M12 16h.01" />
-                    </svg>
-                    {% endif %}
+                      </svg>
+                      {% endif %}
+                      {{ item.first_name }}
                 </td>
+                <td class="p-0">{{ item.last_name }}</td>
+                <td class="p-0">{{ item.email }}</td>
+                <td class="p-0">{{ item.get_location_display }}</td>
+                <td class="p-0">{{ item.get_role_display }}</td>
             </tr>
             {% endfor %}
         </tbody>
