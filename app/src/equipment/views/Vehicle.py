@@ -101,6 +101,16 @@ class UpdateVehicle(LoginRequiredMixin, UpdateView):
     form_class = VehicleForm
     success_url = '/vehiculos/'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title_section'] = 'Actualizar Vehículo {}'.format(
+            self.object.no_plate
+        )
+        context['title_page'] = 'Actualizar Vehículo {}'.format(
+            self.object.no_plate
+        )
+        return context
+
     def get_success_url(self):
         url = reverse_lazy('vehicle_detail', kwargs={'pk': self.object.pk})
         url = f'{url}?action=updated'
