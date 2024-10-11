@@ -31,10 +31,10 @@
                 <th class="bg-secondary bg-opacity-25">Placa</th>
                 <th class="bg-secondary bg-opacity-25">Nombre</th>
                 <th class="bg-secondary bg-opacity-25">Marca</th>
-                <th class="bg-secondary bg-opacity-25">Modelo</th>
+                <th class="bg-secondary bg-opacity-25">Tipo</th>
                 <th class="bg-secondary bg-opacity-25">Año</th>
                 <th class="bg-secondary bg-opacity-25">Propietario</th>
-                <th class="bg-secondary bg-opacity-25">Activo</th>
+                <th class="bg-secondary bg-opacity-25">Modelo</th>
             </tr>
         </thead>
         <tbody>
@@ -73,10 +73,10 @@
                 </td>
                 <td class="p-0">{{ vehicle.name }}</td>
                 <td class="p-0">{{ vehicle.brand }}</td>
-                <td class="p-0">{{ vehicle.model }}</td>
-                <td class="p-0">{{ vehicle.year }}</td>
+                <td class="p-0">{{ vehicle.type_vehicle }}</td>
+                <td class="p-0 text-center">{{ vehicle.year }}</td>
                 <td class="p-0">{{ vehicle.get_owner_transport_display }}</td>
-                <td class="p-0">{{ vehicle.is_active|yesno:"Sí,No" }}</td>
+                <td class="p-0">{{ vehicle.model }}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -18,6 +18,7 @@ urlpatterns = [
     path('equipos/crear/', CreateEquipment.as_view(), name='equipment_create'),
     path('equipos/editar/<int:pk>/', UpdateEquipment.as_view(), name='equipment_update'),
     path('equipos/eliminar/<int:pk>/', DeleteEquipment.as_view(), name='equipment_delete'),
+    
     path('vehiculos/listar/', ListVehicle.as_view(), name='vehicle_list'),
     path('vehiculos/<int:pk>/', DetailVehicle.as_view(), name='vehicle_detail'),
     path('vehiculos/crear/', CreateVehicle.as_view(), name='vehicle_create'),

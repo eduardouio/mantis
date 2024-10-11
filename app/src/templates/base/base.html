@@ -71,6 +71,39 @@
                 </li>
               </ul>
             </li>
+                        <!-- Vehículos -->
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" id="vehiculosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-truck" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                              <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                              <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                              <path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" />
+                            </svg>
+                            Vehículos
+                          </a>
+                          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="vehiculosDropdown">
+                            <li>
+                              <a class="dropdown-item" href="{% url 'vehicle_list' %}">
+                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                  <path d="M11 4l3 8l-3 8" />
+                                </svg>
+                                Listar Vehículos
+            
+                              </a>
+                            </li>
+                            <li>
+                              <a class="dropdown-item" href="{% url 'vehicle_create' %}">
+                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                  <path d="M11 4l3 8l-3 8" />
+                                </svg>
+                                Crear Vehículo
+                              </a>
+                            </li>
+                          </ul>
+                        </li>
             <!-- Tecnicos -->
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="tecnicosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -136,39 +169,6 @@
                       <path d="M11 4l3 8l-3 8" />
                     </svg>
                     Crear Proyecto
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Vehículos -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="vehiculosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-truck" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                  <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                  <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                  <path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" />
-                </svg>
-                Vehículos
-              </a>
-              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="vehiculosDropdown">
-                <li>
-                  <a class="dropdown-item" href="#">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                      <path d="M11 4l3 8l-3 8" />
-                    </svg>
-                    Listar Vehículos
-
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                      <path d="M11 4l3 8l-3 8" />
-                    </svg>
-                    Crear Vehículo
                   </a>
                 </li>
               </ul>
