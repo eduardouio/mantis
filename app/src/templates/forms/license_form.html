@@ -1,0 +1,126 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
+    <div class="row">
+        <div class="col-6">
+            <span class="text-primary">
+                {{ title_section }}
+            </span>
+        </div>
+        <div class="col-6 d-flex justify-content-end gap-3">
+            {%  if request.resolver_match.url_name  != 'license_create' %}    
+            <a href="{% url 'license_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M4 7l16 0" />
+                    <path d="M10 11l0 6" />
+                    <path d="M14 11l0 6" />
+                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                </svg>
+                Eliminar Licencia
+            </a>
+            <a href="{% url 'license_detail' license.id %}" class="btn btn-sm btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                    <path d="M5 12l14 0" />
+                    <path d="M5 12l6 6" />
+                    <path d="M5 12l6 -6" />
+                </svg>
+                Volver Ficha
+            </a>
+            {% endif %}
+            <a href="{% url 'license_list' %}" class="btn btn-sm btn-warning">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                    <path d="M5.7 5.7l12.6 12.6" />
+                  </svg>
+                Cancelar
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-2">
+    <!-- Información de la Licencia -->
+    <div class="card mb-2">
+        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                <path d="M12 9h.01" />
+                <path d="M11 12h1v4h1" />
+            </svg>
+            Información de la Licencia
+        </div>
+        <div class="card-body">
+          <form action="" method="post">
+            {{ form.errors }}
+            {% csrf_token %}
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="license_key" class="text-muted">Clave de Licencia:</label>
+                    {{ form.license_key }}
+                </div>
+                <div class="col-md-4">
+                    <label for="activated_on" class="text-muted">Activada el:</label>
+                    {{ form.activated_on }}
+                </div>
+                <div class="col-md-4">
+                    <label for="expires_on" class="text-muted">Expira el:</label>
+                    {{ form.expires_on }}
+                </div>
+
+                <div class="col-md-4">
+                    <label for="licence_file" class="text-muted">Archivo de Licencia:</label>
+                    {{ form.licence_file }}
+                </div>
+
+                <div class="col-md-4">
+                    <label for="role" class="text-muted">Rol:</label>
+                    {{ form.role }}
+                </div>
+
+                <div class="col-md-4">
+                    <label for="enterprise" class="text-muted">Empresa:</label>
+                    {{ form.enterprise }}
+                </div>
+
+                <div class="col-md-4">
+                    <label for="url_server" class="text-muted">URL del Servidor:</label>
+                    {{ form.url_server }}
+                </div>
+
+                <div class="col-md-4 d-flex align-items-center gap-3">
+                    <label for="is_active" class="text-muted">Activo:</label>
+                    <span>
+                        {{ form.is_active }}
+                    </span>
+                </div>
+
+                <div class="col-md-4">
+                    <label for="user" class="text-muted">Usuario:</label>
+                    {{ form.user }}
+                </div>
+            </div>
+        </div>
+        <div class="row bg-gray bg-gradient p-2 rounded border">
+            <div class="col text-end">
+              <button class="btn btn-sm btn-success">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                  <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                  <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                  <path d="M14 4l0 4l-6 0l0 -4" />
+                </svg>
+                Guardar Nueva Licencia
+              </button>
+            </div>
+        </div>
+      </form>
+    </div>
+    </div>
+</div>
+{% endblock %}

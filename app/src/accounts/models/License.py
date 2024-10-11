@@ -41,7 +41,7 @@ class License(BaseModel):
     enterprise = models.CharField(
         'Empresa',
         max_length=50,
-        default='KOSMOFLOWERS'
+        default='PEISOL S.A.'
     )
     is_active = models.BooleanField(
         'Activo?',

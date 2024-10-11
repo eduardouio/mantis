@@ -5,9 +5,14 @@ from .views import (
     LogoutRV,
     ListTechnical,
     DetailTechnical,
+    DetailLicense,
     CreateTechnical,
     UpdateTechnical,
-    DeleteTechnical
+    DeleteTechnical,
+    ListLicense,
+    CreateLicense,
+    UpdateLicense,
+    DeleteLicense
 )
 
 
@@ -22,5 +27,10 @@ urlpatterns = [
     path('tecnicos/create/', CreateTechnical.as_view(), name='technical_create'),
     path('tecnicos/update/<int:pk>/', UpdateTechnical.as_view(), name='technical_update'),
     path('tecnicos/delete/<int:pk>/', DeleteTechnical.as_view(), name='technical_delete'),
-
+    # Licencias
+    path('licencias/', ListLicense.as_view(), name='license_list'),
+    path('licencias/<int:pk>/', DetailLicense.as_view(), name='license_detail'),
+    path('licencias/create/', CreateLicense.as_view(), name='license_create'),
+    path('licencias/update/<int:pk>/', UpdateLicense.as_view(), name='license_update'),
+    path('licencias/delete/<int:pk>/', DeleteLicense.as_view(), name='license_delete'),
 ]
