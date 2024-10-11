@@ -55,5 +55,5 @@ class License(BaseModel):
     )
     user = models.ForeignKey(
         CustomUserModel,
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )

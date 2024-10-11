@@ -5,11 +5,12 @@
     <div class="row">
         <div class="col-6">
             <span class="text-primary">
-                Detalle de Equipo
+                {{ title_section }}
             </span>
         </div>
         <div class="col-6 d-flex justify-content-end gap-3">
-            <a href="equipos/nuevo/" class="btn btn-sm btn-danger">
+            {%  if request.resolver_match.url_name  != 'equipment_create' %}    
+            <a href="{% url 'equipment_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-danger">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M4 7l16 0" />
@@ -18,24 +19,25 @@
                     <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
                     <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                 </svg>
-                Eliminar
+                Eliminar Equipo
             </a>
-            <a href="{% url 'equipment_create' %}" class="btn btn-sm btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
-                    <path d="M12 5l0 14" />
-                    <path d="M5 12l14 0" />
-                </svg>
-                Agregar
-            </a>
-            <a href="{% url 'equipment_list' %}" class="btn btn-sm btn-secondary">
+            <a href="{% url 'equipment_detail' equipment.id %}" class="btn btn-sm btn-secondary">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                     <path d="M5 12l14 0" />
                     <path d="M5 12l6 6" />
                     <path d="M5 12l6 -6" />
                 </svg>
-                Volver
+                Volver Ficha
+            </a>
+            {% endif %}
+            <a href="{% url 'equipment_list' %}" class="btn btn-sm btn-warning">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                    <path d="M5.7 5.7l12.6 12.6" />
+                  </svg>
+                Cancelar
             </a>
         </div>
     </div>
@@ -131,7 +133,7 @@
                   <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
                   <path d="M14 4l0 4l-6 0l0 -4" />
                 </svg>
-                Guardar
+                Guardar Nuevo
               </button>
             </div>
         </div>

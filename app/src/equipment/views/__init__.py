@@ -2,5 +2,6 @@ from .Equipment import (
     ListEquipment,
     DetailEquipment,
     CreateEquipment,
-    UpdateEquipment
+    UpdateEquipment,
+    DeleteEquipment
 )

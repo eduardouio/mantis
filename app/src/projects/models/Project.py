@@ -20,7 +20,7 @@ class Project(BaseModel):
     )
     partner = models.ForeignKey(
         'projects.Partner',
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     required_by = models.CharField(
         'Requerido por',
@@ -81,11 +81,11 @@ class ProjectEquipments(BaseModel):
     )
     project = models.ForeignKey(
         Project,
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     equipment = models.ForeignKey(
         Equipment,
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     cost_rent = models.DecimalField(
         'Costo',

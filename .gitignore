@@ -187,3 +187,5 @@ app/src/equipment/migrations/
 app/src/equipment/migrations/*
 app/src/accounts/migrations/
 app/src/accounts/migrations/*
+app/src/accounts/migrations/0001_initial.py
+app/src/accounts/migrations/__pycache__/0001_initial.cpython-312.pyc

@@ -1,6 +1,12 @@
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    RedirectView
+)
 from django.contrib.auth.mixins import LoginRequiredMixin
 from equipment.models import Equipment
 
@@ -40,13 +46,16 @@ class ListEquipment(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['title_section'] = 'Listado De Equipos Registrados'
+        context['title_page'] = 'Listado De Equipos'
+
         if 'action' not in self.request.GET:
             return context
-
         message = ''
-        if context['action'] == 'deleted':
+        if self.request.GET.get('action') == 'deleted':
             message = 'El equipo ha sido eliminado con éxito.'
 
+        context['action'] = self.request.GET.get('action')
         context['message'] = message
         return context
 
@@ -58,6 +67,13 @@ class DetailEquipment(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['title_section'] = 'Detalle del Equipo {}'.format(
+            self.object.code
+        )
+        context['title_page'] = 'Detalle del Equipo {}'.format(
+            self.object.code
+        )
+
         if 'action' not in self.request.GET:
             return context
 
@@ -68,6 +84,10 @@ class DetailEquipment(LoginRequiredMixin, DetailView):
             message = 'El equipo ha sido creado con éxito.'
         elif context['action'] == 'updated':
             message = 'El equipo ha sido actualizado con éxito.'
+        elif context['action'] == 'no_delete':
+            message = 'No es posible eliminar el equipo. Existen dependencias.'
+        elif context['action'] == 'delete':
+            message = 'Esta acción es irreversible. ¿Desea continiar?.'
 
         context['message'] = message
         return context
@@ -95,3 +115,16 @@ class UpdateEquipment(LoginRequiredMixin, UpdateView):
         url = reverse_lazy('equipment_detail', kwargs={'pk': self.object.pk})
         url = f'{url}?action=updated'
         return url
+
+
+class DeleteEquipment(LoginRequiredMixin, RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        equipment = Equipment.objects.get(pk=kwargs['pk'])
+        try:
+            equipment.delete()
+            url = reverse_lazy('equipment_list')
+            return f'{url}?action=deleted'
+        except Exception as e:
+            return f'{reverse_lazy("equipment_detail", 
+                                    kwargs={"pk": kwargs["pk"]}
+                )}?action=no_delete'

@@ -43,15 +43,15 @@ class Mantenance(BaseModel):
     )
     project = models.ForeignKey(
         'projects.Project',
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     tecnical = models.ForeignKey(
         Technical,
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     vehicle = models.ForeignKey(
         'equipment.Vehicle',
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     date = models.DateField(
         'Fecha'
@@ -134,11 +134,11 @@ class MantenanceEquipment(BaseModel):
     )
     mantenance = models.ForeignKey(
         Mantenance,
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     equipment = models.ForeignKey(
         Equipment,
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     work_vaccum = models.BooleanField(
         'Succión',
@@ -183,7 +183,7 @@ class ChainOfCustodyPersonal(BaseModel):
     )
     mantenance = models.ForeignKey(
         Mantenance,
-        on_delete=models.CASCADE
+        on_delete=models.PROTECT
     )
     date = models.DateField(
         'Fecha'

@@ -48,7 +48,7 @@ class Technical(BaseModel):
     )
     user = models.OneToOneField(
         CustomUserModel,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=True,
         null=True,
         default=None
