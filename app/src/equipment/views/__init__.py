@@ -5,3 +5,11 @@ from .Equipment import (
     UpdateEquipment,
     DeleteEquipment
 )
+
+from .Vehicle import (
+    ListVehicle,
+    DetailVehicle,
+    CreateVehicle,
+    UpdateVehicle,
+    DeleteVehicle
+)

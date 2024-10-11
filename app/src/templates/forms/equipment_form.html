@@ -9,8 +9,8 @@
             </span>
         </div>
         <div class="col-6 d-flex justify-content-end gap-3">
-            {%  if request.resolver_match.url_name  != 'equipment_create' %}    
-            <a href="{% url 'equipment_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-danger">
+            {% if request.resolver_match.url_name != 'vehicle_create' %}
+            <a href="{% url 'vehicle_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-danger">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M4 7l16 0" />
@@ -19,9 +19,9 @@
                     <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
                     <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                 </svg>
-                Eliminar Equipo
+                Eliminar Vehículo
             </a>
-            <a href="{% url 'equipment_detail' equipment.id %}" class="btn btn-sm btn-secondary">
+            <a href="{% url 'vehicle_detail' vehicle.id %}" class="btn btn-sm btn-secondary">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                     <path d="M5 12l14 0" />
@@ -31,12 +31,12 @@
                 Volver Ficha
             </a>
             {% endif %}
-            <a href="{% url 'equipment_list' %}" class="btn btn-sm btn-warning">
+            <a href="{% url 'vehicle_list' %}" class="btn btn-sm btn-warning">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
                     <path d="M5.7 5.7l12.6 12.6" />
-                  </svg>
+                </svg>
                 Cancelar
             </a>
         </div>
@@ -44,7 +44,7 @@
 </div>
 
 <div class="container mt-2">
-    <!-- Información del Equipo -->
+    <!-- Información del Vehículo -->
     <div class="card mb-2">
         <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -53,92 +53,69 @@
                 <path d="M12 9h.01" />
                 <path d="M11 12h1v4h1" />
             </svg>
-            Información del Equipo
+            Información del Vehículo
         </div>
         <div class="card-body">
-          <form action="" method="post">
-            {{ form.errors }}
-            {% csrf_token %}
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label for="code" class="text-muted">Código del Equipo:</label>
-                    {{ form.code }}
-                </div>
-                <div class="col-md-4">
-                    <label for="name" class="text-muted">Nombre del Equipo:</label>
-                    {{ form.name }}
-                </div>
-                <div class="col-md-4">
-                    <label for="brand" class="text-muted">Marca:</label>
-                    {{ form.brand }}
-                </div>
+            <form action="" method="post">
+                {{ form.errors }}
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="code_vehicle" class="text-muted">Código del Vehículo:</label>
+                        {{ form.code_vehicle }}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="name" class="text-muted">Nombre:</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="brand" class="text-muted">Marca:</label>
+                        {{ form.brand }}
+                    </div>
 
-                <div class="col-md-4">
-                    <label for="model" class="text-muted">Modelo:</label>
-                    {{ form.model }}
-                </div>
+                    <div class="col-md-4">
+                        <label for="model" class="text-muted">Modelo:</label>
+                        {{ form.model }}
+                    </div>
 
-                <div class="col-md-4">
-                    <label for="date_purchase" class="text-muted">Fecha de Compra:</label>
-                    {{ form.date_purchase }}
-                </div>
+                    <div class="col-md-4">
+                        <label for="year" class="text-muted">Año:</label>
+                        {{ form.year }}
+                    </div>
 
-                <div class="col-md-4">
-                    <label for="height" class="text-muted">Altura (cm):</label>
-                    {{ form.height }}
-                </div>
+                    <div class="col-md-4">
+                        <label for="no_plate" class="text-muted">Placa:</label>
+                        {{ form.no_plate }}
+                    </div>
 
-                <div class="col-md-4">
-                    <label for="width" class="text-muted">Ancho (cm):</label>
-                    {{ form.width }}
-                </div>
+                    <div class="col-md-4">
+                        <label for="owner_transport" class="text-muted">Propietario:</label>
+                        {{ form.owner_transport }}
+                    </div>
 
-                <div class="col-md-4">
-                    <label for="depth" class="text-muted">Profundidad (cm):</label>
-                    {{ form.depth }}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="is_active" class="text-muted">Activo:</label>
+                            <span>{{ form.is_active }}</span>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="col-md-4">
-                    <label for="weight" class="text-muted">Peso (kg):</label>
-                    {{ form.weight }}
-                </div>
-                <div class="row">
-                  <div class="col-md-4">
-                      <label for="status" class="text-muted">Estado:</label>
-                      {{ form.status }}
-                  </div>
-  
-                  <div class="col-md-4 d-flex align-items-center gap-3">
-                      <label for="is_active" class="text-muted">Activo:</label>
-                      <span>
-                        {{ form.is_active }}
-                      </span>
-                  </div>
-                <div class="col-md-6">
-                    <label for="description" class="text-muted">Descripción:</label>
-                    {{ form.description }}
-                </div>
-                <div class="col-md-6">
-                    <label for="notes" class="text-muted">Notas:</label>
-                    {{ form.notes }}
-                </div>
-            </div>
         </div>
         <div class="row bg-gray bg-gradient p-2 rounded border">
             <div class="col text-end">
-              <button class="btn btn-sm btn-success">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                  <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
-                  <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                  <path d="M14 4l0 4l-6 0l0 -4" />
-                </svg>
-                Guardar Nuevo
-              </button>
+                <button class="btn btn-sm btn-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
+                        <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                        <path d="M14 4l0 4l-6 0l0 -4" />
+                    </svg>
+                    Guardar Vehículo
+                </button>
             </div>
         </div>
-      </form>
-    </div>
-    </div>
+    </form>
+</div>
+</div>
 </div>
 {% endblock %}

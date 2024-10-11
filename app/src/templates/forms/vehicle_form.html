@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
+    <div class="row">
+        <div class="col-6"><span class="text-primary">{{ title_section }}</span></div>
+        <div class="col-6 d-flex justify-content-end">
+            <a href="{% url 'vehicle_list' %}" class="btn btn-sm btn-warning">Cancelar</a>
+        </div>
+    </div>
+</div>
+<div class="container mt-2">
+    <div class="card mb-2">
+        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">Información del Vehículo</div>
+        <div class="card-body">
+            <form action="" method="post">
+                {{ form.errors }}
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col-md-4"><label for="no_plate" class="text-muted">Placa:</label>{{ form.no_plate }}</div>
+                    <div class="col-md-4"><label for="name" class="text-muted">Nombre:</label>{{ form.name }}</div>
+                    <div class="col-md-4"><label for="brand" class="text-muted">Marca:</label>{{ form.brand }}</div>
+                    <div class="col-md-4"><label for="model" class="text-muted">Modelo:</label>{{ form.model }}</div>
+                    <div class="col-md-4"><label for="year" class="text-muted">Año:</label>{{ form.year }}</div>
+                    <div class="col-md-4"><label for="owner_transport" class="text-muted">Propietario:</label>{{ form.owner_transport }}</div>
+                    <div class="col-md-4"><label for="is_active" class="text-muted">Activo:</label>{{ form.is_active }}</div>
+                </div>
+                <div class="row bg-gray bg-gradient p-2 rounded border">
+                    <div class="col text-end">
+                        <button class="btn btn-sm btn-success">Guardar Vehículo</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
