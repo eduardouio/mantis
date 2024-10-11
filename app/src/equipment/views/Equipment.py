@@ -38,11 +38,39 @@ class ListEquipment(LoginRequiredMixin, ListView):
     context_object_name = 'equipments'
     ordering = ['name']
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'action' not in self.request.GET:
+            return context
+
+        message = ''
+        if context['action'] == 'deleted':
+            message = 'El equipo ha sido eliminado con éxito.'
+
+        context['message'] = message
+        return context
+
 
 class DetailEquipment(LoginRequiredMixin, DetailView):
     model = Equipment
     template_name = 'presentations/equipment_presentation.html'
     context_object_name = 'equipment'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'action' not in self.request.GET:
+            return context
+
+        context['action'] = self.request.GET.get('action')
+        context['equipment'] = self.object
+        message = ''
+        if context['action'] == 'created':
+            message = 'El equipo ha sido creado con éxito.'
+        elif context['action'] == 'updated':
+            message = 'El equipo ha sido actualizado con éxito.'
+
+        context['message'] = message
+        return context
 
 
 class CreateEquipment(LoginRequiredMixin, CreateView):
@@ -53,4 +81,5 @@ class CreateEquipment(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         url = reverse_lazy('equipment_detail', kwargs={'pk': self.object.pk})
+        url = f'{url}?action=created'
         return url

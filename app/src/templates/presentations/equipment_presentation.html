@@ -8,19 +8,19 @@
         Detalle de Equipo
     </span>
 </div>
-<div class="col-4">
-    {% if name_deleted %}
+<div class="col-5 d-flex justify-content-end">
+    {% if action %}
     <div class="bg-peisol-secondary bg-gradient p-2 rounded">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
             <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
             <path d="M9 12l2 2l4 -4" />
         </svg>
-        Equipo <span class="text-muted">{{ name_deleted }}</span> Eliminado Correctamente
+        {{ message }}
     </div>
     {% endif %}
 </div>
-<div class="col-6 d-flex justify-content-end gap-3">
+<div class="col-5 d-flex justify-content-end gap-3">
     <a href=" url 'equipiment_create' %}" class="btn btn-sm btn-danger">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
