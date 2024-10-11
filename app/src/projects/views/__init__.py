@@ -5,3 +5,11 @@ from .Partner import (
     UpdatePartner,
     DeletePartner
 )
+
+from .Project import (
+    ListProject,
+    DetailProject,
+    CreateProject,
+    UpdateProject,
+    DeleteProject
+)

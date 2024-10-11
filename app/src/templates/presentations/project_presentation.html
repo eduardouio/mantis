@@ -1,0 +1,128 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
+    <div class="row">
+        <div class="col-3">
+            <span class="text-primary">
+                {{ title_section }}
+            </span>
+        </div>
+        <div class="col-4 d-flex justify-content-end">
+            {% if action %}
+            <div class="{% if action == 'delete' or action == 'no_delete' %} bg-danger {% else %} bg-peisol-secondary {% endif %} bg-gradient p-2 rounded">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                    <path d="M9 12l2 2l4 -4" />
+                </svg>
+                {{ message }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-5 d-flex justify-content-end gap-3">
+            {% if not action %}
+            <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-sm btn-danger">
+                <!-- Ícono para eliminar -->
+                Eliminar
+            </a>
+            {% endif %}
+            <a href="{% url 'project_update' project.id %}" class="btn btn-sm btn-primary">
+                <!-- Ícono para editar -->
+                Editar
+            </a>
+            <a href="{% url 'project_create' %}" class="btn btn-sm btn-primary">
+                <!-- Ícono para agregar -->
+                Agregar
+            </a>
+            <a href="{% url 'project_list' %}" class="btn btn-sm btn-secondary">
+                <!-- Ícono para volver -->
+                Volver
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-2">
+    <!-- Información del Proyecto -->
+    <div class="card mb-2">
+        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
+            <!-- Ícono de información -->
+            Información del Proyecto
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="text-muted">Código Interno:</span>
+                    <p class="border px-3">{{ project.internal_code }} {% if project.is_active %} <span class="badge text-bg-success">Proyecto Activo</span> {% else %} <span class="badge text-bg-danger">Proyecto Inactivo</span> {% endif %}</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">Nombre del Proyecto:</span>
+                    <p class="border px-3">{{ project.project_name }}</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">Partner:</span>
+                    <p class="border px-3">{{ project.partner }}</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">Requerido por:</span>
+                    <p class="border px-3">{{ project.required_by }}</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">Autorizado por:</span>
+                    <p class="border px-3">{{ project.autorized_by }}</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">Lugar:</span>
+                    <p class="border px-3">{{ project.place }}</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">Fecha de Inicio:</span>
+                    <p class="border px-3">{{ project.start_date }}</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">Fecha de Fin:</span>
+                    <p class="border px-3">{{ project.end_date }}</p>
+                </div>
+                <div class="col-md-12">
+                    <span class="text-muted">Descripción del Proyecto:</span>
+                    <p class="border px-3">{{ project.project_description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información del Contacto -->
+    <div class="card mb-5">
+        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
+            <!-- Ícono de contacto -->
+            Información del Contacto
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <span class="text-muted">Nombre de Contacto:</span>
+                    <p class="border px-3">{{ project.contact_name }}</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">Cargo de Contacto:</span>
+                    <p class="border px-3">{{ project.position_contact }}</p>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">Teléfono de Contacto:</span>
+                    <p class="border px-3">{{ project.phone_contact }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if action == 'delete' %}
+    <div class="row mb-3">
+        <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-sm btn-danger">
+            <!-- Ícono para confirmar eliminación -->
+            Confirmar Eliminación
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
