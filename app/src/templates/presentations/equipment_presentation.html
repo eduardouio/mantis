@@ -92,41 +92,41 @@
 
                 <div class="col-md-4">
                     <span class="text-muted">Modelo:</span>
-                    <p class="border px-3">{% if equipment.model %}  {{ equipment.model }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <p class="border px-3">{% if equipment.model %}  {{ equipment.model }} {% endif %}</p>
                 </div>
 
                 <div class="col-md-4">
                     <span class="text-muted">Fecha de Compra:</span>
-                    <p class="border px-3">{% if equipment.date_purchase %}  {{ equipment.date_purchase }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <p class="border px-3">{% if equipment.date_purchase %}  {{ equipment.date_purchase }} {% endif %}</p>
                 </div>
 
                 <div class="col-md-4">
                     <span class="text-muted">Altura (cm):</span>
-                    <p class="border px-3">{% if equipment.height %}  {{ equipment.height }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <p class="border px-3">{% if equipment.height %}  {{ equipment.height }} {% endif %}</p>
                 </div>
 
                 <div class="col-md-4">
                     <span class="text-muted">Ancho (cm):</span>
-                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }} {% endif %}</p>
                 </div>
 
                 <div class="col-md-4">
                     <span class="text-muted">Profundidad (cm):</span>
-                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }} {% endif %}</p>
                 </div>
 
                 <div class="col-md-4">
                     <span class="text-muted">Peso (kg):</span>
-                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }} {% endif %}</p>
                 </div>
 
                 <div class="col-md-6">
                     <span class="text-muted">Descripción:</span>
-                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }} {% endif %}</p>
                 </div>
                 <div class="col-md-6">
                     <span class="text-muted">Notas:</span>
-                    <p class="border px-3">{% if equipment.notes %}  {{ equipment.notes }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <p class="border px-3">{% if equipment.notes %}  {{ equipment.notes }} {% endif %}</p>
                 </div>
             </div>
         </div>
@@ -168,24 +168,40 @@
                 </div>
                 <div class="col-md-4">
                     <span class="text-muted">Fecha de Compromiso:</span>
-                    <p class="border px-3">{{ equipment.bg_date_commitment }}</p>
+                    <p class="border px-3">{% if equipment.bg_date_commitment %} {{ equipment.bg_date_commitment }} {% endif %}</p>
                 </div>
 
                 <div class="col-md-4">
                     <span class="text-muted">Fecha de Liberación:</span>
-                    <p class="border px-3">{{ equipment.bg_date_free }}</p>
+                    <p class="border px-3">{% if equipment.bg_date_free %}{{ equipment.bg_date_free }}{% endif %}</p>
                 </div>
                 <div class="col-md-4">
                     <span class="text-muted">Fecha de Creación:</span>
                     <p class="border px-3">{{ equipment.created_at }}</p>
                 </div>
                 <div class="col-md-4">
+                    <span class="text-muted">Creado Por:</span>
+                    <p class="border px-3">
+                        {% if equipment.get_create_user %}
+                            {{ equipment.get_create_user }}
+                        {% else %}
+                            SYSTEM
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-md-4">
                     <span class="text-muted">Fecha de Actualización:</span>
                     <p class="border px-3">{{ equipment.updated_at }}</p>
                 </div>
                 <div class="col-md-4">
-                    <span class="text-muted">Creado Por:</span>
-                    <p class="border px-3">{{ equipment.created_by }}</p>
+                    <span class="text-muted">Actualización:</span>
+                    <p class="border px-3">
+                        {% if equipment.get_update_user %}
+                            {{ equipment.get_update_user }}
+                        {% else %}
+                            SYSTEM
+                        {% endif %}
+                    </p>
                 </div>
             </div>
         </div>
