@@ -52,34 +52,26 @@ class Equipment(BaseModel):
         null=True,
         default=None
     )
-    height = models.DecimalField(
+    height = models.PositiveSmallIntegerField(
         'Altura',
-        max_digits=5,
-        decimal_places=2,
         blank=True,
         null=True,
         default=None
     )
-    width = models.DecimalField(
+    width = models.PositiveSmallIntegerField(
         'Ancho',
-        max_digits=5,
-        decimal_places=2,
         blank=True,
         null=True,
         default=None
     )
-    depth = models.DecimalField(
+    depth = models.PositiveSmallIntegerField(
         'Profundidad',
-        max_digits=5,
-        decimal_places=2,
         blank=True,
         null=True,
         default=None
     )
-    weight = models.DecimalField(
+    weight = models.PositiveSmallIntegerField(
         'Peso',
-        max_digits=5,
-        decimal_places=2,
         blank=True,
         null=True,
         default=None

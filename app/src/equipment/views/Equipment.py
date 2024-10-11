@@ -1,6 +1,6 @@
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from equipment.models import Equipment
 
@@ -82,4 +82,16 @@ class CreateEquipment(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         url = reverse_lazy('equipment_detail', kwargs={'pk': self.object.pk})
         url = f'{url}?action=created'
+        return url
+
+
+class UpdateEquipment(LoginRequiredMixin, UpdateView):
+    model = Equipment
+    template_name = 'forms/equipment_form.html'
+    form_class = EquipmentForm
+    success_url = '/equipos/'
+
+    def get_success_url(self):
+        url = reverse_lazy('equipment_detail', kwargs={'pk': self.object.pk})
+        url = f'{url}?action=updated'
         return url

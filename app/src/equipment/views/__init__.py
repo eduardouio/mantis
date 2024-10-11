@@ -1,1 +1,6 @@
-from .Equipment import ListEquipment, DetailEquipment, CreateEquipment
+from .Equipment import (
+    ListEquipment,
+    DetailEquipment,
+    CreateEquipment,
+    UpdateEquipment
+)
