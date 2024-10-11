@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
+<div class="container container-lg mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
         <div class="d-flex justify-content-between">
         <span class="text-primary">
             {{ title_section }}
@@ -25,19 +25,15 @@
         </a>
     </div>
 </div>
-<div class="container-fluid mx-auto">
+<div class="container container-lg mx-auto">
     <table class="table table-bordered table-striped" id="myTable">
         <thead>
         <tr>
             <th class="bg-secondary bg-opacity-25">#</th>
-            <th class="bg-secondary bg-opacity-25">RUC</th>
             <th class="bg-secondary bg-opacity-25">Nombre</th>
             <th class="bg-secondary bg-opacity-25">Correo Electrónico</th>
             <th class="bg-secondary bg-opacity-25">Teléfono</th>                
-            <th class="bg-secondary bg-opacity-25">Dirección</th>
-            <th class="bg-secondary bg-opacity-25">Nombre de Contacto</th>
-            <th class="bg-secondary bg-opacity-25">Técnicos Autorizados</th>
-            <th class="bg-secondary bg-opacity-25">Vehículos Autorizados</th>
+            <th class="bg-secondary bg-opacity-25">Contacto</th>
         </tr>
         </thead>
         <tbody>
@@ -57,22 +53,14 @@
                         {{ forloop.counter }}
                     </a>
                 </td>
-                <td class="p-0">{{ item.business_tax_id }}</td>
                 <td class="p-0">{{ item.name }}</td>
                 <td class="p-0">{{ item.email }}</td>
                 <td class="p-0">{{ item.phone }}</td>
-                <td class="p-0">{{ item.address }}</td>
-                <td class="p-0">{{ item.name_contact }}</td>
                 <td class="p-0">
-                    {% for tech in item.authorized_tehcnicals.all %}
-                        {{ tech.email }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </td>
-                <td class="p-0">
-                    {% for vehicle in item.authorized_vehicle.all %}
-                        {{ vehicle.model }}{% if not forloop.last %}, {% endif %}
-                    {% endfor %}
-                </td>
+                    {% if item.name_contact  %}
+                        {{ item.name_contact }}
+                    {% endif %}
+                </td>  
             </tr>
             {% endfor %}
         </tbody>
