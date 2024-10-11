@@ -41,7 +41,7 @@
             {% for vehicle in vehicles %}
             <tr>
                 <td class="p-0 d-flex justify-content-start gap-3">
-                    <a href="/vehiculos/{{ vehicle.id }}/" class="text-primary d-flex justify-content-center gap-2">
+                    <a href="{% url 'vehicle_detail' vehicle.id %}" class="text-primary d-flex justify-content-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crosshair" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                             <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
