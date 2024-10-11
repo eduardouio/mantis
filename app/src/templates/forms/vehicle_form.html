@@ -90,12 +90,14 @@
             <label for="owner_transport" class="text-muted">Propietario:</label>
             {{ form.owner_transport }}
           </div>
-          <div class="row">
             <div class="col-md-4">
               <label for="is_active" class="text-muted">Activo:</label>
               <span>{{ form.is_active }}</span>
             </div>
-          </div>
+            <div class="col-md-6">
+              <label for="is_active" class="text-muted">Notas:</label>
+              <span>{{ form.notes }}</span>
+            </div>
         </div>
     <div class="row bg-gray bg-gradient p-2 rounded border">
     <div class="col text-end">
