@@ -77,6 +77,8 @@ class DetailTechnical(LoginRequiredMixin, DetailView):
             message = 'No es posible eliminar el técnico. Existen dependencias.'
         elif context['action'] == 'delete':
             message = 'Esta acción es irreversible. ¿Desea continuar?.'
+        elif context['action'] == 'popup_window':
+            context['popup_window'] = True
 
         context['message'] = message
         return context
