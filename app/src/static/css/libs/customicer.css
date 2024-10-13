@@ -107,3 +107,15 @@ background-image: linear-gradient(#babdbf, #babdbf 60%, #a3a5a7);
 border: rgb(44, 227, 99) solid 1px;
 color: rgb(0, 147, 184);
 }
+
+body {
+	 background-image: url('/static/img/background.jpg');
+	 background-size: cover;
+	 background-position: center;
+	 background-repeat: no-repeat;
+	 height: 100vh; /* Asegura que el fondo solo ocupe la altura de la pantalla visible */
+	 background-attachment: fixed; /* Hace que el fondo no se desplace */
+	 background-color: rgba(255, 255, 255, 0.4);
+	 background-blend-mode: overlay;
+	 font-size: 0.85rem;
+}
