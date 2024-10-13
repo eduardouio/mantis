@@ -91,8 +91,18 @@ border: #a3a5a7 solid 1px;
 .btn-default:hover {
 background-image: linear-gradient(#e9ecef, #dde0e3 60%, #c6c9cb);
 border: rgb(44, 161, 227) solid 1px;
+color: rgb(1, 68, 85);
 }
+
+.btn-default:focus {
+	background-image: linear-gradient(#e9ecef, #dde0e3 60%, #c6c9cb);
+	border: rgb(44, 161, 227) solid 1px;
+	color: rgb(1, 68, 85);
+	}
+	
 
 .btn-default:active {
 background-image: linear-gradient(#babdbf, #babdbf 60%, #a3a5a7);
+border: rgb(44, 227, 99) solid 1px;
+color: rgb(0, 147, 184);
 }
