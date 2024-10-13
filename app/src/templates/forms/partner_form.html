@@ -88,26 +88,15 @@
                     {{ form.name_contact }}
                 </div>
             </div>
+            {% if request.resolver_match.url_name != 'partner_create' %}
                 <hr>
-                <div class="row mb-3">     
+            <div class="row mb-3">     
                 <div class="col-md-6">
-                    <div class="row m-3">
-                        <div class="col border rounded p-2 d-flex justify-content-between">
-                            Técnicos Autorizados <a class="btn btn-sm btn-default">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M12 5l0 14" />
-                                    <path d="M5 12l14 0" />
-                                  </svg>
-                                  Agregar Técnico
-                            </a>
-                        </div>
-                    </div>
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped" id="myTableSmall">
                         <thead>
                             <tr>
-                                <th class="p-0">Nombre</th>
-                                <th class="p-0">Action</th>
+                                <th class="p-0 text-center">Nombre</th>
+                                <th class="p-0 text-center">Registrado</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -130,24 +119,11 @@
                     </table>
                 </div>
                 <div class="col-md-6">
-                    <div class="row m-3">
-                        <div class="col border rounded p-2 d-flex justify-content-between">
-                            Vehículos Autorizados
-                            <a class="btn btn-sm btn-default">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M12 5l0 14" />
-                                    <path d="M5 12l14 0" />
-                                  </svg>
-                                Agregar Vehículo
-                            </a>
-                        </div>
-                    </div>
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped" id="myTableSmall2">
                         <thead>
                             <tr>
-                                <th class="p-0">Nombre</th>
-                                <th class="p-0">Action</th>
+                                <th class="p-0 text-center">Nombre</th>
+                                <th class="p-0 text-center">Registrado</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -170,6 +146,7 @@
                     </table>
                 </div>
             </div>
+            {% endif %}
         <div class="row bg-gray bg-gradient p-2 rounded border">
             <div class="col text-end">
               <button class="btn btn-sm btn-default">
@@ -188,3 +165,17 @@
     </div>
 </div>
 {% endblock %}
+{% if request.resolver_match.url_name != 'partner_create' %}
+    {% block files_footer %}
+    <script src="/static/js/libs/vue@3.js"></script>
+    {% endblock %}
+    {% block script %}
+    <script>
+        var technicals = {{ technicals | safe }};
+        var vehicles = {{ vehicles | safe }}
+    </script>
+    {% endblock %}
+    {% block script_app %}
+    <script src="/static/js/app/partner_app.js"></script>
+    {% endblock %}
+{% endif %}
