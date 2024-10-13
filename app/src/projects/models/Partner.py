@@ -1,6 +1,6 @@
 from django.db import models
 from common import BaseModel
-from accounts.models import CustomUserModel
+from accounts.models import Technical
 
 
 # todos los socios de negocio son clientes
@@ -40,16 +40,12 @@ class Partner(BaseModel):
         null=True
     )
     authorized_tehcnicals = models.ManyToManyField(
-        CustomUserModel,
-        blank=True,
-        null=True,
-        default=None
+        Technical,
+        blank=True
     )
     authorized_vehicle = models.ManyToManyField(
         'equipment.Vehicle',
-        blank=True,
-        null=True,
-        default=None
+        blank=True
     )
 
     def __str__(self):

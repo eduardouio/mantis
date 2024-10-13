@@ -7,26 +7,16 @@
     <link rel="icon" type="image/x-icon" href="/static/img/favicon.png">
     <link href="/static/css/libs/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/libs/customicer.css" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/libs/dataTables.dataTables.min.css">
-    <style>
-      body {
-           background-image: url('/static/img/background.jpg');
-           background-size: cover;
-           background-position: center;
-           background-repeat: no-repeat;
-           height: 100vh; /* Asegura que el fondo solo ocupe la altura de la pantalla visible */
-           background-attachment: fixed; /* Hace que el fondo no se desplace */
-           background-color: rgba(255, 255, 255, 0.4);
-           background-blend-mode: overlay;
-           font-size: 0.85rem;
- }
-   </style>
+    <link href="/static/css/libs/dataTables.dataTables.min.css" rel="stylesheet">
+    <script src="/static/js/libs/vue@3.js"></script>
+  
     {% block style%}
     {% endblock %}
     {% block files_header %}
     {% endblock %}
   </head>
-  <body id="app">
+  <body>
+    <div id="app">
     {% if title_page != 'Inicio Sesion' %}
     {% if not popup_window %}
     <nav class="navbar navbar-expand-lg bg-peisol-secondary bg-gradient border-bottom p-0 ">
@@ -361,10 +351,11 @@
         </ul>
       </footer>
     </div>
+  </div>
     {% endif %}
     {% endif %}
     <script src="/static/js/libs/jquery-3.7.1.min.js"></script>
-    <script src="/static/js/libs/dataTables.min.js" ></script>
+    <script src="/static/js/libs/dataTables.min.js"></script>
     <script src="/static/js/libs/bootstrap.bundle.min.js"></script>
     <script>
      $(document).ready(function() {
@@ -462,7 +453,5 @@
     {% endblock %}
     {% block script_app %}
     {% endblock %}
-    
-
   </body>
 </html>

@@ -3,7 +3,8 @@ from .Partner import (
     DetailPartner,
     CreatePartner,
     UpdatePartner,
-    DeletePartner
+    DeletePartner,
+    APIAddManyToMany
 )
 
 from .Project import (

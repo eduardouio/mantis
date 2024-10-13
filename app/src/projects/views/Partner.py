@@ -1,5 +1,6 @@
 import json
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 from django.views.generic import (
     ListView,
     DetailView,
@@ -7,17 +8,19 @@ from django.views.generic import (
     UpdateView,
     RedirectView
 )
+from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
 from projects.models import Partner
 from equipment.models import Vehicle
 from accounts.models import Technical
 
+
 class PartnerForm(forms.ModelForm):
     class Meta:
         model = Partner
         fields = [
-            'business_tax_id', 'name', 'email', 'phone', 'address', 
+            'business_tax_id', 'name', 'email', 'phone', 'address',
             'name_contact', 'authorized_tehcnicals', 'authorized_vehicle'
         ]
         widgets = {
@@ -30,6 +33,7 @@ class PartnerForm(forms.ModelForm):
             'authorized_tehcnicals': forms.SelectMultiple(attrs={'class': 'form-select form-control-sm'}),
             'authorized_vehicle': forms.SelectMultiple(attrs={'class': 'form-select form-control-sm'}),
         }
+
 
 class ListPartner(LoginRequiredMixin, ListView):
     model = Partner
@@ -113,10 +117,10 @@ class UpdatePartner(LoginRequiredMixin, UpdateView):
             self.object.business_tax_id
         )
         vehicles = Vehicle.get_true_false_list(self.object)
-        technical = Technical.get_true_false_list(self.object)
+        technicals = Technical.get_true_false_list(self.object)
 
         context['vehicles'] = json.dumps(vehicles)
-        context['technicals'] = json.dumps(vehicles)
+        context['technicals'] = json.dumps(technicals)
         return context
 
     def get_success_url(self):
@@ -133,6 +137,32 @@ class DeletePartner(LoginRequiredMixin, RedirectView):
             url = reverse_lazy('partner_list')
             return f'{url}?action=deleted'
         except Exception as e:
-            return f'{reverse_lazy("partner_detail", 
-                                    kwargs={"pk": kwargs["pk"]}
-                )}?action=no_delete'
+            return f'{reverse_lazy("partner_detail",
+                                   kwargs={"pk": kwargs["pk"]}
+                                   )}?action = no_delete'
+
+
+class APIAddManyToMany(LoginRequiredMixin, View):
+
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        partner = Partner.objects.get(pk=data['partner_id'])
+        if data['type'] == 'vehicle':
+            vehicle = Vehicle.objects.get(pk=data['id'])
+            if data['action'] == 'add':
+                partner.authorized_vehicle.add(vehicle)
+                partner.save()
+            else:
+                partner.authorized_vehicle.remove(vehicle)
+                partner.save()
+
+        if data['type'] == 'technical':
+            technical = Technical.objects.get(pk=data['id'])
+            if data['action'] == 'add':
+                partner.authorized_tehcnicals.add(technical)
+                partner.save()
+            else:
+                partner.authorized_tehcnicals.remove(technical)
+                partner.save()
+
+        return JsonResponse({'status': 'ok'}, status=200)

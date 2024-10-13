@@ -88,7 +88,7 @@ class Technical(BaseModel):
                 'first_name': tech.first_name,
                 'last_name': tech.last_name,
                 'role': tech.role,
-                'is_registered': tech in registered_techs_id
+                'is_registered': tech.id in registered_techs_id
 
             }
             for tech in cls.objects.all()
