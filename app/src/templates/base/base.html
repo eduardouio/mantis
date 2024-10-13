@@ -340,7 +340,7 @@
         {% endblock %}
     {% if title_page != 'Inicio Sesion' %}
     {% if not popup_window %}
-    <div class="container-fluid mx-auto border shadow rounded-end text-dark px-4">
+    <div class="container-fluid mx-auto border shadow rounded-end text-dark px-4 bg-gray">
       <footer class="d-flex flex-wrap justify-content-between align-items-center  mt-auto p-3">
         <p class="col-md-4 mb-0">©PEISOL S.A Derechos Reservados</p>
         <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto text-decoration-none">
@@ -414,7 +414,7 @@
      $('#myTableSmall').DataTable(      
       {
         "pageLength": 5,
-        "lengthMenu": [15, 25, 50 ,100, 500, 1000, 5000],
+        "lengthMenu": [5, 25, 50 ,100, 500, 1000, 5000],
         "language": {
           "lengthMenu": "_MENU_ registros por página",
           "zeroRecords": "Sin registros",
@@ -436,7 +436,7 @@
      $('#myTableSmall2').DataTable(      
       {
         "pageLength": 5,
-        "lengthMenu": [15, 25, 50 ,100, 500, 1000, 5000],
+        "lengthMenu": [5, 25, 50 ,100, 500, 1000, 5000],
         "language": {
           "lengthMenu": "_MENU_ registros por página",
           "zeroRecords": "Sin registros",
@@ -459,5 +459,9 @@
     {% endblock %}
     {% block script %}
     {% endblock %}
+    {% block script_app %}
+    {% endblock %}
+    
+
   </body>
 </html>
