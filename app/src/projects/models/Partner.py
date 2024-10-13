@@ -40,11 +40,16 @@ class Partner(BaseModel):
         null=True
     )
     authorized_tehcnicals = models.ManyToManyField(
-        CustomUserModel
+        CustomUserModel,
+        blank=True,
+        null=True,
+        default=None
     )
     authorized_vehicle = models.ManyToManyField(
-        'equipment.Vehicle'
-
+        'equipment.Vehicle',
+        blank=True,
+        null=True,
+        default=None
     )
 
     def __str__(self):

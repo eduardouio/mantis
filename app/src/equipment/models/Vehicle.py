@@ -64,5 +64,23 @@ class Vehicle(BaseModel):
         default=True
     )
 
+    @classmethod
+    def get_true_false_list(cls, partner):
+        registered_vehicles_id = set(
+            vehicle.id for vehicle in partner.authorized_vehicle.all()
+        )
+
+        true_or_false_vehicles = [
+            {
+                'id': vehicle.id,
+                'no_plate': vehicle.no_plate,
+                'type_vehicle': vehicle.type_vehicle,
+                'is_registered': vehicle.id in registered_vehicles_id
+            }
+            for vehicle in cls.objects.all()
+        ]
+
+        return true_or_false_vehicles
+
     def __str__(self):
         return self.no_plate

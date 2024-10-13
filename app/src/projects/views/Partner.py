@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+import json
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
@@ -10,6 +10,8 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django import forms
 from projects.models import Partner
+from equipment.models import Vehicle
+from accounts.models import Technical
 
 class PartnerForm(forms.ModelForm):
     class Meta:
@@ -110,6 +112,11 @@ class UpdatePartner(LoginRequiredMixin, UpdateView):
         context['title_page'] = 'Actualizar Socio de Negocio {}'.format(
             self.object.business_tax_id
         )
+        vehicles = Vehicle.get_true_false_list(self.object)
+        technical = Technical.get_true_false_list(self.object)
+
+        context['vehicles'] = json.dumps(vehicles)
+        context['technicals'] = json.dumps(vehicles)
         return context
 
     def get_success_url(self):

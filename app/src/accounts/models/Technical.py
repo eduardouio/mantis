@@ -77,5 +77,24 @@ class Technical(BaseModel):
         default=False
     )
 
+    @classmethod
+    def get_true_false_list(cls, partner):
+        registered_techs_id = set(
+            tech.id for tech in partner.authorized_tehcnicals.all()
+        )
+        true_false_techs = [
+            {
+                'id': tech.id,
+                'first_name': tech.first_name,
+                'last_name': tech.last_name,
+                'role': tech.role,
+                'is_registered': tech in registered_techs_id
+
+            }
+            for tech in cls.objects.all()
+        ]
+
+        return true_false_techs
+
     def __str__(self) -> str:
         return f'{self.first_name} {self.last_name}'
