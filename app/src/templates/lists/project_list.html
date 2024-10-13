@@ -37,7 +37,6 @@
             <th class="bg-secondary bg-opacity-25">Contacto</th>
             <th class="bg-secondary bg-opacity-25">Teléfono</th>
             <th class="bg-secondary bg-opacity-25">Estado</th>
-            <th class="bg-secondary bg-opacity-25">Activo</th>
             <th class="bg-secondary bg-opacity-25">Fecha Inicio</th>
             <th class="bg-secondary bg-opacity-25">Fecha Fin</th>
         </tr>
@@ -45,7 +44,7 @@
         <tbody>
             {% for item in object_list %}
             <tr>
-                <td class="p-0 d-flex justify-content-start gap-3">
+                <td class="p-0 text-start">
                     <a href="{% url 'project_detail' item.id %}" class="text-primary d-flex justify-content-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crosshair" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -59,13 +58,6 @@
                         {{ forloop.counter }}
                     </a>
                 </td>
-                <td class="p-0">{{ item.internal_code }}</td>
-                <td class="p-0">{{ item.project_name }}</td>
-                <td class="p-0">{{ item.partner }}</td>
-                <td class="p-0">{{ item.place }}</td>
-                <td class="p-0">{{ item.contact_name }}</td>
-                <td class="p-0">{{ item.phone_contact }}</td>
-                <td class="p-0">{{ item.type_service }}</td>
                 <td class="p-0">
                     {% if item.is_active %}
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -81,7 +73,14 @@
                         <path d="M12 16h.01" />
                     </svg>
                     {% endif %}
+                    {{ item.internal_code }}
                 </td>
+                <td class="p-0">{{ item.project_name }}</td>
+                <td class="p-0">{{ item.partner }}</td>
+                <td class="p-0">{{ item.place }}</td>
+                <td class="p-0">{{ item.contact_name }}</td>
+                <td class="p-0">{{ item.phone_contact }}</td>
+                <td class="p-0">{{ item.type_service }}</td>
                 <td class="p-0">{{ item.start_date }}</td>
                 <td class="p-0">{{ item.end_date }}</td>
             </tr>
