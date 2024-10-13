@@ -22,7 +22,7 @@
 </div>
 <div class="col-5 d-flex justify-content-end gap-3">
     {% if not action %}
-    <a href="{% url 'partner_detail' partner.id %}?action=delete" class="btn btn-sm btn-danger">
+    <a href="{% url 'partner_detail' partner.id %}?action=delete" class="btn btn-sm btn-default">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
             <path d="M4 7l16 0" />
@@ -34,7 +34,7 @@
         Eliminar
     </a>
     {% endif %}
-    <a href="{% url 'partner_update' partner.id %}" class="btn btn-sm btn-primary">
+    <a href="{% url 'partner_update' partner.id %}" class="btn btn-sm btn-default">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
             <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -43,7 +43,7 @@
           </svg>
         Editar
     </a>
-    <a href="{% url 'partner_create' %}" class="btn btn-sm btn-primary">
+    <a href="{% url 'partner_create' %}" class="btn btn-sm btn-default">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
             <path d="M12 5l0 14" />
@@ -51,7 +51,7 @@
           </svg>
         Agregar
     </a>
-    <a href="{% url 'partner_list' %}" class="btn btn-sm btn-secondary">
+    <a href="{% url 'partner_list' %}" class="btn btn-sm btn-default">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
             <path d="M5 12l14 0" />
@@ -104,25 +104,6 @@
                     <span class="text-muted">Nombre de Contacto:</span>
                     <p class="border px-3">{{ partner.name_contact }}</p>
                 </div>
-
-                <div class="col-md-6">
-                    <span class="text-muted">Técnicos Autorizados:</span>
-                    <p class="border px-3">
-                        {% for tech in partner.authorized_tehcnicals.all %}
-                            {{ tech.email }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    </p>
-                </div>
-
-                <div class="col-md-6">
-                    <span class="text-muted">Vehículos Autorizados:</span>
-                    <p class="border px-3">
-                        {% for vehicle in partner.authorized_vehicle.all %}
-                            {{ vehicle.model }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    </p>
-                </div>
-
                 <div class="col-md-4">
                     <span class="text-muted">Fecha de Creación:</span>
                     <p class="border px-3">{{ partner.created_at }}</p>
@@ -154,9 +135,92 @@
             </div>
         </div>
     </div>
+    <div class="card">
+        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                <path d="M12 9h.01" />
+                <path d="M11 12h1v4h1" />
+              </svg>
+            Vehiculos Registrados
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-6">
+                    <table class="table table-bordered table-striped" id="myTableSmall">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Dni/Placa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vehicle in partner.authorized_vehicle.all %}
+                            <tr>
+                                <td class="p-0">
+                                    <a href="{% url 'vehicle_detail' vehicle.id %}?action=popup_window" class=""
+                                    onclick="openPopup(this.href); return false;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crosshair" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
+                                            <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                                            <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                                            <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+                                            <path d="M9 12l6 0" />
+                                            <path d="M12 9l0 6" />
+                                        </svg>
+                                        {{ vehicle.name }}
+                                    </a>
+                                </td>
+                                <td class="p-0">{{ vehicle.type_vehicle }}</td>
+                                <td class="p-0">{{ vehicle.no_plate }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-6">
+                    <table class="table table-bordered table-striped" id="myTableSmall2">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Cargo</th>
+                                <th>Dni/Placa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tech in partner.authorized_tehcnicals.all %}
+                            <tr>
+                                <td class="p-0">
+                                    <a href="{% url 'technical_detail' tech.id %}?action=popup_window" onclick="openPopup(this.href); return false;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crosshair" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
+                                            <path d="M4 16v2a2 2 0 0 0 2 2h2" />
+                                            <path d="M16 4h2a2 2 0 0 1 2 2v2" />
+                                            <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
+                                            <path d="M9 12l6 0" />
+                                            <path d="M12 9l0 6" />
+                                        </svg>
+                                        {{ tech.last_name }} {{ tech.firt_name }}
+                                    </a>
+                                </td>
+                                <td class="p-0">{{ tech.role }}</td>                            
+                                <td class="p-0">{{ tech.email }}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
     {% if action == 'delete' %}
     <div class="row mb-3">
-        <a href="{% url 'partner_delete' request.resolver_match.kwargs.pk  %}" class="btn btn-sm btn-danger">
+        <a href="{% url 'partner_delete' request.resolver_match.kwargs.pk  %}" class="btn btn-sm btn-default">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                 <path d="M12 9v4" />
@@ -169,3 +233,16 @@
     {% endif %}
 </div>
 {% endblock %}
+{% block script %}
+<script>
+    function openPopup(url) {
+        window.open(
+            url,
+            '_blank',
+            'width=800,height=600,scrollbars=yes,resizable=yes'
+        );
+    }
+</script>
+
+{% endblock %}
+

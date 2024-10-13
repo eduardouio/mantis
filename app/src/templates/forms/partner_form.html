@@ -10,7 +10,7 @@
         </div>
         <div class="col-6 d-flex justify-content-end gap-3">
             {%  if request.resolver_match.url_name  != 'partner_create' %}    
-            <a href="{% url 'partner_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-danger">
+            <a href="{% url 'partner_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                     <path d="M4 7l16 0" />
@@ -21,7 +21,7 @@
                 </svg>
                 Eliminar Socio
             </a>
-            <a href="{% url 'partner_detail' partner.id %}" class="btn btn-sm btn-secondary">
+            <a href="{% url 'partner_detail' partner.id %}" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                     <path d="M5 12l14 0" />
@@ -31,7 +31,7 @@
                 Volver Ficha
             </a>
             {% endif %}
-            <a href="{% url 'partner_list' %}" class="btn btn-sm btn-warning">
+            <a href="{% url 'partner_list' %}" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                     <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
@@ -87,21 +87,92 @@
                     <label for="name_contact" class="text-muted">Nombre de Contacto:</label>
                     {{ form.name_contact }}
                 </div>
-
+            </div>
+                <hr>
+                <div class="row mb-3">     
                 <div class="col-md-6">
-                    <label for="authorized_tehcnicals" class="text-muted">Técnicos Autorizados:</label>
-                    {{ form.authorized_tehcnicals }}
+                    <div class="row m-3">
+                        <div class="col border rounded p-2 d-flex justify-content-between">
+                            Técnicos Autorizados <a class="btn btn-sm btn-default">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M12 5l0 14" />
+                                    <path d="M5 12l14 0" />
+                                  </svg>
+                                  Agregar Técnico
+                            </a>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="p-0">Nombre</th>
+                                <th class="p-0">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in form.authorized_tehcnicals %}
+                            <tr>
+                                <td class="p-0">{{ item }}</td>
+                                <td class="p-0 text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M4 7l16 0" />
+                                        <path d="M10 11l0 6" />
+                                        <path d="M14 11l0 6" />
+                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                      </svg>
+                                </td>
+                            </tr>
+                            {% endfor    %}
+                        </tbody>
+                    </table>
                 </div>
-
                 <div class="col-md-6">
-                    <label for="authorized_vehicle" class="text-muted">Vehículos Autorizados:</label>
-                    {{ form.authorized_vehicle }}
+                    <div class="row m-3">
+                        <div class="col border rounded p-2 d-flex justify-content-between">
+                            Vehículos Autorizados
+                            <a class="btn btn-sm btn-default">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M12 5l0 14" />
+                                    <path d="M5 12l14 0" />
+                                  </svg>
+                                Agregar Vehículo
+                            </a>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th class="p-0">Nombre</th>
+                                <th class="p-0">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in form.authorized_vehicle %}
+                            <tr>
+                                <td class="p-0">{{ item }}</td>
+                                <td class="p-0 text-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff2825" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M4 7l16 0" />
+                                        <path d="M10 11l0 6" />
+                                        <path d="M14 11l0 6" />
+                                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                      </svg>
+                                </td>
+                            </tr>
+                            {% endfor    %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
         <div class="row bg-gray bg-gradient p-2 rounded border">
             <div class="col text-end">
-              <button class="btn btn-sm btn-success">
+              <button class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                   <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />

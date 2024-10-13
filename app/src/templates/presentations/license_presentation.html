@@ -22,7 +22,7 @@
         </div>
         <div class="col-5 d-flex justify-content-end gap-3">
             {% if not action %}
-            <a href="{% url 'license_detail' license.id  %}?action=delete" class="btn btn-sm btn-danger">
+            <a href="{% url 'license_detail' license.id  %}?action=delete" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                     <path d="M4 7l16 0" />
@@ -34,7 +34,7 @@
                 Eliminar
             </a>
             {% endif %}
-            <a href="{% url 'license_update' license.id %}" class="btn btn-sm btn-primary">
+            <a href="{% url 'license_update' license.id %}" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                     <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -43,7 +43,7 @@
                 </svg>
                 Editar
             </a>
-            <a href="{% url 'license_create' %}" class="btn btn-sm btn-primary">
+            <a href="{% url 'license_create' %}" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                     <path d="M12 5l0 14" />
@@ -51,7 +51,7 @@
                 </svg>
                 Agregar
             </a>
-            <a href="{% url 'license_list' %}" class="btn btn-sm btn-secondary">
+            <a href="{% url 'license_list' %}" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                     <path d="M5 12l14 0" />
@@ -141,7 +141,7 @@
     </div>
     {% if action == 'delete' %}
     <div class="row mb-3">
-        <a href="{% url 'license_delete' request.resolver_match.kwargs.pk  %}" class="btn btn-sm btn-danger">
+        <a href="{% url 'license_delete' request.resolver_match.kwargs.pk  %}" class="btn btn-sm btn-default">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                 <path d="M12 9v4" />
