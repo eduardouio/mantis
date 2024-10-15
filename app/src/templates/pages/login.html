@@ -15,19 +15,19 @@
 </style>
 {% endblock %}
 {% block content %}
-<div class="container-fluid min-vh-100 d-flex">
+<div class="container-fluid">
    <div class="row w-100">
       <div
          class="login-bg col-6 d-flex justify-content-center align-items-center border-end border-success border-2 p-0"
          >
       </div>
-      <div class="col-6 d-flex justify-content-center align-items-center">
+      <div class="col-6 d-flex justify-content-center align-items-center bg-opacity-50">
          <div class="bg-success bg-gradient border rounded-4 shadow pt-2 pb-2">
             <div class="container d-flex flex-column align-items-center">
                <div
                   class="text-center border m-1 p-2 border-dark border-2 rounded-4 bg-light"
                   >
-                  <main class="form-signin w-80 m-auto">
+                  <main class="mb-3 mt-2">
                      <form method="post" action="">
                         {% csrf_token %} {% if message %}
                         <div class="alert alert-danger">
@@ -37,21 +37,19 @@
                         <img
                            src="/static/img/logo.png"
                            alt="Logo"
-                           class="m-4"
-                           width="250"
+                           class="mb-5"
+                           width="200"
                            height="auto"
                            />
-                        <div class="form-floating mb-3">
+                        <div class="form-floating mb-2 w-100">
                            <input
                               type="email"
-                              class="form-control"
+                              class="form-control form-control-sm"
                               id="floatingInput"
                               placeholder="name@example.com"
                               name="email"
                               />
-                           <label for="floatingInput"
-                              >Email address</label
-                              >
+                           <label for="floatingInput">Email address</label>
                         </div>
                         <div class="form-floating">
                            <input
@@ -67,14 +65,14 @@
                         </div>
                         <div class="m-5"></div>
                         <button
-                           class="w-100 btn btn-lg btn-success"
+                           class="w-100 btn btn-sm btn-success"
                            type="submit"
                            >
                         Iniciar Sesión
                         </button>
-                        <p class="mt-5 mb-3 text-muted">
+                        <small class="mt-5 mb-3 text-muted">
                            ©PEISOL S.A. Derechos Reservados
-                        </p>
+                        </small>
                      </form>
                   </main>
                </div>
