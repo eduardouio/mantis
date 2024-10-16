@@ -23,20 +23,41 @@
         <div class="col-5 d-flex align-items-center justify-content-end gap-3">
             {% if not action %}
             <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-sm btn-default">
-                <!-- Ícono para eliminar -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M4 7l16 0" />
+                    <path d="M10 11l0 6" />
+                    <path d="M14 11l0 6" />
+                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                  </svg>
                 Eliminar
             </a>
             {% endif %}
             <a href="{% url 'project_update' project.id %}" class="btn btn-sm btn-default">
-                <!-- Ícono para editar -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                    <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                    <path d="M16 5l3 3" />
+                  </svg>
                 Editar
             </a>
             <a href="{% url 'project_create' %}" class="btn btn-sm btn-default">
-                <!-- Ícono para agregar -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M12 5l0 14" />
+                    <path d="M5 12l14 0" />
+                  </svg>
                 Agregar
             </a>
             <a href="{% url 'project_list' %}" class="btn btn-sm btn-default">
-                <!-- Ícono para volver -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                    <path d="M5 12l14 0" />
+                    <path d="M5 12l6 6" />
+                    <path d="M5 12l6 -6" />
+                  </svg>
                 Volver
             </a>
         </div>
@@ -54,41 +75,53 @@
             <div class="row">
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Código Interno:</span>
-                    <span class="border rounded rounded-1 px-3">{{ project.internal_code }} {% if project.is_active %} <span class="badge text-bg-success">Proyecto Activo</span> {% else %} <span class="badge text-bg-danger">Proyecto Inactivo</span> {% endif %}</span>
+                    <span class="rounded rounded-1 px-3">{{ project.internal_code }} {% if project.is_active %} <span class="badge text-bg-success">Proyecto Activo</span> {% else %} <span class="badge text-bg-danger">Proyecto Inactivo</span> {% endif %}</span>
                 </div>
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Nombre del Proyecto:</span>
-                    <span class="border rounded rounded-1 px-3">{{ project.project_name }}</span>
+                    <span class="rounded rounded-1 px-3">{{ project.project_name }}</span>
                 </div>
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Partner:</span>
-                    <span class="border rounded rounded-1 px-3">{{ project.partner }}</span>
+                    <span class="rounded rounded-1 px-3">{{ project.partner }}</span>
                 </div>
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Requerido por:</span>
-                    <span class="border rounded rounded-1 px-3">{{ project.required_by }}</span>
+                    <span class="rounded rounded-1 px-3">{{ project.required_by }}</span>
                 </div>
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Autorizado por:</span>
-                    <span class="border rounded rounded-1 px-3">{{ project.autorized_by }}</span>
+                    <span class="rounded rounded-1 px-3">{{ project.autorized_by }}</span>
                 </div>
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Lugar:</span>
-                    <span class="border rounded rounded-1 px-3">{{ project.place }}</span>
+                    <span class="rounded rounded-1 px-3">{{ project.place }}</span>
                 </div>
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Inicio:</span>
-                    <span class="border rounded rounded-1 px-3">
+                    <span class="rounded rounded-1 px-3">
                         {{ project.start_date }}
                     </span>
                 </div>
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Fin:</span>
-                    <span class="border rounded rounded-1 px-3">{{ project.end_date }}</span>
+                    <span class="rounded rounded-1 px-3">{{ project.end_date }}</span>
+                </div>
+                <div class="col-md-4 d-flex flex-column p-1">
+                    <span class="text-muted">Nombre de Contacto:</span>
+                    <span class="rounded rounded-1 px-3">{{ project.contact_name }}</span>
+                </div>
+                <div class="col-md-4 d-flex flex-column p-1">
+                    <span class="text-muted">Cargo de Contacto:</span>
+                    <span class="rounded rounded-1 px-3">{{ project.position_contact }}</span>
+                </div>
+                <div class="col-md-4 d-flex flex-column p-1">
+                    <span class="text-muted">Teléfono de Contacto:</span>
+                    <span class="rounded rounded-1 px-3">{{ project.phone_contact }}</span>
                 </div>
                 <div class="col-md-12 d-flex flex-column p-1">
                     <span class="text-muted">Descripción del Proyecto:</span>
-                    <p class="border px-3">{{ project.project_description }}</p>
+                    <p class="px-3">{{ project.project_description }}</p>
                 </div>
             </div>
         </div>
@@ -101,18 +134,7 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Nombre de Contacto:</span>
-                    <span class="border rounded rounded-1 px-3">{{ project.contact_name }}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Cargo de Contacto:</span>
-                    <span class="border rounded rounded-1 px-3">{{ project.position_contact }}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Teléfono de Contacto:</span>
-                    <span class="border rounded rounded-1 px-3">{{ project.phone_contact }}</span>
-                </div>
+             
             </div>
         </div>
     </div>

@@ -78,35 +78,35 @@
             <div class="row">
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Clave de Licencia:</span>
-                    <span class="border rounded rounded-1 px-3">{{ license.license_key }} {% if license.is_active %} <span class="badge text-bg-success">Licencia Activa</span> {% else %}  <span class="badge text-bg-danger">Licencia Inactiva</span> {% endif %}</span>
+                    <span class="px-3">{{ license.license_key }} {% if license.is_active %} <span class="badge text-bg-success">Licencia Activa</span> {% else %}  <span class="badge text-bg-danger">Licencia Inactiva</span> {% endif %}</span>
                 </div>
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Activada el:</span>
-                    <span class="border rounded rounded-1 px-3">{% if license.activated_on %}  {{ license.activated_on }} {% endif %}</span>
+                    <span class="px-3">{% if license.activated_on %}  {{ license.activated_on }} {% endif %}</span>
                 </div>
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Expira el:</span>
-                    <span class="border rounded rounded-1 px-3">{% if license.expires_on %}  {{ license.expires_on }} {% endif %}</span>
+                    <span class="px-3">{% if license.expires_on %}  {{ license.expires_on }} {% endif %}</span>
                 </div>
 
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Rol:</span>
-                    <span class="border rounded rounded-1 px-3">{{ license.role }}</span>
+                    <span class="px-3">{{ license.role }}</span>
                 </div>
 
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Empresa:</span>
-                    <span class="border rounded rounded-1 px-3">{{ license.enterprise }}</span>
+                    <span class="px-3">{{ license.enterprise }}</span>
                 </div>
 
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">URL del Servidor:</span>
-                    <span class="border rounded rounded-1 px-3">{% if license.url_server %} {{ license.url_server }} {% endif %}</span>
+                    <span class="px-3">{% if license.url_server %} {{ license.url_server }} {% endif %}</span>
                 </div>
 
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Creado Por:</span>
-                    <span class="border rounded rounded-1 px-3">
+                    <span class="px-3">
                         {% if license.get_create_user %}
                             {{ license.get_create_user }}
                         {% else %}
@@ -117,12 +117,12 @@
 
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Creación:</span>
-                    <span class="border rounded rounded-1 px-3">{{ license.created_at }}</span>
+                    <span class="px-3">{{ license.created_at }}</span>
                 </div>
 
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Actualizado Por:</span>
-                    <span class="border rounded rounded-1 px-3">
+                    <span class="px-3">
                         {% if license.get_update_user %}
                             {{ license.get_update_user }}
                         {% else %}
@@ -133,7 +133,7 @@
 
                 <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Actualización:</span>
-                    <span class="border rounded rounded-1 px-3">{{ license.updated_at }}</span>
+                    <span class="px-3">{{ license.updated_at }}</span>
                 </div>
             </div>
         </div>
