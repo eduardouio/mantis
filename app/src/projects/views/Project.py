@@ -68,8 +68,12 @@ class DetailProject(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title_section'] = 'Detalle del Proyecto {}'.format(self.object.internal_code)
-        context['title_page'] = 'Detalle del Proyecto {}'.format(self.object.internal_code)
+        context['title_section'] = 'Detalle del Proyecto {}'.format(
+            self.object.internal_code
+        )
+        context['title_page'] = 'Detalle del Proyecto {}'.format(
+            self.object.internal_code
+        )
 
         if 'action' not in self.request.GET:
             return context
