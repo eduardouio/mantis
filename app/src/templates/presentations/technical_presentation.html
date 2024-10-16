@@ -7,7 +7,7 @@
         <div class="col-3">
             <span class="text-primary">{{ title_section }}</span>
         </div>
-        <div class="col-4 d-flex justify-content-end">
+        <div class="col-4 text-center">
             {% if action %}
             <div class="{% if action == 'delete' or action == 'no_delete' %} bg-danger {% else %} bg-peisol-secondary {% endif %} bg-gradient p-2 rounded">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -19,7 +19,7 @@
             </div>
             {% endif %}
         </div>
-        <div class="col-5 d-flex justify-content-end gap-3">
+        <div class="col-5 d-flex align-items-center justify-content-end gap-3">
             {% if not action %}
             <a href="{% url 'technical_detail' technical.id %}?action=delete" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -77,50 +77,68 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Nombres:</span>
-                    <p class="border px-3">{{ technical.first_name }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.first_name }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Apellidos:</span>
-                    <p class="border px-3">{{ technical.last_name }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.last_name }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Correo Electrónico:</span>
-                    <p class="border px-3">{{ technical.email }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.email }}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Ubicación:</span>
-                    <p class="border px-3">{{ technical.get_location_display }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.get_location_display }}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Cédula:</span>
-                    <p class="border px-3">{{ technical.dni }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.dni }}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Número de Celular:</span>
-                    <p class="border px-3">{{ technical.nro_phone }}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if technical.nro_phone %}
+                            {{ technical.nro_phone }}
+                        {% else %}
+                            No Registra
+                        {% endif %}
+                    </span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Cargo:</span>
-                    <p class="border px-3">{{ technical.get_role_display }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.get_role_display }}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Días a Trabajar:</span>
-                    <p class="border px-3">{{ technical.days_to_work }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.days_to_work }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Días Libres:</span>
-                <p class="border px-3">{% if  technical.days_free %}{{ technical.days_free }} {% endif %}</p>
+                <span class="border rounded rounded-1 px-3">
+                    {% if  technical.days_free %}
+                        {{ technical.days_free }} 
+                    {% else %}
+                        No Registra
+                    {% endif %}
+                </span>
                 </div>
-                <div class="col md-6">
-                    <span class="text-muted">Notas:</span>`
-                    <p class="border px-3">{{ technical.notes }}</p>
+                <div class="col-md-6 d-flex flex-column p-1">
+                    <span class="text-muted">Notas:</span>
+                    <span class="border rounded rounded-1 px-3">
+                    {% if  technical.notes %}
+                        {{ technical.notes }}
+                    {% else %}
+                        No Registra
+                    {% endif %}
+                    </span>
                 </div>
             </div>
         </div>
@@ -139,49 +157,49 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Activo:</span>
-                    <p class="border px-3">{{ technical.is_active|yesno:"Sí,No" }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.is_active|yesno:"Sí,No" }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Dias Trabajo:</span>
-                    <p class="border px-3">{{ technical.days_to_work }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.days_to_work }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Activo:</span>
-                    <p class="border px-3">{{ technical.days_free}}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.days_free}}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Ingreso:</span>
-                    <p class="border px-3">{% if technical.date_joined %}{{ technical.date_joined }} {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">{% if technical.date_joined %}{{ technical.date_joined }} {%else%}  No Registra{% endif %}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Creación:</span>
-                    <p class="border px-3">{{ technical.created_at }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.created_at }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Creado Por:</span>
-                    <p class="border px-3">
+                    <span class="border rounded rounded-1 px-3">
                         {% if technical.get_create_user %}
                         {{ technical.get_create_user }}
                     {% else %}
                         SYSTEM
                     {% endif %}
-                    </p>
+                    </span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Actualización:</span>
-                    <p class="border px-3">{{ technical.updated_at }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ technical.updated_at }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Actualización:</span>
-                    <p class="border px-3">
+                    <span class="border rounded rounded-1 px-3">
                         {% if technical.get_update_user %}
                         {{ technical.get_update_user }}
                     {% else %}
                         SYSTEM
                     {% endif %}
-                    </p>
+                    </span>
                 </div>
             </div>
         </div>

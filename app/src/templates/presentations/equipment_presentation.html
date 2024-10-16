@@ -8,7 +8,7 @@
         {{ title_section }}
     </span>
 </div>
-<div class="col-4 d-flex justify-content-end">
+<div class="col-4 text-center">
     {% if action %}
     <div class="{% if action == 'delete' or action == 'no_delete'%} bg-danger {% else %} bg-peisol-secondary {% endif %} bg-gradient p-2 rounded">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -20,7 +20,7 @@
     </div>
     {% endif %}
 </div>
-<div class="col-5 d-flex justify-content-end gap-3">
+<div class="col-5 d-flex align-items-center justify-content-end gap-3">
     {% if not action %}
     <a href="{% url 'equipment_detail' equipment.id  %}?action=delete" class="btn btn-sm btn-default">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -77,56 +77,104 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Código del Equipo:</span>
-                    <p class="border px-3">{{ equipment.code }} {% if equipment.is_active %} <span class="badge text-bg-success">Equipo Activo</span> {% else %}  <span class="badge text-bg-danger">Equipo Inactivo</span> {% endif %} </p>
+                    <span class="border rounded rounded-1 px-3">{{ equipment.code }} {% if equipment.is_active %} <span class="badge text-bg-success">Equipo Activo</span> {% else %}  <span class="badge text-bg-danger">Equipo Inactivo</span> {% endif %} </span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Nombre del Equipo:</span>
-                    <p class="border px-3">{{ equipment.name }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ equipment.name }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Marca:</span>
-                    <p class="border px-3">{{ equipment.brand }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ equipment.brand }}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Modelo:</span>
-                    <p class="border px-3">{% if equipment.model %}  {{ equipment.model }} {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.model %} 
+                            {{ equipment.model }}
+                            {% else %}
+                            No Registra
+                        {% endif %}
+                    </span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Compra:</span>
-                    <p class="border px-3">{% if equipment.date_purchase %}  {{ equipment.date_purchase }} {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.date_purchase %}
+                          {{ equipment.date_purchase }} 
+                        {% else %}
+                            No Registra
+                        {% endif %}
+                    </span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Altura (cm):</span>
-                    <p class="border px-3">{% if equipment.height %}  {{ equipment.height }} {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.height %}
+                          {{ equipment.height }} 
+                        {% else %}
+                            No Registra
+                        {% endif %}
+                    </span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Ancho (cm):</span>
-                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }} {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.width %}
+                          {{ equipment.width }} 
+                        {% else %}
+                            No Registra
+                        {% endif %}
+                    </span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Profundidad (cm):</span>
-                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }} {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.width %}
+                        {{ equipment.width }} 
+                        {% else %}
+                            No Registra
+                        {% endif %}
+                    </span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Peso (kg):</span>
-                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }} {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.width %}
+                        {{ equipment.width }} 
+                        {% else %}
+                            No Registra
+                        {% endif %}
+                    </span>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-6 d-flex flex-column">
                     <span class="text-muted">Descripción:</span>
-                    <p class="border px-3">{% if equipment.width %}  {{ equipment.width }} {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.width %}
+                        {{ equipment.width }} 
+                        {% else %}
+                            No Registra
+                        {% endif %}
+                    </span>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 d-flex flex-column">
                     <span class="text-muted">Notas:</span>
-                    <p class="border px-3">{% if equipment.notes %}  {{ equipment.notes }} {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.notes %}
+                        {{ equipment.notes }} 
+                        {% else %}
+                            No Registra
+                        {% endif %}
+                    </span>
                 </div>
             </div>
         </div>
@@ -145,63 +193,85 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Estado:</span>
-                    <p class="border px-3">{{ equipment.get_status_display }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ equipment.get_status_display }}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Activo:</span>
-                    <p class="border px-3">{{ equipment.is_active|yesno:"Sí,No" }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ equipment.is_active|yesno:"Sí,No" }}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Ubicación Actual:</span>
-                    <p class="border px-3">{{ equipment.bg_current_location }}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.bg_current_location  %}
+                        {{ equipment.bg_current_location }}
+                        {% else %}
+                        No Registra
+                        {% endif %}
+                    </span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Proyecto Actual:</span>
-                    <p class="border px-3">
-                        {{ equipment.bg_current_project }}
-                    </p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.bg_current_project  %}
+                            {{ equipment.bg_current_project }}
+                        {% else %}
+                            No Registra
+                        {% endif %}
+                    </span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Compromiso:</span>
-                    <p class="border px-3">{% if equipment.bg_date_commitment %} {{ equipment.bg_date_commitment }} {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.bg_date_commitment %} 
+                        {{ equipment.bg_date_commitment }} 
+                        {% else %}
+                        No Registra
+                        {% endif %}
+                    </span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Liberación:</span>
-                    <p class="border px-3">{% if equipment.bg_date_free %}{{ equipment.bg_date_free }}{% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if equipment.bg_date_free %}
+                        {{ equipment.bg_date_free }}
+                        {% else %}
+                        No Registra
+                        {% endif %}
+                    </span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Creación:</span>
-                    <p class="border px-3">{{ equipment.created_at }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ equipment.created_at }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Creado Por:</span>
-                    <p class="border px-3">
+                    <span class="border rounded rounded-1 px-3">
                         {% if equipment.get_create_user %}
                             {{ equipment.get_create_user }}
                         {% else %}
                             SYSTEM
                         {% endif %}
-                    </p>
+                    </span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Actualización:</span>
-                    <p class="border px-3">{{ equipment.updated_at }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ equipment.updated_at }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Actualización:</span>
-                    <p class="border px-3">
+                    <span class="border rounded rounded-1 px-3">
                         {% if equipment.get_update_user %}
                             {{ equipment.get_update_user }}
                         {% else %}
                             SYSTEM
                         {% endif %}
-                    </p>
+                    </span>
                 </div>
             </div>
         </div>

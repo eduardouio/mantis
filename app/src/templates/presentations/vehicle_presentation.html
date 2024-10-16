@@ -7,7 +7,7 @@
         <div class="col-3">
             <span class="text-primary">{{ title_section }}</span>
         </div>
-        <div class="col-4 d-flex justify-content-end">
+        <div class="col-4 text-center">
             {% if action %}
             <div class="{% if action == 'delete' or action == 'no_delete'%} bg-danger {% else %} bg-peisol-secondary {% endif %} bg-gradient p-2 rounded">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -19,7 +19,7 @@
             </div>
             {% endif %}
         </div>
-        <div class="col-5 d-flex justify-content-end gap-3">
+        <div class="col-5 d-flex align-items-center justify-content-end gap-3">
             {% if not action %}
             <a href="{% url 'vehicle_detail' vehicle.id %}?action=delete" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -77,41 +77,47 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Código del Vehículo:</span>
-                    <p class="border px-3">{{ vehicle.code_vehicle }} {% if vehicle.is_active %} <span class="badge text-bg-success">Vehículo Activo</span> {% else %}  <span class="badge text-bg-danger">Vehículo Inactivo</span> {% endif %} </p>
+                    <span class="border rounded rounded-1 px-3">{{ vehicle.code_vehicle }} {% if vehicle.is_active %} <span class="badge text-bg-success">Vehículo Activo</span> {% else %}  <span class="badge text-bg-danger">Vehículo Inactivo</span> {% endif %} </span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Nombre del Vehículo:</span>
-                    <p class="border px-3">{{ vehicle.name }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ vehicle.name }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Marca:</span>
-                    <p class="border px-3">{{ vehicle.brand }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ vehicle.brand }}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Modelo:</span>
-                    <p class="border px-3">{% if vehicle.model %}  {{ vehicle.model }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">{% if vehicle.model %}  {{ vehicle.model }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Año:</span>
-                    <p class="border px-3">{% if vehicle.year %}  {{ vehicle.year }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">{% if vehicle.year %}  {{ vehicle.year }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Placa:</span>
-                    <p class="border px-3">{% if vehicle.no_plate %}  {{ vehicle.no_plate }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">{% if vehicle.no_plate %}  {{ vehicle.no_plate }}  {% else %} <span class="text-muted">No Registra</span> {% endif %}</span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Propietario:</span>
-                    <p class="border px-3">{{ vehicle.get_owner_transport_display }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ vehicle.get_owner_transport_display }}</span>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-8 d-flex flex-column p-1">
                     <span class="text-muted">Notas:</span>
-                    <p class="border px-3">{% if vehicle.notes %}{{ vehicle.notes }}{% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {% if vehicle.notes %}
+                        {{ vehicle.notes }}
+                        {% else %}
+                        No Registra
+                        {% endif %}
+                    </span>
                 </div>
             </div>
         </div>
@@ -130,27 +136,27 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Activo:</span>
-                    <p class="border px-3">{{ vehicle.is_active|yesno:"Sí,No" }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ vehicle.is_active|yesno:"Sí,No" }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Creación:</span>
-                    <p class="border px-3">{{ vehicle.created_at }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ vehicle.created_at }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Actualización:</span>
-                    <p class="border px-3">{{ vehicle.updated_at }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ vehicle.updated_at }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Creado Por:</span>
-                    <p class="border px-3">
+                    <span class="border rounded rounded-1 px-3">
                         {% if vehicle.get_create_user  %}
                             {{ vehicle.get_create_user }}
                         {% else %}
                             SYSTEM
                         {% endif %}
-                    </p>
+                    </span>
                 </div>
             </div>
         </div>

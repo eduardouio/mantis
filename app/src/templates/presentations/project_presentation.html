@@ -8,7 +8,7 @@
                 {{ title_section }}
             </span>
         </div>
-        <div class="col-4 d-flex justify-content-end">
+        <div class="col-4 text-center">
             {% if action %}
             <div class="{% if action == 'delete' or action == 'no_delete' %} bg-danger {% else %} bg-peisol-secondary {% endif %} bg-gradient p-2 rounded">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -20,7 +20,7 @@
             </div>
             {% endif %}
         </div>
-        <div class="col-5 d-flex justify-content-end gap-3">
+        <div class="col-5 d-flex align-items-center justify-content-end gap-3">
             {% if not action %}
             <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-sm btn-default">
                 <!-- Ícono para eliminar -->
@@ -52,46 +52,47 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Código Interno:</span>
-                    <p class="border px-3">{{ project.internal_code }} {% if project.is_active %} <span class="badge text-bg-success">Proyecto Activo</span> {% else %} <span class="badge text-bg-danger">Proyecto Inactivo</span> {% endif %}</p>
+                    <span class="border rounded rounded-1 px-3">{{ project.internal_code }} {% if project.is_active %} <span class="badge text-bg-success">Proyecto Activo</span> {% else %} <span class="badge text-bg-danger">Proyecto Inactivo</span> {% endif %}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Nombre del Proyecto:</span>
-                    <p class="border px-3">{{ project.project_name }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ project.project_name }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Partner:</span>
-                    <p class="border px-3">{{ project.partner }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ project.partner }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Requerido por:</span>
-                    <p class="border px-3">{{ project.required_by }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ project.required_by }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Autorizado por:</span>
-                    <p class="border px-3">{{ project.autorized_by }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ project.autorized_by }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Lugar:</span>
-                    <p class="border px-3">{{ project.place }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ project.place }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Inicio:</span>
-                    <p class="border px-3">{{ project.start_date }}</p>
+                    <span class="border rounded rounded-1 px-3">
+                        {{ project.start_date }}
+                    </span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Fecha de Fin:</span>
-                    <p class="border px-3">{{ project.end_date }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ project.end_date }}</span>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-12 d-flex flex-column p-1">
                     <span class="text-muted">Descripción del Proyecto:</span>
                     <p class="border px-3">{{ project.project_description }}</p>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Información del Contacto -->
     <div class="card mb-5">
         <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
@@ -100,17 +101,17 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Nombre de Contacto:</span>
-                    <p class="border px-3">{{ project.contact_name }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ project.contact_name }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Cargo de Contacto:</span>
-                    <p class="border px-3">{{ project.position_contact }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ project.position_contact }}</span>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 d-flex flex-column p-1">
                     <span class="text-muted">Teléfono de Contacto:</span>
-                    <p class="border px-3">{{ project.phone_contact }}</p>
+                    <span class="border rounded rounded-1 px-3">{{ project.phone_contact }}</span>
                 </div>
             </div>
         </div>
