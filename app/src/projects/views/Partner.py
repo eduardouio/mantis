@@ -21,7 +21,7 @@ class PartnerForm(forms.ModelForm):
         model = Partner
         fields = [
             'business_tax_id', 'name', 'email', 'phone', 'address',
-            'name_contact', 'authorized_tehcnicals', 'authorized_vehicle'
+            'name_contact'
         ]
         widgets = {
             'business_tax_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
@@ -30,8 +30,6 @@ class PartnerForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'name_contact': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'authorized_tehcnicals': forms.SelectMultiple(attrs={'class': 'form-select form-control-sm'}),
-            'authorized_vehicle': forms.SelectMultiple(attrs={'class': 'form-select form-control-sm'}),
         }
 
 
