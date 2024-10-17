@@ -19,7 +19,7 @@ class ProjectForm(forms.ModelForm):
             'internal_code', 'partner', 'required_by', 'autorized_by',
             'project_name', 'project_description', 'place', 'contact_name',
             'position_contact', 'phone_contact', 'start_date', 'end_date',
-            'is_active', 'type_service'
+            'is_active', 'type_service', 'notes'
         ]
         widgets = {
             'internal_code': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
@@ -27,7 +27,8 @@ class ProjectForm(forms.ModelForm):
             'required_by': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'autorized_by': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'project_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'project_description': forms.Textarea(attrs={'class': 'form-control form-control-sm'}),
+            'project_description': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
+            'notes': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'place': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'contact_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'position_contact': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
@@ -74,6 +75,7 @@ class DetailProject(LoginRequiredMixin, DetailView):
         context['title_page'] = 'Detalle del Proyecto {}'.format(
             self.object.internal_code
         )
+        context['equipment'] = Project.get_equipment(self.object.pk)
 
         if 'action' not in self.request.GET:
             return context

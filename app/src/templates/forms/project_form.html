@@ -44,7 +44,7 @@
                     {{ form.internal_code }}
                 </div>
                 <div class="col-md-4">
-                    <label for="partner" class="text-muted">Partner:</label>
+                    <label for="partner" class="text-muted">Cliente:</label>
                     {{ form.partner }}
                 </div>
                 <div class="col-md-4">
@@ -96,20 +96,21 @@
                     <label for="type_service" class="text-muted">Tipo de Servicio:</label>
                     {{ form.type_service }}
                 </div>
-
-                <div class="col-md-4 d-flex align-items-center gap-3">
+                <div class="col-md-2 d-flex align-items-center gap-3">
                     <label for="is_active" class="text-muted">Activo:</label>
                     <span>
                       {{ form.is_active }}
                     </span>
                 </div>
-
-                <div class="col-md-12">
+                <div class="col-md-5">
                     <label for="project_description" class="text-muted">Descripción del Proyecto:</label>
                     {{ form.project_description }}
                 </div>
+                <div class="col-md-5">
+                    <label for="project_description" class="text-muted">Notas:</label>
+                    {{ form.notes }}
+                </div>
             </div>
-        </div>
         <div class="row bg-gray bg-gradient p-2 rounded border">
             <div class="col text-end">
               <button class="btn btn-sm btn-default">
