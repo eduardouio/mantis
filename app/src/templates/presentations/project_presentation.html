@@ -49,7 +49,7 @@
                     <path d="M12 5l0 14" />
                     <path d="M5 12l14 0" />
                   </svg>
-                Agregar
+                  Nuevo
             </a>
             <a href="{% url 'project_list' %}" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -128,17 +128,46 @@
     </div>
     <!-- Información del Contacto -->
     <div class="card mb-5">
-        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
-            <!-- Ícono de contacto -->
-            Información del Contacto
+        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white d-flex justify-content-between">
+            <span>Detalle de Equipos en Renta</span>
+            <button class="btn btn-sm btn-default text-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M12 5l0 14" />
+                    <path d="M5 12l14 0" />
+                  </svg>
+                Agregar Equipo
+            </button>
         </div>
         <div class="card-body">
             <div class="row">
-             
+                <table class="table table-bordered table-striped" id="myTableSmall">
+                    <thead>
+                        <tr>
+                        <th>#</th>
+                        <th>Equipo</th>
+                        <th>Tipo</th>
+                        <th>Fecha Inicio</th>
+                        <th>Frm</th>
+                        <th>Activo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in equipment %}
+                        <tr>
+                            <td class="p-0">{{ loop.counter }}</td>
+                            <td class="p-0">{{ item.equipment.code }}</td>
+                            <td class="p-0">{{ item.equipment.type }}</td>
+                            <td class="p-0">{{ item.start_date }}</td>
+                            <td class="p-0">{{ item.mantenance_frequency }} D</td>
+                            <td class="p-0">{{ item.is_active }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-
     {% if action == 'delete' %}
     <div class="row mb-3">
         <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-sm btn-default">
@@ -148,4 +177,145 @@
     </div>
     {% endif %}
 </div>
+<!-- Modal para agregar equipos -->
+<div class="modal  modal-xl fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-peisol-primary bg-gradient p-2">
+          <span class="modal-title text-white" id="staticBackdropLabel">
+            Agregar Equipo - Listado de Equipos Disponibles
+        </span>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body border">
+          <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-striped table-bordered" id="myTableSmall2">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">Equipo</th>
+                                <th class="text-center">Tipo</th>
+                                <th class="text-center">Marca</th>
+                                <th class="text-center">Estado</th>
+                                <th class="text-center">Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item, idx in freeEquipment">
+                                <td class="p-0 text-center">[[ idx + 1 ]]</td>
+                                <td class="p-0">[[ item.code ]]</td>
+                                <td class="p-0">[[ item.name ]]</td>
+                                <td class="p-0">[[ item.brand ]]</td>
+                                <td class="p-0">[[ item.status ]]</td>
+                                <td class="p-0 text-center" @click="selectEquipment(item)" title="Agregar Equipo">
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M12 5l0 14" />
+                                            <path d="M5 12l14 0" />
+                                          </svg>
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    Equipos Registrados
+                </div>
+                <div class="col-12">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th class="text-center">Equipo</th>
+                            <th class="text-center">Tipo</th>
+                            <th class="text-center">Costo Rnt</th>
+                            <th class="text-center">Costo Mnt</th>
+                            <th class="text-center">Frec Dias</th>
+                            <th class="text-center">F Inicio</th>
+                            <th class="text-center">F Fin</th>  
+                            <th class="text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                                  </svg>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item, idx in equipmentsSelected">
+                            <td class="p-0 text-center">[[ idx + 1 ]]</td>
+                            <td class="p-0">[[ item.equipment.code ]]</td>
+                            <td class="p-0">[[ item.equipment.name ]]</td>
+                            <td class="p-0 text-end">[[ item.cost_rent ]]</td>
+                            <td class="p-0 text-end">[[ item.cost_manteinance ]]</td>
+                            <td class="p-0 text-end">[[ item.mantenance_frequency ]]</td>
+                            <td class="p-0">[[ item.start_date ]]</td>
+                            <td class="p-0">[[ item.end_date ]]</td>
+                            <td class="p-0 text-center d-flex justify-content-between ga-3">
+                                <span title="Editar Registro">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                                        <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                                        <path d="M16 5l3 3" />
+                                      </svg>
+                                </span>
+                                <span title="Quitar Equipo" @click="removeEquipment(item)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-minus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M5 12l14 0" />
+                                      </svg>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-gray bg-gradient">
+          <button type="button" class="btn btn-default btn-sm" data-bs-dismiss="modal">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+              <path d="M5.7 5.7l12.6 12.6" />
+            </svg>
+            Cancelar
+        </button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block script %}
+<script>
+    var free_equipment = {{ free_equipment | safe }};
+    var project = {{ project_json | safe }};
+
+    var free_equipment = free_equipment.map((itm) => {
+        return {
+            id: itm.pk,
+            is_selected: false,
+            ...itm.fields
+        }
+    });
+
+    var project = project.map((itm) => {
+        return {
+            id: itm.pk,
+            is_selected: false,
+            ...itm.fields
+        }
+    })[0];
+
+</script>
+<script src="/static/js/app/project_app.js"></script>
 {% endblock %}
