@@ -99,6 +99,12 @@ class CreatePartner(LoginRequiredMixin, CreateView):
         url = f'{url}?action=created'
         return url
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title_section'] = 'Registrar Nuevo Socio de Negocio'
+        context['title_page'] = 'Registrar Nuevo Socio de Negocio'
+        return context
+
 
 class UpdatePartner(LoginRequiredMixin, UpdateView):
     model = Partner

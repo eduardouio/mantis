@@ -71,6 +71,10 @@ class Project(BaseModel):
         choices=SERVICES_CHOICES
     )
 
+    @classmethod
+    def get_equipment(cls, project_id):
+        return ProjectEquipments.objects.filter(id=project_id)
+
     def __str__(self):
         return self.project_name
 
@@ -121,3 +125,6 @@ class ProjectEquipments(BaseModel):
         blank=True,
         null=True
     )
+
+    def __str__(self):
+        return f'{self.project} - {self.equipment}'

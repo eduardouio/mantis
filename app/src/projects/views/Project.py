@@ -7,9 +7,11 @@ from django.views.generic import (
     UpdateView,
     RedirectView
 )
+from django import forms
+from django.core.serializers import serialize
 from django.contrib.auth.mixins import LoginRequiredMixin
 from projects.models import Project
-from django import forms
+from equipment.models import Equipment
 
 
 class ProjectForm(forms.ModelForm):
@@ -69,19 +71,22 @@ class DetailProject(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        free_equipment = Equipment.get_free_equipment()
         context['title_section'] = 'Detalle del Proyecto {}'.format(
             self.object.internal_code
         )
         context['title_page'] = 'Detalle del Proyecto {}'.format(
             self.object.internal_code
         )
-        context['equipment'] = Project.get_equipment(self.object.pk)
+        context['project_equipment'] = Project.get_equipment(self.object.pk)
+        context['free_equipment'] = serialize('json', free_equipment)
+        context['project'] = self.object
+        context['project_json'] = serialize('json', [self.object])
 
         if 'action' not in self.request.GET:
             return context
 
         context['action'] = self.request.GET.get('action')
-        context['project'] = self.object
         message = ''
         if context['action'] == 'created':
             message = 'El proyecto ha sido creado con éxito.'
@@ -106,6 +111,12 @@ class CreateProject(LoginRequiredMixin, CreateView):
         url = reverse_lazy('project_detail', kwargs={'pk': self.object.pk})
         url = f'{url}?action=created'
         return url
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title_section'] = 'Crear Nuevo Proyecto'
+        context['title_page'] = 'Crear Nuevo Proyecto'
+        return context
 
 
 class UpdateProject(LoginRequiredMixin, UpdateView):

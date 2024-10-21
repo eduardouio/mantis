@@ -60,8 +60,10 @@ class DetailTechnical(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title_section'] = 'Detalle del Técnico {}'.format(self.object.first_name)
-        context['title_page'] = 'Detalle del Técnico {}'.format(self.object.first_name)
+        context['title_section'] = 'Detalle del Técnico {}'.format(
+            self.object.first_name)
+        context['title_page'] = 'Detalle del Técnico {}'.format(
+            self.object.first_name)
 
         if 'action' not in self.request.GET:
             return context
@@ -95,6 +97,12 @@ class CreateTechnical(LoginRequiredMixin, CreateView):
         url = f'{url}?action=created'
         return url
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title_section'] = 'Registrar Nuevo Técnico'
+        context['title_page'] = 'Registrar Nuevo Técnico'
+        return context
+
 
 class UpdateTechnical(LoginRequiredMixin, UpdateView):
     model = Technical
@@ -104,8 +112,10 @@ class UpdateTechnical(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title_section'] = 'Actualizar Técnico {}'.format(self.object.first_name)
-        context['title_page'] = 'Actualizar Técnico {}'.format(self.object.first_name)
+        context['title_section'] = 'Actualizar Técnico {}'.format(
+            self.object.first_name)
+        context['title_page'] = 'Actualizar Técnico {}'.format(
+            self.object.first_name)
         return context
 
     def get_success_url(self):

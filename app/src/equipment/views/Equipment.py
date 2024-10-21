@@ -104,6 +104,12 @@ class CreateEquipment(LoginRequiredMixin, CreateView):
         url = f'{url}?action=created'
         return url
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title_section'] = 'Registrar Nuevo Equipo'
+        context['title_page'] = 'Registrar Nuevo Equipo'
+        return context
+
 
 class UpdateEquipment(LoginRequiredMixin, UpdateView):
     model = Equipment
@@ -135,6 +141,6 @@ class DeleteEquipment(LoginRequiredMixin, RedirectView):
             url = reverse_lazy('equipment_list')
             return f'{url}?action=deleted'
         except Exception as e:
-            return f'{reverse_lazy("equipment_detail", 
-                                    kwargs={"pk": kwargs["pk"]}
-                )}?action=no_delete'
+            return f'{reverse_lazy("equipment_detail",
+                                   kwargs={"pk": kwargs["pk"]}
+                                   )}?action = no_delete'

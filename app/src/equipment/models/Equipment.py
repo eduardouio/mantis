@@ -12,11 +12,11 @@ CHOICES_CODE = (
     ('PSL-TA', 'PSL-TA')
 )
 STATUS_CHOICES = (
-    ('DISPONIBLE', 'DISPONIBLE'),
+    ('LIBRE', 'LIBRE'),
+    ('RENTADO', 'RENTADO'),
     ('DANADO', 'DANADO'),
     ('STAND BY', 'STAND BY'),
     ('EN REPARACION', 'EN REPARACION'),
-    ('EN RENTA', 'EN RENTA'),
     ('EN ALMACEN', 'EN ALMACEN')
 )
 
@@ -87,7 +87,7 @@ class Equipment(BaseModel):
         'Estado',
         max_length=255,
         choices=STATUS_CHOICES,
-        default='OPERATIVO'
+        default='LIBRE'
     )
     is_active = models.BooleanField(
         'Activo?',
@@ -114,6 +114,10 @@ class Equipment(BaseModel):
         blank=True,
         null=True
     )
+
+    @classmethod
+    def get_free_equipment(cls):
+        return cls.objects.filter(status='LIBRE')
 
     def __str__(self):
         return self.name
