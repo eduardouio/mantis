@@ -2,6 +2,7 @@ from django.db import models
 from common import BaseModel
 from projects.models import Partner
 from equipment.models import Equipment
+from django.core.exceptions import ObjectDoesNotExist
 
 SERVICES_CHOICES = (
     ('ALQUILER', 'ALQUILER DE EQUIPOS'),
@@ -72,8 +73,15 @@ class Project(BaseModel):
     )
 
     @classmethod
-    def get_equipment(cls, project_id):
-        return ProjectEquipments.objects.filter(id=project_id)
+    def get_project_by_id(cls, id_project):
+        try:
+            return Project.objects.get(id=id_project)
+        except ObjectDoesNotExist:
+            return None
+
+    @classmethod
+    def get_equipment(cls, project):
+        return ProjectEquipments.objects.filter(project=project)
 
     def __str__(self):
         return self.project_name

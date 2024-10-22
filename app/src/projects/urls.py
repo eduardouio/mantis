@@ -10,7 +10,8 @@ from .views import (
     CreateProject,
     UpdateProject,
     DeleteProject,
-    APIAddManyToMany
+    APIAddManyToMany,
+    AddEquipmentProject,
 )
 
 urlpatterns = [
@@ -26,4 +27,5 @@ urlpatterns = [
     path('proyectos/create/', CreateProject.as_view(), name='project_create'),
     path('proyectos/update/<int:pk>/', UpdateProject.as_view(), name='project_update'),
     path('proyectos/delete/<int:pk>/', DeleteProject.as_view(), name='project_delete'),
+    path('proyectos/add/equipment/', AddEquipmentProject.as_view(), name='project_add_equipment'),
 ]

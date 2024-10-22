@@ -1,4 +1,6 @@
-from django.http import HttpResponseRedirect
+import json
+from django.http import HttpResponseRedirect, JsonResponse
+from decimal import Decimal
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
@@ -7,10 +9,11 @@ from django.views.generic import (
     UpdateView,
     RedirectView
 )
+from django.views import View
 from django import forms
 from django.core.serializers import serialize
 from django.contrib.auth.mixins import LoginRequiredMixin
-from projects.models import Project
+from projects.models import Project, ProjectEquipments
 from equipment.models import Equipment
 
 
@@ -78,7 +81,7 @@ class DetailProject(LoginRequiredMixin, DetailView):
         context['title_page'] = 'Detalle del Proyecto {}'.format(
             self.object.internal_code
         )
-        context['project_equipment'] = Project.get_equipment(self.object.pk)
+        context['project_equipment'] = Project.get_equipment(self.object)
         context['free_equipment'] = serialize('json', free_equipment)
         context['project'] = self.object
         context['project_json'] = serialize('json', [self.object])
@@ -127,8 +130,10 @@ class UpdateProject(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title_section'] = 'Actualizar Proyecto {}'.format(self.object.internal_code)
-        context['title_page'] = 'Actualizar Proyecto {}'.format(self.object.internal_code)
+        context['title_section'] = 'Actualizar Proyecto {}'.format(
+            self.object.internal_code)
+        context['title_page'] = 'Actualizar Proyecto {}'.format(
+            self.object.internal_code)
         return context
 
     def get_success_url(self):
@@ -146,3 +151,34 @@ class DeleteProject(LoginRequiredMixin, RedirectView):
             return f'{url}?action=deleted'
         except Exception as e:
             return f'{reverse_lazy("project_detail", kwargs={"pk": kwargs["pk"]})}?action=no_delete'
+
+
+class AddEquipmentProject(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        project = Project.get_project_by_id(data['id_project'])
+        if project is None:
+            return JsonResponse({'message': 'Project not found'}, status=500)
+
+        for item in data['equipments']:
+            equipment = Equipment.get_equipment_by_id(item['id'])
+            ProjectEquipments.objects.create(
+                project=project,
+                equipment=equipment,
+                cost_rent=item['cost_rent'],
+                cost_manteinance=item['cost_manteinance'],
+                mantenance_frequency=item['frecuency_days'],
+                start_date=item['start_date'],
+                end_date=item['end_date']
+            )
+            # actualizamos estado equipo
+            equipment.status = 'RENTADO'
+            equipment.bg_current_project = project.id
+            equipment.bg_current_location = project.place
+            equipment.bg_date_commitment = item['start_date']
+            equipment.bg_date_free = item['end_date']
+            equipment.save()
+
+        return JsonResponse(
+            {'message': 'Equipos agregados correctamente', 'status': 201},
+            status=201)

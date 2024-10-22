@@ -144,23 +144,50 @@
                 <table class="table table-bordered table-striped" id="myTableSmall">
                     <thead>
                         <tr>
-                        <th>#</th>
-                        <th>Equipo</th>
-                        <th>Tipo</th>
-                        <th>Fecha Inicio</th>
-                        <th>Frm</th>
-                        <th>Activo</th>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Equipo</th>
+                        <th class="text-center">Tipo</th>
+                        <th class="text-center">Desde</th>
+                        <th class="text-center">Hasta</th>
+                        <th class="text-center">Frecuencia</th>
+                        <th class="text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5"> <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path> <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path> </svg>  
+                        </th>
                     </tr>
                     </thead>
                     <tbody>
-                        {% for item in equipment %}
+                        {% for item in project_equipment %}
                         <tr>
-                            <td class="p-0">{{ loop.counter }}</td>
-                            <td class="p-0">{{ item.equipment.code }}</td>
-                            <td class="p-0">{{ item.equipment.type }}</td>
+                            <td class="p-0 text-center">{{ forloop.counter }}</td>
+                            <td class="p-0">
+                                {% if item.is_active  %}
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                    <path d="M9 12l2 2l4 -4" />
+                                  </svg>
+                                  {% else %}
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M12 9v4" />
+                                    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
+                                    <path d="M12 16h.01" />
+                                  </svg>
+                                  {% endif %}
+                                {{ item.equipment.code }}
+                            </td>
+                            <td class="p-0">{{ item.equipment.name }}</td>
                             <td class="p-0">{{ item.start_date }}</td>
-                            <td class="p-0">{{ item.mantenance_frequency }} D</td>
-                            <td class="p-0">{{ item.is_active }}</td>
+                            <td class="p-0">{{ item.end_date }}</td>
+                            <td class="p-0">{{ item.mantenance_frequency }} Días</td>
+                            <td class="p-0 d-flex justify-content-between gap-3">
+                                <span title="Editar Equipo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path><path d="M16 5l3 3"></path></svg>
+                                </span>
+                                <span title="Eliminar Equipo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="red" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5"> <path d="M5 12l14 0"></path> </svg> 
+                                </span>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -191,7 +218,7 @@
           <div class="container-fluid">
             <div class="row">
                 <div v-if="ceroExist"  class="col-12 text-danger bg-opacity-25 bg-warning p-2 rounded-1 mb-3 fs-6">
-                    No pueden exister valores cero en renta y/o Mantenimiento
+                    No pueden existir valores <strong>cero</strong> en Renta y/o Mantenimiento
                 </div>
                 <div class="col-12" v-if="showAllEquipment">
                     <table class="table table-striped table-bordered" id="myTableSmall2">
@@ -255,7 +282,7 @@
                     </div>
                     <div class="col">
                         <label for="" class="form-label">Costo Mant</label>
-                        <input v-model="currentEquipment.cost_mantenance" class="form-control form-control-sm text-end" type="number" step="0.01"/>
+                        <input v-model="currentEquipment.cost_manteinance" class="form-control form-control-sm text-end" type="number" step="0.01"/>
                     </div>
                     <div class="col">
                         <label for="" class="form-label">Frecuencia</label>
@@ -305,7 +332,7 @@
                                     [[ costFormat(itm.cost_rent) ]]
                                 </span>
                             </td>
-                            <td class="p-0 text-end">[[ costFormat(itm.cost_mantenance) ]]</td>
+                            <td class="p-0 text-end">[[ costFormat(itm.cost_manteinance) ]]</td>
                             <td class="p-0 text-center">[[ itm.frecuency_days ]] Días</td>
                             <td class="p-0 text-end">[[ itm.start_date ]]</td>
                             <td class="p-0 text-end">[[ itm.end_date ]]</td>
@@ -333,8 +360,8 @@
           </div>
         </div>
         <div class="modal-footer bg-gray bg-gradient d-flex justify-content-end gap-3">
-        <button class="btn btn-default btn-sm" v-if="selectedEquipment.length">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-checkbox" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <button class="btn btn-default btn-sm text-success" v-if="!ceroExist" @click="sendData">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-checkbox" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M9 11l3 3l8 -8" />
                 <path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
@@ -356,18 +383,20 @@
 {% endblock %}
 {% block script %}
 <script>
+    var csrf_token = '{{ csrf_token }}';
     var free_equipment = {{ free_equipment | safe }};
     var project = {{ project_json | safe }};
-
+    var urlBase = "{% url 'project_add_equipment' %}";
+    var successUrl = "{% url 'project_detail' project.id %}";
     var free_equipment = free_equipment.map((itm) => {
         return {
             id: itm.pk,
             is_selected: false,
             cost_rent: 0,
-            cost_mantenance: 0,
+            cost_manteinance: 0,
             frecuency_days: 7,
-            date_start: '',
-            date_end: '',
+            start_date: '',
+            end_date: '',
             ...itm.fields
         }
     });

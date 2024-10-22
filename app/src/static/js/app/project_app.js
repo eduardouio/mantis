@@ -3,6 +3,9 @@ const app = Vue.createApp({
         return {
             project: project,
             allEquimpents: free_equipment.map(el=> el),
+            CsrfToken: csrf_token,
+            url: urlBase,
+            successUrl: successUrl,
             selectedEquipment:[],
             currentEquipment: null,
             show_selected: false,
@@ -39,10 +42,37 @@ const app = Vue.createApp({
         },
         isValidItem(item){
             console.log(item);
-            if (item.cost_rent === 0 && item.cost_mantenance === 0){
+            if (item.cost_rent === 0 && item.cost_manteinance === 0){
                 return true;
             }
             return false;
+        },
+        sendData(){
+            data = {
+                'id_project': this.project.id,
+                'equipments': this.allEquimpents.filter(
+                    el=>el.is_selected
+                )
+            }
+            fetch(this.url,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.CsrfToken,
+                },
+                body: JSON.stringify(data)
+            }).then(
+                response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.status === 201){
+                    window.location.reload();
+                }
+            })
+            .catch(error => {
+                alert("Ocurrio un error al enviar los datos");
+                console.error('Error:', error);
+            })
         },
     },
     mounted() {
@@ -50,7 +80,7 @@ const app = Vue.createApp({
     computed: {
        ceroExist(){
            have_cero = this.selectedEquipment.filter(
-               el=>el.cost_rent === 0 && el.cost_mantenance === 0
+               el=>el.cost_rent === 0 && el.cost_manteinance === 0 
            );
             return have_cero.length > 0;
        }

@@ -12,5 +12,6 @@ from .Project import (
     DetailProject,
     CreateProject,
     UpdateProject,
-    DeleteProject
+    DeleteProject,
+    AddEquipmentProject,
 )
