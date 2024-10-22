@@ -1,5 +1,6 @@
 from django.db import models
 from common import BaseModel
+from django.core.exceptions import ObjectDoesNotExist
 
 
 CHOICES_CODE = (
@@ -100,9 +101,10 @@ class Equipment(BaseModel):
         'Ubicación Actual',
         max_length=255
     )
-    bg_current_project = models.CharField(
-        'Proyecto Actual',
-        max_length=255
+    bg_current_project = models.SmallIntegerField(
+        'ID Proyecto Actual',
+        blank=True,
+        null=True
     )
     bg_date_commitment = models.DateField(
         'Fecha de Compromiso',
@@ -116,8 +118,15 @@ class Equipment(BaseModel):
     )
 
     @classmethod
+    def get_equipment_by_id(cls, id_equipment):
+        try:
+            return Equipment.objects.get(id=id_equipment)
+        except ObjectDoesNotExist:
+            return None
+
+    @classmethod
     def get_free_equipment(cls):
-        return cls.objects.filter(status='LIBRE')
+        return cls.objects.filter(status='LIBRE').filter(is_active=True)
 
     def __str__(self):
         return self.name
