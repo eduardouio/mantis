@@ -134,5 +134,12 @@ class ProjectEquipments(BaseModel):
         null=True
     )
 
+    @classmethod
+    def get_by_id(cls, id_project_equipment):
+        try:
+            return ProjectEquipments.objects.get(id=id_project_equipment)
+        except ObjectDoesNotExist:
+            return None
+
     def __str__(self):
         return f'{self.project} - {self.equipment}'

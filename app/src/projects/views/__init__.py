@@ -14,4 +14,5 @@ from .Project import (
     UpdateProject,
     DeleteProject,
     AddEquipmentProject,
+    RemoveEquipmentProject
 )

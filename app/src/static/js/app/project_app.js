@@ -3,7 +3,9 @@ const app = Vue.createApp({
         return {
             project: project,
             allEquimpents: free_equipment.map(el=> el),
+            projectEquipment: project_equipment,
             CsrfToken: csrf_token,
+            deleteUrl: deleteUrl,
             url: urlBase,
             successUrl: successUrl,
             selectedEquipment:[],
@@ -73,6 +75,31 @@ const app = Vue.createApp({
                 alert("Ocurrio un error al enviar los datos");
                 console.error('Error:', error);
             })
+        },
+        deleteEquipment(item){
+            if (!item.confirm_delete){
+                item.confirm_delete = true;
+                return;
+            }
+            fetch(this.deleteUrl,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.CsrfToken,
+                },
+                body: JSON.stringify(item)
+            }).then(
+                response => response.json()
+            ).then((data) => {
+                console.log(data);
+                if (data.status === 201){
+                    this.projectEquipment = this.projectEquipment.filter((itm)=>{
+                        console.log(item);
+                        console.log(itm);
+                        return itm.id_equipment_project !== item.id_equipment_project;
+                    });
+                }
+                })
         },
     },
     mounted() {

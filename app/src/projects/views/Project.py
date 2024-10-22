@@ -81,10 +81,18 @@ class DetailProject(LoginRequiredMixin, DetailView):
         context['title_page'] = 'Detalle del Proyecto {}'.format(
             self.object.internal_code
         )
-        context['project_equipment'] = Project.get_equipment(self.object)
         context['free_equipment'] = serialize('json', free_equipment)
         context['project'] = self.object
         context['project_json'] = serialize('json', [self.object])
+
+        project_equipments = [
+            {
+                'equipment': serialize('json', [itm.equipment]),
+                'detail': serialize('json', [itm])
+            }
+            for itm in Project.get_equipment(self.object)
+        ]
+        context['project_equipment'] = project_equipments
 
         if 'action' not in self.request.GET:
             return context
@@ -182,3 +190,25 @@ class AddEquipmentProject(LoginRequiredMixin, View):
         return JsonResponse(
             {'message': 'Equipos agregados correctamente', 'status': 201},
             status=201)
+
+
+class RemoveEquipmentProject(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        project_equipment = ProjectEquipments.get_by_id(
+            data['id_equipment_project']
+        )
+        equipment = project_equipment.equipment
+        equipment.status = 'LIBRE'
+        equipment.bg_current_project = None
+        equipment.bg_current_location = ''
+        equipment.bg_date_commitment = None
+        equipment.bg_date_free = None
+        project_equipment.delete()
+        equipment.save()
+
+        return JsonResponse({
+            'message': 'Equipos eliminados correctamente',
+            'status': 201},
+            status=201
+        )

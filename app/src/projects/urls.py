@@ -12,6 +12,7 @@ from .views import (
     DeleteProject,
     APIAddManyToMany,
     AddEquipmentProject,
+    RemoveEquipmentProject
 )
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
     path('proyectos/update/<int:pk>/', UpdateProject.as_view(), name='project_update'),
     path('proyectos/delete/<int:pk>/', DeleteProject.as_view(), name='project_delete'),
     path('proyectos/add/equipment/', AddEquipmentProject.as_view(), name='project_add_equipment'),
+    path('proyectos/remove/equipment/', RemoveEquipmentProject.as_view(), name='project_delete_equipment'),
 ]

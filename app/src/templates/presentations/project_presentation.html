@@ -63,7 +63,6 @@
         </div>
     </div>
 </div>
-
 <div class="container mt-2">
     <!-- Información del Proyecto -->
     <div class="card mb-2">
@@ -141,7 +140,7 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <table class="table table-bordered table-striped" id="myTableSmall">
+                <table class="table table-bordered table-striped" id="">
                     <thead>
                         <tr>
                         <th class="text-center">#</th>
@@ -156,40 +155,42 @@
                     </tr>
                     </thead>
                     <tbody>
-                        {% for item in project_equipment %}
-                        <tr>
-                            <td class="p-0 text-center">{{ forloop.counter }}</td>
+                        <tr v-for = "item, idx in projectEquipment">
+                            <td class="p-0 text-center">[[ idx ]]</td>
                             <td class="p-0">
-                                {% if item.is_active  %}
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                                    <path d="M9 12l2 2l4 -4" />
-                                  </svg>
-                                  {% else %}
-                                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M12 9v4" />
-                                    <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
-                                    <path d="M12 16h.01" />
-                                  </svg>
-                                  {% endif %}
-                                {{ item.equipment.code }}
+                                <span v-if="item.is_active">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                        <path d="M9 12l2 2l4 -4" />
+                                      </svg>
+                                </span>
+                                <span v-else>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M12 9v4" />
+                                        <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
+                                        <path d="M12 16h.01" />
+                                      </svg>
+                                </span>
+                                [[ item.code ]]
                             </td>
-                            <td class="p-0">{{ item.equipment.name }}</td>
-                            <td class="p-0">{{ item.start_date }}</td>
-                            <td class="p-0">{{ item.end_date }}</td>
-                            <td class="p-0">{{ item.mantenance_frequency }} Días</td>
+                            <td class="p-0">[[ item.name ]]</td>
+                            <td class="p-0">[[ item.start_date ]]</td>
+                            <td class="p-0">[[ item.end_date ]]</td>
+                            <td class="p-0 text-center">[[ item.mantenance_frequency ]] Días</td>
                             <td class="p-0 d-flex justify-content-between gap-3">
                                 <span title="Editar Equipo">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path><path d="M16 5l3 3"></path></svg>
                                 </span>
-                                <span title="Eliminar Equipo">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="red" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5"> <path d="M5 12l14 0"></path> </svg> 
+                                <span title="Eliminar Equipo" @click="deleteEquipment(item)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="red" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5"> <path d="M5 12l14 0"></path></svg>
+                                    <span v-if="item.confirm_delete" class="text-danger">
+                                        Confirmar
+                                    </span>
                                 </span>
                             </td>
                         </tr>
-                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -379,14 +380,16 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
 {% endblock %}
 {% block script %}
 <script>
     var csrf_token = '{{ csrf_token }}';
     var free_equipment = {{ free_equipment | safe }};
+    var project_equipment = {{ project_equipment | safe }};
     var project = {{ project_json | safe }};
     var urlBase = "{% url 'project_add_equipment' %}";
+    var deleteUrl = "{% url 'project_delete_equipment' %}";
     var successUrl = "{% url 'project_detail' project.id %}";
     var free_equipment = free_equipment.map((itm) => {
         return {
@@ -401,6 +404,22 @@
         }
     });
 
+    var project_equipment = project_equipment.map((itm) => {
+        const equipment_project = JSON.parse(itm.detail)[0];
+        const equipment = JSON.parse(itm.equipment)[0];
+        return {
+            'id_equipment_project': equipment_project.pk,
+            'id_equipment': equipment.pk,
+            'name': equipment.fields.name,
+            'code': equipment.fields.code,
+            'start_date': equipment_project.fields.start_date,
+            'end_date': equipment_project.fields.end_date,
+            'mantenance_frequency': equipment_project.fields.mantenance_frequency,
+            'is_active': equipment_project.fields.is_active,
+            'confirm_delete': false
+        }
+    })
+    
     var project = project.map((itm) => {
         return {
             id: itm.pk,
