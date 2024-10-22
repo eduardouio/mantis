@@ -22,4 +22,8 @@ python manage.py sowseed
 ./manage.py sowseed 
 
 
-
+## TODO:
+# - [ ] Vista de proyecto
+# - [ ] Que pasa cuando el proyecto es de mantenimiento
+# - [ ] Como se manejan las liberaciones de los equipos
+# - [ ] al agregar el equipo debes cambiar el estado y completar los datos adciionales en la fichja del euiqpo
