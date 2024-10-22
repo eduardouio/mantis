@@ -126,6 +126,69 @@
         </div>
     </div>
     <!-- Información del Contacto -->
+     <div class="card mb-5" v-if="currentProjectEquipment">
+        <div class="card-header p-1 bg-peisol-primary bg-gradient bg-opacity-75 text-white d-flex justify-content-between">
+            Modificar Atributos [[ currentProjectEquipment.code ]] [[ currentProjectEquipment.name ]]
+        </div>
+        <div class="card-body">
+            <div class="row">
+                    <div class="col">
+                        <label for="" class="form-label">Desde</label>
+                        <input type="text" class="form-control"/>
+                    </div>
+                    <div class="col">
+                        <label for="" class="form-label">Hasta</label>
+                        <input type="text" class="form-control"/>
+                    </div>
+                    <div class="col">
+                        <label for="" class="form-label">Frecuencia</label>
+                        <input type="text" class="form-control"/>
+                    </div>
+                    <div class="col">
+                        <label for="" class="form-label">C Renta</label>
+                        <input type="text" class="form-control"/>
+                    </div>
+                    <div class="col">
+                        <label for="" class="form-label">C Mant</label>
+                        <input type="text" class="form-control"/>
+                    </div>
+                    <div class="col-1">
+                        <label for="" class="form-label">Retirar</label>
+                        <input type="text" class="form-control"/>
+                    </div>
+                    <div class="col-12" v-if="currentProjectEquipment.is_active">
+                        <label for="" class="form-label">Fecha</label>
+                        <input type="text" class="form-control"/>
+                    </div>
+                    <div class="col-12" v-if="currentProjectEquipment.is_active">
+                        <label for="" class="form-label">Motivo</label>
+                        <input type="text" class="form-control"/>
+                    </div>
+
+            </div>
+            <div class="row m-3">
+                <div class="col d-flex justify-content-end gap-3">
+                <button class="btn btn-default btn-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path>
+                        <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
+                        <path d="M14 4l0 4l-6 0l0 -4"></path>
+                        </svg>
+                    Guardar
+                </button>
+                <button class="btn btn-default btn-sm" @click="currentProjectEquipment=null">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                        <path d="M5.7 5.7l12.6 12.6"></path>
+                      </svg>
+                    Cancelar
+                </button>
+            </div>
+            </div>
+        </div>  
+     </div>
     <div class="card mb-5">
         <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white d-flex justify-content-between">
             <span>Detalle de Equipos en Renta</span>
@@ -180,7 +243,7 @@
                             <td class="p-0">[[ item.end_date ]]</td>
                             <td class="p-0 text-center">[[ item.mantenance_frequency ]] Días</td>
                             <td class="p-0 d-flex justify-content-between gap-3">
-                                <span title="Editar Equipo">
+                                <span title="Editar Equipo" @click="currentProjectEquipment=item">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path><path d="M16 5l3 3"></path></svg>
                                 </span>
                                 <span title="Eliminar Equipo" @click="deleteEquipment(item)">
@@ -416,6 +479,11 @@
             'end_date': equipment_project.fields.end_date,
             'mantenance_frequency': equipment_project.fields.mantenance_frequency,
             'is_active': equipment_project.fields.is_active,
+            'retired_date': equipment_project.fields.retired_date,
+            'motive_retired': equipment_project.fields.motive_retired,
+            'cost_rent': equipment_project.fields.cost_rent,
+            'cost_manteinance': equipment_project.fields.cost_manteinance,
+            'retired_date': equipment_project.fields.retired_date,
             'confirm_delete': false
         }
     })

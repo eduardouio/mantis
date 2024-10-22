@@ -10,6 +10,7 @@ const app = Vue.createApp({
             successUrl: successUrl,
             selectedEquipment:[],
             currentEquipment: null,
+            currentProjectEquipment: null,
             show_selected: false,
             showAllEquipment: true,
         }
