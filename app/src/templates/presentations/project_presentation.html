@@ -190,7 +190,10 @@
         <div class="modal-body border">
           <div class="container-fluid">
             <div class="row">
-                <div class="col-12">
+                <div v-if="ceroExist"  class="col-12 text-danger bg-opacity-25 bg-warning p-2 rounded-1 mb-3 fs-6">
+                    No pueden exister valores cero en renta y/o Mantenimiento
+                </div>
+                <div class="col-12" v-if="showAllEquipment">
                     <table class="table table-striped table-bordered" id="myTableSmall2">
                         <thead>
                             <tr>
@@ -203,25 +206,69 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="item, idx in freeEquipment">
+                            <tr v-for="item, idx in allEquimpents" :key="item">
                                 <td class="p-0 text-center">[[ idx + 1 ]]</td>
-                                <td class="p-0">[[ item.code ]]</td>
-                                <td class="p-0">[[ item.name ]]</td>
-                                <td class="p-0">[[ item.brand ]]</td>
-                                <td class="p-0">[[ item.status ]]</td>
-                                <td class="p-0 text-center" @click="selectEquipment(item)" title="Agregar Equipo">
-                                    <span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <path d="M12 5l0 14" />
-                                            <path d="M5 12l14 0" />
-                                          </svg>
+                                <td class="p-0" @click="asignEquipment(item)">[[ item.code ]]</td>
+                                <td class="p-0" @click="asignEquipment(item)">[[ item.name ]]</td>
+                                <td class="p-0">[[ item.brand ]] </td>
+                                <td class="p-0">
+                                    <span v-if="item.is_selected" class="text-primary">
+                                        SELECCIONADO
                                     </span>
+                                    <span v-else class="text-success">
+                                        LIBRE
+                                    </span>
+                                </td>
+                                <td class="p-0 text-center" title="Agregar Equipo">
+                                    <div @click="asignEquipment(item)">
+                                        <span v-if="!item.is_selected" title="Agregar Equipo">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                <path d="M12 5l0 14" />
+                                                <path d="M5 12l14 0" />
+                                              </svg>
+                                        </span>
+                                            <span v-else title="Quitar Equipo">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-minus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                    <path d="M5 12l14 0" />
+                                                  </svg>
+                                            </span>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="row border rounded-1 bg-gray bg-gradient mb-3 pb-1" v-if="!showAllEquipment">
+                <div class="col-12 d-flex justify-content-between gap-3 p-2 bg-peisol-secondary bg-gradient">
+                    <span>[[ currentEquipment.name ]]</span>
+                    <span class="text-danger">[[ currentEquipment.code ]] </span>
+                    <span class="text-danger" @click="showAllEquipment=true">
+                        Cerrar
+                    </span>
+                </div>
+                    <div class="col">
+                        <label for="" class="form-label">Costo Renta</label>
+                        <input v-model="currentEquipment.cost_rent" class="form-control form-control-sm text-end" type="number" step="0.01"/>
+                    </div>
+                    <div class="col">
+                        <label for="" class="form-label">Costo Mant</label>
+                        <input v-model="currentEquipment.cost_mantenance" class="form-control form-control-sm text-end" type="number" step="0.01"/>
+                    </div>
+                    <div class="col">
+                        <label for="" class="form-label">Frecuencia</label>
+                        <input v-model="currentEquipment.frecuency_days" class="form-control form-control-sm text-end" type="text" step="1"/>
+                    </div>
+                    <div class="col">
+                        <label for="" class="form-label">Desde</label>
+                        <input v-model="currentEquipment.start_date" class="form-control form-control-sm" type="date"/>
+                    </div>
+                    <div class="col">
+                        <label for="" class="form-label">Hasta</label>
+                        <input v-model="currentEquipment.end_date" class="form-control form-control-sm" type="date"/>
+                    </div>
             </div>
             <div class="row">
                 <div class="col-12">
@@ -240,7 +287,7 @@
                             <th class="text-center">F Inicio</th>
                             <th class="text-center">F Fin</th>  
                             <th class="text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="blue" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                     <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
                                     <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
@@ -248,18 +295,22 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr v-for="item, idx in equipmentsSelected">
+                    <tbody v-if="show_selected">
+                        <tr  v-for="itm, idx in selectedEquipment" :key="itm">
                             <td class="p-0 text-center">[[ idx + 1 ]]</td>
-                            <td class="p-0">[[ item.equipment.code ]]</td>
-                            <td class="p-0">[[ item.equipment.name ]]</td>
-                            <td class="p-0 text-end">[[ item.cost_rent ]]</td>
-                            <td class="p-0 text-end">[[ item.cost_manteinance ]]</td>
-                            <td class="p-0 text-end">[[ item.mantenance_frequency ]]</td>
-                            <td class="p-0">[[ item.start_date ]]</td>
-                            <td class="p-0">[[ item.end_date ]]</td>
+                            <td class="p-0" :class="{'bg-danger text-white' : isValidItem(itm)}" @click="setEquipment(itm)">[[ itm.name ]]</td>
+                            <td class="p-0" @click="setEquipment(itm)">[[ itm.code ]]</td >
+                            <td class="p-0 text-end">
+                                <span>
+                                    [[ costFormat(itm.cost_rent) ]]
+                                </span>
+                            </td>
+                            <td class="p-0 text-end">[[ costFormat(itm.cost_mantenance) ]]</td>
+                            <td class="p-0 text-center">[[ itm.frecuency_days ]] Días</td>
+                            <td class="p-0 text-end">[[ itm.start_date ]]</td>
+                            <td class="p-0 text-end">[[ itm.end_date ]]</td>
                             <td class="p-0 text-center d-flex justify-content-between ga-3">
-                                <span title="Editar Registro">
+                                <span title="Editar Registro" @click="setEquipment(itm)">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                         <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -267,7 +318,7 @@
                                         <path d="M16 5l3 3" />
                                       </svg>
                                 </span>
-                                <span title="Quitar Equipo" @click="removeEquipment(item)">
+                                <span title="Quitar Equipo" @click="asignEquipment(itm)">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-minus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                         <path d="M5 12l14 0" />
@@ -281,7 +332,15 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer bg-gray bg-gradient">
+        <div class="modal-footer bg-gray bg-gradient d-flex justify-content-end gap-3">
+        <button class="btn btn-default btn-sm" v-if="selectedEquipment.length">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-checkbox" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M9 11l3 3l8 -8" />
+                <path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
+              </svg>
+            Confirmar Equipos
+        </button>
           <button type="button" class="btn btn-default btn-sm" data-bs-dismiss="modal">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -304,6 +363,11 @@
         return {
             id: itm.pk,
             is_selected: false,
+            cost_rent: 0,
+            cost_mantenance: 0,
+            frecuency_days: 7,
+            date_start: '',
+            date_end: '',
             ...itm.fields
         }
     });
