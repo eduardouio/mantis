@@ -134,30 +134,30 @@
             <div class="row">
                     <div class="col">
                         <label for="" class="form-label">Desde</label>
-                        <input type="text" class="form-control"/>
+                        <input v-model="currentProjectEquipment.start_date" type="text" class="form-control"/>
                     </div>
                     <div class="col">
                         <label for="" class="form-label">Hasta</label>
-                        <input type="text" class="form-control"/>
+                        <input v-model="currentProjectEquipment.start_date"  type="text" class="form-control"/>
                     </div>
                     <div class="col">
                         <label for="" class="form-label">Frecuencia</label>
-                        <input type="text" class="form-control"/>
+                        <input  v-model="currentProjectEquipment.mantenance_frequency" type="text" class="form-control"/>
                     </div>
                     <div class="col">
                         <label for="" class="form-label">C Renta</label>
-                        <input type="text" class="form-control"/>
+                        <input v-model="currentProjectEquipment.cost_rent" type="text" class="form-control"/>
                     </div>
                     <div class="col">
                         <label for="" class="form-label">C Mant</label>
-                        <input type="text" class="form-control"/>
+                        <input v-model="currentProjectEquipment.cost_manteinance"  type="text" class="form-control"/>
                     </div>
                     <div class="col-1">
-                        <label for="" class="form-label">Retirar</label>
-                        <input type="text" class="form-control"/>
+                        <label for="" class="form-label">Activo</label>
+                        <input v-model="currentProjectEquipment.is_active" type="text" class="form-control"/>
                     </div>
                     <div class="col-12" v-if="currentProjectEquipment.is_active">
-                        <label for="" class="form-label">Fecha</label>
+                        <label for="" class="form-label">Fecha Retiro</label>
                         <input type="text" class="form-control"/>
                     </div>
                     <div class="col-12" v-if="currentProjectEquipment.is_active">
@@ -209,6 +209,7 @@
                         <th class="text-center">#</th>
                         <th class="text-center">Equipo</th>
                         <th class="text-center">Tipo</th>
+                        <th class="text-center" title="Fecha de creación de registro">Asignado</th>
                         <th class="text-center">Desde</th>
                         <th class="text-center">Hasta</th>
                         <th class="text-center">Frecuencia</th>
@@ -239,8 +240,9 @@
                                 [[ item.code ]]
                             </td>
                             <td class="p-0">[[ item.name ]]</td>
-                            <td class="p-0">[[ item.start_date ]]</td>
-                            <td class="p-0">[[ item.end_date ]]</td>
+                            <td class="p-0">[[ item.created_at ]]</td>
+                            <td class="p-0">[[ formatDate(item.start_date) ]]</td>
+                            <td class="p-0">[[ formatDate(item.end_date) ]]</td>
                             <td class="p-0 text-center">[[ item.mantenance_frequency ]] Días</td>
                             <td class="p-0 d-flex justify-content-between gap-3">
                                 <span title="Editar Equipo" @click="currentProjectEquipment=item">
@@ -398,8 +400,8 @@
                             </td>
                             <td class="p-0 text-end">[[ costFormat(itm.cost_manteinance) ]]</td>
                             <td class="p-0 text-center">[[ itm.frecuency_days ]] Días</td>
-                            <td class="p-0 text-end">[[ itm.start_date ]]</td>
-                            <td class="p-0 text-end">[[ itm.end_date ]]</td>
+                            <td class="p-0 text-end">[[ formatDate(itm.start_date) ]]</td>
+                            <td class="p-0 text-end">[[ formatDate(itm.end_date) ]]</td>
                             <td class="p-0 text-center d-flex justify-content-between ga-3">
                                 <span title="Editar Registro" @click="setEquipment(itm)">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -470,6 +472,14 @@
     var project_equipment = project_equipment.map((itm) => {
         const equipment_project = JSON.parse(itm.detail)[0];
         const equipment = JSON.parse(itm.equipment)[0];
+        const date = new Date(equipment_project.fields.created_at);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses comienzan desde 0
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}`;
+
         return {
             'id_equipment_project': equipment_project.pk,
             'id_equipment': equipment.pk,
@@ -484,7 +494,8 @@
             'cost_rent': equipment_project.fields.cost_rent,
             'cost_manteinance': equipment_project.fields.cost_manteinance,
             'retired_date': equipment_project.fields.retired_date,
-            'confirm_delete': false
+            'confirm_delete': false,
+            'created_at': formattedDateTime
         }
     })
     

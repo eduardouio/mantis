@@ -102,6 +102,17 @@ const app = Vue.createApp({
                 }
                 })
         },
+        formatDate(date){
+            if (!date){
+                return '';
+            }
+            const myDate = new Date(date);
+            const day = String(myDate.getDate()).padStart(2, '0');
+            const month = String(myDate.getMonth() + 1).padStart(2, '0');
+            const year = myDate.getFullYear();
+            const strDate = `${day}/${month}/${year}`;
+            return strDate;
+        },
     },
     mounted() {
     },
