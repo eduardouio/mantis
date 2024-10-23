@@ -158,7 +158,8 @@ class DeleteProject(LoginRequiredMixin, RedirectView):
             url = reverse_lazy('project_list')
             return f'{url}?action=deleted'
         except Exception as e:
-            return f'{reverse_lazy("project_detail", kwargs={"pk": kwargs["pk"]})}?action=no_delete'
+            url  = reverse_lazy('project_detail', kwargs={'pk': project.pk})
+            return f'{url}?action=no_delete'
 
 
 class AddEquipmentProject(LoginRequiredMixin, View):

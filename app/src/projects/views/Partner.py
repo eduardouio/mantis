@@ -141,9 +141,8 @@ class DeletePartner(LoginRequiredMixin, RedirectView):
             url = reverse_lazy('partner_list')
             return f'{url}?action=deleted'
         except Exception as e:
-            return f'{reverse_lazy("partner_detail",
-                                   kwargs={"pk": kwargs["pk"]}
-                                   )}?action = no_delete'
+            url = reverse_lazy('partner_detail', kwargs={'pk': partner.pk})
+            return f'{url}?action=no_delete'
 
 
 class APIAddManyToMany(LoginRequiredMixin, View):
