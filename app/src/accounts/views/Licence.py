@@ -127,6 +127,5 @@ class DeleteLicense(LoginRequiredMixin, RedirectView):
             url = reverse_lazy('license_list')
             return f'{url}?action=deleted'
         except Exception as e:
-            return f'{reverse_lazy("license_detail", 
-                                    kwargs={"pk": kwargs["pk"]}
-                )}?action=no_delete'
+            url = reverse_lazy('license_detail', kwargs={'pk': license.pk})
+            return f'{url}?action=no_delete'

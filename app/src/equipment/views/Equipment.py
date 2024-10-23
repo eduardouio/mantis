@@ -141,6 +141,5 @@ class DeleteEquipment(LoginRequiredMixin, RedirectView):
             url = reverse_lazy('equipment_list')
             return f'{url}?action=deleted'
         except Exception as e:
-            return f'{reverse_lazy("equipment_detail",
-                                   kwargs={"pk": kwargs["pk"]}
-                                   )}?action = no_delete'
+            url = reverse_lazy('equipment_detail', kwargs={'pk': equipment.pk})
+            return f'{url}?action=no_delete'
