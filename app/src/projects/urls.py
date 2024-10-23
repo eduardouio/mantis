@@ -12,7 +12,8 @@ from .views import (
     DeleteProject,
     APIAddManyToMany,
     AddEquipmentProject,
-    RemoveEquipmentProject
+    RemoveEquipmentProject,
+    UpdateEquipmentProject,
 )
 
 urlpatterns = [
@@ -22,7 +23,7 @@ urlpatterns = [
     path('socios/update/<int:pk>/', UpdatePartner.as_view(), name='partner_update'),
     path('socios/delete/<int:pk>/', DeletePartner.as_view(), name='partner_delete'),
     path('socios/add/many-deps/', APIAddManyToMany.as_view(), name='partner_add_many_to_many'),
-    #projects
+    # projects
     path('proyectos/', ListProject.as_view(), name='project_list'),
     path('proyectos/<int:pk>/', DetailProject.as_view(), name='project_detail'),
     path('proyectos/create/', CreateProject.as_view(), name='project_create'),
@@ -30,4 +31,5 @@ urlpatterns = [
     path('proyectos/delete/<int:pk>/', DeleteProject.as_view(), name='project_delete'),
     path('proyectos/add/equipment/', AddEquipmentProject.as_view(), name='project_add_equipment'),
     path('proyectos/remove/equipment/', RemoveEquipmentProject.as_view(), name='project_delete_equipment'),
+    path('proyectos/update/equipment/', UpdateEquipmentProject.as_view(), name='project_update_equipment'),
 ]

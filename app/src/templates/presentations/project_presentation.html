@@ -65,7 +65,7 @@
 </div>
 <div class="container mt-2">
     <!-- Información del Proyecto -->
-    <div class="card mb-2">
+    <div class="card mb-2" v-if="!currentProjectEquipment">
         <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
             <!-- Ícono de información -->
             Información del Proyecto
@@ -146,29 +146,31 @@
                     </div>
                     <div class="col">
                         <label for="" class="form-label">C Renta</label>
-                        <input v-model="currentProjectEquipment.cost_rent" type="text" class="form-control"/>
+                        <input v-model="currentProjectEquipment.cost_rent" type="number" step="0.01" class="form-control"/>
                     </div>
                     <div class="col">
                         <label for="" class="form-label">C Mant</label>
-                        <input v-model="currentProjectEquipment.cost_manteinance"  type="text" class="form-control"/>
+                        <input v-model="currentProjectEquipment.cost_manteinance"  type="number" step="0.01" class="form-control"/>
                     </div>
-                    <div class="col-1">
+                    <div class="col-1 d-flex justify-content-center align-items-center gap-3">
                         <label for="" class="form-label">Activo</label>
-                        <input v-model="currentProjectEquipment.is_active" type="text" class="form-control"/>
+                        <input v-model="currentProjectEquipment.is_active" type="checkbox" class="form-check-input"/>
                     </div>
-                    <div class="col-12" v-if="currentProjectEquipment.is_active">
+                </div>
+                    <div class="row">  
+                    <div class="col-2" v-if="!currentProjectEquipment.is_active">
                         <label for="" class="form-label">Fecha Retiro</label>
-                        <input type="text" class="form-control"/>
+                        <input type="date" class="form-control" v-model="currentProjectEquipment.retired_date"/>
                     </div>
-                    <div class="col-12" v-if="currentProjectEquipment.is_active">
-                        <label for="" class="form-label">Motivo</label>
-                        <input type="text" class="form-control"/>
+                    <div class="col-10" v-if="!currentProjectEquipment.is_active">
+                        <label for="" class="form-label">Motivo de Retiro</label>
+                        <textarea v-model="currentProjectEquipment.motive_retired" class="form-control form-control-sm"></textarea>
                     </div>
 
             </div>
             <div class="row m-3">
                 <div class="col d-flex justify-content-end gap-3">
-                <button class="btn btn-default btn-sm">
+                <button class="btn btn-default btn-sm" @click="updateProjectEquipment">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                         <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path>
@@ -244,7 +246,7 @@
                             <td class="p-0">[[ formatDate(item.start_date) ]]</td>
                             <td class="p-0">[[ formatDate(item.end_date) ]]</td>
                             <td class="p-0 text-center">[[ item.mantenance_frequency ]] Días</td>
-                            <td class="p-0 d-flex justify-content-between gap-3">
+                            <td class="p-0 d-flex justify-content-center gap-3">
                                 <span title="Editar Equipo" @click="currentProjectEquipment=item">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path><path d="M16 5l3 3"></path></svg>
                                 </span>
@@ -456,6 +458,7 @@
     var urlBase = "{% url 'project_add_equipment' %}";
     var deleteUrl = "{% url 'project_delete_equipment' %}";
     var successUrl = "{% url 'project_detail' project.id %}";
+    var updateUrl = "{% url 'project_update_equipment' %}";
     var free_equipment = free_equipment.map((itm) => {
         return {
             id: itm.pk,

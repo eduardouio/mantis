@@ -6,6 +6,7 @@ const app = Vue.createApp({
             projectEquipment: project_equipment,
             CsrfToken: csrf_token,
             deleteUrl: deleteUrl,
+            updateUrl: updateUrl,
             url: urlBase,
             successUrl: successUrl,
             selectedEquipment:[],
@@ -82,6 +83,7 @@ const app = Vue.createApp({
                 item.confirm_delete = true;
                 return;
             }
+
             fetch(this.deleteUrl,{
                 method: 'POST',
                 headers: {
@@ -102,6 +104,41 @@ const app = Vue.createApp({
                 }
                 })
         },
+        updateProjectEquipment(){
+            if (this.currentProjectEquipment.cost_rent === 0 && this.currentProjectEquipment.cost_manteinance === 0){
+                alert("No se puede guardar un equipo con costos en cero");
+                return;
+            }
+            if (!this.currentProjectEquipment.is_active){
+                if (!this.currentProjectEquipment.retired_date || !this.currentProjectEquipment.motive_retired){
+                    alert("Debe ingresar la fecha de retiro y el motivo");
+                    return;
+                }
+            }
+            fetch(this.updateUrl,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.CsrfToken,
+                },
+                body: JSON.stringify(this.currentProjectEquipment)
+            }).then(
+                response => response.json()
+            ).then((data) => {
+                console.log(data);
+                if (data.status === 201){
+                    this.projectEquipment = this.projectEquipment.map((itm)=>{
+                        if (itm.id_equipment_project === this.currentProjectEquipment.id_equipment_project){
+                            itm = this.currentProjectEquipment;
+                        }
+                        return itm;
+                    });
+                }
+            }).catch(error => {
+                alert("Ocurrio un error al enviar los datos");
+                console.error('Error:', error);
+            });
+        },
         formatDate(date){
             if (!date){
                 return '';
@@ -115,6 +152,7 @@ const app = Vue.createApp({
         },
     },
     mounted() {
+        console.log('vue app mounted');
     },
     computed: {
        ceroExist(){

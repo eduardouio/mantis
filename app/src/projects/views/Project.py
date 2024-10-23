@@ -212,3 +212,30 @@ class RemoveEquipmentProject(LoginRequiredMixin, View):
             'status': 201},
             status=201
         )
+
+
+class UpdateEquipmentProject(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        project_equipment = ProjectEquipments.get_by_id(
+            data['id_equipment_project']
+        )
+        project_equipment.cost_rent = Decimal(data['cost_rent'])
+        project_equipment.cost_manteinance = Decimal(data['cost_manteinance'])
+        project_equipment.mantenance_frequency = data['mantenance_frequency']
+        project_equipment.start_date = data['start_date']
+        project_equipment.end_date = data['end_date']
+
+        if not data.get('is_active'):
+            project_equipment.is_active = data['is_active']
+            project_equipment.retired_date = data['retired_date']
+            project_equipment.motive_retired = data['motive_retired']
+
+        project_equipment.save()
+
+        return JsonResponse({
+            'message': 'Equipos actualizados correctamente',
+            'status': 201
+        },
+            status=201
+        )
