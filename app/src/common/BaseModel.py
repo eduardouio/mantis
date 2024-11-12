@@ -49,7 +49,7 @@ class BaseModel(models.Model):
         help_text='Fecha de ultima actualización del registro.'
     )
 
-    is_record_active = models.BooleanField(
+    is_active = models.BooleanField(
         'activo',
         default=True,
         help_text='Estado del registro.'

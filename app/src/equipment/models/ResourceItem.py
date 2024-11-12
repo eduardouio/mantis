@@ -2,18 +2,13 @@ from django.db import models
 from common import BaseModel
 from django.core.exceptions import ObjectDoesNotExist
 
-
-CHOICES_CODE = (
-    ('PSL-BT-FP', 'PSL-BT-FP'),
-    ('PSL-BT-TPL', 'PSL-BT-TPL'),
-    ('PSL-LV-PJ', 'PSL-LV-PJ'),
-    ('PSL-UO-TPL', 'PSL-UO-TPL'),
-    ('PSL-AR', 'PSL-AR'),
-    ('PSL-AP', 'PSL-AP'),
-    ('PSL-TA', 'PSL-TA')
+TYPE_CHOISES = (
+    ('EQUIPO', 'EQUIPO'),
+    ('SERVICIO', 'SERVICIO')
 )
+
 STATUS_CHOICES = (
-    ('LIBRE', 'LIBRE'),
+    ('DISPONIBLE', 'DISPONIBLE'),
     ('RENTADO', 'RENTADO'),
     ('DANADO', 'DANADO'),
     ('STAND BY', 'STAND BY'),
@@ -22,13 +17,19 @@ STATUS_CHOICES = (
 )
 
 
-class Equipment(BaseModel):
+class ResourceItem(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
     name = models.CharField(
         'Nombre Equipo',
         max_length=255
+    )
+    type = models.CharField(
+        'Tipo',
+        max_length=255,
+        choices=TYPE_CHOISES,
+        default='EQUIPO'
     )
     brand = models.CharField(
         'Marca',
@@ -77,22 +78,11 @@ class Equipment(BaseModel):
         null=True,
         default=None
     )
-    description = models.CharField(
-        'Descripción',
-        max_length=255,
-        blank=True,
-        null=True,
-        default=None
-    )
     status = models.CharField(
         'Estado',
         max_length=255,
         choices=STATUS_CHOICES,
         default='LIBRE'
-    )
-    is_active = models.BooleanField(
-        'Activo?',
-        default=True
     )
     # Estos campos se actualizan cada vez que el equipo cambia de proyecto
     # o de ubicación, no se actualiza manualmente
@@ -120,7 +110,7 @@ class Equipment(BaseModel):
     @classmethod
     def get_equipment_by_id(cls, id_equipment):
         try:
-            return Equipment.objects.get(id=id_equipment)
+            return ResourceItem.objects.get(id=id_equipment)
         except ObjectDoesNotExist:
             return None
 

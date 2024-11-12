@@ -1,10 +1,10 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 from .models import (
-    Mantenance,
+    WorkOrder,
     Partner,
     Project,
-    ProjectEquipments
+    ProjectResourceItem
 )
 
 
@@ -77,7 +77,7 @@ class ProjectEquipmentsAdmin(SimpleHistoryAdmin):
     )
 
 
-admin.site.register(Mantenance, MantenanceAdmin)
+admin.site.register(WorkOrder, MantenanceAdmin)
 admin.site.register(Partner, PartnerAdmin)
 admin.site.register(Project, ProjectAdmin)
-admin.site.register(ProjectEquipments, ProjectEquipmentsAdmin)
+admin.site.register(ProjectResourceItem, ProjectEquipmentsAdmin)

@@ -3,7 +3,7 @@ from common import BaseModel
 
 CHOICES_TYPE_VEHICLE = (
     ('CAMION', 'CAMION'),
-    ('VACCUM', 'VACCUM'),
+    ('VACUUM', 'VACUUM'),
     ('CAMIONETA', 'CAMIONETA'),
     ('AUTO', 'AUTO')
 )
@@ -18,19 +18,10 @@ class Vehicle(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
-    name = models.CharField(
-        'Nombre',
-        max_length=255
-    )
     brand = models.CharField(
         'Marca',
         max_length=255,
         default='SIN MARCA'
-    )
-    code_vehicle = models.CharField(
-        'Código de Vehículo',
-        max_length=100,
-        unique=True
     )
     model = models.CharField(
         'Modelo',

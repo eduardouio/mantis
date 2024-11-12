@@ -1,2 +1,2 @@
-from .Equipment import Equipment
+from .ResourceItem import ResourceItem
 from .Vehicle import Vehicle

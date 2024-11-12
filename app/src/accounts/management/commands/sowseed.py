@@ -5,7 +5,7 @@ from faker import Faker
 import json
 from datetime import timedelta
 from accounts.models import Technical, License, WorkJournal
-from equipment.models import Equipment, Vehicle
+from equipment.models import ResourceItem, Vehicle
 from projects.models import Partner
 
 
@@ -93,7 +93,7 @@ class Command(BaseCommand):
             )
 
     def load_equipment(self, faker):
-        if Equipment.objects.exists():
+        if ResourceItem.objects.exists():
             print('Ya existen los equipos')
             return True
 
@@ -102,7 +102,7 @@ class Command(BaseCommand):
 
         for equipment in file_content:
             print(equipment['code'])
-            Equipment.objects.create(
+            ResourceItem.objects.create(
                 **equipment
             )
 

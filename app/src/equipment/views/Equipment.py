@@ -8,14 +8,14 @@ from django.views.generic import (
     RedirectView
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
-from equipment.models import Equipment
+from equipment.models import ResourceItem
 
 from django import forms
 
 
 class EquipmentForm(forms.ModelForm):
     class Meta:
-        model = Equipment
+        model = ResourceItem
         fields = [
             'name', 'brand', 'model', 'code', 'date_purchase', 'height',
             'width', 'depth', 'weight', 'description', 'status', 'is_active',
@@ -39,7 +39,7 @@ class EquipmentForm(forms.ModelForm):
 
 
 class ListEquipment(LoginRequiredMixin, ListView):
-    model = Equipment
+    model = ResourceItem
     template_name = 'lists/equipment_list.html'
     context_object_name = 'equipments'
     ordering = ['name']
@@ -61,7 +61,7 @@ class ListEquipment(LoginRequiredMixin, ListView):
 
 
 class DetailEquipment(LoginRequiredMixin, DetailView):
-    model = Equipment
+    model = ResourceItem
     template_name = 'presentations/equipment_presentation.html'
     context_object_name = 'equipment'
 
@@ -94,7 +94,7 @@ class DetailEquipment(LoginRequiredMixin, DetailView):
 
 
 class CreateEquipment(LoginRequiredMixin, CreateView):
-    model = Equipment
+    model = ResourceItem
     template_name = 'forms/equipment_form.html'
     form_class = EquipmentForm
     success_url = '/equipos/'
@@ -112,7 +112,7 @@ class CreateEquipment(LoginRequiredMixin, CreateView):
 
 
 class UpdateEquipment(LoginRequiredMixin, UpdateView):
-    model = Equipment
+    model = ResourceItem
     template_name = 'forms/equipment_form.html'
     form_class = EquipmentForm
     success_url = '/equipos/'
@@ -135,7 +135,7 @@ class UpdateEquipment(LoginRequiredMixin, UpdateView):
 
 class DeleteEquipment(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-        equipment = Equipment.objects.get(pk=kwargs['pk'])
+        equipment = ResourceItem.objects.get(pk=kwargs['pk'])
         try:
             equipment.delete()
             url = reverse_lazy('equipment_list')

@@ -13,8 +13,8 @@ from django.views import View
 from django import forms
 from django.core.serializers import serialize
 from django.contrib.auth.mixins import LoginRequiredMixin
-from projects.models import Project, ProjectEquipments
-from equipment.models import Equipment
+from projects.models import Project, ProjectResourceItem
+from equipment.models import ResourceItem
 
 
 class ProjectForm(forms.ModelForm):
@@ -74,7 +74,7 @@ class DetailProject(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        free_equipment = Equipment.get_free_equipment()
+        free_equipment = ResourceItem.get_free_equipment()
         context['title_section'] = 'Detalle del Proyecto {}'.format(
             self.object.internal_code
         )
@@ -170,8 +170,8 @@ class AddEquipmentProject(LoginRequiredMixin, View):
             return JsonResponse({'message': 'Project not found'}, status=500)
 
         for item in data['equipments']:
-            equipment = Equipment.get_equipment_by_id(item['id'])
-            ProjectEquipments.objects.create(
+            equipment = ResourceItem.get_equipment_by_id(item['id'])
+            ProjectResourceItem.objects.create(
                 project=project,
                 equipment=equipment,
                 cost_rent=item['cost_rent'],
@@ -196,7 +196,7 @@ class AddEquipmentProject(LoginRequiredMixin, View):
 class RemoveEquipmentProject(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-        project_equipment = ProjectEquipments.get_by_id(
+        project_equipment = ProjectResourceItem.get_by_id(
             data['id_equipment_project']
         )
         equipment = project_equipment.equipment
@@ -218,7 +218,7 @@ class RemoveEquipmentProject(LoginRequiredMixin, View):
 class UpdateEquipmentProject(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-        project_equipment = ProjectEquipments.get_by_id(
+        project_equipment = ProjectResourceItem.get_by_id(
             data['id_equipment_project']
         )
         project_equipment.cost_rent = Decimal(data['cost_rent'])
