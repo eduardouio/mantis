@@ -9,8 +9,8 @@
             </span>
         </div>
         <div class="col-6 d-flex justify-content-end gap-3">
-            {%  if request.resolver_match.url_name  != 'equipment_create' %}    
-            <a href="{% url 'equipment_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-default">
+            {%  if request.resolver_match.url_name  != 'resource_create' %}    
+            <a href="{% url 'resource_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M4 7l16 0" />
@@ -21,7 +21,7 @@
                 </svg>
                 Eliminar Equipo
             </a>
-            <a href="{% url 'equipment_detail' equipment.id %}" class="btn btn-sm btn-default">
+            <a href="{{ equipment.pk }} " class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                     <path d="M5 12l14 0" />
@@ -31,7 +31,7 @@
                 Volver Ficha
             </a>
             {% endif %}
-            <a href="{% url 'equipment_list' %}" class="btn btn-sm btn-default">
+            <a href="{% url 'resource_list' %}" class="btn btn-sm btn-default">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />

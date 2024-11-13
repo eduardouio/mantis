@@ -15,7 +15,7 @@
             {{ message }}
         </span>
         {% endif %}
-        <a href="{% url 'equipment_create' %}" class="btn btn-sm btn-default">
+        <a href="{% url 'resource_create' %}" class="btn btn-sm btn-default">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M12 5l0 14" />
@@ -29,16 +29,16 @@
         <table class="table table-bordered table-striped" id="myTable">
             <thead>
             <tr>
-                <th class="bg-secondary bg-opacity-25">#</th>
-                <th class="bg-secondary bg-opacity-25">Codigo</th>
-                <th class="bg-secondary bg-opacity-25">Tipo</th>
-                <th class="bg-secondary bg-opacity-25">Marca</th>
-                <th class="bg-secondary bg-opacity-25">Modelo</th>                
-                <th class="bg-secondary bg-opacity-25">Estado</th>
-                <th class="bg-secondary bg-opacity-25">Activo</th>
-                <th class="bg-secondary bg-opacity-25">Ubicación</th>
-                <th class="bg-secondary bg-opacity-25">Proyecto</th>
-                <th class="bg-secondary bg-opacity-25">Fecha Liberación</th>
+                <th class="bg-secondary bg-opacity-25 text-center ">#</th>
+                <th class="bg-secondary bg-opacity-25 text-center">Codigo</th>
+                <th class="bg-secondary bg-opacity-25 text-center">Tipo</th>
+                <th class="bg-secondary bg-opacity-25 text-center">Marca</th>
+                <th class="bg-secondary bg-opacity-25 text-center">Modelo</th>                
+                <th class="bg-secondary bg-opacity-25 text-center">Estado</th>
+                <th class="bg-secondary bg-opacity-25 text-center">Activo</th>
+                <th class="bg-secondary bg-opacity-25 text-center">Ubicación</th>
+                <th class="bg-secondary bg-opacity-25 text-center">Proyecto</th>
+                <th class="bg-secondary bg-opacity-25 text-center">Fecha Liberación</th>
             </tr>
             </thead>
             <tbody>
@@ -79,7 +79,9 @@
                     <td class="p-0">{{ item.brand }}</td>
                     <td class="p-0">{% if item.model %} {{ item.model }} {% endif %}</td>
                     <td class="p-0">{{ item.status }}</td>
-                    <td class="p-0">{{ item.is_active }}</td>
+                    <td class="p-0 text-center">
+                        {{ item.is_active | yesno:"Si,No" }}
+                    </td>
                     <td class="p-0">{{ item.bg_current_location }}</td>
                     <td class="p-0">{{ item.bg_current_project }}</td>
                     <td class="p-0">

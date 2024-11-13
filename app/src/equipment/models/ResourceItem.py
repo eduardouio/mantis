@@ -89,7 +89,9 @@ class ResourceItem(BaseModel):
     # se libera cuando un proyecto termina, o libera el equipo
     bg_current_location = models.CharField(
         'Ubicación Actual',
-        max_length=255
+        max_length=255,
+        blank=True,
+        null=True
     )
     bg_current_project = models.SmallIntegerField(
         'ID Proyecto Actual',

@@ -1,9 +1,9 @@
-from .Equipment import (
-    ListEquipment,
-    DetailEquipment,
-    CreateEquipment,
-    UpdateEquipment,
-    DeleteEquipment
+from .ResourceItem import (
+    ResourceItemList,
+    ResourceItemDetail,
+    CreateResourceItem,
+    UpdateResourceItem,
+    RemoveResourceItem
 )
 
 from .Vehicle import (

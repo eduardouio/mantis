@@ -1,10 +1,10 @@
 from django.urls import path
 from .views import (
-    ListEquipment,
-    DetailEquipment,
-    CreateEquipment,
-    UpdateEquipment,
-    DeleteEquipment,
+    ResourceItemList,
+    ResourceItemDetail,
+    CreateResourceItem,
+    UpdateResourceItem,
+    RemoveResourceItem,
     ListVehicle,
     DetailVehicle,
     CreateVehicle,
@@ -13,11 +13,11 @@ from .views import (
 )
 
 urlpatterns = [
-    path('equipos/listar/', ListEquipment.as_view(), name='equipment_list'),
-    path('equipos/<int:pk>/', DetailEquipment.as_view(), name='equipment_detail'),
-    path('equipos/crear/', CreateEquipment.as_view(), name='equipment_create'),
-    path('equipos/editar/<int:pk>/', UpdateEquipment.as_view(), name='equipment_update'),
-    path('equipos/eliminar/<int:pk>/', DeleteEquipment.as_view(), name='equipment_delete'),
+    path('recursos/listar/', ResourceItemList.as_view(), name='resource_list'),
+    path('recursos/<int:pk>/', ResourceItemDetail.as_view(), name='resource_detail'),
+    path('recursos/crear/', CreateResourceItem.as_view(), name='resource_create'),
+    path('recursos/editar/<int:pk>/', UpdateResourceItem.as_view(), name='resource_update'),
+    path('recursos/eliminar/<int:pk>/', RemoveResourceItem.as_view(), name='resource_delete'),
     
     path('vehiculos/listar/', ListVehicle.as_view(), name='vehicle_list'),
     path('vehiculos/<int:pk>/', DetailVehicle.as_view(), name='vehicle_detail'),

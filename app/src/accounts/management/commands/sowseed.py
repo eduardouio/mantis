@@ -113,9 +113,7 @@ class Command(BaseCommand):
 
         for item in range(15):
             Vehicle.objects.create(
-                name=faker.word(),
                 brand=faker.company(),
-                code_vehicle=faker.uuid4(),
                 model=faker.word(),
                 no_plate=faker.license_plate(),
                 year=random.choice([2012, 2013, 2014, 2015,

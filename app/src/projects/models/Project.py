@@ -211,6 +211,8 @@ class WorkOrderDetail(BaseModel):
     )
     cost = models.DecimalField(
         'Costo',
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
     location = models.CharField(
@@ -225,8 +227,8 @@ class WorkOrderDetail(BaseModel):
     )
     total_hours = models.DecimalField(
         'Horas Totales',
-        max_digits=5,
-        decimal_places=2
+        max_digits=10,
+        decimal_places=2,
     )
     origin_site = models.CharField(
         'Origen',

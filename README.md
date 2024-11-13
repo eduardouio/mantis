@@ -16,11 +16,12 @@ python manage.py sowseed
 
 
 # un solo comando para unix
+```bash
 ./manage.py makemigrations accounts &&
 ./manage.py makemigrations equipment projects &&
 ./manage.py migrate &&
 ./manage.py sowseed 
-
+```
 
 ## TODO:
 # - [ ] Vista de proyecto

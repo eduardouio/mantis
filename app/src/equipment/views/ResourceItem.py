@@ -13,12 +13,12 @@ from equipment.models import ResourceItem
 from django import forms
 
 
-class EquipmentForm(forms.ModelForm):
+class ResourceItemForm(forms.ModelForm):
     class Meta:
         model = ResourceItem
         fields = [
             'name', 'brand', 'model', 'code', 'date_purchase', 'height',
-            'width', 'depth', 'weight', 'description', 'status', 'is_active',
+            'width', 'depth', 'weight', 'status', 'is_active',
             'notes'
         ]
         widgets = {
@@ -31,16 +31,15 @@ class EquipmentForm(forms.ModelForm):
             'width': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
             'depth': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
             'weight': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
-            'description': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'notes': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'status': forms.Select(attrs={'class': 'form-select form-control-sm'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
 
-class ListEquipment(LoginRequiredMixin, ListView):
+class ResourceItemList(LoginRequiredMixin, ListView):
     model = ResourceItem
-    template_name = 'lists/equipment_list.html'
+    template_name = 'lists/resource_list.html'
     context_object_name = 'equipments'
     ordering = ['name']
 
@@ -60,7 +59,7 @@ class ListEquipment(LoginRequiredMixin, ListView):
         return context
 
 
-class DetailEquipment(LoginRequiredMixin, DetailView):
+class ResourceItemDetail(LoginRequiredMixin, DetailView):
     model = ResourceItem
     template_name = 'presentations/equipment_presentation.html'
     context_object_name = 'equipment'
@@ -93,14 +92,14 @@ class DetailEquipment(LoginRequiredMixin, DetailView):
         return context
 
 
-class CreateEquipment(LoginRequiredMixin, CreateView):
+class CreateResourceItem(LoginRequiredMixin, CreateView):
     model = ResourceItem
     template_name = 'forms/equipment_form.html'
-    form_class = EquipmentForm
+    form_class = ResourceItemForm
     success_url = '/equipos/'
 
     def get_success_url(self):
-        url = reverse_lazy('equipment_detail', kwargs={'pk': self.object.pk})
+        url = reverse_lazy('resource_detail', kwargs={'pk': self.object.pk})
         url = f'{url}?action=created'
         return url
 
@@ -111,10 +110,10 @@ class CreateEquipment(LoginRequiredMixin, CreateView):
         return context
 
 
-class UpdateEquipment(LoginRequiredMixin, UpdateView):
+class UpdateResourceItem(LoginRequiredMixin, UpdateView):
     model = ResourceItem
     template_name = 'forms/equipment_form.html'
-    form_class = EquipmentForm
+    form_class = ResourceItemForm
     success_url = '/equipos/'
 
     def get_context_data(self, **kwargs):
@@ -128,18 +127,18 @@ class UpdateEquipment(LoginRequiredMixin, UpdateView):
         return context
 
     def get_success_url(self):
-        url = reverse_lazy('equipment_detail', kwargs={'pk': self.object.pk})
+        url = reverse_lazy('resource_detail', kwargs={'pk': self.object.pk})
         url = f'{url}?action=updated'
         return url
 
 
-class DeleteEquipment(LoginRequiredMixin, RedirectView):
+class RemoveResourceItem(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         equipment = ResourceItem.objects.get(pk=kwargs['pk'])
         try:
             equipment.delete()
-            url = reverse_lazy('equipment_list')
+            url = reverse_lazy('resource_list')
             return f'{url}?action=deleted'
         except Exception as e:
-            url = reverse_lazy('equipment_detail', kwargs={'pk': equipment.pk})
+            url = reverse_lazy('resource_detail', kwargs={'pk': equipment.pk})
             return f'{url}?action=no_delete'

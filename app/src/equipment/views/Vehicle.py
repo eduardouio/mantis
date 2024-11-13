@@ -12,13 +12,11 @@ class VehicleForm(forms.ModelForm):
     class Meta:
         model = Vehicle
         fields = [
-            'name', 'brand', 'code_vehicle', 'model', 'type_vehicle', 'year',
+            'brand', 'model', 'type_vehicle', 'year',
             'no_plate', 'owner_transport', 'is_active', 'notes'
         ]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'brand': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'code_vehicle': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'model': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'type_vehicle': forms.Select(attrs={'class': 'form-select form-control-sm'}),
             'year': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),

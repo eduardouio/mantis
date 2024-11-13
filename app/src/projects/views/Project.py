@@ -21,26 +21,17 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = [
-            'internal_code', 'partner', 'required_by', 'autorized_by',
-            'project_name', 'project_description', 'place', 'contact_name',
-            'position_contact', 'phone_contact', 'start_date', 'end_date',
-            'is_active', 'type_service', 'notes'
+            'partner', 'place', 'contact_name', 'phone_contact', 'start_date',
+            'end_date', 'is_active', 'notes'
         ]
         widgets = {
-            'internal_code': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'partner': forms.Select(attrs={'class': 'form-select form-control-sm'}),
-            'required_by': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'autorized_by': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'project_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'project_description': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'notes': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'place': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'contact_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'position_contact': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'phone_contact': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
             'start_date': forms.DateInput(attrs={'class': 'form-control form-control-sm', 'type': 'date'}),
             'end_date': forms.DateInput(attrs={'class': 'form-control form-control-sm', 'type': 'date'}),
-            'type_service': forms.Select(attrs={'class': 'form-select form-control-sm'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
@@ -158,7 +149,7 @@ class DeleteProject(LoginRequiredMixin, RedirectView):
             url = reverse_lazy('project_list')
             return f'{url}?action=deleted'
         except Exception as e:
-            url  = reverse_lazy('project_detail', kwargs={'pk': project.pk})
+            url = reverse_lazy('project_detail', kwargs={'pk': project.pk})
             return f'{url}?action=no_delete'
 
 

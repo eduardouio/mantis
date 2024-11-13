@@ -9,72 +9,19 @@ from .models import (
 
 
 class MantenanceAdmin(SimpleHistoryAdmin):
-    list_display = (
-        'id',
-        'date',
-        'tecnical',
-        'project',
-        'start_hour',
-        'end_hour',
-        'destination_site',
-        'vehicle',
-        'volume_transported'
-    )
-    search_fields = (
-        'project__name',
-        'tecnical__first_name',
-        'tecnical__last_name',
-        'vehicle__plate',
-    )
+    pass
+
 
 class PartnerAdmin(SimpleHistoryAdmin):
-    list_display = (
-        'business_tax_id',
-        'name',
-        'address',
-        'phone',
-        'email',
-        'name_contact'
-    )
-
-    search_fields = (
-        'business_tax_id',
-        'name',
-
-        'email',
-    )
+    pass
 
 
 class ProjectAdmin(SimpleHistoryAdmin):
-    list_display = (
-        'id',
-        'project_name',
-        'partner',
-        'place',
-        'start_date',
-        'end_date',
-        'is_active',
-        'type_service'
-    )
-
-    search_fields = (
-        'project_name',
-        'partner__name',
-        'place',
-    )
+    pass
 
 
 class ProjectEquipmentsAdmin(SimpleHistoryAdmin):
-    list_display = (
-        'id',
-        'project',
-        'equipment',
-        'cost_rent',
-        'cost_manteinance',
-        'mantenance_frequency',
-        'start_date',
-        'end_date',
-    )
+    pass
 
 
 admin.site.register(WorkOrder, MantenanceAdmin)
