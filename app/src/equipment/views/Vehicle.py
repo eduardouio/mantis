@@ -31,7 +31,6 @@ class ListVehicle(LoginRequiredMixin, ListView):
     model = Vehicle
     template_name = 'lists/vehicle_list.html'
     context_object_name = 'vehicles'
-    ordering = ['name']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
