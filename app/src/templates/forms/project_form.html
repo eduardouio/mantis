@@ -40,61 +40,28 @@
             {% csrf_token %}
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label for="internal_code" class="text-muted">Código Interno:</label>
-                    {{ form.internal_code }}
-                </div>
-                <div class="col-md-4">
                     <label for="partner" class="text-muted">Cliente:</label>
                     {{ form.partner }}
                 </div>
                 <div class="col-md-4">
-                    <label for="required_by" class="text-muted">Requerido por:</label>
-                    {{ form.required_by }}
-                </div>
-
-                <div class="col-md-4">
-                    <label for="autorized_by" class="text-muted">Autorizado por:</label>
-                    {{ form.autorized_by }}
-                </div>
-
-                <div class="col-md-4">
-                    <label for="project_name" class="text-muted">Nombre del Proyecto:</label>
-                    {{ form.project_name }}
-                </div>
-
-                <div class="col-md-4">
                     <label for="place" class="text-muted">Lugar:</label>
                     {{ form.place }}
                 </div>
-
                 <div class="col-md-4">
                     <label for="contact_name" class="text-muted">Nombre de Contacto:</label>
                     {{ form.contact_name }}
                 </div>
-
-                <div class="col-md-4">
-                    <label for="position_contact" class="text-muted">Cargo de Contacto:</label>
-                    {{ form.position_contact }}
-                </div>
-
                 <div class="col-md-4">
                     <label for="phone_contact" class="text-muted">Teléfono de Contacto:</label>
                     {{ form.phone_contact }}
                 </div>
-
                 <div class="col-md-4">
                     <label for="start_date" class="text-muted">Fecha de Inicio:</label>
                     {{ form.start_date }}
                 </div>
-
                 <div class="col-md-4">
                     <label for="end_date" class="text-muted">Fecha de Fin:</label>
                     {{ form.end_date }}
-                </div>
-
-                <div class="col-md-4">
-                    <label for="type_service" class="text-muted">Tipo de Servicio:</label>
-                    {{ form.type_service }}
                 </div>
                 <div class="col-md-2 d-flex align-items-center gap-3">
                     <label for="is_active" class="text-muted">Activo:</label>
@@ -103,10 +70,6 @@
                     </span>
                 </div>
                 <div class="col-md-10">
-                    <label for="project_description" class="text-muted">Descripción del Proyecto:</label>
-                    {{ form.project_description }}
-                </div>
-                <div class="col-md-12">
                     <label for="project_description" class="text-muted">Notas:</label>
                     {{ form.notes }}
                 </div>

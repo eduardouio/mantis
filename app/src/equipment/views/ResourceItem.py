@@ -61,7 +61,7 @@ class ResourceItemList(LoginRequiredMixin, ListView):
 
 class ResourceItemDetail(LoginRequiredMixin, DetailView):
     model = ResourceItem
-    template_name = 'presentations/equipment_presentation.html'
+    template_name = 'presentations/resourse_presentation.html'
     context_object_name = 'equipment'
 
     def get_context_data(self, **kwargs):
