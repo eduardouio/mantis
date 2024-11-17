@@ -50,10 +50,6 @@ class Vehicle(BaseModel):
         choices=CHOICES_OWNER,
         default='PEISOL'
     )
-    is_active = models.BooleanField(
-        'Activo?',
-        default=True
-    )
 
     @classmethod
     def get_true_false_list(cls, partner):

@@ -65,10 +65,6 @@ class Project(BaseModel):
         blank=True,
         null=True
     )
-    order_number = models.PositiveBigIntegerField(
-        'Número de Orden',
-        unique=True
-    )
     place = models.CharField(
         'Lugar',
         max_length=255
