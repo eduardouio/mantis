@@ -1,515 +1,396 @@
 {% extends 'base/base.html' %}
-
 {% block content %}
-<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
-    <div class="row">
-        <div class="col-3">
-            <span class="text-primary">
-                {{ title_section }}
-            </span>
-        </div>
-        <div class="col-4 text-center">
-            {% if action %}
-            <div class="{% if action == 'delete' or action == 'no_delete' %} bg-danger {% else %} bg-peisol-secondary {% endif %} bg-gradient p-2 rounded">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
-                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                    <path d="M9 12l2 2l4 -4" />
-                </svg>
-                {{ message }}
-            </div>
-            {% endif %}
-        </div>
-        <div class="col-5 d-flex align-items-center justify-content-end gap-3">
-            {% if not action %}
-            <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M4 7l16 0" />
-                    <path d="M10 11l0 6" />
-                    <path d="M14 11l0 6" />
-                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                  </svg>
-                Eliminar
-            </a>
-            {% endif %}
-            <a href="{% url 'project_update' project.id %}" class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                    <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                    <path d="M16 5l3 3" />
-                  </svg>
-                Editar
-            </a>
-            <a href="{% url 'project_create' %}" class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M12 5l0 14" />
-                    <path d="M5 12l14 0" />
-                  </svg>
-                  Nuevo
-            </a>
-            <a href="{% url 'project_list' %}" class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
-                    <path d="M5 12l14 0" />
-                    <path d="M5 12l6 6" />
-                    <path d="M5 12l6 -6" />
-                  </svg>
-                Volver
-            </a>
-        </div>
-    </div>
+<div class="container text-center mx-auto" v-if="showLoader">
+   <h1 class="text-primary">
+      Cargando...
+   </h1>
 </div>
-<div class="container mt-2">
-    <!-- Información del Proyecto -->
-    <div class="card mb-2" v-if="!currentProjectEquipment">
-        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
-            <!-- Ícono de información -->
-            Información del Proyecto
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Código Interno:</span>
-                    <span class="rounded rounded-1 px-3">{{ project.internal_code }} {% if project.is_active %} <span class="badge text-bg-success">Proyecto Activo</span> {% else %} <span class="badge text-bg-danger">Proyecto Inactivo</span> {% endif %}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Nombre del Proyecto:</span>
-                    <span class="rounded rounded-1 px-3">{{ project.project_name }}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Partner:</span>
-                    <span class="rounded rounded-1 px-3">{{ project.partner }}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Requerido por:</span>
-                    <span class="rounded rounded-1 px-3">{{ project.required_by }}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Autorizado por:</span>
-                    <span class="rounded rounded-1 px-3">{{ project.autorized_by }}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Lugar:</span>
-                    <span class="rounded rounded-1 px-3">{{ project.place }}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Fecha de Inicio:</span>
-                    <span class="rounded rounded-1 px-3">
-                        {{ project.start_date }}
-                    </span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Fecha de Fin:</span>
-                    <span class="rounded rounded-1 px-3">{{ project.end_date }}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Nombre de Contacto:</span>
-                    <span class="rounded rounded-1 px-3">{{ project.contact_name }}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Cargo de Contacto:</span>
-                    <span class="rounded rounded-1 px-3">{{ project.position_contact }}</span>
-                </div>
-                <div class="col-md-4 d-flex flex-column p-1">
-                    <span class="text-muted">Teléfono de Contacto:</span>
-                    <span class="rounded rounded-1 px-3">{{ project.phone_contact }}</span>
-                </div>
-                <div class="col-md-12 d-flex flex-column p-1">
-                    <span class="text-muted">Descripción del Proyecto:</span>
-                    <p class="px-3">{{ project.project_description }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Información del Contacto -->
-     <div class="card mb-5" v-if="currentProjectEquipment">
-        <div class="card-header p-1 bg-peisol-primary bg-gradient bg-opacity-75 text-white d-flex justify-content-between">
-            Modificar Atributos [[ currentProjectEquipment.code ]] [[ currentProjectEquipment.name ]]
-        </div>
-        <div class="card-body">
-            <div class="row">
-                    <div class="col">
-                        <label for="" class="form-label">Desde</label>
-                        <input v-model="currentProjectEquipment.start_date" type="text" class="form-control"/>
-                    </div>
-                    <div class="col">
-                        <label for="" class="form-label">Hasta</label>
-                        <input v-model="currentProjectEquipment.start_date"  type="text" class="form-control"/>
-                    </div>
-                    <div class="col">
-                        <label for="" class="form-label">Frecuencia</label>
-                        <input  v-model="currentProjectEquipment.mantenance_frequency" type="text" class="form-control"/>
-                    </div>
-                    <div class="col">
-                        <label for="" class="form-label">C Renta</label>
-                        <input v-model="currentProjectEquipment.cost_rent" type="number" step="0.01" class="form-control"/>
-                    </div>
-                    <div class="col">
-                        <label for="" class="form-label">C Mant</label>
-                        <input v-model="currentProjectEquipment.cost_manteinance"  type="number" step="0.01" class="form-control"/>
-                    </div>
-                    <div class="col-1 d-flex justify-content-center align-items-center gap-3">
-                        <label for="" class="form-label">Activo</label>
-                        <input v-model="currentProjectEquipment.is_active" type="checkbox" class="form-check-input"/>
-                    </div>
-                </div>
-                    <div class="row">  
-                    <div class="col-2" v-if="!currentProjectEquipment.is_active">
-                        <label for="" class="form-label">Fecha Retiro</label>
-                        <input type="date" class="form-control" v-model="currentProjectEquipment.retired_date"/>
-                    </div>
-                    <div class="col-10" v-if="!currentProjectEquipment.is_active">
-                        <label for="" class="form-label">Motivo de Retiro</label>
-                        <textarea v-model="currentProjectEquipment.motive_retired" class="form-control form-control-sm"></textarea>
-                    </div>
-
-            </div>
-            <div class="row m-3">
-                <div class="col d-flex justify-content-end gap-3">
-                <button class="btn btn-default btn-sm" @click="updateProjectEquipment">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"></path>
-                        <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"></path>
-                        <path d="M14 4l0 4l-6 0l0 -4"></path>
-                        </svg>
-                    Guardar
-                </button>
-                <button class="btn btn-default btn-sm" @click="currentProjectEquipment=null">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
-                        <path d="M5.7 5.7l12.6 12.6"></path>
-                      </svg>
-                    Cancelar
-                </button>
-            </div>
-            </div>
-        </div>  
-     </div>
-    <div class="card mb-5">
-        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white d-flex justify-content-between">
-            <span>Detalle de Equipos en Renta</span>
-            <button class="btn btn-sm btn-default text-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M12 5l0 14" />
-                    <path d="M5 12l14 0" />
-                  </svg>
-                Agregar Equipo
-            </button>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <table class="table table-bordered table-striped" id="">
-                    <thead>
-                        <tr>
-                        <th class="text-center">#</th>
-                        <th class="text-center">Equipo</th>
-                        <th class="text-center">Tipo</th>
-                        <th class="text-center" title="Fecha de creación de registro">Asignado</th>
-                        <th class="text-center">Desde</th>
-                        <th class="text-center">Hasta</th>
-                        <th class="text-center">Frecuencia</th>
-                        <th class="text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5"> <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"></path> <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path> </svg>  
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for = "item, idx in projectEquipment">
-                            <td class="p-0 text-center">[[ idx ]]</td>
-                            <td class="p-0">
-                                <span v-if="item.is_active">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                                        <path d="M9 12l2 2l4 -4" />
-                                      </svg>
-                                </span>
-                                <span v-else>
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M12 9v4" />
-                                        <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
-                                        <path d="M12 16h.01" />
-                                      </svg>
-                                </span>
-                                [[ item.code ]]
-                            </td>
-                            <td class="p-0">[[ item.name ]]</td>
-                            <td class="p-0">[[ item.created_at ]]</td>
-                            <td class="p-0">[[ formatDate(item.start_date) ]]</td>
-                            <td class="p-0">[[ formatDate(item.end_date) ]]</td>
-                            <td class="p-0 text-center">[[ item.mantenance_frequency ]] Días</td>
-                            <td class="p-0 d-flex justify-content-center gap-3">
-                                <span title="Editar Equipo" @click="currentProjectEquipment=item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path><path d="M16 5l3 3"></path></svg>
-                                </span>
-                                <span title="Eliminar Equipo" @click="deleteEquipment(item)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="red" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" stroke-width="1.5"> <path d="M5 12l14 0"></path></svg>
-                                    <span v-if="item.confirm_delete" class="text-danger">
-                                        Confirmar
-                                    </span>
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    {% if action == 'delete' %}
-    <div class="row mb-3">
-        <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-sm btn-default">
-            <!-- Ícono para confirmar eliminación -->
-            Confirmar Eliminación
-        </a>
-    </div>
-    {% endif %}
-</div>
-<!-- Modal para agregar equipos -->
-<div class="modal  modal-xl fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header bg-peisol-primary bg-gradient p-2">
-          <span class="modal-title text-white" id="staticBackdropLabel">
-            Agregar Equipo - Listado de Equipos Disponibles
-        </span>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body border">
-          <div class="container-fluid">
-            <div class="row">
-                <div v-if="ceroExist"  class="col-12 text-danger bg-opacity-25 bg-warning p-2 rounded-1 mb-3 fs-6">
-                    No pueden existir valores <strong>cero</strong> en Renta y/o Mantenimiento
-                </div>
-                <div class="col-12" v-if="showAllEquipment">
-                    <table class="table table-striped table-bordered" id="myTableSmall2">
-                        <thead>
-                            <tr>
-                                <th class="text-center">#</th>
-                                <th class="text-center">Equipo</th>
-                                <th class="text-center">Tipo</th>
-                                <th class="text-center">Marca</th>
-                                <th class="text-center">Estado</th>
-                                <th class="text-center">Accion</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="item, idx in allEquimpents" :key="item">
-                                <td class="p-0 text-center">[[ idx + 1 ]]</td>
-                                <td class="p-0" @click="asignEquipment(item)">[[ item.code ]]</td>
-                                <td class="p-0" @click="asignEquipment(item)">[[ item.name ]]</td>
-                                <td class="p-0">[[ item.brand ]] </td>
-                                <td class="p-0">
-                                    <span v-if="item.is_selected" class="text-primary">
-                                        SELECCIONADO
-                                    </span>
-                                    <span v-else class="text-success">
-                                        LIBRE
-                                    </span>
-                                </td>
-                                <td class="p-0 text-center" title="Agregar Equipo">
-                                    <div @click="asignEquipment(item)">
-                                        <span v-if="!item.is_selected" title="Agregar Equipo">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                <path d="M12 5l0 14" />
-                                                <path d="M5 12l14 0" />
-                                              </svg>
-                                        </span>
-                                            <span v-else title="Quitar Equipo">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-minus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M5 12l14 0" />
-                                                  </svg>
-                                            </span>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="row border rounded-1 bg-gray bg-gradient mb-3 pb-1" v-if="!showAllEquipment">
-                <div class="col-12 d-flex justify-content-between gap-3 p-2 bg-peisol-secondary bg-gradient">
-                    <span>[[ currentEquipment.name ]]</span>
-                    <span class="text-danger">[[ currentEquipment.code ]] </span>
-                    <span class="text-danger" @click="showAllEquipment=true">
-                        Cerrar
-                    </span>
-                </div>
-                    <div class="col">
-                        <label for="" class="form-label">Costo Renta</label>
-                        <input v-model="currentEquipment.cost_rent" class="form-control form-control-sm text-end" type="number" step="0.01"/>
-                    </div>
-                    <div class="col">
-                        <label for="" class="form-label">Costo Mant</label>
-                        <input v-model="currentEquipment.cost_manteinance" class="form-control form-control-sm text-end" type="number" step="0.01"/>
-                    </div>
-                    <div class="col">
-                        <label for="" class="form-label">Frecuencia</label>
-                        <input v-model="currentEquipment.frecuency_days" class="form-control form-control-sm text-end" type="text" step="1"/>
-                    </div>
-                    <div class="col">
-                        <label for="" class="form-label">Desde</label>
-                        <input v-model="currentEquipment.start_date" class="form-control form-control-sm" type="date"/>
-                    </div>
-                    <div class="col">
-                        <label for="" class="form-label">Hasta</label>
-                        <input v-model="currentEquipment.end_date" class="form-control form-control-sm" type="date"/>
-                    </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    Equipos Registrados
-                </div>
-                <div class="col-12">
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                        <tr>
-                            <th class="text-center">#</th>
-                            <th class="text-center">Equipo</th>
-                            <th class="text-center">Tipo</th>
-                            <th class="text-center">Costo Rnt</th>
-                            <th class="text-center">Costo Mnt</th>
-                            <th class="text-center">Frec Dias</th>
-                            <th class="text-center">F Inicio</th>
-                            <th class="text-center">F Fin</th>  
-                            <th class="text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="blue" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-                                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                                  </svg>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody v-if="show_selected">
-                        <tr  v-for="itm, idx in selectedEquipment" :key="itm">
-                            <td class="p-0 text-center">[[ idx + 1 ]]</td>
-                            <td class="p-0" :class="{'bg-danger text-white' : isValidItem(itm)}" @click="setEquipment(itm)">[[ itm.name ]]</td>
-                            <td class="p-0" @click="setEquipment(itm)">[[ itm.code ]]</td >
-                            <td class="p-0 text-end">
-                                <span>
-                                    [[ costFormat(itm.cost_rent) ]]
-                                </span>
-                            </td>
-                            <td class="p-0 text-end">[[ costFormat(itm.cost_manteinance) ]]</td>
-                            <td class="p-0 text-center">[[ itm.frecuency_days ]] Días</td>
-                            <td class="p-0 text-end">[[ formatDate(itm.start_date) ]]</td>
-                            <td class="p-0 text-end">[[ formatDate(itm.end_date) ]]</td>
-                            <td class="p-0 text-center d-flex justify-content-between ga-3">
-                                <span title="Editar Registro" @click="setEquipment(itm)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                        <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                        <path d="M16 5l3 3" />
-                                      </svg>
-                                </span>
-                                <span title="Quitar Equipo" @click="asignEquipment(itm)">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-minus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M5 12l14 0" />
-                                      </svg>
-                                </span>
-                            </td>
-                        </tr>
-                    </tbody>
-                    </table>
-                </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer bg-gray bg-gradient d-flex justify-content-end gap-3">
-        <button class="btn btn-default btn-sm text-success" v-if="!ceroExist" @click="sendData">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-checkbox" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M9 11l3 3l8 -8" />
-                <path d="M20 12v6a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h9" />
-              </svg>
-            Confirmar Equipos
-        </button>
-          <button type="button" class="btn btn-default btn-sm" data-bs-dismiss="modal">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#000000" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-              <path d="M5.7 5.7l12.6 12.6" />
+<div  v-else class="container-fluid mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50">
+   <div class="row m-3 p-1 bg-gray bg-gradient rounded-1">
+      <div class="col-3">
+         <span class="text-primary">
+         {{ title_section }}
+         </span>
+      </div>
+      <div class="col-4 text-center">
+         {% if action %}
+         <div class="{% if action == 'delete' or action == 'no_delete' %} bg-danger {% else %} bg-peisol-secondary {% endif %} bg-gradient p-2 rounded">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+               <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+               <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+               <path d="M9 12l2 2l4 -4" />
             </svg>
-            Cancelar
-        </button>
+            {{ message }}
+         </div>
+         {% endif %}
+      </div>
+      <div class="col-5 d-flex align-items-center justify-content-end gap-3">
+         {% if not action %}
+         <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-sm btn-default">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+               <path d="M4 7l16 0" />
+               <path d="M10 11l0 6" />
+               <path d="M14 11l0 6" />
+               <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+               <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+            </svg>
+            Eliminar
+         </a>
+         {% endif %}
+         <a href="{% url 'project_update' project.id %}" class="btn btn-sm btn-default">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+               <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+               <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+               <path d="M16 5l3 3" />
+            </svg>
+            Editar
+         </a>
+         <a href="{% url 'project_create' %}" class="btn btn-sm btn-default">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+               <path d="M12 5l0 14" />
+               <path d="M5 12l14 0" />
+            </svg>
+            Orden De Trabajo
+         </a>
+         <a href="{% url 'project_list' %}" class="btn btn-sm btn-default">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+               <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+               <path d="M5 12l14 0" />
+               <path d="M5 12l6 6" />
+               <path d="M5 12l6 -6" />
+            </svg>
+            Volver
+         </a>
+      </div>
+   </div>
+   <div class="row m-1 p-1">
+      <div class="col-2 text-start">
+         <div class="d-flex flex-column flex-shrink-0 p-2 bg-light border rounded-2">
+            <a href="/" class="text-center">
+            <span class="fs-6 upper">Proyecto <i class="text-primary">#{{ project.id }}</i></span>
+            </a>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+               <li class="nav-item">
+                  <a @click="showTab('tab_detail')" :class="tab_show.tab_detail ? tabClass.active : tabClass.inactive">
+                     <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-id">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v10a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+                        <path d="M9 10m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                        <path d="M15 8l2 0" />
+                        <path d="M15 12l2 0" />
+                        <path d="M7 16l10 0" />
+                     </svg>
+                     Detalle
+                  </a>
+               </li>
+               <li>
+                  <a @click="showTab('tab_equipments')" :class="tab_show.tab_equipments ? tabClass.active : tabClass.inactive">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-portable-bathroom" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <rect x="6" y="4" width="12" height="16" rx="2" fill="none" stroke="#555555"></rect>
+                        <rect x="9" y="8" width="6" height="9" rx="1" fill="none" stroke="#555555"></rect>
+                        <circle cx="12" cy="6" r="0.5" fill="none" stroke="#555555"></circle>
+                        <circle cx="13.5" cy="12" r="0.5" fill="none" stroke="#555555"></circle>
+                        <path d="M6 20h12" fill="none" stroke="#555555"></path>
+                     </svg>
+                     Equipos
+                  </a>
+               </li>
+               <li>
+                  <a  @click="showTab('tab_work_order')" :class="tab_show.tab_work_order ? tabClass.active : tabClass.inactive">
+                     <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-truck">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                        <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                        <path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" />
+                     </svg>
+                     Ordenes Trabajo
+                  </a>
+               </li>
+            </ul>
+         </div>
+      </div>
+      <div class="col-10 rounded-2 border">
+         <div v-if="tab_show.tab_detail">
+         <div class="row">
+            <div class="col bg-peisol-primary bg-gradient p-1 m-1 rounded-1 text-white">
+               <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-id">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v10a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" />
+                  <path d="M9 10m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                  <path d="M15 8l2 0" />
+                  <path d="M15 12l2 0" />
+                  <path d="M7 16l10 0" />
+               </svg>
+               Información del Proyecto
+            </div>
+         </div>
+         <div class="mt-2">
+            <div class="row">
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Estado Proyecto:</span>
+                  <span class="rounded rounded-1 px-3">
+                  {% if project.is_active %} 
+                  <span class="badge bg-success">Activo</span>
+                  {% else %} 
+                  <span class="badge bg-danger">Proyecto Inactivo</span> 
+                  {% endif %}
+                  </span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Partner:</span>
+                  <span class="rounded rounded-1 px-3">{{ project.partner }}</span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Lugar:</span>
+                  <span class="rounded rounded-1 px-3">{{ project.place }}</span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Fecha de Inicio:</span>
+                  <span class="rounded rounded-1 px-3">
+                  {{ project.start_date }}
+                  </span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Fecha de Fin:</span>
+                  <span class="rounded rounded-1 px-3">{{ project.end_date }}</span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Nombre de Contacto:</span>
+                  <span class="rounded rounded-1 px-3">{{ project.contact_name }}</span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Teléfono de Contacto:</span>
+                  <span class="rounded rounded-1 px-3">{{ project.phone_contact }}</span>
+               </div>
+            </div>
+            {% if action == 'delete' %}
+            <div class="row mb-3 p-3">
+               <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-sm btn-danger">
+                  <i class="text-white">
+                     <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M4 7l16 0" />
+                        <path d="M10 11l0 6" />
+                        <path d="M14 11l0 6" />
+                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                     </svg>
+                  </i>
+                  Confirmar Eliminación
+               </a>
+            </div>
+            {% endif %}
+         </div>
+      </div>
+      <div v-if="tab_show.tab_equipments">
+         <div class="row">
+            <div class="col bg-peisol-primary bg-gradient p-1 m-1 rounded-1 text-white">
+               <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-portable-bathroom" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                  <rect x="6" y="4" width="12" height="16" rx="2" fill="none" stroke="#fff"></rect>
+                  <rect x="9" y="8" width="6" height="9" rx="1" fill="none" stroke="#fff"></rect>
+                  <circle cx="12" cy="6" r="0.5" fill="none" stroke="#fff"></circle>
+                  <circle cx="13.5" cy="12" r="0.5" fill="none" stroke="#fff"></circle>
+                  <path d="M6 20h12" fill="none" stroke="#fff"></path>
+               </svg>
+               Equipos Rentados en Este Proyecto
+            </div>
+         </div>
+        <div class="mt-2">
+         <div class="row">
+         <div class="col-8 text-center">
+            <strong class="text-primary">
+               Equipos Rentados
+            </strong>
+            <table class="table table-bordered table-striped" id="myTable">
+               <thead>
+                  <tr>
+                     <th class="bg-primary p-1">#</th>
+                     <th class="bg-primary p-1">Tipo</th>
+                     <th class="bg-primary p-1">Código</th>
+                     <th class="bg-primary p-1">Renta</th>
+                     <th class="bg-primary p-1">Mantenimiento</th>
+                     <th class="bg-primary p-1">Frecuencia</th>
+                  </tr>
+               </thead>
+               <tbody>
+               <tr v-for="item, idx in allEquimpents">
+                  <td class="p-0">[[ idx + 1 ]]</td>
+                  <td class="p-0">[[ item.name ]]</td>
+                  <td class="p-0">[[ item.code ]]</td>
+                  <td class="p-0">[[ item.cost_rent ]]</td>
+                  <td class="p-0">[[ item.cost_manteinance ]]</td>
+                  <td class="p-0">[[ item.frecuency_days ]]</td>
+               </tr>
+            </tbody>
+            </table>
+         </div>
+         <div class="col-4 text-center">
+            <strong class="text-success">
+               Equipos Disponibles
+            </strong>
+            <table class="table table-bordered table-striped" id="myTable2">
+               <thead>
+                  <tr>
+                     <th class="bg-success p-1">#</th>
+                     <th class="bg-success p-1">Tipo</th>
+                     <th class="bg-success p-1">Código</th>
+                     <th class="bg-success p-1">Acción</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr v-for="item, idx in allEquimpents">
+                     <td class="p-0">[[ idx + 1 ]]</td>
+                     <td class="p-0">[[ item.name ]]</td>
+                     <td class="p-0">[[ item.code ]]</td>
+                     <th class="p-0">Agregar</th>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+      </div>
         </div>
       </div>
-    </div>
+      <div v-if="tab_show.tab_work_order">
+         <div class="row">
+            <div class="col bg-peisol-primary bg-gradient p-1 m-1 rounded-1 text-white">
+               <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-truck">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                  <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                  <path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" />
+               </svg>
+               Órdenes De Trabajo Ejecutadas En Este Proyecto
+            </div>
+         </div>
+         <div class="mt-2">
+            <div class="row">
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Estado Proyecto:</span>
+                  <span class="rounded rounded-1 px-3">
+                  {% if project.is_active %} 
+                  <span class="badge bg-success">Activo</span>
+                  {% else %} 
+                  <span class="badge bg-danger">Proyecto Inactivo</span> 
+                  {% endif %}
+                  </span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Partner:</span>
+                  <span class="rounded rounded-1 px-3">{{ project.partner }}</span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Lugar:</span>
+                  <span class="rounded rounded-1 px-3">{{ project.place }}</span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Fecha de Inicio:</span>
+                  <span class="rounded rounded-1 px-3">
+                  {{ project.start_date }}
+                  </span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Fecha de Fin:</span>
+                  <span class="rounded rounded-1 px-3">{{ project.end_date }}</span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Nombre de Contacto:</span>
+                  <span class="rounded rounded-1 px-3">{{ project.contact_name }}</span>
+               </div>
+               <div class="col-md-4 d-flex flex-column p-1">
+                  <span class="text-muted">Teléfono de Contacto:</span>
+                  <span class="rounded rounded-1 px-3">{{ project.phone_contact }}</span>
+               </div>
+            </div>
+            {% if action == 'delete' %}
+            <div class="row mb-3 p-3">
+               <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-sm btn-danger">
+                  <i class="text-white">
+                     <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M4 7l16 0" />
+                        <path d="M10 11l0 6" />
+                        <path d="M14 11l0 6" />
+                        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                     </svg>
+                  </i>
+                  Confirmar Eliminación
+               </a>
+            </div>
+            {% endif %}
+         </div>
+      </div>
+   </div>
+   </div>  
 </div>
 {% endblock %}
 {% block script %}
 <script>
-    var csrf_token = '{{ csrf_token }}';
-    var free_equipment = {{ free_equipment | safe }};
-    var project_equipment = {{ project_equipment | safe }};
-    var project = {{ project_json | safe }};
-    var urlBase = "{% url 'project_add_equipment' %}";
-    var deleteUrl = "{% url 'project_delete_equipment' %}";
-    var successUrl = "{% url 'project_detail' project.id %}";
-    var updateUrl = "{% url 'project_update_equipment' %}";
-    var free_equipment = free_equipment.map((itm) => {
-        return {
-            id: itm.pk,
-            is_selected: false,
-            cost_rent: 0,
-            cost_manteinance: 0,
-            frecuency_days: 7,
-            start_date: '',
-            end_date: '',
-            ...itm.fields
-        }
-    });
-
-    var project_equipment = project_equipment.map((itm) => {
-        const equipment_project = JSON.parse(itm.detail)[0];
-        const equipment = JSON.parse(itm.equipment)[0];
-        const date = new Date(equipment_project.fields.created_at);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses comienzan desde 0
-        const year = date.getFullYear();
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}`;
-
-        return {
-            'id_equipment_project': equipment_project.pk,
-            'id_equipment': equipment.pk,
-            'name': equipment.fields.name,
-            'code': equipment.fields.code,
-            'start_date': equipment_project.fields.start_date,
-            'end_date': equipment_project.fields.end_date,
-            'mantenance_frequency': equipment_project.fields.mantenance_frequency,
-            'is_active': equipment_project.fields.is_active,
-            'retired_date': equipment_project.fields.retired_date,
-            'motive_retired': equipment_project.fields.motive_retired,
-            'cost_rent': equipment_project.fields.cost_rent,
-            'cost_manteinance': equipment_project.fields.cost_manteinance,
-            'retired_date': equipment_project.fields.retired_date,
-            'confirm_delete': false,
-            'created_at': formattedDateTime
-        }
-    })
-    
-    var project = project.map((itm) => {
-        return {
-            id: itm.pk,
-            is_selected: false,
-            ...itm.fields
-        }
-    })[0];
-
+   var csrf_token = '{{ csrf_token }}';
+   var free_equipment = {{ free_equipment | safe }};
+   var project_equipment = {{ project_equipment | safe }};
+   var project = {{ project_json | safe }};
+   var urlBase = "{% url 'project_add_equipment' %}";
+   var deleteUrl = "{% url 'project_delete_equipment' %}";
+   var successUrl = "{% url 'project_detail' project.id %}";
+   var updateUrl = "{% url 'project_update_equipment' %}";
+   var free_equipment = free_equipment.map((itm) => {
+       return {
+           id: itm.pk,
+           is_selected: false,
+           cost_rent: 0,
+           cost_manteinance: 0,
+           frecuency_days: 7,
+           start_date: '',
+           end_date: '',
+           ...itm.fields
+       }
+   });
+   
+   var project_equipment = project_equipment.map((itm) => {
+       const equipment_project = JSON.parse(itm.detail)[0];
+       const equipment = JSON.parse(itm.equipment)[0];
+       const date = new Date(equipment_project.fields.created_at);
+       const day = String(date.getDate()).padStart(2, '0');
+       const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses comienzan desde 0
+       const year = date.getFullYear();
+       const hours = String(date.getHours()).padStart(2, '0');
+       const minutes = String(date.getMinutes()).padStart(2, '0');
+       const formattedDateTime = `${day}/${month}/${year} ${hours}:${minutes}`;
+   
+       return {
+           'id_equipment_project': equipment_project.pk,
+           'id_equipment': equipment.pk,
+           'name': equipment.fields.name,
+           'code': equipment.fields.code,
+           'start_date': equipment_project.fields.start_date,
+           'end_date': equipment_project.fields.end_date,
+           'mantenance_frequency': equipment_project.fields.mantenance_frequency,
+           'is_active': equipment_project.fields.is_active,
+           'retired_date': equipment_project.fields.retired_date,
+           'motive_retired': equipment_project.fields.motive_retired,
+           'cost_rent': equipment_project.fields.cost_rent,
+           'cost_manteinance': equipment_project.fields.cost_manteinance,
+           'retired_date': equipment_project.fields.retired_date,
+           'confirm_delete': false,
+           'created_at': formattedDateTime
+       }
+   })
+   
+   var project = project.map((itm) => {
+       return {
+           id: itm.pk,
+           is_selected: false,
+           ...itm.fields
+       }
+   })[0];
+   
 </script>
 <script src="/static/js/app/project_app.js"></script>
 {% endblock %}

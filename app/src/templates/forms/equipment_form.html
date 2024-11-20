@@ -61,44 +61,44 @@
             {% csrf_token %}
             <div class="row mb-3">
                 <div class="col-md-4">
-                    <label for="code" class="text-muted">Código del Equipo:</label>
+                    <label for="code" class="text-muted">Tipo:</label>
+                    {{ form.type }}
+                </div>
+                <div class="col-md-4">
+                    <label for="code" class="text-muted">Código:</label>
                     {{ form.code }}
                 </div>
                 <div class="col-md-4">
-                    <label for="name" class="text-muted">Nombre del Equipo:</label>
+                    <label for="name" class="text-muted">Nombre:</label>
                     {{ form.name }}
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4" id="brand">
                     <label for="brand" class="text-muted">Marca:</label>
                     {{ form.brand }}
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-4" id="model">
                     <label for="model" class="text-muted">Modelo:</label>
                     {{ form.model }}
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-4" id="date_purchase">
                     <label for="date_purchase" class="text-muted">Fecha de Compra:</label>
                     {{ form.date_purchase }}
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-4" id="height">
                     <label for="height" class="text-muted">Altura (cm):</label>
                     {{ form.height }}
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4" id="width">
                     <label for="width" class="text-muted">Ancho (cm):</label>
                     {{ form.width }}
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-4" id="depth">
                     <label for="depth" class="text-muted">Profundidad (cm):</label>
                     {{ form.depth }}
                 </div>
-
-                <div class="col-md-4">
+                <div class="col-md-4" id="weight">
                     <label for="weight" class="text-muted">Peso (kg):</label>
                     {{ form.weight }}
                 </div>
@@ -107,17 +107,12 @@
                       <label for="status" class="text-muted">Estado:</label>
                       {{ form.status }}
                   </div>
-  
-                  <div class="col-md-4 d-flex align-items-center gap-3">
+                  <div class="col-md-2 d-flex align-items-center gap-3">
                       <label for="is_active" class="text-muted">Activo:</label>
                       <span>
                         {{ form.is_active }}
                       </span>
                   </div>
-                <div class="col-md-6">
-                    <label for="description" class="text-muted">Descripción:</label>
-                    {{ form.description }}
-                </div>
                 <div class="col-md-6">
                     <label for="notes" class="text-muted">Notas:</label>
                     {{ form.notes }}
@@ -141,4 +136,33 @@
     </div>
     </div>
 </div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function() {
+     $('#id_type').change(function(){
+        let option = $(this).val();
+        if (option === 'EQUIPO'){
+            $('#brand').fadeIn('slow');
+            $('#model').fadeIn('slow');
+            $('#date_purchase').fadeIn('slow');
+            $('#height').fadeIn('slow');
+            $('#width').fadeIn('slow');
+            $('#depth').fadeIn('slow');
+            $('#weight').fadeIn('slow');
+        }else{
+            $('#brand').fadeOut('slow');
+            $('#model').fadeOut('slow');
+            $('#date_purchase').fadeOut('slow');
+            $('#height').fadeOut('slow');
+            $('#width').fadeOut('slow');
+            $('#depth').fadeOut('slow');
+            $('#weight').fadeOut('slow');
+        }
+
+     });
+
+    });
+ 
+</script>
 {% endblock %}

@@ -30,8 +30,6 @@
         <thead>
         <tr>
             <th class="bg-secondary bg-opacity-25">#</th>
-            <th class="bg-secondary bg-opacity-25">Código Interno</th>
-            <th class="bg-secondary bg-opacity-25">Nombre del Proyecto</th>
             <th class="bg-secondary bg-opacity-25">Partner</th>
             <th class="bg-secondary bg-opacity-25">Lugar</th>
             <th class="bg-secondary bg-opacity-25">Contacto</th>
@@ -73,11 +71,9 @@
                         <path d="M12 16h.01" />
                     </svg>
                     {% endif %}
-                    {{ item.internal_code }}
+                    <td class="p-0">{{ item.place }}</td>
                 </td>
-                <td class="p-0">{{ item.project_name }}</td>
                 <td class="p-0">{{ item.partner }}</td>
-                <td class="p-0">{{ item.place }}</td>
                 <td class="p-0">{{ item.contact_name }}</td>
                 <td class="p-0">{{ item.phone_contact }}</td>
                 <td class="p-0">{{ item.type_service }}</td>

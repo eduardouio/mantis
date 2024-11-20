@@ -14,9 +14,27 @@ const app = Vue.createApp({
             currentProjectEquipment: null,
             show_selected: false,
             showAllEquipment: true,
+            showLoader: true,
+            tabClass: {
+                'active': 'nav-link bg-gray bg-gradient border rounded-1',
+                'inactive': 'nav-link link-dark',
+            },
+            tab_show: {
+                tab_detail: true,
+                tab_equipments: false,
+                tab_work_order: false,
+            }
         }
     },
     methods:{
+        showTab(tab){
+            this.tab_show = {
+                tab_detail: false,
+                tab_equipments: false,
+                tab_work_order: false,
+            }
+            this.tab_show[tab] = true;
+        },
         asignEquipment(item){
             this.showAllEquipment = true;
             this.allEquimpents = this.allEquimpents.map((el)=>{
@@ -153,6 +171,7 @@ const app = Vue.createApp({
     },
     mounted() {
         console.log('vue app mounted');
+        this.showLoader = false;
     },
     computed: {
        ceroExist(){

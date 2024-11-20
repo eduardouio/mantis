@@ -25,14 +25,38 @@ class ProjectForm(forms.ModelForm):
             'end_date', 'is_active', 'notes'
         ]
         widgets = {
-            'partner': forms.Select(attrs={'class': 'form-select form-control-sm'}),
-            'notes': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'place': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'contact_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'phone_contact': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'start_date': forms.DateInput(attrs={'class': 'form-control form-control-sm', 'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'class': 'form-control form-control-sm', 'type': 'date'}),
-            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'partner': forms.Select(
+                attrs={'class': 'form-select form-control-sm'}
+            ),
+            'notes': forms.TextInput(
+                attrs={'class': 'form-control form-control-sm'}
+            ),
+            'place': forms.TextInput(
+                attrs={'class': 'form-control form-control-sm'}
+            ),
+            'contact_name': forms.TextInput(
+                attrs={'class': 'form-control form-control-sm'}
+            ),
+            'phone_contact': forms.TextInput(
+                attrs={'class': 'form-control form-control-sm'}
+            ),
+            'start_date': forms.DateInput(
+                attrs={
+                    'class': 'form-control form-control-sm',
+                    'type': 'date'
+                },
+                format='%Y-%m-%d'
+            ),
+            'end_date': forms.DateInput(
+                attrs={
+                    'class': 'form-control form-control-sm',
+                    'type': 'date'
+                },
+                format='%Y-%m-%d'
+            ),
+            'is_active': forms.CheckboxInput(
+                attrs={'class': 'form-check-input'}
+            )
         }
 
 
@@ -40,7 +64,6 @@ class ListProject(LoginRequiredMixin, ListView):
     model = Project
     template_name = 'lists/project_list.html'
     context_object_name = 'projects'
-    ordering = ['project_name']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -67,10 +90,10 @@ class DetailProject(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         free_equipment = ResourceItem.get_free_equipment()
         context['title_section'] = 'Detalle del Proyecto {}'.format(
-            self.object.internal_code
+            self.object.partner
         )
         context['title_page'] = 'Detalle del Proyecto {}'.format(
-            self.object.internal_code
+            self.object.partner
         )
         context['free_equipment'] = serialize('json', free_equipment)
         context['project'] = self.object
@@ -130,9 +153,9 @@ class UpdateProject(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title_section'] = 'Actualizar Proyecto {}'.format(
-            self.object.internal_code)
+            self.object.partner)
         context['title_page'] = 'Actualizar Proyecto {}'.format(
-            self.object.internal_code)
+            self.object.partner)
         return context
 
     def get_success_url(self):

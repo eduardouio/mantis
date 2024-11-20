@@ -159,6 +159,12 @@ class ProjectResourceItem(BaseModel):
         except ObjectDoesNotExist:
             return None
 
+    @classmethod
+    def get_equipment(cls, project):
+        return ProjectResourceItem.objects.filter(
+            project=project, acvite=True
+        )
+
     def __str__(self):
         return f'{self.project} - {self.equipment}'
 
@@ -178,6 +184,17 @@ class WorkOrder(BaseModel):
     date = models.DateField(
         'Fecha'
     )
+
+    @classmethod
+    def get_by_id(cls, id_work_order):
+        try:
+            return WorkOrder.objects.get(id=id_work_order)
+        except ObjectDoesNotExist:
+            return None
+
+    @classmethod
+    def get_by_project(cls, project):
+        return WorkOrder.objects.filter(project=project, active=True)
 
     def __str__(self):
         return self.work_order
