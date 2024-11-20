@@ -99,9 +99,6 @@ class Project(BaseModel):
     def get_equipment(cls, project):
         return ProjectResourceItem.objects.filter(project=project)
 
-    def __str__(self):
-        return self.project_name
-
 
 class ProjectResourceItem(BaseModel):
     id = models.AutoField(
@@ -160,13 +157,13 @@ class ProjectResourceItem(BaseModel):
             return None
 
     @classmethod
-    def get_equipment(cls, project):
+    def get_project_equipment(cls, project):
         return ProjectResourceItem.objects.filter(
-            project=project, acvite=True
+            project=project, is_active=True
         )
 
     def __str__(self):
-        return f'{self.project} - {self.equipment}'
+        return self.resource_item
 
 
 class WorkOrder(BaseModel):

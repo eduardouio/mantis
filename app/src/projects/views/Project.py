@@ -89,6 +89,9 @@ class DetailProject(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         free_equipment = ResourceItem.get_free_equipment()
+        project_equipment = ProjectResourceItem.get_project_equipment(
+            self.object
+        )
         context['title_section'] = 'Detalle del Proyecto {}'.format(
             self.object.partner
         )
@@ -96,17 +99,16 @@ class DetailProject(LoginRequiredMixin, DetailView):
             self.object.partner
         )
         context['free_equipment'] = serialize('json', free_equipment)
-        context['project'] = self.object
+        context['project_resource'] = []
         context['project_json'] = serialize('json', [self.object])
+        context['project'] = self.object
 
-        project_equipments = [
-            {
-                'equipment': serialize('json', [itm.equipment]),
-                'detail': serialize('json', [itm])
-            }
-            for itm in Project.get_equipment(self.object)
-        ]
-        context['project_equipment'] = project_equipments
+        for i in project_equipment:
+            context['project_resource'].append({
+                'project_resource': serialize('json', [i]),
+                'resourse_item':  serialize('json', [i.resource_item])
+            })
+
 
         if 'action' not in self.request.GET:
             return context

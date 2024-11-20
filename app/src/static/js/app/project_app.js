@@ -3,7 +3,7 @@ const app = Vue.createApp({
         return {
             project: project,
             allEquimpents: free_equipment.map(el=> el),
-            projectEquipment: project_equipment,
+            projectEquipment: project_resource,
             CsrfToken: csrf_token,
             deleteUrl: deleteUrl,
             updateUrl: updateUrl,

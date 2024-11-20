@@ -2,6 +2,7 @@ from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 from .models import (
     WorkOrder,
+    WorkOrderDetail,
     Partner,
     Project,
     ProjectResourceItem
@@ -24,7 +25,20 @@ class ProjectEquipmentsAdmin(SimpleHistoryAdmin):
     pass
 
 
-admin.site.register(WorkOrder, MantenanceAdmin)
+class ProjectResourceItemAdmin(SimpleHistoryAdmin):
+    pass
+
+
+class WorkOrderAdmin(SimpleHistoryAdmin):
+    pass
+
+
+class WorkOrderDetailAdmin(SimpleHistoryAdmin):
+    pass
+
+
+admin.site.register(WorkOrder, WorkOrderAdmin)
 admin.site.register(Partner, PartnerAdmin)
 admin.site.register(Project, ProjectAdmin)
-admin.site.register(ProjectResourceItem, ProjectEquipmentsAdmin)
+admin.site.register(ProjectResourceItem, ProjectResourceItemAdmin)
+admin.site.register(WorkOrderDetail, WorkOrderDetailAdmin)
