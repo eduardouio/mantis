@@ -81,53 +81,6 @@ class ListProject(LoginRequiredMixin, ListView):
         return context
 
 
-class DetailProject(LoginRequiredMixin, DetailView):
-    model = Project
-    template_name = 'presentations/project_presentation.html'
-    context_object_name = 'project'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        free_equipment = ResourceItem.get_free_equipment()
-        project_equipment = ProjectResourceItem.get_project_equipment(
-            self.object
-        )
-        context['title_section'] = 'Detalle del Proyecto {}'.format(
-            self.object.partner
-        )
-        context['title_page'] = 'Detalle del Proyecto {}'.format(
-            self.object.partner
-        )
-        context['free_equipment'] = serialize('json', free_equipment)
-        context['project_resource'] = []
-        context['project_json'] = serialize('json', [self.object])
-        context['project'] = self.object
-
-        for i in project_equipment:
-            context['project_resource'].append({
-                'project_resource': serialize('json', [i]),
-                'resourse_item':  serialize('json', [i.resource_item])
-            })
-
-
-        if 'action' not in self.request.GET:
-            return context
-
-        context['action'] = self.request.GET.get('action')
-        message = ''
-        if context['action'] == 'created':
-            message = 'El proyecto ha sido creado con éxito.'
-        elif context['action'] == 'updated':
-            message = 'El proyecto ha sido actualizado con éxito.'
-        elif context['action'] == 'no_delete':
-            message = 'No es posible eliminar el proyecto. Existen dependencias.'
-        elif context['action'] == 'delete':
-            message = 'Esta acción es irreversible. ¿Desea continuar?.'
-
-        context['message'] = message
-        return context
-
-
 class CreateProject(LoginRequiredMixin, CreateView):
     model = Project
     template_name = 'forms/project_form.html'
@@ -172,10 +125,10 @@ class DeleteProject(LoginRequiredMixin, RedirectView):
         try:
             project.delete()
             url = reverse_lazy('project_list')
-            return f'{url}?action=deleted'
+            return '{}?action=deleted'.format(url)
         except Exception as e:
             url = reverse_lazy('project_detail', kwargs={'pk': project.pk})
-            return f'{url}?action=no_delete'
+            return '{}?action=no_delete'.format(url)
 
 
 class AddEquipmentProject(LoginRequiredMixin, View):
