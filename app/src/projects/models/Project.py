@@ -178,6 +178,10 @@ class WorkOrder(BaseModel):
         'Orden de Trabajo',
         max_length=255
     )
+    tecnical = models.ForeignKey(
+        Technical,
+        on_delete=models.PROTECT
+    )
     date = models.DateField(
         'Fecha'
     )
@@ -209,11 +213,6 @@ class WorkOrderDetail(BaseModel):
         ProjectResourceItem,
         on_delete=models.PROTECT
     )
-    tecnical = models.ForeignKey(
-        Technical,
-        on_delete=models.PROTECT
-    )
-
     type_service = models.CharField(
         'Tipo de Servicio',
         max_length=255,
