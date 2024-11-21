@@ -9,7 +9,6 @@ from .Partner import (
 
 from .Project import (
     ListProject,
-    DetailProject,
     CreateProject,
     UpdateProject,
     DeleteProject,
@@ -17,3 +16,5 @@ from .Project import (
     RemoveEquipmentProject,
     UpdateEquipmentProject,
 )
+
+from .DetailProject import DetailProject
