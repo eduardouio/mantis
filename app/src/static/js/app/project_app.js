@@ -1,3 +1,50 @@
+// Seteo inicial de la aplicacion
+var free_equipment = free_equipment.map((itm) => {
+    return {
+        id: itm.pk,
+        is_selected: false,
+        cost_rent: 0,
+        cost_manteinance: 0,
+        frecuency_days: 7,
+        start_date: '',
+        end_date: '',
+        ...itm.fields
+    }
+});
+
+var project_resource = project_resource.map((itm) => {
+   let resourseItem = JSON.parse(itm.resourse_item);
+   let projectResource = JSON.parse(itm.project_resource);
+   
+   resourseItem = resourseItem.map((i)=>{
+      return {
+         id: i.pk,
+         ...i.fields
+      }
+   });
+   projectResource = projectResource.map((i)=>{
+      return {
+         id: i.pk,
+         ...i.fields
+      }
+   });
+    return {
+      resoruceItem : resourseItem[0],
+      projectResource : projectResource[0],
+      is_selected: false,
+    }
+});
+
+var project = project.map((itm) => {
+    return {
+        id: itm.pk,
+        is_selected: false,
+        ...itm.fields
+    }
+})[0];
+
+
+// Creacion de la aplicacion
 const app = Vue.createApp({
     data(){
         return {
