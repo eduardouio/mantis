@@ -73,6 +73,10 @@ td:hover {
 	background-color: #ffff99;
 }
 
+.hover:hover {
+	background-color: rgb(247, 253, 147);
+}
+
 tr:hover {
 	color: cadetblue;
 }

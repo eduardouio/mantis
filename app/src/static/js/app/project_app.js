@@ -52,7 +52,7 @@ const app = Vue.createApp({
             updateUrl: updateUrl,
             url: urlBase,
             successUrl: successUrl,
-            selectedEquipment:[],
+            selectedEquipment:null,
             currentEquipment: null,
             currentProjectEquipment: null,
             show_selected: false,
@@ -82,7 +82,7 @@ const app = Vue.createApp({
            
         },
         asignEquipment(item){
-            const nuewItem = {
+            const newItem = {
                 resourceItem : item,
                 projectResource : {
                     id: 0,
@@ -92,7 +92,7 @@ const app = Vue.createApp({
                     resource_item: item.id,
                     cost: 0.0,
                     cost_manteinance:0.0,
-                    mantenance_frequency: '',
+                    mantenance_frequency: 'SEMANAL',
                     times_mantenance: 1,
                     start_date: this.project.start_date,
                     end_date: this.project.end_date,
@@ -103,8 +103,8 @@ const app = Vue.createApp({
             this.allEquimpents = this.allEquimpents.filter(
                 el=>el.id !== item.id
             );
-            this.projectEquipment.push(nuewItem);
-
+            this.projectEquipment.push(newItem);
+            this.sendData(newItem);
             // completamos los arreglo filtrados
             this.filteredAllEquipment = this.allEquimpents.map(el=>el);
             this.filteredProjectEquipment = this.projectEquipment.map(el=>el);
@@ -144,23 +144,27 @@ const app = Vue.createApp({
             );
         },
         costFormat(value){
+            if (value === '' || value === null || value === 0){
+                return '0.00';
+            }
             value = parseFloat(value); 
             return value.toFixed(2);
         },
         isValidItem(item){
-            console.log(item);
             if (item.cost_rent === 0 && item.cost_manteinance === 0){
                 return true;
             }
             return false;
         },
-        sendData(){
+        sendData(newItem){
+
             data = {
                 'id_project': this.project.id,
-                'equipments': this.allEquimpents.filter(
-                    el=>el.is_selected
-                )
+                ...newItem.projectResource
             }
+
+            console.log(data);
+            return;
             fetch(this.url,{
                 method: 'POST',
                 headers: {
@@ -197,27 +201,16 @@ const app = Vue.createApp({
             }).then(
                 response => response.json()
             ).then((data) => {
-                console.log(data);
                 if (data.status === 201){
                     this.projectEquipment = this.projectEquipment.filter((itm)=>{
-                        console.log(item);
-                        console.log(itm);
                         return itm.id_equipment_project !== item.id_equipment_project;
                     });
                 }
                 })
         },
-        updateProjectEquipment(){
-            if (this.currentProjectEquipment.cost_rent === 0 && this.currentProjectEquipment.cost_manteinance === 0){
-                alert("No se puede guardar un equipo con costos en cero");
-                return;
-            }
-            if (!this.currentProjectEquipment.is_active){
-                if (!this.currentProjectEquipment.retired_date || !this.currentProjectEquipment.motive_retired){
-                    alert("Debe ingresar la fecha de retiro y el motivo");
-                    return;
-                }
-            }
+        updateProjectEquipment(item){
+            console.log(item);
+            return;
             fetch(this.updateUrl,{
                 method: 'POST',
                 headers: {
@@ -228,7 +221,6 @@ const app = Vue.createApp({
             }).then(
                 response => response.json()
             ).then((data) => {
-                console.log(data);
                 if (data.status === 201){
                     this.projectEquipment = this.projectEquipment.map((itm)=>{
                         if (itm.id_equipment_project === this.currentProjectEquipment.id_equipment_project){
