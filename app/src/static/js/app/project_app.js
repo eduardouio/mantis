@@ -2,12 +2,6 @@
 var free_equipment = free_equipment.map((itm) => {
     return {
         id: itm.pk,
-        is_selected: false,
-        cost_rent: 0,
-        cost_manteinance: 0,
-        frecuency_days: 7,
-        start_date: '',
-        end_date: '',
         ...itm.fields
     }
 });
@@ -29,7 +23,7 @@ var project_resource = project_resource.map((itm) => {
       }
    });
     return {
-      resoruceItem : resourseItem[0],
+      resourceItem : resourseItem[0],
       projectResource : projectResource[0],
       is_selected: false,
     }
@@ -51,6 +45,8 @@ const app = Vue.createApp({
             project: project,
             allEquimpents: free_equipment.map(el=> el),
             projectEquipment: project_resource,
+            filteredAllEquipment: [],
+            filteredProjectEquipment: [],
             CsrfToken: csrf_token,
             deleteUrl: deleteUrl,
             updateUrl: updateUrl,
@@ -62,6 +58,8 @@ const app = Vue.createApp({
             show_selected: false,
             showAllEquipment: true,
             showLoader: true,
+            queryFilterFree: '',
+            queryFilterProject: '',
             tabClass: {
                 'active': 'nav-link bg-gray bg-gradient border rounded-1',
                 'inactive': 'nav-link link-dark',
@@ -81,33 +79,73 @@ const app = Vue.createApp({
                 tab_work_order: false,
             }
             this.tab_show[tab] = true;
+           
         },
         asignEquipment(item){
-            this.showAllEquipment = true;
-            this.allEquimpents = this.allEquimpents.map((el)=>{
-                if(el.id === item.id){
-                    el.is_selected = !item.is_selected;
-                    el.start_date = this.project.start_date;
-                    el.end_date = this.project.end_date;
-                }
-                return el;
-            });
-            this.selectedEquipment = this.allEquimpents.filter(
-                el=>el.is_selected
+            const nuewItem = {
+                resourceItem : item,
+                projectResource : {
+                    id: 0,
+                    notes: '',
+                    is_active: true,
+                    project: this.project.id,
+                    resource_item: item.id,
+                    cost: 0.0,
+                    cost_manteinance:0.0,
+                    mantenance_frequency: '',
+                    times_mantenance: 1,
+                    start_date: this.project.start_date,
+                    end_date: this.project.end_date,
+                },
+                is_selected: false,
+            }
+            
+            this.allEquimpents = this.allEquimpents.filter(
+                el=>el.id !== item.id
             );
+            this.projectEquipment.push(nuewItem);
 
-            setTimeout(() => {
-                this.show_selected = true;
-            }, 200);
+            // completamos los arreglo filtrados
+            this.filteredAllEquipment = this.allEquimpents.map(el=>el);
+            this.filteredProjectEquipment = this.projectEquipment.map(el=>el);
+        },
+        removeEquipment(item){
+            this.projectEquipment = this.projectEquipment.filter(
+                el => el.resourceItem.id !== item.resourceItem.id
+            );
+            this.allEquimpents.push(item.resourceItem);
+
+            // completamos los arreglo filtrados
+            this.filteredAllEquipment = this.allEquimpents.map(el=>el);
+            this.filteredProjectEquipment = this.projectEquipment.map(el=>el);
+        },
+        filterFreeEquipment(){
+            if (this.queryFilterFree === ''){
+                this.filteredAllEquipment = this.allEquimpents.map(el=>el);
+                return;
+            }
+            // filter by name and code
+            this.filteredAllEquipment = this.allEquimpents.filter(
+                el => el.name.toLowerCase().includes(this.queryFilterFree.toLowerCase()) 
+                || 
+                el.code.toLowerCase().includes(this.queryFilterFree.toLowerCase())
+            );
+        },
+        filterProjectEquipments(){
+            if (this.queryFilterProject === ''){
+                this.filteredProjectEquipment = this.projectEquipment.map(el=>el);
+                return;
+            }
+            // filter by name and code
+            this.filteredProjectEquipment = this.projectEquipment.filter(
+                el => el.resourceItem.name.toLowerCase().includes(this.queryFilterProject.toLowerCase()) 
+                || 
+                el.resourceItem.code.toLowerCase().includes(this.queryFilterProject.toLowerCase())
+            );
         },
         costFormat(value){
             value = parseFloat(value); 
             return value.toFixed(2);
-        },
-        setEquipment(item){
-            this.currentEquipment = item;
-            this.showAllEquipment = false;
-            console.log(this.currentEquipment);
         },
         isValidItem(item){
             console.log(item);
@@ -219,6 +257,8 @@ const app = Vue.createApp({
     mounted() {
         console.log('vue app mounted');
         this.showLoader = false;
+        this.filteredAllEquipment = this.allEquimpents.map(el=>el);
+        this.filteredProjectEquipment = this.projectEquipment.map(el=>el);
     },
     computed: {
        ceroExist(){
