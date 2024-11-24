@@ -242,16 +242,21 @@
                 <tbody>
                   <tr v-for="item, idx in filteredProjectEquipment" :key="item.id">
                     <td class="p-0">[[ idx + 1 ]]</td>
-                    <td class="p-0">[[ item.resourceItem.name ]]</td>
-                    <td class="p-0">[[ item.resourceItem.code ]]</td>
-                    <td class="p-0">[[ item.projectResource.cost ]]</td>
-                    <td class="p-0">[[ item.projectResource.cost_manteinance ]]</td>
+                    <td class="p-0 text-start" :class="{ 'bg-danger' : (item.projectResource.cost  === 0 && item.projectResource.cost_manteinance === 0) }">
+                      <i v-if = "(item.projectResource.cost  === 0 && item.projectResource.cost_manteinance === 0)">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>
+                      </i>
+                      [[ item.resourceItem.name ]]
+                    </td>
+                    <td class="p-0 text-start">[[ item.resourceItem.code ]]</td>
+                    <td class="p-0 text-end">[[ costFormat(item.projectResource.cost) ]]</td>
+                    <td class="p-0 text-end">[[ costFormat(item.projectResource.cost_manteinance) ]]</td>
                     <td class="p-0">
                       [[ item.projectResource.times_mantenance ]]
                       [[ item.projectResource.mantenance_frequency ]]
                     </td>
                     <td class="p-0 d-flex justify-content-center gap-3">
-                      <i class="text-primary" title="Editar Equipo">
+                      <i class="text-primary" title="Editar Equipo" data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                           <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
@@ -389,6 +394,8 @@
       </div>
     </div>
   </div>
+  <!-- Modal -->
+{% include 'sections/modal.html' %}
 </div>
 {% endblock %}
 {% block script %}
