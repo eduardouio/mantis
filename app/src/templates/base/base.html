@@ -358,93 +358,33 @@
     <script src="/static/js/libs/dataTables.min.js"></script>
     <script src="/static/js/libs/bootstrap.bundle.min.js"></script>
     <script>
+      var options =  {
+                "pageLength": 15,
+                "lengthMenu": [15, 30, 50 ,100, 500, 1000, 5000],
+                "language": {
+                  "lengthMenu": "_MENU_ registros por página",
+                  "zeroRecords": "Sin registros",
+                  "info": "Mostrando página _PAGE_ de _PAGES_",
+                  "infoEmpty": "Sin registros",
+                  "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                  "search": "Buscar:",
+                  "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                  }
+                }
+              }
      $(document).ready(function() {
-     $('#myTable').DataTable(      
-      {
-        "pageLength": 15,
-        "lengthMenu": [15, 30, 50 ,100, 500, 1000, 5000],
-        "language": {
-          "lengthMenu": "_MENU_ registros por página",
-          "zeroRecords": "Sin registros",
-          "info": "Mostrando página _PAGE_ de _PAGES_",
-          "infoEmpty": "Sin registros",
-          "infoFiltered": "(filtrado de _MAX_ registros totales)",
-          "search": "Buscar:",
-          "paginate": {
-            "first": "Primero",
-            "last": "Último",
-            "next": "Siguiente",
-            "previous": "Anterior"
-          }
-        }
-      }
-    );
-  });
-  $(document).ready(function() {
-     $('#myTable2').DataTable(      
-      {
-        "pageLength": 15,
-        "lengthMenu": [15, 30, 50 ,100, 500, 1000, 5000],
-        "language": {
-          "lengthMenu": "_MENU_ registros por página",
-          "zeroRecords": "Sin registros",
-          "info": "Mostrando página _PAGE_ de _PAGES_",
-          "infoEmpty": "Sin registros",
-          "infoFiltered": "(filtrado de _MAX_ registros totales)",
-          "search": "Buscar:",
-          "paginate": {
-            "first": "Primero",
-            "last": "Último",
-            "next": "Siguiente",
-            "previous": "Anterior"
-          }
-        }
-      }
-    );
-  });
-  $(document).ready(function() {
-     $('#myTableSmall').DataTable(      
-      {
-        "pageLength": 5,
-        "lengthMenu": [5, 10, 50 ,100, 500, 1000, 5000],
-        "language": {
-          "lengthMenu": "_MENU_ registros por página",
-          "zeroRecords": "Sin registros",
-          "info": "Mostrando página _PAGE_ de _PAGES_",
-          "infoEmpty": "Sin registros",
-          "infoFiltered": "(filtrado de _MAX_ registros totales)",
-          "search": "Buscar:",
-          "paginate": {
-            "first": "Primero",
-            "last": "Último",
-            "next": "Siguiente",
-            "previous": "Anterior"
-          }
-        }
-      }
-    );
-  });
-  $(document).ready(function() {
-     $('#myTableSmall2').DataTable(      
-      {
-        "pageLength": 5,
-        "lengthMenu": [5, 10 , 50 ,100, 500, 1000, 5000],
-        "language": {
-          "lengthMenu": "_MENU_ registros por página",
-          "zeroRecords": "Sin registros",
-          "info": "Mostrando página _PAGE_ de _PAGES_",
-          "infoEmpty": "Sin registros",
-          "infoFiltered": "(filtrado de _MAX_ registros totales)",
-          "search": "Buscar:",
-          "paginate": {
-            "first": "Primero",
-            "last": "Último",
-            "next": "Siguiente",
-            "previous": "Anterior"
-          }
-        }
-      }
-    );
+     $('#myTable').DataTable(options);
+     $('#myTable2').DataTable(options);
+
+    options.lengthMenu = [5, 10, 50 ,100, 500, 1000, 5000];
+    options.pageLength = 5;
+    $('#myTableSmall').DataTable(options);
+    $('#myTableSmall2').DataTable(options);
+
   });
     </script>
     {% block files_footer %}
