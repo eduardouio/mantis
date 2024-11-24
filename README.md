@@ -30,3 +30,4 @@ python manage.py sowseed
 # - [ ] al agregar el equipo debes cambiar el estado y completar los datos adciionales en la fichja del euiqpo
 # - [ ] En el listado de equipos, debe mostrar el cliente el proyecto y la ubicacion
 # - [ ] Quitar el nombre de vehiculos
+# - [ ] En la vista de proyectos mostyrar el detalle del equipo 
