@@ -13,8 +13,9 @@ from django.core.serializers import serialize
 from django.contrib.auth.mixins import LoginRequiredMixin
 from projects.models import Project, ProjectResourceItem
 from equipment.models import ResourceItem
-from .forms import ProjectForm
+from projects.forms import ProjectForm
 from projects.models import Project
+
 
 class ListProject(LoginRequiredMixin, ListView):
     model = Project
