@@ -18,3 +18,5 @@ from .Project import (
 )
 
 from .DetailProject import DetailProject
+
+from .ProjectResourceCV import CreateProjectResource, UpdateProjectResource

@@ -9,12 +9,10 @@ from django.views.generic import (
     RedirectView
 )
 from django.views import View
-from django.core.serializers import serialize
 from django.contrib.auth.mixins import LoginRequiredMixin
 from projects.models import Project, ProjectResourceItem
 from equipment.models import ResourceItem
 from projects.forms import ProjectForm
-from projects.models import Project
 
 
 class ListProject(LoginRequiredMixin, ListView):
@@ -96,7 +94,7 @@ class AddEquipmentProject(LoginRequiredMixin, View):
             return JsonResponse({'message': 'Project not found'}, status=500)
 
         for item in data['equipments']:
-            equipment = ResourceItem.get_equipment_by_id(item['id'])
+            equipment = ResourceItem.get_by_id(item['id'])
             ProjectResourceItem.objects.create(
                 project=project,
                 equipment=equipment,

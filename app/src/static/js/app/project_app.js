@@ -50,6 +50,8 @@ const app = Vue.createApp({
             CsrfToken: csrf_token,
             deleteUrl: deleteUrl,
             updateUrl: updateUrl,
+            projectResourceAddUrl:projectResourceAddUrl,
+            projectResourceUpdUrl:projectResourceUpdUrl,
             url: urlBase,
             successUrl: successUrl,
             selectedEquipment:null,
@@ -96,6 +98,8 @@ const app = Vue.createApp({
                     times_mantenance: 1,
                     start_date: this.project.start_date,
                     end_date: this.project.end_date,
+                    retired_date: null,
+                    motive_retired: null,
                 },
                 is_selected: false,
             }
@@ -163,9 +167,7 @@ const app = Vue.createApp({
                 ...newItem.projectResource
             }
 
-            console.log(data);
-            return;
-            fetch(this.url,{
+            fetch(this.projectResourceAddUrl,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

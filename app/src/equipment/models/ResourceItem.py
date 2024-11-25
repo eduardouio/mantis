@@ -110,7 +110,7 @@ class ResourceItem(BaseModel):
     )
 
     @classmethod
-    def get_equipment_by_id(cls, id_equipment):
+    def get_by_id(cls, id_equipment):
         try:
             return ResourceItem.objects.get(id=id_equipment)
         except ObjectDoesNotExist:
