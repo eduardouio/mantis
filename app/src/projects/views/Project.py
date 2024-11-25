@@ -4,61 +4,17 @@ from decimal import Decimal
 from django.urls import reverse_lazy
 from django.views.generic import (
     ListView,
-    DetailView,
     CreateView,
     UpdateView,
     RedirectView
 )
 from django.views import View
-from django import forms
 from django.core.serializers import serialize
 from django.contrib.auth.mixins import LoginRequiredMixin
 from projects.models import Project, ProjectResourceItem
 from equipment.models import ResourceItem
-
-
-class ProjectForm(forms.ModelForm):
-    class Meta:
-        model = Project
-        fields = [
-            'partner', 'place', 'contact_name', 'phone_contact', 'start_date',
-            'end_date', 'is_active', 'notes'
-        ]
-        widgets = {
-            'partner': forms.Select(
-                attrs={'class': 'form-select form-control-sm'}
-            ),
-            'notes': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'place': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'contact_name': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'phone_contact': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'start_date': forms.DateInput(
-                attrs={
-                    'class': 'form-control form-control-sm',
-                    'type': 'date'
-                },
-                format='%Y-%m-%d'
-            ),
-            'end_date': forms.DateInput(
-                attrs={
-                    'class': 'form-control form-control-sm',
-                    'type': 'date'
-                },
-                format='%Y-%m-%d'
-            ),
-            'is_active': forms.CheckboxInput(
-                attrs={'class': 'form-check-input'}
-            )
-        }
-
+from .forms import ProjectForm
+from projects.models import Project
 
 class ListProject(LoginRequiredMixin, ListView):
     model = Project
@@ -82,7 +38,7 @@ class ListProject(LoginRequiredMixin, ListView):
 
 
 class CreateProject(LoginRequiredMixin, CreateView):
-    model = Project
+    model = ProjectForm
     template_name = 'forms/project_form.html'
     form_class = ProjectForm
     success_url = '/proyectos/'
@@ -100,7 +56,7 @@ class CreateProject(LoginRequiredMixin, CreateView):
 
 
 class UpdateProject(LoginRequiredMixin, UpdateView):
-    model = Project
+    model = ProjectForm
     template_name = 'forms/project_form.html'
     form_class = ProjectForm
     success_url = '/proyectos/'
@@ -115,7 +71,7 @@ class UpdateProject(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         url = reverse_lazy('project_detail', kwargs={'pk': self.object.pk})
-        url = f'{url}?action=updated'
+        url = '{url}?action=updated'.format(url=url)
         return url
 
 
