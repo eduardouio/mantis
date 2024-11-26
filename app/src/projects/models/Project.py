@@ -160,10 +160,20 @@ class ProjectResourceItem(BaseModel):
             return None
 
     @classmethod
+    def get_by_project_resource_id(cls, id_project_equipment):
+        try:
+            return ProjectResourceItem.objects.get(id=id_project_equipment)
+        except ObjectDoesNotExist:
+            return None
+
+    @classmethod
     def get_project_equipment(cls, project):
         return ProjectResourceItem.objects.filter(
             project=project, is_active=True
         )
+
+    class Meta:
+        unique_together = ('project', 'resource_item')
 
     def __str__(self):
         return self.resource_item
