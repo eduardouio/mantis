@@ -116,6 +116,8 @@ const app = Vue.createApp({
             this.filteredProjectEquipment = this.projectEquipment.map(el=>el);
         },
         removeEquipment(item){
+            console.log('ELIMINANDO EQUIPO DE LA LISTA');
+            console.log(item);
             this.projectEquipment = this.projectEquipment.filter(
                 el => el.resourceItem.id !== item.resourceItem.id
             );
@@ -183,6 +185,7 @@ const app = Vue.createApp({
                         throw new Error(err.message || 'Ocurrió un error en el servidor');
                     });
                 }
+                console.log(response);
                 return response.json();
             })
             .then(data => {
@@ -213,11 +216,14 @@ const app = Vue.createApp({
             }).then(
                 response => response.json()
             ).then((data) => {
-                if (data.status === 201){
+                console.dir(data);
+                if (data.status === 'success'){
                     this.removeEquipment(item);
                 }
+                if (data.status === 'error'){
+                    alert(data.errors);
                 }
-            ).catch(error => {
+            }).catch(error => {
                 alert("Ocurrio un error al enviar los datos");
                 console.error('Error:', error);
             });

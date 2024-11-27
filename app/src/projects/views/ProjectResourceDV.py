@@ -4,9 +4,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from projects.models import (
     ProjectResourceItem,
-    ResourceItem,
     WorkOrderDetail,
 )
+from equipment.models import ResourceItem
 
 
 class DeleteProjectResource(LoginRequiredMixin, View):
@@ -21,11 +21,18 @@ class DeleteProjectResource(LoginRequiredMixin, View):
             data['projectResource']['id']
         )
 
+        if not project_resource:
+            return JsonResponse(
+                {
+                    'status': 'error',
+                    'errors': 'El recurso no existe'
+                },
+                status=400
+            )
+
         work_order = WorkOrderDetail.get_by_project_resource(
             project_resource
-        )
-
-        work_order = True
+        ).count()
 
         if work_order:
             return JsonResponse(
@@ -44,6 +51,9 @@ class DeleteProjectResource(LoginRequiredMixin, View):
             resoruce_item.bg_date_commitment = None
             resoruce_item.bg_date_free = None
             resoruce_item.save()
+            return JsonResponse(
+                {'status': 'success'}, status=201
+            )   
         except Exception as e:
             return JsonResponse(
                 {'status': 'error', 'errors': str(e)}, status=400
