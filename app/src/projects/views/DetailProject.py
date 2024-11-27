@@ -1,7 +1,7 @@
 from django.views.generic import DetailView
 from django.core.serializers import serialize
 from django.contrib.auth.mixins import LoginRequiredMixin
-from projects.models import Project, ProjectResourceItem
+from projects.models import Project, ProjectResourceItem, WorkOrder
 from equipment.models import ResourceItem
 
 
@@ -16,9 +16,11 @@ class DetailProject(LoginRequiredMixin, DetailView):
         project_equipment = ProjectResourceItem.get_project_equipment(
             self.object
         )
+        work_orders = WorkOrder.get_by_project(self.object)
         context['title_section'] = 'Detalle del Proyecto {}'.format(
             self.object.partner
         )
+
         context['title_page'] = 'Detalle del Proyecto {}'.format(
             self.object.partner
         )
@@ -26,6 +28,7 @@ class DetailProject(LoginRequiredMixin, DetailView):
         context['project_resource'] = []
         context['project_json'] = serialize('json', [self.object])
         context['project'] = self.object
+        context['work_orders'] = work_orders
 
         for i in project_equipment:
             context['project_resource'].append({

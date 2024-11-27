@@ -205,7 +205,7 @@ class WorkOrder(BaseModel):
 
     @classmethod
     def get_by_project(cls, project):
-        return WorkOrder.objects.filter(project=project, active=True)
+        return WorkOrder.objects.filter(project=project, is_active=True)
 
     def __str__(self):
         return self.work_order
@@ -297,6 +297,12 @@ class WorkOrderDetail(BaseModel):
     def get_by_project_resource(cls, project_resource):
         return WorkOrderMaintenance.objects.filter(
             work_order_detail__resource_item=project_resource
+        )
+
+    @classmethod
+    def get_by_work_order(cls, work_order):
+        return cls.objects.filter(
+            work_order=work_order
         )
 
 
