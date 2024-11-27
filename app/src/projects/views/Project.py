@@ -1,5 +1,5 @@
 import json
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from decimal import Decimal
 from django.urls import reverse_lazy
 from django.views.generic import (
