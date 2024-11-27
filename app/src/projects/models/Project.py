@@ -296,6 +296,15 @@ class WorkOrderDetail(BaseModel):
         choices=UNIT
     )
 
+    @classmethod
+    def get_by_project_resource(cls, project_resource):
+        return WorkOrderMaintenance.objects.filter(
+            work_order_detail__resource_item=project_resource
+        )
+
+    def __str__(self):
+        return self.work_order
+
 
 class WorkOrderMaintenance(BaseModel):
     id = models.AutoField(

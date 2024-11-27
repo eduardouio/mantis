@@ -26,6 +26,7 @@ var project_resource = project_resource.map((itm) => {
       resourceItem : resourseItem[0],
       projectResource : projectResource[0],
       is_selected: false,
+      confirm_delete: false,
     }
 });
 
@@ -52,6 +53,7 @@ const app = Vue.createApp({
             updateUrl: updateUrl,
             projectResourceAddUrl:projectResourceAddUrl,
             projectResourceUpdUrl:projectResourceUpdUrl,
+            projectResourceDelUrl:projectResourceDelUrl,
             url: urlBase,
             successUrl: successUrl,
             selectedEquipment:null,
@@ -160,40 +162,48 @@ const app = Vue.createApp({
             }
             return false;
         },
-        sendData(newItem){
-
-            data = {
+        sendData(newItem) {
+            const data = {
                 'id_project': this.project.id,
                 ...newItem.projectResource
-            }
-
-            fetch(this.projectResourceAddUrl,{
+            };
+        
+            fetch(this.projectResourceAddUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': this.CsrfToken,
                 },
                 body: JSON.stringify(data)
-            }).then(
-                response => response.json())
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // Si el código de estado no está en el rango 200-299, se lanza un error.
+                    return response.json().then(err => {
+                        throw new Error(err.message || 'Ocurrió un error en el servidor');
+                    });
+                }
+                return response.json();
+            })
             .then(data => {
                 console.log(data);
-                if (data.status === 201){
-                    window.location.reload();
+                if (data.status === 201) {
+                    alert('Genial');
+                    console.log(data);
                 }
             })
             .catch(error => {
-                alert("Ocurrio un error al enviar los datos");
+                // Captura errores HTTP y otros errores.
+                alert(error.message);
                 console.error('Error:', error);
-            })
-        },
+            });
+        },        
         deleteEquipment(item){
             if (!item.confirm_delete){
                 item.confirm_delete = true;
                 return;
             }
-
-            fetch(this.deleteUrl,{
+            fetch(this.projectResourceDelUrl,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -204,11 +214,13 @@ const app = Vue.createApp({
                 response => response.json()
             ).then((data) => {
                 if (data.status === 201){
-                    this.projectEquipment = this.projectEquipment.filter((itm)=>{
-                        return itm.id_equipment_project !== item.id_equipment_project;
-                    });
+                    this.removeEquipment(item);
                 }
-                })
+                }
+            ).catch(error => {
+                alert("Ocurrio un error al enviar los datos");
+                console.error('Error:', error);
+            });
         },
         updateProjectEquipment(item){
             console.log(item);

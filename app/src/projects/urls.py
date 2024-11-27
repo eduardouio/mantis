@@ -16,7 +16,7 @@ from .views import (
     UpdateEquipmentProject,
     CreateProjectResource,
     UpdateProjectResource,
-
+    DeleteProjectResource,
 )
 
 urlpatterns = [
@@ -38,5 +38,6 @@ urlpatterns = [
     # project resources
     path('proyectos/add/resource/', CreateProjectResource.as_view(), name='project_add_resource'),
     path('proyectos/update/resource/', UpdateProjectResource.as_view(), name='project_update_resource'),\
+    path('proyectos/delete/resource/', DeleteProjectResource.as_view(), name='project_delete_resource'),
     
 ]
