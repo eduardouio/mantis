@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from accounts.models import CustomUserModel
 import random
 from faker import Faker
+from datetime import date
 import json
 from datetime import timedelta
 from accounts.models import Technical, License, WorkJournal
@@ -20,8 +21,8 @@ class Command(BaseCommand):
         self.load_technical(faker)
         print('creamos los registros de jornadas')
         self.load_work_journal(faker)
-        print('creamos las licencias')
-        self.load_license(faker)
+        #print('creamos las licencias')
+        #self.load_license(faker)
         print('creamos los equipos')
         self.load_equipment(faker)
         print('creamos los vehiculos')
@@ -42,6 +43,14 @@ class Command(BaseCommand):
         user.set_password('seguro')
         user.save()
 
+        user_test = CustomUserModel(
+            email='test@peisol.com.ec',
+            first_name='Usuario',
+            last_name='Pruebas'
+        )
+        user_test.set_password('seguro')
+        user_test.save()
+
     def load_technical(self, faker):
         if Technical.objects.exists():
             print('Ya existen los tecnicos')
@@ -54,12 +63,12 @@ class Command(BaseCommand):
             Technical.objects.create(
                 **technical
             )
-            CustomUserModel.objects.create(
-                email=technical['email'],
-                first_name=technical['first_name'],
-                last_name=technical['last_name'],
-                role=technical['role']
-            )
+            #CustomUserModel.objects.create(
+            #    email=technical['email'],
+            #    first_name=technical['first_name'],
+            #    last_name=technical['last_name'],
+            #    role=technical['role']
+            #)
 
     def load_work_journal(self, faker):
         if WorkJournal.objects.exists():
@@ -110,17 +119,11 @@ class Command(BaseCommand):
         if Vehicle.objects.exists():
             print('Ya existen los vehiculos')
             return True
+        with open('seed/vehicles.json', 'r') as file:
+            file_content = json.load(file)
 
-        for item in range(15):
-            Vehicle.objects.create(
-                brand=faker.company(),
-                model=faker.word(),
-                no_plate=faker.license_plate(),
-                year=random.choice([2012, 2013, 2014, 2015,
-                                    2016, 2017, 2018, 2019,
-                                    2020, 2021, 2022, 2023]),
-                type_vehicle=random.choice(['CAMION', 'VACCUM', 'CAMIONETA'])
-            )
+            for vehicle in file_content:
+                Vehicle.objects.create(**vehicle)
 
     def load_suppliers(self, faker):
         if Partner.objects.exists():

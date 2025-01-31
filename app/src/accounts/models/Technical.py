@@ -34,7 +34,10 @@ class Technical(BaseModel):
     )
     email = models.EmailField(
         'Correo Electrónico',
-        unique=True,
+        max_length=255,
+        blank=True,
+        null=True,
+        default=None
     )
     location = models.CharField(
         'Ubicación',

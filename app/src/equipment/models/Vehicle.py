@@ -5,12 +5,29 @@ CHOICES_TYPE_VEHICLE = (
     ('CAMION', 'CAMION'),
     ('VACUUM', 'VACUUM'),
     ('CAMIONETA', 'CAMIONETA'),
+    ('PLATAFORMA', 'PLATAFORMA'),
     ('AUTO', 'AUTO')
 )
 
 CHOICES_OWNER = (
     ('PEISOL', 'PEISOL'),
     ('CONTRATANANTE', 'CONTRATANANTE'),
+)
+
+CHOICES_STATUS_CERT = (
+    ('VIGENTE', 'VIGENTE'),
+    ('VENCIDO', 'VENCIDO'),
+    ('NO APLICA', 'NO APLICA'),
+    ('VENCIDO',  'VENCIDO'),
+    ('POR VENCER', 'POR VENCER'),
+    ('EN TRAMITE', 'EN TRAMITE'),
+    ('RECHAZADO', 'RECHAZADO'),
+)
+
+CHOICES_STATUS_VEHICLES = (
+    ('DISPONIBLE', 'DISPONIBLE'),
+    ('EN MANTENIMIENTO', 'EN MANTENIMIENTO'),
+    ('STANBY', 'STABY'),
 )
 
 
@@ -44,11 +61,44 @@ class Vehicle(BaseModel):
         max_length=10,
         unique=True
     )
+    status_vehicle = models.CharField(
+        'Estado Vehiculo',
+        max_length=100,
+        choices=CHOICES_STATUS_VEHICLES,
+        default='DISPONIBLE'
+    )
+    status_cert_oper = (
+        'Estado Certificado'
+    )
+    chasis = models.CharField(
+        'Chasis',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    motor_no = models.CharField(
+        'No. Motor',
+        max_length=255,
+        blank=True,
+        null=True
+    )
     owner_transport = models.CharField(
         'Propietario',
         max_length=255,
         choices=CHOICES_OWNER,
         default='PEISOL'
+    )
+    due_date_matricula = models.DateField(
+        'Vecimiento Matricula',
+        blank=True,
+        null=True,
+        default=None
+    )
+    due_date_cert_oper = models.DateField(
+        'Vecimiento Certificado de Operacion',
+        blank=True,
+        null=True,
+        default=None
     )
 
     @classmethod

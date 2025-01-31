@@ -69,8 +69,18 @@ class Project(BaseModel):
         null=True
     )
     place = models.CharField(
-        'Lugar',
-        max_length=255
+        'Campamento',
+        max_length=50,
+        blank=True,
+        null=True,
+        default=None
+    )
+    avrebiature = models.CharField(
+        'Abreviatura',
+        max_length=10,
+        blank=True,
+        null=True,
+        default=None
     )
     contact_name = models.CharField(
         'Nombre de Contacto',
@@ -120,7 +130,6 @@ class ProjectResourceItem(BaseModel):
         max_digits=10,
         decimal_places=2
     )
-    # aplica a quipos solamente
     cost_manteinance = models.DecimalField(
         'Costo de Mantenimiento',
         max_digits=10,

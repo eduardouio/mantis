@@ -1,622 +1,2042 @@
 [
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-181-X1",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-133",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-181-X2",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-195",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-204",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-154",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-201",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-187",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-154",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-192",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-151",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-162",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-202",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-148",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-156",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-139",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-184",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-179",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-167",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-136",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-123",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-193-X1",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-144",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-182",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-310",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-149",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-180",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-141",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-145",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-302",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-300",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-304",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-122",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-197",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-198",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-134",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-199",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-147",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-157",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-186",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-191",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-196",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-146",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-120-X1",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-113",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-126",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-127",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-303",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-305",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-306",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-307",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-308",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-309",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-159",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-160",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-161",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-163",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-164",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-165",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-166",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-168",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-169",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-170",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-171",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-172",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-174",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-175",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-176",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-177",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-178",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-100",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-104",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-115",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-116",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-117",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-120",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-122",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-127",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-128",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-132",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-133",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-138-X1",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-109",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-110",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-100",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-111",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-116",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-117",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-119-X1",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-120-X2",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-121-X1",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-128",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-185",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-102",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-143",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-131",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-203",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-400",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "F0043F419",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "JOK00030F919",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-146-X2",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "O45F919",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "O49F919",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-138-X2",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-190",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-135",
-      "status": "LIBRE"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "LV19-66881",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-139",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-137",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-142",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-136",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-146-X1",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-181-X3",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-344",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-346",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-119-X2",
-      "status": "STAND BY"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-121-X2",
-      "status": "STAND BY"
-    },
-    {
-      "name": "ESTACION DE LAVAMANOS",
-      "code": "PSLLV-103",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-124",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-138",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-158",
-      "status": "LIBRE"
-    },
-    {
-      "name": "BATERIAS SANITARIAS",
-      "code": "PSLBT-193-X2",
-      "status": "LIBRE"
-    }
-  ]
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-131",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET AUCA SUR",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-158",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET AUCA SUR",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"O45F919",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET AUCA SUR",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"O49F919",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET AUCA SUR",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-138",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET AUCA SUR",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-121",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET AUCA SUR",
+     "status":"OPERATIVA",
+     "notes":"ESTA EQUIPO DUPLICADO CON CPPSHUSHUFINDI"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-141",
+     "type":"EQUIPO",
+     "bg_current_location":"PROYECREDES BASE ENAP",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-180",
+     "type":"EQUIPO",
+     "bg_current_location":"PROYECREDES BASE ENAP",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-134",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET BLOQUE 12",
+     "status":"OPERATIVA",
+     "notes":"NO HAY EL CODIGO"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-173",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET BLOQUE 12",
+     "status":"OPERATIVA",
+     "notes":"NO HAY EL LETRERO"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-312",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET BLOQUE 12",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-144",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET BLOQUE 15",
+     "status":"OPERATIVA",
+     "notes":"NO HAY EL CODIGO"
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-154",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET BLOQUE 15",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-193",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET BLOQUE 15",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-SN",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET BLOQUE 15",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-349",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"CONCUCIP",
+     "notes":"UBICAR BATERIA / MDC"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-185",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"HALLIBURTON",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-105",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-106",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-107",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-108",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-109",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-129",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-150",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT152",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-155",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-156",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-157",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-189",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLPT-301",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-400",
+     "type":"EQUIPO",
+     "bg_current_location":"BUSCAR BUSCAR",
+     "status":"BUSCAR",
+     "notes":"UBICAR BATERIA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-182",
+     "type":"EQUIPO",
+     "bg_current_location":"GEOPARK CAMPO ESPEJO",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-151",
+     "type":"EQUIPO",
+     "bg_current_location":"GEOPARK CAMPO ESPEJO",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-137",
+     "type":"EQUIPO",
+     "bg_current_location":"COPOWER CHANANGUE J",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-300",
+     "type":"EQUIPO",
+     "bg_current_location":"GRAN TIERRA ENERGY CHANANGUE J",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-304",
+     "type":"EQUIPO",
+     "bg_current_location":"GRAN TIERRA ENERGY CHANANGUE J",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-147",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET CHANANGUE K",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION CUADRUPLE URINARIO",
+     "code":"PSL-UP-101",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET CHANANGUE PROYECTOS",
+     "status":"OPERATIVO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV- 19-66864",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET CHANANGUE PROYECTOS",
+     "status":"OPERATIVO",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-145",
+     "type":"EQUIPO",
+     "bg_current_location":"GRAN TIERRA ENERGY CHARAPA B",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-186",
+     "type":"EQUIPO",
+     "bg_current_location":"GRAN TIERRA ENERGY CHARAPA B",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-302",
+     "type":"EQUIPO",
+     "bg_current_location":"GRAN TIERRA ENERGY CHARAPA B",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-365",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET CHARAPA B",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-104",
+     "type":"EQUIPO",
+     "bg_current_location":"DONACION CLIENTE EXTERNO DONACION CLIENTE EXTERNO",
+     "status":"DONACION ANGEL CRUZ",
+     "notes":"DONACION TALLER ANGEL CRUZ"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-101",
+     "type":"EQUIPO",
+     "bg_current_location":"DONACION CLIENTE EXTERNO DONACION CLIENTE EXTERNO",
+     "status":"DONACION ROMARIO ORELLANA",
+     "notes":"DONACION / ROMARIO ORELLANA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-183",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET ESTACION PARAISO",
+     "status":"OPERATIVA",
+     "notes":"DUPLICADA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-199",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET ESTACION PARAISO",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-88011",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET ESTACION PARAISO",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66857",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET HILONG 28",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-348",
+     "type":"EQUIPO",
+     "bg_current_location":"PECPROYECT HUATARACO",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-138",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET LIMONCOCHA",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-197",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET LIMONCOCHA",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-124",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET LIMONCOCHA",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-139",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET MARIAM 9",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-181",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET MARIAM 9",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-354",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET MARIAM 9",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-359",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET MARIAM 9",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-355",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROYECT MARIAN 9",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-122",
+     "type":"EQUIPO",
+     "bg_current_location":"SOES MDC",
+     "status":"OPERATIVA",
+     "notes":"USO JOSE VERDEZOTO"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-117",
+     "type":"EQUIPO",
+     "bg_current_location":"SOES MDC 80",
+     "status":"OPERATIVA",
+     "notes":"JOSE VERDESOTO"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-119",
+     "type":"EQUIPO",
+     "bg_current_location":"SOES MDC 80",
+     "status":"OPERATIVA",
+     "notes":"JOSE VERDESOTO"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-351",
+     "type":"EQUIPO",
+     "bg_current_location":"SOES MDC 80 CONDUTO",
+     "status":"OPERATIVA",
+     "notes":"USO JOSE VEDEZOTO"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-187",
+     "type":"EQUIPO",
+     "bg_current_location":"ARCOLANS MDC40",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-142",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROYECT NUEVA ESPERANZA",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-222",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET NW 05 / MARIAN",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-196",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-116",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-137",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-146",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-161",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-193",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-200",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-310",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-311",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-314",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-315",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-316",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-317",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-318",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-319",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-320",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-321",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-322",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-323",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-324",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-325",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-326",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-327",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-328",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-329",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-330",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-331",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-332",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-333",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-334",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-335",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-336",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-337",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-338",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-339",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA/CHIMENEA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-340",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA/CHIMENEA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-341",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA/CHIMENEA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-342",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA/CHIMENEA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-343",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA/CHIMENEA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-344",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA/CHIMENEA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-345",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA/CHIMENEA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-346",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA/CHIMENEA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-347",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR TAPA BALANCIN/PAPELERA/JABONERA/CHIMENEA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-115",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"SIN JABONERA Y CON DAÑO CERRADURA PAPELERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-192",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-194",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA/CAMBIAR PAPELERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-352",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA/CHIMENEA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-356",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-357",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-358",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-360",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-361",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-362",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-366",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-367",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"  ",
+     "code":"PSLBT-368",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA/ COLOCAR PAPELERA/JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-102",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"OPERATIVA",
+     "notes":"NO DISPONIBLE / TALLER"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-114",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-100",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"STAND BY",
+     "notes":"HACER MANTENIMIENTO"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-121",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"STAND BY",
+     "notes":"HACER LIMPIEZA / DAÑO EN LA PUERTA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-123",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"STAND BY",
+     "notes":"HACER MANTENIMIENTO"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-124",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"STAND BY",
+     "notes":"SIN CERRADURA PUERTA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-125",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"STAND BY",
+     "notes":"HACER MANTENIMIENTO"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-112",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"STAND BY",
+     "notes":"HACER MANTENIMIENTO"
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 20-71400",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-62216",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-62219",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-62217",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66889",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-71016",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66839",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66853",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66846",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-68010",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66238",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66838",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66246",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66840",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66875",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66819",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66841",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66842",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-68019",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66843",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66854",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66869",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-68048",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66888",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66849",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66880",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66886",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66865",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66829",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-68006",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66844",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66872",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-68055",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66851",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-68001",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":"TANQUE ROTO -SOLICITAR LA BAJA"
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66873",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL BASE",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-204",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINA",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-102",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINA",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-103",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINA",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-113",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINA",
+     "status":"OPERATIVA",
+     "notes":"ARREGLAR TANQUE"
+  },
+  {
+     "name":"ESTACION CUADRUPLE URINARIO",
+     "code":"PSL -UP-100",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINA",
+     "status":"OPERATIVO",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 20-72095",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINA",
+     "status":"INDEFINIDO",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-120",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-201",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-202",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-154",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-198",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-68057",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-68063",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-136",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-103",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":"NO DISPONIBLE / PARA BASURA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-130",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA/CAMBIAR JABONERA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-140",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":"HACER MANTENIMIENTO"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-143",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-353",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":"LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-149",
+     "type":"EQUIPO",
+     "bg_current_location":"PEISOL PEISOL OFICINAS",
+     "status":"DISPONIBLE",
+     "notes":"HACER LIMPIEZA"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-350",
+     "type":"EQUIPO",
+     "bg_current_location":"HALLIBURTON PERICO 1",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-133",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROJECT PERICO 1",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-167",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET PERICO 1",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-179",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET PERICO 1",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-184",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET PERICO 1",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-66847",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET PERICO 1",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-110",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET PERICO 3",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-203",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET PERICO 3",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-66850",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET PERICO 3",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-195",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROYECT PUCCUNA 08",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-190",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET SACHA 470",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-135",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET SACHA 470",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-188",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET SACHA 470",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"LV19-66881",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET SACHA 470",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-44",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET SACHA 470",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-162",
+     "type":"EQUIPO",
+     "bg_current_location":"WELDING SACHA 500",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV- 148",
+     "type":"EQUIPO",
+     "bg_current_location":"WELDING SACHA 500",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV- 156",
+     "type":"EQUIPO",
+     "bg_current_location":"WELDING SACHA 500",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-139",
+     "type":"EQUIPO",
+     "bg_current_location":"WELDING SACHA 500",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-132",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROYECT SACHA 510",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-191",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROYECT SACHA 510",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-146",
+     "type":"EQUIPO",
+     "bg_current_location":"CONSPECCIME SACHA CENTRAL",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-153",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROYECT SANSAHUARI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-363",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROYECT SANSAHUARI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-68064",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROYECT SANSAHUARI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66883",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROYECT SANSAHUARI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 20-77564",
+     "type":"EQUIPO",
+     "bg_current_location":"HOERBIGER SECOYA",
+     "status":"OPERATIVO",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-127",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-305",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-126",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":"CAMBIO DE DISPENSADOR"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-159",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-160",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-163",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-164",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-165",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-166",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-168",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-169",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-170",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-171",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":"CAMBIO DE DISPENSADOR DE PAPEL"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-172",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-174",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-175",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-176",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-177",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-178",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":"CAMBIO DE DISPENSADOR DE PAPEL"
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-303",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-306",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-307",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-308",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-309",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-100",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-104",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-109",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-110",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-115",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-116",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-117",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-120",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-122",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":"ESTA EQUIPO DUPLICADO CON SERTECPET AUCA SUR"
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-127",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-128",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-132",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV-133",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-118",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"STAND BY",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-111",
+     "type":"EQUIPO",
+     "bg_current_location":"CPP SHUSHUFINDI",
+     "status":"STAND BY",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-148",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET SHUSHUQUI 29",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-364",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET SHUSHUQUI29",
+     "status":"OPERATIVA",
+     "notes":null
+  },
+  {
+     "name":"ESTACION DE LAVAMANOS",
+     "code":"PSLLV 19-66848",
+     "type":"EQUIPO",
+     "bg_current_location":"SERTECPET SHUSHUQUI29",
+     "status":"OPERATIVO",
+     "notes":null
+  },
+  {
+     "name":"BATERIAS SANITARIAS",
+     "code":"PSLBT-128",
+     "type":"EQUIPO",
+     "bg_current_location":"PEC PROYECT TARAPOA",
+     "status":"OPERATIVA",
+     "notes":null
+  }
+]

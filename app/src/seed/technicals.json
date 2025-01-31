@@ -1,114 +1,162 @@
 [
-    {
-      "first_name": "AGUILAR LOZANO",
-      "last_name": "ANTHONI SAUl",
-      "dni": "0928004753",
-      "email": "aguilarlozanoanthonisaul@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "MERIZALDE MERIZALDE",
-      "last_name": "JACOBO ANA",
-      "dni": "2100147392",
-      "email": "merizaldemerizaldejacoboana@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "VERDEZOTO BARRAGAN",
-      "last_name": "JOSÉ LUIS",
-      "dni": "0603783713",
-      "email": "verdezotobarraganjoséluis@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "RUIZ FLORES",
-      "last_name": "ANGEL PATRICIO",
-      "dni": "",
-      "email": "ruizfloresangelpatricio@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "GUEVARA HIDALGO",
-      "last_name": "JOSE LUIS",
-      "dni": "",
-      "email": "guevarahidalgojoseluis@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "NARVAEZ CHASE",
-      "last_name": "JOSE QUENNI",
-      "dni": "2150119184",
-      "email": "narvaezchasejosequenni@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "PORTILLA LEITON",
-      "last_name": "FAUSTO EDIXON",
-      "dni": "1757630882",
-      "email": "portillaleitonfaustoedixon@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "UNUP YUMA",
-      "last_name": "JUAN JOSE",
-      "dni": "2100403555",
-      "email": "unupyumajuanjose@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "JUMBO MORENO",
-      "last_name": "XAVIER AGUSTIN",
-      "dni": "2100417480",
-      "email": "jumbomorenoxavieragustin@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "SARMIENTO ARGUELLO",
-      "last_name": "EDISON GUIL",
-      "dni": "2100493853",
-      "email": "sarmientoarguelloedisonguil@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "VERDEZOTO BARRAGAN",
-      "last_name": "JUAN GABRI",
-      "dni": "0603783697",
-      "email": "verdezotobarraganjuangabri@peisol.com",
-      "role": "TECNICO"
-    },
-    {
-      "first_name": "ANDRADE TELLO",
-      "last_name": "LISETH JOHANNA",
-      "dni": "0603908898",
-      "email": "andradetellolisethjohanna@peisol.com",
-      "role": "ADMINISTRATIVO"
-    },
-    {
-      "first_name": "TAPIA PONCE",
-      "last_name": "MARYURI MARLENE",
-      "dni": "2100647334",
-      "email": "tapiaponcemaryurimarlene@peisol.com",
-      "role": "ADMINISTRATIVO"
-    },
-    {
-      "first_name": "BURGOS PAREDES",
-      "last_name": "RAFAEL ALLBERTO",
-      "dni": "1206374439",
-      "email": "burgosparedesrafaelallberto@peisol.com",
-      "role": "ADMINISTRATIVO"
-    },
-    {
-      "first_name": "AROCA QUINTANILLA",
-      "last_name": "EDGAR PAUL",
-      "dni": "2101163984",
-      "email": "arocaquintanillaedgarpaul@peisol.com",
-      "role": "ADMINISTRATIVO"
-    },
-    {
-      "first_name": "ORTEGA OLGA",
-      "last_name": "MARIA",
-      "dni": "2100376572",
-      "email": "ortegaolgamaria@peisol.com",
-      "role": "ADMINISTRATIVO"
-    }
-  ]
+  {
+     "last_name":"SARMIENTO ARGUELLO",
+     "first_name":"EDISON GUILLERMO",
+     "dni":"2100493853",
+     "role":"TECNICO",
+     "nro_phone":"0989044753",
+     "location":null,
+     "days_to_work":14,
+     "days_free":7
+  },
+  {
+     "last_name":"PORTILLA LEITON",
+     "first_name":"FAUSTO EDIXON",
+     "dni":"1757630882",
+     "role":"TECNICO",
+     "nro_phone":"0988548260",
+     "location":null,
+     "days_to_work":14,
+     "days_free":7
+  },
+  {
+     "last_name":"JINSON ADRIAN",
+     "first_name":"CEDEÑO GARCIA",
+     "dni":"2101112353",
+     "role":"TECNICO",
+     "nro_phone":"0962353261",
+     "location":null,
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"GUEVARA HIDALGO",
+     "first_name":"JOSE LUIS",
+     "dni":"2100387410",
+     "role":"TECNICO",
+     "nro_phone":"0988659107",
+     "location":null,
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"VERDEZOTO BARRAGAN",
+     "first_name":"JOSE LUIS",
+     "dni":"0603783713",
+     "role":"TECNICO",
+     "nro_phone":"0961469132",
+     "location":"BASE LAGO AGRIO",
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"VERDEZOTO BARRAGAN",
+     "first_name":"JUAN GABRIEL",
+     "dni":"0603783697",
+     "role":"TECNICO",
+     "nro_phone":"0991389141",
+     "location":"BASE LAGO AGRIO",
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"UNUP YUMA",
+     "first_name":"JUAN JOSE",
+     "dni":"2100403555",
+     "role":"TECNICO",
+     "nro_phone":"0989017942",
+     "location":null,
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"PAPA MAMALLACTA",
+     "first_name":"NEYSER FERNEY",
+     "dni":"2100833736",
+     "role":"TECNICO",
+     "nro_phone":"0969120336",
+     "location":null,
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"BURGOS PAREDES",
+     "first_name":"RAFAEL ALBERTO",
+     "dni":"1206374439",
+     "role":"TECNICO",
+     "nro_phone":"0994972128",
+     "location":null,
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"PAMBABAY SANTACRUZ",
+     "first_name":"RICARDO ANDRES",
+     "dni":"1711758449",
+     "role":"TECNICO",
+     "nro_phone":"0985023134",
+     "location":null,
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"RUIZ FLORES",
+     "first_name":"ANGEL PATRICIO",
+     "dni":"1004146765",
+     "role":"TECNICO",
+     "nro_phone":"0991303671",
+     "location":null,
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"MILLINGALLI PRECIADO",
+     "first_name":"WILSON ISAIAS",
+     "dni":"2100034186",
+     "role":"TECNICO",
+     "nro_phone":"0968727682",
+     "location":null,
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"JUMBO MORENO",
+     "first_name":"XAVIER AGUSTIN",
+     "dni":"2100417480",
+     "role":"TECNICO",
+     "nro_phone":"0939458478",
+     "location":null,
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"GALEAS BARRAGAN",
+     "first_name":"JHONY MAURICIO",
+     "dni":"0202409470",
+     "role":"TECNICO",
+     "nro_phone":"0967138248",
+     "location":null,
+     "days_to_work":0,
+     "days_free":0
+  },
+  {
+     "last_name":"RUEDA TORRES",
+     "first_name":"BLANCA ROMI",
+     "dni":"2100231964",
+     "role":"TECNICO",
+     "nro_phone":"0991685582",
+     "location":"BASE LAGO AGRIO",
+     "days_to_work":5,
+     "days_free":2
+  },
+  {
+     "last_name":"MARYURI STEFANY",
+     "first_name":"ALVAREZ CHONGO",
+     "dni":"2101074553",
+     "role":"TECNICO",
+     "nro_phone":"0993511352",
+     "location":"BASE LAGO AGRIO",
+     "days_to_work":5,
+     "days_free":2
+  }
+]
