@@ -15,7 +15,6 @@ django-utils-six
 django-cors-headers
 requests
 django_extensions
-psycopg2
 pillow
 setuptools
 django-user-sessions
