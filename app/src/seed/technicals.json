@@ -5,7 +5,7 @@
      "dni":"2100493853",
      "role":"TECNICO",
      "nro_phone":"0989044753",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":14,
      "days_free":7
   },
@@ -15,7 +15,7 @@
      "dni":"1757630882",
      "role":"TECNICO",
      "nro_phone":"0988548260",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":14,
      "days_free":7
   },
@@ -25,7 +25,7 @@
      "dni":"2101112353",
      "role":"TECNICO",
      "nro_phone":"0962353261",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -35,7 +35,7 @@
      "dni":"2100387410",
      "role":"TECNICO",
      "nro_phone":"0988659107",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -45,7 +45,7 @@
      "dni":"0603783713",
      "role":"TECNICO",
      "nro_phone":"0961469132",
-     "location":"BASE LAGO AGRIO",
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -55,7 +55,7 @@
      "dni":"0603783697",
      "role":"TECNICO",
      "nro_phone":"0991389141",
-     "location":"BASE LAGO AGRIO",
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -65,7 +65,7 @@
      "dni":"2100403555",
      "role":"TECNICO",
      "nro_phone":"0989017942",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -75,7 +75,7 @@
      "dni":"2100833736",
      "role":"TECNICO",
      "nro_phone":"0969120336",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -85,7 +85,7 @@
      "dni":"1206374439",
      "role":"TECNICO",
      "nro_phone":"0994972128",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -95,7 +95,7 @@
      "dni":"1711758449",
      "role":"TECNICO",
      "nro_phone":"0985023134",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -105,7 +105,7 @@
      "dni":"1004146765",
      "role":"TECNICO",
      "nro_phone":"0991303671",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -115,7 +115,7 @@
      "dni":"2100034186",
      "role":"TECNICO",
      "nro_phone":"0968727682",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -125,7 +125,7 @@
      "dni":"2100417480",
      "role":"TECNICO",
      "nro_phone":"0939458478",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -135,7 +135,7 @@
      "dni":"0202409470",
      "role":"TECNICO",
      "nro_phone":"0967138248",
-     "location":null,
+     "location": "CAMPO BASE",
      "days_to_work":0,
      "days_free":0
   },
@@ -145,7 +145,7 @@
      "dni":"2100231964",
      "role":"TECNICO",
      "nro_phone":"0991685582",
-     "location":"BASE LAGO AGRIO",
+     "location": "CAMPO BASE",
      "days_to_work":5,
      "days_free":2
   },
@@ -155,7 +155,7 @@
      "dni":"2101074553",
      "role":"TECNICO",
      "nro_phone":"0993511352",
-     "location":"BASE LAGO AGRIO",
+     "location": "CAMPO BASE",
      "days_to_work":5,
      "days_free":2
   }
