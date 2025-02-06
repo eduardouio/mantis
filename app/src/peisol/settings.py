@@ -15,7 +15,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+    
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'accounts',
     'equipment',
     'projects',
-    
 ]
 
 MIDDLEWARE = [
@@ -65,6 +64,19 @@ MIDDLEWARE = [
 SESSION_ENGINE = 'user_sessions.backends.db'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://54.91.246.31',
+    'https://54.91.246.31',
+    'http://localhost',
+    'http://127.0.0.1',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:5173',
+]
+
 
 ROOT_URLCONF = 'peisol.urls'
 
