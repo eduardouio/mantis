@@ -9,61 +9,9 @@ from django.views.generic import (
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
 from equipment.models import ResourceItem
+from equipment.forms.ResourceItemForm import ResourceItemForm
 
 from django import forms
-
-
-class ResourceItemForm(forms.ModelForm):
-    class Meta:
-        model = ResourceItem
-        fields = [
-            'name', 'type', 'brand', 'model', 'code', 'date_purchase',
-            'height', 'width', 'depth', 'weight', 'status', 'is_active',
-            'notes'
-        ]
-        widgets = {
-            'type': forms.Select(
-                attrs={
-                    'class': 'form-select form-select-sm'
-                }
-            ),
-            'name': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'brand': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'model': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'code': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'date_purchase': forms.DateInput(
-                attrs={'class': 'form-control form-control-sm', 'type': 'date'}
-            ),
-            'height': forms.NumberInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'width': forms.NumberInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'depth': forms.NumberInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'weight': forms.NumberInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'notes': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
-            ),
-            'status': forms.Select(
-                attrs={'class': 'form-select form-select-sm'}
-            ),
-            'is_active': forms.CheckboxInput(
-                attrs={'class': 'form-check-input'}
-            ),
-        }
 
 
 class ResourceItemList(LoginRequiredMixin, ListView):

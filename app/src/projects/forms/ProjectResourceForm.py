@@ -12,48 +12,48 @@ class ProjectResourceForm(forms.ModelForm):
         ]
         widgets = {
             'project': forms.Select(
-                attrs={'class': 'form-select form-control-sm'}
+                attrs={'class': 'select select-bordered select-md w-full'}
             ),
             'resource_item': forms.Select(
-                attrs={'class': 'form-select form-control-sm'}
+                attrs={'class': 'select select-bordered select-md w-full'}
             ),
             'cost': forms.NumberInput(
-                attrs={'class': 'form-control form-control-sm'}
+                attrs={'class': 'input input-bordered input-md w-full'}
             ),
             'cost_manteinance': forms.NumberInput(
-                attrs={'class': 'form-control form-control-sm'}
+                attrs={'class': 'input input-bordered input-md w-full'}
             ),
             'is_active': forms.CheckboxInput(
-                attrs={'class': 'form-check-input'}
+                attrs={'class': 'checkbox checkbox-md'}
             ),
             'start_date': forms.DateInput(
                 attrs={
-                    'class': 'form-control form-control-sm',
+                    'class': 'input input-bordered input-md w-full',
                     'type': 'date'
                 },
                 format='%Y-%m-%d'
             ),
             'end_date': forms.DateInput(
                 attrs={
-                    'class': 'form-control form-control-sm',
+                    'class': 'input input-bordered input-md w-full',
                     'type': 'date'
                 },
                 format='%Y-%m-%d'
             ),
             'mantenance_frequency': forms.Select(
-                attrs={'class': 'form-select form-control-sm'}
+                attrs={'class': 'select select-bordered select-md w-full'}
             ),
             'times_mantenance': forms.NumberInput(
-                attrs={'class': 'form-control form-control-sm'}
+                attrs={'class': 'input input-bordered input-md w-full'}
             ),
             'retired_date': forms.DateInput(
                 attrs={
-                    'class': 'form-control form-control-sm',
+                    'class': 'input input-bordered input-md w-full',
                     'type': 'date'
                 },
                 format='%Y-%m-%d'
             ),
             'motive_retired': forms.Textarea(
-                attrs={'class': 'form-control form-control-sm'}
+                attrs={'class': 'textarea textarea-bordered textarea-md w-full'}
             )
         }

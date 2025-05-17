@@ -10,27 +10,10 @@ from django.views.generic import (
 )
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django import forms
 from projects.models import Partner
+from projects.forms.PartnerForm import PartnerForm
 from equipment.models import Vehicle
 from accounts.models import Technical
-
-
-class PartnerForm(forms.ModelForm):
-    class Meta:
-        model = Partner
-        fields = [
-            'business_tax_id', 'name', 'email', 'phone', 'address',
-            'name_contact'
-        ]
-        widgets = {
-            'business_tax_id': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control form-control-sm'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'address': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'name_contact': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-        }
 
 
 class ListPartner(LoginRequiredMixin, ListView):

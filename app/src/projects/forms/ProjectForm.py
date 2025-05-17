@@ -1,4 +1,3 @@
-
 from django import forms
 from projects.models import Project
 
@@ -12,35 +11,35 @@ class ProjectForm(forms.ModelForm):
         ]
         widgets = {
             'partner': forms.Select(
-                attrs={'class': 'form-select form-control-sm'}
+                attrs={'class': 'select select-bordered select-md w-full'}
             ),
-            'notes': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
+            'notes': forms.TextInput(  # Consider changing to Textarea if appropriate for DaisyUI styling
+                attrs={'class': 'input input-bordered input-md w-full'}
             ),
             'place': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
+                attrs={'class': 'input input-bordered input-md w-full'}
             ),
             'contact_name': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
+                attrs={'class': 'input input-bordered input-md w-full'}
             ),
             'phone_contact': forms.TextInput(
-                attrs={'class': 'form-control form-control-sm'}
+                attrs={'class': 'input input-bordered input-md w-full'}
             ),
             'start_date': forms.DateInput(
                 attrs={
-                    'class': 'form-control form-control-sm',
+                    'class': 'input input-bordered input-md w-full',
                     'type': 'date'
                 },
                 format='%Y-%m-%d'
             ),
             'end_date': forms.DateInput(
                 attrs={
-                    'class': 'form-control form-control-sm',
+                    'class': 'input input-bordered input-md w-full',
                     'type': 'date'
                 },
                 format='%Y-%m-%d'
             ),
             'is_active': forms.CheckboxInput(
-                attrs={'class': 'form-check-input'}
+                attrs={'class': 'checkbox checkbox-md'}
             )
         }

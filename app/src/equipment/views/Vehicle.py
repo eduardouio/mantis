@@ -5,26 +5,7 @@ from django.views.generic import (
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
 from equipment.models import Vehicle
-from django import forms
-
-
-class VehicleForm(forms.ModelForm):
-    class Meta:
-        model = Vehicle
-        fields = [
-            'brand', 'model', 'type_vehicle', 'year',
-            'no_plate', 'owner_transport', 'is_active', 'notes'
-        ]
-        widgets = {
-            'brand': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'model': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'type_vehicle': forms.Select(attrs={'class': 'form-select form-control-sm'}),
-            'year': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
-            'no_plate': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'owner_transport': forms.Select(attrs={'class': 'form-select form-control-sm'}),
-            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'notes': forms.Textarea(attrs={'class': 'form-control form-control-sm', 'rows': 2}),
-        }
+from equipment.forms.VehicleForm import VehicleForm
 
 
 class ListVehicle(LoginRequiredMixin, ListView):
