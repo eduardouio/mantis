@@ -1,26 +1,25 @@
 {% extends 'base/base.html'%}
 {% block content %}
-<div class="container my-5">
-    <div class="row g-4">
-      <!-- Sales Card -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card border shadow-sm rounded-3 h-100 p-4" style="background-color: #f8f9fa;">
-          <div class="d-flex justify-content-between align-items-center">
+<div class="p-4 sm:p-6 lg:p-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+      
+      <!-- Equipos Card -->
+      <a href="#" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
+        <div class="card-body">
+          <div class="flex justify-between items-start">
             <div>
-              <h6 class="text-kosmo-primary">EQUIPOS</h6>
-              <h2 class="mb-0">51</h2>
-              <div class="mt-2">
-                <span class="text-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M11 4l3 8l-3 8" />
-                      </svg>
-                    13 Equipos Disponibles
-                </span>
+              <h2 class="card-title text-xl  font-semibold uppercase text-error">EQUIPOS</h2>
+              <p class="text-4xl font-bold mt-1">51</p>
+              <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M11 4l3 8l-3 8" />
+                </svg>
+                13 Equipos Disponibles
               </div>
             </div>
-            <div class="icon bg-danger text-white rounded-circle p-3 d-flex justify-content-center align-items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-portable-bathroom" width="50" height="50" viewBox="0 0 24 24" stroke-width="1" stroke="#FFFFFF" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <div class="p-3 rounded-full bg-error text-error-content">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-portable-bathroom" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <rect x="6" y="4" width="12" height="16" rx="2" fill="none"></rect>
                 <rect x="9" y="8" width="6" height="9" rx="1" fill="none"></rect>
@@ -30,54 +29,52 @@
               </svg>
             </div>
           </div>
-          <a href=" url 'resource_list' %}" class="stretched-link"></a>
         </div>
-      </div>
+      </a>
   
-      <!-- Purchases Card -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card border shadow-sm rounded-3 h-100 p-4" style="background-color: #f8f9fa;">
-          <div class="d-flex justify-content-between align-items-center">
+      <!-- Proyectos Card -->
+      <a href="#" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
+        <div class="card-body">
+          <div class="flex justify-between items-start">
             <div>
-              <h6 class="text-kosmo-green">PROYECTOS</h6>
-              <h2 class="mb-0">5</h2>
-              <p class="text-primary mt-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <h2 class="card-title text-xl  font-semibold uppercase text-primary">PROYECTOS</h2>
+              <p class="text-4xl font-bold mt-1">5</p>
+              <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M11 4l3 8l-3 8" />
-                  </svg>
+                </svg>
                  5 Proyectos Activos
-              </p>
+              </div>
             </div>
-            <div class="icon bg-primary text-white rounded-circle p-3 d-flex justify-content-center align-items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tower" width="50" height="50" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FFFFFF" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <div class="p-3 rounded-full bg-primary text-primary-content">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-tower" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M5 3h1a1 1 0 0 1 1 1v2h3v-2a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2h3v-2a1 1 0 0 1 1 -1h1a1 1 0 0 1 1 1v4.394a2 2 0 0 1 -.336 1.11l-1.328 1.992a2 2 0 0 0 -.336 1.11v7.394a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-7.394a2 2 0 0 0 -.336 -1.11l-1.328 -1.992a2 2 0 0 1 -.336 -1.11v-4.394a1 1 0 0 1 1 -1z" />
                 <path d="M10 21v-5a2 2 0 1 1 4 0v5" />
               </svg>
             </div>
           </div>
-          <a href=" 'bills-create' %}" class="stretched-link"></a>
         </div>
-      </div>
+      </a>
 
-      <!-- Partners Card -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card border shadow-sm rounded-3 h-100 p-4" style="background-color: #f8f9fa;">
-          <div class="d-flex justify-content-between align-items-center">
+      <!-- Tecnicos Card -->
+      <a href="#" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
+        <div class="card-body">
+          <div class="flex justify-between items-start">
             <div>
-              <h6 class="text-muted">TECNICOS</h6>
-              <h2 class="mb-0">25</h2>
-              <p class="text-primary mt-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <h2 class="card-title text-xl  font-semibold uppercase text-secondary">TECNICOS</h2>
+              <p class="text-4xl font-bold mt-1">25</p>
+              <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                   <path d="M11 4l3 8l-3 8" />
                 </svg>
                10 Técnicos En Servicio
-              </p>
+              </div>
             </div>
-            <div class="icon bg-peisol-secondary text-white rounded-circle p-3 d-flex justify-content-center align-items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users-group" width="50" height="50" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FFFFFF" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <div class="p-3 rounded-full bg-secondary text-secondary-content">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-users-group" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
                 <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
@@ -88,56 +85,55 @@
               </svg>
             </div>
           </div>
-          <a href=" url 'technical_list' %}" class="stretched-link"></a>
         </div>
-      </div>
-      <!-- Manual Ledger Card -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card border shadow-sm rounded-3 h-100 p-4" style="background-color: #f8f9fa;">
-          <div class="d-flex justify-content-between align-items-center">
+      </a>
+
+      <!-- Mantenimientos Card -->
+      <a href="#" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
+        <div class="card-body">
+          <div class="flex justify-between items-start">
             <div>
-              <h6 class="text-muted">MANTENIMIENTOS</h6>
-              <h2 class="mb-0">201</h2>
-              <p class="text-primary mt-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <h2 class="card-title text-xl  font-semibold uppercase text-success">MANTENIMIENTOS</h2>
+              <p class="text-4xl font-bold mt-1">201</p>
+              <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M11 4l3 8l-3 8" />
-                  </svg>
+                </svg>
                  En 12 Proyectos
-              </p>
+              </div>
             </div>
-            <div class="icon bg-success text-white rounded-circle p-3 d-flex justify-content-center align-items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-checkup-list" width="50" height="50" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FFFFFF" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <div class="p-3 rounded-full bg-success text-success-content">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-checkup-list" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
                     <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
                     <path d="M9 14h.01" />
                     <path d="M9 17h.01" />
                     <path d="M12 16l1 1l3 -3" />
-                  </svg>
+                </svg>
             </div>
           </div>
-          <a href=" url 'journal-create' %}" class="stretched-link"></a>
         </div>
-      </div>
+      </a>
   
-      <!-- Admin Card -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card border shadow-sm rounded-3 h-100 p-4" style="background-color: #f8f9fa;">
-          <div class="d-flex justify-content-between align-items-center">
+      <!-- Planillas Card -->
+      <a href="#" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
+        <div class="card-body">
+          <div class="flex justify-between items-start">
             <div>
-              <h6 class="text-muted">PLANILLAS</h6>
-              <h2 class="mb-0">25</h2>
-              <p class="text-secondary mt-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <h2 class="card-title text-xl  font-semibold uppercase text-info">PLANILLAS</h2>
+              <p class="text-4xl font-bold mt-1">25</p>
+              <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M11 4l3 8l-3 8" />
-                  </svg>
+                </svg>
                  12 Proyectos Pendientes
-              </p>
+              </div>
             </div>
-            <div class="icon bg-info text-white rounded-circle p-3 d-flex justify-content-center align-items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-analytics" width=50" height="50" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FFFFFF" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <div class="p-3 rounded-full bg-info text-info-content">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-file-analytics" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M14 3v4a1 1 0 0 0 1 1h4" />
                 <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
@@ -147,27 +143,26 @@
               </svg>
             </div>
           </div>
-          <a href="url 'admin-panel' %}" class="stretched-link"></a>
         </div>
-      </div>
+      </a>
   
-      <!-- Transport Card -->
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card border shadow-sm rounded-3 h-100 p-4" style="background-color: #f8f9fa;">
-          <div class="d-flex justify-content-between align-items-center">
+      <!-- Vehiculos Card -->
+      <a href="#" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
+        <div class="card-body">
+          <div class="flex justify-between items-start">
             <div>
-              <h6 class="text-muted">VEHICULOS</h6>
-              <h2 class="mb-0">14</h2>
-              <p class="text-secondary mt-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <h2 class="card-title text-xl  font-semibold uppercase text-neutral-focus">VEHICULOS</h2>
+              <p class="text-4xl font-bold mt-1">14</p>
+              <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                     <path d="M11 4l3 8l-3 8" />
-                  </svg>
+                </svg>
                  12 Vehiculos Disponibles
-              </p>
+              </div>
             </div>
-            <div class="icon bg-secondary text-white rounded-circle p-3 d-flex justify-content-center align-items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-truck" width="40" height="40" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <div class="p-3 rounded-full bg-neutral text-neutral-content">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-truck" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                 <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
                 <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
@@ -175,9 +170,8 @@
               </svg>
             </div>
           </div>
-          <a href=" url 'vehicle_list' %}" class="stretched-link"></a>
         </div>
-      </div>
+      </a>
     </div>
-  </div>
+</div>
 {% endblock %}
