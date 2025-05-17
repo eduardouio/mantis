@@ -25,31 +25,39 @@
         </a>
     </div>
     </div>
-    <div class="w-[90%] mx-auto">
+    <div class="w-[90%] mx-auto overflow-x-auto">
         <table id="datatable" class="table table-bordered table-striped">
             <thead>
             <tr>
-                <th class="bg-blue-400 bg-opacity-75 text-gray-600">#</th>
+                <th class="bg-blue-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
                 <th class="bg-blue-400 bg-opacity-75 text-gray-600">Clave de Licencia</th>
-                <th class="bg-blue-400 bg-opacity-75 text-gray-600">Activada el</th>
-                <th class="bg-blue-400 bg-opacity-75 text-gray-600">Expira el</th>
-                <th class="bg-blue-400 bg-opacity-75 text-gray-600">Rol</th>
-                <th class="bg-blue-400 bg-opacity-75 text-gray-600">Empresa</th>
+                <th class="bg-blue-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Activada el</th>
+                <th class="bg-blue-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Expira el</th>
+                <th class="bg-blue-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Rol</th>
+                <th class="bg-blue-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Empresa</th>
                 <th class="bg-blue-400 bg-opacity-75 text-gray-600">Estado</th>
-                <th class="bg-blue-400 bg-opacity-75 text-gray-600 no-export">Usuario</th>
+                <th class="bg-blue-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Usuario</th>
+                <th class="bg-blue-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
             </tr>
             </thead>
             <tbody>
                 {% for item in object_list %}
                 <tr>
-                    <td class="text-center">{{ forloop.counter }}</td>
-                    <td class="text-center">{{ item.license_key }}</td>
-                    <td class="text-center">{{ item.activated_on|date:"Y-m-d" }}</td>
-                    <td class="text-center">{{ item.expires_on|date:"Y-m-d" }}</td>
-                    <td class="text-center">{{ item.role }}</td>
-                    <td class="text-center">{{ item.enterprise }}</td>
+                    <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
+                    <td class="text-center">
+                        <a href="{% url 'license_detail' item.id %}" class="link link-hover text-primary md:hidden">{{ item.license_key }}</a>
+                        <span class="hidden md:inline">{{ item.license_key }}</span>
+                    </td>
+                    <td class="text-center hidden md:table-cell">{{ item.activated_on|date:"Y-m-d" }}</td>
+                    <td class="text-center hidden md:table-cell">{{ item.expires_on|date:"Y-m-d" }}</td>
+                    <td class="text-center hidden md:table-cell">{{ item.role }}</td>
+                    <td class="text-center hidden md:table-cell">{{ item.enterprise }}</td>
                     <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
-                    <td class="text-center">{{ item.user_email|default:"N/A" }}</td>
+                    <td class="text-center hidden md:table-cell">{{ item.user_email|default:"N/A" }}</td>
+                    <td class="text-center hidden md:table-cell">
+                        <a href="{% url 'license_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
+                        {# No hay botón editar para licencias en el código original #}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -15,29 +15,32 @@
         </a>
     </div>
 </div>
-<div class="w-[90%] mx-auto">
+<div class="w-[90%] mx-auto overflow-x-auto">
     <table id="datatable" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600">#</th>
+                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
                 <th class="bg-yellow-400 bg-opacity-75 text-gray-600">Nombres</th>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600">Apellidos</th>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600">Email</th>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600">Rol</th>
+                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Apellidos</th>
+                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Email</th>
+                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Rol</th>
                 <th class="bg-yellow-400 bg-opacity-75 text-gray-600">Estado</th>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 no-export">Acciones</th>
+                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for item in object_list %}
             <tr>
-                <td class="text-center">{{ forloop.counter }}</td>
-                <td class="text-center">{{ item.first_name }}</td>
-                <td class="text-center">{{ item.last_name }}</td>
-                <td class="text-center">{{ item.email }}</td>
-                <td class="text-center">{{ item.get_role_display }}</td>
-                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
                 <td class="text-center">
+                    <a href="{% url 'technical_detail' item.id %}" class="link link-hover text-primary md:hidden">{{ item.first_name }}</a>
+                    <span class="hidden md:inline">{{ item.first_name }}</span>
+                </td>
+                <td class="text-center hidden md:table-cell">{{ item.last_name }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.email }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.get_role_display }}</td>
+                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                <td class="text-center hidden md:table-cell">
                     <a href="{% url 'technical_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
                     <a href="{% url 'technical_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
                 </td>

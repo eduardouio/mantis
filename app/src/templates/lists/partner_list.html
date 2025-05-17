@@ -15,27 +15,30 @@
         </a>
     </div>
 </div>
-<div class="w-[90%] mx-auto">
+<div class="w-[90%] mx-auto overflow-x-auto">
     <table id="datatable" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th class="bg-indigo-400 bg-opacity-75 text-gray-600">#</th>
+                <th class="bg-indigo-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
                 <th class="bg-indigo-400 bg-opacity-75 text-gray-600">RUC</th>
-                <th class="bg-indigo-400 bg-opacity-75 text-gray-600">Nombre</th>
-                <th class="bg-indigo-400 bg-opacity-75 text-gray-600">Email</th>
-                <th class="bg-indigo-400 bg-opacity-75 text-gray-600">Teléfono</th>
-                <th class="bg-indigo-400 bg-opacity-75 text-gray-600 no-export">Acciones</th>
+                <th class="bg-indigo-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Nombre</th>
+                <th class="bg-indigo-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Email</th>
+                <th class="bg-indigo-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Teléfono</th>
+                <th class="bg-indigo-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for item in object_list %}
             <tr>
-                <td class="text-center">{{ forloop.counter }}</td>
-                <td class="text-center">{{ item.business_tax_id }}</td>
-                <td class="text-center">{{ item.name }}</td>
-                <td class="text-center">{{ item.email }}</td>
-                <td class="text-center">{{ item.phone }}</td>
+                <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
                 <td class="text-center">
+                    <a href="{% url 'partner_detail' item.id %}" class="link link-hover text-primary md:hidden">{{ item.business_tax_id }}</a>
+                    <span class="hidden md:inline">{{ item.business_tax_id }}</span>
+                </td>
+                <td class="text-center hidden md:table-cell">{{ item.name }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.email }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.phone }}</td>
+                <td class="text-center hidden md:table-cell">
                     <a href="{% url 'partner_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
                     <a href="{% url 'partner_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
                 </td>

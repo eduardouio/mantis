@@ -15,29 +15,32 @@
         </a>
     </div>
 </div>
-<div class="w-[90%] mx-auto">
+<div class="w-[90%] mx-auto overflow-x-auto">
     <table id="datatable" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600">#</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600">Código</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Nombre</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Marca</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Estado Físico</th> <!-- MODIFICADO: para diferenciar del estado de actividad -->
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Estado</th> <!-- MODIFICADO -->
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 no-export">Acciones</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Nombre</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Marca</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Estado Físico</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Estado</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for item in object_list %}
             <tr>
-                <td class="text-center">{{ forloop.counter }}</td>
-                <td class="text-center">{{ item.code }}</td>
-                <td class="text-center">{{ item.name }}</td>
-                <td class="text-center">{{ item.brand }}</td>
-                <td class="text-center">{{ item.get_status_display }}</td> <!-- Este es el estado físico -->
-                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td> <!-- MODIFICADO: Este es el estado de actividad -->
+                <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
                 <td class="text-center">
+                    <a href="{% url 'resource_detail' item.id %}" class="link link-hover text-primary md:hidden">{{ item.code }}</a>
+                    <span class="hidden md:inline">{{ item.code }}</span>
+                </td>
+                <td class="text-center hidden md:table-cell">{{ item.name }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.brand }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.get_status_display }}</td>
+                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                <td class="text-center hidden md:table-cell">
                     <a href="{% url 'resource_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
                     <a href="{% url 'resource_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
                 </td>

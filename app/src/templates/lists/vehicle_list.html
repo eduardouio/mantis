@@ -15,31 +15,34 @@
         </a>
     </div>
 </div>
-<div class="w-[90%] mx-auto">
+<div class="w-[90%] mx-auto overflow-x-auto">
     <table id="datatable" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th class="bg-green-400 bg-opacity-75 text-gray-600">#</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
                 <th class="bg-green-400 bg-opacity-75 text-gray-600">Código</th>
-                <th class="bg-green-400 bg-opacity-75 text-gray-600">Marca</th>
-                <th class="bg-green-400 bg-opacity-75 text-gray-600">Modelo</th>
-                <th class="bg-green-400 bg-opacity-75 text-gray-600">Placa</th>
-                <th class="bg-green-400 bg-opacity-75 text-gray-600">Propietario</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Marca</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Modelo</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Placa</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Propietario</th>
                 <th class="bg-green-400 bg-opacity-75 text-gray-600">Estado</th>
-                <th class="bg-green-400 bg-opacity-75 text-gray-600 no-export">Acciones</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for item in object_list %}
             <tr>
-                <td class="text-center">{{ forloop.counter }}</td>
-                <td class="text-center">{{ item.code_vehicle }}</td>
-                <td class="text-center">{{ item.brand }}</td>
-                <td class="text-center">{{ item.model|default_if_none:"" }}</td>
-                <td class="text-center">{{ item.no_plate|default_if_none:"" }}</td>
-                <td class="text-center">{{ item.get_owner_transport_display }}</td>
-                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
                 <td class="text-center">
+                    <a href="{% url 'vehicle_detail' item.id %}" class="link link-hover text-primary md:hidden">{{ item.code_vehicle }}</a>
+                    <span class="hidden md:inline">{{ item.code_vehicle }}</span>
+                </td>
+                <td class="text-center hidden md:table-cell">{{ item.brand }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.model|default_if_none:"" }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.no_plate|default_if_none:"" }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.get_owner_transport_display }}</td>
+                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                <td class="text-center hidden md:table-cell">
                     <a href="{% url 'vehicle_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
                     <a href="{% url 'vehicle_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
                 </td>

@@ -15,29 +15,34 @@
         </a>
     </div>
 </div>
-<div class="w-[90%] mx-auto">
+<div class="w-[90%] mx-auto overflow-x-auto">
     <table id="datatable" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th class="bg-pink-400 bg-opacity-75 text-gray-600">#</th>
-                <th class="bg-pink-400 bg-opacity-75 text-gray-600">Cliente</th>
-                <th class="bg-pink-400 bg-opacity-75 text-gray-600">Lugar</th>
-                <th class="bg-pink-400 bg-opacity-75 text-gray-600">Fecha Inicio</th>
-                <th class="bg-pink-400 bg-opacity-75 text-gray-600">Fecha Fin</th>
+                <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
+                <th class="bg-pink-400 bg-opacity-75 text-gray-600">ID Proyecto</th>
+                <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Cliente</th>
+                <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Lugar</th>
+                <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Fecha Inicio</th>
+                <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Fecha Fin</th>
                 <th class="bg-pink-400 bg-opacity-75 text-gray-600">Estado</th>
-                <th class="bg-pink-400 bg-opacity-75 text-gray-600 no-export">Acciones</th>
+                <th class="bg-pink-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for item in object_list %}
             <tr>
-                <td class="text-center">{{ forloop.counter }}</td>
-                <td class="text-center">{{ item.partner }}</td>
-                <td class="text-center">{{ item.place }}</td>
-                <td class="text-center">{{ item.start_date }}</td>
-                <td class="text-center">{{ item.end_date }}</td>
-                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
                 <td class="text-center">
+                    <a href="{% url 'project_detail' item.id %}" class="link link-hover text-primary md:hidden">{{ item.id }}</a>
+                    <span class="hidden md:inline">{{ item.id }}</span>
+                </td>
+                <td class="text-center hidden md:table-cell">{{ item.partner }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.place }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.start_date }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.end_date }}</td>
+                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                <td class="text-center hidden md:table-cell">
                     <a href="{% url 'project_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
                     <a href="{% url 'project_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
                 </td>
