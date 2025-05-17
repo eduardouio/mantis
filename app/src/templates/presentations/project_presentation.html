@@ -68,7 +68,7 @@
     </div>
 
     <div class="w-full md:w-3/4 lg:w-4/5">
-      <div v-if="tab_show.tab_detail" class="card bg-base-100 shadow-xl">
+      <div v-if="tab_show.tab_detail" class="card bg-base-100 shadow-xl border border-gray-500">
         <div class="card-body">
           <h2 class="card-title">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 4m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v10a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3z" /><path d="M9 10m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M15 8l2 0" /><path d="M15 12l2 0" /><path d="M7 16l10 0" /></svg>
@@ -87,7 +87,7 @@
             </div>
             <div>
               <span class="text-sm font-medium text-gray-500">Cliente:</span>
-              <p class="mt-1 text-gray-900 p-2 border rounded bg-base-200">{{ project.partner }}</p>
+              <p class="mt-1 text-gray-900 p-2 border rounded bg-base-200"><a href="{% if project.partner_id %}{% url 'partner_detail' project.partner_id %}{% else %}#{% endif %}" class="link link-hover text-primary">{{ project.partner }}</a></p>
             </div>
             <div>
               <span class="text-sm font-medium text-gray-500">Lugar:</span>
@@ -121,7 +121,7 @@
         </div>
       </div>
 
-      <div v-if="tab_show.tab_equipments" class="card bg-base-100 shadow-xl">
+      <div v-if="tab_show.tab_equipments" class="card bg-base-100 shadow-xl border border-gray-500">
         <div class="card-body">
           <h2 class="card-title">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><rect x="6" y="4" width="12" height="16" rx="2"></rect><rect x="9" y="8" width="6" height="9" rx="1"></rect><circle cx="12" cy="6" r="0.5"></circle><circle cx="13.5" cy="12" r="0.5"></circle><path d="M6 20h12"></path></svg>
@@ -160,7 +160,9 @@
                       <td>[[ idx + 1 ]]</td>
                       <td @click="selectedEquipment=item" data-bs-toggle="modal" data-bs-target="#equipmentModal" class="cursor-pointer hover:text-primary">
                         <span v-if="(parseFloat(item.projectResource.cost) === 0 && parseFloat(item.projectResource.cost_manteinance) === 0)">⚠️ </span>
-                        [[ item.resourceItem.name ]]
+                        <a :href="'{% url 'resource_detail' 0 %}'.replace('0', item.resourceItem.id)" target="_blank" @click.stop> <!-- Enlace al detalle del equipo -->
+                           [[ item.resourceItem.name ]]
+                        </a>
                       </td>
                       <td>[[ item.resourceItem.code ]]</td>
                       <td class="text-right">[[ costFormat(item.projectResource.cost) ]]</td>
@@ -220,7 +222,7 @@
         </div>
       </div>
 
-      <div v-if="tab_show.tab_work_order" class="card bg-base-100 shadow-xl">
+      <div v-if="tab_show.tab_work_order" class="card bg-base-100 shadow-xl border border-gray-500">
         <div class="card-body">
           <h2 class="card-title">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /></svg>
@@ -245,7 +247,7 @@
                     <td>{{ forloop.counter }}</td>
                     <td>{{ item.date|date:"Y-m-d" }}</td>
                     <td>{{ item.equipment_count }}</td> {# Asumiendo que tienes un conteo o una forma de mostrar los equipos #}
-                    <td>{{ item.tecnical }}</td>
+                    <td><a href="{% if item.tecnical_id %}{% url 'technical_detail' item.tecnical_id %}{% else %}#{% endif %}" class="link link-hover text-primary">{{ item.tecnical }}</a></td>
                     <td class="text-center">
                       <button class="btn btn-xs btn-ghost text-primary" title="Ver Detalle">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
@@ -331,14 +333,14 @@
   var free_equipment = {{ free_equipment|safe }};
   var project_resource = {{ project_resource|safe }};
   var project = {{ project_json|safe }};
-  var urlBase = "{% url 'project_add_equipment' %}";
-  var deleteUrl = "{% url 'project_delete_equipment' %}";
-  var successUrl = "{% url 'project_detail' project.id %}";
-  var updateUrl = "{% url 'project_update_equipment' %}";
+  var urlBase = "{% url 'project_add_equipment' %}"; // project_add_equipment
+  var deleteUrl = "{% url 'project_delete_equipment' %}"; // project_delete_equipment
+  var successUrl = "{% url 'project_detail' project.id %}"; // project_detail
+  var updateUrl = "{% url 'project_update_equipment' %}"; // project_update_equipment
   // Estas URLs no se usan en el JS proporcionado, pero las mantengo por si acaso.
-  var projectResourceAddUrl = "{% url 'project_add_resource' %}";
-  var projectResourceUpdUrl = "{% url 'project_update_resource' %}";
-  var projectResourceDelUrl = "{% url 'project_delete_resource' %}";
+  var projectResourceAddUrl = "{% url 'project_add_resource' %}"; // project_add_resource
+  var projectResourceUpdUrl = "{% url 'project_update_resource' %}"; // project_update_resource
+  var projectResourceDelUrl = "{% url 'project_delete_resource' %}"; // project_delete_resource
 </script>
 <script src="/static/js/app/project_app.js"></script>
 {% endblock %
