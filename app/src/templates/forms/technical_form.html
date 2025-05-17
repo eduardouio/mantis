@@ -1,41 +1,27 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
-    <div class="row">
-        <div class="col-6">
-            <span class="text-primary">
-                {{ title_section }}
-            </span>
-        </div>
-        <div class="col-6 d-flex justify-content-end gap-3">
+<div class="container mx-auto mt-3 mb-3 p-4 shadow-lg rounded-lg bg-base-100">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+        <h1 class="text-2xl font-semibold text-primary mb-2 md:mb-0">{{ title_section }}</h1>
+        <div class="flex flex-wrap gap-2">
             {% if request.resolver_match.url_name != 'technical_create' %}
-            <a href="{% url 'technical_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M4 7l16 0" />
-                    <path d="M10 11l0 6" />
-                    <path d="M14 11l0 6" />
-                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+            <a href="{% url 'technical_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                 </svg>
-                Eliminar Técnico
+                Eliminar
             </a>
-            <a href="{% url 'technical_detail' technical.id %}" class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
-                    <path d="M5 12l14 0" />
-                    <path d="M5 12l6 6" />
-                    <path d="M5 12l6 -6" />
+            <a href="{% url 'technical_detail' technical.id %}" class="btn btn-sm btn-outline btn-info">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" />
                 </svg>
-                Volver Ficha
+                Volver a Ficha
             </a>
             {% endif %}
-            <a href="{% url 'technical_list' %}" class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                    <path d="M5.7 5.7l12.6 12.6" />
+            <a href="{% url 'technical_list' %}" class="btn btn-sm btn-outline">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" />
                 </svg>
                 Cancelar
             </a>
@@ -43,87 +29,96 @@
     </div>
 </div>
 
-<div class="container mt-2">
-    <!-- Información del Técnico -->
-    <div class="card mb-2">
-        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                <path d="M12 9h.01" />
-                <path d="M11 12h1v4h1" />
-            </svg>
-            Información del Técnico
-        </div>
+<div class="container mx-auto mt-2 p-4">
+    <div class="card bg-base-100 shadow-xl border border-gray-500">
         <div class="card-body">
+            <h2 class="card-title text-secondary mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" />
+                </svg>
+                Información del Técnico
+            </h2>
+
+            {% if form.errors %}
+            <div class="alert alert-error shadow-lg mb-4">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>Por favor, corrige los errores en el formulario.</span>
+                </div>
+            </div>
+            {% endif %}
+
             <form action="" method="post">
-                {{ form.errors }}
                 {% csrf_token %}
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <label for="first_name" class="text-muted">Nombres:</label>
-                        {{ form.first_name }}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="form-control">
+                        <label class="label" for="{{ form.first_name.id_for_label }}"><span class="label-text">Nombres:</span></label>
+                        {{ form.first_name }} <!-- Expected class: input -->
+                        {% if form.first_name.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.first_name.errors }}</span></label>{% endif %}
                     </div>
-                    <div class="col-md-4">
-                        <label for="last_name" class="text-muted">Apellidos:</label>
-                        {{ form.last_name }}
+                    <div class="form-control">
+                        <label class="label" for="{{ form.last_name.id_for_label }}"><span class="label-text">Apellidos:</span></label>
+                        {{ form.last_name }} <!-- Expected class: input -->
+                        {% if form.last_name.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.last_name.errors }}</span></label>{% endif %}
                     </div>
-                    <div class="col-md-4">
-                        <label for="email" class="text-muted">Correo Electrónico:</label>
-                        {{ form.email }}
+                    <div class="form-control">
+                        <label class="label" for="{{ form.email.id_for_label }}"><span class="label-text">Correo Electrónico:</span></label>
+                        {{ form.email }} <!-- Expected class: input -->
+                        {% if form.email.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.email.errors }}</span></label>{% endif %}
                     </div>
-
-                    <div class="col-md-4">
-                        <label for="location" class="text-muted">Ubicación:</label>
-                        {{ form.location }}
+                    <div class="form-control">
+                        <label class="label" for="{{ form.location.id_for_label }}"><span class="label-text">Ubicación:</span></label>
+                        {{ form.location }} <!-- Expected class: select -->
+                        {% if form.location.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.location.errors }}</span></label>{% endif %}
                     </div>
-
-                    <div class="col-md-4">
-                        <label for="dni" class="text-muted">Cédula:</label>
-                        {{ form.dni }}
+                    <div class="form-control">
+                        <label class="label" for="{{ form.dni.id_for_label }}"><span class="label-text">Cédula:</span></label>
+                        {{ form.dni }} <!-- Expected class: input -->
+                        {% if form.dni.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.dni.errors }}</span></label>{% endif %}
                     </div>
-
-                    <div class="col-md-4">
-                        <label for="nro_phone" class="text-muted">Número de Celular:</label>
-                        {{ form.nro_phone }}
+                    <div class="form-control">
+                        <label class="label" for="{{ form.nro_phone.id_for_label }}"><span class="label-text">Número de Celular:</span></label>
+                        {{ form.nro_phone }} <!-- Expected class: input -->
+                        {% if form.nro_phone.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.nro_phone.errors }}</span></label>{% endif %}
                     </div>
-
-                    <div class="col-md-4">
-                        <label for="role" class="text-muted">Cargo:</label>
-                        {{ form.role }}
+                    <div class="form-control">
+                        <label class="label" for="{{ form.role.id_for_label }}"><span class="label-text">Cargo:</span></label>
+                        {{ form.role }} <!-- Expected class: select -->
+                        {% if form.role.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.role.errors }}</span></label>{% endif %}
                     </div>
-
-                    <div class="col-md-4">
-                        <label for="days_to_work" class="text-muted">Días a Trabajar:</label>
-                        {{ form.days_to_work }}
+                    <div class="form-control">
+                        <label class="label" for="{{ form.days_to_work.id_for_label }}"><span class="label-text">Días a Trabajar:</span></label>
+                        {{ form.days_to_work }} <!-- Expected class: input -->
+                        {% if form.days_to_work.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.days_to_work.errors }}</span></label>{% endif %}
                     </div>
-
-                    <div class="col-md-4">
-                        <label for="days_free" class="text-muted">Días Libres:</label>
-                        {{ form.days_free }}
+                    <div class="form-control">
+                        <label class="label" for="{{ form.days_free.id_for_label }}"><span class="label-text">Días Libres:</span></label>
+                        {{ form.days_free }} <!-- Expected class: input -->
+                        {% if form.days_free.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.days_free.errors }}</span></label>{% endif %}
                     </div>
-
-                    <div class="col-md-4 d-flex align-items-center gap-3">
-                        <label for="is_active" class="text-muted">Activo:</label>
-                        <span>{{ form.is_active }}</span>
+                     <div class="form-control md:col-span-3">
+                        <label class="label" for="{{ form.notes.id_for_label }}"><span class="label-text">Notas:</span></label>
+                        {{ form.notes }} <!-- Expected class: textarea -->
+                        {% if form.notes.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.notes.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Activo:</span> 
+                            {{ form.is_active }} <!-- DaisyUI checkbox class handles focus styling -->
+                        </label>
+                        {% if form.is_active.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.is_active.errors }}</span></label>{% endif %}
                     </div>
                 </div>
+                <div class="card-actions justify-end mt-6">
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" />
+                        </svg>
+                        Guardar Técnico
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="row bg-gray bg-gradient p-2 rounded border">
-            <div class="col text-end">
-                <button class="btn btn-sm btn-default">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
-                        <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                        <path d="M14 4l0 4l-6 0l0 -4" />
-                    </svg>
-                    Guardar Técnico
-                </button>
-            </div>
-        </div>
-      </form>
     </div>
-</div>
 </div>
 {% endblock %}

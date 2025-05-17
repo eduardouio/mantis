@@ -150,13 +150,13 @@
                      <li><div class="divider my-1"></div></li>
                      <!-- Salir para móvil -->
                      <li>
-                        <a class="text-error" href="/accounts/logout/">
+                        <a class="text-error" href="{% url 'logout' %}">
                            Salir
                         </a>
                      </li>
                   </ul>
                </div>
-               <a class="btn btn-ghost normal-case text-xl" href="/">
+               <a class="btn btn-ghost normal-case text-xl" href="{% url 'home' %}">
                   <img src="/static/img/logo.png" alt="Logo" class="h-8 rounded" />
                </a>
             </div>
@@ -295,7 +295,7 @@
                 <ul class="menu menu-horizontal px-1">
                     <!-- Salir para desktop -->
                     <li>
-                        <a class="btn btn-ghost text-error" href="/accounts/logout/">
+                        <a class="btn btn-ghost text-error" href="{% url 'logout' %}">
                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
                               <path d="M9 12h12l-3 -3" />

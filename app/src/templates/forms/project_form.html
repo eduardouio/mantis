@@ -1,88 +1,107 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
-    <div class="row">
-        <div class="col-6">
-            <span class="text-primary">
-                {{ title_section }}
-            </span>
-        </div>
-        <div class="col-6 d-flex justify-content-end gap-3">
-            {%  if request.resolver_match.url_name  != 'project_create' %}    
-            <a href="{% url 'project_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-default">
-                <!-- Ícono y texto para eliminar el proyecto -->
-                Eliminar Proyecto
+<div class="container mx-auto mt-3 mb-3 p-4 shadow-lg rounded-lg bg-base-100">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+        <h1 class="text-2xl font-semibold text-primary mb-2 md:mb-0">{{ title_section }}</h1>
+        <div class="flex flex-wrap gap-2">
+            {% if request.resolver_match.url_name != 'project_create' %}    
+            <a href="{% url 'project_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
+                Eliminar
             </a>
-            <a href="{% url 'project_detail' project.id %}" class="btn btn-sm btn-default">
-                <!-- Ícono y texto para volver -->
-                Volver Ficha
+            <a href="{% url 'project_detail' project.id %}" class="btn btn-sm btn-outline btn-info">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" />
+                </svg>
+                Volver a Ficha
             </a>
             {% endif %}
-            <a href="{% url 'project_list' %}" class="btn btn-sm btn-default">
-                <!-- Ícono y texto para cancelar -->
+            <a href="{% url 'project_list' %}" class="btn btn-sm btn-outline">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" />
+                </svg>
                 Cancelar
             </a>
         </div>
     </div>
 </div>
 
-<div class="container mt-2">
-    <!-- Información del Proyecto -->
-    <div class="card mb-2">
-        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
-            <!-- Ícono de información -->
-            Información del Proyecto
-        </div>
+<div class="container mx-auto mt-2 p-4">
+    <div class="card bg-base-100 shadow-xl border border-gray-500">
         <div class="card-body">
-          <form action="" method="post">
-            {{ form.errors }}
-            {% csrf_token %}
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label for="partner" class="text-muted">Cliente:</label>
-                    {{ form.partner }}
-                </div>
-                <div class="col-md-4">
-                    <label for="place" class="text-muted">Lugar:</label>
-                    {{ form.place }}
-                </div>
-                <div class="col-md-4">
-                    <label for="contact_name" class="text-muted">Nombre de Contacto:</label>
-                    {{ form.contact_name }}
-                </div>
-                <div class="col-md-4">
-                    <label for="phone_contact" class="text-muted">Teléfono de Contacto:</label>
-                    {{ form.phone_contact }}
-                </div>
-                <div class="col-md-4">
-                    <label for="start_date" class="text-muted">Fecha de Inicio:</label>
-                    {{ form.start_date }}
-                </div>
-                <div class="col-md-4">
-                    <label for="end_date" class="text-muted">Fecha de Fin:</label>
-                    {{ form.end_date }}
-                </div>
-                <div class="col-md-2 d-flex align-items-center gap-3">
-                    <label for="is_active" class="text-muted">Activo:</label>
-                    <span>
-                      {{ form.is_active }}
-                    </span>
-                </div>
-                <div class="col-md-10">
-                    <label for="project_description" class="text-muted">Notas:</label>
-                    {{ form.notes }}
+            <h2 class="card-title text-secondary mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" />
+                </svg>
+                Información del Proyecto
+            </h2>
+
+            {% if form.errors %}
+            <div class="alert alert-error shadow-lg mb-4">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>Por favor, corrige los errores en el formulario.</span>
                 </div>
             </div>
-        <div class="row bg-gray bg-gradient p-2 rounded border">
-            <div class="col text-end">
-              <button class="btn btn-sm btn-default">
-                Guardar Nuevo
-              </button>
-            </div>
+            {% endif %}
+
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="form-control">
+                        <label class="label" for="{{ form.partner.id_for_label }}"><span class="label-text">Cliente:</span></label>
+                        {{ form.partner }} <!-- Expected class: select -->
+                        {% if form.partner.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.partner.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.place.id_for_label }}"><span class="label-text">Lugar:</span></label>
+                        {{ form.place }} <!-- Expected class: input -->
+                        {% if form.place.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.place.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.contact_name.id_for_label }}"><span class="label-text">Nombre de Contacto:</span></label>
+                        {{ form.contact_name }} <!-- Expected class: input -->
+                        {% if form.contact_name.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.contact_name.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.phone_contact.id_for_label }}"><span class="label-text">Teléfono de Contacto:</span></label>
+                        {{ form.phone_contact }} <!-- Expected class: input -->
+                        {% if form.phone_contact.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.phone_contact.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.start_date.id_for_label }}"><span class="label-text">Fecha de Inicio:</span></label>
+                        {{ form.start_date }} <!-- Expected class: input -->
+                        {% if form.start_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.start_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.end_date.id_for_label }}"><span class="label-text">Fecha de Fin:</span></label>
+                        {{ form.end_date }} <!-- Expected class: input -->
+                        {% if form.end_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.end_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control md:col-span-3">
+                        <label class="label" for="{{ form.notes.id_for_label }}"><span class="label-text">Notas:</span></label>
+                        {{ form.notes }} <!-- Expected class: textarea -->
+                        {% if form.notes.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.notes.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Activo:</span> 
+                            {{ form.is_active }} <!-- DaisyUI checkbox class handles focus styling -->
+                        </label>
+                        {% if form.is_active.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.is_active.errors }}</span></label>{% endif %}
+                    </div>
+                </div>
+                <div class="card-actions justify-end mt-6">
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" />
+                        </svg>
+                        Guardar Proyecto
+                    </button>
+                </div>
+            </form>
         </div>
-      </form>
-    </div>
     </div>
 </div>
 {% endblock %}

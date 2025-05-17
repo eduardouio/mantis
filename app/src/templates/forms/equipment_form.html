@@ -1,41 +1,27 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
-    <div class="row">
-        <div class="col-6">
-            <span class="text-primary">
-                {{ title_section }}
-            </span>
-        </div>
-        <div class="col-6 d-flex justify-content-end gap-3">
-            {%  if request.resolver_match.url_name  != 'resource_create' %}    
-            <a href="{% url 'resource_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M4 7l16 0" />
-                    <path d="M10 11l0 6" />
-                    <path d="M14 11l0 6" />
-                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+<div class="container mx-auto mt-3 mb-3 p-4 shadow-lg rounded-lg bg-base-100">
+    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+        <h1 class="text-2xl font-semibold text-primary mb-2 md:mb-0">{{ title_section }}</h1>
+        <div class="flex flex-wrap gap-2">
+            {% if request.resolver_match.url_name != 'resource_create' %}    
+            <a href="{% url 'resource_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
                 </svg>
-                Eliminar Equipo
+                Eliminar
             </a>
-            <a href="{{ equipment.pk }} " class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
-                    <path d="M5 12l14 0" />
-                    <path d="M5 12l6 6" />
-                    <path d="M5 12l6 -6" />
+            <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-sm btn-outline btn-info">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" />
                 </svg>
-                Volver Ficha
+                Volver a Ficha
             </a>
             {% endif %}
-            <a href="{% url 'resource_list' %}" class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-ban" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                    <path d="M5.7 5.7l12.6 12.6" />
+            <a href="{% url 'resource_list' %}" class="btn btn-sm btn-outline">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" />
                   </svg>
                 Cancelar
             </a>
@@ -43,126 +29,127 @@
     </div>
 </div>
 
-<div class="container mt-2">
-    <!-- Información del Equipo -->
-    <div class="card mb-2">
-        <div class="card-header p-1 bg-secondary bg-gradient bg-opacity-75 text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                <path d="M12 9h.01" />
-                <path d="M11 12h1v4h1" />
-            </svg>
-            Información del Equipo
-        </div>
+<div class="container mx-auto mt-2 p-4">
+    <div class="card bg-base-100 shadow-xl border border-gray-500">
         <div class="card-body">
-          <form action="" method="post">
-            {{ form.errors }}
-            {% csrf_token %}
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label for="code" class="text-muted">Tipo:</label>
-                    {{ form.type }}
-                </div>
-                <div class="col-md-4">
-                    <label for="code" class="text-muted">Código:</label>
-                    {{ form.code }}
-                </div>
-                <div class="col-md-4">
-                    <label for="name" class="text-muted">Nombre:</label>
-                    {{ form.name }}
-                </div>
-                <div class="col-md-4" id="brand">
-                    <label for="brand" class="text-muted">Marca:</label>
-                    {{ form.brand }}
-                </div>
-                <div class="col-md-4" id="model">
-                    <label for="model" class="text-muted">Modelo:</label>
-                    {{ form.model }}
-                </div>
-                <div class="col-md-4" id="date_purchase">
-                    <label for="date_purchase" class="text-muted">Fecha de Compra:</label>
-                    {{ form.date_purchase }}
-                </div>
-                <div class="col-md-4" id="height">
-                    <label for="height" class="text-muted">Altura (cm):</label>
-                    {{ form.height }}
-                </div>
-
-                <div class="col-md-4" id="width">
-                    <label for="width" class="text-muted">Ancho (cm):</label>
-                    {{ form.width }}
-                </div>
-
-                <div class="col-md-4" id="depth">
-                    <label for="depth" class="text-muted">Profundidad (cm):</label>
-                    {{ form.depth }}
-                </div>
-                <div class="col-md-4" id="weight">
-                    <label for="weight" class="text-muted">Peso (kg):</label>
-                    {{ form.weight }}
-                </div>
-                <div class="row">
-                  <div class="col-md-4">
-                      <label for="status" class="text-muted">Estado:</label>
-                      {{ form.status }}
-                  </div>
-                  <div class="col-md-2 d-flex align-items-center gap-3">
-                      <label for="is_active" class="text-muted">Activo:</label>
-                      <span>
-                        {{ form.is_active }}
-                      </span>
-                  </div>
-                <div class="col-md-6">
-                    <label for="notes" class="text-muted">Notas:</label>
-                    {{ form.notes }}
-                </div>
-            </div>
-        </div>
-        <div class="row bg-gray bg-gradient p-2 rounded border">
-            <div class="col text-end">
-              <button class="btn btn-sm btn-default">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-floppy" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                  <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" />
-                  <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                  <path d="M14 4l0 4l-6 0l0 -4" />
+            <h2 class="card-title text-secondary mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" />
                 </svg>
-                Guardar Nuevo
-              </button>
+                Información del Equipo
+            </h2>
+            
+            {% if form.errors %}
+            <div class="alert alert-error shadow-lg mb-4">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>Por favor, corrige los errores en el formulario.</span>
+                </div>
             </div>
+            {% endif %}
+
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="form-control">
+                        <label class="label" for="{{ form.type.id_for_label }}"><span class="label-text">Tipo:</span></label>
+                        {{ form.type }} <!-- Expected class: select -->
+                        {% if form.type.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.type.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.code.id_for_label }}"><span class="label-text">Código:</span></label>
+                        {{ form.code }} <!-- Expected class: input -->
+                        {% if form.code.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.code.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.name.id_for_label }}"><span class="label-text">Nombre:</span></label>
+                        {{ form.name }} <!-- Expected class: input -->
+                        {% if form.name.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.name.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control" id="brand_div">
+                        <label class="label" for="{{ form.brand.id_for_label }}"><span class="label-text">Marca:</span></label>
+                        {{ form.brand }} <!-- Expected class: input -->
+                        {% if form.brand.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.brand.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control" id="model_div">
+                        <label class="label" for="{{ form.model.id_for_label }}"><span class="label-text">Modelo:</span></label>
+                        {{ form.model }} <!-- Expected class: input -->
+                        {% if form.model.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.model.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control" id="date_purchase_div">
+                        <label class="label" for="{{ form.date_purchase.id_for_label }}"><span class="label-text">Fecha de Compra:</span></label>
+                        {{ form.date_purchase }} <!-- Expected class: input -->
+                        {% if form.date_purchase.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.date_purchase.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control" id="height_div">
+                        <label class="label" for="{{ form.height.id_for_label }}"><span class="label-text">Altura (cm):</span></label>
+                        {{ form.height }} <!-- Expected class: input -->
+                        {% if form.height.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.height.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control" id="width_div">
+                        <label class="label" for="{{ form.width.id_for_label }}"><span class="label-text">Ancho (cm):</span></label>
+                        {{ form.width }} <!-- Expected class: input -->
+                        {% if form.width.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.width.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control" id="depth_div">
+                        <label class="label" for="{{ form.depth.id_for_label }}"><span class="label-text">Profundidad (cm):</span></label>
+                        {{ form.depth }} <!-- Expected class: input -->
+                        {% if form.depth.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.depth.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control" id="weight_div">
+                        <label class="label" for="{{ form.weight.id_for_label }}"><span class="label-text">Peso (kg):</span></label>
+                        {{ form.weight }} <!-- Expected class: input -->
+                        {% if form.weight.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.weight.errors }}</span></label>{% endif %}
+                    </div>
+                     <div class="form-control">
+                        <label class="label" for="{{ form.status.id_for_label }}"><span class="label-text">Estado Físico:</span></label>
+                        {{ form.status }} <!-- Expected class: select -->
+                        {% if form.status.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.status.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control md:col-span-2">
+                        <label class="label" for="{{ form.notes.id_for_label }}"><span class="label-text">Notas:</span></label>
+                        {{ form.notes }} <!-- Expected class: textarea -->
+                        {% if form.notes.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.notes.errors }}</span></label>{% endif %}
+                    </div>
+                     <div class="form-control">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Activo:</span> 
+                            {{ form.is_active }} <!-- DaisyUI checkbox class handles focus styling -->
+                        </label>
+                        {% if form.is_active.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.is_active.errors }}</span></label>{% endif %}
+                    </div>
+                </div>
+                <div class="card-actions justify-end mt-6">
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" />
+                        </svg>
+                        Guardar Equipo
+                    </button>
+                </div>
+            </form>
         </div>
-      </form>
-    </div>
     </div>
 </div>
 {% endblock %}
+
 {% block script %}
 <script>
     $(document).ready(function() {
-     $('#id_type').change(function(){
-        let option = $(this).val();
-        if (option === 'EQUIPO'){
-            $('#brand').fadeIn('slow');
-            $('#model').fadeIn('slow');
-            $('#date_purchase').fadeIn('slow');
-            $('#height').fadeIn('slow');
-            $('#width').fadeIn('slow');
-            $('#depth').fadeIn('slow');
-            $('#weight').fadeIn('slow');
-        }else{
-            $('#brand').fadeOut('slow');
-            $('#model').fadeOut('slow');
-            $('#date_purchase').fadeOut('slow');
-            $('#height').fadeOut('slow');
-            $('#width').fadeOut('slow');
-            $('#depth').fadeOut('slow');
-            $('#weight').fadeOut('slow');
+        function toggleEquipmentFields() {
+            let option = $('#{{ form.type.id_for_label }}').val(); // Usar el ID correcto del campo type
+            if (option === 'EQUIPO') {
+                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div').fadeIn('slow');
+            } else {
+                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div').fadeOut('slow');
+            }
         }
 
-     });
+        // Ejecutar al cargar la página
+        toggleEquipmentFields();
 
+        // Ejecutar al cambiar la selección
+        $('#{{ form.type.id_for_label }}').change(toggleEquipmentFields);
     });
- 
 </script>
 {% endblock %}
