@@ -1,115 +1,49 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
-        <div class="d-flex justify-content-between">
+<div class="container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
+    <div class="d-flex justify-content-between">
         <span class="text-primary">
-            {{ title_section }}
+            {{ title_section|default:"Listado de Equipos" }}
         </span>
-        {% if action %}
-        <span class="bg-peisol-secondary bg-gradient p-2 rounded">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                <path d="M9 12l2 2l4 -4" />
-              </svg>
-            {{ message }}
-        </span>
-        {% endif %}
         <a href="{% url 'resource_create' %}" class="btn btn-sm btn-default">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                 <path d="M12 5l0 14" />
                 <path d="M5 12l14 0" />
-              </svg>
+            </svg>
             Agregar Equipo
         </a>
     </div>
-    </div>
-    <div class="container container-xl mx-auto">
-        <table class="table table-bordered table-striped" id="myTable">
-            <thead>
+</div>
+<div class="w-[90%] mx-auto">
+    <table id="datatable" class="table table-bordered table-striped">
+        <thead>
             <tr>
-                <th class="bg-secondary bg-opacity-25 text-center ">#</th>
-                <th class="bg-secondary bg-opacity-25 text-center">Codigo</th>
-                <th class="bg-secondary bg-opacity-25 text-center">Tipo</th>
-                <th class="bg-secondary bg-opacity-25 text-center">Marca</th>
-                <th class="bg-secondary bg-opacity-25 text-center">Modelo</th>                
-                <th class="bg-secondary bg-opacity-25 text-center">Estado</th>
-                <th class="bg-secondary bg-opacity-25 text-center">Activo</th>
-                <th class="bg-secondary bg-opacity-25 text-center">Ubicación</th>
-                <th class="bg-secondary bg-opacity-25 text-center">Proyecto</th>
-                <th class="bg-secondary bg-opacity-25 text-center">Fecha Liberación</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600">#</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Código</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Nombre</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Marca</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Estado Físico</th> <!-- MODIFICADO: para diferenciar del estado de actividad -->
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Estado</th> <!-- MODIFICADO -->
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 no-export">Acciones</th>
             </tr>
-            </thead>
-            <tbody>
-                {% for item in object_list %}
-                <tr>
-                    <td class="p-0 d-flex justify-content-start gap-3">
-                        <a href="{% url 'resource_detail' item.id  %}" class="text-primary d-flex justify-content-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crosshair" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
-                                <path d="M4 16v2a2 2 0 0 0 2 2h2" />
-                                <path d="M16 4h2a2 2 0 0 1 2 2v2" />
-                                <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
-                                <path d="M9 12l6 0" />
-                                <path d="M12 9l0 6" />
-                              </svg>
-                            {{ forloop.counter }}
-                        </a>
-                    </td>
-                    <td class="p-0">
-                        {% if item.is_active  %}
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                            <path d="M9 12l2 2l4 -4" />
-                          </svg>
-                          {% else %}
-                          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M12 9v4" />
-                            <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
-                            <path d="M12 16h.01" />
-                          </svg>
-                          {% endif %}
-                        {{ item.code }}
-                    </td>
-                    <td class="p-0">{{ item.name }}</td>
-                    <td class="p-0">{{ item.brand }}</td>
-                    <td class="p-0">{% if item.model %} {{ item.model }} {% endif %}</td>
-                    <td class="p-0">{{ item.status }}</td>
-                    <td class="p-0 text-center">
-                        {{ item.is_active | yesno:"Si,No" }}
-                    </td>
-                    <td class="p-0">
-                        {% if item.bg_current_project %}
-                            {{ item.bg_current_location }}
-                        {% else %}
-                            Peisol
-                        {% endif %}
-
-                    </td>
-                    <td class="p-0 text-center">
-                        {% if item.bg_current_project  %}
-                        <a href="{% url 'project_detail' item.bg_current_project %}" target="_blank" class="text-secondary">
-                            <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                            # {{ item.bg_current_project }}
-                        </a>
-                        {% else %}
-                            Sin Asingar
-                        {% endif %}
-                    </td>
-                    <td class="p-0">
-                        {% if item.bg_date_free  %}
-                            {{ item.bg_date_free }}
-                            {% else %}
-                            Disponible
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+        </thead>
+        <tbody>
+            {% for item in object_list %}
+            <tr>
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td class="text-center">{{ item.code }}</td>
+                <td class="text-center">{{ item.name }}</td>
+                <td class="text-center">{{ item.brand }}</td>
+                <td class="text-center">{{ item.get_status_display }}</td> <!-- Este es el estado físico -->
+                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td> <!-- MODIFICADO: Este es el estado de actividad -->
+                <td class="text-center">
+                    <a href="{% url 'resource_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
+                    <a href="{% url 'resource_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

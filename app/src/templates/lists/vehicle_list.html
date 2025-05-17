@@ -1,21 +1,13 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="container container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
+<div class="container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
     <div class="d-flex justify-content-between">
-        <span class="text-primary">{{ title_section }}</span>
-        {% if action %}
-        <span class="bg-peisol-secondary bg-gradient p-2 rounded">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                <path d="M9 12l2 2l4 -4" />
-            </svg>
-            {{ message }}
+        <span class="text-primary">
+            {{ title_section|default:"Listado de Vehículos" }}
         </span>
-        {% endif %}
         <a href="{% url 'vehicle_create' %}" class="btn btn-sm btn-default">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                 <path d="M12 5l0 14" />
                 <path d="M5 12l14 0" />
             </svg>
@@ -23,58 +15,34 @@
         </a>
     </div>
 </div>
-<div class="container container-xl mx-auto">
-    <table class="table table-bordered table-striped" id="myTable">
+<div class="w-[90%] mx-auto">
+    <table id="datatable" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th class="bg-secondary bg-opacity-25">#</th>
-                <th class="bg-secondary bg-opacity-25">Placa</th>
-                <th class="bg-secondary bg-opacity-25">Marca</th>
-                <th class="bg-secondary bg-opacity-25">Tipo</th>
-                <th class="bg-secondary bg-opacity-25">Año</th>
-                <th class="bg-secondary bg-opacity-25">Propietario</th>
-                <th class="bg-secondary bg-opacity-25">Modelo</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600">#</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600">Código</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600">Marca</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600">Modelo</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600">Placa</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600">Propietario</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600">Estado</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 no-export">Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for vehicle in vehicles %}
+            {% for item in object_list %}
             <tr>
-                <td class="p-0 d-flex justify-content-start gap-3">
-                    <a href="{% url 'vehicle_detail' vehicle.id %}" class="text-primary d-flex justify-content-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-crosshair" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M4 8v-2a2 2 0 0 1 2 -2h2" />
-                            <path d="M4 16v2a2 2 0 0 0 2 2h2" />
-                            <path d="M16 4h2a2 2 0 0 1 2 2v2" />
-                            <path d="M16 20h2a2 2 0 0 0 2 -2v-2" />
-                            <path d="M9 12l6 0" />
-                            <path d="M12 9l0 6" />
-                        </svg>
-                        {{ forloop.counter }}
-                    </a>
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td class="text-center">{{ item.code_vehicle }}</td>
+                <td class="text-center">{{ item.brand }}</td>
+                <td class="text-center">{{ item.model|default_if_none:"" }}</td>
+                <td class="text-center">{{ item.no_plate|default_if_none:"" }}</td>
+                <td class="text-center">{{ item.get_owner_transport_display }}</td>
+                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                <td class="text-center">
+                    <a href="{% url 'vehicle_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
+                    <a href="{% url 'vehicle_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
                 </td>
-                <td class="p-0">
-                    {% if vehicle.is_active %}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-check" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="green" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                        <path d="M9 12l2 2l4 -4" />
-                    </svg>
-                    {% else %}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="red" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M12 9v4" />
-                        <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
-                        <path d="M12 16h.01" />
-                    </svg>
-                    {% endif %}
-                    {{ vehicle.no_plate }}
-                </td>
-                <td class="p-0">{{ vehicle.brand }}</td>
-                <td class="p-0">{{ vehicle.type_vehicle }}</td>
-                <td class="p-0 text-center">{{ vehicle.year }}</td>
-                <td class="p-0">{{ vehicle.get_owner_transport_display }}</td>
-                <td class="p-0">{{ vehicle.model }}</td>
             </tr>
             {% endfor %}
         </tbody>
