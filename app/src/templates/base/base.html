@@ -69,18 +69,98 @@
          }
       </style>
    </head>
-   <body class="bg-base-200 min-h-screen">
+   <body>
+
       <div id="app">
          {% if title_page != 'Inicio Sesion' %}
          {% if not popup_window %}
-         <!-- Navbar DaisyUI -->
+         <!-- Nuevo Navbar Responsivo para Items de Menú -->
          <div class="navbar bg-base-100 shadow mb-4">
-            <div class="flex-1">
+            <div class="navbar-start">
+               <div class="dropdown">
+                  <label tabindex="0" class="btn btn-ghost lg:hidden">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+                  </label>
+                  <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1000] p-2 shadow bg-base-100 rounded-box w-52">
+                     <!-- Equipos -->
+                     <li>
+                        <details>
+                           <summary>Equipos</summary>
+                           <ul class="p-2">
+                              <li><a href="{% url 'resource_list' %}">Listar Equipos</a></li>
+                              <li><a href="{% url 'resource_create' %}">Crear Equipo</a></li>
+                           </ul>
+                        </details>
+                     </li>
+                     <!-- Vehículos -->
+                     <li>
+                        <details>
+                           <summary>Vehículos</summary>
+                           <ul class="p-2">
+                              <li><a href="{% url 'vehicle_list' %}">Listar Vehículos</a></li>
+                              <li><a href="{% url 'vehicle_create' %}">Crear Vehículo</a></li>
+                           </ul>
+                        </details>
+                     </li>
+                     <!-- Técnicos -->
+                     <li>
+                        <details>
+                           <summary>Técnicos</summary>
+                           <ul class="p-2">
+                              <li><a href="{% url 'technical_list' %}">Listar Técnicos</a></li>
+                              <li><a href="{% url 'technical_create' %}">Crear Técnico</a></li>
+                           </ul>
+                        </details>
+                     </li>
+                     <!-- Proyectos -->
+                     <li>
+                        <details>
+                           <summary>Proyectos</summary>
+                           <ul class="p-2">
+                              <li><a href="{% url 'partner_list' %}">Listar Clientes</a></li>
+                              <li><a href="{% url 'project_list' %}">Listar Proyectos</a></li>
+                              <li><a href="{% url 'project_create' %}">Crear Proyecto</a></li>
+                           </ul>
+                        </details>
+                     </li>
+                     <!-- Planificación -->
+                     <li>
+                        <details>
+                           <summary>Planificación</summary>
+                           <ul class="p-2">
+                              <li><a href="#">Ver Planificación</a></li>
+                              <li><a href="#">Crear Planificación</a></li>
+                           </ul>
+                        </details>
+                     </li>
+                     <!-- Reportes -->
+                     <li>
+                        <details>
+                           <summary>Reportes</summary>
+                           <ul class="p-2">
+                              <li><a href="#">Reporte de Mantenimiento</a></li>
+                              <li><a href="#">Reporte de Disponibilidad de Equipos</a></li>
+                              <li><a href="#">Reporte de Mantenimiento por Equipos</a></li>
+                              <li><a href="#">Reporte de Proyectos Activos</a></li>
+                              <li><a href="#">Reporte de Técnicos</a></li>
+                              <li><a href="{% url 'license_list' %}">Licencias</a></li>
+                           </ul>
+                        </details>
+                     </li>
+                     <li><div class="divider my-1"></div></li>
+                     <!-- Salir para móvil -->
+                     <li>
+                        <a class="text-error" href="/accounts/logout/">
+                           Salir
+                        </a>
+                     </li>
+                  </ul>
+               </div>
                <a class="btn btn-ghost normal-case text-xl" href="/">
                   <img src="/static/img/logo.png" alt="Logo" class="h-8 rounded" />
                </a>
             </div>
-            <div class="flex-none">
+            <div class="navbar-center hidden lg:flex">
                <ul class="menu menu-horizontal px-1">
                   <!-- Equipos -->
                   <li>
@@ -95,7 +175,7 @@
                            </svg>
                            Equipos
                         </summary>
-                        <ul class="p-2 bg-base-100">
+                        <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box">
                            <li><a href="{% url 'resource_list' %}">Listar Equipos</a></li>
                            <li><a href="{% url 'resource_create' %}">Crear Equipo</a></li>
                         </ul>
@@ -112,7 +192,7 @@
                            </svg>
                            Vehículos
                         </summary>
-                        <ul class="p-2 bg-base-100">
+                        <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box">
                            <li><a href="{% url 'vehicle_list' %}">Listar Vehículos</a></li>
                            <li><a href="{% url 'vehicle_create' %}">Crear Vehículo</a></li>
                         </ul>
@@ -132,7 +212,7 @@
                            </svg>
                            Técnicos
                         </summary>
-                        <ul class="p-2 bg-base-100">
+                        <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box">
                            <li><a href="{% url 'technical_list' %}">Listar Técnicos</a></li>
                            <li><a href="{% url 'technical_create' %}">Crear Técnico</a></li>
                         </ul>
@@ -151,7 +231,7 @@
                            </svg>
                            Proyectos
                         </summary>
-                        <ul class="p-2 bg-base-100">
+                        <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box">
                            <li><a href="{% url 'partner_list' %}">Listar Clientes</a></li>
                            <li><a href="{% url 'project_list' %}">Listar Proyectos</a></li>
                            <li><a href="{% url 'project_create' %}">Crear Proyecto</a></li>
@@ -177,7 +257,7 @@
                            </svg>
                            Planificación
                         </summary>
-                        <ul class="p-2 bg-base-100">
+                        <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box">
                            <li><a href="#">Ver Planificación</a></li>
                            <li><a href="#">Crear Planificación</a></li>
                         </ul>
@@ -199,7 +279,7 @@
                            </svg>
                            Reportes
                         </summary>
-                        <ul class="p-2 bg-base-100">
+                        <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box">
                            <li><a href="#">Reporte de Mantenimiento</a></li>
                            <li><a href="#">Reporte de Disponibilidad de Equipos</a></li>
                            <li><a href="#">Reporte de Mantenimiento por Equipos</a></li>
@@ -209,18 +289,22 @@
                         </ul>
                      </details>
                   </li>
-                  <!-- Salir -->
-                  <li>
-                     <a class="btn btn-ghost text-error" href="/accounts/logout/">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                           <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-                           <path d="M9 12h12l-3 -3" />
-                           <path d="M18 15l3 -3" />
-                        </svg>
-                        Salir
-                     </a>
-                  </li>
                </ul>
+            </div>
+            <div class="navbar-end hidden lg:flex">
+                <ul class="menu menu-horizontal px-1">
+                    <!-- Salir para desktop -->
+                    <li>
+                        <a class="btn btn-ghost text-error" href="/accounts/logout/">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                              <path d="M9 12h12l-3 -3" />
+                              <path d="M18 15l3 -3" />
+                           </svg>
+                           Salir
+                        </a>
+                     </li>
+                </ul>
             </div>
          </div>
          {% endif %}
