@@ -43,7 +43,13 @@
             <div class="alert alert-error shadow-lg mb-4">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span>Por favor, corrige los errores en el formulario.</span>
+                    <span>Por favor, corrige los errores en el formulario:
+                        <ul>
+                        {% for field, errors in form.errors.items %}
+                            <li><strong>{{ field }}:</strong> {{ errors|join:", " }}</li>
+                        {% endfor %}
+                        </ul>
+                    </span>
                 </div>
             </div>
             {% endif %}
@@ -53,53 +59,135 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="form-control">
                         <label class="label" for="{{ form.first_name.id_for_label }}"><span class="label-text">Nombres:</span></label>
-                        {{ form.first_name }} <!-- Expected class: input -->
+                        {{ form.first_name }}
                         {% if form.first_name.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.first_name.errors }}</span></label>{% endif %}
                     </div>
                     <div class="form-control">
                         <label class="label" for="{{ form.last_name.id_for_label }}"><span class="label-text">Apellidos:</span></label>
-                        {{ form.last_name }} <!-- Expected class: input -->
+                        {{ form.last_name }}
                         {% if form.last_name.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.last_name.errors }}</span></label>{% endif %}
                     </div>
                     <div class="form-control">
                         <label class="label" for="{{ form.email.id_for_label }}"><span class="label-text">Correo Electrónico:</span></label>
-                        {{ form.email }} <!-- Expected class: input -->
+                        {{ form.email }}
                         {% if form.email.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.email.errors }}</span></label>{% endif %}
                     </div>
                     <div class="form-control">
-                        <label class="label" for="{{ form.location.id_for_label }}"><span class="label-text">Ubicación:</span></label>
-                        {{ form.location }} <!-- Expected class: select -->
-                        {% if form.location.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.location.errors }}</span></label>{% endif %}
+                        <label class="label" for="{{ form.work_area.id_for_label }}"><span class="label-text">Área de Trabajo:</span></label> {# Actualizado de Ubicación #}
+                        {{ form.work_area }}
+                        {% if form.work_area.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.work_area.errors }}</span></label>{% endif %}
                     </div>
                     <div class="form-control">
                         <label class="label" for="{{ form.dni.id_for_label }}"><span class="label-text">Cédula:</span></label>
-                        {{ form.dni }} <!-- Expected class: input -->
+                        {{ form.dni }}
                         {% if form.dni.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.dni.errors }}</span></label>{% endif %}
                     </div>
                     <div class="form-control">
                         <label class="label" for="{{ form.nro_phone.id_for_label }}"><span class="label-text">Número de Celular:</span></label>
-                        {{ form.nro_phone }} <!-- Expected class: input -->
+                        {{ form.nro_phone }}
                         {% if form.nro_phone.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.nro_phone.errors }}</span></label>{% endif %}
                     </div>
                     <div class="form-control">
-                        <label class="label" for="{{ form.role.id_for_label }}"><span class="label-text">Cargo:</span></label>
-                        {{ form.role }} <!-- Expected class: select -->
+                        <label class="label" for="{{ form.role.id_for_label }}"><span class="label-text">Cargo General:</span></label>
+                        {{ form.role }}
                         {% if form.role.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.role.errors }}</span></label>{% endif %}
                     </div>
                     <div class="form-control">
-                        <label class="label" for="{{ form.days_to_work.id_for_label }}"><span class="label-text">Días a Trabajar:</span></label>
-                        {{ form.days_to_work }} <!-- Expected class: input -->
-                        {% if form.days_to_work.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.days_to_work.errors }}</span></label>{% endif %}
+                        <label class="label" for="{{ form.date_joined.id_for_label }}"><span class="label-text">Fecha de Ingreso:</span></label>
+                        {{ form.date_joined }}
+                        {% if form.date_joined.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.date_joined.errors }}</span></label>{% endif %}
                     </div>
                     <div class="form-control">
-                        <label class="label" for="{{ form.days_free.id_for_label }}"><span class="label-text">Días Libres:</span></label>
-                        {{ form.days_free }} <!-- Expected class: input -->
-                        {% if form.days_free.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.days_free.errors }}</span></label>{% endif %}
+                        <label class="label" for="{{ form.birth_date.id_for_label }}"><span class="label-text">Fecha de Nacimiento:</span></label>
+                        {{ form.birth_date }}
+                        {% if form.birth_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.birth_date.errors }}</span></label>{% endif %}
                     </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.license_issue_date.id_for_label }}"><span class="label-text">Licencia Emisión:</span></label>
+                        {{ form.license_issue_date }}
+                        {% if form.license_issue_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.license_issue_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.license_expiry_date.id_for_label }}"><span class="label-text">Licencia Caducidad:</span></label>
+                        {{ form.license_expiry_date }}
+                        {% if form.license_expiry_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.license_expiry_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.defensive_driving_certificate_issue_date.id_for_label }}"><span class="label-text">Cert. Manejo Def. Emisión:</span></label>
+                        {{ form.defensive_driving_certificate_issue_date }}
+                        {% if form.defensive_driving_certificate_issue_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.defensive_driving_certificate_issue_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.defensive_driving_certificate_expiry_date.id_for_label }}"><span class="label-text">Cert. Manejo Def. Caducidad:</span></label>
+                        {{ form.defensive_driving_certificate_expiry_date }}
+                        {% if form.defensive_driving_certificate_expiry_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.defensive_driving_certificate_expiry_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.mae_certificate_issue_date.id_for_label }}"><span class="label-text">Cert. MAE Emisión:</span></label>
+                        {{ form.mae_certificate_issue_date }}
+                        {% if form.mae_certificate_issue_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.mae_certificate_issue_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.mae_certificate_expiry_date.id_for_label }}"><span class="label-text">Cert. MAE Caducidad:</span></label>
+                        {{ form.mae_certificate_expiry_date }}
+                        {% if form.mae_certificate_expiry_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.mae_certificate_expiry_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.medical_certificate_issue_date.id_for_label }}"><span class="label-text">Cert. Médico Emisión:</span></label>
+                        {{ form.medical_certificate_issue_date }}
+                        {% if form.medical_certificate_issue_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.medical_certificate_issue_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.medical_certificate_expiry_date.id_for_label }}"><span class="label-text">Cert. Médico Caducidad:</span></label>
+                        {{ form.medical_certificate_expiry_date }}
+                        {% if form.medical_certificate_expiry_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.medical_certificate_expiry_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.quest_ncst_code.id_for_label }}"><span class="label-text">Código Quest NCST:</span></label>
+                        {{ form.quest_ncst_code }}
+                        {% if form.quest_ncst_code.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.quest_ncst_code.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.quest_instructor.id_for_label }}"><span class="label-text">Instructor Quest:</span></label>
+                        {{ form.quest_instructor }}
+                        {% if form.quest_instructor.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.quest_instructor.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.quest_start_date.id_for_label }}"><span class="label-text">Quest Fecha Inicio:</span></label>
+                        {{ form.quest_start_date }}
+                        {% if form.quest_start_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.quest_start_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.quest_end_date.id_for_label }}"><span class="label-text">Quest Fecha Fin:</span></label>
+                        {{ form.quest_end_date }}
+                        {% if form.quest_end_date.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.quest_end_date.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label" for="{{ form.user.id_for_label }}"><span class="label-text">Usuario Vinculado:</span></label>
+                        {{ form.user }}
+                        {% if form.user.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.user.errors }}</span></label>{% endif %}
+                    </div>
+
+                    {# Campos days_to_work y days_free eliminados #}
+                    
                      <div class="form-control md:col-span-3">
                         <label class="label" for="{{ form.notes.id_for_label }}"><span class="label-text">Notas:</span></label>
-                        {{ form.notes }} <!-- Expected class: textarea -->
+                        {{ form.notes }}
                         {% if form.notes.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.notes.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Afiliado IESS:</span> 
+                            {{ form.is_iess_affiliated }}
+                        </label>
+                        {% if form.is_iess_affiliated.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.is_iess_affiliated.errors }}</span></label>{% endif %}
+                    </div>
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                            <span class="label-text">Póliza de Vida:</span> 
+                            {{ form.has_life_insurance_policy }}
+                        </label>
+                        {% if form.has_life_insurance_policy.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.has_life_insurance_policy.errors }}</span></label>{% endif %}
                     </div>
                     <div class="form-control">
                         <label class="label cursor-pointer">

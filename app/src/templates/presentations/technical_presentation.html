@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{# Ya no se carga date_extras: {% load date_extras %} #}
 
 {% block content %}
 <div class="max-w-3xl mx-auto p-4 bg-white rounded-2xl shadow-md space-y-6 border border-t-[15px] border-t-blue-500">
@@ -20,7 +21,7 @@
     </div>
     <div>
       <p class="text-sm text-gray-500">Correo Electrónico</p>
-      <p class="font-semibold text-gray-900">{{ technical.email }}</p>
+      <p class="font-semibold text-gray-900">{{ technical.email|default:"No registrado" }}</p>
     </div>
     <div>
       <p class="text-sm text-gray-500">Número de Celular</p>
@@ -28,28 +29,111 @@
     </div>
     <div>
       <p class="text-sm text-gray-500">Fecha de Ingreso</p>
-      <p class="font-semibold text-gray-900">{{ technical.date_joined }}</p>
+      <p class="font-semibold text-gray-900">{{ technical.date_joined|date:"d-m-Y"|default:"No registrada" }}</p>
     </div>
     <div>
-      <p class="text-sm text-gray-500">Ubicación</p>
-      <p class="font-semibold text-gray-900">{{ technical.get_location_display }}</p>
+      <p class="text-sm text-gray-500">Área de Trabajo</p>
+      <p class="font-semibold text-gray-900">{{ technical.get_work_area_display }}</p>
     </div>
     <div>
-      <p class="text-sm text-gray-500">Cargo</p>
+      <p class="text-sm text-gray-500">Cargo General</p>
       <p class="font-semibold text-gray-900">{{ technical.get_role_display }}</p>
     </div>
     <div>
-      <p class="text-sm text-gray-500">Días a Trabajar</p>
-      <p class="font-semibold text-gray-900">{{ technical.days_to_work }}</p>
+      <p class="text-sm text-gray-500">Fecha de Nacimiento</p>
+      <p class="font-semibold text-gray-900">{{ technical.birth_date|date:"d-m-Y"|default:"No registrada" }}</p>
+    </div>
+    
+    {# Licencia de Conducir #}
+    <div class="sm:col-span-2">
+      <p class="text-sm text-gray-500">Licencia de Conducir</p>
+      <p class="font-semibold text-gray-900">
+        Emisión: {{ technical.license_issue_date|date:"d-m-Y"|default:"N/A" }}
+        {% if technical.license_expiry_date %}
+          - Caducidad: {{ technical.license_expiry_date|date:"d-m-Y" }}
+          <span class="{{ license_expiry_details.class }}">({{ license_expiry_details.text }})</span>
+        {% else %}
+          - Caducidad: N/A
+        {% endif %}
+      </p>
+    </div>
+
+    {# Certificado Manejo Defensivo #}
+    <div class="sm:col-span-2">
+      <p class="text-sm text-gray-500">Certificado Manejo Defensivo</p>
+      <p class="font-semibold text-gray-900">
+        Emisión: {{ technical.defensive_driving_certificate_issue_date|date:"d-m-Y"|default:"N/A" }}
+        {% if technical.defensive_driving_certificate_expiry_date %}
+          - Caducidad: {{ technical.defensive_driving_certificate_expiry_date|date:"d-m-Y" }}
+          <span class="{{ defensive_driving_expiry_details.class }}">({{ defensive_driving_expiry_details.text }})</span>
+        {% else %}
+          - Caducidad: N/A
+        {% endif %}
+      </p>
+    </div>
+
+    {# Certificado MAE #}
+    <div class="sm:col-span-2">
+      <p class="text-sm text-gray-500">Certificado MAE</p>
+      <p class="font-semibold text-gray-900">
+        Emisión: {{ technical.mae_certificate_issue_date|date:"d-m-Y"|default:"N/A" }}
+        {% if technical.mae_certificate_expiry_date %}
+          - Caducidad: {{ technical.mae_certificate_expiry_date|date:"d-m-Y" }}
+          <span class="{{ mae_expiry_details.class }}">({{ mae_expiry_details.text }})</span>
+        {% else %}
+          - Caducidad: N/A
+        {% endif %}
+      </p>
+    </div>
+
+    {# Certificado Médico #}
+    <div class="sm:col-span-2">
+      <p class="text-sm text-gray-500">Certificado Médico</p>
+      <p class="font-semibold text-gray-900">
+        Emisión: {{ technical.medical_certificate_issue_date|date:"d-m-Y"|default:"N/A" }}
+        {% if technical.medical_certificate_expiry_date %}
+          - Caducidad: {{ technical.medical_certificate_expiry_date|date:"d-m-Y" }}
+          <span class="{{ medical_expiry_details.class }}">({{ medical_expiry_details.text }})</span>
+        {% else %}
+          - Caducidad: N/A
+        {% endif %}
+      </p>
+    </div>
+    
+    {# Información Quest #}
+    <div class="sm:col-span-2">
+        <p class="text-sm text-gray-500">Información Quest</p>
+        <p class="font-semibold text-gray-900">
+            Código NCST: {{ technical.quest_ncst_code|default:"N/A" }}
+            - Instructor: {{ technical.quest_instructor|default:"N/A" }}
+        </p>
+        <p class="font-semibold text-gray-900">
+            Inicio: {{ technical.quest_start_date|date:"d-m-Y"|default:"N/A" }}
+            {% if technical.quest_end_date %}
+            - Fin: {{ technical.quest_end_date|date:"d-m-Y" }}
+            <span class="{{ quest_end_details.class }}">({{ quest_end_details.text }})</span>
+            {% else %}
+            - Fin: N/A
+            {% endif %}
+        </p>
+    </div>
+
+    <div>
+      <p class="text-sm text-gray-500">Afiliado IESS</p>
+      <p class="font-semibold text-gray-900">{% if technical.is_iess_affiliated %}Sí{% else %}No{% endif %}</p>
     </div>
     <div>
-      <p class="text-sm text-gray-500">Días Libres</p>
-      <p class="font-semibold text-gray-900">{{ technical.days_free }}</p>
+      <p class="text-sm text-gray-500">Póliza de Vida</p>
+      <p class="font-semibold text-gray-900">{% if technical.has_life_insurance_policy %}Sí{% else %}No{% endif %}</p>
+    </div>
+    <div class="sm:col-span-2">
+      <p class="text-sm text-gray-500">Notas</p>
+      <p class="font-semibold text-gray-900">{{ technical.notes|default:"Sin notas" }}</p>
     </div>
     <div>
       <p class="text-sm text-gray-500">Usuario Vinculado</p>
       <p class="font-semibold text-gray-900">
- 
+        {{ technical.user.username|default:"No vinculado" }}
       </p>
     </div>
     <div>

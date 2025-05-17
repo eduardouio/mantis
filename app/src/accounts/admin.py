@@ -2,7 +2,9 @@ from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 from django.contrib.auth.admin import UserAdmin
 
-from accounts.models import CustomUserModel, License, Technical, WorkJournal
+from accounts.models import (
+    CustomUserModel, License, Technical, WorkJournal, Partner, VaccinationRecord # Añadir VaccinationRecord
+)
 from accounts.forms import CustomCreationForm, CustomChangeForm
 
 admin.site.site_header = "MANTIS GESTION DE MANTENIMIENTOS"
@@ -91,15 +93,19 @@ class TechnicalAdmin(SimpleHistoryAdmin):
         'email',
         'dni',
         'nro_phone',
+        'work_area',  # Cambiado de location y se eliminaron days_to_work, days_free
         'role',
-        'days_to_work',
-        'days_free',
+        'is_iess_affiliated', # Nuevo campo
+        'has_life_insurance_policy', # Nuevo campo
         'is_active',
     )
 
     list_filter = (
         'role',
+        'work_area', # Añadido work_area al filtro
         'is_active',
+        'is_iess_affiliated',
+        'has_life_insurance_policy',
     )
 
     search_fields = ('first_name', 'last_name', 'email', 'dni')
@@ -107,25 +113,33 @@ class TechnicalAdmin(SimpleHistoryAdmin):
     ordering = ('-created_at',)
 
 
-class WorkJournalAdmin(SimpleHistoryAdmin):
+class VaccinationRecordAdmin(SimpleHistoryAdmin):
     list_display = (
         'technical',
-        'date_start',
-        'date_end',
-        'type',
-        'is_active',
+        'vaccine_type',
+        'application_date',
+        'dose_number',
+        'next_dose_date',
+        'created_at',
+        'updated_at',
     )
-
     list_filter = (
-        'is_active',
+        'vaccine_type',
+        'technical',
+        'application_date',
     )
-
-    search_fields = ('technical__first_name', 'technical__last_name')
-
-    ordering = ('-created_at',)
+    search_fields = (
+        'technical__first_name',
+        'technical__last_name',
+        'vaccine_type',
+    )
+    autocomplete_fields = ['technical']
+    ordering = ('-application_date',)
 
 
 admin.site.register(CustomUserModel, CustomUserModelAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(Technical, TechnicalAdmin)
 admin.site.register(WorkJournal, WorkJournalAdmin)
+admin.site.register(Partner, PartnerAdmin)
+admin.site.register(VaccinationRecord, VaccinationRecordAdmin) # Registrar el nuevo modelo

@@ -7,10 +7,13 @@ ROLE_CHOICES = (
     ('ADMINISTRATIVO', 'ADMINISTRATIVO'),
     ('TECNICO', 'TECNICO'),
 )
-LOCATION_CHOICES = (
-    ('CAMPO BASE', 'CAMPO BASE'),
-    ('CHANANHUE', 'CHANANHUE'),
-    ('CPP', 'CPP'),
+# Actualizado de LOCATION_CHOICES a WORK_AREA_CHOICES
+WORK_AREA_CHOICES = (
+    ('PLANT_PROJECTS', 'Proyectos de Plantas de tratamiento de agua'),
+    ('SANITARY_TECHNICIAN', 'Técnico de baterías sanitarias'),
+    ('ASSISTANT', 'Ayudante'),
+    ('MAINTENANCE_LOGISTICS', 'Mantenimientos y Logística'),
+    ('SUPERVISOR', 'Supervisor'),
 )
 
 
@@ -39,11 +42,12 @@ class Technical(BaseModel):
         null=True,
         default=None
     )
-    location = models.CharField(
-        'Ubicación',
+    # Renombrado de location a work_area y actualizado choices
+    work_area = models.CharField(
+        'Área de Trabajo',
         max_length=255,
-        choices=LOCATION_CHOICES,
-        default='CAMPO BASE'
+        choices=WORK_AREA_CHOICES,
+        default='ASSISTANT' # Un valor por defecto de las nuevas opciones
     )
     dni = models.CharField(
         'Cédula',
@@ -61,43 +65,94 @@ class Technical(BaseModel):
         max_length=15
     )
     role = models.CharField(
-        'cargo',
+        'cargo', # Este es el rol general, no el área de trabajo específica
         max_length=255,
         choices=ROLE_CHOICES,
     )
-    days_to_work = models.PositiveSmallIntegerField(
-        'días a trabajar',
-        default=22,
-        help_text='Días a trabajar por mes'
+    # Campos eliminados: days_to_work y days_free
+
+    # Nuevos campos agregados
+    birth_date = models.DateField(
+        'Fecha de Nacimiento',
+        blank=True,
+        null=True
     )
-    days_free = models.PositiveSmallIntegerField(
-        'días libres',
-        default=7,
-        help_text='Días libres por mes'
+    license_issue_date = models.DateField(
+        'Fecha de Emisión Licencia',
+        blank=True,
+        null=True
+    )
+    license_expiry_date = models.DateField(
+        'Fecha de Caducidad Licencia',
+        blank=True,
+        null=True
+    )
+    defensive_driving_certificate_issue_date = models.DateField(
+        'Fecha Emisión Certificado Manejo Defensivo',
+        blank=True,
+        null=True
+    )
+    defensive_driving_certificate_expiry_date = models.DateField(
+        'Fecha Caducidad Certificado Manejo Defensivo',
+        blank=True,
+        null=True
+    )
+    mae_certificate_issue_date = models.DateField(
+        'Fecha Emisión Certificado MAE',
+        blank=True,
+        null=True
+    )
+    mae_certificate_expiry_date = models.DateField(
+        'Fecha Caducidad Certificado MAE',
+        blank=True,
+        null=True
+    )
+    medical_certificate_issue_date = models.DateField(
+        'Fecha Emisión Certificado Médico',
+        blank=True,
+        null=True
+    )
+    medical_certificate_expiry_date = models.DateField(
+        'Fecha Caducidad Certificado Médico',
+        blank=True,
+        null=True
+    )
+    is_iess_affiliated = models.BooleanField(
+        'Afiliado IESS?',
+        default=False
+    )
+    has_life_insurance_policy = models.BooleanField(
+        'Póliza de Vida?',
+        default=False
+    )
+    quest_ncst_code = models.CharField(
+        'Código Quest NCST',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    quest_instructor = models.CharField(
+        'Instructor Quest',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    quest_start_date = models.DateField(
+        'Fecha Inicio Quest',
+        blank=True,
+        null=True
+    )
+    quest_end_date = models.DateField(
+        'Fecha Fin Quest',
+        blank=True,
+        null=True
+    )
+    notes = models.TextField(
+        'Notas',
+        blank=True,
+        null=True
     )
     is_active = models.BooleanField(
         'Activo?',
         default=False
     )
-
-    @classmethod
-    def get_true_false_list(cls, partner):
-        registered_techs_id = set(
-            tech.id for tech in partner.authorized_tehcnicals.all()
-        )
-        true_false_techs = [
-            {
-                'id': tech.id,
-                'first_name': tech.first_name,
-                'last_name': tech.last_name,
-                'role': tech.role,
-                'is_registered': tech.id in registered_techs_id
-
-            }
-            for tech in cls.objects.all()
-        ]
-
-        return true_false_techs
-
-    def __str__(self) -> str:
-        return f'{self.first_name} {self.last_name}'

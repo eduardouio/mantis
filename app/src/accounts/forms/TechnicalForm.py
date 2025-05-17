@@ -6,20 +6,43 @@ class TechnicalForm(forms.ModelForm):
     class Meta:
         model = Technical
         fields = [
-            'date_joined', 'first_name', 'last_name', 'email', 'location', 'dni',
-            'user', 'nro_phone', 'role', 'days_to_work', 'days_free', 'is_active'
+            'date_joined', 'first_name', 'last_name', 'email', 'work_area', 'dni',  # 'location' cambiado a 'work_area'
+            'user', 'nro_phone', 'role',
+            # 'days_to_work', 'days_free' eliminados
+            'birth_date', 'license_issue_date', 'license_expiry_date',
+            'defensive_driving_certificate_issue_date', 'defensive_driving_certificate_expiry_date',
+            'mae_certificate_issue_date', 'mae_certificate_expiry_date',
+            'medical_certificate_issue_date', 'medical_certificate_expiry_date',
+            'is_iess_affiliated', 'has_life_insurance_policy',
+            'quest_ncst_code', 'quest_instructor', 'quest_start_date', 'quest_end_date',
+            'notes', 'is_active'
         ]
         widgets = {
             'date_joined': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
             'first_name': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
             'last_name': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
             'email': forms.EmailInput(attrs={'class': 'input input-bordered input-md w-full'}),
-            'location': forms.Select(attrs={'class': 'select select-bordered select-md w-full'}),
+            'work_area': forms.Select(attrs={'class': 'select select-bordered select-md w-full'}),  # 'location' cambiado a 'work_area'
             'dni': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
             'user': forms.Select(attrs={'class': 'select select-bordered select-md w-full'}),
             'nro_phone': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
             'role': forms.Select(attrs={'class': 'select select-bordered select-md w-full'}),
-            'days_to_work': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
-            'days_free': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            # 'days_to_work', 'days_free' eliminados
+            'birth_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'license_issue_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'license_expiry_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'defensive_driving_certificate_issue_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'defensive_driving_certificate_expiry_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'mae_certificate_issue_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'mae_certificate_expiry_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'medical_certificate_issue_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'medical_certificate_expiry_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'is_iess_affiliated': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-md'}),
+            'has_life_insurance_policy': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-md'}),
+            'quest_ncst_code': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'quest_instructor': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'quest_start_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'quest_end_date': forms.DateInput(attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}),
+            'notes': forms.Textarea(attrs={'class': 'textarea textarea-bordered textarea-md w-full', 'rows': 3}),
             'is_active': forms.CheckboxInput(attrs={'class': 'checkbox checkbox-md'}),
         }

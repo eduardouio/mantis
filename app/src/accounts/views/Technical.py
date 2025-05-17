@@ -1,11 +1,43 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import (
-    ListView, DetailView, CreateView, UpdateView, RedirectView
+    TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
 )
+from django.contrib.auth.views import LoginView
+from django.contrib.auth import logout
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from datetime import date # Asegúrate de importar date
+
 from accounts.models import Technical
-from accounts.forms.TechnicalForm import TechnicalForm
+from accounts.forms import TechnicalForm
+
+
+# Función auxiliar para calcular detalles de caducidad
+def get_expiry_details(expiry_date):
+    if not expiry_date:
+        return {"text": "N/A", "class": "text-gray-500"}
+
+    today = date.today()
+    delta = expiry_date - today
+    days_remaining = delta.days
+
+    if days_remaining < 0:
+        return {"text": "Vencido", "class": "text-error font-bold"}
+    elif days_remaining == 0:
+        return {"text": "Vence Hoy", "class": "text-error font-bold"}
+    elif days_remaining <= 30:
+        days_str = f"{days_remaining} día{'s' if days_remaining != 1 else ''}"
+        return {"text": days_str, "class": "text-error font-semibold"}
+    else:
+        days_str = f"{days_remaining} día{'s' if days_remaining != 1 else ''}"
+        return {"text": days_str, "class": "text-success font-semibold"}
+
+
+class HomeTV(LoginRequiredMixin, TemplateView):
+    template_name = 'home.html'
 
 
 class ListTechnical(LoginRequiredMixin, ListView):
@@ -37,31 +69,20 @@ class DetailTechnical(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title_section'] = 'Detalle del Técnico {}'.format(
-            self.object.first_name)
-        context['title_page'] = 'Detalle del Técnico {}'.format(
-            self.object.first_name)
+        context['title_page'] = 'Ficha de Técnico'
+        context['title_section'] = 'Ficha de Técnico'
+        context['action'] = self.request.GET.get('action', None)
+        
+        technical = self.object
 
-        if 'action' not in self.request.GET:
-            return context
-
-        context['action'] = self.request.GET.get('action')
-        context['technical'] = self.object
-        message = ''
-        if context['action'] == 'created':
-            message = 'El técnico ha sido creado con éxito.'
-        elif context['action'] == 'updated':
-            message = 'El técnico ha sido actualizado con éxito.'
-        elif context['action'] == 'no_delete':
-            message = 'No es posible eliminar el técnico. Existen dependencias.'
-        elif context['action'] == 'delete':
-            message = 'Esta acción es irreversible. ¿Desea continuar?.'
-        elif context['action'] == 'popup_window':
-            context['popup_window'] = True
-
-        context['message'] = message
+        # Calcular detalles de caducidad para cada fecha relevante
+        context['license_expiry_details'] = get_expiry_details(technical.license_expiry_date)
+        context['defensive_driving_expiry_details'] = get_expiry_details(technical.defensive_driving_certificate_expiry_date)
+        context['mae_expiry_details'] = get_expiry_details(technical.mae_certificate_expiry_date)
+        context['medical_expiry_details'] = get_expiry_details(technical.medical_certificate_expiry_date)
+        context['quest_end_details'] = get_expiry_details(technical.quest_end_date)
+        
         return context
-
 
 class CreateTechnical(LoginRequiredMixin, CreateView):
     model = Technical
