@@ -5,30 +5,7 @@ from django.views.generic import (
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.models import Technical
-from django import forms
-
-
-class TechnicalForm(forms.ModelForm):
-    class Meta:
-        model = Technical
-        fields = [
-            'date_joined', 'first_name', 'last_name', 'email', 'location', 'dni',
-            'user', 'nro_phone', 'role', 'days_to_work', 'days_free', 'is_active'
-        ]
-        widgets = {
-            'date_joined': forms.DateInput(attrs={'class': 'form-control form-control-sm', 'type': 'date'}),
-            'first_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control form-control-sm'}),
-            'location': forms.Select(attrs={'class': 'form-select form-control-sm'}),
-            'dni': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'user': forms.Select(attrs={'class': 'form-select form-control-sm'}),
-            'nro_phone': forms.TextInput(attrs={'class': 'form-control form-control-sm'}),
-            'role': forms.Select(attrs={'class': 'form-select form-control-sm'}),
-            'days_to_work': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
-            'days_free': forms.NumberInput(attrs={'class': 'form-control form-control-sm'}),
-            'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        }
+from accounts.forms.TechnicalForm import TechnicalForm
 
 
 class ListTechnical(LoginRequiredMixin, ListView):
