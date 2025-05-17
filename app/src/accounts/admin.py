@@ -3,13 +3,14 @@ from simple_history.admin import SimpleHistoryAdmin
 from django.contrib.auth.admin import UserAdmin
 
 from accounts.models import (
-    CustomUserModel, License, Technical, WorkJournal, Partner, VaccinationRecord # Añadir VaccinationRecord
+    CustomUserModel, License, Technical, VaccinationRecord
 )
 from accounts.forms import CustomCreationForm, CustomChangeForm
 
 admin.site.site_header = "MANTIS GESTION DE MANTENIMIENTOS"
 admin.site.site_title = "MANTIS GESTION DE MANTENIMIENTOS"
 admin.site.index_title = "PEISOL SA"
+
 
 class CustomUserModelAdmin(UserAdmin):
     add_form = CustomCreationForm
@@ -140,6 +141,4 @@ class VaccinationRecordAdmin(SimpleHistoryAdmin):
 admin.site.register(CustomUserModel, CustomUserModelAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(Technical, TechnicalAdmin)
-admin.site.register(WorkJournal, WorkJournalAdmin)
-admin.site.register(Partner, PartnerAdmin)
-admin.site.register(VaccinationRecord, VaccinationRecordAdmin) # Registrar el nuevo modelo
+admin.site.register(VaccinationRecord, VaccinationRecordAdmin)

@@ -1,84 +1,138 @@
 {% extends 'base/base.html' %} 
-{% block style%}
+
+{% block style %}
 <style>
-   .login-bg {
-          background-image: url('/static/img/login_image.jpg');
-           background-size: cover;
-           background-position: center;
-           background-repeat: no-repeat;
-           height: 100vh; /* Asegura que el fondo solo ocupe la altura de la pantalla visible */
-           background-attachment: fixed; /* Hace que el fondo no se desplace */
-           background-blend-mode: overlay;
-           background-color: rgba(255, 255, 255, 0.2);
-           overflow: hidden; /* Evita el scroll innecesario */
-   }
+  .input-bordered {
+    border-color: #d1d5db; /* Bordes gris claro */
+  }
+  .btn-primary {
+    background-color: #4b5563; /* Gris oscuro para el botón de login */
+    color: #ffffff; /* Texto blanco */
+  }
 </style>
 {% endblock %}
+
 {% block content %}
-<div class="container-fluid">
-   <div class="row w-100">
-      <div
-         class="login-bg col-6 d-flex justify-content-center align-items-center border-end border-success border-2 p-0"
-         >
+<div class="flex min-h-screen flex-col justify-between">
+  <div class="flex flex-grow items-center">
+    <!-- Columna Izquierda: Imagen en un Card -->
+    <div class="w-1/2 hidden lg:flex items-center justify-center p-8 h-full" > 
+      <div class="card w-full max-w-md overflow-hidden border">
+        <figure>
+          <img src="/static/img/login_image.jpg" alt="Imagen de Bienvenida" class="w-full h-auto object-cover" />
+        </figure>
+        <div class="card-body">
+          <h2 class="card-title">Mantis</h2>
+          <p>Sistema de Gestion de Equipos y Proyectos</p>
+        </div>
       </div>
-      <div class="col-6 d-flex justify-content-center align-items-center bg-opacity-50">
-         <div class="bg-success bg-gradient border rounded-4 shadow pt-2 pb-2">
-            <div class="container d-flex flex-column align-items-center">
-               <div
-                  class="text-center border m-1 p-2 border-dark border-2 rounded-4 bg-light"
-                  >
-                  <main class="mb-3 mt-2">
-                     <form method="post" action="">
-                        {% csrf_token %} {% if message %}
-                        <div class="alert alert-danger">
-                           {{ message }}
-                        </div>
-                        {% endif %}
-                        <img
-                           src="/static/img/logo.png"
-                           alt="Logo"
-                           class="mb-5"
-                           width="200"
-                           height="auto"
-                           />
-                        <div class="form-floating mb-2 w-100">
-                           <input
-                              type="email"
-                              class="form-control form-control-sm"
-                              id="floatingInput"
-                              placeholder="name@example.com"
-                              name="email"
-                              />
-                           <label for="floatingInput">Email address</label>
-                        </div>
-                        <div class="form-floating">
-                           <input
-                              type="password"
-                              class="form-control form-control-sm"
-                              id="floatingPassword"
-                              placeholder="Password"
-                              name="password"
-                              />
-                           <label for="floatingPassword"
-                              >Password</label
-                              >
-                        </div>
-                        <div class="m-5"></div>
-                        <button
-                           class="w-100 btn btn-sm btn-success"
-                           type="submit"
-                           >
-                        Iniciar Sesión
-                        </button>
-                        <small class="mt-5 mb-3 text-muted">
-                           ©PEISOL S.A. Derechos Reservados
-                        </small>
-                     </form>
-                  </main>
-               </div>
+    </div>
+
+    <!-- Columna Derecha: Formulario de Inicio de Sesión -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8">
+      <div class="w-full max-w-sm">
+        <div class="card bg-base-100 shadow-2xl border border-lime-600">
+          <div class="card-body items-center text-center p-4 sm:p-8">
+            <!-- Logo (opcional, mantenido del código original) -->
+            <img
+              src="/static/img/logo.png"
+              alt="Logo"
+              class="mb-6 h-16 sm:h-20"
+            />
+
+            <!-- Título con ícono -->
+            <div class="flex items-center justify-center mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="text-gray-600 mr-2 icon icon-tabler icons-tabler-outline icon-tabler-user" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="1.5"  stroke-linecap="round"  stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /></svg>
+              <h2 class="text-xl font-bold text-gray-600">Inice sesión con su cuenta</h2>
             </div>
-         </div>
+
+            <!-- Mensaje de error si existe -->
+            {% if message %}
+            <div role="alert" class="alert alert-error mb-4 shadow-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2 2m2-2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              <span>{{ message }}</span>
+            </div>
+            {% endif %}
+
+            <!-- Formulario -->
+            <form method="post" action="" class="w-full space-y-3">
+              {% csrf_token %}
+              <div class="form-control w-full">
+                <label class="label" for="floatingInput">
+                  <span class="label-text">Correo Electrónico</span>
+                </label>
+                <input
+                  type="email"
+                  class="input input-bordered input-sm w-full"
+                  id="floatingInput"
+                  placeholder="email"
+                  name="email"
+                  required
+                />
+              </div>
+
+              <div class="form-control w-full">
+                <label class="label" for="floatingPassword">
+                  <span class="label-text">Contraseña</span>
+                </label>
+                <input
+                  type="password"
+                  class="input input-bordered input-sm w-full"
+                  id="floatingPassword"
+                  placeholder="password"
+                  name="password"
+                  required
+                />
+              </div>
+
+              <!-- Checkbox "Remember me" y enlace "Forgot password?" -->
+              <div class="flex justify-between items-center mt-2">
+                <label class="flex items-center">
+                  <input type="checkbox" class="checkbox checkbox-sm mr-2" name="remember_me">
+                  <span class="text-sm">Remember me</span>
+                </label>
+                <a href="#" class="text-sm text-gray-500 hover:underline">Forgot password?</a>
+              </div>
+
+              <!-- Botón de login -->
+              <div class="form-control mt-5 pt-5">
+                <button
+                  class="btn btn-primary btn-sm w-full"
+                  type="submit"
+                >
+                  Iniciar Sesión
+                </button>
+              </div>
+            </form>
+
+            <!-- Enlace "Create new account" -->
+            <p class="mt-4 text-sm text-center">
+            </p>
+
+            <small class="mt-6 text-xs text-gray-500">
+              ©PEISOL S.A. Derechos Reservados
+            </small>
+          </div>
+        </div>
       </div>
-   </div>
+    </div>
+  </div>
+  
+  <!-- Pie de página -->
+  <footer class="bg-gray-800 text-white py-4 text-center">
+    <div class="container mx-auto flex justify-between items-center">
+      <p class="text-sm">©PEISOL S.A. {% now "Y" %} - Todos los derechos reservados</p>
+      <p class="flex justify-content-end text-[12px]">
+         <a href="https://dev-7.com/" class="text-info">Desarrollado por Eduardo Villota</a>
+         <a href="mailto:eduardouio7@gmail.com" class="link link-hover flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="15" height="15" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+               <path d="M11 4l3 8l-3 8" />
+            </svg>
+            <span class="ml-2 text-info">eduardouio7@gmail.com</span>
+         </a>
+      </p>
+    </div>
+  </footer>
 </div>
 {% endblock %}
