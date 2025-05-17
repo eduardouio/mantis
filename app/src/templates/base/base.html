@@ -1,104 +1,128 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
    <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>{{ title_page }}</title>
       <link rel="icon" type="image/x-icon" href="/static/img/favicon.png">
-      <link href="/static/css/libs/bootstrap.min.css" rel="stylesheet">
-      <link href="/static/css/libs/customicer.css" rel="stylesheet">
-      <link href="/static/css/libs/dataTables.dataTables.min.css" rel="stylesheet">
+      <!-- jQuery y DataTables con las rutas correctas -->
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+      <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+      <script src="https://cdn.tailwindcss.com"></script>
       <script src="/static/js/libs/vue@3.js"></script>
+      <!-- Datatables correctas -->
+      <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
+      <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+      
+      <!-- Extensiones para exportación -->
+      <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" rel="stylesheet" />
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+      <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+      
       {% block style%}
       {% endblock %}
       {% block files_header %}
       {% endblock %}
+      <!-- Estilos personalizados para tablas -->
+      <style>
+         /* Asegurar que todas las celdas de tabla tengan padding cero */
+         table td, table th {
+            @apply p-0 !important;
+            border: 1px solid #e5e7eb !important;
+         }
+         
+         /* Ajustes específicos para DataTables */
+         .dataTables_wrapper .dataTables_paginate .paginate_button {
+            @apply px-2 py-1 !important;
+         }
+         
+         /* Permitir un padding mínimo para los encabezados de tabla para mejorar la legibilidad */
+         table th {
+            @apply py-1 px-2 !important;
+         }
+         
+         /* Adaptar DataTables a Tailwind/DaisyUI */
+         div.dt-buttons {
+            @apply mb-3 flex gap-2 !important;
+         }
+         
+         /* Eliminar estilos básicos de DataTables para permitir que DaisyUI tome el control */
+         button.dt-button {
+            border: solid 1px #4369b5 !important;
+            background-color: transparent !important;
+            border-radius: 10px !important;
+            display: inline-flex !important; /* Usar inline-flex para que los botones se comporten como inline pero con capacidades flex */
+            align-items: center !important; /* Centrado vertical */
+            justify-content: center !important; /* Centrado horizontal */
+            padding-top: 0.25rem !important; /* Ajustar padding si es necesario */
+            padding-bottom: 0.25rem !important;
+            min-height: 2rem !important; /* Asegurar una altura mínima para el centrado vertical */
+         }
+         button.dt-button span { /* Asegurar que el contenido del span también se centre si es necesario */
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+         }
+      </style>
    </head>
-   <body>
+   <body class="bg-base-200 min-h-screen">
       <div id="app">
          {% if title_page != 'Inicio Sesion' %}
          {% if not popup_window %}
-         <nav class="navbar navbar-expand-lg bg-peisol-secondary bg-gradient border-bottom p-0 ">
-            <div class="container-fluid">
-               <a class="navbar-brand text-sm" href="/">
-               <img src="/static/img/logo.png" alt="Logo" width="auto" height="30" class="rounded rounded-3">
+         <!-- Navbar DaisyUI -->
+         <div class="navbar bg-base-100 shadow mb-4">
+            <div class="flex-1">
+               <a class="btn btn-ghost normal-case text-xl" href="/">
+                  <img src="/static/img/logo.png" alt="Logo" class="h-8 rounded" />
                </a>
-               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-               <span class="navbar-toggler-icon"></span>
-               </button>
-               <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
-                  <ul class="navbar-nav">
-                     <!-- Equipos -->
-                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="equiposDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-portable-bathroom" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                              <rect x="6" y="4" width="12" height="16" rx="2" fill="none" stroke="#555555" />
-                              <rect x="9" y="8" width="6" height="9" rx="1" fill="none" stroke="#555555" />
-                              <circle cx="12" cy="6" r="0.5" fill="none" stroke="#555555"/>
-                              <circle cx="13.5" cy="12" r="0.5" fill="none" stroke="#555555"/>
-                              <path d="M6 20h12" fill="none" stroke="#555555" />
+            </div>
+            <div class="flex-none">
+               <ul class="menu menu-horizontal px-1">
+                  <!-- Equipos -->
+                  <li>
+                     <details>
+                        <summary>
+                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <rect x="6" y="4" width="12" height="16" rx="2" />
+                              <rect x="9" y="8" width="6" height="9" rx="1" />
+                              <circle cx="12" cy="6" r="0.5"/>
+                              <circle cx="13.5" cy="12" r="0.5"/>
+                              <path d="M6 20h12" />
                            </svg>
                            Equipos
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="equiposDropdown">
-                           <li>
-                              <a class="dropdown-item" href="{% url 'resource_list' %}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Listar Equipos
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="{% url 'resource_create' %}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Crear Equipo
-                              </a>
-                           </li>
+                        </summary>
+                        <ul class="p-2 bg-base-100">
+                           <li><a href="{% url 'resource_list' %}">Listar Equipos</a></li>
+                           <li><a href="{% url 'resource_create' %}">Crear Equipo</a></li>
                         </ul>
-                     </li>
-                     <!-- Vehículos -->
-                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="vehiculosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-truck" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                     </details>
+                  </li>
+                  <!-- Vehículos -->
+                  <li>
+                     <details>
+                        <summary>
+                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
                               <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
                               <path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" />
                            </svg>
                            Vehículos
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="vehiculosDropdown">
-                           <li>
-                              <a class="dropdown-item" href="{% url 'vehicle_list' %}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Listar Vehículos
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="{% url 'vehicle_create' %}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Crear Vehículo
-                              </a>
-                           </li>
+                        </summary>
+                        <ul class="p-2 bg-base-100">
+                           <li><a href="{% url 'vehicle_list' %}">Listar Vehículos</a></li>
+                           <li><a href="{% url 'vehicle_create' %}">Crear Vehículo</a></li>
                         </ul>
-                     </li>
-                     <!-- Tecnicos -->
-                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="tecnicosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-users-group" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                     </details>
+                  </li>
+                  <!-- Técnicos -->
+                  <li>
+                     <details>
+                        <summary>
+                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
                               <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
                               <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
@@ -107,33 +131,18 @@
                               <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
                            </svg>
                            Técnicos
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="tecnicosDropdown">
-                           <li>
-                              <a class="dropdown-item" href="{% url 'technical_list' %}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Listar Técnicos
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="{% url 'technical_create' %}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Crear Técnico
-                              </a>
-                           </li>
+                        </summary>
+                        <ul class="p-2 bg-base-100">
+                           <li><a href="{% url 'technical_list' %}">Listar Técnicos</a></li>
+                           <li><a href="{% url 'technical_create' %}">Crear Técnico</a></li>
                         </ul>
-                     </li>
-                     <!-- Proyectos -->
-                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="proyectosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-building-factory-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                     </details>
+                  </li>
+                  <!-- Proyectos -->
+                  <li>
+                     <details>
+                        <summary>
+                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M3 21h18" />
                               <path d="M5 21v-12l5 4v-4l5 4h4" />
                               <path d="M19 21v-8l-1.436 -9.574a.5 .5 0 0 0 -.495 -.426h-1.145a.5 .5 0 0 0 -.494 .418l-1.43 8.582" />
@@ -141,42 +150,19 @@
                               <path d="M14 17h1" />
                            </svg>
                            Proyectos
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="proyectosDropdown">
-                           <li>
-                              <a class="dropdown-item" href="{% url 'partner_list' %}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Listar Clientes
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="{% url 'project_list' %}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Listar Proyectos
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="{% url 'project_create' %}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Crear Proyecto
-                              </a>
-                           </li>
+                        </summary>
+                        <ul class="p-2 bg-base-100">
+                           <li><a href="{% url 'partner_list' %}">Listar Clientes</a></li>
+                           <li><a href="{% url 'project_list' %}">Listar Proyectos</a></li>
+                           <li><a href="{% url 'project_create' %}">Crear Proyecto</a></li>
                         </ul>
-                     </li>
-                     <!-- Planificación -->
-                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="planificacionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-month" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                     </details>
+                  </li>
+                  <!-- Planificación -->
+                  <li>
+                     <details>
+                        <summary>
+                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
                               <path d="M16 3v4" />
                               <path d="M8 3v4" />
@@ -190,33 +176,18 @@
                               <path d="M10.01 17h.005" />
                            </svg>
                            Planificación
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="planificacionDropdown">
-                           <li>
-                              <a class="dropdown-item" href="#">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Ver Planificación
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="#">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Crear Planificación
-                              </a>
-                           </li>
+                        </summary>
+                        <ul class="p-2 bg-base-100">
+                           <li><a href="#">Ver Planificación</a></li>
+                           <li><a href="#">Crear Planificación</a></li>
                         </ul>
-                     </li>
-                     <!-- Reportes -->
-                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="reportesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-desktop-analytics" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                     </details>
+                  </li>
+                  <!-- Reportes -->
+                  <li>
+                     <details>
+                        <summary>
+                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M3 4m0 1a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z" />
                               <path d="M7 20h10" />
                               <path d="M9 16v4" />
@@ -227,100 +198,45 @@
                               <path d="M12 12v-1" />
                            </svg>
                            Reportes
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="reportesDropdown">
-                           <li>
-                              <a class="dropdown-item" href="#">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Reporte de Mantenimiento
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="#">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Reporte de Disponibilidad de Equipos
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="#">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Reporte de Mantenimiento por Equipos
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="#">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Reporte de Proyectos Activos
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="#">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Reporte de Técnicos
-                              </a>
-                           </li>
-                           <li>
-                              <a class="dropdown-item" href="{% url 'license_list' %}">
-                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                    <path d="M11 4l3 8l-3 8" />
-                                 </svg>
-                                 Licencias
-                              </a>
-                           </li>
+                        </summary>
+                        <ul class="p-2 bg-base-100">
+                           <li><a href="#">Reporte de Mantenimiento</a></li>
+                           <li><a href="#">Reporte de Disponibilidad de Equipos</a></li>
+                           <li><a href="#">Reporte de Mantenimiento por Equipos</a></li>
+                           <li><a href="#">Reporte de Proyectos Activos</a></li>
+                           <li><a href="#">Reporte de Técnicos</a></li>
+                           <li><a href="{% url 'license_list' %}">Licencias</a></li>
                         </ul>
-                     </li>
-                     <!-- Salir -->
-                     <li class="nav-item">
-                        <a class="btn btn-sm btn-default text-danger" href="/accounts/logout/">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-logout" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-                              <path d="M9 12h12l-3 -3" />
-                              <path d="M18 15l3 -3" />
-                           </svg>
-                           Salir
-                        </a>
-                     </li>
-                  </ul>
-               </div>
+                     </details>
+                  </li>
+                  <!-- Salir -->
+                  <li>
+                     <a class="btn btn-ghost text-error" href="/accounts/logout/">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                           <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                           <path d="M9 12h12l-3 -3" />
+                           <path d="M18 15l3 -3" />
+                        </svg>
+                        Salir
+                     </a>
+                  </li>
+               </ul>
             </div>
-         </nav>
+         </div>
          {% endif %}
          {% if show_alert  %}
-         <div class="container-fluid">
+         <div class="container mx-auto">
             <div class="alert alert-warning" role="alert">
                Esta es una alerta del sistema
             </div>
          </div>
          {% endif %}
          {% if show_toolbar %}
-         <div class="container-fluid bordered bg-gray m-1 p-1 mx-auto">
-            <div class="row">
-               <div class="col">
-                  Column
-               </div>
-               <div class="col">
-                  Column
-               </div>
-               <div class="col">
-                  Column
-               </div>
+         <div class="container mx-auto bg-base-200 m-1 p-1">
+            <div class="flex gap-2">
+               <div class="flex-1">Column</div>
+               <div class="flex-1">Column</div>
+               <div class="flex-1">Column</div>
             </div>
          </div>
          {% endif %}
@@ -329,70 +245,102 @@
          {% endblock %}
          {% if title_page != 'Inicio Sesion' %}
          {% if not popup_window %}
-         <div class="container-fluid mx-auto border shadow rounded-end text-dark px-4 bg-gray mt-5">
-            <footer class="d-flex flex-wrap justify-content-between align-items-center  mt-auto p-3">
-               <p class="col-md-4 mb-0">©PEISOL S.A Derechos Reservados</p>
-               <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto text-decoration-none">
-               <span class="badge text-bg text-info">
-               Desarrollado por eduardo@dev-7.com
-               </span>
-               </a>
-               <ul class="nav col-md-4 justify-content-end">
-                  <li class="nav-item">
-                     <a href="/" class="nav-link px-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-compact-right" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                           <path d="M11 4l3 8l-3 8" />
-                        </svg>
-                        Inicio
-                     </a>
-               </ul>
-            </footer>
-         </div>
-      </div>
-      {% endif %}
-      {% endif %}
-      <script src="/static/js/libs/jquery-3.7.1.min.js"></script>
-      <script src="/static/js/libs/dataTables.min.js"></script>
-      <script src="/static/js/libs/bootstrap.bundle.min.js"></script>
-      <script>
-         var options =  {
-                   "pageLength": 15,
-                   "lengthMenu": [15, 30, 50 ,100, 500, 1000, 5000],
-                   "language": {
-                     "lengthMenu": "_MENU_ registros por página",
-                     "zeroRecords": "Sin registros",
-                     "info": "Mostrando página _PAGE_ de _PAGES_",
-                     "infoEmpty": "Sin registros",
-                     "infoFiltered": "(filtrado de _MAX_ registros totales)",
-                     "search": "Buscar:",
-                     "paginate": {
-                       "first": "Primero",
-                       "last": "Último",
-                       "next": "Siguiente",
-                       "previous": "Anterior"
+         <footer class="bg-neutral text-neutral-content mt-10 py-10">
+            <div class="container mx-auto px-4">
+               <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                  <div>
+                     <h5 class="font-bold text-lg mb-3">Navegación</h5>
+                     <ul class="space-y-2">
+                        <li><a href="{% url 'resource_list' %}" class="link link-hover">Equipos</a></li>
+                        <li><a href="{% url 'vehicle_list' %}" class="link link-hover">Vehículos</a></li>
+                        <li><a href="{% url 'technical_list' %}" class="link link-hover">Técnicos</a></li>
+                     </ul>
+                  </div>
+                  <div>
+                     <h5 class="font-bold text-lg mb-3">Proyectos y Planificación</h5>
+                     <ul class="space-y-2">
+                        <li><a href="{% url 'partner_list' %}" class="link link-hover">Clientes</a></li>
+                        <li><a href="{% url 'project_list' %}" class="link link-hover">Proyectos</a></li>
+                        <li><a href="#" class="link link-hover">Planificación</a></li>
+                     </ul>
+                  </div>
+                  <div>
+                     <h5 class="font-bold text-lg mb-3">Reportes y Otros</h5>
+                     <ul class="space-y-2">
+                        <li><a href="#" class="link link-hover">Reporte de Mantenimiento</a></li>
+                        <li><a href="{% url 'license_list' %}" class="link link-hover">Licencias</a></li>
+                     </ul>
+                  </div>
+               </div>
+               <div class="border-t border-neutral-focus pt-2 text-[10px]">
+                  <div class="flex flex-col md:flex-row justify-between items-center">
+                     <p class="mb-4 md:mb-0">©{% now "Y" %} PEISOL S.A Derechos Reservados</p>
+                     <div class="flex items-center space-x-4">
+                        <a href="https://dev-7.com/" class="text-info">Desarrollado por Eduardo Villota</a>
+                        <a href="mailto:eduardouio7@gmail.com" class="link link-hover flex items-center">
+                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                              <path d="M11 4l3 8l-3 8" />
+                           </svg>
+                           <span class="ml-2 text-info">eduardouio7@gmail.com</span>
+                        </a>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </footer>
+         {% endif %}
+         {% endif %}
+         <!-- DataTables y otros scripts opcionales pueden ir aquí si los necesitas -->
+         {% block files_footer %}
+         <script>
+            $(document).ready(function() {
+               $('#datatable').DataTable({
+                  language: {
+                     url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                  },
+                  dom: 'Blfrtip', // Añadido 'l' para el control de longitud
+                  buttons: [
+                     {
+                        extend: 'excel',
+                        text: '<span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-spreadsheet"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M8 11h8v7h-8z" /><path d="M8 15h8" /><path d="M11 11v7" /></svg> Excel</span>',
+                        className: 'btn btn-sm btn-success border',
+                        title: document.title,
+                        exportOptions: {
+                           columns: ':not(.no-export)'  // Excluir columnas con la clase 'no-export'
+                        }
+                     },
+                     {
+                        extend: 'pdf',
+                        text: '<span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-type-pdf"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4" /><path d="M5 18h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6" /><path d="M17 18h2" /><path d="M20 15h-3v6" /><path d="M11 15v6h1a2 2 0 0 0 2 -2v-2a2 2 0 0 0 -2 -2h-1z" /></svg> PDF</span>',
+                        className: 'btn btn-sm btn-error',
+                        title: document.title,
+                        exportOptions: {
+                           columns: ':not(.no-export)' // Excluir columnas con la clase 'no-export'
+                        }
+                     },
+                     {
+                        extend: 'csv',
+                        text: '<span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-type-csv"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M5 12v-7a2 2 0 0 1 2 -2h7l5 5v4" /><path d="M7 18h2a1 1 0 0 0 1 -1v-4a1 1 0 0 0 -1 -1h-2v6z" /><path d="M17.5 15a2.5 2.5 0 0 0 @ -2.5a2.5 2.5 0 0 0 @ 2.5" /><path d="M10 21v-6l3 3" /></svg> CSV</span>',
+                        className: 'btn btn-sm btn-info',
+                        title: document.title,
+                        exportOptions: {
+                           columns: ':not(.no-export)' // Excluir columnas con la clase 'no-export'
+                        }
                      }
-                   }
-                 }
-         $(document).ready(function() {
-         $('#myTable').DataTable(options);
-         $('#myTable2').DataTable(options);
-         $('#myTableSmall').DataTable({
-         ...options,
-         "pageLength": 5
-         });
-         $('#myTableSmall2').DataTable({
-           ...options,
-         "pageLength": 5
-         });
-         
-         });
-      </script>
-      {% block files_footer %}
-      {% endblock %}
-      {% block script %}
-      {% endblock %}
-      {% block script_app %}
-      {% endblock %}
+                  ],
+                  lengthMenu: [ // Definición de las opciones de longitud
+                     [15, 50, 100, -1],
+                     ['15', '50', '100', 'Todos']
+                  ]
+               });
+            });
+         </script>
+         {% endblock %}
+         {% block script %}
+         {% endblock %}
+         {% block script_app %}
+         {% endblock %}
+      </div>
    </body>
 </html>
