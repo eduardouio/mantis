@@ -52,7 +52,7 @@
          
          /* Eliminar estilos básicos de DataTables para permitir que DaisyUI tome el control */
          button.dt-button {
-            border: solid 1px #4369b5 !important;
+            border: solid 1px black !important; /* Cambiado de #4369b5 a black */
             background-color: transparent !important;
             border-radius: 10px !important;
             display: inline-flex !important; /* Usar inline-flex para que los botones se comporten como inline pero con capacidades flex */
@@ -150,7 +150,7 @@
                      <li><div class="divider my-1"></div></li>
                      <!-- Salir para móvil -->
                      <li>
-                        <a class="text-error" href="{% url 'logout' %}">
+                        <a class="text-error border border-black" href="{% url 'logout' %}">
                            Salir
                         </a>
                      </li>
@@ -295,7 +295,7 @@
                 <ul class="menu menu-horizontal px-1">
                     <!-- Salir para desktop -->
                     <li>
-                        <a class="btn btn-ghost text-error" href="{% url 'logout' %}">
+                        <a class="btn btn-ghost text-error border border-black" href="{% url 'logout' %}">
                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                               <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
                               <path d="M9 12h12l-3 -3" />
