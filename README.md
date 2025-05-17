@@ -11,8 +11,7 @@ python manage.py sowseed
 
 # linea a linea para unix
 ```bash
-./manage.py makemigrations accounts
-./manage.py makemigrations equipment projects
+./manage.py makemigrations accounts equipment projects
 ./manage.py migrate
 ./manage.py sowseed
 ```

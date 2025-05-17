@@ -6,14 +6,16 @@ formulario de equipos -> con Sra Blanca
     EN LOS DE PURIFICACION DE AGUA CAPACIODAD EN GALONES 
 
 
-Areas de los tecnicos, poner en lugar de ubicacion son los cargos
-    Proectos de Plantas de tratamiento de agua
-    Tecnico de baterias sanitaria
-    Ayudante
-    Mantenimientos y Logistica
-    Supervisor
+has los siguientes cambios en el modelo de tecnico 
 
-Agregar los campos
+Cambiar el location por Cargo o Area  los cargos son los siguientes
+        Proectos de Plantas de tratamiento de agua
+        Tecnico de baterias sanitaria
+        Ayudante
+        Mantenimientos y Logistica
+        Supervisor
+
+Agregar los campos al modelo los campos 
     Fecha de nacimiento 
     fecha de emisio licencia dura 5 años
     Fecha de caducidad de licencia
@@ -29,6 +31,12 @@ Agregar los campos
     instructor_quest => alfanumerico 
     quest_fecha_inicio => fecha
     quest_fecha_fin => fecha
+
+los campos nuevos deben estar en ingles si el mismo patron de 
+app/src/accounts/models/Technical.py
+
+modifica de la misma manera las plantillas  de formulario de presentacion y de edicion de los tecnicos
+
 
 
 # Quitar los dias de trabajo del las fichas 
