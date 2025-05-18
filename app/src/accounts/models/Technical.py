@@ -7,7 +7,7 @@ ROLE_CHOICES = (
     ('ADMINISTRATIVO', 'ADMINISTRATIVO'),
     ('TECNICO', 'TECNICO'),
 )
-# Actualizado de LOCATION_CHOICES a WORK_AREA_CHOICES
+
 WORK_AREA_CHOICES = (
     ('PLANT_PROJECTS', 'Proyectos de Plantas de tratamiento de agua'),
     ('SANITARY_TECHNICIAN', 'Técnico de baterías sanitarias'),
@@ -42,12 +42,12 @@ class Technical(BaseModel):
         null=True,
         default=None
     )
-    # Renombrado de location a work_area y actualizado choices
+    
     work_area = models.CharField(
         'Área de Trabajo',
         max_length=255,
         choices=WORK_AREA_CHOICES,
-        default='ASSISTANT' # Un valor por defecto de las nuevas opciones
+        default='ASSISTANT' 
     )
     dni = models.CharField(
         'Cédula',
@@ -65,13 +65,13 @@ class Technical(BaseModel):
         max_length=15
     )
     role = models.CharField(
-        'cargo', # Este es el rol general, no el área de trabajo específica
+        'cargo', 
         max_length=255,
         choices=ROLE_CHOICES,
     )
-    # Campos eliminados: days_to_work y days_free
+    
 
-    # Nuevos campos agregados
+    
     birth_date = models.DateField(
         'Fecha de Nacimiento',
         blank=True,

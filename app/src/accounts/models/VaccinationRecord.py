@@ -58,3 +58,8 @@ class VaccinationRecord(BaseModel):
     def __str__(self):
         return f'{self.technical} - {self.get_vaccine_type_display()} ({self.application_date})'
 
+    def get_all_by_technical(self, technical_id):
+        """
+        Obtiene todos los registros de vacunación de un técnico específico.
+        """
+        return self.objects.filter(technical_id=technical_id, is_active=True).order_by('-application_date')
