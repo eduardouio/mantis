@@ -6,9 +6,9 @@ class TechnicalForm(forms.ModelForm):
     class Meta:
         model = Technical
         fields = [
-            'date_joined', 'first_name', 'last_name', 'email', 'work_area', 'dni',  # 'location' cambiado a 'work_area'
+            'date_joined', 'first_name', 'last_name', 'email', 'work_area', 'dni',
             'user', 'nro_phone', 'role',
-            # 'days_to_work', 'days_free' eliminados
+            
             'birth_date', 'license_issue_date', 'license_expiry_date',
             'defensive_driving_certificate_issue_date', 'defensive_driving_certificate_expiry_date',
             'mae_certificate_issue_date', 'mae_certificate_expiry_date',
@@ -27,6 +27,7 @@ class TechnicalForm(forms.ModelForm):
             'user': forms.Select(attrs={'class': 'border rounded px-3 py-2 w-full'}),
             'nro_phone': forms.TextInput(attrs={'class': 'border rounded px-3 py-2 w-full'}),
             'role': forms.Select(attrs={'class': 'border rounded px-3 py-2 w-full'}),
+            
             'birth_date': forms.DateInput(attrs={'class': 'border rounded px-3 py-2 w-full', 'type': 'date'}),
             'license_issue_date': forms.DateInput(attrs={'class': 'border rounded px-3 py-2 w-full', 'type': 'date'}),
             'license_expiry_date': forms.DateInput(attrs={'class': 'border rounded px-3 py-2 w-full', 'type': 'date'}),
