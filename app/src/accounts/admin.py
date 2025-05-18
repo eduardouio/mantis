@@ -3,7 +3,7 @@ from simple_history.admin import SimpleHistoryAdmin
 from django.contrib.auth.admin import UserAdmin
 
 from accounts.models import (
-    CustomUserModel, License, Technical, VaccinationRecord
+    CustomUserModel, License, Technical, VaccinationRecord, PassTechnical, PassVehicle
 )
 from accounts.forms import CustomCreationForm, CustomChangeForm
 
@@ -72,13 +72,11 @@ class LicenseAdmin(SimpleHistoryAdmin):
         'license_key',
         'activated_on',
         'expires_on',
-        'role',
         'is_active',
         'user',
     )
 
     list_filter = (
-        'role',
         'is_active',
     )
 
@@ -94,16 +92,14 @@ class TechnicalAdmin(SimpleHistoryAdmin):
         'email',
         'dni',
         'nro_phone',
-        'work_area',  # Cambiado de location y se eliminaron days_to_work, days_free
-        'role',
-        'is_iess_affiliated', # Nuevo campo
-        'has_life_insurance_policy', # Nuevo campo
+        'work_area',
+        'is_iess_affiliated',
+        'has_life_insurance_policy',
         'is_active',
     )
 
     list_filter = (
-        'role',
-        'work_area', # Añadido work_area al filtro
+        'work_area',
         'is_active',
         'is_iess_affiliated',
         'has_life_insurance_policy',
@@ -119,9 +115,9 @@ class VaccinationRecordAdmin(SimpleHistoryAdmin):
         'technical',
         'vaccine_type',
         'application_date',
-        'dose_number',
         'next_dose_date',
         'created_at',
+        'batch_number',
         'updated_at',
     )
     list_filter = (
@@ -130,6 +126,7 @@ class VaccinationRecordAdmin(SimpleHistoryAdmin):
         'application_date',
     )
     search_fields = (
+        'batch_number',
         'technical__first_name',
         'technical__last_name',
         'vaccine_type',
@@ -138,7 +135,41 @@ class VaccinationRecordAdmin(SimpleHistoryAdmin):
     ordering = ('-application_date',)
 
 
+class PassTechnicalAdmin(SimpleHistoryAdmin):
+    list_display = (
+        'bloque',
+        'fecha_caducidad',
+    )
+    list_filter = (
+        'bloque',
+        'fecha_caducidad',
+    )
+    search_fields = (
+        'bloque',
+    )
+    ordering = ('-fecha_caducidad',)
+
+
+class PassVehicleAdmin(SimpleHistoryAdmin):
+    list_display = (
+        'vehicle',
+        'bloque',
+        'fecha_caducidad',
+    )
+    list_filter = (
+        'bloque',
+        'fecha_caducidad',
+    )
+    search_fields = (
+        'vehicle__no_plate',
+        'bloque',
+    )
+    ordering = ('-fecha_caducidad',)
+
+
 admin.site.register(CustomUserModel, CustomUserModelAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(Technical, TechnicalAdmin)
 admin.site.register(VaccinationRecord, VaccinationRecordAdmin)
+admin.site.register(PassTechnical, PassTechnicalAdmin)
+admin.site.register(PassVehicle, PassVehicleAdmin)
