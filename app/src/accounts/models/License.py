@@ -57,3 +57,4 @@ class License(BaseModel):
         CustomUserModel,
         on_delete=models.PROTECT
     )
+    

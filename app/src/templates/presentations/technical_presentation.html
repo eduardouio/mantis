@@ -144,6 +144,65 @@
     </div>
   </div>
 
+  {# Sección de Pases Técnicos #}
+  <div class="mt-6 pt-4 border-t">
+    <h2 class="text-xl font-semibold text-blue-500 mb-3">Pase Técnico</h2>
+    {% if pass_technical %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <p class="text-sm text-gray-500">Nombre de Bloque</p>
+          <p class="font-semibold text-gray-900">{{ pass_technical.get_bloque_display }}</p>
+        </div>
+        <div>
+          <p class="text-sm text-gray-500">Fecha de Caducidad</p>
+          <p class="font-semibold text-gray-900">{{ pass_technical.fecha_caducidad|date:"d-m-Y" }}</p>
+        </div>
+      </div>
+    {% else %}
+      <p class="text-gray-700">No hay información de pase técnico registrada para este técnico.</p>
+    {% endif %}
+  </div>
+
+  {# Sección de Registros de Vacunación #}
+  <div class="mt-6 pt-4 border-t">
+    <h2 class="text-xl font-semibold text-blue-500 mb-3">Registros de Vacunación</h2>
+    {% if vaccination_records %}
+      <div class="space-y-4">
+        {% for record in vaccination_records %}
+          <div class="p-3 bg-gray-50 rounded-lg shadow">
+            <p class="font-semibold text-gray-800">{{ record.get_vaccine_type_display }}</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+              <div>
+                <p class="text-sm text-gray-500">Fecha de Aplicación</p>
+                <p class="text-gray-700">{{ record.application_date|date:"d-m-Y" }}</p>
+              </div>
+              {% if record.dose_number %}
+              <div>
+                <p class="text-sm text-gray-500">Número de Dosis</p>
+                <p class="text-gray-700">{{ record.dose_number }}</p>
+              </div>
+              {% endif %}
+              {% if record.next_dose_date %}
+              <div>
+                <p class="text-sm text-gray-500">Próxima Dosis</p>
+                <p class="text-gray-700">{{ record.next_dose_date|date:"d-m-Y" }}</p>
+              </div>
+              {% endif %}
+            </div>
+            {% if record.notes %}
+              <div class="mt-2">
+                <p class="text-sm text-gray-500">Notas</p>
+                <p class="text-gray-700">{{ record.notes }}</p>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-700">No hay registros de vacunación para este técnico.</p>
+    {% endif %}
+  </div>
+
   <div class="mt-6 pt-4 border-t">
     <div class="flex flex-wrap justify-center gap-2">
         <a href="{% url 'technical_create' %}" class="btn btn-sm btn-outline btn-dark">
@@ -193,4 +252,4 @@
     </div>
     {% endif %}
 </div>
-{% endblock %}
+{% endblock %
