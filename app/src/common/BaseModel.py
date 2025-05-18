@@ -78,7 +78,7 @@ class BaseModel(models.Model):
 
     def get_all(self):
         '''Retorna todos los registros activos.'''
-        return self.__class__.objects.filter(is_active=True)
+        return self.objects.filter(is_active=True)
 
     def get(self, id):
         '''Retorna el registro por id.'''
