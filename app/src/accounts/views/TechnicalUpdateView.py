@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from accounts.models import Technical
 from accounts.forms import TechnicalForm
 
+
 class UpdateTechnical(LoginRequiredMixin, UpdateView):
     model = Technical
     template_name = 'forms/technical_form.html'

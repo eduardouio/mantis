@@ -4,11 +4,12 @@ from django.urls import reverse_lazy
 from accounts.models import Technical
 from accounts.forms import TechnicalForm
 
+
 class CreateTechnical(LoginRequiredMixin, CreateView):
     model = Technical
     template_name = 'forms/technical_form.html'
     form_class = TechnicalForm
-    # success_url = '/tecnicos/' # Se reemplaza por get_success_url
+    success_url = reverse_lazy('technical_list')
 
     def get_success_url(self):
         url = reverse_lazy('technical_detail', kwargs={'pk': self.object.pk})
