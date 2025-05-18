@@ -72,6 +72,40 @@ class BaseModel(models.Model):
 
     history = HistoricalRecords(inherit=True)
 
+    def filter(self, **kwargs):
+        '''Retorna los registros activos filtrados por los argumentos.'''
+        return self.__class__.objects.filter(is_active=True, **kwargs)
+
+    def get_all(self):
+        '''Retorna todos los registros activos.'''
+        return self.__class__.objects.filter(is_active=True)
+
+    def get(self, id):
+        '''Retorna el registro por id.'''
+        try:
+            return self.__class__.objects.get(pk=id, is_active=True)
+        except ObjectDoesNotExist:
+            return None
+
+    def get_ignore_deleted(self, id):
+        '''Retorna el registro por id, ignorando el estado de eliminado.'''
+        try:
+            return self.__class__.objects.get(pk=id)
+        except ObjectDoesNotExist:
+            return None
+
+    def get_by_id_user(self, id_user):
+        '''Retorna el registro por id_user.'''
+        try:
+            return self.__class__.objects.get(id_user_created=id_user, is_active=True)
+        except ObjectDoesNotExist:
+            return None
+
+    def delete(self, *args, **kwargs):
+        '''Marca el registro como inactivo en lugar de eliminarlo.'''
+        self.is_active = False
+        self.save(*args, **kwargs)
+
     def save(self, *args, **kwargs):
         user = get_current_user()
 
