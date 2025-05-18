@@ -1,7 +1,5 @@
 from django import forms
-from .models import Technical, License # Asegurarse de importar License
-
-# ... (TechnicalForm existente, si está aquí) ...
+from accounts.models import License, Technical
 
 class LicenseForm(forms.ModelForm):
     class Meta:
