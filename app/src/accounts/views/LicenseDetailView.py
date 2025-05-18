@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView
 from accounts.models import License
 
+
 class DetailLicense(LoginRequiredMixin, DetailView):
     model = License
     template_name = 'presentations/license_presentation.html'

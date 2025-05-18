@@ -2,12 +2,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 from django.urls import reverse_lazy
 from accounts.models import License
-from accounts.forms import LicenseForm # Importar desde accounts.forms
+from accounts.forms import LicenceForm
 
 class CreateLicense(LoginRequiredMixin, CreateView):
     model = License
     template_name = 'forms/license_form.html'
-    form_class = LicenseForm
+    form_class = LicenceForm
     # success_url = '/licencias/' # Reemplazado por get_success_url
 
     def get_success_url(self):

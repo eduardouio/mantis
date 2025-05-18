@@ -1,27 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import DetailView
-from accounts.models import Technical
+from accounts.models import Technical, PassTechnical, VaccinationRecord # Asegúrate de importar PassTechnical y VaccinationRecord
 from datetime import date # Asegúrate de importar date
 
-# Función auxiliar para calcular detalles de caducidad
-def get_expiry_details(expiry_date):
-    if not expiry_date:
-        return {"text": "N/A", "class": "text-gray-500"}
-
-    today = date.today()
-    delta = expiry_date - today
-    days_remaining = delta.days
-
-    if days_remaining < 0:
-        return {"text": "Vencido", "class": "text-error font-bold"}
-    elif days_remaining == 0:
-        return {"text": "Vence Hoy", "class": "text-error font-bold"}
-    elif days_remaining <= 30:
-        days_str = f"{days_remaining} día{'s' if days_remaining != 1 else ''}"
-        return {"text": days_str, "class": "text-error font-semibold"}
-    else:
-        days_str = f"{days_remaining} día{'s' if days_remaining != 1 else ''}"
-        return {"text": days_str, "class": "text-success font-semibold"}
 
 class DetailTechnical(LoginRequiredMixin, DetailView):
     model = Technical
@@ -36,11 +17,13 @@ class DetailTechnical(LoginRequiredMixin, DetailView):
         
         technical = self.object
 
-        # Calcular detalles de caducidad para cada fecha relevante
-        context['license_expiry_details'] = get_expiry_details(technical.license_expiry_date)
-        context['defensive_driving_expiry_details'] = get_expiry_details(technical.defensive_driving_certificate_expiry_date)
-        context['mae_expiry_details'] = get_expiry_details(technical.mae_certificate_expiry_date)
-        context['medical_expiry_details'] = get_expiry_details(technical.medical_certificate_expiry_date)
-        context['quest_end_details'] = get_expiry_details(technical.quest_end_date)
+        # Obtener registros de vacunación
+        context['vaccination_records'] = VaccinationRecord.objects.filter(technical=technical).order_by('-application_date')
+
+        # Obtener pase técnico
+        try:
+            context['pass_technical'] = PassTechnical.objects.get(technical=technical)
+        except PassTechnical.DoesNotExist:
+            context['pass_technical'] = None
         
         return context

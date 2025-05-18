@@ -3,9 +3,10 @@ from django.views.generic import RedirectView
 from django.urls import reverse_lazy
 from accounts.models import License
 
+
 class DeleteLicense(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-        license_obj = License.objects.get(pk=kwargs['pk']) # Renombrar variable para evitar conflicto con el modelo
+        license_obj = License.objects.get(pk=kwargs['pk'])
         try:
             license_obj.delete()
             url = reverse_lazy('license_list')
