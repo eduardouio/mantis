@@ -1,12 +1,6 @@
 from django.db import models
 from common import BaseModel
-from accounts.models.CustomUserModel import CustomUserModel
 
-
-ROLE_CHOICES = (
-    ('ADMINISTRATIVO', 'ADMINISTRATIVO'),
-    ('TECNICO', 'TECNICO'),
-)
 
 WORK_AREA_CHOICES = (
     ('PLANT_PROJECTS', 'Proyectos de Plantas de tratamiento de agua'),
@@ -42,7 +36,6 @@ class Technical(BaseModel):
         null=True,
         default=None
     )
-    
     work_area = models.CharField(
         'Área de Trabajo',
         max_length=255,
@@ -53,25 +46,10 @@ class Technical(BaseModel):
         'Cédula',
         max_length=15
     )
-    user = models.OneToOneField(
-        CustomUserModel,
-        on_delete=models.PROTECT,
-        blank=True,
-        null=True,
-        default=None
-    )
     nro_phone = models.CharField(
         'Número de Celular',
         max_length=15
     )
-    role = models.CharField(
-        'cargo', 
-        max_length=255,
-        choices=ROLE_CHOICES,
-    )
-    
-
-    
     birth_date = models.DateField(
         'Fecha de Nacimiento',
         blank=True,

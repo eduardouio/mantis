@@ -48,7 +48,6 @@ class BaseModel(models.Model):
         auto_now=True,
         help_text='Fecha de ultima actualización del registro.'
     )
-
     is_active = models.BooleanField(
         'activo',
         default=True,
@@ -61,7 +60,6 @@ class BaseModel(models.Model):
         null=True,
         help_text='Identificador del usuario creador del registro 0 es anonimo.'
     )
-
     id_user_updated = models.PositiveIntegerField(
         'usuario actualizador',
         default=0,
@@ -76,28 +74,37 @@ class BaseModel(models.Model):
         '''Retorna los registros activos filtrados por los argumentos.'''
         return self.__class__.objects.filter(is_active=True, **kwargs)
 
-    def get_all(self):
+    @classmethod
+    def get_all(cls):
         '''Retorna todos los registros activos.'''
-        return self.objects.filter(is_active=True)
+        return cls.objects.filter(is_active=True)
 
-    def get(self, id):
+    @classmethod
+    def get_all_by(cls, **kwargs):
+        '''Retorna todos los registros activos filtrados por los argumentos.'''
+        return cls.objects.filter(is_active=True, **kwargs)
+
+    @classmethod
+    def get(cls, id):
         '''Retorna el registro por id.'''
         try:
-            return self.__class__.objects.get(pk=id, is_active=True)
+            return cls.objects.get(pk=id, is_active=True)
         except ObjectDoesNotExist:
             return None
 
-    def get_ignore_deleted(self, id):
+    @classmethod
+    def get_ignore_deleted(cls, id):
         '''Retorna el registro por id, ignorando el estado de eliminado.'''
         try:
-            return self.__class__.objects.get(pk=id)
+            return cls.objects.get(pk=id)
         except ObjectDoesNotExist:
             return None
 
-    def get_by_id_user(self, id_user):
+    @classmethod
+    def get_by_id_user(cls, id_user):
         '''Retorna el registro por id_user.'''
         try:
-            return self.__class__.objects.get(id_user_created=id_user, is_active=True)
+            return cls.objects.get(id_user_created=id_user, is_active=True)
         except ObjectDoesNotExist:
             return None
 

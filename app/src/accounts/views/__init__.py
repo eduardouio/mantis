@@ -2,7 +2,7 @@ from .HomeTV import HomeTV
 from .LoginTV import LoginTV
 from .LogoutRV import LogoutRV
 from .TechnicalList import ListTechnical
-from .TechnicalDetailView import DetailTechnical
+from .TechnicalDetailView import TechnicalDetail
 from .TechnicalCreateView import CreateTechnical
 from .TechnicalUpdateView import UpdateTechnical
 from .TechnicalDeleteView import DeleteTechnical
@@ -18,10 +18,10 @@ __all__ = [
     'LoginTV',
     'LogoutRV',
     'ListTechnical',
-    'DetailTechnical',
     'CreateTechnical',
     'UpdateTechnical',
     'DeleteTechnical',
+    'TechnicalDetail',      
     'DetailLicense',
     'CreateLicense',
     'UpdateLicense',

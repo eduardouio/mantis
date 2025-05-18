@@ -1,13 +1,13 @@
-from django import models
+from django.db import models
 from accounts.models import Technical
-from common.models import BaseModel
+from common import BaseModel
 
 
 class PassTechnical(models.Model):
     id = models.AutoField(
         primary_key=True
     )
-    technical = models.OneToOneField(Technical, on_delete=models.CASCADE)
+    technical = models.ForeignKey(Technical, on_delete=models.CASCADE)
     BLOQUE_CHOICES = [
         ('petroecuador', 'Tarjeta de Petroecuador'),
         ('shaya', 'Shaya'),
@@ -34,3 +34,14 @@ class PassTechnical(models.Model):
     fecha_caducidad = models.DateField(
         verbose_name='Fecha de caducidad'
     )
+
+    @classmethod
+    def get_by_technical(cls, technical_id):
+        """
+        Obtiene el registro de pase de un técnico específico.
+        Si no existe, retorna None.
+        """
+        try:
+            return cls.objects.get(technical_id=technical_id)
+        except cls.DoesNotExist:
+            return None
