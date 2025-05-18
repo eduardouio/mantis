@@ -82,6 +82,12 @@ class Vehicle(BaseModel):
         blank=True,
         null=True
     )
+    color = models.CharField(
+        'Color',
+        max_length=255,
+        blank=True,
+        null=True
+    )
     owner_transport = models.CharField(
         'Propietario',
         max_length=255,
@@ -99,6 +105,72 @@ class Vehicle(BaseModel):
         blank=True,
         null=True,
         default=None
+    )
+    date_matricula = models.DateField(
+        'Fecha Matricula',
+        blank=True,
+        null=True,
+        default=None
+    ) 
+    date_mtop = models.DateField(
+        'Fecha MTOP',
+        blank=True,
+        null=True,
+        default=None
+    )
+    date_technical_review = models.DateField(
+        'Fecha Revisión Técnica',
+        blank=True,
+        null=True,
+        default=None
+    )
+    nro_poliza = models.CharField(
+        'Número de Póliza',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    insurance_company = models.CharField(
+        'Compañía de Seguros',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    insurance_expiration_date = models.DateField(
+        'Fecha Vencimiento Póliza',
+        blank=True,
+        null=True,
+        default=None
+    )
+    insurance_issue_date = models.DateField(
+        'Fecha Emisión Póliza',
+        blank=True,
+        null=True,
+        default=None
+    )
+    duedate_satellite = models.DateField(
+        'Fecha Vencimiento Satelital',
+        blank=True,
+        null=True,
+        default=None
+    )
+    serial_number = models.CharField(
+        'Número de Serie',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    engine_number = models.CharField(
+        'Número de Motor',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    chassis_number = models.CharField(
+        'Número de Chasis',
+        max_length=255,
+        blank=True,
+        null=True
     )
 
     @classmethod

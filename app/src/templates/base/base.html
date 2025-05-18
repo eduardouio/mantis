@@ -7,8 +7,8 @@
       <link rel="icon" type="image/x-icon" href="/static/img/favicon.png">
       <!-- jQuery y DataTables con las rutas correctas -->
       <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-      <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
-      <script src="https://cdn.tailwindcss.com"></script>
+      <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
       <script src="/static/js/libs/vue@3.js"></script>
       <!-- Datatables correctas -->
       <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet" />
@@ -22,60 +22,28 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
       <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
       <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-      
       {% block style%}
       {% endblock %}
       {% block files_header %}
       {% endblock %}
-      <!-- Estilos personalizados para tablas -->
-      <style>
-         /* Asegurar que todas las celdas de tabla tengan padding cero */
-         table td, table th {
-            @apply p-0 !important;
-            border: 1px solid #e5e7eb !important;
-         }
-         
-         /* Ajustes específicos para DataTables */
-         .dataTables_wrapper .dataTables_paginate .paginate_button {
-            @apply px-2 py-1 !important;
-         }
-         
-         /* Permitir un padding mínimo para los encabezados de tabla para mejorar la legibilidad */
-         table th {
-            @apply py-1 px-2 !important;
-         }
-         
-         /* Adaptar DataTables a Tailwind/DaisyUI */
-         div.dt-buttons {
-            @apply mb-3 flex gap-2 !important;
-         }
-         
-         /* Eliminar estilos básicos de DataTables para permitir que DaisyUI tome el control */
-         button.dt-button {
-            border: solid 1px black !important; /* Cambiado de #4369b5 a black */
-            background-color: transparent !important;
-            border-radius: 10px !important;
-            display: inline-flex !important; /* Usar inline-flex para que los botones se comporten como inline pero con capacidades flex */
-            align-items: center !important; /* Centrado vertical */
-            justify-content: center !important; /* Centrado horizontal */
-            padding-top: 0.25rem !important; /* Ajustar padding si es necesario */
-            padding-bottom: 0.25rem !important;
-            min-height: 2rem !important; /* Asegurar una altura mínima para el centrado vertical */
-         }
-         button.dt-button span { /* Asegurar que el contenido del span también se centre si es necesario */
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-         }
-      </style>
    </head>
+   <style>
+      table {
+    border: 1px solid #d1d5db; /* gray-300 */
+    border-collapse: collapse;
+  }
+  table th, table td {
+    padding: 0.25rem; /* padding-1 */
+    border: 1px solid #d1d5db; /* gray-300 */
+  }
+   </style>
    <body class="flex flex-col min-h-screen">
 
       <div id="app" class="flex flex-col flex-grow">
          {% if title_page != 'Inicio Sesion' %}
          {% if not popup_window %}
          <!-- Nuevo Navbar Responsivo para Items de Menú -->
-         <div class="navbar bg-base-100 shadow mb-4">
+         <div class="navbar bg-base-200 shadow-lg mb-4">
             <div class="navbar-start">
                <div class="dropdown">
                   <label tabindex="0" class="btn btn-ghost lg:hidden">
@@ -351,7 +319,7 @@
 
          {% if title_page != 'Inicio Sesion' %}
          {% if not popup_window %}
-         <footer class="bg-neutral text-neutral-content mt-10 py-10">
+         <footer class="bg-zinc-700 text-base-100 mt-10 py-10">
             <div class="container mx-auto px-4">
                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                   <div>
