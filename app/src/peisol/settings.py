@@ -173,3 +173,6 @@ LOGIN = '/accounts/login/'
 HOME = '/'
 # mis configuraciones
 URL_LICENCE = 'https://licences.dev-7.com/peisol/'
+
+PATH_LOGS = os.path.join(os.path.dirname(BASE_DIR), 'logs')
+# Verifica si el directorio de logs existe, si no lo crea
