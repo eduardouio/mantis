@@ -39,6 +39,11 @@ class Partner(BaseModel):
         blank=True,
         null=True
     )
+    notes = models.TextField(
+        'Notas',
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return self.name
