@@ -6,3 +6,13 @@ from .Project import (
                         WorkOrderDetail,
                         WorkOrderMaintenance
 )
+
+
+__all__ = [
+    'Partner',
+    'Project',
+    'ProjectResourceItem',
+    'WorkOrder',
+    'WorkOrderDetail',
+    'WorkOrderMaintenance'
+]
