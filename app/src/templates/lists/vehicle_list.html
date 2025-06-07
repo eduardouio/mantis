@@ -1,25 +1,9 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
-    <div class="d-flex justify-content-between">
-        <span class="text-primary">
-            {{ title_section|default:"Listado de Vehículos" }}
-        </span>
-        <a href="{% url 'vehicle_create' %}" class="btn btn-sm btn-outline bg-gray-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
-                <path d="M12 5l0 14" />
-                <path d="M5 12l14 0" />
-            </svg>
-            Agregar Vehículo
-        </a>
-    </div>
-</div>
-
 <!-- Filtros de búsqueda -->
-<div class="container-xl mx-auto mb-3 p-2">
+<div class="container mx-auto mb-3 p-2">
     <div class="card bg-base-100 shadow-sm border border-gray-200">
-        <div class="card-body p-4">
+        <div class="card-body">
             <form method="get" class="grid grid-cols-1 md:grid-cols-5 gap-3">
                 <div class="form-control">
                     <label class="label"><span class="label-text">Buscar</span></label>
@@ -52,73 +36,23 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-control flex justify-end">
+                <div class="form-control flex justify-end items-end">
                     <label class="label"><span class="label-text">&nbsp;</span></label>
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 items-center">
                         <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
                         <a href="{% url 'vehicle_list' %}" class="btn btn-outline btn-sm">Limpiar</a>
+                        <div class="divider divider-horizontal"></div>
+                        <a href="{% url 'vehicle_create' %}" class="btn btn-success btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                                <path d="M12 5l0 14" />
+                                <path d="M5 12l14 0" />
+                            </svg>
+                            Agregar
+                        </a>
                     </div>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-
-<!-- Estadísticas en la cabecera de la tabla -->
-<div class="w-[95%] mx-auto mb-4">
-    <div class="stats stats-horizontal shadow w-full bg-base-100 border">
-        <div class="stat place-items-center">
-            <div class="stat-title text-xs">Total Vehículos</div>
-            <div class="stat-value text-primary text-2xl">{{ total_vehicles|default:vehicles|length }}</div>
-            <div class="stat-desc text-xs">En el sistema</div>
-        </div>
-        
-        <div class="stat place-items-center">
-            <div class="stat-title text-xs">Activos</div>
-            <div class="stat-value text-success text-2xl">{{ active_vehicles|default:vehicles|length }}</div>
-            <div class="stat-desc text-xs">Disponibles</div>
-        </div>
-        
-        <div class="stat place-items-center">
-            <div class="stat-title text-xs">PEISOL</div>
-            <div class="stat-value text-info text-2xl">{{ peisol_vehicles|default:0 }}</div>
-            <div class="stat-desc text-xs">Propios</div>
-        </div>
-        
-        <div class="stat place-items-center">
-            <div class="stat-title text-xs">Contratante</div>
-            <div class="stat-value text-warning text-2xl">{{ contractor_vehicles|default:0 }}</div>
-            <div class="stat-desc text-xs">Externos</div>
-        </div>
-        
-        <div class="stat place-items-center">
-            <div class="stat-title text-xs">Con Certificaciones</div>
-            <div class="stat-value text-accent text-2xl">
-                {% with cert_count=0 %}
-                    {% for vehicle in vehicles %}
-                        {% if vehicle.certifications.all %}
-                            {% with cert_count=cert_count|add:1 %}{% endwith %}
-                        {% endif %}
-                    {% endfor %}
-                    {{ cert_count }}
-                {% endwith %}
-            </div>
-            <div class="stat-desc text-xs">Certificados</div>
-        </div>
-        
-        <div class="stat place-items-center">
-            <div class="stat-title text-xs">Con Pases</div>
-            <div class="stat-value text-secondary text-2xl">
-                {% with pass_count=0 %}
-                    {% for vehicle in vehicles %}
-                        {% if vehicle.passes.all %}
-                            {% with pass_count=pass_count|add:1 %}{% endwith %}
-                        {% endif %}
-                    {% endfor %}
-                    {{ pass_count }}
-                {% endwith %}
-            </div>
-            <div class="stat-desc text-xs">Con pases</div>
         </div>
     </div>
 </div>
@@ -238,24 +172,4 @@
         </tbody>
     </table>
 </div>
-
-<!-- Paginación -->
-{% if is_paginated %}
-<div class="flex justify-center mt-4">
-    <div class="btn-group">
-        {% if page_obj.has_previous %}
-            <a href="?page=1{% if search %}&search={{ search }}{% endif %}{% if type_vehicle %}&type_vehicle={{ type_vehicle }}{% endif %}{% if status_vehicle %}&status_vehicle={{ status_vehicle }}{% endif %}{% if owner_transport %}&owner_transport={{ owner_transport }}{% endif %}" class="btn btn-sm">««</a>
-            <a href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if type_vehicle %}&type_vehicle={{ type_vehicle }}{% endif %}{% if status_vehicle %}&status_vehicle={{ status_vehicle }}{% endif %}{% if owner_transport %}&owner_transport={{ owner_transport }}{% endif %}" class="btn btn-sm">‹</a>
-        {% endif %}
-        
-        <span class="btn btn-sm btn-active">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-        
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if type_vehicle %}&type_vehicle={{ type_vehicle }}{% endif %}{% if status_vehicle %}&status_vehicle={{ status_vehicle }}{% endif %}{% if owner_transport %}&owner_transport={{ owner_transport }}{% endif %}" class="btn btn-sm">›</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}{% if type_vehicle %}&type_vehicle={{ type_vehicle }}{% endif %}{% if status_vehicle %}&status_vehicle={{ status_vehicle }}{% endif %}{% if owner_transport %}&owner_transport={{ owner_transport }}{% endif %}" class="btn btn-sm">»»</a>
-        {% endif %}
-    </div>
-</div>
-{% endif %}
-
 {% endblock %}

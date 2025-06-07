@@ -1,48 +1,188 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
-    <div class="d-flex justify-content-between">
-        <span class="text-primary">
-            {{ title_section|default:"Listado de Técnicos" }}
-        </span>
-        <a href="{% url 'technical_create' %}" class="btn btn-sm btn-outline bg-gray-200">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
-                <path d="M12 5l0 14" />
-                <path d="M5 12l14 0" />
-            </svg>
-            Agregar Técnico
-        </a>
+<!-- Filtros de búsqueda -->
+<div class="w-full mx-auto mb-3 px-4">
+    <div class="card bg-base-100 shadow-sm border border-gray-200">
+        <div class="card-body">
+            <form method="get" class="space-y-4">
+                <!-- Primera fila de filtros -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Buscar</span></label>
+                        <input type="text" name="search" value="{{ search }}" placeholder="Nombre, email, teléfono..." class="input input-bordered input-sm" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Área de Trabajo</span></label>
+                        <select name="work_area" class="select select-bordered select-sm">
+                            <option value="">Todas las áreas</option>
+                            {% for value, label in work_area_choices %}
+                            <option value="{{ value }}" {% if work_area == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Estado</span></label>
+                        <select name="is_active" class="select select-bordered select-sm">
+                            <option value="">Todos los estados</option>
+                            {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if is_active == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Licencia</span></label>
+                        <select name="has_license" class="select select-bordered select-sm">
+                            <option value="">Todos</option>
+                            {% for value, label in certificate_choices %}
+                            <option value="{{ value }}" {% if has_license == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-control flex justify-end items-end">
+                        <label class="label"><span class="label-text">&nbsp;</span></label>
+                        <div class="flex gap-2 items-center">
+                            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                            <a href="{% url 'technical_list' %}" class="btn btn-outline btn-sm">Limpiar</a>
+                            <div class="divider divider-horizontal"></div>
+                            <a href="{% url 'technical_create' %}" class="btn btn-success btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                                    <path d="M12 5l0 14" />
+                                    <path d="M5 12l14 0" />
+                                </svg>
+                                Agregar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Segunda fila de filtros de certificados -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Manejo Defensivo</span></label>
+                        <select name="has_defensive_driving" class="select select-bordered select-sm">
+                            <option value="">Todos</option>
+                            {% for value, label in certificate_choices %}
+                            <option value="{{ value }}" {% if has_defensive_driving == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Certificado MAE</span></label>
+                        <select name="has_mae_certificate" class="select select-bordered select-sm">
+                            <option value="">Todos</option>
+                            {% for value, label in certificate_choices %}
+                            <option value="{{ value }}" {% if has_mae_certificate == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Certificado Médico</span></label>
+                        <select name="has_medical_certificate" class="select select-bordered select-sm">
+                            <option value="">Todos</option>
+                            {% for value, label in certificate_choices %}
+                            <option value="{{ value }}" {% if has_medical_certificate == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <!-- Espacio vacío para alineación -->
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-<div class="w-[90%] mx-auto overflow-x-auto">
-    <table id="datatable" class="table table-bordered table-striped">
+
+<div class="w-full mx-auto px-4 overflow-x-auto">
+    <table id="datatable" class="table table-bordered table-striped w-full">
         <thead>
             <tr>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600">Nombres</th>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Apellidos</th>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Email</th>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Rol</th>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600">Estado</th>
-                <th class="bg-yellow-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
+                <th class="bg-blue-200 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
+                <th class="bg-blue-200 bg-opacity-75 text-gray-600">Nombres</th>
+                <th class="bg-blue-200 bg-opacity-75 text-gray-600 hidden md:table-cell">Apellidos</th>
+                <th class="bg-blue-200 bg-opacity-75 text-gray-600 hidden md:table-cell">Email</th>
+                <th class="bg-blue-200 bg-opacity-75 text-gray-600 hidden md:table-cell">Teléfono</th>
+                <th class="bg-blue-200 bg-opacity-75 text-gray-600 hidden md:table-cell">Área de Trabajo</th>
+                <th class="bg-blue-200 bg-opacity-75 text-gray-600 hidden lg:table-cell">Certificados</th>
+                <th class="bg-blue-200 bg-opacity-75 text-gray-600">Estado</th>
+                <th class="bg-blue-200 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for item in object_list %}
-            <tr>
+            {% for technical in technicals %}
+            <tr class="hover:bg-gray-50">
                 <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
                 <td class="text-center">
-                    <a href="{% url 'technical_detail' item.id %}" class="link link-hover text-primary md:hidden">{{ item.first_name }}</a>
-                    <span class="hidden md:inline">{{ item.first_name }}</span>
+                    <a href="{% url 'technical_detail' technical.id %}" class="link link-hover text-primary md:hidden font-semibold">{{ technical.first_name }}</a>
+                    <span class="hidden md:inline font-semibold">{{ technical.first_name }}</span>
                 </td>
-                <td class="text-center hidden md:table-cell">{{ item.last_name }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.email }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.get_role_display }}</td>
-                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                <td class="text-center hidden md:table-cell">{{ technical.last_name }}</td>
                 <td class="text-center hidden md:table-cell">
-                    <a href="{% url 'technical_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
-                    <a href="{% url 'technical_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
+                    <div class="text-sm">
+                        <div class="font-medium">{{ technical.email|default_if_none:"-" }}</div>
+                    </div>
+                </td>
+                <td class="text-center hidden md:table-cell">{{ technical.nro_phone|default_if_none:"-" }}</td>
+                <td class="text-center hidden md:table-cell">
+                    <span class="badge badge-outline badge-sm">{{ technical.get_work_area_display }}</span>
+                </td>
+                <td class="text-center hidden lg:table-cell">
+                    <div class="flex flex-col gap-1">
+                        {% if technical.license_issue_date %}
+                            <div class="badge badge-xs badge-success">Licencia</div>
+                        {% endif %}
+                        {% if technical.defensive_driving_certificate_issue_date %}
+                            <div class="badge badge-xs badge-info">Manejo Defensivo</div>
+                        {% endif %}
+                        {% if technical.mae_certificate_issue_date %}
+                            <div class="badge badge-xs badge-warning">MAE</div>
+                        {% endif %}
+                        {% if technical.medical_certificate_issue_date %}
+                            <div class="badge badge-xs badge-accent">Médico</div>
+                        {% endif %}
+                        {% if not technical.license_issue_date and not technical.defensive_driving_certificate_issue_date and not technical.mae_certificate_issue_date and not technical.medical_certificate_issue_date %}
+                            <span class="text-gray-400 text-xs">Sin certificados</span>
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="text-center">
+                    <div class="flex flex-col gap-1">
+                        {% if technical.is_active %}
+                            <span class="badge badge-success badge-sm">Activo</span>
+                        {% else %}
+                            <span class="badge badge-error badge-sm">Inactivo</span>
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="text-center hidden md:table-cell">
+                    <div class="flex gap-1 justify-center">
+                        <a href="{% url 'technical_detail' technical.id %}" class="btn btn-xs btn-info" title="Ver detalles">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </a>
+                        <a href="{% url 'technical_update' technical.id %}" class="btn btn-xs btn-warning" title="Editar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" class="text-center py-8">
+                    <div class="flex flex-col items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="text-gray-400" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                        <span class="text-gray-500">No se encontraron técnicos</span>
+                        <a href="{% url 'technical_create' %}" class="btn btn-primary btn-sm">Agregar primer técnico</a>
+                    </div>
                 </td>
             </tr>
             {% endfor %}
