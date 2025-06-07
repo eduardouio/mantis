@@ -1,6 +1,7 @@
 from django.db import models
 from common.BaseModel import BaseModel
 
+
 class PassVehicle(BaseModel):
     vehicle = models.ForeignKey(
         'equipment.Vehicle',
