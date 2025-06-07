@@ -43,8 +43,8 @@ class ResourceItemForm(forms.ModelForm):
             'weight': forms.NumberInput(
                 attrs={'class': 'input input-bordered input-md w-full'}
             ),
-            'notes': forms.TextInput(
-                attrs={'class': 'input input-bordered input-md w-full'}
+            'notes': forms.Textarea(
+                attrs={'class': 'textarea textarea-bordered w-full'}
             ),
             'status': forms.Select(
                 attrs={'class': 'select select-bordered select-md w-full'}
