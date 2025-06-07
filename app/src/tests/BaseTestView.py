@@ -9,7 +9,16 @@ class BaseTestView():
 
     @pytest.fixture
     def client_logged(self):
-        user = CustomUserModel.get(email='eduardouio7@gmail.com')
+        user, created = CustomUserModel.objects.get_or_create(
+            email='eduardouio7@gmail.com',
+            defaults={
+                'first_name': 'Test',
+                'last_name': 'User',
+                'is_staff': True,
+                'is_superuser': True,
+                # Agrega aquí otros campos obligatorios si es necesario
+            }
+        )
         client = Client()
         client.force_login(user)
         return client

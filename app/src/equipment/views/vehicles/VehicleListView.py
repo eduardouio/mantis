@@ -2,16 +2,17 @@ from django.views.generic import ListView
 from django.db.models import Q, Prefetch
 from equipment.models import Vehicle
 from equipment.models.CertificationVehicle import CertificationVehicle
+from django.contrib.auth.mixins import LoginRequiredMixin
 from equipment.models.PassVehicle import PassVehicle
 
 
-class VehicleListView(ListView):
+class VehicleListView(LoginRequiredMixin, ListView):
     model = Vehicle
     template_name = 'lists/vehicle_list.html'
     context_object_name = 'vehicles'
 
     def get_queryset(self):
-        queryset = Vehicle.get_all().select_related().prefetch_related( 
+        queryset = Vehicle.get_all().select_related().prefetch_related(
             Prefetch(
                 'certificationvehicle_set',
                 queryset=CertificationVehicle.objects.filter(is_active=True),
