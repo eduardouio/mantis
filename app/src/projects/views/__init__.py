@@ -1,23 +1,28 @@
-from .Partner import (
-    ListPartner,
-    DetailPartner,
-    CreatePartner,
-    UpdatePartner,
-    DeletePartner,
-    APIAddManyToMany
+from projects.views.partner import (
+    PartnerListView,
+    PartnerDetailView,
+    PartnerCreateView,
+    PartnerUpdateView,
+    PartnerDeleteView
 )
 
-from .Project import (
-    ListProject,
-    CreateProject,
-    UpdateProject,
-    DeleteProject,
-    AddEquipmentProject,
-    RemoveEquipmentProject,
-    UpdateEquipmentProject,
+from projects.views.project import (
+    ProjectListView,
+    ProjectDetailView,
+    ProjectCreateView,
+    ProjectUpdateView,
+    ProjectDeleteView
 )
 
-from .DetailProject import DetailProject
-
-from .ProjectResourceCV import CreateProjectResource, UpdateProjectResource
-from .ProjectResourceDV import DeleteProjectResource
+__all__ = [
+    'PartnerListView',
+    'PartnerDetailView',
+    'PartnerCreateView',
+    'PartnerUpdateView',
+    'PartnerDeleteView',
+    'ProjectListView',
+    'ProjectDetailView',
+    'ProjectCreateView',
+    'ProjectUpdateView',
+    'ProjectDeleteView'
+]
