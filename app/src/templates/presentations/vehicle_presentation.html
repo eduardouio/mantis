@@ -1,116 +1,446 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto p-4 bg-white rounded-2xl shadow-md space-y-6 border border-t-[15px] border-t-blue-500">
-  <div class="flex justify-between items-center border-b-blue-500 border-b pb-1">
+<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
+  <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
     <h1 class="text-2xl font-semibold text-blue-500">Ficha de Vehículo</h1>
-    {# Ícono opcional aquí #}
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <div>
-      <p class="text-sm text-gray-500">Código del Vehículo</p>
-      <p class="font-semibold text-gray-900">{{ vehicle.code_vehicle }}</p>
-    </div>
-    <div>
-      <p class="text-sm text-gray-500">Marca</p>
-      <p class="font-semibold text-gray-900">{{ vehicle.brand }}</p>
-    </div>
-    <div>
-      <p class="text-sm text-gray-500">Modelo</p>
-      <p class="font-semibold text-gray-900">{% if vehicle.model %}{{ vehicle.model }}{% else %}No Registra{% endif %}</p>
-    </div>
-    <div>
-      <p class="text-sm text-gray-500">Año</p>
-      <p class="font-semibold text-gray-900">{% if vehicle.year %}{{ vehicle.year }}{% else %}No Registra{% endif %}</p>
-    </div>
-    <div>
-      <p class="text-sm text-gray-500">Placa</p>
-      <p class="font-semibold text-gray-900">{% if vehicle.no_plate %}{{ vehicle.no_plate }}{% else %}No Registra{% endif %}</p>
-    </div>
-    <div>
-      <p class="text-sm text-gray-500">Propietario</p>
-      <p class="font-semibold text-gray-900">{{ vehicle.get_owner_transport_display }}</p>
-    </div>
-    <div class="sm:col-span-2">
-      <p class="text-sm text-gray-500">Notas</p>
-      <p class="font-semibold text-gray-900">{% if vehicle.notes %}{{ vehicle.notes }}{% else %}No Registra{% endif %}</p>
-    </div>
-    <div>
-      <p class="text-sm text-gray-500">Estado</p>
-      <p class="font-semibold text-gray-900">
-        {% if vehicle.is_active %}
-            <span class="badge badge-success">Activo</span>
-        {% else %}
-            <span class="badge badge-error">Inactivo</span>
-        {% endif %}
-      </p>
-    </div>
-    <div>
-      <p class="text-sm text-gray-500">Fecha de Creación</p>
-      <p class="font-semibold text-gray-900">{{ vehicle.created_at|date:"Y-m-d H:i" }}</p>
-    </div>
-    <div>
-      <p class="text-sm text-gray-500">Creado Por</p>
-      <p class="font-semibold text-gray-900">{% if vehicle.get_create_user %}{{ vehicle.get_create_user }}{% else %}SYSTEM{% endif %}</p>
-    </div>
-    <div>
-      <p class="text-sm text-gray-500">Fecha de Actualización</p>
-      <p class="font-semibold text-gray-900">{{ vehicle.updated_at|date:"Y-m-d H:i" }}</p>
-    </div>
-    <div>
-      <p class="text-sm text-gray-500">Actualizado Por</p>
-      <p class="font-semibold text-gray-900">{% if vehicle.get_update_user %}{{ vehicle.get_update_user }}{% else %}SYSTEM{% endif %}</p>
+    <div class="text-gray-500">
+      <span class="badge {% if vehicle.is_active %}badge-success{% else %}badge-error{% endif %}">
+        {% if vehicle.is_active %}Activo{% else %}Inactivo{% endif %}
+      </span>
     </div>
   </div>
 
-  <div class="mt-6 pt-4 border-t">
-    <div class="flex flex-wrap justify-center gap-2">
-        <a href="{% url 'vehicle_create' %}" class="btn btn-sm btn-outline btn-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" />
-            </svg>
-            Agregar Nuevo
-        </a>
-        <a href="{% url 'vehicle_update' vehicle.id %}" class="btn btn-sm btn-outline btn-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" />
-            </svg>
-            Editar
-        </a>
-        <a href="{% url 'vehicle_detail' vehicle.id %}?action=delete" class="btn btn-sm btn-outline btn-error">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-            </svg>
-            Eliminar
-        </a>
-        <a href="{% url 'vehicle_list' %}" class="btn btn-sm btn-outline border-black">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l-6 6l6 6" /><path d="M21 6l-6 6l6 6" />
-            </svg>
-            Volver al Listado
-        </a>
-    </div>
-  </div>
-
-    {% if action == 'delete' %}
-    <div class="flex justify-center mt-6 mb-6">
-        <div class="alert alert-warning max-w-md">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-            <span>¿Estás seguro de que deseas eliminar este vehículo? Esta acción no se puede deshacer.</span>
+  <!-- Tabs para organizar la información -->
+  <div class="tabs tabs-box w-full mb-4">
+    <input type="radio" name="my_tabs_6" class="tab" aria-label="Información General" checked />
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <!-- Información básica en 3 columnas para mejor aprovechamiento del espacio -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-10">
+        <!-- Columna 1: Datos del vehículo -->
+        <div class="space-y-1 border-l-blue-300 border-l-[1px] pl-5">
+          <div>
+            <p class="text-gray-500 text-sm">Placa / Tipo</p>
+            <p class="font-semibold text-gray-900">{{ vehicle.no_plate }} / {{ vehicle.get_type_vehicle_display }}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Marca / Modelo</p>
+            <p class="font-semibold text-gray-900">{{ vehicle.brand }} / {{ vehicle.model|default:"No registrado" }}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Año / Color</p>
+            <p class="font-semibold text-gray-900">{{ vehicle.year|default:"N/A" }} / {{ vehicle.color|default:"No registrado" }}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Propietario</p>
+            <p class="font-semibold text-gray-900">{{ vehicle.get_owner_transport_display }}</p>
+          </div>
         </div>
+        
+        <!-- Columna 2: Datos técnicos -->
+        <div class="space-y-1 border-l-blue-300 border-l-[1px] pl-5">
+          <div>
+            <p class="text-gray-500 text-sm">Número de Chasis</p>
+            <p class="font-semibold text-gray-900">{{ vehicle.chassis_number|default:"No registrado" }}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Número de Motor</p>
+            <p class="font-semibold text-gray-900">{{ vehicle.engine_number|default:"No registrado" }}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Número de Serie</p>
+            <p class="font-semibold text-gray-900">{{ vehicle.serial_number|default:"No registrado" }}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Estado del Vehículo</p>
+            <p class="font-semibold text-gray-900">
+              <span class="badge {% if vehicle.status_vehicle == 'DISPONIBLE' %}badge-success{% elif vehicle.status_vehicle == 'EN MANTENIMIENTO' %}badge-warning{% else %}badge-info{% endif %}">
+                {{ vehicle.get_status_vehicle_display }}
+              </span>
+            </p>
+          </div>
+        </div>
+        
+        <!-- Columna 3: Información de seguros -->
+        <div class="space-y-1 border-l-blue-300 border-l-[1px] pl-5">
+          <div>
+            <p class="text-gray-500 text-sm">Compañía de Seguros</p>
+            <p class="font-semibold text-gray-900">{{ vehicle.insurance_company|default:"No registrada" }}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Número de Póliza</p>
+            <p class="font-semibold text-gray-900">{{ vehicle.nro_poliza|default:"No registrado" }}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Vigencia Póliza</p>
+            <p class="font-semibold text-gray-900">
+              {% if vehicle.insurance_issue_date and vehicle.insurance_expiration_date %}
+                {{ vehicle.insurance_issue_date|date:"d-m-Y" }} al {{ vehicle.insurance_expiration_date|date:"d-m-Y" }}
+                {% if vehicle.insurance_expiration_date and insurance_expiry_details %}
+                  <span class="{{ insurance_expiry_details.class }}">({{ insurance_expiry_details.text }})</span>
+                {% endif %}
+              {% else %}
+                No registrada
+              {% endif %}
+            </p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Vencimiento Satelital</p>
+            <p class="font-semibold text-gray-900">
+              {% if vehicle.duedate_satellite %}
+                {{ vehicle.duedate_satellite|date:"d-m-Y" }}
+                {% if satellite_expiry_details %}
+                  <span class="{{ satellite_expiry_details.class }}">({{ satellite_expiry_details.text }})</span>
+                {% endif %}
+              {% else %}
+                No registrado
+              {% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Notas (si existen) -->
+      {% if vehicle.notes %}
+      <div class="mt-3 p-2 bg-gray-50 rounded border border-gray-200">
+        <p class="text-gray-500 text-sm">Notas</p>
+        <p class="text-gray-700">{{ vehicle.notes }}</p>
+      </div>
+      {% endif %}
     </div>
-    <div class="flex justify-center mb-6">
-        <a href="{% url 'vehicle_delete' request.resolver_match.kwargs.pk %}" class="btn btn-error">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+
+    <input type="radio" name="my_tabs_6" class="tab" aria-label="Documentos y Certificados" />
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <!-- Documentos Oficiales -->
+        <div class="p-2 bg-gray-50 rounded-lg shadow-sm border border-gray-200 bg-gray-100">
+          <p class="font-medium text-gray-700">Matrícula</p>
+          <div class="text-sm border border-gray-200 rounded-lg p-2 bg-white">
+            <div class="grid grid-cols-2 gap-1">
+              <div>
+                <span class="text-gray-500">Fecha:</span>
+                <span>{{ vehicle.date_matricula|date:"d-m-Y"|default:"N/A" }}</span>
+              </div>
+              <div>
+                <span class="text-gray-500">Vencimiento:</span>
+                <span>
+                  {{ vehicle.due_date_matricula|date:"d-m-Y"|default:"N/A" }}
+                  {% if vehicle.due_date_matricula and matricula_expiry_details %}
+                    <span class="{{ matricula_expiry_details.class }}">({{ matricula_expiry_details.text }})</span>
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Certificado de Operación -->
+        <div class="p-2 bg-gray-50 rounded-lg shadow-sm border border-gray-200 bg-gray-100">
+          <p class="font-medium text-gray-700">Certificado de Operación</p>
+          <div class="text-sm border border-gray-200 rounded-lg p-2 bg-white">
+            <div class="grid grid-cols-1 gap-1">
+              <div>
+                <span class="text-gray-500">Vencimiento:</span>
+                <span>
+                  {{ vehicle.due_date_cert_oper|date:"d-m-Y"|default:"N/A" }}
+                  {% if vehicle.due_date_cert_oper and cert_oper_expiry_details %}
+                    <span class="{{ cert_oper_expiry_details.class }}">({{ cert_oper_expiry_details.text }})</span>
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- MTOP -->
+        <div class="p-2 bg-gray-50 rounded-lg shadow-sm border border-gray-200 bg-gray-100">
+          <p class="font-medium text-gray-700">MTOP</p>
+          <div class="text-sm border border-gray-200 rounded-lg p-2 bg-white">
+            <div class="grid grid-cols-1 gap-1">
+              <div>
+                <span class="text-gray-500">Fecha:</span>
+                <span>{{ vehicle.date_mtop|date:"d-m-Y"|default:"N/A" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Revisión Técnica -->
+        <div class="p-2 bg-gray-50 rounded-lg shadow-sm border border-gray-200 bg-gray-100">
+          <p class="font-medium text-gray-700">Revisión Técnica</p>
+          <div class="text-sm border border-gray-200 rounded-lg p-2 bg-white">
+            <div class="grid grid-cols-1 gap-1">
+              <div>
+                <span class="text-gray-500">Fecha:</span>
+                <span>{{ vehicle.date_technical_review|date:"d-m-Y"|default:"N/A" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Certificaciones Técnicas -->
+      {% if certifications %}
+      <div class="mt-4">
+        <h3 class="text-md font-semibold text-blue-500 mb-2">Certificaciones Técnicas</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {% for cert in certifications %}
+          <div class="p-2 bg-blue-50 rounded-lg shadow-sm border border-blue-200">
+            <p class="font-medium text-blue-700">{{ cert.get_name_display }}</p>
+            <div class="text-sm border border-blue-200 rounded-lg p-2 bg-white">
+              <div class="grid grid-cols-2 gap-1">
+                <div>
+                  <span class="text-gray-500">Inicio:</span>
+                  <span>{{ cert.date_start|date:"d-m-Y" }}</span>
+                </div>
+                <div>
+                  <span class="text-gray-500">Fin:</span>
+                  <span>
+                    {{ cert.date_end|date:"d-m-Y" }}
+                    {% if cert.expiry_status %}
+                      <span class="{{ cert.expiry_status.class }}">({{ cert.expiry_status.text }})</span>
+                    {% endif %}
+                  </span>
+                </div>
+              </div>
+              {% if cert.description %}
+              <div class="mt-1">
+                <span class="text-gray-500">Descripción:</span>
+                <span class="text-xs">{{ cert.description|truncatewords:10 }}</span>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <input type="radio" name="my_tabs_6" class="tab" aria-label="Pases de Bloques" />
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <div class="grid grid-cols-1 gap-4">
+        <!-- Sección de Pases de Vehículos -->
+        <div>
+          <h3 class="text-md font-semibold text-blue-500 mb-2">Pases Autorizados</h3>
+          {% if pass_vehicle %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {% for pass in pass_vehicle %}
+              <div class="p-2 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
+                <div class="text-sm">
+                  <div class="mb-2">
+                    <span class="font-medium text-gray-700">{{ pass.get_bloque_display }}</span>
+                  </div>
+                  <div class="grid grid-cols-1 gap-1">
+                    <div>
+                      <span class="text-gray-500">Caducidad:</span>
+                      <span>
+                        {{ pass.fecha_caducidad|date:"d-m-Y" }}
+                        {% if pass.expiry_status %}
+                          <span class="{{ pass.expiry_status.class }}">({{ pass.expiry_status.text }})</span>
+                        {% endif %}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-end text-xs text-gray-500 mt-2">
+                  {% if pass.expiry_status %}
+                    {{ pass.expiry_status.days_remaining }} días restantes
+                  {% else %}
+                    Sin fecha de caducidad
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="text-gray-700">No hay información de pases de vehículos.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Nueva pestaña de Metadatos -->
+    <input type="radio" name="my_tabs_6" class="tab" aria-label="Metadatos" />
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <h3 class="text-md font-semibold text-blue-500 mb-4">Información de Auditoría</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Información de Registro -->
+        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+              <polyline points="14,2 14,8 20,8"/>
             </svg>
-            Confirmar Eliminación
-        </a>
-         <a href="{% url 'vehicle_detail' vehicle.id %}" class="btn btn-outline ml-2 border-black">
-            Cancelar
-        </a>
+            Registro Inicial
+          </h4>
+          <div class="space-y-2 text-sm">
+            <div>
+              <span class="text-gray-500">Fecha de Registro:</span>
+              <span class="font-medium">{{ vehicle.created_at|date:"d-m-Y H:i"|default:"No registrada" }}</span>
+            </div>
+            <div>
+              <span class="text-gray-500">Usuario Registrador:</span>
+              <span class="font-medium">
+                {% if vehicle.get_create_user %}
+                  {{ vehicle.get_create_user.get_full_name|default:vehicle.get_create_user.email }}
+                {% else %}
+                  Sistema
+                {% endif %}
+              </span>
+            </div>
+            <div>
+              <span class="text-gray-500">ID del Registro:</span>
+              <span class="font-medium font-mono">#{{ vehicle.id }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información de Modificación -->
+        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Última Modificación
+          </h4>
+          <div class="space-y-2 text-sm">
+            <div>
+              <span class="text-gray-500">Fecha de Modificación:</span>
+              <span class="font-medium">{{ vehicle.updated_at|date:"d-m-Y H:i"|default:"No modificado" }}</span>
+            </div>
+            <div>
+              <span class="text-gray-500">Usuario Modificador:</span>
+              <span class="font-medium">
+                {% if vehicle.get_update_user %}
+                  {{ vehicle.get_update_user.get_full_name|default:vehicle.get_update_user.email }}
+                {% else %}
+                  No modificado
+                {% endif %}
+              </span>
+            </div>
+            <div>
+              <span class="text-gray-500">Versión:</span>
+              <span class="font-medium">{{ vehicle.version|default:"1.0" }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estadísticas Adicionales -->
+        <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            Estadísticas
+          </h4>
+          <div class="space-y-2 text-sm">
+            <div>
+              <span class="text-gray-500">Documentos Vencidos:</span>
+              <span class="font-medium text-red-600">{{ expired_documents_count|default:0 }}</span>
+            </div>
+            <div>
+              <span class="text-gray-500">Documentos por Vencer:</span>
+              <span class="font-medium text-orange-600">{{ expiring_documents_count|default:0 }}</span>
+            </div>
+            <div>
+              <span class="text-gray-500">Pases Activos:</span>
+              <span class="font-medium text-green-600">{{ active_passes_count|default:0 }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información del Sistema -->
+        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+            Sistema
+          </h4>
+          <div class="space-y-2 text-sm">
+            <div>
+              <span class="text-gray-500">Estado del Registro:</span>
+              <span class="badge badge-sm {% if vehicle.is_active %}badge-success{% else %}badge-error{% endif %}">
+                {% if vehicle.is_active %}Activo{% else %}Inactivo{% endif %}
+              </span>
+            </div>
+            <div>
+              <span class="text-gray-500">Última Sincronización:</span>
+              <span class="font-medium">{{ vehicle.last_sync|date:"d-m-Y H:i"|default:"No sincronizado" }}</span>
+            </div>
+            <div>
+              <span class="text-gray-500">Observaciones:</span>
+              <span class="font-medium">
+                {% if vehicle.system_notes %}
+                  {{ vehicle.system_notes|truncatewords:10 }}
+                {% else %}
+                  Sin observaciones
+                {% endif %}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    {% endif %}
+  </div>
+
+  <!-- Botones de acción - más compactos -->
+  <div class="flex flex-wrap justify-center gap-2 mt-3 border-t pt-3">
+    <a href="{% url 'vehicle_create' %}" class="btn btn-soft btn-default">
+      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" />
+      </svg>
+      Nuevo
+    </a>
+    <a href="{% url 'vehicle_update' vehicle.id %}" class="btn btn-soft">
+      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" />
+      </svg>
+      Editar
+    </a>
+    <a href="{% url 'vehicle_detail' vehicle.id %}?action=delete" class="btn btn-soft btn-error">
+      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+      </svg>
+      Eliminar
+    </a>
+    <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">
+      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l-6 6l6 6" /><path d="M21 6l-6 6l6 6" />
+      </svg>
+      Volver atrás
+    </a>
+  </div>
+
+  <!-- Confirmación de eliminación -->
+  {% if action == 'delete' %}
+  <div class="mt-4 p-3 bg-red-50 rounded-md border border-red-200">
+    <p class="text-red-700 mb-2">¿Estás seguro de que deseas eliminar este vehículo? Esta acción no se puede deshacer.</p>
+    <div class="flex justify-center gap-2">
+      <a href="{% url 'vehicle_delete' request.resolver_match.kwargs.pk %}" class="btn btn-soft btn-error">
+        Confirmar Eliminación
+      </a>
+      <a href="{% url 'vehicle_detail' vehicle.id %}" class="btn btn-secondary">
+        Cancelar
+      </a>
+    </div>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

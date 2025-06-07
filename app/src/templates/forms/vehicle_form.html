@@ -1,109 +1,529 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="container mx-auto mt-3 mb-3 p-4 shadow-lg rounded-lg bg-base-100">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
-        <h1 class="text-2xl font-semibold text-primary mb-2 md:mb-0">{{ title_section }}</h1>
-        <div class="flex flex-wrap gap-2">
-            {% if request.resolver_match.url_name != 'vehicle_create' %}
-            <a href="{% url 'vehicle_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                </svg>
-                Eliminar
-            </a>
-            <a href="{% url 'vehicle_detail' vehicle.id %}" class="btn btn-sm btn-outline btn-info border-black">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" />
-                </svg>
-                Volver a Ficha
-            </a>
-            {% endif %}
-            <a href="{% url 'vehicle_list' %}" class="btn btn-sm btn-outline border-black">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" />
-                </svg>
-                Cancelar
-            </a>
-        </div>
+<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
+  <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
+    <h1 class="text-2xl font-semibold text-blue-500">{{ title_section|default:"Formulario de Vehículo" }}</h1>
+    <div class="text-gray-500">
+      <div class="flex flex-wrap gap-3">
+        {% if request.resolver_match.url_name != 'vehicle_create' %}
+        <a href="{% url 'vehicle_detail' request.resolver_match.kwargs.pk %}?action=delete" 
+           class="btn btn-soft btn-error">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" stroke="currentColor" fill="none">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+          Eliminar
+        </a>
+        <a href="{% url 'vehicle_detail' vehicle.id %}" 
+           class="btn btn-soft btn-info">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" stroke="currentColor" fill="none">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+          </svg>
+          Ver Ficha
+        </a>
+        {% endif %}
+        <a href="{% url 'vehicle_list' %}" 
+           class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" stroke="currentColor" fill="none">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+          Cancelar
+        </a>
+      </div>
     </div>
-</div>
+  </div>
 
-<div class="container mx-auto mt-2 p-4">
-    <div class="card bg-base-100 shadow-xl border border-gray-500">
-        <div class="card-body">
-            <h2 class="card-title text-secondary mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" />
-                </svg>
-                Información del Vehículo
-            </h2>
+  <!-- Error Messages -->
+  {% if form.errors %}
+  <div class="bg-red-50 border-l-4 border-red-400 p-6 mb-8 rounded-r-xl shadow-lg">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <svg class="h-8 w-8 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+        </svg>
+      </div>
+      <div class="ml-4">
+        <h3 class="text-lg font-medium text-red-800">Error en el formulario</h3>
+        <p class="text-red-700">Por favor, corrige los errores marcados en rojo antes de continuar.</p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
 
-            {% if form.errors %}
-            <div class="alert alert-error shadow-lg mb-4">
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span>Por favor, corrige los errores en el formulario.</span>
-                </div>
+  <form action="" method="post" class="space-y-4">
+    {% csrf_token %}
+
+    <!-- Tabs para organizar la información -->
+    <div class="tabs tabs-box w-full mb-4">
+      <input type="radio" name="form_tabs" class="tab" aria-label="Información General" checked />
+      <div class="tab-content bg-base-100 border-base-300 p-6">
+        <!-- Información básica en 3 columnas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+          <!-- Columna 1: Datos del vehículo -->
+          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
+            <h3 class="font-medium text-gray-700 mb-4 text-base">Datos del Vehículo</h3>
+            
+            <!-- Placa -->
+            <div class="form-control">
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                  Placa
+                </span>
+              </label>
+              <input type="text" 
+                     name="{{ form.no_plate.html_name }}" 
+                     value="{{ form.no_plate.value|default:'' }}" 
+                     class="input input-bordered w-full h-10" 
+                     placeholder="Ingrese la placa del vehículo"
+                     {% if form.no_plate.field.required %}required{% endif %}>
+              {% if form.no_plate.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.no_plate.errors.0 }}</span></label>
+              {% endif %}
             </div>
-            {% endif %}
 
-            <form action="" method="post">
-                {% csrf_token %}
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="form-control">
-                        <label class="label" for="{{ form.brand.id_for_label }}"><span class="label-text">Marca:</span></label>
-                        {{ form.brand }} <!-- Expected class: input -->
-                        {% if form.brand.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.brand.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control">
-                        <label class="label" for="{{ form.model.id_for_label }}"><span class="label-text">Modelo:</span></label>
-                        {{ form.model }} <!-- Expected class: input -->
-                        {% if form.model.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.model.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control">
-                        <label class="label" for="{{ form.type_vehicle.id_for_label }}"><span class="label-text">Tipo Vehículo:</span></label>
-                        {{ form.type_vehicle }} <!-- Expected class: select -->
-                        {% if form.type_vehicle.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.type_vehicle.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control">
-                        <label class="label" for="{{ form.year.id_for_label }}"><span class="label-text">Año:</span></label>
-                        {{ form.year }} <!-- Expected class: input -->
-                        {% if form.year.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.year.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control">
-                        <label class="label" for="{{ form.no_plate.id_for_label }}"><span class="label-text">Placa:</span></label>
-                        {{ form.no_plate }} <!-- Expected class: input -->
-                        {% if form.no_plate.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.no_plate.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control">
-                        <label class="label" for="{{ form.owner_transport.id_for_label }}"><span class="label-text">Propietario:</span></label>
-                        {{ form.owner_transport }} <!-- Expected class: select -->
-                        {% if form.owner_transport.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.owner_transport.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control md:col-span-3">
-                        <label class="label" for="{{ form.notes.id_for_label }}"><span class="label-text">Notas:</span></label>
-                        {{ form.notes }} <!-- Expected class: textarea -->
-                        {% if form.notes.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.notes.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control">
-                        <label class="label cursor-pointer">
-                            <span class="label-text">Activo:</span> 
-                            {{ form.is_active }} <!-- DaisyUI checkbox class handles focus styling -->
-                        </label>
-                        {% if form.is_active.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.is_active.errors }}</span></label>{% endif %}
-                    </div>
-                </div>
-                <div class="card-actions justify-end mt-6">
-                    <button type="submit" class="btn btn-primary border border-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" />
-                        </svg>
-                        Guardar Vehículo
-                    </button>
-                </div>
-            </form>
+            <!-- Tipo de Vehículo -->
+            <div class="form-control">
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                  Tipo
+                </span>
+              </label>
+              <select name="{{ form.type_vehicle.html_name }}" 
+                      class="select select-bordered w-full h-10"
+                      {% if form.type_vehicle.field.required %}required{% endif %}>
+                <option value="">Seleccione un tipo</option>
+                {% for value, label in form.type_vehicle.field.choices %}
+                  <option value="{{ value }}" {% if form.type_vehicle.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              {% if form.type_vehicle.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.type_vehicle.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+
+            <!-- Marca / Modelo -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Marca</span>
+                </label>
+                <input type="text" 
+                       name="{{ form.brand.html_name }}" 
+                       value="{{ form.brand.value|default:'' }}" 
+                       class="input input-bordered w-full h-10" 
+                       placeholder="Marca">
+                {% if form.brand.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.brand.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Modelo</span>
+                </label>
+                <input type="text" 
+                       name="{{ form.model.html_name }}" 
+                       value="{{ form.model.value|default:'' }}" 
+                       class="input input-bordered w-full h-10" 
+                       placeholder="Modelo">
+                {% if form.model.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.model.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Año / Color -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Año</span>
+                </label>
+                <input type="number" 
+                       name="{{ form.year.html_name }}" 
+                       value="{{ form.year.value|default:'' }}" 
+                       class="input input-bordered w-full h-10" 
+                       placeholder="2024" 
+                       min="1900" 
+                       max="2030">
+                {% if form.year.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.year.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Color</span>
+                </label>
+                <input type="text" 
+                       name="{{ form.color.html_name }}" 
+                       value="{{ form.color.value|default:'' }}" 
+                       class="input input-bordered w-full h-10" 
+                       placeholder="Color">
+                {% if form.color.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.color.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Propietario -->
+            <div class="form-control">
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700">Propietario</span>
+              </label>
+              <select name="{{ form.owner_transport.html_name }}" 
+                      class="select select-bordered w-full h-10">
+                {% for value, label in form.owner_transport.field.choices %}
+                  <option value="{{ value }}" {% if form.owner_transport.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              {% if form.owner_transport.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.owner_transport.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+          </div>
+          
+          <!-- Columna 2: Datos técnicos -->
+          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
+            <h3 class="font-medium text-gray-700 mb-4 text-base">Datos Técnicos</h3>
+            
+            <!-- Número de Chasis -->
+            <div class="form-control">
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700">Chasis</span>
+              </label>
+              <input type="text" 
+                     name="{{ form.chassis_number.html_name }}" 
+                     value="{{ form.chassis_number.value|default:'' }}" 
+                     class="input input-bordered w-full h-10" 
+                     placeholder="Número de chasis">
+              {% if form.chassis_number.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.chassis_number.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+
+            <!-- Número de Motor -->
+            <div class="form-control">
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700">Motor</span>
+              </label>
+              <input type="text" 
+                     name="{{ form.engine_number.html_name }}" 
+                     value="{{ form.engine_number.value|default:'' }}" 
+                     class="input input-bordered w-full h-10" 
+                     placeholder="Número de motor">
+              {% if form.engine_number.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.engine_number.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+
+            <!-- Número de Serie -->
+            <div class="form-control">
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700">Serie</span>
+              </label>
+              <input type="text" 
+                     name="{{ form.serial_number.html_name }}" 
+                     value="{{ form.serial_number.value|default:'' }}" 
+                     class="input input-bordered w-full h-10" 
+                     placeholder="Número de serie">
+              {% if form.serial_number.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.serial_number.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+
+            <!-- Estado del Vehículo -->
+            <div class="form-control">
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700">Estado</span>
+              </label>
+              <select name="{{ form.status_vehicle.html_name }}" 
+                      class="select select-bordered w-full h-10">
+                {% for value, label in form.status_vehicle.field.choices %}
+                  <option value="{{ value }}" {% if form.status_vehicle.value == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+              {% if form.status_vehicle.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.status_vehicle.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+
+            <!-- Estado Activo -->
+            <div class="form-control">
+              <label class="label cursor-pointer bg-gray-50 rounded-xl p-3 hover:bg-gray-100 transition-colors duration-200 h-10 min-h-10">
+                <span class="label-text text-sm font-semibold text-gray-700 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Activo
+                </span>
+                <input type="checkbox" 
+                       name="{{ form.is_active.html_name }}" 
+                       {% if form.is_active.value %}checked{% endif %} 
+                       class="checkbox checkbox-primary">
+              </label>
+              {% if form.is_active.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.is_active.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+          </div>
+          
+          <!-- Columna 3: Información de seguros -->
+          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
+            <h3 class="font-medium text-gray-700 mb-4 text-base">Seguros</h3>
+            
+            <!-- Compañía de Seguros -->
+            <div class="form-control">
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700">Compañía</span>
+              </label>
+              <input type="text" 
+                     name="{{ form.insurance_company.html_name }}" 
+                     value="{{ form.insurance_company.value|default:'' }}" 
+                     class="input input-bordered w-full h-10" 
+                     placeholder="Compañía de seguros">
+              {% if form.insurance_company.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.insurance_company.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+
+            <!-- Número de Póliza -->
+            <div class="form-control">
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700">Póliza</span>
+              </label>
+              <input type="text" 
+                     name="{{ form.nro_poliza.html_name }}" 
+                     value="{{ form.nro_poliza.value|default:'' }}" 
+                     class="input input-bordered w-full h-10" 
+                     placeholder="Número de póliza">
+              {% if form.nro_poliza.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.nro_poliza.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+
+            <!-- Vigencia Póliza -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Emisión</span>
+                </label>
+                <input type="date" 
+                       name="{{ form.insurance_issue_date.html_name }}" 
+                       value="{{ form.insurance_issue_date.value|date:'Y-m-d'|default:'' }}" 
+                       class="input input-bordered w-full h-10">
+                {% if form.insurance_issue_date.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.insurance_issue_date.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Vencimiento</span>
+                </label>
+                <input type="date" 
+                       name="{{ form.insurance_expiration_date.html_name }}" 
+                       value="{{ form.insurance_expiration_date.value|date:'Y-m-d'|default:'' }}" 
+                       class="input input-bordered w-full h-10">
+                {% if form.insurance_expiration_date.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.insurance_expiration_date.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Vencimiento Satelital -->
+            <div class="form-control">
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700">Satelital</span>
+              </label>
+              <input type="date" 
+                     name="{{ form.duedate_satellite.html_name }}" 
+                     value="{{ form.duedate_satellite.value|date:'Y-m-d'|default:'' }}" 
+                     class="input input-bordered w-full h-10">
+              {% if form.duedate_satellite.errors %}
+                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.duedate_satellite.errors.0 }}</span></label>
+              {% endif %}
+            </div>
+          </div>
         </div>
+
+        <!-- Notas -->
+        <div class="mt-6 p-4 bg-gray-50 rounded border border-gray-200">
+          <div class="form-control">
+            <label class="label pb-2">
+              <span class="label-text text-sm font-semibold text-gray-700">Notas</span>
+              <span class="label-text-alt text-gray-500 text-xs">Información adicional</span>
+            </label>
+            <textarea name="{{ form.notes.html_name }}" 
+                      class="textarea textarea-bordered w-full min-h-20" 
+                      placeholder="Ingrese notas adicionales sobre el vehículo">{{ form.notes.value|default:'' }}</textarea>
+            {% if form.notes.errors %}
+              <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.notes.errors.0 }}</span></label>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <input type="radio" name="form_tabs" class="tab" aria-label="Documentos y Certificados" />
+      <div class="tab-content bg-base-100 border-base-300 p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Documentos Oficiales -->
+          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
+            <h3 class="font-medium text-gray-700 mb-4 text-base">Matrícula</h3>
+            <div class="space-y-4">
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Fecha Matrícula</span>
+                </label>
+                <input type="date" 
+                       name="{{ form.date_matricula.html_name }}" 
+                       value="{{ form.date_matricula.value|date:'Y-m-d'|default:'' }}" 
+                       class="input input-bordered w-full h-10">
+                {% if form.date_matricula.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.date_matricula.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Vencimiento</span>
+                </label>
+                <input type="date" 
+                       name="{{ form.due_date_matricula.html_name }}" 
+                       value="{{ form.due_date_matricula.value|date:'Y-m-d'|default:'' }}" 
+                       class="input input-bordered w-full h-10">
+                {% if form.due_date_matricula.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.due_date_matricula.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Certificado de Operación -->
+          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
+            <h3 class="font-medium text-gray-700 mb-4 text-base">Certificado de Operación</h3>
+            <div class="space-y-4">
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Vencimiento</span>
+                </label>
+                <input type="date" 
+                       name="{{ form.due_date_cert_oper.html_name }}" 
+                       value="{{ form.due_date_cert_oper.value|date:'Y-m-d'|default:'' }}" 
+                       class="input input-bordered w-full h-10">
+                {% if form.due_date_cert_oper.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.due_date_cert_oper.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <!-- MTOP -->
+          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
+            <h3 class="font-medium text-gray-700 mb-4 text-base">MTOP</h3>
+            <div class="space-y-4">
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Fecha MTOP</span>
+                </label>
+                <input type="date" 
+                       name="{{ form.date_mtop.html_name }}" 
+                       value="{{ form.date_mtop.value|date:'Y-m-d'|default:'' }}" 
+                       class="input input-bordered w-full h-10">
+                {% if form.date_mtop.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.date_mtop.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Revisión Técnica -->
+          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
+            <h3 class="font-medium text-gray-700 mb-4 text-base">Revisión Técnica</h3>
+            <div class="space-y-4">
+              <div class="form-control">
+                <label class="label pb-2">
+                  <span class="label-text text-sm font-semibold text-gray-700">Fecha Revisión</span>
+                </label>
+                <input type="date" 
+                       name="{{ form.date_technical_review.html_name }}" 
+                       value="{{ form.date_technical_review.value|date:'Y-m-d'|default:'' }}" 
+                       class="input input-bordered w-full h-10">
+                {% if form.date_technical_review.errors %}
+                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.date_technical_review.errors.0 }}</span></label>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Botones de acción -->
+    <div class="flex flex-wrap justify-center gap-2 mt-6 border-t pt-4">
+      <button type="submit" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 013.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A1.875 1.875 0 0119.125 7.125v-1.5A3.375 3.375 0 0015.75 2.25H14.25A1.875 1.875 0 0012.375 4.125v1.5A1.875 1.875 0 0110.5 7.5H9.375A1.875 1.875 0 017.5 5.625V3.375z"/>
+        </svg>
+      Guardar Vehículo
+      </button>
+      <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M9 6l-6 6l6 6"/>
+          <path d="M21 6l-6 6l6 6"/>
+        </svg>
+        Cancelar
+      </a>
+    </div>
+  </form>
 </div>
+
+<style>
+  /* Alineación consistente para todos los inputs */
+  .form-control .input,
+  .form-control .select,
+  .form-control .textarea {
+    @apply h-10 min-h-10;
+  }
+  
+  .form-control .textarea {
+    @apply min-h-20;
+  }
+  
+  /* Efectos de hover y focus */
+  .form-control input:focus,
+  .form-control select:focus,
+  .form-control textarea:focus {
+    @apply ring-2 ring-blue-500 ring-opacity-50 border-blue-500 shadow-lg transition-all duration-200;
+  }
+  
+  .form-control:hover .input,
+  .form-control:hover .select,
+  .form-control:hover .textarea {
+    @apply border-blue-300 shadow-md;
+  }
+  
+  /* Espaciado consistente para labels */
+  .label {
+    @apply mb-0;
+  }
+  
+  .label-text {
+    @apply leading-tight;
+  }
+  
+  /* Alineación de checkboxes */
+  .checkbox {
+    @apply w-5 h-5;
+  }
+  
+  /* Grid alineado */
+  .grid.gap-3 > * {
+    @apply min-h-fit;
+  }
+  
+  /* Headers de secciones */
+  h3 {
+    @apply border-b border-gray-200 pb-2;
+  }
+</style>
 {% endblock %}
