@@ -2,19 +2,18 @@ from django.db import models
 from common import BaseModel
 from .Technical import Technical
 
-VACCINE_TYPE_CHOICES = (
-    ('HEPATITIS_A_B', 'Hepatitis A y B'),
-    ('TETANUS', 'Tétanos'),
-    ('TYPHOID', 'Tifoidea'),
-    ('YELLOW_FEVER', 'Fiebre Amarilla'),
-    ('INFLUENZA', 'Influenza'),
-    ('MEASLES', 'Sarampión'),
-    ('COVID', 'Covid-19'),
-    ('OTHER', 'Otra'),
-)
-
 
 class VaccinationRecord(BaseModel):
+    VACCINE_TYPE_CHOICES = (
+        ('HEPATITIS_A_B', 'Hepatitis A y B'),
+        ('TETANUS', 'Tétanos'),
+        ('TYPHOID', 'Tifoidea'),
+        ('YELLOW_FEVER', 'Fiebre Amarilla'),
+        ('INFLUENZA', 'Influenza'),
+        ('MEASLES', 'Sarampión'),
+        ('COVID', 'Covid-19'),
+        ('OTHER', 'Otra'),
+    )
     id = models.AutoField(
         primary_key=True
     )

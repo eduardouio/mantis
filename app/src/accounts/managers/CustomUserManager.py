@@ -26,4 +26,4 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError('El correo electrónico es obligatorio.')
 
-        self.create_user(email, password, **extra_fields)
+        return self.create_user(email, password, **extra_fields)

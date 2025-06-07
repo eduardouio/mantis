@@ -7,19 +7,18 @@ TYPE_CHOISES = (
     ('SERVICIO', 'SERVICIO')
 )
 
-STATUS_CHOICES = (
-    ('DISPONIBLE', 'DISPONIBLE'),
-    ('INDEFINIDO', 'INDEFINIDO'),
-    ('BUSCAR', 'BUSCAR'),
-    ('RENTADO', 'RENTADO'),
-    ('DANADO', 'DANADO'),
-    ('STAND BY', 'STAND BY'),
-    ('EN REPARACION', 'EN REPARACION'),
-    ('EN ALMACEN', 'EN ALMACEN')
-)
-
 
 class ResourceItem(BaseModel):
+    STATUS_CHOICES = (
+        ('DISPONIBLE', 'DISPONIBLE'),
+        ('INDEFINIDO', 'INDEFINIDO'),
+        ('BUSCAR', 'BUSCAR'),
+        ('RENTADO', 'RENTADO'),
+        ('DANADO', 'DANADO'),
+        ('STAND BY', 'STAND BY'),
+        ('EN REPARACION', 'EN REPARACION'),
+        ('EN ALMACEN', 'EN ALMACEN')
+    )
     id = models.AutoField(
         primary_key=True
     )

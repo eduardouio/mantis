@@ -1,19 +1,21 @@
 from django.db import models
 from common.BaseModel import BaseModel
 
-CERTIFICATION_NAME_CHOICES = (
-    ('INSPECCION_VOLUMETRICA', 'Inspección Volumétrica'),
-    ('MEDICION_DE_ESPESORES', 'Medición de Espesores'),
-    ('INSPECCION_DE_SEGURIDAD', 'Inspección de Seguridad'),
-    ('PRUEBA_HIDROSTATICA', 'Prueba Hidrostática'),
-)
-
 
 class CertificationVehicle(BaseModel):
+    CERTIFICATION_NAME_CHOICES = (
+        ('INSPECCION_VOLUMETRICA', 'Inspección Volumétrica'),
+        ('MEDICION_DE_ESPESORES', 'Medición de Espesores'),
+        ('INSPECCION_DE_SEGURIDAD', 'Inspección de Seguridad'),
+        ('PRUEBA_HIDROSTATICA', 'Prueba Hidrostática'),
+    )
+    
     vehicle = models.ForeignKey(
         'equipment.Vehicle',
         on_delete=models.CASCADE,
-        verbose_name='Vehículo'
+        verbose_name='Vehículo',
+        blank=True,
+        null=True
     )
     name = models.CharField(
         'Nombre de Certificación',
