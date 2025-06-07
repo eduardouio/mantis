@@ -6,10 +6,23 @@ from equipment.views.vehicles import (
     VehicleDeleteView
 )
 
+from equipment.views.resources import (
+    ResourceItemCreateView,
+    ResourceItemDetailView,
+    ResourceItemUpdateView,
+    ResourceItemDeleteView,
+    ResourceItemListView
+)
+
 __all__ = [
     'VehicleCreateView',
     'VehicleListView',
     'VehicleUpdateView',
     'VehicleDetailView',
-    'VehicleDeleteView'
+    'VehicleDeleteView',
+    'ResourceItemCreateView',
+    'ResourceItemDetailView',
+    'ResourceItemUpdateView',
+    'ResourceItemDeleteView',
+    'ResourceItemListView'
 ]
