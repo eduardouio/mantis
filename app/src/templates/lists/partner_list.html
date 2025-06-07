@@ -1,46 +1,130 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="container-xl mx-auto mt-3 mb-3 border shadow rounded bg-opacity-50 m-2 p-2">
-    <div class="d-flex justify-content-between">
-        <span class="text-primary">
-            {{ title_section|default:"Listado de Clientes" }}
-        </span>
-        <a href="{% url 'partner_create' %}" class="btn btn-sm btn-default">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
-                <path d="M12 5l0 14" />
-                <path d="M5 12l14 0" />
-            </svg>
-            Agregar Cliente
-        </a>
+<!-- Filtros de búsqueda -->
+<div class="w-[95%] mx-auto mb-3 p-2">
+    <div class="card bg-base-100 shadow-sm border border-gray-200">
+        <div class="card-body p-2">
+            <form method="get" class="space-y-2">
+                <!-- Primera fila de filtros -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Buscar</span></label>
+                        <input type="text" name="search" value="{{ search }}" placeholder="Nombre, RUC, email..." class="input input-bordered input-sm" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Tipo</span></label>
+                        <select name="partner_type" class="select select-bordered select-sm">
+                            <option value="">Todos los tipos</option>
+                            {% for value, label in partner_type_choices %}
+                            <option value="{{ value }}" {% if partner_type == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Dirección</span></label>
+                        <select name="address" class="select select-bordered select-sm">
+                            <option value="">Todas las direcciones</option>
+                            {% for address_option in address_choices %}
+                                {% if address_option %}
+                                <option value="{{ address_option }}" {% if address == address_option %}selected{% endif %}>{{ address_option|truncatechars:30 }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text">Estado</span></label>
+                        <select name="is_active" class="select select-bordered select-sm">
+                            <option value="">Todos los estados</option>
+                            {% for value, label in active_choices %}
+                            <option value="{{ value }}" {% if is_active == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-control flex justify-end items-end">
+                        <label class="label"><span class="label-text">&nbsp;</span></label>
+                        <div class="flex gap-2 items-center">
+                            <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                            <a href="{% url 'partner_list' %}" class="btn btn-outline btn-sm">Limpiar</a>
+                            <div class="divider divider-horizontal"></div>
+                            <a href="{% url 'partner_create' %}" class="btn btn-success btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
+                                    <path d="M12 5l0 14" />
+                                    <path d="M5 12l14 0" />
+                                </svg>
+                                Agregar Cliente
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-<div class="w-[90%] mx-auto overflow-x-auto">
-    <table id="datatable" class="table table-bordered table-striped">
+
+<div class="w-[95%] mx-auto overflow-x-auto">
+    <table id="datatable" class="table table-bordered table-striped w-full">
         <thead>
             <tr>
                 <th class="bg-indigo-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
                 <th class="bg-indigo-400 bg-opacity-75 text-gray-600">RUC</th>
                 <th class="bg-indigo-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Nombre</th>
+                <th class="bg-indigo-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Contacto</th>
                 <th class="bg-indigo-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Email</th>
                 <th class="bg-indigo-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Teléfono</th>
+                <th class="bg-indigo-400 bg-opacity-75 text-gray-600">Estado</th>
                 <th class="bg-indigo-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for item in object_list %}
-            <tr>
+            <tr class="hover:bg-gray-50">
                 <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
                 <td class="text-center">
-                    <a href="{% url 'partner_detail' item.id %}" class="link link-hover text-primary md:hidden">{{ item.business_tax_id }}</a>
-                    <span class="hidden md:inline">{{ item.business_tax_id }}</span>
+                    <a href="{% url 'partner_detail' item.id %}" class="link link-hover text-primary md:hidden font-semibold">{{ item.business_tax_id }}</a>
+                    <span class="hidden md:inline font-semibold">{{ item.business_tax_id }}</span>
                 </td>
                 <td class="text-center hidden md:table-cell">{{ item.name }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.email }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.phone }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.name_contact|default_if_none:"-" }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.email|default_if_none:"-" }}</td>
+                <td class="text-center hidden md:table-cell">{{ item.phone|default_if_none:"-" }}</td>
+                <td class="text-center">
+                    <div class="flex flex-col gap-1">
+                        {% if item.is_active %}
+                            <span class="badge badge-success badge-sm">Activo</span>
+                        {% else %}
+                            <span class="badge badge-error badge-sm">Inactivo</span>
+                        {% endif %}
+                    </div>
+                </td>
                 <td class="text-center hidden md:table-cell">
-                    <a href="{% url 'partner_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
-                    <a href="{% url 'partner_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
+                    <div class="flex gap-1 justify-center">
+                        <a href="{% url 'partner_detail' item.id %}" class="btn btn-xs btn-info" title="Ver detalles">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </a>
+                        <a href="{% url 'partner_update' item.id %}" class="btn btn-xs btn-warning" title="Editar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center py-8">
+                    <div class="flex flex-col items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="text-gray-400" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                        <span class="text-gray-500">No se encontraron clientes</span>
+                        <a href="{% url 'partner_create' %}" class="btn btn-primary btn-sm">Agregar primer cliente</a>
+                    </div>
                 </td>
             </tr>
             {% endfor %}
