@@ -13,8 +13,12 @@ class ProjectForm(forms.ModelForm):
             'partner': forms.Select(
                 attrs={'class': 'select select-bordered select-md w-full'}
             ),
-            'notes': forms.TextInput(  # Consider changing to Textarea if appropriate for DaisyUI styling
-                attrs={'class': 'input input-bordered input-md w-full'}
+            'notes': forms.Textarea(
+                attrs={
+                    'class': 'textarea textarea-bordered w-full',
+                    'rows': 4,
+                    'placeholder': 'Observaciones y notas del proyecto...'
+                }
             ),
             'place': forms.TextInput(
                 attrs={'class': 'input input-bordered input-md w-full'}

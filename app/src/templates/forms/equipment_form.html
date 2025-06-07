@@ -1,147 +1,402 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="container mx-auto mt-3 mb-3 p-4 shadow-lg rounded-lg bg-base-100">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
-        <h1 class="text-2xl font-semibold text-primary mb-2 md:mb-0">{{ title_section }}</h1>
-        <div class="flex flex-wrap gap-2">
-            {% if request.resolver_match.url_name != 'resource_create' %}    
-            <a href="{% url 'resource_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                </svg>
-                Eliminar
-            </a>
-            <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-sm btn-outline btn-info border-black">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" />
-                </svg>
-                Volver a Ficha
-            </a>
-            {% endif %}
-            <a href="{% url 'resource_list' %}" class="btn btn-sm btn-outline border-black">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" />
-                  </svg>
-                Cancelar
-            </a>
-        </div>
+<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
+  <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
+    <h1 class="text-2xl font-semibold text-blue-500">{{ title_section }}</h1>
+    <div class="flex flex-wrap gap-2">
+      {% if request.resolver_match.url_name != 'resource_create' %}    
+      <a href="{% url 'resource_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+        </svg>
+        Eliminar
+      </a>
+      <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-sm btn-outline btn-info border-black">
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" />
+        </svg>
+        Volver a Ficha
+      </a>
+      {% endif %}
+      <a href="{% url 'resource_list' %}" class="btn btn-sm btn-outline border-black">
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" />
+        </svg>
+        Cancelar
+      </a>
     </div>
-</div>
+  </div>
 
-<div class="container mx-auto mt-2 p-4">
-    <div class="card bg-base-100 shadow-xl border border-gray-500">
-        <div class="card-body">
-            <h2 class="card-title text-secondary mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" />
-                </svg>
-                Información del Equipo
-            </h2>
+  <form action="" method="post">
+    {% csrf_token %}
+    
+    <!-- Mostrar errores generales del formulario -->
+    {% if form.errors %}
+      <div class="alert alert-error mb-4">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>Por favor, corrige los errores en el formulario.</span>
+        </div>
+      </div>
+    {% endif %}
+    
+    <!-- Tabs para organizar el formulario -->
+    <div class="tabs tabs-box w-full mb-4">
+      <input type="radio" name="form_tabs" class="tab" aria-label="Información General" checked />
+      <div class="tab-content bg-base-100 border-base-300 p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Datos Principales -->
+          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
+            <h3 class="text-lg font-medium text-blue-600 mb-4">Datos Principales</h3>
             
-            {% if form.errors %}
-            <div class="alert alert-error shadow-lg mb-4">
-                <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                    <span>Por favor, corrige los errores en el formulario.</span>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Tipo:</span>
+              </label>
+              {{ form.type }}
+              {% if form.type.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.type.errors.0 }}</span>
                 </div>
+              {% endif %}
             </div>
-            {% endif %}
 
-            <form action="" method="post">
-                {% csrf_token %}
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="form-control">
-                        <label class="label" for="{{ form.type.id_for_label }}"><span class="label-text">Tipo:</span></label>
-                        {{ form.type }} <!-- Expected class: select -->
-                        {% if form.type.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.type.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control">
-                        <label class="label" for="{{ form.code.id_for_label }}"><span class="label-text">Código:</span></label>
-                        {{ form.code }} <!-- Expected class: input -->
-                        {% if form.code.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.code.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control">
-                        <label class="label" for="{{ form.name.id_for_label }}"><span class="label-text">Nombre:</span></label>
-                        {{ form.name }} <!-- Expected class: input -->
-                        {% if form.name.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.name.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control" id="brand_div">
-                        <label class="label" for="{{ form.brand.id_for_label }}"><span class="label-text">Marca:</span></label>
-                        {{ form.brand }} <!-- Expected class: input -->
-                        {% if form.brand.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.brand.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control" id="model_div">
-                        <label class="label" for="{{ form.model.id_for_label }}"><span class="label-text">Modelo:</span></label>
-                        {{ form.model }} <!-- Expected class: input -->
-                        {% if form.model.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.model.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control" id="date_purchase_div">
-                        <label class="label" for="{{ form.date_purchase.id_for_label }}"><span class="label-text">Fecha de Compra:</span></label>
-                        {{ form.date_purchase }} <!-- Expected class: input -->
-                        {% if form.date_purchase.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.date_purchase.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control" id="height_div">
-                        <label class="label" for="{{ form.height.id_for_label }}"><span class="label-text">Altura (cm):</span></label>
-                        {{ form.height }} <!-- Expected class: input -->
-                        {% if form.height.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.height.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control" id="width_div">
-                        <label class="label" for="{{ form.width.id_for_label }}"><span class="label-text">Ancho (cm):</span></label>
-                        {{ form.width }} <!-- Expected class: input -->
-                        {% if form.width.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.width.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control" id="depth_div">
-                        <label class="label" for="{{ form.depth.id_for_label }}"><span class="label-text">Profundidad (cm):</span></label>
-                        {{ form.depth }} <!-- Expected class: input -->
-                        {% if form.depth.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.depth.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control" id="weight_div">
-                        <label class="label" for="{{ form.weight.id_for_label }}"><span class="label-text">Peso (kg):</span></label>
-                        {{ form.weight }} <!-- Expected class: input -->
-                        {% if form.weight.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.weight.errors }}</span></label>{% endif %}
-                    </div>
-                     <div class="form-control">
-                        <label class="label" for="{{ form.status.id_for_label }}"><span class="label-text">Estado Físico:</span></label>
-                        {{ form.status }} <!-- Expected class: select -->
-                        {% if form.status.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.status.errors }}</span></label>{% endif %}
-                    </div>
-                    <div class="form-control md:col-span-2">
-                        <label class="label" for="{{ form.notes.id_for_label }}"><span class="label-text">Notas:</span></label>
-                        {{ form.notes }} <!-- Expected class: textarea -->
-                        {% if form.notes.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.notes.errors }}</span></label>{% endif %}
-                    </div>
-                     <div class="form-control">
-                        <label class="label cursor-pointer">
-                            <span class="label-text">Activo:</span> 
-                            {{ form.is_active }} <!-- DaisyUI checkbox class handles focus styling -->
-                        </label>
-                        {% if form.is_active.errors %}<label class="label"><span class="label-text-alt text-error">{{ form.is_active.errors }}</span></label>{% endif %}
-                    </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Código:</span>
+              </label>
+              {{ form.code }}
+              {% if form.code.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.code.errors.0 }}</span>
                 </div>
-                <div class="card-actions justify-end mt-6">
-                    <button type="submit" class="btn btn-primary border border-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" />
-                        </svg>
-                        Guardar Equipo
-                    </button>
+              {% endif %}
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Nombre:</span>
+              </label>
+              {{ form.name }}
+              {% if form.name.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.name.errors.0 }}</span>
                 </div>
-            </form>
+              {% endif %}
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Estado Físico:</span>
+              </label>
+              {{ form.status }}
+              {% if form.status.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.status.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Datos del Equipo (campos específicos) -->
+          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
+            <h3 class="text-lg font-medium text-blue-600 mb-4">Datos del Equipo</h3>
+            
+            <div class="form-control" id="brand_div">
+              <label class="label">
+                <span class="label-text">Marca:</span>
+              </label>
+              {{ form.brand }}
+              {% if form.brand.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.brand.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="form-control" id="model_div">
+              <label class="label">
+                <span class="label-text">Modelo:</span>
+              </label>
+              {{ form.model }}
+              {% if form.model.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.model.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="form-control" id="date_purchase_div">
+              <label class="label">
+                <span class="label-text">Fecha de Compra:</span>
+              </label>
+              {{ form.date_purchase }}
+              {% if form.date_purchase.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.date_purchase.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Estado del Equipo -->
+            <div class="mt-4">
+              <div class="form-control">
+                <label class="label cursor-pointer">
+                  <span class="label-text">Activo:</span>
+                  {{ form.is_active }}
+                </label>
+                {% if form.is_active.errors %}
+                  <div class="label">
+                    <span class="label-text-alt text-error">{{ form.is_active.errors.0 }}</span>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
         </div>
+
+        <!-- Dimensiones y Peso -->
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200" id="dimensions_section">
+          <h3 class="text-lg font-medium text-blue-600 mb-4">Dimensiones y Peso</h3>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="form-control" id="height_div">
+              <label class="label">
+                <span class="label-text">Altura (cm):</span>
+              </label>
+              {{ form.height }}
+              {% if form.height.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.height.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="form-control" id="width_div">
+              <label class="label">
+                <span class="label-text">Ancho (cm):</span>
+              </label>
+              {{ form.width }}
+              {% if form.width.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.width.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="form-control" id="depth_div">
+              <label class="label">
+                <span class="label-text">Profundidad (cm):</span>
+              </label>
+              {{ form.depth }}
+              {% if form.depth.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.depth.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="form-control" id="weight_div">
+              <label class="label">
+                <span class="label-text">Peso (kg):</span>
+              </label>
+              {{ form.weight }}
+              {% if form.weight.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.weight.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Notas -->
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+          <h3 class="text-lg font-medium text-blue-600 mb-4">Notas y Observaciones</h3>
+          
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Notas:</span>
+            </label>
+            {{ form.notes }}
+            {% if form.notes.errors %}
+              <div class="label">
+                <span class="label-text-alt text-error">{{ form.notes.errors.0 }}</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Botones de acción -->
+    <div class="flex flex-wrap justify-center gap-2 mt-6 border-t pt-4">
+      <button type="submit" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M5 12l5 5l10 -10" />
+        </svg>
+        Guardar Equipo
+      </button>
+      
+      {% if request.resolver_match.url_name != 'resource_create' %}
+        <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-outline">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M9 6l-6 6l6 6" />
+          </svg>
+          Ver Detalle
+        </a>
+      {% endif %}
+      
+      <a href="{% url 'resource_list' %}" class="btn btn-outline">
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M9 6l-6 6l6 6" />
+        </svg>
+        Cancelar
+      </a>
+    </div>
+  </form>
 </div>
+
+<style>
+  /* Forzar clases DaisyUI para todos los elementos del formulario Django */
+  .form-control input,
+  .form-control select,
+  .form-control textarea {
+    @apply input input-bordered w-full h-10 min-h-10 !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+  
+  .form-control textarea {
+    @apply textarea textarea-bordered min-h-20 !important;
+    height: auto !important;
+    min-height: 5rem !important;
+  }
+  
+  /* Asegurar que todos los tipos de input tengan la misma altura */
+  .form-control input[type="text"],
+  .form-control input[type="email"],
+  .form-control input[type="number"],
+  .form-control input[type="tel"],
+  .form-control input[type="date"],
+  .form-control input[type="checkbox"] {
+    @apply input input-bordered !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+  
+  .form-control select {
+    @apply select select-bordered !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+  
+  /* Excepción para checkboxes */
+  .form-control input[type="checkbox"] {
+    @apply checkbox checkbox-primary !important;
+    height: 1.25rem !important;
+    width: 1.25rem !important;
+    min-height: 1.25rem !important;
+  }
+  
+  /* Efectos de hover y focus */
+  .form-control input:focus,
+  .form-control select:focus,
+  .form-control textarea:focus {
+    @apply ring-2 ring-blue-500 ring-opacity-50 border-blue-500 shadow-lg transition-all duration-200 !important;
+  }
+  
+  .form-control:hover input:not(:focus),
+  .form-control:hover select:not(:focus),
+  .form-control:hover textarea:not(:focus) {
+    @apply border-blue-300 shadow-md !important;
+  }
+  
+  /* Espaciado consistente para labels */
+  .label {
+    @apply mb-2 !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .label-text {
+    @apply leading-tight font-medium text-gray-700 !important;
+  }
+  
+  /* Alineación vertical de elementos en grids */
+  .grid > .form-control {
+    @apply flex flex-col justify-start !important;
+  }
+  
+  /* Espaciado consistente entre elementos */
+  .space-y-4 > .form-control {
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Headers de secciones */
+  h3 {
+    @apply border-b border-gray-200 pb-2 mb-4 !important;
+  }
+  
+  /* Alineación específica para checkboxes en labels cursor-pointer */
+  .label.cursor-pointer {
+    @apply flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 !important;
+    height: auto !important;
+    min-height: 3rem !important;
+  }
+  
+  .label.cursor-pointer .label-text {
+    @apply text-sm font-medium text-gray-700 !important;
+  }
+  
+  /* Asegurar altura mínima consistente para todos los controles de formulario */
+  .form-control {
+    @apply min-h-fit !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Mejorar la apariencia de los elementos deshabilitados */
+  .form-control input:disabled,
+  .form-control select:disabled,
+  .form-control textarea:disabled {
+    @apply bg-gray-100 text-gray-500 cursor-not-allowed !important;
+  }
+  
+  /* Normalizar apariencia de todos los inputs para que sean consistentes */
+  .form-control input,
+  .form-control select {
+    border-radius: 0.5rem !important;
+    border-width: 1px !important;
+    border-color: #d1d5db !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+  
+  /* Normalizar select */
+  .form-control select {
+    @apply select select-bordered !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+    background-position: right 0.5rem center !important;
+    background-repeat: no-repeat !important;
+    background-size: 1.5em 1.5em !important;
+    padding-right: 2.5rem !important;
+  }
+</style>
 {% endblock %}
 
 {% block script %}
 <script>
     $(document).ready(function() {
         function toggleEquipmentFields() {
-            let option = $('#{{ form.type.id_for_label }}').val(); // Usar el ID correcto del campo type
+            let option = $('#{{ form.type.id_for_label }}').val();
             if (option === 'EQUIPO') {
-                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div').fadeIn('slow');
+                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div, #dimensions_section').fadeIn('slow');
             } else {
-                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div').fadeOut('slow');
+                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div, #dimensions_section').fadeOut('slow');
             }
         }
 
