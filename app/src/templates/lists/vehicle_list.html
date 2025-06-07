@@ -5,7 +5,7 @@
         <span class="text-primary">
             {{ title_section|default:"Listado de Vehículos" }}
         </span>
-        <a href="{% url 'vehicle_create' %}" class="btn btn-sm btn-default">
+        <a href="{% url 'vehicle_create' %}" class="btn btn-sm btn-outline bg-gray-200">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#555555" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path stroke="none" d="M0 0h24V0H0z" fill="none"/>
                 <path d="M12 5l0 14" />
@@ -15,40 +15,227 @@
         </a>
     </div>
 </div>
-<div class="w-[90%] mx-auto overflow-x-auto">
+
+<!-- Filtros de búsqueda -->
+<div class="container-xl mx-auto mb-3 p-2">
+    <div class="card bg-base-100 shadow-sm border border-gray-200">
+        <div class="card-body p-4">
+            <form method="get" class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Buscar</span></label>
+                    <input type="text" name="search" value="{{ search }}" placeholder="Placa, marca, modelo..." class="input input-bordered input-sm" />
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Tipo</span></label>
+                    <select name="type_vehicle" class="select select-bordered select-sm">
+                        <option value="">Todos los tipos</option>
+                        {% for value, label in vehicle_types %}
+                        <option value="{{ value }}" {% if type_vehicle == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Estado</span></label>
+                    <select name="status_vehicle" class="select select-bordered select-sm">
+                        <option value="">Todos los estados</option>
+                        {% for value, label in vehicle_statuses %}
+                        <option value="{{ value }}" {% if status_vehicle == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text">Propietario</span></label>
+                    <select name="owner_transport" class="select select-bordered select-sm">
+                        <option value="">Todos los propietarios</option>
+                        {% for value, label in owner_choices %}
+                        <option value="{{ value }}" {% if owner_transport == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-control flex justify-end">
+                    <label class="label"><span class="label-text">&nbsp;</span></label>
+                    <div class="flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                        <a href="{% url 'vehicle_list' %}" class="btn btn-outline btn-sm">Limpiar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Estadísticas en la cabecera de la tabla -->
+<div class="w-[95%] mx-auto mb-4">
+    <div class="stats stats-horizontal shadow w-full bg-base-100 border">
+        <div class="stat place-items-center">
+            <div class="stat-title text-xs">Total Vehículos</div>
+            <div class="stat-value text-primary text-2xl">{{ total_vehicles|default:vehicles|length }}</div>
+            <div class="stat-desc text-xs">En el sistema</div>
+        </div>
+        
+        <div class="stat place-items-center">
+            <div class="stat-title text-xs">Activos</div>
+            <div class="stat-value text-success text-2xl">{{ active_vehicles|default:vehicles|length }}</div>
+            <div class="stat-desc text-xs">Disponibles</div>
+        </div>
+        
+        <div class="stat place-items-center">
+            <div class="stat-title text-xs">PEISOL</div>
+            <div class="stat-value text-info text-2xl">{{ peisol_vehicles|default:0 }}</div>
+            <div class="stat-desc text-xs">Propios</div>
+        </div>
+        
+        <div class="stat place-items-center">
+            <div class="stat-title text-xs">Contratante</div>
+            <div class="stat-value text-warning text-2xl">{{ contractor_vehicles|default:0 }}</div>
+            <div class="stat-desc text-xs">Externos</div>
+        </div>
+        
+        <div class="stat place-items-center">
+            <div class="stat-title text-xs">Con Certificaciones</div>
+            <div class="stat-value text-accent text-2xl">
+                {% with cert_count=0 %}
+                    {% for vehicle in vehicles %}
+                        {% if vehicle.certifications.all %}
+                            {% with cert_count=cert_count|add:1 %}{% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ cert_count }}
+                {% endwith %}
+            </div>
+            <div class="stat-desc text-xs">Certificados</div>
+        </div>
+        
+        <div class="stat place-items-center">
+            <div class="stat-title text-xs">Con Pases</div>
+            <div class="stat-value text-secondary text-2xl">
+                {% with pass_count=0 %}
+                    {% for vehicle in vehicles %}
+                        {% if vehicle.passes.all %}
+                            {% with pass_count=pass_count|add:1 %}{% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ pass_count }}
+                {% endwith %}
+            </div>
+            <div class="stat-desc text-xs">Con pases</div>
+        </div>
+    </div>
+</div>
+
+<div class="w-[95%] mx-auto overflow-x-auto">
     <table id="datatable" class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
-                <th class="bg-green-400 bg-opacity-75 text-gray-600">Código</th>
-                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Marca</th>
-                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Modelo</th>
-                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Placa</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600">Placa</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Marca/Modelo</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Tipo</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Año</th>
                 <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Propietario</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden lg:table-cell">Certificaciones</th>
+                <th class="bg-green-400 bg-opacity-75 text-gray-600 hidden lg:table-cell">Pases</th>
                 <th class="bg-green-400 bg-opacity-75 text-gray-600">Estado</th>
                 <th class="bg-green-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
             </tr>
         </thead>
         <tbody>
-            {% for item in object_list %}
-            <tr>
-                <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
-                <td class="text-center">
-                    <a href="{% url 'vehicle_detail' item.id %}" class="link link-hover text-primary md:hidden">{{ item.code_vehicle }}</a>
-                    <span class="hidden md:inline">{{ item.code_vehicle }}</span>
+            {% for vehicle in vehicles %}
+            <tr class="hover:bg-gray-50">
+                        <span class="badge badge-outline badge-xs">{{ vehicle.get_status_vehicle_display }}</span>
+                    </div>
                 </td>
-                <td class="text-center hidden md:table-cell">{{ item.brand }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.model|default_if_none:"" }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.no_plate|default_if_none:"" }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.get_owner_transport_display }}</td>
-                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
                 <td class="text-center hidden md:table-cell">
-                    <a href="{% url 'vehicle_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
-                    <a href="{% url 'vehicle_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
+                    <div class="flex gap-1 justify-center">
+                        <a href="{% url 'vehicle_detail' vehicle.id %}" class="btn btn-xs btn-info" title="Ver detalles">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </a>
+                        <a href="{% url 'vehicle_update' vehicle.id %}" class="btn btn-xs btn-warning" title="Editar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" class="text-center py-8">
+                    <div class="flex flex-col items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="text-gray-400" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                        <span class="text-gray-500">No se encontraron vehículos</span>
+                        <a href="{% url 'vehicle_create' %}" class="btn btn-primary btn-sm">Agregar primer vehículo</a>
+                    </div>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+<!-- Paginación -->
+{% if is_paginated %}
+<div class="flex justify-center mt-4">
+    <div class="btn-group">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if search %}&search={{ search }}{% endif %}{% if type_vehicle %}&type_vehicle={{ type_vehicle }}{% endif %}{% if status_vehicle %}&status_vehicle={{ status_vehicle }}{% endif %}{% if owner_transport %}&owner_transport={{ owner_transport }}{% endif %}" class="btn btn-sm">««</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if type_vehicle %}&type_vehicle={{ type_vehicle }}{% endif %}{% if status_vehicle %}&status_vehicle={{ status_vehicle }}{% endif %}{% if owner_transport %}&owner_transport={{ owner_transport }}{% endif %}" class="btn btn-sm">‹</a>
+        {% endif %}
+        
+        <span class="btn btn-sm btn-active">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if type_vehicle %}&type_vehicle={{ type_vehicle }}{% endif %}{% if status_vehicle %}&status_vehicle={{ status_vehicle }}{% endif %}{% if owner_transport %}&owner_transport={{ owner_transport }}{% endif %}" class="btn btn-sm">›</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}{% if type_vehicle %}&type_vehicle={{ type_vehicle }}{% endif %}{% if status_vehicle %}&status_vehicle={{ status_vehicle }}{% endif %}{% if owner_transport %}&owner_transport={{ owner_transport }}{% endif %}" class="btn btn-sm">»»</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Estadísticas al final -->
+<div class="container-xl mx-auto mt-4 mb-3">
+    <div class="stats shadow">
+        <div class="stat">
+            <div class="stat-title">Total Vehículos</div>
+            <div class="stat-value text-primary">{{ vehicles|length }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-title">Activos</div>
+            <div class="stat-value text-success">{{ vehicles|length }}</div>
+        </div>
+        <div class="stat">
+            <div class="stat-title">Propios</div>
+            <div class="stat-value text-info">
+                {% with peisol_count=0 %}
+                    {% for vehicle in vehicles %}
+                        {% if vehicle.owner_transport == 'PEISOL' %}
+                            {% with peisol_count=peisol_count|add:1 %}{% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ peisol_count }}
+                {% endwith %}
+            </div>
+        </div>
+        <div class="stat">
+            <div class="stat-title">Contratante</div>
+            <div class="stat-value text-warning">
+                {% with contractor_count=0 %}
+                    {% for vehicle in vehicles %}
+                        {% if vehicle.owner_transport == 'CONTRATANANTE' %}
+                            {% with contractor_count=contractor_count|add:1 %}{% endwith %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ contractor_count }}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

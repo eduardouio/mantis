@@ -1,11 +1,12 @@
 from django.db import models
-from equipment.models import Vehicle
+from common.BaseModel import BaseModel
 
-class PassVehicle(models.Model):
-    id = models.AutoField(
-        primary_key=True
+class PassVehicle(BaseModel):
+    vehicle = models.ForeignKey(
+        'equipment.Vehicle',
+        on_delete=models.CASCADE,
+        verbose_name='Vehículo'
     )
-    vehicle = models.ForeignKey(Vehicle, on_delete=models.CASCADE)
     BLOQUE_CHOICES = [
         ('petroecuador', 'Tarjeta de Petroecuador'),
         ('shaya', 'Shaya'),
@@ -36,13 +37,9 @@ class PassVehicle(models.Model):
     @classmethod
     def get_by_vehicle(cls, vehicle_id):
         """
-        Obtiene el registro de pase de un vehículo específico.
-        Si no existe, retorna None.
+        Obtiene los registros de pases de un vehículo específico.
         """
-        try:
-            return cls.objects.get(vehicle_id=vehicle_id)
-        except cls.DoesNotExist:
-            return None
+        return cls.objects.filter(vehicle_id=vehicle_id, is_active=True)
 
     def __str__(self):
         return f'{self.vehicle} - {self.bloque}'

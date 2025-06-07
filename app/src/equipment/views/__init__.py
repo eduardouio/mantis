@@ -1,15 +1,15 @@
-from .ResourceItem import (
-    ResourceItemList,
-    ResourceItemDetail,
-    CreateResourceItem,
-    UpdateResourceItem,
-    RemoveResourceItem
+from equipment.views.vehicles import (
+    VehicleCreateView,
+    VehicleListView,
+    VehicleUpdateView,
+    VehicleDetailView,
+    VehicleDeleteView
 )
 
-from .Vehicle import (
-    ListVehicle,
-    DetailVehicle,
-    CreateVehicle,
-    UpdateVehicle,
-    DeleteVehicle
-)
+__all__ = [
+    'VehicleCreateView',
+    'VehicleListView',
+    'VehicleUpdateView',
+    'VehicleDetailView',
+    'VehicleDeleteView'
+]

@@ -11,8 +11,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from equipment.models import ResourceItem
 from equipment.forms.ResourceItemForm import ResourceItemForm
 
-from django import forms
-
 
 class ResourceItemList(LoginRequiredMixin, ListView):
     model = ResourceItem

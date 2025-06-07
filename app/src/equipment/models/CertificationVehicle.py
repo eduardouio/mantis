@@ -1,5 +1,5 @@
 from django.db import models
-from common import BaseModel
+from common.BaseModel import BaseModel
 
 CERTIFICATION_NAME_CHOICES = (
     ('INSPECCION_VOLUMETRICA', 'Inspección Volumétrica'),
@@ -10,6 +10,11 @@ CERTIFICATION_NAME_CHOICES = (
 
 
 class CertificationVehicle(BaseModel):
+    vehicle = models.ForeignKey(
+        'equipment.Vehicle',
+        on_delete=models.CASCADE,
+        verbose_name='Vehículo'
+    )
     name = models.CharField(
         'Nombre de Certificación',
         max_length=50,
@@ -21,6 +26,11 @@ class CertificationVehicle(BaseModel):
     date_end = models.DateField(
         'Fecha de Fin'
     )
+    description = models.TextField(
+        'Descripción',
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
-        return f'{self.get_name_display()} - {self.no_plate}'
+        return f'{self.get_name_display()} - {self.vehicle.no_plate if self.vehicle else "Sin Vehículo"}'
