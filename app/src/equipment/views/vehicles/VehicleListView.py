@@ -62,11 +62,25 @@ class VehicleListView(ListView):
         context['vehicle_statuses'] = Vehicle._meta.get_field('status_vehicle').choices
         context['owner_choices'] = Vehicle._meta.get_field('owner_transport').choices
         
-        # Estadísticas adicionales
-        vehicles = context['vehicles']
-        context['total_vehicles'] = vehicles.count() if hasattr(vehicles, 'count') else len(vehicles)
+        # Estadísticas mejoradas para la cabecera
+        vehicles = list(context['vehicles'])  # Convertir a lista para evitar múltiples consultas
+        context['total_vehicles'] = len(vehicles)
         context['active_vehicles'] = sum(1 for v in vehicles if v.is_active)
         context['peisol_vehicles'] = sum(1 for v in vehicles if v.owner_transport == 'PEISOL')
         context['contractor_vehicles'] = sum(1 for v in vehicles if v.owner_transport == 'CONTRATANANTE')
+        
+        # Estadísticas de certificaciones y pases
+        context['vehicles_with_certifications'] = sum(1 for v in vehicles if hasattr(v, 'certifications') and v.certifications)
+        context['vehicles_with_passes'] = sum(1 for v in vehicles if hasattr(v, 'passes') and v.passes)
+        
+        # Estadísticas por tipo de vehículo
+        vehicle_type_stats = {}
+        for vehicle in vehicles:
+            vtype = vehicle.get_type_vehicle_display()
+            if vtype in vehicle_type_stats:
+                vehicle_type_stats[vtype] += 1
+            else:
+                vehicle_type_stats[vtype] = 1
+        context['vehicle_type_stats'] = vehicle_type_stats
         
         return context

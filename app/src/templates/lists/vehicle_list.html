@@ -142,6 +142,65 @@
         <tbody>
             {% for vehicle in vehicles %}
             <tr class="hover:bg-gray-50">
+                <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
+                <td class="text-center">
+                    <a href="{% url 'vehicle_detail' vehicle.id %}" class="link link-hover text-primary md:hidden font-semibold">{{ vehicle.no_plate }}</a>
+                    <span class="hidden md:inline font-semibold">{{ vehicle.no_plate }}</span>
+                </td>
+                <td class="text-center hidden md:table-cell">
+                    <div class="text-sm">
+                        <div class="font-medium">{{ vehicle.brand }}</div>
+                        <div class="text-gray-500">{{ vehicle.model|default_if_none:"Sin modelo" }}</div>
+                    </div>
+                </td>
+                <td class="text-center hidden md:table-cell">
+                    <span class="badge badge-outline badge-sm">{{ vehicle.get_type_vehicle_display }}</span>
+                </td>
+                <td class="text-center hidden md:table-cell">{{ vehicle.year|default_if_none:"-" }}</td>
+                <td class="text-center hidden md:table-cell">
+                    <span class="badge {% if vehicle.owner_transport == 'PEISOL' %}badge-success{% else %}badge-info{% endif %} badge-sm">
+                        {{ vehicle.get_owner_transport_display }}
+                    </span>
+                </td>
+                <td class="text-center hidden lg:table-cell">
+                    <div class="flex flex-col gap-1">
+                        {% if vehicle.certifications.all %}
+                            {% for cert in vehicle.certifications.all|slice:":3" %}
+                            <div class="badge badge-xs {% if cert.is_active %}badge-success{% else %}badge-error{% endif %}">
+                                {{ cert.get_name_display|truncatechars:15 }}
+                            </div>
+                            {% endfor %}
+                            {% if vehicle.certifications.all|length > 3 %}
+                            <div class="badge badge-xs badge-ghost">+{{ vehicle.certifications.all|length|add:"-3" }} más</div>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-gray-400 text-xs">Sin certificaciones</span>
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="text-center hidden lg:table-cell">
+                    <div class="flex flex-col gap-1">
+                        {% if vehicle.passes.all %}
+                            {% for pass in vehicle.passes.all|slice:":2" %}
+                            <div class="badge badge-xs badge-warning">
+                                {{ pass.get_bloque_display|truncatechars:12 }}
+                            </div>
+                            {% endfor %}
+                            {% if vehicle.passes.all|length > 2 %}
+                            <div class="badge badge-xs badge-ghost">+{{ vehicle.passes.all|length|add:"-2" }} más</div>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-gray-400 text-xs">Sin pases</span>
+                        {% endif %}
+                    </div>
+                </td>
+                <td class="text-center">
+                    <div class="flex flex-col gap-1">
+                        {% if vehicle.is_active %}
+                            <span class="badge badge-success badge-sm">Activo</span>
+                        {% else %}
+                            <span class="badge badge-error badge-sm">Inactivo</span>
+                        {% endif %}
                         <span class="badge badge-outline badge-xs">{{ vehicle.get_status_vehicle_display }}</span>
                     </div>
                 </td>
@@ -199,43 +258,4 @@
 </div>
 {% endif %}
 
-<!-- Estadísticas al final -->
-<div class="container-xl mx-auto mt-4 mb-3">
-    <div class="stats shadow">
-        <div class="stat">
-            <div class="stat-title">Total Vehículos</div>
-            <div class="stat-value text-primary">{{ vehicles|length }}</div>
-        </div>
-        <div class="stat">
-            <div class="stat-title">Activos</div>
-            <div class="stat-value text-success">{{ vehicles|length }}</div>
-        </div>
-        <div class="stat">
-            <div class="stat-title">Propios</div>
-            <div class="stat-value text-info">
-                {% with peisol_count=0 %}
-                    {% for vehicle in vehicles %}
-                        {% if vehicle.owner_transport == 'PEISOL' %}
-                            {% with peisol_count=peisol_count|add:1 %}{% endwith %}
-                        {% endif %}
-                    {% endfor %}
-                    {{ peisol_count }}
-                {% endwith %}
-            </div>
-        </div>
-        <div class="stat">
-            <div class="stat-title">Contratante</div>
-            <div class="stat-value text-warning">
-                {% with contractor_count=0 %}
-                    {% for vehicle in vehicles %}
-                        {% if vehicle.owner_transport == 'CONTRATANANTE' %}
-                            {% with contractor_count=contractor_count|add:1 %}{% endwith %}
-                        {% endif %}
-                    {% endfor %}
-                    {{ contractor_count }}
-                {% endwith %}
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
