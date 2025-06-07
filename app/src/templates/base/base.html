@@ -56,8 +56,8 @@
                         <details>
                            <summary>Equipos</summary>
                            <ul class="p-2">
-                              <li><a  class="whitespace-nowrap" href=" url 'resource_list' %}">Listar Equipos</a></li>
-                              <li><a  class="whitespace-nowrap" href=" url 'resource_create' %}">Crear Equipo</a></li>
+                              <li><a  class="whitespace-nowrap" href="{% url 'resource_list' %}">Listar Equipos</a></li>
+                              <li><a  class="whitespace-nowrap" href="{% url 'resource_create' %}">Crear Equipo</a></li>
                            </ul>
                         </details>
                      </li>
@@ -112,7 +112,7 @@
                               <li><a  class="whitespace-nowrap" href="#">Reporte de Mantenimiento por Equipos</a></li>
                               <li><a  class="whitespace-nowrap" href="#">Reporte de Proyectos Activos</a></li>
                               <li><a  class="whitespace-nowrap" href="#">Reporte de Técnicos</a></li>
-                              <li><a  class="whitespace-nowrap" href="{% url 'license_list' %}">Licencias</a></li>
+                              <li><a  class="whitespace-nowrap" href="#">Licencias</a></li>
                            </ul>
                         </details>
                      </li>
@@ -145,8 +145,8 @@
                            Equipos
                         </summary>
                         <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50">
-                           <li><a  class="whitespace-nowrap bg-base-100" href=" url 'resource_list' %}">Listar Equipos</a></li>
-                           <li><a  class="whitespace-nowrap bg-base-100" href=" url 'resource_create' %}">Crear Equipo</a></li>
+                           <li><a  class="whitespace-nowrap bg-base-100" href="{% url 'resource_list' %}">Listar Equipos</a></li>
+                           <li><a  class="whitespace-nowrap bg-base-100" href="{% url 'resource_create' %}">Crear Equipo</a></li>
                         </ul>
                      </details>
                   </li>
@@ -162,8 +162,8 @@
                            Vehículos
                         </summary>
                         <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50">
-                           <li><a  class="whitespace-nowrap bg-base-100 href="{% url 'vehicle_list' %}">Listar Vehículos</a></li>
-                           <li><a  class="whitespace-nowrap bg-base-100 href="{% url 'vehicle_create' %}">Crear Vehículo</a></li>
+                           <li><a  class="whitespace-nowrap bg-base-100" href="{% url 'vehicle_list' %}">Listar Vehículos</a></li>
+                           <li><a  class="whitespace-nowrap bg-base-100" href="{% url 'vehicle_create' %}">Crear Vehículo</a></li>
                         </ul>
                      </details>
                   </li>
@@ -254,7 +254,7 @@
                            <li><a  class="whitespace-nowrap bg-base-100" href="#">Reporte de Mantenimiento por Equipos</a></li>
                            <li><a  class="whitespace-nowrap bg-base-100" href="#">Reporte de Proyectos Activos</a></li>
                            <li><a  class="whitespace-nowrap bg-base-100" href="#">Reporte de Técnicos</a></li>
-                           <li><a  class="whitespace-nowrap bg-base-100" href="{% url 'license_list' %}">Licencias</a></li>
+                           <li><a  class="whitespace-nowrap bg-base-100" href="#">Licencias</a></li>
                         </ul>
                      </details>
                   </li>
@@ -326,7 +326,7 @@
                   <div>
                      <h5 class="font-bold text-lg mb-3">Navegación</h5>
                      <ul class="space-y-2">
-                        <li><a  class="whitespace-nowrap" href=" url 'resource_list' %}" class="link link-hover">Equipos</a></li>
+                        <li><a  class="whitespace-nowrap" href="{% url 'resource_list' %}" class="link link-hover">Equipos</a></li>
                         <li><a  class="whitespace-nowrap" href="{% url 'vehicle_list' %}" class="link link-hover">Vehículos</a></li>
                         <li><a  class="whitespace-nowrap" href="{% url 'technical_list' %}" class="link link-hover">Técnicos</a></li>
                      </ul>
@@ -343,7 +343,7 @@
                      <h5 class="font-bold text-lg mb-3">Reportes y Otros</h5>
                      <ul class="space-y-2">
                         <li><a  class="whitespace-nowrap" href="#" class="link link-hover">Reporte de Mantenimiento</a></li>
-                        <li><a  class="whitespace-nowrap" href="{% url 'license_list' %}" class="link link-hover">Licencias</a></li>
+                        <li><a  class="whitespace-nowrap" href="#" class="link link-hover">Licencias</a></li>
                      </ul>
                   </div>
                </div>
