@@ -1,6 +1,6 @@
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from projects.models import Partner
+from projects.models import Partner, Project
 
 
 class PartnerDetailView(LoginRequiredMixin, DetailView):
@@ -16,6 +16,12 @@ class PartnerDetailView(LoginRequiredMixin, DetailView):
         context['title_page'] = 'Detalle del Socio de Negocio {}'.format(
             self.object.business_tax_id
         )
+        
+        # Agregar proyectos asociados al contexto
+        context['projects'] = Project.objects.filter(
+            partner=self.object,
+            is_active=True
+        ).order_by('-created_at')
 
         if 'action' not in self.request.GET:
             return context
