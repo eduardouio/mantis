@@ -70,22 +70,13 @@ class BaseModel(models.Model):
 
     history = HistoricalRecords(inherit=True)
 
-    def filter(self, **kwargs):
-        '''Retorna los registros activos filtrados por los argumentos.'''
-        return self.__class__.objects.filter(is_active=True, **kwargs)
-
     @classmethod
     def get_all(cls):
         '''Retorna todos los registros activos.'''
         return cls.objects.filter(is_active=True)
 
     @classmethod
-    def get_all_by(cls, **kwargs):
-        '''Retorna todos los registros activos filtrados por los argumentos.'''
-        return cls.objects.filter(is_active=True, **kwargs)
-
-    @classmethod
-    def get(cls, id):
+    def get_by_id(cls, id):
         '''Retorna el registro por id.'''
         try:
             return cls.objects.get(pk=id, is_active=True)
