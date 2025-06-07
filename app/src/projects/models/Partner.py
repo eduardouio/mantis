@@ -39,14 +39,6 @@ class Partner(BaseModel):
         blank=True,
         null=True
     )
-    authorized_tehcnicals = models.ManyToManyField(
-        Technical,
-        blank=True
-    )
-    authorized_vehicle = models.ManyToManyField(
-        'equipment.Vehicle',
-        blank=True
-    )
 
     def __str__(self):
         return self.name
