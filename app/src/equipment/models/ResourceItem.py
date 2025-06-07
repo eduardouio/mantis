@@ -49,6 +49,13 @@ class ResourceItem(BaseModel):
         max_length=50,
         unique=True
     )
+    serial_number = models.CharField(
+        'Número de Serie',
+        max_length=255,
+        blank=True,
+        null=True,
+        unique=True
+    )
     date_purchase = models.DateField(
         'Fecha de Compra',
         blank=True,

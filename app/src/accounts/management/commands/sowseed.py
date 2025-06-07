@@ -6,7 +6,7 @@ from datetime import date, datetime
 import json
 from datetime import timedelta
 from accounts.models import Technical, License, VaccinationRecord, PassTechnical
-from equipment.models import ResourceItem, Vehicle
+from equipment.models import ResourceItem, Vehicle, PassVehicle, CertificationVehicle
 from projects.models import Partner
 
 
@@ -20,8 +20,8 @@ class Command(BaseCommand):
         print('creamos los tecnicos')
         self.load_technical(faker)
         print('creamos los registros de jornadas')
-        # print('creamos las licencias')
-        # self.load_license(faker)
+        print('creamos las licencias')
+        self.load_license(faker)
         print('creamos los equipos')
         self.load_equipment(faker)
         print('creamos los vehiculos')
@@ -32,6 +32,10 @@ class Command(BaseCommand):
         self.load_vaccination_records(faker)
         print('creamos los pases técnicos')
         self.load_technical_passes(faker)
+        print('creamos los pases de vehículos')
+        self.load_vehicle_passes(faker)
+        print('creamos las certificaciones de vehículos')
+        self.load_vehicle_certifications(faker)
 
     def createSuperUser(self):
         user = CustomUserModel.get('eduardouio7@gmail.com')
@@ -174,10 +178,14 @@ class Command(BaseCommand):
         with open('seed/equipments.json', 'r') as file:
             file_content = json.load(file)
 
-        for equipment in file_content:
-            print(equipment['code'])
+        for equipment_data in file_content:
+            print(equipment_data['code'])
+            # Asegurar que el serial_number sea único y se genere si no está en el JSON
+            if 'serial_number' not in equipment_data or not equipment_data['serial_number']:
+                equipment_data['serial_number'] = faker.unique.bothify(text='SN-????-####')
+            
             ResourceItem.objects.create(
-                **equipment
+                **equipment_data
             )
 
     def load_vehicle(self, faker):
@@ -257,11 +265,16 @@ class Command(BaseCommand):
             return True
 
         technicals = Technical.objects.all()
+        if not technicals.exists():
+            print('No hay técnicos para asignar pases. Ejecute load_technical primero.')
+            return
+
         bloques = [choice[0] for choice in PassTechnical.BLOQUE_CHOICES]
 
         # Seleccionar aleatoriamente técnicos que tendrán pases (entre 60% y 80%)
-        selected_technicals = random.sample(list(technicals), k=int(
-            len(technicals) * random.uniform(0.6, 0.8)))
+        selected_technicals_count = int(len(technicals) * random.uniform(0.6, 0.8))
+        selected_technicals = random.sample(list(technicals), k=selected_technicals_count)
+
 
         for technical in selected_technicals:
             # Fecha de caducidad entre 3 meses y 2 años en el futuro
@@ -278,3 +291,66 @@ class Command(BaseCommand):
             )
 
         print(f'Se han creado {PassTechnical.objects.count()} pases técnicos')
+
+    def load_vehicle_passes(self, faker):
+        if PassVehicle.objects.exists():
+            print('Ya existen pases de vehículos')
+            return True
+
+        vehicles = Vehicle.objects.all()
+        if not vehicles.exists():
+            print('No hay vehículos para asignar pases. Ejecute load_vehicle primero.')
+            return
+
+        bloque_choices = [choice[0] for choice in PassVehicle.BLOQUE_CHOICES]
+
+        for vehicle in vehicles:
+            # Decidir aleatoriamente si este vehículo tendrá pases (e.g., 70% de probabilidad)
+            if random.random() < 0.7:
+                # Crear entre 1 y 3 pases para el vehículo
+                num_passes = random.randint(1, 3)
+                selected_bloques = random.sample(bloque_choices, min(num_passes, len(bloque_choices)))
+
+                for bloque in selected_bloques:
+                    fecha_caducidad = faker.date_between(start_date='+3m', end_date='+2y')
+                    PassVehicle.objects.create(
+                        vehicle=vehicle,
+                        bloque=bloque,
+                        fecha_caducidad=fecha_caducidad
+                    )
+        
+        print(f'Se han creado {PassVehicle.objects.count()} pases de vehículos')
+
+    def load_vehicle_certifications(self, faker):
+        if CertificationVehicle.objects.exists():
+            print('Ya existen certificaciones de vehículos')
+            return True
+
+        vehicles = Vehicle.objects.all()
+        if not vehicles.exists():
+            print('No hay vehículos para asignar certificaciones. Ejecute load_vehicle primero.')
+            return
+
+        certification_name_choices = [choice[0] for choice in CertificationVehicle.CERTIFICATION_NAME_CHOICES]
+
+        for vehicle in vehicles:
+            # Decidir aleatoriamente si este vehículo tendrá certificaciones (e.g., 80% de probabilidad)
+            if random.random() < 0.8:
+                # Crear entre 1 y len(certification_name_choices) certificaciones para el vehículo
+                num_certifications = random.randint(1, len(certification_name_choices))
+                selected_cert_names = random.sample(certification_name_choices, num_certifications)
+
+                for cert_name in selected_cert_names:
+                    date_start = faker.date_between(start_date='-2y', end_date='-1m')
+                    date_end = faker.date_between(start_date='+1m', end_date='+2y')
+                    description = faker.sentence() if random.random() < 0.5 else None
+
+                    CertificationVehicle.objects.create(
+                        vehicle=vehicle,
+                        name=cert_name,
+                        date_start=date_start,
+                        date_end=date_end,
+                        description=description
+                    )
+        
+        print(f'Se han creado {CertificationVehicle.objects.count()} certificaciones de vehículos')

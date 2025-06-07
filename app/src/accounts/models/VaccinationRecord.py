@@ -38,6 +38,12 @@ class VaccinationRecord(BaseModel):
     application_date = models.DateField(
         'Fecha de Aplicación'
     )
+    dose_number = models.PositiveSmallIntegerField(
+        'Número de Dosis',
+        blank=True,
+        null=True,
+        help_text='Número de dosis administrada, si aplica (ej. 1, 2, 3).'
+    )
     next_dose_date = models.DateField(
         'Fecha Próxima Dosis',
         blank=True,
