@@ -677,11 +677,295 @@ const bloqueLabels = {
   'geopark': 'Geopark'
 };
 
+// Definición para certificateDurations (faltante en el código original)
+const certificateDurations = {
+  'license': {
+    badgeId: 'licenseExpiryBadge',
+    startField: 'id_license_issue_date',
+    endField: 'id_license_expiry_date',
+    name: 'Licencia'
+  },
+  'defensiveDriving': {
+    badgeId: 'defensiveDrivingExpiryBadge',
+    startField: 'id_defensive_driving_certificate_issue_date',
+    endField: 'id_defensive_driving_certificate_expiry_date',
+    name: 'Manejo Defensivo'
+  },
+  'mae': {
+    badgeId: 'maeExpiryBadge',
+    startField: 'id_mae_certificate_issue_date',
+    endField: 'id_mae_certificate_expiry_date',
+    name: 'MAE'
+  },
+  'medical': {
+    badgeId: 'medicalExpiryBadge',
+    startField: 'id_medical_certificate_issue_date',
+    endField: 'id_medical_certificate_expiry_date',
+    name: 'Médico'
+  }
+};
+
+// Configuración para cálculo automático de fechas de vencimiento
+const expiryConfig = {
+  'license': {
+    issueField: 'id_license_issue_date',
+    expiryField: 'id_license_expiry_date',
+    duration: 5, // años
+    durationUnit: 'years'
+  },
+  'defensiveDriving': {
+    issueField: 'id_defensive_driving_certificate_issue_date',
+    expiryField: 'id_defensive_driving_certificate_expiry_date',
+    duration: 2, // años
+    durationUnit: 'years'
+  },
+  'mae': {
+    issueField: 'id_mae_certificate_issue_date',
+    expiryField: 'id_mae_certificate_expiry_date',
+    duration: 2, // años
+    durationUnit: 'years'
+  },
+  'medical': {
+    issueField: 'id_medical_certificate_issue_date',
+    expiryField: 'id_medical_certificate_expiry_date',
+    duration: 1, // año
+    durationUnit: 'years'
+  }
+};
+
+// Función para calcular fecha de vencimiento basada en fecha de emisión
+function calculateExpiryDate(issueDate, duration, unit = 'years') {
+  if (!issueDate) return null;
+  
+  const date = new Date(issueDate);
+  
+  switch(unit) {
+    case 'years':
+      date.setFullYear(date.getFullYear() + duration);
+      break;
+    case 'months':
+      date.setMonth(date.getMonth() + duration);
+      break;
+    case 'days':
+      date.setDate(date.getDate() + duration);
+      break;
+  }
+  
+  // Formato YYYY-MM-DD para input type="date"
+  return date.toISOString().split('T')[0];
+}
+
+// Configurar el cálculo automático de fechas de vencimiento
+function setupExpiryDateCalculations() {
+  Object.keys(expiryConfig).forEach(key => {
+    const config = expiryConfig[key];
+    const issueField = document.getElementById(config.issueField);
+    const expiryField = document.getElementById(config.expiryField);
+    
+    if (!issueField || !expiryField) return;
+    
+    issueField.addEventListener('change', function() {
+      const newExpiryDate = calculateExpiryDate(
+        this.value, 
+        config.duration, 
+        config.durationUnit
+      );
+      
+      if (newExpiryDate) {
+        expiryField.value = newExpiryDate;
+        
+        // Destacar visualmente el campo actualizado
+        expiryField.style.backgroundColor = '#f0f9ff';
+        expiryField.style.borderColor = '#0ea5e9';
+        
+        // Actualizar el badge si existe
+        if (certificateDurations[key]) {
+          updateExpiryBadge(certificateDurations[key]);
+        }
+        
+        // Quitar el destacado después de un momento
+        setTimeout(() => {
+          expiryField.style.backgroundColor = '';
+          expiryField.style.borderColor = '';
+        }, 2000);
+      }
+    });
+    
+    // Calcular fecha inicial si ya hay valor
+    if (issueField.value) {
+      const newExpiryDate = calculateExpiryDate(
+        issueField.value, 
+        config.duration, 
+        config.durationUnit
+      );
+      
+      if (newExpiryDate && !expiryField.value) {
+        expiryField.value = newExpiryDate;
+      }
+    }
+  });
+}
+
 // Función para formatear fecha
 function formatDate(dateString) {
   if (!dateString) return '';
   const date = new Date(dateString);
   return date.toLocaleDateString('es-ES');
+}
+
+// Funciones para manejar modales de vacunación
+function openVaccinationModal() {
+  document.getElementById('vaccinationModal').classList.add('modal-open');
+}
+
+function closeVaccinationModal() {
+  document.getElementById('vaccinationModal').classList.remove('modal-open');
+  document.getElementById('vaccinationForm').reset();
+}
+
+// Funciones para manejar modales de pases técnicos
+function openTechnicalPassModal() {
+  document.getElementById('technicalPassModal').classList.add('modal-open');
+}
+
+function closeTechnicalPassModal() {
+  document.getElementById('technicalPassModal').classList.remove('modal-open');
+  document.getElementById('technicalPassForm').reset();
+}
+
+// Función para actualizar el modal de vacunación con esquemas automáticos
+function updateVaccinationModal() {
+  const vaccineTypeSelect = document.querySelector('#vaccinationForm select[name="vaccine_type"]');
+  const doseNumberInput = document.querySelector('#vaccinationForm input[name="dose_number"]');
+  const applicationDateInput = document.querySelector('#vaccinationForm input[name="application_date"]');
+  const nextDoseDateInput = document.querySelector('#vaccinationForm input[name="next_dose_date"]');
+  
+  if (!vaccineTypeSelect || !applicationDateInput || !nextDoseDateInput) return;
+  
+  function calculateAndUpdateNextDose() {
+    const vaccineType = vaccineTypeSelect.value;
+    const doseNumber = doseNumberInput ? doseNumberInput.value || 1 : 1;
+    const applicationDate = applicationDateInput.value;
+    
+    if (!vaccineType || !applicationDate) return;
+    
+    // Calcular próxima fecha basada en tipo de vacuna
+    const nextDate = new Date(applicationDate);
+    
+    switch(vaccineType) {
+      case 'HEPATITIS_A_B':
+        if (doseNumber == 1) nextDate.setDate(nextDate.getDate() + 30);
+        else if (doseNumber == 2) nextDate.setMonth(nextDate.getMonth() + 7);
+        else if (doseNumber == 3) nextDate.setFullYear(nextDate.getFullYear() + 5);
+        else return;
+        break;
+      case 'TETANUS':
+        if (doseNumber == 1) nextDate.setDate(nextDate.getDate() + 30);
+        else if (doseNumber == 2) nextDate.setMonth(nextDate.getMonth() + 7);
+        else if (doseNumber == 3) nextDate.setFullYear(nextDate.getFullYear() + 1);
+        else nextDate.setFullYear(nextDate.getFullYear() + 10);
+        break;
+      case 'TYPHOID':
+        nextDate.setFullYear(nextDate.getFullYear() + 3);
+        break;
+      case 'INFLUENZA':
+        nextDate.setFullYear(nextDate.getFullYear() + 1);
+        break;
+      case 'COVID':
+        if (doseNumber <= 4) nextDate.setMonth(nextDate.getMonth() + 6);
+        else return;
+        break;
+      case 'YELLOW_FEVER':
+      case 'MEASLES':
+        return; // Dosis única
+      default:
+        nextDate.setDate(nextDate.getDate() + 30);
+    }
+    
+    if (nextDoseDateInput) {
+      nextDoseDateInput.value = nextDate.toISOString().split('T')[0];
+    }
+  }
+  
+  // Agregar eventos para recalcular automáticamente
+  if (vaccineTypeSelect) {
+    vaccineTypeSelect.addEventListener('change', calculateAndUpdateNextDose);
+  }
+  
+  if (doseNumberInput) {
+    doseNumberInput.addEventListener('input', calculateAndUpdateNextDose);
+  }
+  
+  if (applicationDateInput) {
+    applicationDateInput.addEventListener('change', calculateAndUpdateNextDose);
+  }
+}
+
+// Función para actualizar el badge de expiración de certificados
+function updateExpiryBadge(config) {
+  const startField = document.getElementById(config.startField);
+  const endField = document.getElementById(config.endField);
+  const badge = document.getElementById(config.badgeId);
+  
+  if (!badge || !endField) return;
+  
+  const endDate = endField.value ? new Date(endField.value) : null;
+  
+  if (!endDate) {
+    badge.style.display = 'none';
+    return;
+  }
+  
+  const today = new Date();
+  const timeDiff = endDate.getTime() - today.getTime();
+  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  
+  badge.style.display = 'inline-flex';
+  
+  if (daysDiff < 0) {
+    badge.className = 'badge badge-error badge-soft';
+    badge.textContent = 'Vencido';
+  } else if (daysDiff <= 30) {
+    badge.className = 'badge badge-warning badge-soft';
+    badge.textContent = `Vence en ${daysDiff} días`;
+  } else {
+    badge.className = 'badge badge-success badge-soft';
+    badge.textContent = 'Vigente';
+  }
+}
+
+// Función para calcular edad
+function initializeBirthDateCalculator() {
+  const birthDateInput = document.getElementById('id_birth_date');
+  const ageDisplay = document.getElementById('ageDisplay');
+  
+  if (!birthDateInput || !ageDisplay) return;
+  
+  function calculateAge() {
+    if (!birthDateInput.value) {
+      ageDisplay.style.display = 'none';
+      return;
+    }
+    
+    const birthDate = new Date(birthDateInput.value);
+    const today = new Date();
+    
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    ageDisplay.style.display = 'inline-flex';
+    ageDisplay.textContent = `${age} años`;
+  }
+  
+  birthDateInput.addEventListener('change', calculateAge);
+  birthDateInput.addEventListener('input', calculateAge);
+  
+  // Calcular edad inicial si ya hay un valor
+  calculateAge();
 }
 
 // Función para agregar vacunación temporal
@@ -706,6 +990,8 @@ function removeTempVaccination(id) {
 // Función para renderizar vacunaciones temporales
 function renderTempVaccinations() {
   const container = document.getElementById('tempVaccinationsList');
+  if (!container) return;
+  
   container.innerHTML = '';
   
   tempVaccinations.forEach(vaccination => {
@@ -771,25 +1057,11 @@ function removeTempPass(id) {
   updateNoPassesMessage();
 }
 
-// Función para calcular estado del pase
-function getPassStatus(fechaCaducidad) {
-  const today = new Date();
-  const expiry = new Date(fechaCaducidad);
-  const timeDiff = expiry.getTime() - today.getTime();
-  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-  
-  if (daysDiff < 0) {
-    return '<span class="badge badge-error badge-sm">Vencido</span>';
-  } else if (daysDiff <= 30) {
-    return '<span class="badge badge-warning badge-sm">Por vencer</span>';
-  } else {
-    return '<span class="badge badge-success badge-sm">Vigente</span>';
-  }
-}
-
 // Función para renderizar pases temporales
 function renderTempPasses() {
   const container = document.getElementById('tempPassesList');
+  if (!container) return;
+  
   container.innerHTML = '';
   
   tempPasses.forEach(pass => {
@@ -806,9 +1078,6 @@ function renderTempPasses() {
             <span class="font-medium">Vence:</span> 
             ${formatDate(pass.fecha_caducidad)}
           </p>
-          <div class="mt-2">
-            ${getPassStatus(pass.fecha_caducidad)}
-          </div>
         </div>
         <div class="flex gap-1">
           <button type="button" class="btn btn-ghost btn-xs text-red-600" onclick="removeTempPass('${pass.id}')">
@@ -859,410 +1128,80 @@ function updateNoPassesMessage() {
   }
 }
 
-// Funciones para manejar modales de vacunación
-function openVaccinationModal() {
-  document.getElementById('vaccinationModal').classList.add('modal-open');
-}
-
-function closeVaccinationModal() {
-  document.getElementById('vaccinationModal').classList.remove('modal-open');
-  document.getElementById('vaccinationForm').reset();
-}
-
-// Funciones para manejar modales de pases técnicos
-function openTechnicalPassModal() {
-  document.getElementById('technicalPassModal').classList.add('modal-open');
-}
-
-function closeTechnicalPassModal() {
-  document.getElementById('technicalPassModal').classList.remove('modal-open');
-  document.getElementById('technicalPassForm').reset();
-}
-
-// Cerrar modales al hacer clic fuera
-document.addEventListener('click', function(event) {
-  const vaccinationModal = document.getElementById('vaccinationModal');
-  const technicalPassModal = document.getElementById('technicalPassModal');
-  
-  if (event.target === vaccinationModal) {
-    closeVaccinationModal();
-  }
-  if (event.target === technicalPassModal) {
-    closeTechnicalPassModal();
-  }
-});
-
-// Actualizar el manejo de envío de formularios de modales
-document.getElementById('vaccinationForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  
-  const formData = new FormData(this);
-  const vaccinationData = {
-    vaccine_type: formData.get('vaccine_type'),
-    application_date: formData.get('application_date'),
-    dose_number: formData.get('dose_number') || null,
-    batch_number: formData.get('batch_number') || null,
-    next_dose_date: formData.get('next_dose_date') || null,
-    notes: formData.get('notes') || null
-  };
-  
-  // Validar campos requeridos
-  if (!vaccinationData.vaccine_type || !vaccinationData.application_date) {
-    alert('Por favor complete los campos requeridos.');
-    return;
-  }
-  
-  addTempVaccination(vaccinationData);
-  closeVaccinationModal();
-});
-
-document.getElementById('technicalPassForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-  
-  const formData = new FormData(this);
-  const passData = {
-    bloque: formData.get('bloque'),
-    fecha_caducidad: formData.get('fecha_caducidad')
-  };
-  
-  // Validar campos requeridos
-  if (!passData.bloque || !passData.fecha_caducidad) {
-    alert('Por favor complete todos los campos.');
-    return;
-  }
-  
-  addTempPass(passData);
-  closeTechnicalPassModal();
-});
-
-// Esquemas de vacunación con intervalos entre dosis
-const vaccinationSchedules = {
-  'HEPATITIS_A_B': {
-    schedule: [
-      { dose: 1, nextInterval: 30, unit: 'days' }, // dosis 1 -> dosis 2: 30 días
-      { dose: 2, nextInterval: 7, unit: 'months' }, // dosis 2 -> dosis 3: 7 meses
-      { dose: 3, nextInterval: 5, unit: 'years' }   // dosis 3 -> refuerzo: 5 años
-    ],
-    maxDoses: 3,
-    boosterInterval: { interval: 5, unit: 'years' }
-  },
-  'TETANUS': {
-    schedule: [
-      { dose: 1, nextInterval: 30, unit: 'days' },    // dosis 1 -> dosis 2: 30 días
-      { dose: 2, nextInterval: 7, unit: 'months' },   // dosis 2 -> dosis 3: 7 meses
-      { dose: 3, nextInterval: 19, unit: 'months' }   // dosis 3 -> refuerzo: 1 año 7 meses
-    ],
-    maxDoses: 4,
-    boosterInterval: { interval: 10, unit: 'years' }
-  },
-  'TYPHOID': {
-    schedule: [
-      { dose: 1, nextInterval: 3, unit: 'years' }     // cada 3 años
-    ],
-    maxDoses: 1,
-    boosterInterval: { interval: 3, unit: 'years' }
-  },
-  'YELLOW_FEVER': {
-    schedule: [],
-    maxDoses: 1,
-    boosterInterval: null // dosis única
-  },
-  'INFLUENZA': {
-    schedule: [
-      { dose: 1, nextInterval: 1, unit: 'years' }     // cada año
-    ],
-    maxDoses: 1,
-    boosterInterval: { interval: 1, unit: 'years' }
-  },
-  'MEASLES': {
-    schedule: [],
-    maxDoses: 1,
-    boosterInterval: null // dosis única
-  },
-  'COVID': {
-    schedule: [
-      { dose: 1, nextInterval: 21, unit: 'days' },    // dosis 1 -> dosis 2: 21 días
-      { dose: 2, nextInterval: 6, unit: 'months' },   // dosis 2 -> dosis 3: 6 meses
-      { dose: 3, nextInterval: 6, unit: 'months' }    // dosis 3 -> dosis 4: 6 meses
-    ],
-    maxDoses: 4,
-    boosterInterval: null
-  },
-  'OTHER': {
-    schedule: [],
-    maxDoses: 999,
-    boosterInterval: null
-  }
-};
-
-// Función para calcular la próxima fecha de dosis
-function calculateNextDoseDate(vaccineType, currentDose, applicationDate) {
-  if (!vaccineType || !applicationDate) return null;
-  
-  const schedule = vaccinationSchedules[vaccineType];
-  if (!schedule) return null;
-  
-  const currentDoseNum = parseInt(currentDose) || 1;
-  const appDate = new Date(applicationDate);
-  
-  // Buscar el intervalo correspondiente a la dosis actual
-  const doseSchedule = schedule.schedule.find(s => s.dose === currentDoseNum);
-  
-  let nextDate = new Date(appDate);
-  
-  if (doseSchedule) {
-    // Hay un esquema específico para esta dosis
-    nextDate = addTimeInterval(appDate, doseSchedule.nextInterval, doseSchedule.unit);
-  } else if (currentDoseNum >= schedule.maxDoses && schedule.boosterInterval) {
-    // Es un refuerzo después de completar el esquema inicial
-    nextDate = addTimeInterval(appDate, schedule.boosterInterval.interval, schedule.boosterInterval.unit);
-  } else if (schedule.boosterInterval && currentDoseNum < schedule.maxDoses) {
-    // Usar el intervalo del refuerzo como fallback
-    nextDate = addTimeInterval(appDate, schedule.boosterInterval.interval, schedule.boosterInterval.unit);
-  } else {
-    // No hay próxima dosis programada
-    return null;
-  }
-  
-  return nextDate;
-}
-
-// Función auxiliar para agregar intervalos de tiempo
-function addTimeInterval(date, interval, unit) {
-  const newDate = new Date(date);
-  
-  switch (unit) {
-    case 'days':
-      newDate.setDate(newDate.getDate() + interval);
-      break;
-    case 'months':
-      newDate.setMonth(newDate.getMonth() + interval);
-      break;
-    case 'years':
-      newDate.setFullYear(newDate.getFullYear() + interval);
-      break;
-  }
-  
-  return newDate;
-}
-
-// Función para obtener el número de dosis sugerido
-function getSuggestedDoseNumber(vaccineType, technical_id = null) {
-  // En un futuro, aquí podrías consultar las dosis previas del técnico
-  // Por ahora, sugerimos dosis 1
-  return 1;
-}
-
-// Función para obtener información sobre el esquema de vacunación
-function getVaccinationInfo(vaccineType, doseNumber) {
-  const schedule = vaccinationSchedules[vaccineType];
-  if (!schedule) return null;
-  
-  const dose = parseInt(doseNumber) || 1;
-  const doseSchedule = schedule.schedule.find(s => s.dose === dose);
-  
-  let info = {
-    maxDoses: schedule.maxDoses,
-    isComplete: dose >= schedule.maxDoses,
-    hasNextDose: false,
-    nextDoseInfo: null
-  };
-  
-  if (doseSchedule) {
-    info.hasNextDose = true;
-    info.nextDoseInfo = {
-      interval: doseSchedule.nextInterval,
-      unit: doseSchedule.unit,
-      description: formatIntervalDescription(doseSchedule.nextInterval, doseSchedule.unit)
-    };
-  } else if (dose >= schedule.maxDoses && schedule.boosterInterval) {
-    info.hasNextDose = true;
-    info.nextDoseInfo = {
-      interval: schedule.boosterInterval.interval,
-      unit: schedule.boosterInterval.unit,
-      description: `Refuerzo cada ${formatIntervalDescription(schedule.boosterInterval.interval, schedule.boosterInterval.unit)}`
-    };
-  }
-  
-  return info;
-}
-
-// Función para formatear descripción del intervalo
-function formatIntervalDescription(interval, unit) {
-  const units = {
-    'days': interval === 1 ? 'día' : 'días',
-    'months': interval === 1 ? 'mes' : 'meses',
-    'years': interval === 1 ? 'año' : 'años'
-  };
-  
-  return `${interval} ${units[unit]}`;
-}
-
-// Actualizar el modal de vacunación para incluir cálculo automático
-function updateVaccinationModal() {
-  const vaccineTypeSelect = document.querySelector('#vaccinationForm select[name="vaccine_type"]');
-  const doseNumberInput = document.querySelector('#vaccinationForm input[name="dose_number"]');
-  const applicationDateInput = document.querySelector('#vaccinationForm input[name="application_date"]');
-  const nextDoseDateInput = document.querySelector('#vaccinationForm input[name="next_dose_date"]');
-  
-  function calculateAndUpdateNextDose() {
-    const vaccineType = vaccineTypeSelect.value;
-    const doseNumber = doseNumberInput.value || 1;
-    const applicationDate = applicationDateInput.value;
-    
-    if (vaccineType && applicationDate) {
-      const nextDate = calculateNextDoseDate(vaccineType, doseNumber, applicationDate);
-      
-      if (nextDate) {
-        nextDoseDateInput.value = nextDate.toISOString().split('T')[0];
-        nextDoseDateInput.style.backgroundColor = '#f0f9ff';
-        nextDoseDateInput.style.borderColor = '#0ea5e9';
-        
-        // Mostrar información del esquema
-        showVaccinationScheduleInfo(vaccineType, doseNumber);
-        
-        // Quitar indicador después de 2 segundos
-        setTimeout(() => {
-          nextDoseDateInput.style.backgroundColor = '';
-          nextDoseDateInput.style.borderColor = '';
-        }, 2000);
-      } else {
-        nextDoseDateInput.value = '';
-        hideVaccinationScheduleInfo();
-      }
-    }
-  }
-  
-  // Event listeners para recalcular automáticamente
-  vaccineTypeSelect.addEventListener('change', function() {
-    // Sugerir número de dosis
-    if (this.value && !doseNumberInput.value) {
-      doseNumberInput.value = getSuggestedDoseNumber(this.value);
-    }
-    calculateAndUpdateNextDose();
-  });
-  
-  doseNumberInput.addEventListener('input', calculateAndUpdateNextDose);
-  applicationDateInput.addEventListener('change', calculateAndUpdateNextDose);
-}
-
-// Función para mostrar información del esquema de vacunación
-function showVaccinationScheduleInfo(vaccineType, doseNumber) {
-  const info = getVaccinationInfo(vaccineType, doseNumber);
-  if (!info) return;
-  
-  let infoContainer = document.getElementById('vaccinationScheduleInfo');
-  if (!infoContainer) {
-    infoContainer = document.createElement('div');
-    infoContainer.id = 'vaccinationScheduleInfo';
-    infoContainer.className = 'alert alert-info mt-2 text-sm';
-    
-    const form = document.getElementById('vaccinationForm');
-    const modalAction = form.querySelector('.modal-action');
-    form.insertBefore(infoContainer, modalAction);
-  }
-  
-  let infoText = '';
-  
-  if (info.hasNextDose && info.nextDoseInfo) {
-    infoText = `<strong>Próxima dosis:</strong> ${info.nextDoseInfo.description}`;
-  } else if (info.isComplete) {
-    infoText = '<strong>Esquema completo:</strong> No se requieren más dosis.';
-  }
-  
-  if (info.maxDoses < 999) {
-    infoText += ` <span class="text-xs opacity-75">(Máximo ${info.maxDoses} dosis)</span>`;
-  }
-  
-  infoContainer.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-    </svg>
-    ${infoText}
-  `;
-  
-  infoContainer.style.display = 'block';
-}
-
-// Función para ocultar información del esquema
-function hideVaccinationScheduleInfo() {
-  const infoContainer = document.getElementById('vaccinationScheduleInfo');
-  if (infoContainer) {
-    infoContainer.style.display = 'none';
-  }
-}
-
-// Actualizar función de renderizado para mostrar esquema en elementos temporales
-function renderTempVaccinations() {
-  const container = document.getElementById('tempVaccinationsList');
-  container.innerHTML = '';
-  
-  tempVaccinations.forEach(vaccination => {
-    const info = getVaccinationInfo(vaccination.vaccine_type, vaccination.dose_number);
-    const div = document.createElement('div');
-    div.className = 'border border-blue-200 rounded-lg p-3 hover:bg-blue-50 transition-colors bg-blue-25';
-    div.innerHTML = `
-      <div class="flex justify-between items-start">
-        <div>
-          <div class="flex items-center gap-2">
-            <h4 class="font-medium text-gray-800">${vaccineTypeLabels[vaccination.vaccine_type]}</h4>
-            <span class="badge badge-soft badge-info">Nuevo</span>
-            ${info && info.isComplete ? '<span class="badge badge-soft badge-success">Completo</span>' : ''}
-          </div>
-          <p class="text-sm text-gray-600 mt-1">
-            <span class="font-medium">Aplicada:</span> 
-            ${formatDate(vaccination.application_date)}
-          </p>
-          ${vaccination.dose_number ? `
-            <p class="text-sm text-gray-600">
-              <span class="font-medium">Dosis:</span> ${vaccination.dose_number}${info ? ` de ${info.maxDoses < 999 ? info.maxDoses : '∞'}` : ''}
-            </p>
-          ` : ''}
-          ${vaccination.next_dose_date ? `
-            <p class="text-sm text-gray-600">
-              <span class="font-medium">Próxima dosis:</span> ${formatDate(vaccination.next_dose_date)}
-            </p>
-          ` : ''}
-          ${vaccination.batch_number ? `
-            <p class="text-xs text-gray-500 mt-1">Lote: ${vaccination.batch_number}</p>
-          ` : ''}
-          ${vaccination.notes ? `
-            <p class="text-xs text-gray-500 mt-1">Nota: ${vaccination.notes}</p>
-          ` : ''}
-          ${info && info.hasNextDose && info.nextDoseInfo ? `
-            <p class="text-xs text-blue-600 mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              ${info.nextDoseInfo.description}
-            </p>
-          ` : ''}
-        </div>
-        <div class="flex gap-1">
-          <button type="button" class="btn btn-ghost btn-xs text-red-600" onclick="removeTempVaccination('${vaccination.id}')">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-    `;
-    container.appendChild(div);
-  });
-}
-
-// Actualizar inicialización del modal
 document.addEventListener('DOMContentLoaded', function() {
-  // ...existing code...
-
   // Inicializar modal de vacunación con cálculos automáticos
   updateVaccinationModal();
+  
+  // Inicializar calculador de edad
+  initializeBirthDateCalculator();
+  
+  // Inicializar badges de expiración
+  Object.keys(certificateDurations).forEach(key => {
+    const config = certificateDurations[key];
+    
+    // Configurar eventos para actualizar badges
+    const startField = document.getElementById(config.startField);
+    const endField = document.getElementById(config.endField);
+    
+    if (startField) startField.addEventListener('change', () => updateExpiryBadge(config));
+    if (endField) endField.addEventListener('change', () => updateExpiryBadge(config));
+    
+    // Actualizar badge inicial
+    updateExpiryBadge(config);
+  });
+  
+  // Configurar cálculo automático de fechas de vencimiento
+  setupExpiryDateCalculations();
+  
+  // Configurar manejadores de formularios
+  const vaccinationForm = document.getElementById('vaccinationForm');
+  if (vaccinationForm) {
+    vaccinationForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const vaccinationData = {
+        vaccine_type: formData.get('vaccine_type'),
+        application_date: formData.get('application_date'),
+        dose_number: formData.get('dose_number') || null,
+        batch_number: formData.get('batch_number') || null,
+        next_dose_date: formData.get('next_dose_date') || null,
+        notes: formData.get('notes') || null
+      };
+      
+      // Validar campos requeridos
+      if (!vaccinationData.vaccine_type || !vaccinationData.application_date) {
+        alert('Por favor complete los campos requeridos.');
+        return;
+      }
+      
+      addTempVaccination(vaccinationData);
+      closeVaccinationModal();
+    });
+  }
 
-  // ...existing code...
+  const technicalPassForm = document.getElementById('technicalPassForm');
+  if (technicalPassForm) {
+    technicalPassForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const passData = {
+        bloque: formData.get('bloque'),
+        fecha_caducidad: formData.get('fecha_caducidad')
+      };
+      
+      // Validar campos requeridos
+      if (!passData.bloque || !passData.fecha_caducidad) {
+        alert('Por favor complete todos los campos.');
+        return;
+      }
+      
+      addTempPass(passData);
+      closeTechnicalPassModal();
+    });
+  }
 });
-
-// Funciones para calcular y mostrar edad - AHORA SÍ SE EJECUTA DESPUÉS DE DEFINIR LAS FUNCIONES
-initializeBirthDateCalculator();
 
 // Actualizar todos los badges de certificados cada minuto
 setInterval(() => {

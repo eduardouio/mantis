@@ -84,20 +84,78 @@ class TechnicalCreateView(LoginRequiredMixin, CreateView):
             elif action == 'add_pass':
                 return self.handle_add_pass(data)
 
+        # Para requests normales de formulario, continuar con el flujo normal
+        self.object = None
         return super().post(request, *args, **kwargs)
 
     def handle_add_vaccination(self, data):
         """Manejar adición de vacunación vía AJAX"""
-        # Por ahora solo retornamos éxito, los datos se procesarán en form_valid
-        return JsonResponse({
-            'success': True,
-            'message': 'Vacunación agregada correctamente'
-        })
+        try:
+            # Validar campos requeridos
+            if not data.get('vaccine_type') or not data.get('application_date'):
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Tipo de vacuna y fecha de aplicación son requeridos'
+                })
+
+            # Validar formato de fecha
+            from datetime import datetime
+            try:
+                datetime.strptime(data.get('application_date'), '%Y-%m-%d')
+            except ValueError:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Formato de fecha inválido'
+                })
+
+            return JsonResponse({
+                'success': True,
+                'message': 'Vacunación agregada correctamente',
+                'data': {
+                    'vaccine_type': data.get('vaccine_type'),
+                    'application_date': data.get('application_date'),
+                    'dose_number': data.get('dose_number'),
+                    'batch_number': data.get('batch_number'),
+                    'next_dose_date': data.get('next_dose_date'),
+                    'notes': data.get('notes')
+                }
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al procesar vacunación: {str(e)}'
+            })
 
     def handle_add_pass(self, data):
         """Manejar adición de pase vía AJAX"""
-        # Por ahora solo retornamos éxito, los datos se procesarán en form_valid
-        return JsonResponse({
-            'success': True,
-            'message': 'Pase agregado correctamente'
-        })
+        try:
+            # Validar campos requeridos
+            if not data.get('bloque') or not data.get('fecha_caducidad'):
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Bloque y fecha de caducidad son requeridos'
+                })
+
+            # Validar formato de fecha
+            from datetime import datetime
+            try:
+                datetime.strptime(data.get('fecha_caducidad'), '%Y-%m-%d')
+            except ValueError:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Formato de fecha inválido'
+                })
+
+            return JsonResponse({
+                'success': True,
+                'message': 'Pase agregado correctamente',
+                'data': {
+                    'bloque': data.get('bloque'),
+                    'fecha_caducidad': data.get('fecha_caducidad')
+                }
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'message': f'Error al procesar pase: {str(e)}'
+            })
