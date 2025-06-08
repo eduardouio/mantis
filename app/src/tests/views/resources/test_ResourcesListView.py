@@ -21,7 +21,7 @@ class TestResourceItemListView(BaseTestView):
                 brand="Dell",
                 model="XPS 13",
                 serial_number="DL001XPS",
-                status='DISPONIBLE',  # Cambiado de 'operative'
+                status='DISPONIBLE',
                 is_active=True
             ),
             ResourceItem.objects.create(
@@ -30,9 +30,9 @@ class TestResourceItemListView(BaseTestView):
                 brand="HP",
                 model="24 inch",
                 serial_number="HP002MON",
-                status='EN REPARACION',  # Cambiado de 'maintenance'
+                status='EN REPARACION',
                 is_active=True,
-                motivo_reparacion="Pantalla rota"  # Añadir motivo_reparacion
+                motivo_reparacion="Pantalla rota"
             ),
             ResourceItem.objects.create(
                 name="Teclado Logitech",
@@ -40,7 +40,7 @@ class TestResourceItemListView(BaseTestView):
                 brand="Logitech",
                 model="K120",
                 serial_number="LG003KEY",
-                status='DANADO',  # Cambiado de 'damaged'
+                status='FUERA DE SERVICIO',  # Asegurar que está corregido
                 is_active=False
             ),
             ResourceItem.objects.create(
@@ -49,7 +49,7 @@ class TestResourceItemListView(BaseTestView):
                 brand="Dell",
                 model="PowerEdge R740",
                 serial_number="DL004SRV",
-                status='DISPONIBLE',  # Cambiado de 'operative'
+                status='DISPONIBLE',
                 is_active=True
             )
         ]
@@ -133,11 +133,11 @@ class TestResourceItemListView(BaseTestView):
         assert equipments[0].status == 'EN REPARACION'  # Cambiado de 'maintenance'
 
     def test_resource_list_filter_by_status_damaged(self, client_logged, url, sample_resources):
-        response = client_logged.get(url, {'status': 'DANADO'})  # Cambiado de 'damaged'
+        response = client_logged.get(url, {'status': 'FUERA DE SERVICIO'})  # Cambiado de 'DANADO'
         assert response.status_code == 200
         equipments = response.context['equipments']
         assert len(equipments) == 1
-        assert equipments[0].status == 'DANADO'  # Cambiado de 'damaged'
+        assert equipments[0].status == 'FUERA DE SERVICIO'  # Cambiado de 'DANADO'
 
     def test_resource_list_filter_by_brand_dropdown(self, client_logged, url, sample_resources):
         response = client_logged.get(url, {'brand': 'HP'})

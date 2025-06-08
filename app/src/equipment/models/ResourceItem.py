@@ -131,7 +131,7 @@ class ResourceItem(BaseModel):
         'Estado',
         max_length=255,
         choices=STATUS_CHOICES,
-        default='LIBRE'
+        default='DISPONIBLE'
     )
 
     # Campos de capacidad separados
