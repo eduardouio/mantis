@@ -29,7 +29,7 @@ class TechnicalCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         """Guardar el técnico y procesar datos adicionales de vacunas y pases"""
         response = super().form_valid(form)
-        
+
         # Procesar vacunas desde el request
         vaccinations_data = self.request.POST.get('vaccinations_data')
         if vaccinations_data:
@@ -38,7 +38,7 @@ class TechnicalCreateView(LoginRequiredMixin, CreateView):
                 self.create_vaccinations(vaccinations)
             except json.JSONDecodeError:
                 pass
-        
+
         # Procesar pases desde el request
         passes_data = self.request.POST.get('passes_data')
         if passes_data:
@@ -47,7 +47,7 @@ class TechnicalCreateView(LoginRequiredMixin, CreateView):
                 self.create_passes(passes)
             except json.JSONDecodeError:
                 pass
-        
+
         return response
 
     def create_vaccinations(self, vaccinations_data):
@@ -78,12 +78,12 @@ class TechnicalCreateView(LoginRequiredMixin, CreateView):
         if request.headers.get('Content-Type') == 'application/json':
             data = json.loads(request.body)
             action = data.get('action')
-            
+
             if action == 'add_vaccination':
                 return self.handle_add_vaccination(data)
             elif action == 'add_pass':
                 return self.handle_add_pass(data)
-        
+
         return super().post(request, *args, **kwargs)
 
     def handle_add_vaccination(self, data):
