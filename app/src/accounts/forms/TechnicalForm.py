@@ -51,7 +51,7 @@ class TechnicalForm(forms.ModelForm):
             'birth_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'nro_phone': forms.TextInput(attrs={
                 'class': 'input input-bordered',
                 'placeholder': '0987654321'
@@ -62,39 +62,39 @@ class TechnicalForm(forms.ModelForm):
             'date_joined': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'license_issue_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'license_expiry_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'defensive_driving_certificate_issue_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'defensive_driving_certificate_expiry_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'mae_certificate_issue_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'mae_certificate_expiry_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'medical_certificate_issue_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'medical_certificate_expiry_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'quest_ncst_code': forms.TextInput(attrs={
                 'class': 'input input-bordered',
                 'placeholder': 'Código Quest'
@@ -106,11 +106,11 @@ class TechnicalForm(forms.ModelForm):
             'quest_start_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'quest_end_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
-            }),
+            }, format='%Y-%m-%d'),
             'notes': forms.Textarea(attrs={
                 'class': 'textarea textarea-bordered',
                 'rows': 8,
@@ -165,6 +165,19 @@ class TechnicalForm(forms.ModelForm):
         
         # Configuración adicional para campos específicos
         self.fields['work_area'].empty_label = "Seleccione un área"
+        
+        # Configurar formato de fecha para todos los campos de fecha
+        date_fields = [
+            'birth_date', 'date_joined', 'license_issue_date', 
+            'license_expiry_date', 'defensive_driving_certificate_issue_date',
+            'defensive_driving_certificate_expiry_date', 'mae_certificate_issue_date',
+            'mae_certificate_expiry_date', 'medical_certificate_issue_date',
+            'medical_certificate_expiry_date', 'quest_start_date', 'quest_end_date'
+        ]
+        
+        for field_name in date_fields:
+            if field_name in self.fields:
+                self.fields[field_name].input_formats = ['%Y-%m-%d']
         
         # Establecer is_active como True por defecto para nuevos registros
         if not self.instance.pk:
