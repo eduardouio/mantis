@@ -21,7 +21,7 @@ class TestResourceItemListView(BaseTestView):
                 brand="Dell",
                 model="XPS 13",
                 serial_number="DL001XPS",
-                status='operative',
+                status='DISPONIBLE',  # Cambiado de 'operative'
                 is_active=True
             ),
             ResourceItem.objects.create(
@@ -30,8 +30,9 @@ class TestResourceItemListView(BaseTestView):
                 brand="HP",
                 model="24 inch",
                 serial_number="HP002MON",
-                status='maintenance',
-                is_active=True
+                status='EN REPARACION',  # Cambiado de 'maintenance'
+                is_active=True,
+                motivo_reparacion="Pantalla rota"  # Añadir motivo_reparacion
             ),
             ResourceItem.objects.create(
                 name="Teclado Logitech",
@@ -39,7 +40,7 @@ class TestResourceItemListView(BaseTestView):
                 brand="Logitech",
                 model="K120",
                 serial_number="LG003KEY",
-                status='damaged',
+                status='DANADO',  # Cambiado de 'damaged'
                 is_active=False
             ),
             ResourceItem.objects.create(
@@ -48,7 +49,7 @@ class TestResourceItemListView(BaseTestView):
                 brand="Dell",
                 model="PowerEdge R740",
                 serial_number="DL004SRV",
-                status='operative',
+                status='DISPONIBLE',  # Cambiado de 'operative'
                 is_active=True
             )
         ]
@@ -117,26 +118,26 @@ class TestResourceItemListView(BaseTestView):
         assert equipments[0].serial_number == "HP002MON"
 
     def test_resource_list_filter_by_status_operative(self, client_logged, url, sample_resources):
-        response = client_logged.get(url, {'status': 'operative'})
+        response = client_logged.get(url, {'status': 'DISPONIBLE'})  # Cambiado de 'operative'
         assert response.status_code == 200
         equipments = response.context['equipments']
         assert len(equipments) == 2
         for equipment in equipments:
-            assert equipment.status == 'operative'
+            assert equipment.status == 'DISPONIBLE'  # Cambiado de 'operative'
 
     def test_resource_list_filter_by_status_maintenance(self, client_logged, url, sample_resources):
-        response = client_logged.get(url, {'status': 'maintenance'})
+        response = client_logged.get(url, {'status': 'EN REPARACION'})  # Cambiado de 'maintenance'
         assert response.status_code == 200
         equipments = response.context['equipments']
         assert len(equipments) == 1
-        assert equipments[0].status == 'maintenance'
+        assert equipments[0].status == 'EN REPARACION'  # Cambiado de 'maintenance'
 
     def test_resource_list_filter_by_status_damaged(self, client_logged, url, sample_resources):
-        response = client_logged.get(url, {'status': 'damaged'})
+        response = client_logged.get(url, {'status': 'DANADO'})  # Cambiado de 'damaged'
         assert response.status_code == 200
         equipments = response.context['equipments']
         assert len(equipments) == 1
-        assert equipments[0].status == 'damaged'
+        assert equipments[0].status == 'DANADO'  # Cambiado de 'damaged'
 
     def test_resource_list_filter_by_brand_dropdown(self, client_logged, url, sample_resources):
         response = client_logged.get(url, {'brand': 'HP'})
@@ -164,7 +165,7 @@ class TestResourceItemListView(BaseTestView):
         # Filtrar por Dell, operativo y activo
         response = client_logged.get(url, {
             'search': 'Dell',
-            'status': 'operative',
+            'status': 'DISPONIBLE',  # Cambiado de 'operative'
             'is_active': 'true'
         })
         assert response.status_code == 200
@@ -172,7 +173,7 @@ class TestResourceItemListView(BaseTestView):
         assert len(equipments) == 2
         for equipment in equipments:
             assert equipment.brand == 'Dell'
-            assert equipment.status == 'operative'
+            assert equipment.status == 'DISPONIBLE'  # Cambiado de 'operative'
             assert equipment.is_active is True
 
     def test_resource_list_no_results_with_filters(self, client_logged, url, sample_resources):
@@ -186,14 +187,14 @@ class TestResourceItemListView(BaseTestView):
     def test_resource_list_filter_context_persistence(self, client_logged, url, sample_resources):
         params = {
             'search': 'TestSearch',
-            'status': 'maintenance',
+            'status': 'EN REPARACION',  # Cambiado de 'maintenance'
             'brand': 'HP',
             'is_active': 'true'
         }
         response = client_logged.get(url, params)
         assert response.status_code == 200
         assert response.context['search'] == 'TestSearch'
-        assert response.context['status'] == 'maintenance'
+        assert response.context['status'] == 'EN REPARACION'  # Cambiado de 'maintenance'
         assert response.context['brand'] == 'HP'
         assert response.context['is_active'] == 'true'
 
