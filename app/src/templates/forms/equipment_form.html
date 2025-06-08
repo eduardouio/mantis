@@ -62,6 +62,18 @@
               {% endif %}
             </div>
 
+            <div class="form-control" id="subtipo_div">
+              <label class="label">
+                <span class="label-text">Subtipo de Equipo:</span>
+              </label>
+              {{ form.subtipo }}
+              {% if form.subtipo.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.subtipo.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
+
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Código:</span>
@@ -97,9 +109,22 @@
                 </div>
               {% endif %}
             </div>
+
+            <!-- Motivo de reparación (aparece cuando status es EN REPARACION) -->
+            <div class="form-control" id="motivo_reparacion_div" style="display: none;">
+              <label class="label">
+                <span class="label-text">Motivo de Reparación:</span>
+              </label>
+              {{ form.motivo_reparacion }}
+              {% if form.motivo_reparacion.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.motivo_reparacion.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
           </div>
 
-          <!-- Datos del Equipo (campos específicos) -->
+          <!-- Datos del Equipo -->
           <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
             <h3 class="text-lg font-medium text-blue-600 mb-4">Datos del Equipo</h3>
             
@@ -135,6 +160,45 @@
               {% if form.date_purchase.errors %}
                 <div class="label">
                   <span class="label-text-alt text-error">{{ form.date_purchase.errors.0 }}</span>
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Capacidades -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="capacidad_div">
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Capacidad:</span>
+                </label>
+                {{ form.capacidad }}
+                {% if form.capacidad.errors %}
+                  <div class="label">
+                    <span class="label-text-alt text-error">{{ form.capacidad.errors.0 }}</span>
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Unidad:</span>
+                </label>
+                {{ form.unidad_capacidad }}
+                {% if form.unidad_capacidad.errors %}
+                  <div class="label">
+                    <span class="label-text-alt text-error">{{ form.unidad_capacidad.errors.0 }}</span>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="form-control" id="capacidad_planta_div" style="display: none;">
+              <label class="label">
+                <span class="label-text">Capacidad de Planta:</span>
+              </label>
+              {{ form.capacidad_planta }}
+              {% if form.capacidad_planta.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.capacidad_planta.errors.0 }}</span>
                 </div>
               {% endif %}
             </div>
@@ -206,6 +270,97 @@
                   <span class="label-text-alt text-error">{{ form.weight.errors.0 }}</span>
                 </div>
               {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Características Específicas por Subtipo -->
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200" id="caracteristicas_section" style="display: none;">
+          <h3 class="text-lg font-medium text-blue-600 mb-4">Características Específicas</h3>
+          
+          <!-- Características para Lavamanos -->
+          <div id="lavamanos_caracteristicas" class="caracteristicas-group" style="display: none;">
+            <h4 class="font-medium text-gray-700 mb-4">Características de Lavamanos</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.bombas_pie }}
+                  <span class="label-text">Bombas de Pie</span>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.dispensador_jabon_lavamanos }}
+                  <span class="label-text">Dispensador de Jabón</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Características para Baterías Sanitarias -->
+          <div id="bateria_caracteristicas" class="caracteristicas-group" style="display: none;">
+            <h4 class="font-medium text-gray-700 mb-4">Características de Batería Sanitaria</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.dispensador_papel }}
+                  <span class="label-text">Dispensador de Papel</span>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.dispensador_jabon }}
+                  <span class="label-text">Dispensador de Jabón</span>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.dispensador_servilletas }}
+                  <span class="label-text">Dispensador de Servilletas</span>
+                </label>
+              </div>
+              <div class="form-control" id="urinales_field">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.urinales }}
+                  <span class="label-text">Urinales</span>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.asientos }}
+                  <span class="label-text">Asientos</span>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.bomba_bano }}
+                  <span class="label-text">Bomba Baño</span>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.bomba_lavamanos }}
+                  <span class="label-text">Bomba Lavamanos</span>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.tapa_inodoro }}
+                  <span class="label-text">Tapa de Inodoro</span>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.bases_banos }}
+                  <span class="label-text">Bases Baños</span>
+                </label>
+              </div>
+              <div class="form-control">
+                <label class="label cursor-pointer justify-start gap-3">
+                  {{ form.tubo_ventilacion }}
+                  <span class="label-text">Tubo de Ventilación</span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -292,6 +447,15 @@
     @apply select select-bordered !important;
     height: 2.5rem !important;
     min-height: 2.5rem !important;
+  }
+  
+  /* Mejoras específicas para checkboxes */
+  .form-control input[type="checkbox"] {
+    @apply checkbox checkbox-primary !important;
+    height: 1.25rem !important;
+    width: 1.25rem !important;
+    min-height: 1.25rem !important;
+    margin: 0 !important;
   }
   
   /* Excepción para checkboxes */
@@ -385,26 +549,86 @@
     background-size: 1.5em 1.5em !important;
     padding-right: 2.5rem !important;
   }
+  
+  /* Estilo mejorado para labels con checkboxes alineados a la izquierda */
+  .label.cursor-pointer.justify-start {
+    @apply flex items-center p-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200 !important;
+    height: auto !important;
+    min-height: 2.5rem !important;
+    justify-content: flex-start !important;
+  }
+  
+  .label.cursor-pointer.justify-start .label-text {
+    @apply text-sm font-medium text-gray-700 !important;
+    margin: 0 !important;
+  }
+  
+  /* Override para labels normales (no checkboxes) */
+  .label:not(.cursor-pointer) {
+    @apply flex items-start justify-between !important;
+  }
 </style>
-{% endblock %}
 
 {% block script %}
 <script>
     $(document).ready(function() {
         function toggleEquipmentFields() {
-            let option = $('#{{ form.type.id_for_label }}').val();
-            if (option === 'EQUIPO') {
-                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div, #dimensions_section').fadeIn('slow');
+            let tipo = $('#{{ form.type.id_for_label }}').val();
+            if (tipo === 'EQUIPO') {
+                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div, #dimensions_section, #subtipo_div, #capacidad_div').fadeIn('slow');
+                toggleSubtipoFields();
             } else {
-                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div, #dimensions_section').fadeOut('slow');
+                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div, #dimensions_section, #subtipo_div, #capacidad_div, #caracteristicas_section').fadeOut('slow');
+            }
+        }
+
+        function toggleSubtipoFields() {
+            let subtipo = $('#{{ form.subtipo.id_for_label }}').val();
+            
+            // Ocultar todas las características específicas
+            $('.caracteristicas-group').hide();
+            $('#capacidad_planta_div').hide();
+            
+            if (subtipo) {
+                $('#caracteristicas_section').fadeIn('slow');
+                
+                if (subtipo === 'LAVAMANOS') {
+                    $('#lavamanos_caracteristicas').show();
+                } else if (subtipo === 'BATERIA SANITARIA HOMBRE') {
+                    $('#bateria_caracteristicas').show();
+                    $('#urinales_field').show();
+                } else if (subtipo === 'BATERIA SANITARIA MUJER') {
+                    $('#bateria_caracteristicas').show();
+                    $('#urinales_field').hide();
+                    // Desmarcar urinales para baterías de mujer
+                    $('#{{ form.urinales.id_for_label }}').prop('checked', false);
+                } else if (subtipo === 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL') {
+                    $('#capacidad_planta_div').show();
+                }
+            } else {
+                $('#caracteristicas_section').fadeOut('slow');
+            }
+        }
+
+        function toggleMotivoReparacion() {
+            let status = $('#{{ form.status.id_for_label }}').val();
+            if (status === 'EN REPARACION') {
+                $('#motivo_reparacion_div').fadeIn('slow');
+                $('#{{ form.motivo_reparacion.id_for_label }}').prop('required', true);
+            } else {
+                $('#motivo_reparacion_div').fadeOut('slow');
+                $('#{{ form.motivo_reparacion.id_for_label }}').prop('required', false);
             }
         }
 
         // Ejecutar al cargar la página
         toggleEquipmentFields();
+        toggleMotivoReparacion();
 
         // Ejecutar al cambiar la selección
         $('#{{ form.type.id_for_label }}').change(toggleEquipmentFields);
+        $('#{{ form.subtipo.id_for_label }}').change(toggleSubtipoFields);
+        $('#{{ form.status.id_for_label }}').change(toggleMotivoReparacion);
     });
 </script>
 {% endblock %}
