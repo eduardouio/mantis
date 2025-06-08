@@ -175,18 +175,137 @@ class Command(BaseCommand):
             print('Ya existen los equipos')
             return True
 
-        with open('seed/equipments.json', 'r') as file:
-            file_content = json.load(file)
+        # Opciones para los nuevos campos
+        subtipos = [choice[0] for choice in ResourceItem._meta.get_field('subtipo').choices]
+        unidades_capacidad = [choice[0] for choice in ResourceItem._meta.get_field('unidad_capacidad').choices]
+        capacidades_planta = [choice[0] for choice in ResourceItem._meta.get_field('capacidad_planta').choices]
+        status_choices = [choice[0] for choice in ResourceItem._meta.get_field('status').choices]
 
-        for equipment_data in file_content:
-            print(equipment_data['code'])
-            # Asegurar que el serial_number sea único y se genere si no está en el JSON
-            if 'serial_number' not in equipment_data or not equipment_data['serial_number']:
-                equipment_data['serial_number'] = faker.unique.bothify(text='SN-????-####')
+        # Crear equipos con datos aleatorios usando los nuevos campos
+        equipment_types = ['EQUIPO', 'SERVICIO']
+        
+        for i in range(50):  # Crear 50 equipos de ejemplo
+            equipment_type = random.choice(equipment_types)
             
-            ResourceItem.objects.create(
-                **equipment_data
-            )
+            # Datos básicos
+            base_data = {
+                'name': faker.company() + ' ' + faker.word().title(),
+                'type': equipment_type,
+                'brand': faker.company() if equipment_type == 'EQUIPO' else 'SIN MARCA',
+                'model': faker.bothify(text='MOD-##??') if equipment_type == 'EQUIPO' and random.random() > 0.3 else 'N/A',
+                'code': faker.unique.bothify(text='EQ-####'),
+                'serial_number': faker.unique.bothify(text='SN-????-####') if equipment_type == 'EQUIPO' and random.random() > 0.2 else None,
+                'date_purchase': faker.date_between(start_date='-5y', end_date='today') if equipment_type == 'EQUIPO' and random.random() > 0.4 else None,
+                'status': random.choice(status_choices),
+                'is_active': random.choice([True, True, True, False])
+            }
+            
+            # Solo para equipos, agregar campos específicos
+            if equipment_type == 'EQUIPO':
+                # Subtipo aleatorio
+                subtipo = random.choice(subtipos) if random.random() > 0.2 else None
+                base_data['subtipo'] = subtipo
+                
+                # Dimensiones y peso
+                if random.random() > 0.3:
+                    base_data.update({
+                        'height': random.randint(50, 300),
+                        'width': random.randint(40, 250),
+                        'depth': random.randint(30, 200),
+                        'weight': random.randint(10, 500)
+                    })
+                
+                # Capacidad
+                if random.random() > 0.4:
+                    base_data['capacidad'] = round(random.uniform(5.0, 1000.0), 2)
+                    base_data['unidad_capacidad'] = random.choice(unidades_capacidad)
+                
+                # Capacidad de planta específica para plantas de tratamiento de agua residual
+                if subtipo == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL':
+                    base_data['capacidad_planta'] = random.choice(capacidades_planta)
+                
+                # Motivo de reparación si está en reparación
+                if base_data['status'] == 'EN REPARACION':
+                    base_data['motivo_reparacion'] = faker.paragraph()
+                
+                # Características específicas según el subtipo
+                if subtipo == 'LAVAMANOS':
+                    base_data.update({
+                        'bombas_pie': random.choice([True, False]),
+                        'dispensador_jabon_lavamanos': random.choice([True, False])
+                    })
+                
+                elif subtipo in ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER']:
+                    base_data.update({
+                        'dispensador_papel': random.choice([True, False]),
+                        'dispensador_jabon': random.choice([True, False]),
+                        'dispensador_servilletas': random.choice([True, False]),
+                        'asientos': random.choice([True, False]),
+                        'bomba_bano': random.choice([True, False]),
+                        'bomba_lavamanos': random.choice([True, False]),
+                        'tapa_inodoro': random.choice([True, False]),
+                        'bases_banos': random.choice([True, False]),
+                        'tubo_ventilacion': random.choice([True, False])
+                    })
+                    
+                    # Urinales solo para baterías de hombre
+                    if subtipo == 'BATERIA SANITARIA HOMBRE':
+                        base_data['urinales'] = random.choice([True, False])
+                    else:
+                        base_data['urinales'] = False
+                
+                # Notas aleatorias
+                if random.random() > 0.6:
+                    base_data['notes'] = faker.paragraph()
+            
+            try:
+                ResourceItem.objects.create(**base_data)
+                print(f'Creado equipo: {base_data["code"]} - {base_data["name"]}')
+            except Exception as e:
+                print(f'Error creando equipo {base_data["code"]}: {str(e)}')
+                continue
+        
+        # También cargar desde JSON si existe (manteniendo compatibilidad)
+        try:
+            with open('seed/equipments.json', 'r') as file:
+                file_content = json.load(file)
+
+            for equipment_data in file_content:
+                # Asegurar que el serial_number sea único y se genere si no está en el JSON
+                if 'serial_number' not in equipment_data or not equipment_data['serial_number']:
+                    equipment_data['serial_number'] = faker.unique.bothify(text='SN-????-####')
+                
+                # Agregar campos por defecto para compatibilidad con el modelo actualizado
+                equipment_data.setdefault('subtipo', None)
+                equipment_data.setdefault('capacidad', None)
+                equipment_data.setdefault('unidad_capacidad', None)
+                equipment_data.setdefault('capacidad_planta', None)
+                equipment_data.setdefault('motivo_reparacion', None)
+                
+                # Campos booleanos por defecto
+                boolean_fields = [
+                    'bombas_pie', 'dispensador_jabon_lavamanos', 'dispensador_papel',
+                    'dispensador_jabon', 'dispensador_servilletas', 'urinales',
+                    'asientos', 'bomba_bano', 'bomba_lavamanos', 'tapa_inodoro',
+                    'bases_banos', 'tubo_ventilacion'
+                ]
+                
+                for field in boolean_fields:
+                    equipment_data.setdefault(field, False)
+                
+                try:
+                    ResourceItem.objects.create(**equipment_data)
+                    print(f'Creado equipo desde JSON: {equipment_data["code"]}')
+                except Exception as e:
+                    print(f'Error creando equipo desde JSON {equipment_data.get("code", "Unknown")}: {str(e)}')
+                    continue
+        
+        except FileNotFoundError:
+            print('Archivo seed/equipments.json no encontrado, continuando solo con datos generados')
+        except Exception as e:
+            print(f'Error leyendo archivo JSON: {str(e)}')
+        
+        print(f'Se han creado {ResourceItem.objects.count()} equipos en total')
 
     def load_vehicle(self, faker):
         if Vehicle.objects.exists():
