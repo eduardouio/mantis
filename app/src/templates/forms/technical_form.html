@@ -42,6 +42,31 @@
     <div class="tabs tabs-box w-full mb-4">
       <input type="radio" name="form_tabs" class="tab" aria-label="Información Personal" checked />
       <div class="tab-content bg-base-100 border-base-300 p-6">
+        
+        <!-- Estados y Afiliaciones - Parte Superior -->
+        <div class="mb-6 p-1 border rounded-lg border-gray-200">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="form-control">
+              <label class="label cursor-pointer justify-start gap-3 p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                {{ form.is_active }}
+                <span class="label-text font-medium text-gray-700">{{ form.is_active.label }}</span>
+              </label>
+            </div>
+            <div class="form-control">
+              <label class="label cursor-pointer justify-start gap-3 p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                {{ form.is_iess_affiliated }}
+                <span class="label-text font-medium text-gray-700">{{ form.is_iess_affiliated.label }}</span>
+              </label>
+            </div>
+            <div class="form-control">
+              <label class="label cursor-pointer justify-start gap-3 p-3 bg-white rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                {{ form.has_life_insurance_policy }}
+                <span class="label-text font-medium text-gray-700">{{ form.has_life_insurance_policy.label }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Datos Personales -->
           <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
@@ -147,35 +172,6 @@
                 </div>
               {% endif %}
             </div>
-          </div>
-        </div>
-
-        <!-- Seguros y Afiliaciones -->
-        <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <h3 class="text-lg font-medium text-blue-600 mb-4">Seguros y Afiliaciones</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="form-control">
-              <label class="label cursor-pointer">
-                <span class="label-text">{{ form.is_iess_affiliated.label }}</span>
-                {{ form.is_iess_affiliated }}
-              </label>
-            </div>
-            <div class="form-control">
-              <label class="label cursor-pointer">
-                <span class="label-text">{{ form.has_life_insurance_policy.label }}</span>
-                {{ form.has_life_insurance_policy }}
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Estado del Técnico -->
-        <div class="mt-4">
-          <div class="form-control">
-            <label class="label cursor-pointer">
-              <span class="label-text">{{ form.is_active.label }}</span>
-              {{ form.is_active }}
-            </label>
           </div>
         </div>
       </div>
@@ -302,8 +298,9 @@
             <h3 class="text-lg font-medium text-blue-600 mb-4">Notas y Observaciones</h3>
             
             <div class="form-control">
-              <label class="label">
-                <span class="label-text">{{ form.notes.label }}</span>
+              <label class="label pb-2">
+                <span class="label-text text-sm font-semibold text-gray-700">{{ form.notes.label }}</span>
+                <span class="label-text-alt text-gray-500 text-xs">Información adicional</span>
               </label>
               {{ form.notes }}
               {% if form.notes.errors %}
