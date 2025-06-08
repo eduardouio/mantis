@@ -253,6 +253,50 @@ class Command(BaseCommand):
                         base_data['urinales'] = random.choice([True, False])
                     else:
                         base_data['urinales'] = False
+
+                # Campos especiales para plantas y tanques
+                if subtipo in [
+                    'PLANTA DE TRATAMIENTO DE AGUA',
+                    'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
+                    'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
+                    'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
+                ]:
+                    base_data.update({
+                        'blower_marca': faker.company(),
+                        'blower_modelo': faker.bothify(text='BLW-##??'),
+                        'motor_marca': faker.company(),
+                        'motor_modelo': faker.bothify(text='MOT-##??'),
+                        'banda_marca': faker.company(),
+                        'banda_modelo': faker.bothify(text='BND-##??'),
+                        'banda_tipo': random.choice(['A', 'B']),
+                        'polea_blower_marca': faker.company(),
+                        'polea_blower_modelo': faker.bothify(text='PLB-##??'),
+                        'polea_motor_marca': faker.company(),
+                        'polea_motor_modelo': faker.bothify(text='PLM-##??'),
+                        'tablero_electrico_marca': faker.company(),
+                        'tablero_electrico_modelo': faker.bothify(text='TBE-##??'),
+                        'guarda_motor_marca': faker.company(),
+                        'guarda_motor_modelo': faker.bothify(text='GDM-##??')
+                    })
+                else:
+                    # Para otros subtipos, asegurar que los campos estén vacíos
+                    base_data.update({
+                        'blower_marca': None,
+                        'blower_modelo': None,
+                        'motor_marca': None,
+                        'motor_modelo': None,
+                        'banda_marca': None,
+                        'banda_modelo': None,
+                        'banda_tipo': None,
+                        'polea_blower_marca': None,
+                        'polea_blower_modelo': None,
+                        'polea_motor_marca': None,
+                        'polea_motor_modelo': None,
+                        'tablero_electrico_marca': None,
+                        'tablero_electrico_modelo': None,
+                        'guarda_motor_marca': None,
+                        'guarda_motor_modelo': None
+                    })
                 
                 # Notas aleatorias
                 if random.random() > 0.6:

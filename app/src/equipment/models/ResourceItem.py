@@ -270,6 +270,114 @@ class ResourceItem(BaseModel):
         null=True
     )
 
+    # Campos para equipos especiales (blower, motor, banda, etc.)
+    blower_marca = models.CharField(
+        'Marca del Blower',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    blower_modelo = models.CharField(
+        'Modelo del Blower',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    motor_marca = models.CharField(
+        'Marca del Motor',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    motor_modelo = models.CharField(
+        'Modelo del Motor',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    banda_marca = models.CharField(
+        'Marca de la Banda',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    banda_modelo = models.CharField(
+        'Modelo de la Banda',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    banda_tipo = models.CharField(
+        'Tipo de Banda',
+        max_length=1,
+        choices=(('A', 'A'), ('B', 'B')),
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques. Solo una por equipo.'
+    )
+    polea_blower_marca = models.CharField(
+        'Marca de la Polea del Blower',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    polea_blower_modelo = models.CharField(
+        'Modelo de la Polea del Blower',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    polea_motor_marca = models.CharField(
+        'Marca de la Polea del Motor',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    polea_motor_modelo = models.CharField(
+        'Modelo de la Polea del Motor',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    tablero_electrico_marca = models.CharField(
+        'Marca del Tablero Eléctrico',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    tablero_electrico_modelo = models.CharField(
+        'Modelo del Tablero Eléctrico',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    guarda_motor_marca = models.CharField(
+        'Marca de la Guarda Motor',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+    guarda_motor_modelo = models.CharField(
+        'Modelo de la Guarda Motor',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas y tanques'
+    )
+
     def clean(self):
         """Validaciones personalizadas del modelo"""
         from django.core.exceptions import ValidationError
@@ -296,6 +404,28 @@ class ResourceItem(BaseModel):
                 raise ValidationError({
                     'capacidad_planta': 'Debe especificar la capacidad de la planta para este tipo de equipo'
                 })
+
+        # Validar que los campos de blower, motor, banda, etc. solo se llenen para los subtipos correctos
+        subtipos_especiales = [
+            'PLANTA DE TRATAMIENTO DE AGUA',
+            'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
+            'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
+            'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
+        ]
+        campos_especiales = [
+            'blower_marca', 'blower_modelo', 'motor_marca', 'motor_modelo',
+            'banda_marca', 'banda_modelo', 'banda_tipo',
+            'polea_blower_marca', 'polea_blower_modelo',
+            'polea_motor_marca', 'polea_motor_modelo',
+            'tablero_electrico_marca', 'tablero_electrico_modelo',
+            'guarda_motor_marca', 'guarda_motor_modelo'
+        ]
+        if self.subtipo not in subtipos_especiales:
+            for campo in campos_especiales:
+                if getattr(self, campo):
+                    raise ValidationError({
+                        campo: f'Este campo solo aplica para plantas y tanques.'
+                    })
 
     def save(self, *args, **kwargs):
         self.full_clean()
