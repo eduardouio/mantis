@@ -20,7 +20,7 @@ class TestTechnical:
         assert technical.email == 'juan.perez@example.com'
         assert technical.work_area == 'ASSISTANT'
         assert technical.dni == '1234567890'
-        assert not technical.is_active  # default False
+        assert technical.is_active  # default True
 
     def test_technical_work_areas(self):
         technical = Technical.objects.create(
