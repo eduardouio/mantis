@@ -111,6 +111,7 @@
             <div class="form-control">
               <label class="label">
                 <span class="label-text">{{ form.birth_date.label }}</span>
+                <span id="ageDisplay" class="badge badge-info badge-soft" style="display: none;"></span>
               </label>
               {{ form.birth_date }}
               {% if form.birth_date.errors %}
@@ -180,8 +181,11 @@
       <div class="tab-content bg-base-100 border-base-300 p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Licencia de Conducir -->
-          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <h3 class="text-lg font-medium text-blue-600 mb-4">Licencia de Conducir</h3>
+          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 relative">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-lg font-medium text-blue-600">Licencia de Conducir</h3>
+              <span id="licenseExpiryBadge" class="badge badge-soft" style="display: none;"></span>
+            </div>
             
             <div class="form-control mb-3">
               <label class="label">
@@ -199,8 +203,11 @@
           </div>
 
           <!-- Certificado de Manejo Defensivo -->
-          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <h3 class="text-lg font-medium text-blue-600 mb-4">Manejo Defensivo</h3>
+          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 relative">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-lg font-medium text-blue-600">Manejo Defensivo</h3>
+              <span id="defensiveDrivingExpiryBadge" class="badge badge-soft" style="display: none;"></span>
+            </div>
             
             <div class="form-control mb-3">
               <label class="label">
@@ -218,8 +225,11 @@
           </div>
 
           <!-- Certificado MAE -->
-          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <h3 class="text-lg font-medium text-blue-600 mb-4">Certificado MAE</h3>
+          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 relative">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-lg font-medium text-blue-600">Certificado MAE</h3>
+              <span id="maeExpiryBadge" class="badge badge-soft" style="display: none;"></span>
+            </div>
             
             <div class="form-control mb-3">
               <label class="label">
@@ -237,8 +247,11 @@
           </div>
 
           <!-- Certificado Médico -->
-          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <h3 class="text-lg font-medium text-blue-600 mb-4">Certificado Médico</h3>
+          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 relative">
+            <div class="flex justify-between items-start mb-4">
+              <h3 class="text-lg font-medium text-blue-600">Certificado Médico</h3>
+              <span id="medicalExpiryBadge" class="badge badge-soft" style="display: none;"></span>
+            </div>
             
             <div class="form-control mb-3">
               <label class="label">
@@ -333,8 +346,9 @@
               </div>
             </div>
             <div class="p-4">
+              <!-- Lista de vacunas existentes -->
               {% if object and object.vaccination_records.all %}
-                <div class="space-y-3">
+                <div id="existingVaccinations" class="space-y-3 mb-4">
                   {% for vaccination in object.vaccination_records.all %}
                     <div class="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-colors">
                       <div class="flex justify-between items-start">
@@ -374,15 +388,21 @@
                     </div>
                   {% endfor %}
                 </div>
-              {% else %}
-                <div class="text-center py-8">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto text-gray-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
-                  </svg>
-                  <p class="text-gray-500 text-sm">No hay vacunas registradas</p>
-                  <p class="text-gray-400 text-xs mt-1">Haz clic en "Agregar Vacuna" para comenzar</p>
-                </div>
               {% endif %}
+              
+              <!-- Lista de vacunas temporales (pendientes de guardar) -->
+              <div id="tempVaccinationsList" class="space-y-3">
+                <!-- Las vacunas temporales se agregan aquí dinámicamente -->
+              </div>
+              
+              <!-- Mensaje cuando no hay vacunas -->
+              <div id="noVaccinationsMessage" class="text-center py-8" style="display: {% if object and object.vaccination_records.all %}none{% else %}block{% endif %};">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto text-gray-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                </svg>
+                <p class="text-gray-500 text-sm">No hay vacunas registradas</p>
+                <p class="text-gray-400 text-xs mt-1">Haz clic en "Agregar Vacuna" para comenzar</p>
+              </div>
             </div>
           </div>
 
@@ -402,8 +422,9 @@
               </div>
             </div>
             <div class="p-4">
+              <!-- Lista de pases existentes -->
               {% if object and object.passtechnical_set.all %}
-                <div class="space-y-3">
+                <div id="existingPasses" class="space-y-3 mb-4">
                   {% for pass in object.passtechnical_set.all %}
                     <div class="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-colors">
                       <div class="flex justify-between items-start">
@@ -440,21 +461,31 @@
                     </div>
                   {% endfor %}
                 </div>
-              {% else %}
-                <div class="text-center py-8">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto text-gray-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0z"/>
-                  </svg>
-                  <p class="text-gray-500 text-sm">No hay pases registrados</p>
-                  <p class="text-gray-400 text-xs mt-1">Haz clic en "Agregar Pase" para comenzar</p>
-                </div>
               {% endif %}
+              
+              <!-- Lista de pases temporales (pendientes de guardar) -->
+              <div id="tempPassesList" class="space-y-3">
+                <!-- Los pases temporales se agregan aquí dinámicamente -->
+              </div>
+              
+              <!-- Mensaje cuando no hay pases -->
+              <div id="noPassesMessage" class="text-center py-8" style="display: {% if object and object.passtechnical_set.all %}none{% else %}block{% endif %};">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto text-gray-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0z"/>
+                </svg>
+                <p class="text-gray-500 text-sm">No hay pases registrados</p>
+                <p class="text-gray-400 text-xs mt-1">Haz clic en "Agregar Pase" para comenzar</p>
+              </div>
             </div>
           </div>
 
         </div>
       </div>
     </div>
+
+    <!-- Campos ocultos para almacenar datos temporales -->
+    {{ form.vaccinations_data }}
+    {{ form.passes_data }}
 
     <!-- Botones de acción -->
     <div class="flex flex-wrap justify-center gap-2 mt-6 border-t pt-4">
@@ -610,6 +641,224 @@
 </div>
 
 <script>
+// Arrays temporales para almacenar datos antes de guardar
+let tempVaccinations = [];
+let tempPasses = [];
+
+// Diccionario para traducir tipos de vacunas
+const vaccineTypeLabels = {
+  'HEPATITIS_A_B': 'Hepatitis A y B',
+  'TETANUS': 'Tétanos',
+  'TYPHOID': 'Tifoidea',
+  'YELLOW_FEVER': 'Fiebre Amarilla',
+  'INFLUENZA': 'Influenza',
+  'MEASLES': 'Sarampión',
+  'COVID': 'Covid-19',
+  'OTHER': 'Otra'
+};
+
+// Diccionario para traducir bloques
+const bloqueLabels = {
+  'petroecuador': 'Tarjeta de Petroecuador',
+  'shaya': 'Shaya',
+  'consorcio_shushufindi': 'Consorcio Shushufindi',
+  'enap_sipec': 'ENAP SIPEC',
+  'orion': 'Tarjeta Orion',
+  'andes_petroleum': 'Andes Petroleum',
+  'pardalis_services': 'Pardalis Services',
+  'frontera_energy': 'Frontera Energy',
+  'gran_tierra': 'Gran Tierra',
+  'pcr': 'PCR',
+  'halliburton': 'Halliburton',
+  'gente_oil': 'Gente Oil',
+  'tribiol_gas': 'Tribiol Gas',
+  'adico': 'Adico',
+  'cuyaveno_petro': 'Cuyaveno Petro',
+  'geopark': 'Geopark'
+};
+
+// Función para formatear fecha
+function formatDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('es-ES');
+}
+
+// Función para agregar vacunación temporal
+function addTempVaccination(vaccinationData) {
+  const id = 'temp_' + Date.now();
+  const vaccination = { ...vaccinationData, id };
+  tempVaccinations.push(vaccination);
+  
+  renderTempVaccinations();
+  updateVaccinationsData();
+  updateNoVaccinationsMessage();
+}
+
+// Función para eliminar vacunación temporal
+function removeTempVaccination(id) {
+  tempVaccinations = tempVaccinations.filter(v => v.id !== id);
+  renderTempVaccinations();
+  updateVaccinationsData();
+  updateNoVaccinationsMessage();
+}
+
+// Función para renderizar vacunaciones temporales
+function renderTempVaccinations() {
+  const container = document.getElementById('tempVaccinationsList');
+  container.innerHTML = '';
+  
+  tempVaccinations.forEach(vaccination => {
+    const div = document.createElement('div');
+    div.className = 'border border-blue-200 rounded-lg p-3 hover:bg-blue-50 transition-colors bg-blue-25';
+    div.innerHTML = `
+      <div class="flex justify-between items-start">
+        <div>
+          <div class="flex items-center gap-2">
+            <h4 class="font-medium text-gray-800">${vaccineTypeLabels[vaccination.vaccine_type]}</h4>
+            <span class="badge badge-soft badge-info">Nuevo</span>
+          </div>
+          <p class="text-sm text-gray-600 mt-1">
+            <span class="font-medium">Aplicada:</span> 
+            ${formatDate(vaccination.application_date)}
+          </p>
+          ${vaccination.dose_number ? `
+            <p class="text-sm text-gray-600">
+              <span class="font-medium">Dosis:</span> ${vaccination.dose_number}
+            </p>
+          ` : ''}
+          ${vaccination.next_dose_date ? `
+            <p class="text-sm text-gray-600">
+              <span class="font-medium">Próxima dosis:</span> ${formatDate(vaccination.next_dose_date)}
+            </p>
+          ` : ''}
+          ${vaccination.batch_number ? `
+            <p class="text-xs text-gray-500 mt-1">Lote: ${vaccination.batch_number}</p>
+          ` : ''}
+          ${vaccination.notes ? `
+            <p class="text-xs text-gray-500 mt-1">Nota: ${vaccination.notes}</p>
+          ` : ''}
+        </div>
+        <div class="flex gap-1">
+          <button type="button" class="btn btn-ghost btn-xs text-red-600" onclick="removeTempVaccination('${vaccination.id}')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// Función para agregar pase temporal
+function addTempPass(passData) {
+  const id = 'temp_' + Date.now();
+  const pass = { ...passData, id };
+  tempPasses.push(pass);
+  
+  renderTempPasses();
+  updatePassesData();
+  updateNoPassesMessage();
+}
+
+// Función para eliminar pase temporal
+function removeTempPass(id) {
+  tempPasses = tempPasses.filter(p => p.id !== id);
+  renderTempPasses();
+  updatePassesData();
+  updateNoPassesMessage();
+}
+
+// Función para calcular estado del pase
+function getPassStatus(fechaCaducidad) {
+  const today = new Date();
+  const expiry = new Date(fechaCaducidad);
+  const timeDiff = expiry.getTime() - today.getTime();
+  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+  
+  if (daysDiff < 0) {
+    return '<span class="badge badge-error badge-sm">Vencido</span>';
+  } else if (daysDiff <= 30) {
+    return '<span class="badge badge-warning badge-sm">Por vencer</span>';
+  } else {
+    return '<span class="badge badge-success badge-sm">Vigente</span>';
+  }
+}
+
+// Función para renderizar pases temporales
+function renderTempPasses() {
+  const container = document.getElementById('tempPassesList');
+  container.innerHTML = '';
+  
+  tempPasses.forEach(pass => {
+    const div = document.createElement('div');
+    div.className = 'border border-blue-200 rounded-lg p-3 hover:bg-blue-50 transition-colors bg-blue-25';
+    div.innerHTML = `
+      <div class="flex justify-between items-start">
+        <div>
+          <div class="flex items-center gap-2">
+            <h4 class="font-medium text-gray-800">${bloqueLabels[pass.bloque]}</h4>
+            <span class="badge badge-soft badge-info">Nuevo</span>
+          </div>
+          <p class="text-sm text-gray-600 mt-1">
+            <span class="font-medium">Vence:</span> 
+            ${formatDate(pass.fecha_caducidad)}
+          </p>
+          <div class="mt-2">
+            ${getPassStatus(pass.fecha_caducidad)}
+          </div>
+        </div>
+        <div class="flex gap-1">
+          <button type="button" class="btn btn-ghost btn-xs text-red-600" onclick="removeTempPass('${pass.id}')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// Funciones para actualizar campos ocultos
+function updateVaccinationsData() {
+  const field = document.querySelector('input[name="vaccinations_data"]');
+  if (field) {
+    field.value = JSON.stringify(tempVaccinations);
+  }
+}
+
+function updatePassesData() {
+  const field = document.querySelector('input[name="passes_data"]');
+  if (field) {
+    field.value = JSON.stringify(tempPasses);
+  }
+}
+
+// Funciones para actualizar mensajes de "no hay elementos"
+function updateNoVaccinationsMessage() {
+  const message = document.getElementById('noVaccinationsMessage');
+  const hasExisting = document.getElementById('existingVaccinations') !== null;
+  const hasTempVaccinations = tempVaccinations.length > 0;
+  
+  if (message) {
+    message.style.display = (hasExisting || hasTempVaccinations) ? 'none' : 'block';
+  }
+}
+
+function updateNoPassesMessage() {
+  const message = document.getElementById('noPassesMessage');
+  const hasExisting = document.getElementById('existingPasses') !== null;
+  const hasTempPasses = tempPasses.length > 0;
+  
+  if (message) {
+    message.style.display = (hasExisting || hasTempPasses) ? 'none' : 'block';
+  }
+}
+
 // Funciones para manejar modales de vacunación
 function openVaccinationModal() {
   document.getElementById('vaccinationModal').classList.add('modal-open');
@@ -643,20 +892,385 @@ document.addEventListener('click', function(event) {
   }
 });
 
-// Prevenir envío de formularios por ahora (placeholder)
+// Actualizar el manejo de envío de formularios de modales
 document.getElementById('vaccinationForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  console.log('Formulario de vacunación enviado:', new FormData(this));
-  // TODO: Implementar envío AJAX
+  
+  const formData = new FormData(this);
+  const vaccinationData = {
+    vaccine_type: formData.get('vaccine_type'),
+    application_date: formData.get('application_date'),
+    dose_number: formData.get('dose_number') || null,
+    batch_number: formData.get('batch_number') || null,
+    next_dose_date: formData.get('next_dose_date') || null,
+    notes: formData.get('notes') || null
+  };
+  
+  // Validar campos requeridos
+  if (!vaccinationData.vaccine_type || !vaccinationData.application_date) {
+    alert('Por favor complete los campos requeridos.');
+    return;
+  }
+  
+  addTempVaccination(vaccinationData);
   closeVaccinationModal();
 });
 
 document.getElementById('technicalPassForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  console.log('Formulario de pase técnico enviado:', new FormData(this));
-  // TODO: Implementar envío AJAX
+  
+  const formData = new FormData(this);
+  const passData = {
+    bloque: formData.get('bloque'),
+    fecha_caducidad: formData.get('fecha_caducidad')
+  };
+  
+  // Validar campos requeridos
+  if (!passData.bloque || !passData.fecha_caducidad) {
+    alert('Por favor complete todos los campos.');
+    return;
+  }
+  
+  addTempPass(passData);
   closeTechnicalPassModal();
 });
+
+// Esquemas de vacunación con intervalos entre dosis
+const vaccinationSchedules = {
+  'HEPATITIS_A_B': {
+    schedule: [
+      { dose: 1, nextInterval: 30, unit: 'days' }, // dosis 1 -> dosis 2: 30 días
+      { dose: 2, nextInterval: 7, unit: 'months' }, // dosis 2 -> dosis 3: 7 meses
+      { dose: 3, nextInterval: 5, unit: 'years' }   // dosis 3 -> refuerzo: 5 años
+    ],
+    maxDoses: 3,
+    boosterInterval: { interval: 5, unit: 'years' }
+  },
+  'TETANUS': {
+    schedule: [
+      { dose: 1, nextInterval: 30, unit: 'days' },    // dosis 1 -> dosis 2: 30 días
+      { dose: 2, nextInterval: 7, unit: 'months' },   // dosis 2 -> dosis 3: 7 meses
+      { dose: 3, nextInterval: 19, unit: 'months' }   // dosis 3 -> refuerzo: 1 año 7 meses
+    ],
+    maxDoses: 4,
+    boosterInterval: { interval: 10, unit: 'years' }
+  },
+  'TYPHOID': {
+    schedule: [
+      { dose: 1, nextInterval: 3, unit: 'years' }     // cada 3 años
+    ],
+    maxDoses: 1,
+    boosterInterval: { interval: 3, unit: 'years' }
+  },
+  'YELLOW_FEVER': {
+    schedule: [],
+    maxDoses: 1,
+    boosterInterval: null // dosis única
+  },
+  'INFLUENZA': {
+    schedule: [
+      { dose: 1, nextInterval: 1, unit: 'years' }     // cada año
+    ],
+    maxDoses: 1,
+    boosterInterval: { interval: 1, unit: 'years' }
+  },
+  'MEASLES': {
+    schedule: [],
+    maxDoses: 1,
+    boosterInterval: null // dosis única
+  },
+  'COVID': {
+    schedule: [
+      { dose: 1, nextInterval: 21, unit: 'days' },    // dosis 1 -> dosis 2: 21 días
+      { dose: 2, nextInterval: 6, unit: 'months' },   // dosis 2 -> dosis 3: 6 meses
+      { dose: 3, nextInterval: 6, unit: 'months' }    // dosis 3 -> dosis 4: 6 meses
+    ],
+    maxDoses: 4,
+    boosterInterval: null
+  },
+  'OTHER': {
+    schedule: [],
+    maxDoses: 999,
+    boosterInterval: null
+  }
+};
+
+// Función para calcular la próxima fecha de dosis
+function calculateNextDoseDate(vaccineType, currentDose, applicationDate) {
+  if (!vaccineType || !applicationDate) return null;
+  
+  const schedule = vaccinationSchedules[vaccineType];
+  if (!schedule) return null;
+  
+  const currentDoseNum = parseInt(currentDose) || 1;
+  const appDate = new Date(applicationDate);
+  
+  // Buscar el intervalo correspondiente a la dosis actual
+  const doseSchedule = schedule.schedule.find(s => s.dose === currentDoseNum);
+  
+  let nextDate = new Date(appDate);
+  
+  if (doseSchedule) {
+    // Hay un esquema específico para esta dosis
+    nextDate = addTimeInterval(appDate, doseSchedule.nextInterval, doseSchedule.unit);
+  } else if (currentDoseNum >= schedule.maxDoses && schedule.boosterInterval) {
+    // Es un refuerzo después de completar el esquema inicial
+    nextDate = addTimeInterval(appDate, schedule.boosterInterval.interval, schedule.boosterInterval.unit);
+  } else if (schedule.boosterInterval && currentDoseNum < schedule.maxDoses) {
+    // Usar el intervalo del refuerzo como fallback
+    nextDate = addTimeInterval(appDate, schedule.boosterInterval.interval, schedule.boosterInterval.unit);
+  } else {
+    // No hay próxima dosis programada
+    return null;
+  }
+  
+  return nextDate;
+}
+
+// Función auxiliar para agregar intervalos de tiempo
+function addTimeInterval(date, interval, unit) {
+  const newDate = new Date(date);
+  
+  switch (unit) {
+    case 'days':
+      newDate.setDate(newDate.getDate() + interval);
+      break;
+    case 'months':
+      newDate.setMonth(newDate.getMonth() + interval);
+      break;
+    case 'years':
+      newDate.setFullYear(newDate.getFullYear() + interval);
+      break;
+  }
+  
+  return newDate;
+}
+
+// Función para obtener el número de dosis sugerido
+function getSuggestedDoseNumber(vaccineType, technical_id = null) {
+  // En un futuro, aquí podrías consultar las dosis previas del técnico
+  // Por ahora, sugerimos dosis 1
+  return 1;
+}
+
+// Función para obtener información sobre el esquema de vacunación
+function getVaccinationInfo(vaccineType, doseNumber) {
+  const schedule = vaccinationSchedules[vaccineType];
+  if (!schedule) return null;
+  
+  const dose = parseInt(doseNumber) || 1;
+  const doseSchedule = schedule.schedule.find(s => s.dose === dose);
+  
+  let info = {
+    maxDoses: schedule.maxDoses,
+    isComplete: dose >= schedule.maxDoses,
+    hasNextDose: false,
+    nextDoseInfo: null
+  };
+  
+  if (doseSchedule) {
+    info.hasNextDose = true;
+    info.nextDoseInfo = {
+      interval: doseSchedule.nextInterval,
+      unit: doseSchedule.unit,
+      description: formatIntervalDescription(doseSchedule.nextInterval, doseSchedule.unit)
+    };
+  } else if (dose >= schedule.maxDoses && schedule.boosterInterval) {
+    info.hasNextDose = true;
+    info.nextDoseInfo = {
+      interval: schedule.boosterInterval.interval,
+      unit: schedule.boosterInterval.unit,
+      description: `Refuerzo cada ${formatIntervalDescription(schedule.boosterInterval.interval, schedule.boosterInterval.unit)}`
+    };
+  }
+  
+  return info;
+}
+
+// Función para formatear descripción del intervalo
+function formatIntervalDescription(interval, unit) {
+  const units = {
+    'days': interval === 1 ? 'día' : 'días',
+    'months': interval === 1 ? 'mes' : 'meses',
+    'years': interval === 1 ? 'año' : 'años'
+  };
+  
+  return `${interval} ${units[unit]}`;
+}
+
+// Actualizar el modal de vacunación para incluir cálculo automático
+function updateVaccinationModal() {
+  const vaccineTypeSelect = document.querySelector('#vaccinationForm select[name="vaccine_type"]');
+  const doseNumberInput = document.querySelector('#vaccinationForm input[name="dose_number"]');
+  const applicationDateInput = document.querySelector('#vaccinationForm input[name="application_date"]');
+  const nextDoseDateInput = document.querySelector('#vaccinationForm input[name="next_dose_date"]');
+  
+  function calculateAndUpdateNextDose() {
+    const vaccineType = vaccineTypeSelect.value;
+    const doseNumber = doseNumberInput.value || 1;
+    const applicationDate = applicationDateInput.value;
+    
+    if (vaccineType && applicationDate) {
+      const nextDate = calculateNextDoseDate(vaccineType, doseNumber, applicationDate);
+      
+      if (nextDate) {
+        nextDoseDateInput.value = nextDate.toISOString().split('T')[0];
+        nextDoseDateInput.style.backgroundColor = '#f0f9ff';
+        nextDoseDateInput.style.borderColor = '#0ea5e9';
+        
+        // Mostrar información del esquema
+        showVaccinationScheduleInfo(vaccineType, doseNumber);
+        
+        // Quitar indicador después de 2 segundos
+        setTimeout(() => {
+          nextDoseDateInput.style.backgroundColor = '';
+          nextDoseDateInput.style.borderColor = '';
+        }, 2000);
+      } else {
+        nextDoseDateInput.value = '';
+        hideVaccinationScheduleInfo();
+      }
+    }
+  }
+  
+  // Event listeners para recalcular automáticamente
+  vaccineTypeSelect.addEventListener('change', function() {
+    // Sugerir número de dosis
+    if (this.value && !doseNumberInput.value) {
+      doseNumberInput.value = getSuggestedDoseNumber(this.value);
+    }
+    calculateAndUpdateNextDose();
+  });
+  
+  doseNumberInput.addEventListener('input', calculateAndUpdateNextDose);
+  applicationDateInput.addEventListener('change', calculateAndUpdateNextDose);
+}
+
+// Función para mostrar información del esquema de vacunación
+function showVaccinationScheduleInfo(vaccineType, doseNumber) {
+  const info = getVaccinationInfo(vaccineType, doseNumber);
+  if (!info) return;
+  
+  let infoContainer = document.getElementById('vaccinationScheduleInfo');
+  if (!infoContainer) {
+    infoContainer = document.createElement('div');
+    infoContainer.id = 'vaccinationScheduleInfo';
+    infoContainer.className = 'alert alert-info mt-2 text-sm';
+    
+    const form = document.getElementById('vaccinationForm');
+    const modalAction = form.querySelector('.modal-action');
+    form.insertBefore(infoContainer, modalAction);
+  }
+  
+  let infoText = '';
+  
+  if (info.hasNextDose && info.nextDoseInfo) {
+    infoText = `<strong>Próxima dosis:</strong> ${info.nextDoseInfo.description}`;
+  } else if (info.isComplete) {
+    infoText = '<strong>Esquema completo:</strong> No se requieren más dosis.';
+  }
+  
+  if (info.maxDoses < 999) {
+    infoText += ` <span class="text-xs opacity-75">(Máximo ${info.maxDoses} dosis)</span>`;
+  }
+  
+  infoContainer.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+    </svg>
+    ${infoText}
+  `;
+  
+  infoContainer.style.display = 'block';
+}
+
+// Función para ocultar información del esquema
+function hideVaccinationScheduleInfo() {
+  const infoContainer = document.getElementById('vaccinationScheduleInfo');
+  if (infoContainer) {
+    infoContainer.style.display = 'none';
+  }
+}
+
+// Actualizar función de renderizado para mostrar esquema en elementos temporales
+function renderTempVaccinations() {
+  const container = document.getElementById('tempVaccinationsList');
+  container.innerHTML = '';
+  
+  tempVaccinations.forEach(vaccination => {
+    const info = getVaccinationInfo(vaccination.vaccine_type, vaccination.dose_number);
+    const div = document.createElement('div');
+    div.className = 'border border-blue-200 rounded-lg p-3 hover:bg-blue-50 transition-colors bg-blue-25';
+    div.innerHTML = `
+      <div class="flex justify-between items-start">
+        <div>
+          <div class="flex items-center gap-2">
+            <h4 class="font-medium text-gray-800">${vaccineTypeLabels[vaccination.vaccine_type]}</h4>
+            <span class="badge badge-soft badge-info">Nuevo</span>
+            ${info && info.isComplete ? '<span class="badge badge-soft badge-success">Completo</span>' : ''}
+          </div>
+          <p class="text-sm text-gray-600 mt-1">
+            <span class="font-medium">Aplicada:</span> 
+            ${formatDate(vaccination.application_date)}
+          </p>
+          ${vaccination.dose_number ? `
+            <p class="text-sm text-gray-600">
+              <span class="font-medium">Dosis:</span> ${vaccination.dose_number}${info ? ` de ${info.maxDoses < 999 ? info.maxDoses : '∞'}` : ''}
+            </p>
+          ` : ''}
+          ${vaccination.next_dose_date ? `
+            <p class="text-sm text-gray-600">
+              <span class="font-medium">Próxima dosis:</span> ${formatDate(vaccination.next_dose_date)}
+            </p>
+          ` : ''}
+          ${vaccination.batch_number ? `
+            <p class="text-xs text-gray-500 mt-1">Lote: ${vaccination.batch_number}</p>
+          ` : ''}
+          ${vaccination.notes ? `
+            <p class="text-xs text-gray-500 mt-1">Nota: ${vaccination.notes}</p>
+          ` : ''}
+          ${info && info.hasNextDose && info.nextDoseInfo ? `
+            <p class="text-xs text-blue-600 mt-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              ${info.nextDoseInfo.description}
+            </p>
+          ` : ''}
+        </div>
+        <div class="flex gap-1">
+          <button type="button" class="btn btn-ghost btn-xs text-red-600" onclick="removeTempVaccination('${vaccination.id}')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// Actualizar inicialización del modal
+document.addEventListener('DOMContentLoaded', function() {
+  // ...existing code...
+
+  // Inicializar modal de vacunación con cálculos automáticos
+  updateVaccinationModal();
+
+  // ...existing code...
+});
+
+// Funciones para calcular y mostrar edad - AHORA SÍ SE EJECUTA DESPUÉS DE DEFINIR LAS FUNCIONES
+initializeBirthDateCalculator();
+
+// Actualizar todos los badges de certificados cada minuto
+setInterval(() => {
+  Object.keys(certificateDurations).forEach(fieldId => {
+    const config = certificateDurations[fieldId];
+    updateExpiryBadge(config);
+  });
+}, 60000); // 60 segundos
 </script>
 
 <style>
@@ -791,6 +1405,57 @@ document.getElementById('technicalPassForm').addEventListener('submit', function
     background-repeat: no-repeat !important;
     background-size: 1.5em 1.5em !important;
     padding-right: 2.5rem !important;
+  }
+  
+  /* Badge con estilo suave personalizado */
+  .badge-soft {
+    @apply text-xs font-medium px-2.5 py-0.5 rounded-full !important;
+    border: 1px solid transparent !important;
+  }
+  
+  .badge-soft.badge-info {
+    @apply bg-blue-50 text-blue-700 border-blue-200 !important;
+  }
+  
+  .badge-soft.badge-warning {
+    @apply bg-orange-50 text-orange-700 border-orange-200 !important;
+  }
+  
+  .badge-soft.badge-secondary {
+    @apply bg-purple-50 text-purple-700 border-purple-200 !important;
+  }
+  
+  .badge-soft.badge-success {
+    @apply bg-green-50 text-green-700 border-green-200 !important;
+  }
+  
+  .badge-soft.badge-error {
+    @apply bg-red-50 text-red-700 border-red-200 !important;
+  }
+  
+  /* Efecto hover para badges */
+  .badge-soft:hover {
+    @apply shadow-sm transform scale-105 transition-all duration-200 !important;
+  }
+  
+  .badge-soft.badge-info:hover {
+    @apply bg-blue-100 border-blue-300 !important;
+  }
+  
+  .badge-soft.badge-warning:hover {
+    @apply bg-orange-100 border-orange-300 !important;
+  }
+  
+  .badge-soft.badge-secondary:hover {
+    @apply bg-purple-100 border-purple-300 !important;
+  }
+  
+  .badge-soft.badge-success:hover {
+    @apply bg-green-100 border-green-300 !important;
+  }
+  
+  .badge-soft.badge-error:hover {
+    @apply bg-red-100 border-red-300 !important;
   }
 </style>
 
