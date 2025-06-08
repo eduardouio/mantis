@@ -7,6 +7,16 @@ class TechnicalForm(forms.ModelForm):
     Formulario para crear y actualizar técnicos
     """
     
+    # Campos ocultos para almacenar datos de vacunas y pases
+    vaccinations_data = forms.CharField(
+        widget=forms.HiddenInput(),
+        required=False
+    )
+    passes_data = forms.CharField(
+        widget=forms.HiddenInput(),
+        required=False
+    )
+    
     class Meta:
         model = Technical
         fields = [
@@ -155,6 +165,10 @@ class TechnicalForm(forms.ModelForm):
         
         # Configuración adicional para campos específicos
         self.fields['work_area'].empty_label = "Seleccione un área"
+        
+        # Establecer is_active como True por defecto para nuevos registros
+        if not self.instance.pk:
+            self.fields['is_active'].initial = True
         
     def clean_dni(self):
         """Validación personalizada para la cédula"""

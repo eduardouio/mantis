@@ -132,5 +132,5 @@ class Technical(BaseModel):
     )
     is_active = models.BooleanField(
         'Activo?',
-        default=False
+        default=True
     )
