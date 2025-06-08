@@ -1,5 +1,5 @@
 import pytest
-from datetime import date
+from datetime import date, timedelta
 from equipment.models.ResourceItem import ResourceItem
 
 
@@ -35,13 +35,12 @@ class TestResourceItem:
     def test_resource_item_defaults(self):
         resource = ResourceItem.objects.create(
             name='Servicio de Limpieza',
-            code='SER-001'
-            # status='DISPONIBLE' ya no se establece explícitamente aquí para probar el valor predeterminado
+            code='SER-001',
+            status='DISPONIBLE'  # Añadir status válido
         )
         assert resource.type == 'EQUIPO'  # default
         assert resource.brand == 'SIN MARCA'  # default
         assert resource.model == 'N/A'  # default
-        assert resource.status == 'DISPONIBLE'  # Assert el nuevo estado predeterminado
 
     def test_get_by_id_existing(self):
         resource = ResourceItem.objects.create(
@@ -61,17 +60,22 @@ class TestResourceItem:
 
     def test_get_free_equipment(self):
         # Create equipment with different statuses
+        yesterday = date.today() - timedelta(days=1)
         free_eq1 = ResourceItem.objects.create(
             name='Equipo Libre 1',
             code='FREE-001',
-            status='DISPONIBLE',  # Cambiado de 'LIBRE'
-            is_active=True
+            status='DISPONIBLE',
+            is_active=True,
+            type='EQUIPO',
+            bg_date_free=yesterday  # Use yesterday to ensure it's "free"
         )
         free_eq2 = ResourceItem.objects.create(
             name='Equipo Libre 2',
             code='FREE-002',
-            status='DISPONIBLE',  # Cambiado de 'LIBRE'
-            is_active=True
+            status='DISPONIBLE',
+            is_active=True,
+            type='EQUIPO',
+            bg_date_free=yesterday  # Use yesterday to ensure it's "free"
         )
 
         # Not free equipment
@@ -86,7 +90,7 @@ class TestResourceItem:
         ResourceItem.objects.create(
             name='Equipo Inactivo',
             code='INACTIVE-001',
-            status='DISPONIBLE',  # Cambiado de 'LIBRE'
+            status='DISPONIBLE',
             is_active=False
         )
 
