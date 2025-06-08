@@ -7,11 +7,24 @@
       {% if object.pk %}Editar Técnico{% else %}Nuevo Técnico{% endif %}
     </h1>
     <div class="text-gray-500">
-      {% if object.pk %}
-        <span class="badge {% if object.is_active %}badge-success{% else %}badge-error{% endif %}">
-          {% if object.is_active %}Activo{% else %}Inactivo{% endif %}
-        </span>
-      {% endif %}
+      <div class="flex flex-wrap gap-3">
+        {% if object.pk %}
+        <a href="{% url 'technical_detail' object.id %}" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M9 6l-6 6l6 6" />
+          </svg>
+          Ver Detalle
+        </a>
+        {% endif %}
+        <a href="{% url 'technical_list' %}" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M9 6l-6 6l6 6" />
+          </svg>
+          Cancelar
+        </a>
+      </div>
     </div>
   </div>
 
@@ -457,18 +470,7 @@
         </svg>
         {% if object.pk %}Actualizar{% else %}Crear{% endif %} Técnico
       </button>
-      
-      {% if object.pk %}
-        <a href="{% url 'technical_detail' object.id %}" class="btn btn-outline">
-          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-            <path d="M9 6l-6 6l6 6" />
-          </svg>
-          Ver Detalle
-        </a>
-      {% endif %}
-      
-      <a href="{% url 'technical_list' %}" class="btn btn-outline">
+      <a href="{% url 'technical_list' %}" class="btn btn-secondary">
         <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
           <path d="M9 6l-6 6l6 6" />

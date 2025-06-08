@@ -17,9 +17,10 @@
         Volver a Ficha
       </a>
       {% endif %}
-      <a href="{% url 'project_list' %}" class="btn btn-sm btn-outline border-black">
-        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" />
+      <a href="{% url 'project_list' %}" class="btn btn-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M9 6l-6 6l6 6" />
         </svg>
         Cancelar
       </a>
@@ -242,18 +243,7 @@
         </svg>
         Guardar Proyecto
       </button>
-      
-      {% if request.resolver_match.url_name != 'project_create' %}
-        <a href="{% url 'project_detail' project.id %}" class="btn btn-outline">
-          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-            <path d="M9 6l-6 6l6 6" />
-          </svg>
-          Ver Detalle
-        </a>
-      {% endif %}
-      
-      <a href="{% url 'project_list' %}" class="btn btn-outline">
+      <a href="{% url 'project_list' %}" class="btn btn-secondary">
         <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
           <path d="M9 6l-6 6l6 6" />
