@@ -202,7 +202,7 @@ class TestResourceItemDetailView(BaseTestView):
         statuses_config = {
             'EN REPARACION': {'class': 'text-red-600', 'attention': True, 'available': False, 'motivo': 'Test repair'},
             'RENTADO': {'class': 'text-blue-600', 'attention': False, 'available': False},
-            'BUSCAR': {'class': 'text-orange-600', 'attention': True, 'available': False},
+            'FUERA DE SERVICIO': {'class': 'text-gray-600', 'attention': False, 'available': False},
             'DISPONIBLE': {'class': 'text-green-600', 'attention': False, 'available': True},
         }
         for status_code, config in statuses_config.items():
