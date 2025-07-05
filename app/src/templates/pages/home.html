@@ -1,177 +1,358 @@
 {% extends 'base/base.html'%}
+{% load static %}
+
 {% block content %}
-<div class="p-4 sm:p-6 lg:p-8">
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+<style>
+  [v-cloak] { display: none; }
+</style>
+<!-- Loader overlay -->
+<div id="page-loader" class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+</div>
+<div id="dashboard" v-cloak class="p-4 sm:p-6 lg:p-8">
+    <!-- Filtros -->
+    <div class="mb-6 flex flex-wrap gap-2">
+        <button @click="filter = 'all'" 
+                :class="{
+                    'btn btn-sm': true,
+                    'btn-primary': filter === 'all', 
+                    'btn-ghost': filter !== 'all'
+                }"
+                class="transition-all duration-200">
+            Todos
+        </button>
+        <button v-for="category in categories" 
+                :key="category.id"
+                @click="filter = category.id"
+                :class="{
+                    'btn btn-sm': true,
+                    'btn-primary': filter === category.id, 
+                    'btn-ghost': filter !== category.id,
+                    'btn-error': category.id === 'equipos',
+                    'btn-primary': category.id === 'proyectos',
+                    'btn-secondary': category.id === 'tecnicos',
+                    'btn-success': category.id === 'mantenimientos',
+                    'btn-info': category.id === 'planillas',
+                    'btn-neutral': category.id === 'vehiculos'
+                }"
+                class="transition-all duration-200">
+            ${category.label}
+        </button>
+    </div>
+
+    <!-- Stats compactos -->
+    <div class="stats stats-vertical lg:stats-horizontal shadow mb-8 w-full overflow-x-auto">
+        <!-- Equipos -->
+        <div class="stat">
+            <div class="stat-figure text-error">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"></path></svg>
+            </div>
+            <div class="stat-title">Equipos</div>
+            <div class="stat-value text-error">${counters.equipos.total}</div>
+            <div class="stat-desc">${counters.equipos.disponibles} disponibles</div>
+            <progress class="progress progress-error w-40" :value="counters.equipos.disponibles" :max="counters.equipos.total"></progress>
+        </div>
+        <!-- Proyectos -->
+        <div class="stat">
+            <div class="stat-figure text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m4-4H8" /></svg>
+            </div>
+            <div class="stat-title">Proyectos</div>
+            <div class="stat-value text-primary">${counters.proyectos.total}</div>
+            <div class="stat-desc">${counters.proyectos.activos} activos</div>
+            <progress class="progress progress-primary w-40" :value="counters.proyectos.activos" :max="counters.proyectos.total"></progress>
+        </div>
+        <!-- Técnicos -->
+        <div class="stat">
+            <div class="stat-figure text-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a4 4 0 00-4 4v1h8v-1a4 4 0 00-4-4z"/></svg>
+            </div>
+            <div class="stat-title">Técnicos</div>
+            <div class="stat-value text-secondary">${counters.tecnicos.total}</div>
+            <div class="stat-desc">${counters.tecnicos.enServicio} en servicio</div>
+            <progress class="progress progress-secondary w-40" :value="counters.tecnicos.enServicio" :max="counters.tecnicos.total"></progress>
+        </div>
+        <!-- Mantenimientos -->
+        <div class="stat">
+            <div class="stat-figure text-success">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg>
+            </div>
+            <div class="stat-title">Mantenimientos</div>
+            <div class="stat-value text-success">${counters.mantenimientos.total}</div>
+            <div class="stat-desc">En ${counters.mantenimientos.proyectos} proyectos</div>
+        </div>
+        <!-- Planillas -->
+        <div class="stat">
+            <div class="stat-figure text-info">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v4a1 1 0 001 1h3v9a1 1 0 001 1h8a1 1 0 001-1V12h3a1 1 0 001-1V7a1 1 0 00-1-1H4a1 1 0 00-1 1z" /></svg>
+            </div>
+            <div class="stat-title">Planillas</div>
+            <div class="stat-value text-info">${counters.planillas.total}</div>
+            <div class="stat-desc">${counters.planillas.pendientes} pendientes</div>
+        </div>
+        <!-- Vehículos -->
+        <div class="stat">
+            <div class="stat-figure text-warning">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13l2-2m0 0l7-7 7 7M13 5v6h6"/></svg>
+            </div>
+            <div class="stat-title">Vehículos</div>
+            <div class="stat-value text-warning">${counters.vehiculos.total}</div>
+            <div class="stat-desc">${counters.vehiculos.enServicio} en servicio</div>
+            <progress class="progress progress-warning w-40" :value="counters.vehiculos.enServicio" :max="counters.vehiculos.total"></progress>
+        </div>
+    </div>
+
+    <!-- Bloques colapsables -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-10">
+        <!-- Últimas actividades -->
+        <div class="collapse collapse-arrow border border-base-300 bg-base-100">
+            <input type="checkbox"/> 
+            <div class="collapse-title font-medium">
+                Últimas actividades
+            </div>
+            <div class="collapse-content">
+                <ul class="list-disc ml-6 text-sm">
+                    <li>Mantenimiento EQU-001 completado</li>
+                    <li>Proyecto PRJ-002 iniciado</li>
+                    <li>Vehículo VH-05 asignado</li>
+                    <li>Planilla PL-12 enviada</li>
+                    <li>Técnico agregado: Juan Pérez</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Próximos vencimientos -->
+        <div class="collapse collapse-arrow border border-base-300 bg-base-100">
+            <input type="checkbox"/> 
+            <div class="collapse-title font-medium">
+                Próximos vencimientos
+            </div>
+            <div class="collapse-content">
+                <ul class="list-disc ml-6 text-sm">
+                    <li>Mantenimiento EQU-010 vence el 10/07</li>
+                    <li>Planilla PL-15 vence el 12/07</li>
+                    <li>Seguro VH-03 vence el 20/07</li>
+                    <li>Certificación TEC-07 vence el 25/07</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 justify-center justify-items-center">
       
-      <!-- Equipos Card -->
-      <a href="{% url 'resource_list' %}" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
-        <div class="card-body">
-          <div class="flex justify-between items-start">
-            <div>
-              <h2 class="card-title text-xl  font-semibold uppercase text-error">EQUIPOS</h2>
-              <p class="text-4xl font-bold mt-1">51</p>
-              <div class="mt-2 text-xs text-base-content/70 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M11 4l3 8l-3 8" />
-                </svg>
-                13 Equipos Disponibles
+      <!-- Tarjeta de Equipos -->
+      <a v-if="filter === 'all' || filter === 'equipos'"
+         href="{% url 'resource_list' %}" 
+         class="card card-compact w-80 bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-error hover:bg-error/5 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+         :class="'card-' + Math.floor(Math.random() * 10)">
+          <div class="card-body">
+              <div class="flex justify-between items-start">
+                  <div>
+                      <h2 class="card-title text-xl font-semibold uppercase text-error">
+                          EQUIPOS
+                          <span v-if="loading.equipos" class="loading loading-spinner loading-xs ml-2"></span>
+                      </h2>
+                      <div v-if="loading.equipos" class="skeleton h-10 w-20 mt-2"></div>
+                      <p v-else class="text-4xl font-bold mt-1 animate-count">${counters.equipos.total}</p>
+                      <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                              <path d="M11 4l3 8l-3 8" />
+                          </svg>
+                          ${counters.equipos.disponibles} Equipos Disponibles
+                      </div>
+                  </div>
+                  <div class="p-3 rounded-full bg-error/10 text-error">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                          <rect x="6" y="4" width="12" height="16" rx="2"></rect>
+                          <rect x="9" y="8" width="6" height="9" rx="1"></rect>
+                          <circle cx="12" cy="6" r=".5"></circle>
+                          <circle cx="13.5" cy="12" r=".5"></circle>
+                          <path d="M6 20h12"></path>
+                      </svg>
+                  </div>
               </div>
-            </div>
-            <div class="p-3 rounded-full bg-error text-error-content">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-portable-bathroom" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <rect x="6" y="4" width="12" height="16" rx="2" fill="none"></rect>
-                <rect x="9" y="8" width="6" height="9" rx="1" fill="none"></rect>
-                <circle cx="12" cy="6" r="0.5" fill="none"></circle>
-                <circle cx="13.5" cy="12" r="0.5" fill="none"></circle>
-                <path d="M6 20h12" fill="none"></path>
-              </svg>
-            </div>
           </div>
-        </div>
       </a>
   
-      <!-- Proyectos Card -->
-      <a href="{% url 'project_list' %}" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
-        <div class="card-body">
-          <div class="flex justify-between items-start">
-            <div>
-              <h2 class="card-title text-xl  font-semibold uppercase text-primary">PROYECTOS</h2>
-              <p class="text-4xl font-bold mt-1">5</p>
-              <div class="mt-2 text-xs text-base-content/70 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M11 4l3 8l-3 8" />
-                </svg>
-                 5 Proyectos Activos
+      <!-- Tarjeta de Proyectos -->
+      <a v-if="filter === 'all' || filter === 'proyectos'"
+         href="{% url 'project_list' %}" 
+         class="card card-compact w-80 bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-primary/5 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+         :class="'card-' + Math.floor(Math.random() * 10)">
+          <div class="card-body">
+              <div class="flex justify-between items-start">
+                  <div>
+                      <h2 class="card-title text-xl font-semibold uppercase text-primary">
+                          PROYECTOS
+                          <span v-if="loading.proyectos" class="loading loading-spinner loading-xs ml-2"></span>
+                      </h2>
+                      <div v-if="loading.proyectos" class="skeleton h-10 w-20 mt-2"></div>
+                      <p v-else class="text-4xl font-bold mt-1 animate-count">${counters.proyectos.total}</p>
+                      <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                              <path d="M11 4l3 8l-3 8" />
+                          </svg>
+                          ${counters.proyectos.activos} Proyectos Activos
+                      </div>
+                  </div>
+                  <div class="p-3 rounded-full bg-primary/10 text-primary">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                          <path d="M5 3h1a1 1 0 0 1 1 1v2h3v-2a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2h3v-2a1 1 0 0 1 1 -1h1a1 1 0 0 1 1 1v4.394a2 2 0 0 1 -.336 1.11l-1.328 1.992a2 2 0 0 0 -.336 1.11v7.394a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-7.394a2 2 0 0 0 -.336 -1.11l-1.328 -1.992a2 2 0 0 1 -.336 -1.11v-4.394a1 1 0 0 1 1 -1z" />
+                          <path d="M10 21v-5a2 2 0 1 1 4 0v5" />
+                      </svg>
+                  </div>
               </div>
-            </div>
-            <div class="p-3 rounded-full bg-primary text-primary-content">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-tower" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M5 3h1a1 1 0 0 1 1 1v2h3v-2a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2h3v-2a1 1 0 0 1 1 -1h1a1 1 0 0 1 1 1v4.394a2 2 0 0 1 -.336 1.11l-1.328 1.992a2 2 0 0 0 -.336 1.11v7.394a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-7.394a2 2 0 0 0 -.336 -1.11l-1.328 -1.992a2 2 0 0 1 -.336 -1.11v-4.394a1 1 0 0 1 1 -1z" />
-                <path d="M10 21v-5a2 2 0 1 1 4 0v5" />
-              </svg>
-            </div>
           </div>
-        </div>
       </a>
 
-      <!-- Tecnicos Card -->
-      <a href="{% url 'technical_list' %}" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
-        <div class="card-body">
-          <div class="flex justify-between items-start">
-            <div>
-              <h2 class="card-title text-xl  font-semibold uppercase text-secondary">TECNICOS</h2>
-              <p class="text-4xl font-bold mt-1">25</p>
-              <div class="mt-2 text-xs text-base-content/70 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                  <path d="M11 4l3 8l-3 8" />
-                </svg>
-               10 Técnicos En Servicio
+      <!-- Tarjeta de Técnicos -->
+      <a v-if="filter === 'all' || filter === 'tecnicos'"
+         href="{% url 'technical_list' %}" 
+         class="card card-compact w-80 bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-secondary hover:bg-secondary/5 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+         :class="'card-' + Math.floor(Math.random() * 10)">
+          <div class="card-body">
+              <div class="flex justify-between items-start">
+                  <div>
+                      <h2 class="card-title text-xl font-semibold uppercase text-secondary">
+                          TÉCNICOS
+                          <span v-if="loading.tecnicos" class="loading loading-spinner loading-xs ml-2"></span>
+                      </h2>
+                      <div v-if="loading.tecnicos" class="skeleton h-10 w-20 mt-2"></div>
+                      <p v-else class="text-4xl font-bold mt-1 animate-count">${counters.tecnicos.total}</p>
+                      <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                              <path d="M11 4l3 8l-3 8" />
+                          </svg>
+                          ${counters.tecnicos.enServicio} Técnicos en Servicio
+                      </div>
+                  </div>
+                  <div class="p-3 rounded-full bg-secondary/10 text-secondary">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                          <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                          <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+                          <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                          <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+                          <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                          <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
+                      </svg>
+                  </div>
               </div>
-            </div>
-            <div class="p-3 rounded-full bg-secondary text-secondary-content">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-users-group" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
-                <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                <path d="M17 10h2a2 2 0 0 1 2 2v1" />
-                <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
-              </svg>
-            </div>
           </div>
-        </div>
       </a>
 
-      <!-- Mantenimientos Card -->
-      <a href="#" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
-        <div class="card-body">
-          <div class="flex justify-between items-start">
-            <div>
-              <h2 class="card-title text-xl  font-semibold uppercase text-success">MANTENIMIENTOS</h2>
-              <p class="text-4xl font-bold mt-1">201</p>
-              <div class="mt-2 text-xs text-base-content/70 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M11 4l3 8l-3 8" />
-                </svg>
-                 En 12 Proyectos
+      <!-- Tarjeta de Mantenimientos -->
+      <a v-if="filter === 'all' || filter === 'mantenimientos'"
+         href="#" 
+         class="card card-compact w-80 bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-success hover:bg-success/5 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+         :class="'card-' + Math.floor(Math.random() * 10)">
+          <div class="card-body">
+              <div class="flex justify-between items-start">
+                  <div>
+                      <h2 class="card-title text-xl font-semibold uppercase text-success">
+                          MANTENIMIENTOS
+                          <span v-if="loading.mantenimientos" class="loading loading-spinner loading-xs ml-2"></span>
+                      </h2>
+                      <div v-if="loading.mantenimientos" class="skeleton h-10 w-20 mt-2"></div>
+                      <p v-else class="text-4xl font-bold mt-1 animate-count">${counters.mantenimientos.total}</p>
+                      <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                              <path d="M11 4l3 8l-3 8" />
+                          </svg>
+                          En ${counters.mantenimientos.proyectos} Proyectos
+                      </div>
+                  </div>
+                  <div class="p-3 rounded-full bg-success/10 text-success">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                          <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+                          <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
+                          <path d="M9 14h.01" />
+                          <path d="M9 17h.01" />
+                          <path d="M12 16l1 1l3 -3" />
+                      </svg>
+                  </div>
               </div>
-            </div>
-            <div class="p-3 rounded-full bg-success text-success-content">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-checkup-list" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
-                    <path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" />
-                    <path d="M9 14h.01" />
-                    <path d="M9 17h.01" />
-                    <path d="M12 16l1 1l3 -3" />
-                </svg>
-            </div>
           </div>
-        </div>
       </a>
   
-      <!-- Planillas Card -->
-      <a href="#" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
-        <div class="card-body">
-          <div class="flex justify-between items-start">
-            <div>
-              <h2 class="card-title text-xl  font-semibold uppercase text-info">PLANILLAS</h2>
-              <p class="text-4xl font-bold mt-1">25</p>
-              <div class="mt-2 text-xs text-base-content/70 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M11 4l3 8l-3 8" />
-                </svg>
-                 12 Proyectos Pendientes
+      <!-- Tarjeta de Planillas -->
+      <a v-if="filter === 'all' || filter === 'planillas'"
+         href="#" 
+         class="card card-compact w-80 bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-info hover:bg-info/5 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+         :class="'card-' + Math.floor(Math.random() * 10)">
+          <div class="card-body">
+              <div class="flex justify-between items-start">
+                  <div>
+                      <h2 class="card-title text-xl font-semibold uppercase text-info">
+                          PLANILLAS
+                          <span v-if="loading.planillas" class="loading loading-spinner loading-xs ml-2"></span>
+                      </h2>
+                      <div v-if="loading.planillas" class="skeleton h-10 w-20 mt-2"></div>
+                      <p v-else class="text-4xl font-bold mt-1 animate-count">${counters.planillas.total}</p>
+                      <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                              <path d="M11 4l3 8l-3 8" />
+                          </svg>
+                          ${counters.planillas.pendientes} Proyectos Pendientes
+                      </div>
+                  </div>
+                  <div class="p-3 rounded-full bg-info/10 text-info">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                          <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                          <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+                          <path d="M9 17l0 -5" />
+                          <path d="M12 17l0 -1" />
+                          <path d="M15 17l0 -3" />
+                      </svg>
+                  </div>
               </div>
-            </div>
-            <div class="p-3 rounded-full bg-info text-info-content">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-file-analytics" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-                <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-                <path d="M9 17l0 -5" />
-                <path d="M12 17l0 -1" />
-                <path d="M15 17l0 -3" />
-              </svg>
-            </div>
           </div>
-        </div>
       </a>
   
-      <!-- Vehiculos Card -->
-      <a href="{% url 'vehicle_list' %}" class="card bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-primary hover:bg-gray-100 transition-all duration-300 ease-in-out">
-        <div class="card-body">
-          <div class="flex justify-between items-start">
-            <div>
-              <h2 class="card-title text-xl  font-semibold uppercase text-neutral-focus">VEHICULOS</h2>
-              <p class="text-4xl font-bold mt-1">14</p>
-              <div class="mt-2 text-xs text-base-content/70 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1 icon icon-tabler icon-tabler-chevron-compact-right" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                    <path d="M11 4l3 8l-3 8" />
-                </svg>
-                 12 Vehiculos Disponibles
+      <!-- Tarjeta de Vehículos -->
+      <a v-if="filter === 'all' || filter === 'vehiculos'"
+         href="#" 
+         class="card card-compact w-80 bg-base-100 shadow-xl border border-base-300 hover:shadow-2xl hover:border-warning hover:bg-warning/5 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+         :class="'card-' + Math.floor(Math.random() * 10)">
+          <div class="card-body">
+              <div class="flex justify-between items-start">
+                  <div>
+                      <h2 class="card-title text-xl font-semibold uppercase text-warning">
+                          VEHÍCULOS
+                          <span v-if="loading.vehiculos" class="loading loading-spinner loading-xs ml-2"></span>
+                      </h2>
+                      <div v-if="loading.vehiculos" class="skeleton h-10 w-20 mt-2"></div>
+                      <p v-else class="text-4xl font-bold mt-1 animate-count">${counters.vehiculos.total}</p>
+                      <div class="mt-2 text-xs text-base-content/70 flex items-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 mr-1" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                              <path d="M11 4l3 8l-3 8" />
+                          </svg>
+                          ${counters.vehiculos.enServicio} Vehículos en Servicio
+                      </div>
+                  </div>
+                  <div class="p-3 rounded-full bg-warning/10 text-warning">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                          <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                          <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                          <path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" />
+                      </svg>
+                  </div>
               </div>
-            </div>
-            <div class="p-3 rounded-full bg-neutral text-neutral-content">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 icon icon-tabler icon-tabler-truck" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                <path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" />
-              </svg>
-            </div>
           </div>
-        </div>
       </a>
     </div>
 </div>
+{% block script_app %}
+<script src="{% static 'js/app/home_app.js' %}"></script>
 {% endblock %}
+{% endblock %}  
