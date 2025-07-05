@@ -6,12 +6,13 @@ from equipment.models import ResourceItem, Vehicle, CertificationVehicle, PassVe
 class ResourceItemAdmin(SimpleHistoryAdmin):
     list_display = (
         'name',
-        'code', 
+        'code',
         'type',
         'brand',
         'model',
+        'base_price',
         'status',
-        'bg_current_location',
+        'current_location',
         'is_active',
         'created_at',
     )
@@ -30,38 +31,39 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
         'code',
         'brand',
         'model',
-        'bg_current_location',
+        'current_location',
         'notes',
     )
-    
+
     ordering = ('-created_at', 'name')
-    
+
     fieldsets = (
-        ('Información Básica', {
-            'fields': ('name', 'code', 'type', 'brand', 'model')
+        ('Basic Information', {
+            'fields': ('name', 'code', 'type', 'brand', 'model', 'base_price')
         }),
-        ('Características Físicas', {
+        ('Physical Characteristics', {
             'fields': ('height', 'width', 'depth', 'weight'),
             'classes': ('collapse',)
         }),
-        ('Estado y Ubicación', {
-            'fields': ('status', 'bg_current_location', 'bg_current_project', 'is_active')
+        ('Status and Location', {
+            'fields': ('status', 'current_location', 'current_project_id', 'is_active')
         }),
-        ('Fechas Importantes', {
-            'fields': ('date_purchase', 'bg_date_commitment', 'bg_date_free')
+        ('Important Dates', {
+            'fields': ('date_purchase', 'commitment_date', 'release_date')
         }),
-        ('Información Adicional', {
+        ('Additional Information', {
             'fields': ('notes',),
             'classes': ('collapse',)
         }),
-        ('Auditoría', {
+        ('Audit', {
             'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
             'classes': ('collapse',)
         })
     )
-    
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
-    
+
+    readonly_fields = ('created_at', 'updated_at',
+                       'id_user_created', 'id_user_updated')
+
     date_hierarchy = 'created_at'
 
 
@@ -100,9 +102,9 @@ class VehicleAdmin(SimpleHistoryAdmin):
         'insurance_company',
         'notes',
     )
-    
+
     ordering = ('-created_at', '-year')
-    
+
     fieldsets = (
         ('Información Básica', {
             'fields': ('no_plate', 'brand', 'model', 'type_vehicle', 'year', 'color')
@@ -129,9 +131,10 @@ class VehicleAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         })
     )
-    
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
-    
+
+    readonly_fields = ('created_at', 'updated_at',
+                       'id_user_created', 'id_user_updated')
+
     date_hierarchy = 'created_at'
 
 
@@ -160,9 +163,9 @@ class CertificationVehicleAdmin(SimpleHistoryAdmin):
         'vehicle__brand',
         'notes',
     )
-    
+
     ordering = ('-date_start', '-created_at')
-    
+
     fieldsets = (
         ('Información de Certificación', {
             'fields': ('vehicle', 'name', 'description', 'is_active')
@@ -179,11 +182,12 @@ class CertificationVehicleAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         })
     )
-    
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
-    
+
+    readonly_fields = ('created_at', 'updated_at',
+                       'id_user_created', 'id_user_updated')
+
     date_hierarchy = 'date_start'
-    
+
     def get_vehicle_plate(self, obj):
         return obj.vehicle.no_plate if obj.vehicle else 'N/A'
     get_vehicle_plate.short_description = 'Placa del Vehículo'
@@ -211,9 +215,9 @@ class PassVehicleAdmin(SimpleHistoryAdmin):
         'bloque',
         'notes',
     )
-    
+
     ordering = ('-fecha_caducidad', '-created_at')
-    
+
     fieldsets = (
         ('Información del Pase', {
             'fields': ('vehicle', 'bloque', 'fecha_caducidad', 'is_active')
@@ -227,11 +231,12 @@ class PassVehicleAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         })
     )
-    
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
-    
+
+    readonly_fields = ('created_at', 'updated_at',
+                       'id_user_created', 'id_user_updated')
+
     date_hierarchy = 'fecha_caducidad'
-    
+
     def get_vehicle_plate(self, obj):
         return obj.vehicle.no_plate if obj.vehicle else 'N/A'
     get_vehicle_plate.short_description = 'Placa del Vehículo'

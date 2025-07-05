@@ -3,12 +3,12 @@ from common import BaseModel
 from django.core.exceptions import ObjectDoesNotExist
 from datetime import date
 
-TYPE_CHOISES = (
+TYPE_RECORD = (
     ('EQUIPO', 'EQUIPO'),
     ('SERVICIO', 'SERVICIO')
 )
 
-EQUIPOS_SUBTIPO = (
+TYPE_EQUIPMENT = (
     ('LAVAMANOS', 'LAVAMANOS'),
     ('BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA HOMBRE'),
     ('BATERIA SANITARIA MUJER', 'BATERIA SANITARIA MUJER'),
@@ -27,13 +27,6 @@ CAPACIDAD_PLANTA_CHOICES = (
     ('10M3', '10M3'),
     ('15M3', '15M3'),
     ('25M3', '25M3'),
-)
-
-UNIDAD_CAPACIDAD_CHOICES = (
-    ('GALONES', 'GALONES'),
-    ('LITROS', 'LITROS'),
-    ('METROS_CUBICOS', 'METROS CÚBICOS'),
-    ('BARRILES', 'BARRILES'),
 )
 
 
@@ -60,112 +53,102 @@ class ResourceItem(BaseModel):
     type = models.CharField(
         'Tipo',
         max_length=255,
-        choices=TYPE_CHOISES,
+        choices=TYPE_RECORD,
         default='EQUIPO'
     )
 
-    # Nuevo campo para subtipo de equipo
-    subtipo = models.CharField(
-        'Subtipo de Equipo',
+    # Nuevo campo para subtype de equipo
+    subtype = models.CharField(
+        'Equipment Subtype',
         max_length=255,
-        choices=EQUIPOS_SUBTIPO,
+        choices=TYPE_EQUIPMENT,
         blank=True,
         null=True
     )
 
     brand = models.CharField(
-        'Marca',
+        'Brand',
         max_length=255,
         default='SIN MARCA'
     )
     model = models.CharField(
-        'Modelo',
+        'Model',
         max_length=255,
         blank=True,
         null=True,
         default='N/A'
     )
     code = models.CharField(
-        'Código Equipo',
+        'Equipment Code',
         max_length=50,
         unique=True
     )
     serial_number = models.CharField(
-        'Número de Serie',
+        'Serial Number',
         max_length=255,
         blank=True,
         null=True,
-        unique=True
     )
     date_purchase = models.DateField(
-        'Fecha de Compra',
+        'Purchase Date',
         blank=True,
         null=True,
         default=None
     )
     height = models.PositiveSmallIntegerField(
-        'Altura',
+        'Height (cm)',
         blank=True,
         null=True,
         default=None
     )
     width = models.PositiveSmallIntegerField(
-        'Ancho',
+        'Width (cm)',
         blank=True,
         null=True,
         default=None
     )
     depth = models.PositiveSmallIntegerField(
-        'Profundidad',
+        'Depth (cm)',
         blank=True,
         null=True,
         default=None
     )
     weight = models.PositiveSmallIntegerField(
-        'Peso',
+        'Weight (kg)',
         blank=True,
         null=True,
         default=None
     )
     status = models.CharField(
-        'Estado',
+        'Status',
         max_length=255,
         choices=STATUS_CHOICES,
         default='DISPONIBLE'
     )
 
-    # Campos de capacidad separados
-    capacidad = models.DecimalField(
-        'Capacidad',
+    # Precio base de alquiler del equipo
+    base_price = models.DecimalField(
+        'Base Rental Price',
         max_digits=10,
         decimal_places=2,
         blank=True,
         null=True,
-        help_text='Capacidad del equipo (valor numérico)'
+        help_text='Valor base de alquiler del equipo'
     )
 
-    unidad_capacidad = models.CharField(
-        'Unidad de Capacidad',
-        max_length=20,
-        choices=UNIDAD_CAPACIDAD_CHOICES,
-        blank=True,
-        null=True,
-        help_text='Unidad de medida para la capacidad'
-    )
-
-    # Mantener el campo anterior para compatibilidad (deprecated)
-    capacidad_galones = models.DecimalField(
-        'Capacidad en Galones (Deprecated)',
+    # Simplificar campos de capacidad - todo en galones
+    capacity_gallons = models.DecimalField(
+        'Capacity (gallons)',
         max_digits=10,
         decimal_places=2,
         blank=True,
         null=True,
-        help_text='Campo obsoleto - usar capacidad + unidad_capacidad'
+        help_text='Capacidad del equipo en galones'
     )
 
     # Campo específico para plantas de tratamiento de agua residual
-    capacidad_planta = models.CharField(
-        'Capacidad de Planta',
+    plant_capacity = models.CharField(
+        'Plant Capacity',
         max_length=10,
         choices=CAPACIDAD_PLANTA_CHOICES,
         blank=True,
@@ -174,71 +157,76 @@ class ResourceItem(BaseModel):
     )
 
     # Campos específicos para LAVAMANOS
-    bombas_pie = models.BooleanField(
-        'Bombas de Pie',
+    foot_pumps = models.BooleanField(
+        'Foot Pumps',
         default=False,
         help_text='Solo para lavamanos'
     )
-    dispensador_jabon_lavamanos = models.BooleanField(
-        'Dispensador de Jabón',
+    sink_soap_dispenser = models.BooleanField(
+        'Soap Dispenser',
+        default=False,
+        help_text='Solo para lavamanos'
+    )
+    paper_towels = models.BooleanField(
+        'Paper Towels',
         default=False,
         help_text='Solo para lavamanos'
     )
 
     # Campos específicos para BATERÍAS SANITARIAS (HOMBRE Y MUJER)
-    dispensador_papel = models.BooleanField(
-        'Dispensador de Papel',
+    paper_dispenser = models.BooleanField(
+        'Paper Dispenser',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    dispensador_jabon = models.BooleanField(
-        'Dispensador de Jabón',
+    soap_dispenser = models.BooleanField(
+        'Soap Dispenser',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    dispensador_servilletas = models.BooleanField(
+    napkin_dispenser = models.BooleanField(
         'Dispensador de Servilletas',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    urinales = models.BooleanField(
-        'Urinales',
+    urinals = models.BooleanField(
+        'Urinarios',
         default=False,
         help_text='Solo para baterías sanitarias de hombre'
     )
-    asientos = models.BooleanField(
-        'Asientos',
+    seats = models.BooleanField(
+        'Asiento',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    bomba_bano = models.BooleanField(
-        'Bomba Baño',
+    toilet_pump = models.BooleanField(
+        'Bomba de Baño',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    bomba_lavamanos = models.BooleanField(
-        'Bomba Lavamanos',
+    sink_pump = models.BooleanField(
+        'Bomba de Lavamanos',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    tapa_inodoro = models.BooleanField(
-        'Tapa de Inodoro',
+    toilet_lid = models.BooleanField(
+        'Llave de Baño',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    bases_banos = models.BooleanField(
-        'Bases Baños',
+    bathroom_bases = models.BooleanField(
+        'Bases de Baño',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    tubo_ventilacion = models.BooleanField(
+    ventilation_pipe = models.BooleanField(
         'Tubo de Ventilación',
         default=False,
         help_text='Para baterías sanitarias'
     )
 
     # Campo para motivo de reparación
-    motivo_reparacion = models.TextField(
+    repair_reason = models.TextField(
         'Motivo de Reparación',
         blank=True,
         null=True,
@@ -248,72 +236,72 @@ class ResourceItem(BaseModel):
     # Estos campos se actualizan cada vez que el equipo cambia de proyecto
     # o de ubicación, no se actualiza manualmente
     # se libera cuando un proyecto termina, o libera el equipo
-    bg_current_location = models.CharField(
+    current_location = models.CharField(
         'Ubicación Actual',
         max_length=255,
         blank=True,
         null=True
     )
-    bg_current_project = models.SmallIntegerField(
-        'ID Proyecto Actual',
+    current_project_id = models.SmallIntegerField(
+        'ID del Proyecto Actual',
         blank=True,
         null=True
     )
-    bg_date_commitment = models.DateField(
-        'Fecha de Compromiso',
+    commitment_date = models.DateField(
+        'Fecha de Ocupación',
         blank=True,
         null=True
     )
-    bg_date_free = models.DateField(
+    release_date = models.DateField(
         'Fecha de Liberación',
         blank=True,
         null=True
     )
 
     # Campos para equipos especiales (blower, motor, banda, etc.)
-    blower_marca = models.CharField(
+    blower_brand = models.CharField(
         'Marca del Blower',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    blower_modelo = models.CharField(
+    blower_model = models.CharField(
         'Modelo del Blower',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    motor_marca = models.CharField(
+    engine_brand = models.CharField(
         'Marca del Motor',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    motor_modelo = models.CharField(
+    engine_model = models.CharField(
         'Modelo del Motor',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    banda_marca = models.CharField(
+    belt_brand = models.CharField(
         'Marca de la Banda',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    banda_modelo = models.CharField(
+    belt_model = models.CharField(
         'Modelo de la Banda',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    banda_tipo = models.CharField(
+    belt_type = models.CharField(
         'Tipo de Banda',
         max_length=1,
         choices=(('A', 'A'), ('B', 'B')),
@@ -321,57 +309,57 @@ class ResourceItem(BaseModel):
         null=True,
         help_text='Solo para plantas y tanques. Solo una por equipo.'
     )
-    polea_blower_marca = models.CharField(
-        'Marca de la Polea del Blower',
+    blower_pulley_brand = models.CharField(
+        'Marca de la Pulley del Blower',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    polea_blower_modelo = models.CharField(
-        'Modelo de la Polea del Blower',
+    blower_pulley_model = models.CharField(
+        'Modelo de la Pulley del Blower',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    polea_motor_marca = models.CharField(
-        'Marca de la Polea del Motor',
+    motor_pulley_brand = models.CharField(
+        'Marca de la Pulley del Motor',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    polea_motor_modelo = models.CharField(
-        'Modelo de la Polea del Motor',
+    motor_pulley_model = models.CharField(
+        'Modelo de la Pulley del Motor',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    tablero_electrico_marca = models.CharField(
-        'Marca del Tablero Eléctrico',
+    electrical_panel_brand = models.CharField(
+        'Marca del Panel Eléctrico',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    tablero_electrico_modelo = models.CharField(
-        'Modelo del Tablero Eléctrico',
+    electrical_panel_model = models.CharField(
+        'Modelo del Panel Eléctrico',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    guarda_motor_marca = models.CharField(
-        'Marca de la Guarda Motor',
+    motor_guard_brand = models.CharField(
+        'Marca de la Guardia del Motor',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    guarda_motor_modelo = models.CharField(
-        'Modelo de la Guarda Motor',
+    motor_guard_model = models.CharField(
+        'Modelo Guarda Motor',
         max_length=255,
         blank=True,
         null=True,
@@ -383,45 +371,45 @@ class ResourceItem(BaseModel):
         from django.core.exceptions import ValidationError
 
         # Validar que si el estado es "EN REPARACION" se especifique el motivo
-        if self.status == 'EN REPARACION' and not self.motivo_reparacion:
+        if self.status == 'EN REPARACION' and not self.repair_reason:
             raise ValidationError({
-                'motivo_reparacion': 'Debe especificar el motivo de reparación cuando el estado es "EN REPARACION"'
+                'repair_reason': 'Debe especificar el motivo de reparación cuando el estado es "EN REPARACION"'
             })
 
-        # Validar que los campos específicos solo se usen con los subtipos correctos
-        if self.subtipo == 'LAVAMANOS':
+        # Validar que los campos específicos solo se usen con los subtypes correctos
+        if self.subtype == 'LAVAMANOS':
             # Solo validar campos específicos de lavamanos
             pass
-        elif self.subtipo in ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER']:
-            # Validar que urinales solo se use en baterías de hombre
-            if self.subtipo == 'BATERIA SANITARIA MUJER' and self.urinales:
+        elif self.subtype in ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER']:
+            # Validar que urinals solo se use en baterías de hombre
+            if self.subtype == 'BATERIA SANITARIA MUJER' and self.urinals:
                 raise ValidationError({
-                    'urinales': 'Los urinales solo aplican para baterías sanitarias de hombre'
+                    'urinals': 'Los urinals solo aplican para baterías sanitarias de hombre'
                 })
-        elif self.subtipo == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL':
+        elif self.subtype == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL':
             # Validar que se especifique la capacidad de planta
-            if not self.capacidad_planta:
+            if not self.plant_capacity:
                 raise ValidationError({
-                    'capacidad_planta': 'Debe especificar la capacidad de la planta para este tipo de equipo'
+                    'plant_capacity': 'Debe especificar la capacidad de la planta para este tipo de equipo'
                 })
 
-        # Validar que los campos de blower, motor, banda, etc. solo se llenen para los subtipos correctos
-        subtipos_especiales = [
+        # Validar que los campos de blower, motor, banda, etc. solo se llenen para los subtypes correctos
+        special_subtypes = [
             'PLANTA DE TRATAMIENTO DE AGUA',
             'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
             'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
             'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
         ]
-        campos_especiales = [
-            'blower_marca', 'blower_modelo', 'motor_marca', 'motor_modelo',
-            'banda_marca', 'banda_modelo', 'banda_tipo',
-            'polea_blower_marca', 'polea_blower_modelo',
-            'polea_motor_marca', 'polea_motor_modelo',
-            'tablero_electrico_marca', 'tablero_electrico_modelo',
-            'guarda_motor_marca', 'guarda_motor_modelo'
+        special_fields = [
+            'blower_brand', 'blower_model', 'engine_brand', 'engine_model',
+            'belt_brand', 'belt_model', 'belt_type',
+            'blower_pulley_brand', 'blower_pulley_model',
+            'motor_pulley_brand', 'motor_pulley_model',
+            'electrical_panel_brand', 'electrical_panel_model',
+            'motor_guard_brand', 'motor_guard_model'
         ]
-        if self.subtipo not in subtipos_especiales:
-            for campo in campos_especiales:
+        if self.subtype not in special_subtypes:
+            for campo in special_fields:
                 if getattr(self, campo):
                     raise ValidationError({
                         campo: f'Este campo solo aplica para plantas y tanques.'
@@ -432,68 +420,61 @@ class ResourceItem(BaseModel):
         super().save(*args, **kwargs)
 
     @property
-    def capacidad_display(self):
+    def capacity_display(self):
         """Muestra la capacidad con su unidad de forma legible"""
-        if self.capacidad and self.unidad_capacidad:
-            unidad_display = dict(UNIDAD_CAPACIDAD_CHOICES).get(
-                self.unidad_capacidad, self.unidad_capacidad)
-            return f"{self.capacidad} {unidad_display}"
-        elif self.capacidad_galones:  # Fallback al campo anterior
-            return f"{self.capacidad_galones} Galones"
+        if self.capacity_gallons:
+            return f"{self.capacity_gallons} Galones"
+        elif self.subtype == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL' and self.plant_capacity:
+            return f"{self.plant_capacity}"
         return "No especificada"
 
     @property
-    def tiene_caracteristicas_especiales(self):
-        """Verifica si el equipo tiene características específicas configuradas"""
-        caracteristicas = [
-            self.bombas_pie, self.dispensador_jabon_lavamanos, self.dispensador_papel,
-            self.dispensador_jabon, self.dispensador_servilletas, self.urinales,
-            self.asientos, self.bomba_bano, self.bomba_lavamanos, self.tapa_inodoro,
-            self.bases_banos, self.tubo_ventilacion
+    def has_characteristics(self):
+        """Verifies if the equipment has specific characteristics configured"""
+        characteristics = [
+            self.foot_pumps, self.sink_soap_dispenser, self.paper_dispenser,
+            self.soap_dispenser, self.napkin_dispenser, self.urinals,
+            self.seats, self.toilet_pump, self.sink_pump, self.toilet_lid,
+            self.bathroom_bases, self.ventilation_pipe
         ]
-        return any(caracteristicas)
+        return any(characteristics)
 
     @property
-    def caracteristicas_activas(self):
-        """Retorna una lista de las características activas del equipo"""
-        caracteristicas = []
+    def get_active_characteristics(self):
+        """Returns a list of the equipment's active characteristics"""
+        characteristics = []
 
-        if self.subtipo == 'LAVAMANOS':
-            if self.bombas_pie:
-                caracteristicas.append('Bombas de Pie')
-            if self.dispensador_jabon_lavamanos:
-                caracteristicas.append('Dispensador de Jabón')
+        if self.subtype == 'LAVAMANOS':
+            if self.foot_pumps:
+                characteristics.append('Foot Pumps')
+            if self.sink_soap_dispenser:
+                characteristics.append('Soap Dispenser')
+            if self.paper_towels:
+                characteristics.append('Paper Towels')
 
-        elif self.subtipo in ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER']:
-            if self.dispensador_papel:
-                caracteristicas.append('Dispensador de Papel')
-            if self.dispensador_jabon:
-                caracteristicas.append('Dispensador de Jabón')
-            if self.dispensador_servilletas:
-                caracteristicas.append('Dispensador de Servilletas')
-            if self.urinales:
-                caracteristicas.append('Urinales')
-            if self.asientos:
-                caracteristicas.append('Asientos')
-            if self.bomba_bano:
-                caracteristicas.append('Bomba Baño')
-            if self.bomba_lavamanos:
-                caracteristicas.append('Bomba Lavamanos')
-            if self.tapa_inodoro:
-                caracteristicas.append('Tapa de Inodoro')
-            if self.bases_banos:
-                caracteristicas.append('Bases Baños')
-            if self.tubo_ventilacion:
-                caracteristicas.append('Tubo de Ventilación')
+        elif self.subtype in ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER']:
+            if self.paper_dispenser:
+                characteristics.append('Paper Dispenser')
+            if self.soap_dispenser:
+                characteristics.append('Soap Dispenser')
+            if self.napkin_dispenser:
+                characteristics.append('Napkin Dispenser')
+            if self.urinals:
+                characteristics.append('Urinals')
+            if self.seats:
+                characteristics.append('Seats')
+            if self.toilet_pump:
+                characteristics.append('Toilet Pump')
+            if self.sink_pump:
+                characteristics.append('Sink Pump')
+            if self.toilet_lid:
+                characteristics.append('Toilet Lid')
+            if self.bathroom_bases:
+                characteristics.append('Bathroom Bases')
+            if self.ventilation_pipe:
+                characteristics.append('Ventilation Pipe')
 
-        return caracteristicas
-
-    @classmethod
-    def get_by_id(cls, id_equipment):
-        try:
-            return ResourceItem.objects.get(id=id_equipment)
-        except ObjectDoesNotExist:
-            return None
+        return characteristics
 
     @classmethod
     def get_free_equipment(cls):
@@ -502,17 +483,19 @@ class ResourceItem(BaseModel):
             status='DISPONIBLE',
             is_active=True,
             type='EQUIPO',
-            bg_date_free__lte=today
+            release_date__lte=today
         )
 
     def __str__(self):
-        capacidad_str = f" - {self.capacidad_display}" if (
-            self.capacidad or self.capacidad_galones) else ""
-        if self.subtipo == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL' and self.capacidad_planta:
-            capacidad_str = f" - {self.capacidad_planta}"
-        return f"{self.name}{capacidad_str}"
+        capacity_str = ""
+        if self.subtype == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL' and self.plant_capacity:
+            capacity_str = f" - {self.plant_capacity}"
+        elif self.capacity_gallons:
+            capacity_str = f" - {self.capacity_gallons} Galones"
+        return f"{self.name}{capacity_str}"
 
     class Meta:
         verbose_name = 'Recurso/Equipo'
         verbose_name_plural = 'Recursos/Equipos'
         ordering = ['name']
+        unique_together = (('code', 'serial_number'),)

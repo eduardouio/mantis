@@ -67,7 +67,7 @@ class TestResourceItem:
             status='DISPONIBLE',
             is_active=True,
             type='EQUIPO',
-            bg_date_free=yesterday  # Use yesterday to ensure it's "free"
+            release_date=yesterday  # Use yesterday to ensure it's "free"
         )
         free_eq2 = ResourceItem.objects.create(
             name='Equipo Libre 2',
@@ -75,7 +75,7 @@ class TestResourceItem:
             status='DISPONIBLE',
             is_active=True,
             type='EQUIPO',
-            bg_date_free=yesterday  # Use yesterday to ensure it's "free"
+            release_date=yesterday  # Use yesterday to ensure it's "free"
         )
 
         # Not free equipment
@@ -125,11 +125,11 @@ class TestResourceItem:
 
         for status_code, _ in ResourceItem.STATUS_CHOICES:
             resource.status = status_code
-            # Añadir motivo_reparacion si el estado es EN REPARACION
+            # Añadir repair_reason si el estado es EN REPARACION
             if status_code == 'EN REPARACION':
-                resource.motivo_reparacion = 'Test motivo'
-            elif resource.motivo_reparacion and status_code != 'EN REPARACION':  # Limpiar si no es EN REPARACION
-                resource.motivo_reparacion = None
+                resource.repair_reason = 'Test motivo'
+            elif resource.repair_reason and status_code != 'EN REPARACION':  # Limpiar si no es EN REPARACION
+                resource.repair_reason = None
             resource.save()
             resource.refresh_from_db()
             assert resource.status == status_code
@@ -138,9 +138,9 @@ class TestResourceItem:
         resource = ResourceItem.objects.create(
             name='Test Dates',
             code='DATE-TEST',
-            bg_date_commitment=date(2024, 6, 1),
-            bg_date_free=date(2024, 12, 31),
+            commitment_date=date(2024, 6, 1),
+            release_date=date(2024, 12, 31),
             status='DISPONIBLE'  # Añadir status válido
         )
-        assert resource.bg_date_commitment == date(2024, 6, 1)
-        assert resource.bg_date_free == date(2024, 12, 31)
+        assert resource.commitment_date == date(2024, 6, 1)
+        assert resource.release_date == date(2024, 12, 31)
