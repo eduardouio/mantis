@@ -1,24 +1,301 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
+{% block style%}
+<style>
+  /* Forzar clases DaisyUI para todos los elementos del formulario Django */
+  .form-control input,
+  .form-control select,
+  .form-control textarea {
+    @apply input input-bordered w-full h-10 min-h-10 !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+  
+  .form-control textarea {
+    @apply textarea textarea-bordered min-h-20 !important;
+    height: auto !important;
+    min-height: 5rem !important;
+  }
+  
+  /* Asegurar que todos los tipos de input tengan la misma altura */
+  .form-control input[type="text"],
+  .form-control input[type="email"],
+  .form-control input[type="number"],
+  .form-control input[type="tel"],
+  .form-control input[type="date"],
+  .form-control input[type="checkbox"] {
+    @apply input input-bordered !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+  
+  .form-control select {
+    @apply select select-bordered !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+  
+  /* Mejoras específicas para checkboxes */
+  .form-control input[type="checkbox"] {
+    @apply checkbox checkbox-primary !important;
+    height: 1.25rem !important;
+    width: 1.25rem !important;
+    min-height: 1.25rem !important;
+    margin: 0 !important;
+  }
+  
+  /* Excepción para checkboxes */
+  .form-control input[type="checkbox"] {
+    @apply checkbox checkbox-primary !important;
+    height: 1.25rem !important;
+    width: 1.25rem !important;
+    min-height: 1.25rem !important;
+  }
+  
+  /* Efectos de hover y focus */
+  .form-control input:focus,
+  .form-control select:focus,
+  .form-control textarea:focus {
+    @apply ring-2 ring-blue-500 ring-opacity-50 border-blue-500 shadow-lg transition-all duration-200 !important;
+  }
+  
+  .form-control:hover input:not(:focus),
+  .form-control:hover select:not(:focus),
+  .form-control:hover textarea:not(:focus) {
+    @apply border-blue-300 shadow-md !important;
+  }
+  
+  /* Espaciado consistente para labels */
+  .label {
+    @apply mb-2 !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .label-text {
+    @apply leading-tight font-medium text-gray-700 !important;
+  }
+  
+  /* Alineación vertical de elementos en grids */
+  .grid > .form-control {
+    @apply flex flex-col justify-start !important;
+  }
+  
+  /* Espaciado consistente entre elementos */
+  .space-y-4 > .form-control {
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Headers de secciones */
+  h3 {
+    @apply border-b border-gray-200 pb-2 mb-4 !important;
+  }
+  
+  /* Alineación específica para checkboxes en labels cursor-pointer */
+  .label.cursor-pointer {
+    @apply flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 !important;
+    height: auto !important;
+    min-height: 3rem !important;
+  }
+  
+  .label.cursor-pointer .label-text {
+    @apply text-sm font-medium text-gray-700 !important;
+  }
+  
+  /* Asegurar altura mínima consistente para todos los controles de formulario */
+  .form-control {
+    @apply min-h-fit !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Mejorar la apariencia de los elementos deshabilitados */
+  .form-control input:disabled,
+  .form-control select:disabled,
+  .form-control textarea:disabled {
+    @apply bg-gray-100 text-gray-500 cursor-not-allowed !important;
+  }
+  
+  /* Normalizar apariencia de todos los inputs para que sean consistentes */
+  .form-control input,
+  .form-control select {
+    border-radius: 0.5rem !important;
+    border-width: 1px !important;
+    border-color: #d1d5db !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+  
+  /* Normalizar select */
+  .form-control select {
+    @apply select select-bordered !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+    background-position: right 0.5rem center !important;
+    background-repeat: no-repeat !important;
+    background-size: 1.5em 1.5em !important;
+    padding-right: 2.5rem !important;
+  }
+  
+  /* Estilo mejorado para labels con checkboxes alineados a la izquierda */
+  .label.cursor-pointer.justify-start {
+    @apply flex items-center p-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200 !important;
+    height: auto !important;
+    min-height: 2.5rem !important;
+    justify-content: flex-start !important;
+  }
+  
+  .label.cursor-pointer.justify-start .label-text {
+    @apply text-sm font-medium text-gray-700 !important;
+    margin: 0 !important;
+  }
+  
+  /* Override para labels normales (no checkboxes) */
+  .label:not(.cursor-pointer) {
+    @apply flex items-start justify-between !important;
+  }
+</style>
+{% endblock %}
 {% block content %}
-<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
-  <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
-    <h1 class="text-2xl font-semibold text-blue-500">{{ title_section }}</h1>
-    <div class="flex flex-wrap gap-2">
-      {% if request.resolver_match.url_name != 'resource_create' %}    
-      <a href="{% url 'resource_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
-        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-        </svg>
-        Eliminar
-      </a>
-      <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-sm btn-outline btn-info border-black">
-        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" />
-        </svg>
-        Volver a Ficha
-      </a>
-      {% endif %}
+<div id="resourceItemApp" class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-gray-300 border-t-[15px] border-t-blue-500">
+  <!-- Asistente paso a paso -->
+  {% verbatim %}
+  <div class="wizard-container mb-6" v-if="currentStep < 3">
+    <!-- Barra de progreso -->
+    <div class="flex items-center justify-between mb-8">
+      <template v-for="(title, index) in stepTitles" :key="index">
+        <div class="flex flex-col items-center">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center" 
+              :class="{
+                'bg-blue-500 text-white': index + 1 === currentStep,
+                'bg-blue-200 text-gray-700': index + 1 < currentStep,
+                'bg-gray-200 text-gray-500': index + 1 > currentStep
+              }">
+            {{ index + 1 }}
+          </div>
+          <span class="text-sm mt-1" 
+                :class="{
+                  'text-blue-500 font-medium': index + 1 === currentStep,
+                  'text-gray-500': index + 1 !== currentStep
+                }">
+            {{ title }}
+          </span>
+        </div>
+        <div v-if="index < stepTitles.length - 1" class="w-full h-1 bg-gray-200 flex-1 mx-2">
+          <div class="h-full bg-blue-500" :style="{ width: index + 1 < currentStep ? '100%' : '0%' }"></div>
+        </div>
+      </template>
+    </div>
+    
+    <!-- Paso 1: Selección de tipo -->
+    <div v-if="currentStep === 1" class="wizard-step">
+      <h2 class="text-xl font-semibold text-gray-700 mb-4">Seleccione el tipo de registro</h2>
+      <p class="text-gray-600 mb-6">¿Desea registrar un equipo físico o un servicio?</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Tarjeta de Equipo -->
+        <div class="card bg-white shadow-md hover:shadow-lg transition-all cursor-pointer border"
+             :class="{'ring-2 ring-blue-300 border-blue-300': formData.type === 'EQUIPO', 'border-gray-100': formData.type !== 'EQUIPO'}"
+             @click="selectType('EQUIPO')">
+          <div class="card-body">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="card-title text-lg font-bold text-blue-800">Equipo</h3>
+                <p class="text-gray-600 mt-2">Seleccione esta opción para registrar un equipo físico como lavamanos, baterías sanitarias, plantas de tratamiento, etc.</p>
+              </div>
+              <div class="rounded-full bg-blue-100 p-3" v-if="formData.type === 'EQUIPO'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tarjeta de Servicio -->
+        <div class="card bg-white shadow-md hover:shadow-lg transition-all cursor-pointer border"
+             :class="{'ring-2 ring-blue-300 border-blue-300': formData.type === 'SERVICIO', 'border-gray-100': formData.type !== 'SERVICIO'}"
+             @click="selectType('SERVICIO')">
+          <div class="card-body">
+            <div class="flex items-start justify-between">
+              <div>
+                <h3 class="card-title text-lg font-bold text-blue-800">Servicio</h3>
+                <p class="text-gray-600 mt-2">Seleccione esta opción para registrar un servicio ofrecido como instalación, mantenimiento, transporte, etc.</p>
+              </div>
+              <div class="rounded-full bg-blue-100 p-3" v-if="formData.type === 'SERVICIO'">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex justify-between mt-6">
+        <a href="{% url 'resource_list' %}" class="btn btn-outline">Cancelar</a>
+        <button class="btn btn-primary" @click.prevent="nextStep()" :disabled="!formData.type">Siguiente</button>
+      </div>
+    </div>
+    
+    <!-- Paso 2: Selección de subtipo (para equipos) -->
+    <div v-if="currentStep === 2" class="wizard-step">
+      <h2 class="text-xl font-semibold text-gray-700 mb-4">Seleccione el subtipo de equipo</h2>
+      <p class="text-gray-600 mb-6">¿Qué tipo de equipo desea registrar?</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        <div v-for="subtype in equipmentSubtypes" :key="subtype.value" 
+             class="card bg-white shadow-sm hover:shadow-md transition-all cursor-pointer border"
+             :class="{'ring-1 ring-blue-300 border-blue-200': formData.subtype === subtype.value, 'border-gray-100': formData.subtype !== subtype.value}"
+             @click="selectSubtype(subtype.value)">
+          <div class="card-body p-4">
+            <div class="flex items-start justify-between">
+              <h3 class="card-title text-md text-blue-700">{{ subtype.label }}</h3>
+              <div class="rounded-full bg-blue-100 p-2" v-if="formData.subtype === subtype.value">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex justify-between mt-6">
+        <button class="btn btn-outline" @click.prevent="prevStep()">Anterior</button>
+        <button class="btn btn-primary" @click.prevent="nextStep()" :disabled="!formData.subtype">Siguiente</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Vista previa del tipo seleccionado (en paso 3) -->
+  <div v-if="currentStep === 3" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+    <div class="flex justify-between items-center">
+      <div>
+        <span class="font-semibold">Tipo seleccionado:</span> {{ formData.type === 'EQUIPO' ? 'Equipo' : 'Servicio' }}
+        <span v-if="formData.type === 'EQUIPO'">
+          - <span class="font-semibold">Subtipo:</span> {{ formData.subtype }}
+        </span>
+      </div>
+      <button class="btn btn-sm btn-outline" @click.prevent="currentStep = 1">Cambiar</button>
+    </div>
+  </div>
+  
+  {% endverbatim %}
+  <div class="hidden">
+    {% if request.resolver_match.url_name != 'resource_create' %}    
+    <a href="{% url 'resource_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
+      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+      </svg>
+      Eliminar
+    </a>
+    <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-sm btn-outline btn-info border-black">
+      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" />
+      </svg>
+      Volver a Ficha
+    </a>
+    {% endif %}
       <a href="{% url 'resource_list' %}" class="btn btn-sm btn-outline border-black">
         <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" />
@@ -414,222 +691,7 @@
     </div>
   </form>
 </div>
-
-<style>
-  /* Forzar clases DaisyUI para todos los elementos del formulario Django */
-  .form-control input,
-  .form-control select,
-  .form-control textarea {
-    @apply input input-bordered w-full h-10 min-h-10 !important;
-    height: 2.5rem !important;
-    min-height: 2.5rem !important;
-  }
-  
-  .form-control textarea {
-    @apply textarea textarea-bordered min-h-20 !important;
-    height: auto !important;
-    min-height: 5rem !important;
-  }
-  
-  /* Asegurar que todos los tipos de input tengan la misma altura */
-  .form-control input[type="text"],
-  .form-control input[type="email"],
-  .form-control input[type="number"],
-  .form-control input[type="tel"],
-  .form-control input[type="date"],
-  .form-control input[type="checkbox"] {
-    @apply input input-bordered !important;
-    height: 2.5rem !important;
-    min-height: 2.5rem !important;
-  }
-  
-  .form-control select {
-    @apply select select-bordered !important;
-    height: 2.5rem !important;
-    min-height: 2.5rem !important;
-  }
-  
-  /* Mejoras específicas para checkboxes */
-  .form-control input[type="checkbox"] {
-    @apply checkbox checkbox-primary !important;
-    height: 1.25rem !important;
-    width: 1.25rem !important;
-    min-height: 1.25rem !important;
-    margin: 0 !important;
-  }
-  
-  /* Excepción para checkboxes */
-  .form-control input[type="checkbox"] {
-    @apply checkbox checkbox-primary !important;
-    height: 1.25rem !important;
-    width: 1.25rem !important;
-    min-height: 1.25rem !important;
-  }
-  
-  /* Efectos de hover y focus */
-  .form-control input:focus,
-  .form-control select:focus,
-  .form-control textarea:focus {
-    @apply ring-2 ring-blue-500 ring-opacity-50 border-blue-500 shadow-lg transition-all duration-200 !important;
-  }
-  
-  .form-control:hover input:not(:focus),
-  .form-control:hover select:not(:focus),
-  .form-control:hover textarea:not(:focus) {
-    @apply border-blue-300 shadow-md !important;
-  }
-  
-  /* Espaciado consistente para labels */
-  .label {
-    @apply mb-2 !important;
-    margin-bottom: 0.5rem !important;
-  }
-  
-  .label-text {
-    @apply leading-tight font-medium text-gray-700 !important;
-  }
-  
-  /* Alineación vertical de elementos en grids */
-  .grid > .form-control {
-    @apply flex flex-col justify-start !important;
-  }
-  
-  /* Espaciado consistente entre elementos */
-  .space-y-4 > .form-control {
-    margin-bottom: 1rem !important;
-  }
-  
-  /* Headers de secciones */
-  h3 {
-    @apply border-b border-gray-200 pb-2 mb-4 !important;
-  }
-  
-  /* Alineación específica para checkboxes en labels cursor-pointer */
-  .label.cursor-pointer {
-    @apply flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 !important;
-    height: auto !important;
-    min-height: 3rem !important;
-  }
-  
-  .label.cursor-pointer .label-text {
-    @apply text-sm font-medium text-gray-700 !important;
-  }
-  
-  /* Asegurar altura mínima consistente para todos los controles de formulario */
-  .form-control {
-    @apply min-h-fit !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-  
-  /* Mejorar la apariencia de los elementos deshabilitados */
-  .form-control input:disabled,
-  .form-control select:disabled,
-  .form-control textarea:disabled {
-    @apply bg-gray-100 text-gray-500 cursor-not-allowed !important;
-  }
-  
-  /* Normalizar apariencia de todos los inputs para que sean consistentes */
-  .form-control input,
-  .form-control select {
-    border-radius: 0.5rem !important;
-    border-width: 1px !important;
-    border-color: #d1d5db !important;
-    padding: 0.5rem 0.75rem !important;
-    font-size: 0.875rem !important;
-    line-height: 1.25rem !important;
-  }
-  
-  /* Normalizar select */
-  .form-control select {
-    @apply select select-bordered !important;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
-    background-position: right 0.5rem center !important;
-    background-repeat: no-repeat !important;
-    background-size: 1.5em 1.5em !important;
-    padding-right: 2.5rem !important;
-  }
-  
-  /* Estilo mejorado para labels con checkboxes alineados a la izquierda */
-  .label.cursor-pointer.justify-start {
-    @apply flex items-center p-2 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200 !important;
-    height: auto !important;
-    min-height: 2.5rem !important;
-    justify-content: flex-start !important;
-  }
-  
-  .label.cursor-pointer.justify-start .label-text {
-    @apply text-sm font-medium text-gray-700 !important;
-    margin: 0 !important;
-  }
-  
-  /* Override para labels normales (no checkboxes) */
-  .label:not(.cursor-pointer) {
-    @apply flex items-start justify-between !important;
-  }
-</style>
+{% block script_app %}
+<script src="{% static 'js/app/resourceitem_app.js' %}"></script>
 {% endblock %}
-
-{% block script %}
-<script>
-    $(document).ready(function() {
-        function toggleEquipmentFields() {
-            let tipo = $('#{{ form.type.id_for_label }}').val();
-            if (tipo === 'EQUIPO') {
-                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div, #dimensions_section, #subtipo_div, #capacidad_div').fadeIn('slow');
-                toggleSubtipoFields();
-            } else {
-                $('#brand_div, #model_div, #date_purchase_div, #height_div, #width_div, #depth_div, #weight_div, #dimensions_section, #subtipo_div, #capacidad_div, #caracteristicas_section').fadeOut('slow');
-            }
-        }
-
-        function toggleSubtipoFields() {
-            let subtipo = $('#{{ form.subtipo.id_for_label }}').val();
-            
-            // Ocultar todas las características específicas
-            $('.caracteristicas-group').hide();
-            $('#capacidad_planta_div').hide();
-            
-            if (subtipo) {
-                $('#caracteristicas_section').fadeIn('slow');
-                
-                if (subtipo === 'LAVAMANOS') {
-                    $('#lavamanos_caracteristicas').show();
-                } else if (subtipo === 'BATERIA SANITARIA HOMBRE') {
-                    $('#bateria_caracteristicas').show();
-                    $('#urinales_field').show();
-                } else if (subtipo === 'BATERIA SANITARIA MUJER') {
-                    $('#bateria_caracteristicas').show();
-                    $('#urinales_field').hide();
-                    // Desmarcar urinales para baterías de mujer
-                    $('#{{ form.urinales.id_for_label }}').prop('checked', false);
-                } else if (subtipo === 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL') {
-                    $('#capacidad_planta_div').show();
-                }
-            } else {
-                $('#caracteristicas_section').fadeOut('slow');
-            }
-        }
-
-        function toggleMotivoReparacion() {
-            let status = $('#{{ form.status.id_for_label }}').val();
-            if (status === 'EN REPARACION') {
-                $('#motivo_reparacion_div').fadeIn('slow');
-                $('#{{ form.motivo_reparacion.id_for_label }}').prop('required', true);
-            } else {
-                $('#motivo_reparacion_div').fadeOut('slow');
-                $('#{{ form.motivo_reparacion.id_for_label }}').prop('required', false);
-            }
-        }
-
-        // Ejecutar al cargar la página
-        toggleEquipmentFields();
-        toggleMotivoReparacion();
-
-        // Ejecutar al cambiar la selección
-        $('#{{ form.type.id_for_label }}').change(toggleEquipmentFields);
-        $('#{{ form.subtipo.id_for_label }}').change(toggleSubtipoFields);
-        $('#{{ form.status.id_for_label }}').change(toggleMotivoReparacion);
-    });
-</script>
 {% endblock %}
