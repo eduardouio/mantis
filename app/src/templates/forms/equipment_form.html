@@ -202,8 +202,8 @@
         </div>
       </div>
       
-      <!-- Formulario Django para Equipo -->
-      <form v-if="formData.type === 'EQUIPO'" action="" method="post" class="form-django mt-6">
+      <!-- Formulario para Equipo con Vue.js -->
+      <form v-if="formData.type === 'EQUIPO'" @submit.prevent="saveEquipment" class="mt-6">
   {% endverbatim %}
       <div class="hidden">
         {% if request.resolver_match.url_name != 'resource_create' %}    
@@ -239,10 +239,9 @@
       </div>
     {% endif %}
     
-    <!-- Tabs para organizar el formulario -->
-    <div class="tabs tabs-box w-full mb-4">
-      <input type="radio" name="form_tabs" class="tab" aria-label="Información General" checked />
-      <div class="tab-content bg-base-100 border-base-300 p-6">
+    <!-- Formulario organizado en secciones -->
+    <div class="w-full mb-4">
+      <div class="bg-base-100 border border-base-300 rounded-lg p-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Datos Principales -->
           <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
@@ -250,50 +249,90 @@
             
             <div class="form-control">
               <label class="label">
-                <span class="label-text">Tipo:</span>
-              </label>
-              {{ form.type }}
-              {% if form.type.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.type.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="form-control" id="subtipo_div">
-              <label class="label">
-                <span class="label-text">Subtipo de Equipo:</span>
-              </label>
-              {{ form.subtipo }}
-              {% if form.subtipo.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.subtipo.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="form-control">
-              <label class="label">
                 <span class="label-text">Código:</span>
               </label>
-              {{ form.code }}
-              {% if form.code.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.code.errors.0 }}</span>
-                </div>
-              {% endif %}
+              <input type="text" v-model="formData.code" class="input input-bordered w-full" placeholder="Ingrese el código">
+              <div v-if="errors.code" class="text-error text-sm mt-1">{{ errors.code }}</div>
             </div>
 
             <div class="form-control">
               <label class="label">
                 <span class="label-text">Nombre:</span>
               </label>
-              {{ form.name }}
-              {% if form.name.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.name.errors.0 }}</span>
-                </div>
-              {% endif %}
+              <input type="text" v-model="formData.name" class="input input-bordered w-full" placeholder="Ingrese el nombre">
+              <div v-if="errors.name" class="text-error text-sm mt-1">{{ errors.name }}</div>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Marca:</span>
+              </label>
+              <input type="text" v-model="formData.brand" class="input input-bordered w-full" placeholder="Ingrese la marca">
+              <div v-if="errors.brand" class="text-error text-sm mt-1">{{ errors.brand }}</div>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Modelo:</span>
+              </label>
+              <input type="text" v-model="formData.model" class="input input-bordered w-full" placeholder="Ingrese el modelo">
+              <div v-if="errors.model" class="text-error text-sm mt-1">{{ errors.model }}</div>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Número de Serie:</span>
+              </label>
+              <input type="text" v-model="formData.serial_number" class="input input-bordered w-full" placeholder="Ingrese el número de serie">
+              <div v-if="errors.serial_number" class="text-error text-sm mt-1">{{ errors.serial_number }}</div>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Fecha de Compra:</span>
+              </label>
+              <input type="date" v-model="formData.date_purchase" class="input input-bordered w-full">
+              <div v-if="errors.date_purchase" class="text-error text-sm mt-1">{{ errors.date_purchase }}</div>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Precio Base:</span>
+              </label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                <input type="number" v-model="formData.base_price" class="input input-bordered w-full pl-6" placeholder="0.00" step="0.01" min="0">
+              </div>
+              <div v-if="errors.base_price" class="text-error text-sm mt-1">{{ errors.base_price }}</div>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Estado:</span>
+              </label>
+              <select v-model="formData.status" class="select select-bordered w-full">
+                <option value="DISPONIBLE">Disponible</option>
+                <option value="RENTADO">Rentado</option>
+                <option value="EN_REPARACION">En Reparación</option>
+                <option value="FUERA_DE_SERVICIO">Fuera de Servicio</option>
+              </select>
+              <div v-if="errors.status" class="text-error text-sm mt-1">{{ errors.status }}</div>
+            </div>
+
+            <div class="form-control" v-if="formData.status === 'EN_REPARACION'">
+              <label class="label">
+                <span class="label-text">Motivo de Reparación:</span>
+              </label>
+              <textarea v-model="formData.motivo_reparacion" class="textarea textarea-bordered w-full" rows="3" placeholder="Ingrese el motivo de la reparación"></textarea>
+              <div v-if="errors.motivo_reparacion" class="text-error text-sm mt-1">{{ errors.motivo_reparacion }}</div>
+            </div>
+
+            <div class="form-control">
+              <label class="flex items-center cursor-pointer gap-3">
+                <input type="checkbox" v-model="formData.is_active" class="checkbox checkbox-primary">
+                <span class="label-text font-medium">Activo</span>
+              </label>
+              <p class="text-xs text-gray-500 mt-1">Indica si el equipo está activo y disponible</p>
             </div>
 
             <div class="form-control">
@@ -419,55 +458,40 @@
         </div>
 
         <!-- Dimensiones y Peso -->
-        <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200" id="dimensions_section">
+        <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
           <h3 class="text-lg font-medium text-blue-600 mb-4">Dimensiones y Peso</h3>
-          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="form-control" id="height_div">
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="form-control">
               <label class="label">
-                <span class="label-text">Altura (cm):</span>
+                <span class="label-text">Alto (cm):</span>
               </label>
-              {{ form.height }}
-              {% if form.height.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.height.errors.0 }}</span>
-                </div>
-              {% endif %}
+              <input type="number" v-model="formData.height" class="input input-bordered w-full" step="0.01" min="0" placeholder="0.00">
+              <div v-if="errors.height" class="text-error text-sm mt-1">{{ errors.height }}</div>
             </div>
 
-            <div class="form-control" id="width_div">
+            <div class="form-control">
               <label class="label">
                 <span class="label-text">Ancho (cm):</span>
               </label>
-              {{ form.width }}
-              {% if form.width.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.width.errors.0 }}</span>
-                </div>
-              {% endif %}
+              <input type="number" v-model="formData.width" class="input input-bordered w-full" step="0.01" min="0" placeholder="0.00">
+              <div v-if="errors.width" class="text-error text-sm mt-1">{{ errors.width }}</div>
             </div>
 
-            <div class="form-control" id="depth_div">
+            <div class="form-control">
               <label class="label">
                 <span class="label-text">Profundidad (cm):</span>
               </label>
-              {{ form.depth }}
-              {% if form.depth.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.depth.errors.0 }}</span>
-                </div>
-              {% endif %}
+              <input type="number" v-model="formData.depth" class="input input-bordered w-full" step="0.01" min="0" placeholder="0.00">
+              <div v-if="errors.depth" class="text-error text-sm mt-1">{{ errors.depth }}</div>
             </div>
 
-            <div class="form-control" id="weight_div">
+            <div class="form-control">
               <label class="label">
                 <span class="label-text">Peso (kg):</span>
               </label>
-              {{ form.weight }}
-              {% if form.weight.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.weight.errors.0 }}</span>
-                </div>
-              {% endif %}
+              <input type="number" v-model="formData.weight" class="input input-bordered w-full" step="0.01" min="0" placeholder="0.00">
+              <div v-if="errors.weight" class="text-error text-sm mt-1">{{ errors.weight }}</div>
             </div>
           </div>
         </div>
@@ -582,18 +606,62 @@
       </div>
     </div>
 
-    <!-- Botones de acción -->
+    {% verbatim %}
+  <!-- Botones de acción -->
     <div class="flex flex-wrap justify-center gap-2 mt-6 border-t pt-4">
-      <button type="submit" class="btn btn-primary">
-        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <button type="submit" class="btn btn-primary" :disabled="isSaving">
+        <svg v-if="isSaving" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <svg v-else xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
           <path d="M5 12l5 5l10 -10" />
         </svg>
-        Guardar Equipo
+        <span v-if="isSaving">Guardando...</span>
+        <span v-else>Guardar Equipo</span>
+      </button>
+  {% endverbatim %}
+      
+      <button type="button" @click="cancelForm" class="btn btn-outline">
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M5 12l14 0" />
+          <path d="M5 12l6 6" />
+          <path d="M5 12l6 -6" />
+        </svg>
+        Cancelar
       </button>
       
+      {% verbatim %}
+      <div v-if="successMessage" class="alert alert-success mt-4">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ successMessage }}</span>
+        </div>
+      </div>
+      
+      <div v-if="Object.keys(errors).length > 0" class="alert alert-error mt-4 w-full">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <h3 class="font-bold">¡Error al guardar el equipo!</h3>
+            <div class="text-xs">
+              <p v-for="(error, field) in errors" :key="field" class="mt-1">
+                <strong>{{ field | capitalize }}:</strong> {{ error }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endverbatim %}
+      
       {% if request.resolver_match.url_name != 'resource_create' %}
-        <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-outline">
+        <a :href="'{% url 'resource_detail' '0' %}'.replace('0', formData.id)" class="btn btn-outline">
           <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
             <path d="M9 6l-6 6l6 6" />
@@ -614,6 +682,94 @@
   </div>
 </div>
 {% block script_app %}
+<script>
+// Add saveEquipment method to the Vue app
+if (typeof ResourceItemApp !== 'undefined') {
+  ResourceItemApp.methods.saveEquipment = async function() {
+    this.isSaving = true;
+    this.errors = {};
+    
+    try {
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const url = this.formData.id 
+        ? `/api/resource/equipment/${this.formData.id}/` 
+        : '/api/resource/equipment/';
+      
+      const method = this.formData.id ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(this.formData)
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        if (response.status === 400) {
+          this.errors = data;
+          this.scrollToError();
+        } else {
+          throw new Error(data.detail || 'Error al guardar el equipo');
+        }
+      } else {
+        this.successMessage = '¡Equipo guardado exitosamente!';
+        
+        // Update form data with the response (in case of new IDs, etc.)
+        this.formData = { ...this.formData, ...data };
+        
+        // If this was a new item, update the URL
+        if (!this.formData.id && data.id) {
+          window.history.pushState({}, '', `/equipment/edit/${data.id}/`);
+        }
+        
+        // Scroll to success message
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    } catch (error) {
+      console.error('Error saving equipment:', error);
+      this.errors = { general: error.message };
+      this.scrollToError();
+    } finally {
+      this.isSaving = false;
+    }
+  };
+  
+  // Add helper method to scroll to first error
+  ResourceItemApp.methods.scrollToError = function() {
+    this.$nextTick(() => {
+      const firstError = document.querySelector('.text-error');
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  };
+  
+  // Add isSaving flag to data
+  if (ResourceItemApp.data) {
+    const originalData = ResourceItemApp.data();
+    ResourceItemApp.data = function() {
+      return {
+        ...originalData,
+        isSaving: false
+      };
+    };
+  }
+  
+  // Add filter to capitalize field names
+  ResourceItemApp.filters = {
+    capitalize: function(value) {
+      if (!value) return '';
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1).replace(/_/g, ' ');
+    }
+  };
+}
+</script>
 <script src="{% static 'js/app/resourceitem_app.js' %}"></script>
 {% endblock %}
 {% endblock %}
