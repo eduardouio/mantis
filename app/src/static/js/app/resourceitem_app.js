@@ -20,6 +20,11 @@ window.ResourceItemApp = {
         'Completar Información'
       ],
       
+      // Estado de UI
+      isLoading: false,
+      errors: {},
+      successMessage: '',
+      
       // Tabs de navegación para el paso 3
       activeTab: 'general',
       tabs: [
@@ -34,7 +39,12 @@ window.ResourceItemApp = {
       formData: {
         type: '',
         subtype: '',
-        status: ''
+        // Campos compartidos para servicios y equipos
+        name: '',
+        status: '',
+        base_price: '',
+        is_active: true, // Campo del modelo base, por defecto activo
+        notes: ''
       },
       
       // Visibilidad de secciones según tipo y subtipo
@@ -205,12 +215,12 @@ window.ResourceItemApp = {
     selectType(type) {
       this.formData.type = type;
       
-      // Si selecciona servicio, no necesitamos subtipo
+      // Si selecciona servicio, no necesitamos subtipo y establecemos el estado como DISPONIBLE por defecto
       if (type === 'SERVICIO') {
         this.formData.subtype = '';
+        this.formData.status = 'DISPONIBLE';
       }
       
-      // Actualizar el select del formulario Django
       const typeSelector = document.querySelector('[name="type"]');
       if (typeSelector) {
         typeSelector.value = type;
@@ -411,6 +421,115 @@ window.ResourceItemApp = {
      */
     setActiveTab(tabId) {
       this.activeTab = tabId;
+    },
+    
+    /**
+     * Cancela el formulario y regresa a la lista de equipos/servicios
+     */
+    cancelForm() {
+      // Redirigir a la lista de equipos/servicios
+      window.location.href = '/equipos/'; // Ajustar según la URL real
+    },
+    
+    /**
+     * Guarda los datos del servicio usando AJAX
+     */
+    saveService() {
+      // Validar formulario antes de enviar
+      if (!this.validateServiceForm()) {
+        return;
+      }
+      
+      // Limpiar mensajes previos
+      this.successMessage = '';
+      this.isLoading = true;
+      
+      // Preparar datos para envío
+      const serviceData = {
+        type: this.formData.type,
+        name: this.formData.name,
+        status: 'DISPONIBLE', // Siempre DISPONIBLE para servicios
+        base_price: this.formData.base_price || 0,
+        notes: this.formData.notes || '',
+        is_active: true, // Campo del modelo base
+        csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
+      };
+      
+      // Mostrar indicador de carga
+      this.isLoading = true;
+      
+      // Enviar datos por AJAX
+      fetch(window.location.pathname, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify(serviceData)
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error al guardar el servicio');
+        }
+        return response.json();
+      })
+      .then(data => {
+        // Procesar respuesta exitosa
+        if (data.success) {
+          // Redirigir a la página de detalle o lista
+          window.location.href = data.redirect_url || '/equipos/';
+        } else {
+          // Mostrar errores si los hay
+          this.showErrors(data.errors);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Mostrar mensaje de error al usuario
+        alert('Ha ocurrido un error al guardar el servicio. Por favor, inténtelo nuevamente.');
+      })
+      .finally(() => {
+        this.isLoading = false;
+      });
+    },
+    
+    /**
+     * Valida el formulario de servicio
+     * @returns {boolean} - True si el formulario es válido
+     */
+    validateServiceForm() {
+      let valid = true;
+      this.errors = {};
+      
+      // Validar nombre (requerido)
+      if (!this.formData.name || this.formData.name.trim() === '') {
+        this.errors.name = 'El nombre del servicio es requerido';
+        valid = false;
+      }
+      
+      // Validar precio base (debe ser un número positivo si se proporciona)
+      if (this.formData.base_price && (isNaN(this.formData.base_price) || parseFloat(this.formData.base_price) < 0)) {
+        this.errors.base_price = 'El precio base debe ser un valor numérico positivo';
+        valid = false;
+      }
+      // Otras validaciones específicas pueden agregarse aquí
+      
+      return valid;
+    },
+    
+    /**
+     * Muestra errores en el formulario
+     */
+    showErrors(errors) {
+      this.errors = errors || {};
+      
+      // Hacer scroll al primer error
+      if (Object.keys(this.errors).length > 0) {
+        const firstErrorField = document.querySelector(`[data-field="${Object.keys(this.errors)[0]}"]`);
+        if (firstErrorField) {
+          firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
     }
   }
 };
