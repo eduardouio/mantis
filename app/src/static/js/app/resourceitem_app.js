@@ -353,6 +353,12 @@ window.ResourceItemApp = {
      * Actualiza la visibilidad de elementos DOM según el estado de Vue
      */
     updateDOMVisibility() {
+      // Mostrar/ocultar el formulario de Django según el paso actual
+      const djangoForm = document.querySelector('form.form-django');
+      if (djangoForm) {
+        djangoForm.style.display = this.currentStep === 3 ? 'block' : 'none';
+      }
+      
       // Campos generales de equipo
       this.toggleElement('#brand_div, #model_div, #date_purchase_div, #dimensions_section, #subtipo_div, #capacidad_div', 
                          this.visibility.equipmentFields);
