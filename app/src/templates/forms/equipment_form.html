@@ -126,44 +126,44 @@
     </div>
   </div>
   
-  <!-- Vista previa del tipo seleccionado (en paso 3) -->
-  <div v-if="currentStep === 3" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-    <div class="flex justify-between items-center">
-      <div>
-        <span class="font-semibold">Tipo seleccionado:</span> {{ formData.type === 'EQUIPO' ? 'Equipo' : 'Servicio' }}
-        <span v-if="formData.type === 'EQUIPO'">
-          - <span class="font-semibold">Subtipo:</span> {{ formData.subtype }}
-        </span>
+  <!-- Paso 3: Formulario completo -->
+  <div v-if="currentStep === 3" class="wizard-step">
+    <!-- Vista previa del tipo seleccionado -->
+    <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <div class="flex justify-between items-center">
+        <div>
+          <span class="font-semibold">Tipo seleccionado:</span> {{ formData.type === 'EQUIPO' ? 'Equipo' : 'Servicio' }}
+          <span v-if="formData.type === 'EQUIPO'">
+            - <span class="font-semibold">Subtipo:</span> {{ formData.subtype }}
+          </span>
+        </div>
+        <button class="btn btn-sm btn-outline" @click.prevent="currentStep = 1">Cambiar</button>
       </div>
-      <button class="btn btn-sm btn-outline" @click.prevent="currentStep = 1">Cambiar</button>
-    </div>
-  </div>
+      <!-- Formulario Django completo -->
+    <form action="" method="post" class="form-django mt-6">
   {% endverbatim %}
-  <div class="hidden">
-    {% if request.resolver_match.url_name != 'resource_create' %}    
-    <a href="{% url 'resource_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
-      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-      </svg>
-      Eliminar
-    </a>
-    <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-sm btn-outline btn-info border-black">
-      <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" />
-      </svg>
-      Volver a Ficha
-    </a>
-    {% endif %}
-      <a href="{% url 'resource_list' %}" class="btn btn-sm btn-outline border-black">
-        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" />
-        </svg>
-        Cancelar
-      </a>
-    </div>
-  </div>
-
-  <form action="" method="post" style="display: none;" class="form-django">
+      <div class="hidden">
+        {% if request.resolver_match.url_name != 'resource_create' %}    
+        <a href="{% url 'resource_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+          </svg>
+          Eliminar
+        </a>
+        <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-sm btn-outline btn-info border-black">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" />
+          </svg>
+          Volver a Ficha
+        </a>
+        {% endif %}
+        <a href="{% url 'resource_list' %}" class="btn btn-sm btn-outline border-black">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M5.7 5.7l12.6 12.6" />
+          </svg>
+          Cancelar
+        </a>
+      </div>
     {% csrf_token %}
     
     <!-- Mostrar errores generales del formulario -->
@@ -548,6 +548,7 @@
       </a>
     </div>
   </form>
+  </div>
 </div>
 {% block script_app %}
 <script src="{% static 'js/app/resourceitem_app.js' %}"></script>
