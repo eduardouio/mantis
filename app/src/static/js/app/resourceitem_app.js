@@ -72,10 +72,14 @@ window.ResourceItemApp = {
         { value: 'ESTACION CUADRUPLE URINARIO', label: 'Estación Cuádruple Urinario' }
       ],
       
-      // Definiciones de subtipo para mostrar campos especiales
+      // Definiciones de subtipo para mostrar campos especiales (solo plantas)
       specialSubtypes: [
         'PLANTA DE TRATAMIENTO DE AGUA',
-        'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
+        'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL'
+      ],
+      
+      // Definiciones de subtipos de tanques para mostrar capacidad en galones
+      tankSubtypes: [
         'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
         'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
       ],
@@ -300,11 +304,12 @@ window.ResourceItemApp = {
         // Lavamanos
         this.visibility.lavandinosSection = this.formData.subtype === 'LAVAMANOS';
         
-        // Baterías sanitarias y Camper Baño (comparten los mismos campos)
+        // Baterías sanitarias, Camper Baño y Estación Cuádruple Urinario (comparten los mismos campos)
         this.visibility.sanitarySection = 
           this.formData.subtype === 'BATERIA SANITARIA HOMBRE' || 
           this.formData.subtype === 'BATERIA SANITARIA MUJER' ||
-          this.formData.subtype === 'CAMPER BAÑO';
+          this.formData.subtype === 'CAMPER BAÑO' ||
+          this.formData.subtype === 'ESTACION CUADRUPLE URINARIO';
         
         // Urinales (solo para baterías sanitarias de hombre y camper baño)
         this.visibility.urinalsField = 
@@ -325,13 +330,10 @@ window.ResourceItemApp = {
         this.visibility.specialFieldsSection = this.specialSubtypes.includes(this.formData.subtype);
         
         // Campo de capacidad en galones (tanques)
-        const isTank = 
-          this.formData.subtype === 'TANQUES DE ALMACENAMIENTO AGUA CRUDA' || 
-          this.formData.subtype === 'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL';
+        const isTank = this.tankSubtypes.includes(this.formData.subtype);
         
-        // Mostrar/ocultar sección de dimensiones para todos excepto Estación Cuádruple Urinario
-        const showDimensions = this.formData.subtype !== 'ESTACION CUADRUPLE URINARIO';
-        this.toggleElement('#dimensions_section', showDimensions);
+        // Mostrar sección de dimensiones para todos los tipos
+        this.toggleElement('#dimensions_section', true);
         
         // Mostrar/ocultar campos específicos según subtipo
         if (isTank) {
@@ -398,6 +400,9 @@ window.ResourceItemApp = {
       
       // Campo de capacidad de planta
       this.toggleElement('#capacidad_planta_div', this.visibility.plantCapacityField);
+      
+      // Características especiales de plantas de tratamiento
+      this.toggleElement('#planta_tratamiento_caracteristicas', this.visibility.specialFieldsSection);
       
       // Campos especiales para plantas y tanques
       this.toggleElement('.special-fields-section', this.visibility.specialFieldsSection);
@@ -498,8 +503,24 @@ window.ResourceItemApp = {
      * Guarda los datos del equipo usando AJAX
      */
     async saveEquipment() {
+      // Validar el formulario según el tipo antes de continuar
+      let isValid = false;
+      
+      if (this.formData.type === 'SERVICIO') {
+        isValid = this.validateServiceForm();
+      } else if (this.formData.type === 'EQUIPO') {
+        isValid = this.validateEquipmentForm();
+      } else {
+        this.errors = { general: 'Debe seleccionar un tipo de registro (Equipo o Servicio)' };
+      }
+      
+      // Si no es válido, mostrar errores y salir
+      if (!isValid) {
+        this.scrollToError();
+        return;
+      }
+      
       this.isSaving = true;
-      this.errors = {};
       
       try {
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -585,6 +606,160 @@ window.ResourceItemApp = {
       // Otras validaciones específicas pueden agregarse aquí
       
       return valid;
+    },
+    
+    /**
+     * Valida el formulario de equipo según su tipo/subtipo
+     * @returns {boolean} - True si el formulario es válido
+     */
+    validateEquipmentForm() {
+      let valid = true;
+      this.errors = {};
+      
+      // Validaciones comunes para todos los equipos
+      
+      // Nombre (requerido)
+      if (!this.formData.name || this.formData.name.trim() === '') {
+        this.errors.name = 'El nombre del equipo es requerido';
+        valid = false;
+      }
+      
+      // Código del equipo (requerido y único)
+      if (!this.formData.code || this.formData.code.trim() === '') {
+        this.errors.code = 'El código del equipo es requerido';
+        valid = false;
+      }
+      
+      // Marca (requerido)
+      if (!this.formData.brand || this.formData.brand.trim() === '') {
+        this.errors.brand = 'La marca del equipo es requerida';
+        valid = false;
+      }
+      
+      // Subtipo (requerido para equipos)
+      if (!this.formData.subtype || this.formData.subtype.trim() === '') {
+        this.errors.subtype = 'Debe seleccionar un tipo de equipo';
+        valid = false;
+      }
+      
+      // Estado (requerido)
+      if (!this.formData.status || this.formData.status.trim() === '') {
+        this.errors.status = 'Debe seleccionar un estado para el equipo';
+        valid = false;
+      }
+      
+      // Precio base (debe ser un número positivo si se proporciona)
+      if (this.formData.base_price && (isNaN(this.formData.base_price) || parseFloat(this.formData.base_price) < 0)) {
+        this.errors.base_price = 'El precio base debe ser un valor numérico positivo';
+        valid = false;
+      }
+      
+      // Validar dimensiones (deben ser números positivos si se proporcionan)
+      const dimensionFields = ['height', 'width', 'depth', 'weight'];
+      dimensionFields.forEach(field => {
+        if (this.formData[field] && (isNaN(this.formData[field]) || parseInt(this.formData[field]) < 0)) {
+          this.errors[field] = `El valor de ${this.getFieldLabel(field)} debe ser un número positivo`;
+          valid = false;
+        }
+      });
+      
+      // Validaciones específicas según el subtipo
+      if (this.formData.subtype) {
+        // PLANTAS DE TRATAMIENTO
+        if (this.specialSubtypes.includes(this.formData.subtype)) {
+          // PLANTA DE TRATAMIENTO DE AGUA RESIDUAL - capacidad obligatoria
+          if (this.formData.subtype === 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL' && !this.formData.plant_capacity) {
+            this.errors.plant_capacity = 'Debe especificar la capacidad de la planta';
+            valid = false;
+          }
+          
+          // Campos comunes para plantas de tratamiento (no obligatorios, pero se recomienda completarlos)
+          const plantFields = [
+            { field: 'blower_brand', label: 'Marca del Blower' },
+            { field: 'engine_brand', label: 'Marca del Motor' },
+            { field: 'belt_brand', label: 'Marca de la Banda' }
+          ];
+          
+          for (const { field, label } of plantFields) {
+            if (!this.formData[field] || this.formData[field].trim() === '') {
+              // No son obligatorios pero mostramos una advertencia
+              this.errors[field] = `Se recomienda especificar ${label} para este tipo de equipo`;
+              // No establecemos valid = false porque no son obligatorios
+            }
+          }
+        }
+        
+        // TANQUES
+        if (this.tankSubtypes.includes(this.formData.subtype)) {
+          if (!this.formData.capacity_gallons || parseFloat(this.formData.capacity_gallons) <= 0) {
+            this.errors.capacity_gallons = 'Debe especificar una capacidad válida en galones para el tanque';
+            valid = false;
+          }
+        }
+        
+        // LAVAMANOS
+        if (this.formData.subtype === 'LAVAMANOS') {
+          // Para lavamanos recomendamos especificar si tiene foot_pumps y sink_soap_dispenser
+          if (this.formData.foot_pumps === undefined) {
+            this.errors.foot_pumps = 'Especifique si el lavamanos tiene bombas de pie';
+            // No es obligatorio, no afecta la validación
+          }
+          
+          if (this.formData.sink_soap_dispenser === undefined) {
+            this.errors.sink_soap_dispenser = 'Especifique si el lavamanos tiene dispensador de jabón';
+            // No es obligatorio, no afecta la validación
+          }
+        }
+        
+        // BATERIAS SANITARIAS y similares
+        const bathroomTypes = ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER', 'CAMPER BAÑO', 'ESTACION CUADRUPLE URINARIO'];
+        if (bathroomTypes.includes(this.formData.subtype)) {
+          // Para baterías sanitarias, se recomienda especificar características específicas
+          const bathroomFields = [
+            'paper_dispenser', 'soap_dispenser', 'napkin_dispenser', 
+            'seats', 'toilet_pump', 'toilet_lid', 'bathroom_bases', 'ventilation_pipe'
+          ];
+          
+          // Verificar que al menos una característica esté especificada
+          const hasAnyFeature = bathroomFields.some(field => this.formData[field] === true);
+          if (!hasAnyFeature) {
+            this.errors.general = 'Se recomienda especificar al menos una característica para este tipo de baño';
+            // No es obligatorio, no afecta la validación
+          }
+          
+          // Urinales solo aplican a baterías de hombre y estación cuádruple urinario
+          if (this.formData.subtype === 'BATERIA SANITARIA MUJER' && this.formData.urinals === true) {
+            this.errors.urinals = 'Los urinales no aplican para baterías sanitarias de mujer';
+            valid = false;
+          }
+        }
+        
+        // Estado EN REPARACION
+        if (this.formData.status === 'EN REPARACION' && (!this.formData.repair_reason || this.formData.repair_reason.trim() === '')) {
+          this.errors.repair_reason = 'Debe especificar el motivo de reparación cuando el estado es "EN REPARACION"';
+          valid = false;
+        }
+      }
+      
+      return valid;
+    },
+    
+    /**
+     * Obtiene la etiqueta legible de un campo para mostrar en mensajes de error
+     * @param {string} field - Nombre del campo
+     * @returns {string} - Etiqueta legible
+     */
+    getFieldLabel(field) {
+      const labels = {
+        'height': 'altura',
+        'width': 'ancho',
+        'depth': 'profundidad',
+        'weight': 'peso',
+        'capacity_gallons': 'capacidad en galones',
+        'plant_capacity': 'capacidad de planta'
+      };
+      
+      return labels[field] || field;
     },
     
     /**
