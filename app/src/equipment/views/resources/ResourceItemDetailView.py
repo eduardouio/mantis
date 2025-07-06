@@ -7,7 +7,7 @@ from projects.models import ProjectResourceItem
 
 class ResourceItemDetailView(LoginRequiredMixin, DetailView):
     model = ResourceItem
-    template_name = 'presentations/equipment_presentation.html'
+    template_name = 'presentations/resource_presentation.html'
     context_object_name = 'equipment'
 
     def get_context_data(self, **kwargs):
@@ -34,6 +34,15 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         
         # Metadatos del sistema
         context.update(self._get_system_metadata(equipment))
+        
+        # Características específicas del equipo
+        context.update(self._get_equipment_characteristics(equipment))
+        
+        # Componentes especiales (blower, motor, banda, etc.)
+        context.update(self._get_special_components(equipment))
+        
+        # Información detallada de capacidad
+        context.update(self._get_capacity_information(equipment))
         
         return context
 
@@ -137,4 +146,170 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                 'last_sync': getattr(equipment, 'last_sync', None),
                 'system_notes': getattr(equipment, 'system_notes', None),
             }
+        }
+
+    def _get_equipment_characteristics(self, equipment):
+        """Obtener características específicas del equipo según su subtipo"""
+        characteristics = []
+        
+        if equipment.subtype == 'LAVAMANOS':
+            if equipment.foot_pumps:
+                characteristics.append('Bombas de Pie')
+            if equipment.sink_soap_dispenser:
+                characteristics.append('Dispensador de Jabón')
+            if equipment.paper_towels:
+                characteristics.append('Toallas de Papel')
+        
+        elif equipment.subtype in ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER']:
+            if equipment.paper_dispenser:
+                characteristics.append('Dispensador de Papel')
+            if equipment.soap_dispenser:
+                characteristics.append('Dispensador de Jabón')
+            if equipment.napkin_dispenser:
+                characteristics.append('Dispensador de Servilletas')
+            if equipment.urinals:
+                characteristics.append('Urinarios')
+            if equipment.seats:
+                characteristics.append('Asientos')
+            if equipment.toilet_pump:
+                characteristics.append('Bomba de Baño')
+            if equipment.sink_pump:
+                characteristics.append('Bomba de Lavamanos')
+            if equipment.toilet_lid:
+                characteristics.append('Llave de Baño')
+            if equipment.bathroom_bases:
+                characteristics.append('Bases de Baño')
+            if equipment.ventilation_pipe:
+                characteristics.append('Tubo de Ventilación')
+        
+        elif equipment.subtype == 'CAMPER BAÑO':
+            # CAMPER BAÑO comparte características con batería sanitaria según docs
+            if equipment.paper_dispenser:
+                characteristics.append('Dispensador de Papel')
+            if equipment.soap_dispenser:
+                characteristics.append('Dispensador de Jabón')
+            if equipment.napkin_dispenser:
+                characteristics.append('Dispensador de Servilletas')
+            if equipment.urinals:
+                characteristics.append('Urinarios')
+            if equipment.seats:
+                characteristics.append('Asientos')
+            if equipment.toilet_pump:
+                characteristics.append('Bomba de Baño')
+            if equipment.sink_pump:
+                characteristics.append('Bomba de Lavamanos')
+            if equipment.toilet_lid:
+                characteristics.append('Llave de Baño')
+            if equipment.bathroom_bases:
+                characteristics.append('Bases de Baño')
+            if equipment.ventilation_pipe:
+                characteristics.append('Tubo de Ventilación')
+        
+        elif equipment.subtype in ['TANQUES DE ALMACENAMIENTO AGUA CRUDA', 'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL']:
+            if equipment.capacity_gallons:
+                characteristics.append(f'Capacidad: {equipment.capacity_gallons} Galones')
+        
+        elif equipment.subtype == 'ESTACION CUADRUPLE URINARIO':
+            # Solo campos base según docs
+            characteristics.append('Estación de 4 Urinarios')
+        
+        # Para plantas de tratamiento, mostrar capacidad específica
+        elif equipment.subtype in ['PLANTA DE TRATAMIENTO DE AGUA', 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL']:
+            if equipment.plant_capacity:
+                characteristics.append(f'Capacidad: {equipment.plant_capacity}')
+        
+        return {
+            'equipment_characteristics': characteristics,
+            'has_characteristics': len(characteristics) > 0,
+        }
+
+    def _get_special_components(self, equipment):
+        """Obtener información de componentes especiales (blower, motor, banda, etc.)"""
+        special_subtypes = [
+            'PLANTA DE TRATAMIENTO DE AGUA',
+            'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
+            'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
+            'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
+        ]
+        
+        if equipment.subtype not in special_subtypes:
+            return {'has_special_components': False}
+        
+        components = {}
+        
+        # Información del Blower
+        if equipment.blower_brand or equipment.blower_model:
+            components['blower'] = {
+                'brand': equipment.blower_brand,
+                'model': equipment.blower_model,
+            }
+        
+        # Información del Motor
+        if equipment.engine_brand or equipment.engine_model:
+            components['engine'] = {
+                'brand': equipment.engine_brand,
+                'model': equipment.engine_model,
+            }
+        
+        # Información de la Banda
+        if equipment.belt_brand or equipment.belt_model or equipment.belt_type:
+            components['belt'] = {
+                'brand': equipment.belt_brand,
+                'model': equipment.belt_model,
+                'type': equipment.belt_type,
+            }
+        
+        # Información de Pulleys
+        if equipment.blower_pulley_brand or equipment.blower_pulley_model:
+            components['blower_pulley'] = {
+                'brand': equipment.blower_pulley_brand,
+                'model': equipment.blower_pulley_model,
+            }
+        
+        if equipment.motor_pulley_brand or equipment.motor_pulley_model:
+            components['motor_pulley'] = {
+                'brand': equipment.motor_pulley_brand,
+                'model': equipment.motor_pulley_model,
+            }
+        
+        # Información del Panel Eléctrico
+        if equipment.electrical_panel_brand or equipment.electrical_panel_model:
+            components['electrical_panel'] = {
+                'brand': equipment.electrical_panel_brand,
+                'model': equipment.electrical_panel_model,
+            }
+        
+        # Información del Guarda Motor
+        if equipment.motor_guard_brand or equipment.motor_guard_model:
+            components['motor_guard'] = {
+                'brand': equipment.motor_guard_brand,
+                'model': equipment.motor_guard_model,
+            }
+        
+        return {
+            'special_components': components,
+            'has_special_components': len(components) > 0,
+        }
+
+    def _get_capacity_information(self, equipment):
+        """Obtener información detallada de capacidad del equipo"""
+        capacity_info = {
+            'capacity_display': equipment.capacity_display,
+            'capacity_gallons': equipment.capacity_gallons,
+            'plant_capacity': equipment.plant_capacity,
+        }
+        
+        # Información adicional según el subtipo
+        if equipment.subtype in ['PLANTA DE TRATAMIENTO DE AGUA', 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL']:
+            capacity_info['capacity_type'] = 'Capacidad de Planta'
+            capacity_info['capacity_unit'] = 'M³/día'
+        elif equipment.capacity_gallons:
+            capacity_info['capacity_type'] = 'Capacidad de Almacenamiento'
+            capacity_info['capacity_unit'] = 'Galones'
+        
+        return {
+            'capacity_info': capacity_info,
+        }
+        return {
+            'capacity_info': capacity_info,
         }
