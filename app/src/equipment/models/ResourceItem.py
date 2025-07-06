@@ -69,7 +69,8 @@ class ResourceItem(BaseModel):
     brand = models.CharField(
         'Brand',
         max_length=255,
-        default='SIN MARCA'
+        blank=True,
+        null=True
     )
     model = models.CharField(
         'Model',
@@ -81,7 +82,9 @@ class ResourceItem(BaseModel):
     code = models.CharField(
         'Equipment Code',
         max_length=50,
-        unique=True
+        unique=True,
+        blank=True,
+        null=True
     )
     serial_number = models.CharField(
         'Serial Number',

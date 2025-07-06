@@ -450,10 +450,11 @@ window.ResourceItemApp = {
       }
 
       // Preparar datos para envío AJAX
-      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-      const url = this.formData.id 
-        ? `/api/resource/service/${this.formData.id}/` 
-        : '/api/resource/service/';
+      const csrfTokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
+      const csrfToken = csrfTokenElement ? csrfTokenElement.value : '';
+      
+      // Usar la URL actual para el envío del formulario
+      const url = window.location.pathname;
 
       const method = this.formData.id ? 'PUT' : 'POST';
 
@@ -587,6 +588,13 @@ window.ResourceItemApp = {
       if (!this.formData.name || this.formData.name.trim() === '') {
         this.errors.name = 'El nombre del servicio es requerido';
         valid = false;
+      }
+      
+      // El código ya no es obligatorio (opcional en el modelo)
+      // pero si se proporciona, debe tener un formato válido
+      if (this.formData.code && this.formData.code.trim() === '') {
+        // Si se proporciona un valor pero está vacío, establecerlo como null
+        this.formData.code = null;
       }
       
       // Validar precio base (debe ser un número positivo si se proporciona)
