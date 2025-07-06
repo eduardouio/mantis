@@ -22,6 +22,7 @@ window.ResourceItemApp = {
       
       // Estado de UI
       isLoading: false,
+      isSaving: false,
       errors: {},
       successMessage: '',
       
@@ -435,61 +436,130 @@ window.ResourceItemApp = {
      * Guarda los datos del servicio usando AJAX
      */
     saveService() {
-      // Validar formulario antes de enviar
+      this.isLoading = true;
+      this.errors = {};
+
       if (!this.validateServiceForm()) {
+        this.isLoading = false;
         return;
       }
-      
-      // Limpiar mensajes previos
-      this.successMessage = '';
-      this.isLoading = true;
-      
-      // Preparar datos para envío
-      const serviceData = {
-        type: this.formData.type,
-        name: this.formData.name,
-        status: 'DISPONIBLE', // Siempre DISPONIBLE para servicios
-        base_price: this.formData.base_price || 0,
-        notes: this.formData.notes || '',
-        is_active: true, // Campo del modelo base
-        csrfmiddlewaretoken: document.querySelector('[name=csrfmiddlewaretoken]').value
-      };
-      
-      // Mostrar indicador de carga
-      this.isLoading = true;
-      
-      // Enviar datos por AJAX
-      fetch(window.location.pathname, {
-        method: 'POST',
+
+      // Preparar datos para envío AJAX
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const url = this.formData.id 
+        ? `/api/resource/service/${this.formData.id}/` 
+        : '/api/resource/service/';
+
+      const method = this.formData.id ? 'PUT' : 'POST';
+
+      fetch(url, {
+        method: method,
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest'
         },
-        body: JSON.stringify(serviceData)
+        body: JSON.stringify(this.formData)
       })
-      .then(response => {
+      .then(response => response.json().then(data => ({ response, data })))
+      .then(({ response, data }) => {
         if (!response.ok) {
-          throw new Error('Error al guardar el servicio');
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Procesar respuesta exitosa
-        if (data.success) {
-          // Redirigir a la página de detalle o lista
-          window.location.href = data.redirect_url || '/equipos/';
+          if (response.status === 400) {
+            this.showErrors(data);
+          } else {
+            throw new Error(data.detail || 'Error al guardar el servicio');
+          }
         } else {
-          // Mostrar errores si los hay
-          this.showErrors(data.errors);
+          this.successMessage = '¡Servicio guardado exitosamente!';
+          
+          // Update form data with response (in case of new IDs, etc)
+          this.formData = { ...this.formData, ...data };
+          
+          // If this was a new item, update the URL
+          if (!this.formData.id && data.id) {
+            window.history.pushState({}, '', `/service/edit/${data.id}/`);
+          }
+          
+          // Scroll to top to show success message
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       })
       .catch(error => {
-        console.error('Error:', error);
-        // Mostrar mensaje de error al usuario
-        alert('Ha ocurrido un error al guardar el servicio. Por favor, inténtelo nuevamente.');
+        console.error('Error saving service:', error);
+        this.errors = { general: error.message };
+        this.scrollToError();
       })
       .finally(() => {
         this.isLoading = false;
+      });
+    },
+    
+    /**
+     * Guarda los datos del equipo usando AJAX
+     */
+    async saveEquipment() {
+      this.isSaving = true;
+      this.errors = {};
+      
+      try {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const url = this.formData.id 
+          ? `/api/resource/equipment/${this.formData.id}/` 
+          : '/api/resource/equipment/';
+        
+        const method = this.formData.id ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify(this.formData)
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          if (response.status === 400) {
+            this.errors = data;
+            this.scrollToError();
+          } else {
+            throw new Error(data.detail || 'Error al guardar el equipo');
+          }
+        } else {
+          this.successMessage = '¡Equipo guardado exitosamente!';
+          
+          // Update form data with the response (in case of new IDs, etc.)
+          this.formData = { ...this.formData, ...data };
+          
+          // If this was a new item, update the URL
+          if (!this.formData.id && data.id) {
+            window.history.pushState({}, '', `/equipment/edit/${data.id}/`);
+          }
+          
+          // Scroll to success message
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      } catch (error) {
+        console.error('Error saving equipment:', error);
+        this.errors = { general: error.message };
+        this.scrollToError();
+      } finally {
+        this.isSaving = false;
+      }
+    },
+    
+    /**
+     * Helper para desplazarse al primer error en el formulario
+     */
+    scrollToError() {
+      this.$nextTick(() => {
+        const firstError = document.querySelector('.text-error');
+        if (firstError) {
+          firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
       });
     },
     
@@ -531,6 +601,15 @@ window.ResourceItemApp = {
         }
       }
     }
+  }
+};
+
+// Filtro para capitalizar campos
+window.ResourceItemApp.filters = {
+  capitalize: function(value) {
+    if (!value) return '';
+    value = value.toString();
+    return value.charAt(0).toUpperCase() + value.slice(1).replace(/_/g, ' ');
   }
 };
 
