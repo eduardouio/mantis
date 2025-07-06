@@ -242,81 +242,88 @@
     <!-- Formulario organizado en secciones -->
     <div class="w-full mb-4">
       <div class="bg-base-100 border border-base-300 rounded-lg p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Datos Principales -->
           <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
             <h3 class="text-lg font-medium text-blue-600 mb-4">Datos Principales</h3>
             
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Código:</span>
-              </label>
-              <input type="text" v-model="formData.code" class="input input-bordered w-full" placeholder="Ingrese el código">
-              <div v-if="errors.code" class="text-error text-sm mt-1">{{ errors.code }}</div>
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Nombre:</span>
-              </label>
-              <input type="text" v-model="formData.name" class="input input-bordered w-full" placeholder="Ingrese el nombre">
-              <div v-if="errors.name" class="text-error text-sm mt-1">{{ errors.name }}</div>
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Marca:</span>
-              </label>
-              <input type="text" v-model="formData.brand" class="input input-bordered w-full" placeholder="Ingrese la marca">
-              <div v-if="errors.brand" class="text-error text-sm mt-1">{{ errors.brand }}</div>
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Modelo:</span>
-              </label>
-              <input type="text" v-model="formData.model" class="input input-bordered w-full" placeholder="Ingrese el modelo">
-              <div v-if="errors.model" class="text-error text-sm mt-1">{{ errors.model }}</div>
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Número de Serie:</span>
-              </label>
-              <input type="text" v-model="formData.serial_number" class="input input-bordered w-full" placeholder="Ingrese el número de serie">
-              <div v-if="errors.serial_number" class="text-error text-sm mt-1">{{ errors.serial_number }}</div>
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Fecha de Compra:</span>
-              </label>
-              <input type="date" v-model="formData.date_purchase" class="input input-bordered w-full">
-              <div v-if="errors.date_purchase" class="text-error text-sm mt-1">{{ errors.date_purchase }}</div>
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Precio Base:</span>
-              </label>
-              <div class="relative">
-                <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                <input type="number" v-model="formData.base_price" class="input input-bordered w-full pl-6" placeholder="0.00" step="0.01" min="0">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
+              <!-- Columna 1 -->
+              <div>
+                <div class="form-control mb-3">
+                  <label class="label">
+                    <span class="label-text">Código:</span>
+                  </label>
+                  <input type="text" v-model="formData.code" class="input input-bordered w-full" placeholder="Ingrese el código">
+                  <div v-if="errors.code" class="text-error text-sm mt-1">{{ errors.code }}</div>
+                </div>
+                
+                <div class="form-control mb-3">
+                  <label class="label">
+                    <span class="label-text">Marca:</span>
+                  </label>
+                  <input type="text" v-model="formData.brand" class="input input-bordered w-full" placeholder="Ingrese la marca">
+                  <div v-if="errors.brand" class="text-error text-sm mt-1">{{ errors.brand }}</div>
+                </div>
+                
+                <div class="form-control mb-3">
+                  <label class="label">
+                    <span class="label-text">Número de Serie:</span>
+                  </label>
+                  <input type="text" v-model="formData.serial_number" class="input input-bordered w-full" placeholder="Ingrese el número de serie">
+                  <div v-if="errors.serial_number" class="text-error text-sm mt-1">{{ errors.serial_number }}</div>
+                </div>
+                
+                <div class="form-control mb-3">
+                  <label class="label">
+                    <span class="label-text">Precio Base:</span>
+                  </label>
+                  <div class="relative">
+                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                    <input type="number" v-model="formData.base_price" class="input input-bordered w-full pl-6" placeholder="0.00" step="0.01" min="0">
+                  </div>
+                  <div v-if="errors.base_price" class="text-error text-sm mt-1">{{ errors.base_price }}</div>
+                </div>
               </div>
-              <div v-if="errors.base_price" class="text-error text-sm mt-1">{{ errors.base_price }}</div>
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Estado:</span>
-              </label>
-              <select v-model="formData.status" class="select select-bordered w-full">
-                <option value="DISPONIBLE">Disponible</option>
-                <option value="RENTADO">Rentado</option>
-                <option value="EN_REPARACION">En Reparación</option>
-                <option value="FUERA_DE_SERVICIO">Fuera de Servicio</option>
-              </select>
-              <div v-if="errors.status" class="text-error text-sm mt-1">{{ errors.status }}</div>
+              
+              <!-- Columna 2 -->
+              <div>
+                <div class="form-control mb-3">
+                  <label class="label">
+                    <span class="label-text">Nombre:</span>
+                  </label>
+                  <input type="text" v-model="formData.name" class="input input-bordered w-full" placeholder="Ingrese el nombre">
+                  <div v-if="errors.name" class="text-error text-sm mt-1">{{ errors.name }}</div>
+                </div>
+                
+                <div class="form-control mb-3">
+                  <label class="label">
+                    <span class="label-text">Modelo:</span>
+                  </label>
+                  <input type="text" v-model="formData.model" class="input input-bordered w-full" placeholder="Ingrese el modelo">
+                  <div v-if="errors.model" class="text-error text-sm mt-1">{{ errors.model }}</div>
+                </div>
+                
+                <div class="form-control mb-3">
+                  <label class="label">
+                    <span class="label-text">Fecha de Compra:</span>
+                  </label>
+                  <input type="date" v-model="formData.date_purchase" class="input input-bordered w-full">
+                  <div v-if="errors.date_purchase" class="text-error text-sm mt-1">{{ errors.date_purchase }}</div>
+                </div>
+                
+                <div class="form-control mb-3">
+                  <label class="label">
+                    <span class="label-text">Estado:</span>
+                  </label>
+                  <select v-model="formData.status" class="select select-bordered w-full">
+                    <option value="DISPONIBLE">Disponible</option>
+                    <option value="RENTADO">Rentado</option>
+                    <option value="EN_REPARACION">En Reparación</option>
+                    <option value="FUERA_DE_SERVICIO">Fuera de Servicio</option>
+                  </select>
+                  <div v-if="errors.status" class="text-error text-sm mt-1">{{ errors.status }}</div>
+                </div>
+              </div>
             </div>
 
             <div class="form-control" v-if="formData.status === 'EN_REPARACION'">
@@ -360,102 +367,6 @@
               {% endif %}
             </div>
           </div>
-
-          <!-- Datos del Equipo -->
-          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
-            <h3 class="text-lg font-medium text-blue-600 mb-4">Datos del Equipo</h3>
-            
-            <div class="form-control" id="brand_div">
-              <label class="label">
-                <span class="label-text">Marca:</span>
-              </label>
-              {{ form.brand }}
-              {% if form.brand.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.brand.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="form-control" id="model_div">
-              <label class="label">
-                <span class="label-text">Modelo:</span>
-              </label>
-              {{ form.model }}
-              {% if form.model.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.model.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="form-control" id="date_purchase_div">
-              <label class="label">
-                <span class="label-text">Fecha de Compra:</span>
-              </label>
-              {{ form.date_purchase }}
-              {% if form.date_purchase.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.date_purchase.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <!-- Capacidades -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="capacidad_div">
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Capacidad:</span>
-                </label>
-                {{ form.capacidad }}
-                {% if form.capacidad.errors %}
-                  <div class="label">
-                    <span class="label-text-alt text-error">{{ form.capacidad.errors.0 }}</span>
-                  </div>
-                {% endif %}
-              </div>
-              
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Unidad:</span>
-                </label>
-                {{ form.unidad_capacidad }}
-                {% if form.unidad_capacidad.errors %}
-                  <div class="label">
-                    <span class="label-text-alt text-error">{{ form.unidad_capacidad.errors.0 }}</span>
-                  </div>
-                {% endif %}
-              </div>
-            </div>
-
-            <div class="form-control" id="capacidad_planta_div" style="display: none;">
-              <label class="label">
-                <span class="label-text">Capacidad de Planta:</span>
-              </label>
-              {{ form.capacidad_planta }}
-              {% if form.capacidad_planta.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.capacidad_planta.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <!-- Estado del Equipo -->
-            <div class="mt-4">
-              <div class="form-control">
-                <label class="label cursor-pointer">
-                  <span class="label-text">Activo:</span>
-                  {{ form.is_active }}
-                </label>
-                {% if form.is_active.errors %}
-                  <div class="label">
-                    <span class="label-text-alt text-error">{{ form.is_active.errors.0 }}</span>
-                  </div>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        </div>
 
         <!-- Dimensiones y Peso -->
         <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
