@@ -8,7 +8,7 @@ class ResourceItemForm(forms.ModelForm):
         fields = [
             'name', 'type', 'subtype', 'code', 'serial_number', 'brand', 'model',
             'date_purchase', 'height', 'width', 'depth', 'weight', 'status',
-            'capacity_gallons', 'plant_capacity', 'repair_reason', 'base_price',
+            'capacity_gallons', 'plant_capacity', 'repair_reason', 'base_price', 'notes',
             # Specific fields for sinks
             'foot_pumps', 'sink_soap_dispenser', 'paper_towels',
             # Specific fields for sanitary batteries
@@ -39,6 +39,7 @@ class ResourceItemForm(forms.ModelForm):
             'weight': forms.NumberInput(attrs={'class': 'form-control'}),
             'status': forms.Select(attrs={'class': 'form-control'}),
             'base_price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'min': '0'}),
+            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'capacity_gallons': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'plant_capacity': forms.Select(attrs={'class': 'form-control'}),
             'repair_reason': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
@@ -73,6 +74,7 @@ class ResourceItemForm(forms.ModelForm):
         self.fields['capacity_gallons'].required = False
         self.fields['plant_capacity'].required = False
         self.fields['repair_reason'].required = False
+        self.fields['notes'].required = False
 
         # Special fields not required
         for field_name in ['blower_brand', 'blower_model', 'engine_brand', 'engine_model',

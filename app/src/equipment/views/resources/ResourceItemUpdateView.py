@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.db import models
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 from django.forms.models import model_to_dict
 
 from equipment.models import ResourceItem
@@ -41,7 +42,7 @@ class ResourceItemUpdateView(LoginRequiredMixin, UpdateView):
         else:
             equipment_data['date_purchase'] = ''
 
-        context['equipment_data_json'] = json.dumps(equipment_data)
+        context['equipment_data_json'] = json.dumps(equipment_data, cls=DjangoJSONEncoder)
         
         return context
 
