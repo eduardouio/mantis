@@ -233,7 +233,7 @@
       </div>
       
       <!-- Formulario para Equipo con Vue.js -->
-            <form v-if="formData.type === 'EQUIPO' || isEditMode" id="equipmentForm" class="mt-6">
+            <form v-if="formData.type === 'EQUIPO'" id="equipmentForm" class="mt-6">
       
       
       <!-- Campos ocultos para Django -->
@@ -274,7 +274,7 @@
     {% endif %}
     <!-- Formulario organizado en secciones -->
     <div class="w-full mb-4">
-      <div class="bg-base-100 border border-base-300 rounded-lg p-6">
+      <div class="bg-base-100 border border-base-300 rounded-lg p-6" v-if="formData.type === 'EQUIPO'">
           <!-- Datos Principales -->
           <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
             <h3 class="text-lg font-medium text-blue-600 mb-4">Datos Principales</h3>
