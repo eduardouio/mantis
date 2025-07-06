@@ -509,11 +509,12 @@ window.ResourceItemApp = {
     },
     
     /**
-     * Guarda los datos del equipo usando el formulario HTML estándar
+     * Guarda los datos del equipo usando AJAX
      */
     saveEquipment() {
       // Validar el formulario según el tipo antes de continuar
       let isValid = false;
+      this.errors = {};
       
       if (this.formData.type === 'SERVICIO') {
         isValid = this.validateServiceForm();
@@ -531,11 +532,64 @@ window.ResourceItemApp = {
       
       this.isSaving = true;
       
-      // Transferir los datos de Vue al formulario HTML de Django
-      this.syncFormDataToHtmlForm();
+      // Preparar datos para envío AJAX
+      const csrfTokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
+      const csrfToken = csrfTokenElement ? csrfTokenElement.value : '';
       
-      // Dejar que el formulario se envíe normalmente
-      return true;
+      // Usar la URL actual para el envío del formulario
+      const url = window.location.pathname;
+      const method = this.formData.id ? 'PUT' : 'POST';
+      
+      fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify(this.formData)
+      })
+      .then(response => response.json().then(data => ({ response, data })))
+      .then(({ response, data }) => {
+        if (!response.ok) {
+          if (response.status === 400) {
+            this.showErrors(data);
+          } else {
+            throw new Error(data.detail || 'Error al guardar el equipo');
+          }
+        } else {
+          this.successMessage = '¡Equipo guardado exitosamente!';
+          
+          // Actualizar datos del formulario con la respuesta (en caso de nuevos IDs, etc)
+          this.formData = { ...this.formData, ...data };
+          
+          // Verificar si hay una URL de redirección en la respuesta
+          if (data.redirect) {
+            // Mostrar mensaje de éxito brevemente antes de redireccionar
+            setTimeout(() => {
+              window.location.href = data.redirect;
+            }, 1000); // Redireccionar después de 1 segundo
+          } else {
+            // Si no hay redirección, actualizar la URL si es un nuevo elemento
+            if (!this.formData.id && data.id) {
+              window.history.pushState({}, '', `/equipos/editar/${data.id}/`);
+            }
+            
+            // Scroll to top to show success message
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error guardando equipo:', error);
+        this.errors = { general: error.message };
+        this.scrollToError();
+      })
+      .finally(() => {
+        this.isSaving = false;
+      });
+      
+      return false; // Prevenir el envío del formulario HTML tradicional
     },
     
     /**
@@ -706,15 +760,21 @@ window.ResourceItemApp = {
         
         // LAVAMANOS
         if (this.formData.subtype === 'LAVAMANOS') {
-          // Para lavamanos recomendamos especificar si tiene foot_pumps y sink_soap_dispenser
+          // Para lavamanos todos los campos booleanos son opcionales
+          // Si no están definidos, se establecerán como false en el backend
+          // No se requiere validación adicional
+          
+          // Aseguramos que los campos estén definidos con valores booleanos
           if (this.formData.foot_pumps === undefined) {
-            this.errors.foot_pumps = 'Especifique si el lavamanos tiene bombas de pie';
-            // No es obligatorio, no afecta la validación
+            this.formData.foot_pumps = false;
           }
           
           if (this.formData.sink_soap_dispenser === undefined) {
-            this.errors.sink_soap_dispenser = 'Especifique si el lavamanos tiene dispensador de jabón';
-            // No es obligatorio, no afecta la validación
+            this.formData.sink_soap_dispenser = false;
+          }
+          
+          if (this.formData.paper_towels === undefined) {
+            this.formData.paper_towels = false;
           }
         }
         
