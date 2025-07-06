@@ -82,42 +82,22 @@ class ResourceItemForm(forms.ModelForm):
                            'motor_guard_brand', 'motor_guard_model']:
             if field_name in self.fields:
                 self.fields[field_name].required = False
-        self.fields['foot_pumps'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['sink_soap_dispenser'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['paper_dispenser'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['soap_dispenser'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['napkin_dispenser'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['urinals'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['seats'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['toilet_pump'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['sink_pump'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['toilet_lid'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['bathroom_bases'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
-        self.fields['ventilation_pipe'] = forms.CheckboxInput(
-            attrs={'class': 'checkbox checkbox-primary checkbox-md'}
-        )
+        # Definir campos booleanos correctamente con BooleanField + CheckboxInput widget
+        boolean_fields = [
+            'foot_pumps', 'sink_soap_dispenser', 'paper_dispenser', 
+            'soap_dispenser', 'napkin_dispenser', 'urinals', 'seats',
+            'toilet_pump', 'sink_pump', 'toilet_lid', 'bathroom_bases',
+            'ventilation_pipe'
+        ]
+        
+        for field_name in boolean_fields:
+            if field_name in self.fields:
+                self.fields[field_name] = forms.BooleanField(
+                    widget=forms.CheckboxInput(
+                        attrs={'class': 'checkbox checkbox-primary checkbox-md'}
+                    ),
+                    required=False
+                )
 
         # Make repair reason required if status is "EN REPARACION"
         if self.instance and self.instance.status == 'EN REPARACION':

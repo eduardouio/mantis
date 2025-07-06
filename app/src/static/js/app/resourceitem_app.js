@@ -500,9 +500,9 @@ window.ResourceItemApp = {
     },
     
     /**
-     * Guarda los datos del equipo usando AJAX
+     * Guarda los datos del equipo usando el formulario HTML estándar
      */
-    async saveEquipment() {
+    saveEquipment() {
       // Validar el formulario según el tipo antes de continuar
       let isValid = false;
       
@@ -517,58 +517,49 @@ window.ResourceItemApp = {
       // Si no es válido, mostrar errores y salir
       if (!isValid) {
         this.scrollToError();
-        return;
+        return false; // Evita el envío del formulario
       }
       
       this.isSaving = true;
       
-      try {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        const url = this.formData.id 
-          ? `/api/resource/equipment/${this.formData.id}/` 
-          : '/api/resource/equipment/';
+      // Transferir los datos de Vue al formulario HTML de Django
+      this.syncFormDataToHtmlForm();
+      
+      // Dejar que el formulario se envíe normalmente
+      return true;
+    },
+    
+    /**
+     * Sincroniza los datos del formData de Vue con los campos reales del formulario HTML
+     * para que Django los procese correctamente
+     */
+    syncFormDataToHtmlForm() {
+      // Obtener todos los campos de entrada del formulario
+      const form = document.querySelector('form');
+      if (!form) return;
+      
+      // Recorrer todas las propiedades en formData y buscar campos correspondientes
+      for (const [key, value] of Object.entries(this.formData)) {
+        // Buscar el campo por ID o por nombre
+        let field = form.querySelector(`#id_${key}`) || form.querySelector(`[name="${key}"]`);
         
-        const method = this.formData.id ? 'PUT' : 'POST';
-        
-        const response = await fetch(url, {
-          method: method,
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken,
-            'X-Requested-With': 'XMLHttpRequest'
-          },
-          body: JSON.stringify(this.formData)
-        });
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-          if (response.status === 400) {
-            this.errors = data;
-            this.scrollToError();
-          } else {
-            throw new Error(data.detail || 'Error al guardar el equipo');
-          }
-        } else {
-          this.successMessage = '¡Equipo guardado exitosamente!';
-          
-          // Update form data with the response (in case of new IDs, etc.)
-          this.formData = { ...this.formData, ...data };
-          
-          // If this was a new item, update the URL
-          if (!this.formData.id && data.id) {
-            window.history.pushState({}, '', `/equipment/edit/${data.id}/`);
-          }
-          
-          // Scroll to success message
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Si no se encuentra, intentar crear un campo oculto
+        if (!field && value !== undefined && value !== null) {
+          field = document.createElement('input');
+          field.type = 'hidden';
+          field.name = key;
+          form.appendChild(field);
         }
-      } catch (error) {
-        console.error('Error saving equipment:', error);
-        this.errors = { general: error.message };
-        this.scrollToError();
-      } finally {
-        this.isSaving = false;
+        
+        // Asignar el valor al campo si existe
+        if (field) {
+          // Para checkboxes necesitamos un tratamiento especial
+          if (field.type === 'checkbox') {
+            field.checked = Boolean(value);
+          } else {
+            field.value = value !== null && value !== undefined ? value : '';
+          }
+        }
       }
     },
     
