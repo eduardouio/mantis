@@ -18,14 +18,14 @@
                 'bg-blue-200 text-gray-700': index + 1 < currentStep,
                 'bg-gray-200 text-gray-500': index + 1 > currentStep
               }">
-            {{ index + 1 }}
+            ${ index + 1 }
           </div>
           <span class="text-sm mt-1" 
                 :class="{
                   'text-blue-500 font-medium': index + 1 === currentStep,
                   'text-gray-500': index + 1 !== currentStep
                 }">
-            {{ title }}
+            ${ title }
           </span>
         </div>
         <div v-if="index < stepTitles.length - 1" class="w-full h-1 bg-gray-200 flex-1 mx-2">
@@ -105,7 +105,7 @@
             </div>
             
             <!-- Título del subtipo -->
-            <h3 class="text-sm font-medium" :class="{'text-blue-700': formData.subtype === subtype.value, 'text-gray-700': formData.subtype !== subtype.value}">{{ subtype.label }}</h3>
+            <h3 class="text-sm font-medium" :class="{'text-blue-700': formData.subtype === subtype.value, 'text-gray-700': formData.subtype !== subtype.value}">${ subtype.label }</h3>
             
             <!-- Indicador de selección (simplificado) -->
             <div class="mt-1" v-if="formData.subtype === subtype.value">
@@ -132,9 +132,9 @@
     <div class="mb-6 p-4 bg-gray-100 border border-blue-200 rounded-lg">
       <div class="flex justify-between items-center">
         <div>
-          <span class="font-semibold">Tipo seleccionado:</span> {{ formData.type === 'EQUIPO' ? 'Equipo' : 'Servicio' }}
+          <span class="font-semibold">Tipo seleccionado:</span> ${ formData.type === 'EQUIPO' ? 'Equipo' : 'Servicio' }
           <span v-if="formData.type === 'EQUIPO'">
-            - <span class="font-semibold">Subtipo:</span> {{ formData.subtype }}
+            - <span class="font-semibold">Subtipo:</span> ${ formData.subtype }
           </span>
         </div>
         <button class="btn btn-sm btn-outline" @click.prevent="currentStep = 1">Cambiar</button>
@@ -147,7 +147,7 @@
         <!-- Mensajes de notificación -->
         <div v-if="successMessage" class="alert alert-success mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          <span>{{ successMessage }}</span>
+          <span>${ successMessage }</span>
         </div>
         
         <!-- Mensaje de error general -->
@@ -157,7 +157,7 @@
             <span class="font-semibold">Error al guardar el servicio:</span>
             <ul class="list-disc list-inside mt-1">
               <li v-for="(error, field) in errors" :key="field">
-                {{ error && Array.isArray(error) ? error[0] : error }}
+                ${ error && Array.isArray(error) ? error[0] : error }
               </li>
             </ul>
           </div>
@@ -171,7 +171,7 @@
               <span class="label-text font-medium">Nombre del Servicio:</span>
             </label>
             <input type="text" v-model="formData.name" class="input input-bordered w-full" placeholder="Ingrese el nombre del servicio">
-            <div v-if="errors.name" class="text-error text-sm mt-1">{{ errors.name }}</div>
+            <div v-if="errors.name" class="text-error text-sm mt-1">${ errors.name }</div>
           </div>
           
           <!-- Código del Servicio -->
@@ -180,7 +180,7 @@
               <span class="label-text font-medium">Código:</span>
             </label>
             <input type="text" v-model="formData.code" class="input input-bordered w-full" placeholder="Ingrese el código del servicio">
-            <div v-if="errors.code" class="text-error text-sm mt-1">{{ errors.code }}</div>
+            <div v-if="errors.code" class="text-error text-sm mt-1">${ errors.code }</div>
           </div>
         </div>
         
@@ -198,7 +198,7 @@
               <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
               <input type="number" v-model="formData.base_price" class="input input-bordered w-full pl-6" placeholder="0.00" step="0.01" min="0">
             </div>
-            <div v-if="errors.base_price" class="text-error text-sm mt-1">{{ errors.base_price }}</div>
+            <div v-if="errors.base_price" class="text-error text-sm mt-1">${ errors.base_price }</div>
           </div>
 
           <!-- Is Active Checkbox -->
@@ -217,7 +217,7 @@
             <span class="label-text font-medium">Notas:</span>
           </label>
           <textarea v-model="formData.notes" class="textarea textarea-bordered w-full" rows="4" placeholder="Ingrese notas adicionales"></textarea>
-          <div v-if="errors.notes" class="text-error text-sm mt-1">{{ errors.notes }}</div>
+          <div v-if="errors.notes" class="text-error text-sm mt-1">${ errors.notes }</div>
         </div>
         
         <!-- Botones de acción -->
@@ -277,7 +277,7 @@
                     <span class="label-text">Código:</span>
                   </label>
                   <input type="text" v-model="formData.code" class="input input-bordered w-full" placeholder="Ingrese el código">
-                  <div v-if="errors.code" class="text-error text-sm mt-1">{{ errors.code }}</div>
+                  <div v-if="errors.code" class="text-error text-sm mt-1">${ errors.code }</div>
                 </div>
                 
                 <div class="form-control mb-3">
@@ -285,7 +285,7 @@
                     <span class="label-text">Marca:</span>
                   </label>
                   <input type="text" v-model="formData.brand" class="input input-bordered w-full" placeholder="Ingrese la marca">
-                  <div v-if="errors.brand" class="text-error text-sm mt-1">{{ errors.brand }}</div>
+                  <div v-if="errors.brand" class="text-error text-sm mt-1">${ errors.brand }</div>
                 </div>
                 
                 <div class="form-control mb-3">
@@ -293,7 +293,7 @@
                     <span class="label-text">Número de Serie:</span>
                   </label>
                   <input type="text" v-model="formData.serial_number" class="input input-bordered w-full" placeholder="Ingrese el número de serie">
-                  <div v-if="errors.serial_number" class="text-error text-sm mt-1">{{ errors.serial_number }}</div>
+                  <div v-if="errors.serial_number" class="text-error text-sm mt-1">${ errors.serial_number }</div>
                 </div>
                 
                 <div class="form-control mb-3">
@@ -304,7 +304,7 @@
                     <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
                     <input type="number" v-model="formData.base_price" class="input input-bordered w-full pl-6" placeholder="0.00" step="0.01" min="0">
                   </div>
-                  <div v-if="errors.base_price" class="text-error text-sm mt-1">{{ errors.base_price }}</div>
+                  <div v-if="errors.base_price" class="text-error text-sm mt-1">${ errors.base_price }</div>
                 </div>
               </div>
               
@@ -315,7 +315,7 @@
                     <span class="label-text">Nombre:</span>
                   </label>
                   <input type="text" v-model="formData.name" class="input input-bordered w-full" placeholder="Ingrese el nombre">
-                  <div v-if="errors.name" class="text-error text-sm mt-1">{{ errors.name }}</div>
+                  <div v-if="errors.name" class="text-error text-sm mt-1">${ errors.name }</div>
                 </div>
                 
                 <div class="form-control mb-3">
@@ -323,7 +323,7 @@
                     <span class="label-text">Modelo:</span>
                   </label>
                   <input type="text" v-model="formData.model" class="input input-bordered w-full" placeholder="Ingrese el modelo">
-                  <div v-if="errors.model" class="text-error text-sm mt-1">{{ errors.model }}</div>
+                  <div v-if="errors.model" class="text-error text-sm mt-1">${ errors.model }</div>
                 </div>
                 
                 <div class="form-control mb-3">
@@ -331,7 +331,7 @@
                     <span class="label-text">Fecha de Compra:</span>
                   </label>
                   <input type="date" v-model="formData.date_purchase" class="input input-bordered w-full">
-                  <div v-if="errors.date_purchase" class="text-error text-sm mt-1">{{ errors.date_purchase }}</div>
+                  <div v-if="errors.date_purchase" class="text-error text-sm mt-1">${ errors.date_purchase }</div>
                 </div>
                 
                 <div class="form-control mb-3">
@@ -344,7 +344,7 @@
                     <option value="EN REPARACION">En Reparación</option>
                     <option value="FUERA DE SERVICIO">Fuera de Servicio</option>
                   </select>
-                  <div v-if="errors.status" class="text-error text-sm mt-1">{{ errors.status }}</div>
+                  <div v-if="errors.status" class="text-error text-sm mt-1">${ errors.status }</div>
                 </div>
               </div>
             </div>
@@ -355,7 +355,7 @@
                 <span class="label-text-alt text-error">* Obligatorio</span>
               </label>
               <textarea v-model="formData.repair_reason" class="textarea textarea-bordered h-24 w-full" placeholder="Ingrese motivo de reparación"></textarea>
-              <div v-if="errors.repair_reason" class="text-error text-sm mt-1">{{ errors.repair_reason }}</div>
+              <div v-if="errors.repair_reason" class="text-error text-sm mt-1">${ errors.repair_reason }</div>
             </div>
 
             <div class="form-control">
@@ -402,7 +402,7 @@
                 <span class="label-text">Alto (cm):</span>
               </label>
               <input type="number" v-model="formData.height" class="input input-bordered w-full" step="0.01" min="0" placeholder="0.00">
-              <div v-if="errors.height" class="text-error text-sm mt-1">{{ errors.height }}</div>
+              <div v-if="errors.height" class="text-error text-sm mt-1">${ errors.height }</div>
             </div>
 
             <div class="form-control">
@@ -410,7 +410,7 @@
                 <span class="label-text">Ancho (cm):</span>
               </label>
               <input type="number" v-model="formData.width" class="input input-bordered w-full" step="0.01" min="0" placeholder="0.00">
-              <div v-if="errors.width" class="text-error text-sm mt-1">{{ errors.width }}</div>
+              <div v-if="errors.width" class="text-error text-sm mt-1">${ errors.width }</div>
             </div>
 
             <div class="form-control">
@@ -418,7 +418,7 @@
                 <span class="label-text">Profundidad (cm):</span>
               </label>
               <input type="number" v-model="formData.depth" class="input input-bordered w-full" step="0.01" min="0" placeholder="0.00">
-              <div v-if="errors.depth" class="text-error text-sm mt-1">{{ errors.depth }}</div>
+              <div v-if="errors.depth" class="text-error text-sm mt-1">${ errors.depth }</div>
             </div>
 
             <div class="form-control">
@@ -426,7 +426,7 @@
                 <span class="label-text">Peso (kg):</span>
               </label>
               <input type="number" v-model="formData.weight" class="input input-bordered w-full" step="0.01" min="0" placeholder="0.00">
-              <div v-if="errors.weight" class="text-error text-sm mt-1">{{ errors.weight }}</div>
+              <div v-if="errors.weight" class="text-error text-sm mt-1">${ errors.weight }</div>
             </div>
             
             <!-- Capacidad en Galones -->
@@ -435,7 +435,7 @@
                 <span class="label-text">Capacidad (galones):</span>
               </label>
               <input type="number" v-model="formData.capacity_gallons" class="input input-bordered w-full" step="0.01" min="0" placeholder="0.00">
-              <div v-if="errors.capacity_gallons" class="text-error text-sm mt-1">{{ errors.capacity_gallons }}</div>
+              <div v-if="errors.capacity_gallons" class="text-error text-sm mt-1">${ errors.capacity_gallons }</div>
             </div>
             
             <!-- Capacidad de Planta -->
@@ -449,7 +449,7 @@
                 <option value="15M3">15M3</option>
                 <option value="25M3">25M3</option>
               </select>
-              <div v-if="errors.plant_capacity" class="text-error text-sm mt-1">{{ errors.plant_capacity }}</div>
+              <div v-if="errors.plant_capacity" class="text-error text-sm mt-1">${ errors.plant_capacity }</div>
             </div>
           </div>
         </div>
@@ -561,14 +561,14 @@
                   <span class="label-text">Marca del Blower:</span>
                 </label>
                 <input type="text" v-model="formData.blower_brand" class="input input-bordered w-full" placeholder="Ingrese la marca del blower">
-                <div v-if="errors.blower_brand" class="text-error text-sm mt-1">{{ errors.blower_brand }}</div>
+                <div v-if="errors.blower_brand" class="text-error text-sm mt-1">${ errors.blower_brand }</div>
               </div>
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">Modelo del Blower:</span>
                 </label>
                 <input type="text" v-model="formData.blower_model" class="input input-bordered w-full" placeholder="Ingrese el modelo del blower">
-                <div v-if="errors.blower_model" class="text-error text-sm mt-1">{{ errors.blower_model }}</div>
+                <div v-if="errors.blower_model" class="text-error text-sm mt-1">${ errors.blower_model }</div>
               </div>
             </div>
             
@@ -579,14 +579,14 @@
                   <span class="label-text">Marca del Motor:</span>
                 </label>
                 <input type="text" v-model="formData.engine_brand" class="input input-bordered w-full" placeholder="Ingrese la marca del motor">
-                <div v-if="errors.engine_brand" class="text-error text-sm mt-1">{{ errors.engine_brand }}</div>
+                <div v-if="errors.engine_brand" class="text-error text-sm mt-1">${ errors.engine_brand }</div>
               </div>
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">Modelo del Motor:</span>
                 </label>
                 <input type="text" v-model="formData.engine_model" class="input input-bordered w-full" placeholder="Ingrese el modelo del motor">
-                <div v-if="errors.engine_model" class="text-error text-sm mt-1">{{ errors.engine_model }}</div>
+                <div v-if="errors.engine_model" class="text-error text-sm mt-1">${ errors.engine_model }</div>
               </div>
             </div>
             
@@ -597,14 +597,14 @@
                   <span class="label-text">Marca de la Banda:</span>
                 </label>
                 <input type="text" v-model="formData.belt_brand" class="input input-bordered w-full" placeholder="Ingrese la marca de la banda">
-                <div v-if="errors.belt_brand" class="text-error text-sm mt-1">{{ errors.belt_brand }}</div>
+                <div v-if="errors.belt_brand" class="text-error text-sm mt-1">${ errors.belt_brand }</div>
               </div>
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">Modelo de la Banda:</span>
                 </label>
                 <input type="text" v-model="formData.belt_model" class="input input-bordered w-full" placeholder="Ingrese el modelo de la banda">
-                <div v-if="errors.belt_model" class="text-error text-sm mt-1">{{ errors.belt_model }}</div>
+                <div v-if="errors.belt_model" class="text-error text-sm mt-1">${ errors.belt_model }</div>
               </div>
               <div class="form-control">
                 <label class="label">
@@ -615,7 +615,7 @@
                   <option value="A">Tipo A</option>
                   <option value="B">Tipo B</option>
                 </select>
-                <div v-if="errors.belt_type" class="text-error text-sm mt-1">{{ errors.belt_type }}</div>
+                <div v-if="errors.belt_type" class="text-error text-sm mt-1">${ errors.belt_type }</div>
               </div>
             </div>
             
@@ -626,14 +626,14 @@
                   <span class="label-text">Marca de la Pulley del Blower:</span>
                 </label>
                 <input type="text" v-model="formData.blower_pulley_brand" class="input input-bordered w-full" placeholder="Ingrese la marca de la polea del blower">
-                <div v-if="errors.blower_pulley_brand" class="text-error text-sm mt-1">{{ errors.blower_pulley_brand }}</div>
+                <div v-if="errors.blower_pulley_brand" class="text-error text-sm mt-1">${ errors.blower_pulley_brand }</div>
               </div>
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">Modelo de la Pulley del Blower:</span>
                 </label>
                 <input type="text" v-model="formData.blower_pulley_model" class="input input-bordered w-full" placeholder="Ingrese el modelo de la polea del blower">
-                <div v-if="errors.blower_pulley_model" class="text-error text-sm mt-1">{{ errors.blower_pulley_model }}</div>
+                <div v-if="errors.blower_pulley_model" class="text-error text-sm mt-1">${ errors.blower_pulley_model }</div>
               </div>
             </div>
             
@@ -644,14 +644,14 @@
                   <span class="label-text">Marca de la Pulley del Motor:</span>
                 </label>
                 <input type="text" v-model="formData.motor_pulley_brand" class="input input-bordered w-full" placeholder="Ingrese la marca de la polea del motor">
-                <div v-if="errors.motor_pulley_brand" class="text-error text-sm mt-1">{{ errors.motor_pulley_brand }}</div>
+                <div v-if="errors.motor_pulley_brand" class="text-error text-sm mt-1">${ errors.motor_pulley_brand }</div>
               </div>
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">Modelo de la Pulley del Motor:</span>
                 </label>
                 <input type="text" v-model="formData.motor_pulley_model" class="input input-bordered w-full" placeholder="Ingrese el modelo de la polea del motor">
-                <div v-if="errors.motor_pulley_model" class="text-error text-sm mt-1">{{ errors.motor_pulley_model }}</div>
+                <div v-if="errors.motor_pulley_model" class="text-error text-sm mt-1">${ errors.motor_pulley_model }</div>
               </div>
             </div>
             
@@ -662,14 +662,14 @@
                   <span class="label-text">Marca del Panel Eléctrico:</span>
                 </label>
                 <input type="text" v-model="formData.electrical_panel_brand" class="input input-bordered w-full" placeholder="Ingrese la marca del panel eléctrico">
-                <div v-if="errors.electrical_panel_brand" class="text-error text-sm mt-1">{{ errors.electrical_panel_brand }}</div>
+                <div v-if="errors.electrical_panel_brand" class="text-error text-sm mt-1">${ errors.electrical_panel_brand }</div>
               </div>
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">Modelo del Panel Eléctrico:</span>
                 </label>
                 <input type="text" v-model="formData.electrical_panel_model" class="input input-bordered w-full" placeholder="Ingrese el modelo del panel eléctrico">
-                <div v-if="errors.electrical_panel_model" class="text-error text-sm mt-1">{{ errors.electrical_panel_model }}</div>
+                <div v-if="errors.electrical_panel_model" class="text-error text-sm mt-1">${ errors.electrical_panel_model }</div>
               </div>
             </div>
             
@@ -680,14 +680,14 @@
                   <span class="label-text">Marca de la Guardia del Motor:</span>
                 </label>
                 <input type="text" v-model="formData.motor_guard_brand" class="input input-bordered w-full" placeholder="Ingrese la marca del guarda motor">
-                <div v-if="errors.motor_guard_brand" class="text-error text-sm mt-1">{{ errors.motor_guard_brand }}</div>
+                <div v-if="errors.motor_guard_brand" class="text-error text-sm mt-1">${ errors.motor_guard_brand }</div>
               </div>
               <div class="form-control">
                 <label class="label">
                   <span class="label-text">Modelo Guarda Motor:</span>
                 </label>
                 <input type="text" v-model="formData.motor_guard_model" class="input input-bordered w-full" placeholder="Ingrese el modelo del guarda motor">
-                <div v-if="errors.motor_guard_model" class="text-error text-sm mt-1">{{ errors.motor_guard_model }}</div>
+                <div v-if="errors.motor_guard_model" class="text-error text-sm mt-1">${ errors.motor_guard_model }</div>
               </div>
             </div>
           </div>
@@ -702,7 +702,7 @@
               <span class="label-text">Notas:</span>
             </label>
             <textarea v-model="formData.notes" class="textarea textarea-bordered w-full h-24" placeholder="Ingrese notas o comentarios adicionales sobre el equipo"></textarea>
-            <div v-if="errors.notes" class="text-error text-sm mt-1">{{ errors.notes }}</div>
+            <div v-if="errors.notes" class="text-error text-sm mt-1">${ errors.notes }</div>
           </div>
         </div>
       </div>
@@ -741,7 +741,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <span>{{ successMessage }}</span>
+          <span>${ successMessage }</span>
         </div>
       </div>
       
@@ -754,7 +754,7 @@
             <h3 class="font-bold">¡Error al guardar el equipo!</h3>
             <div class="text-xs">
               <p v-for="(error, field) in errors" :key="field" class="mt-1">
-                <strong>{{ field | capitalize }}:</strong> {{ error }}
+                <strong>${ field | capitalize }:</strong> ${ error }
               </p>
             </div>
           </div>

@@ -878,7 +878,10 @@ window.ResourceItemApp.filters = {
 document.addEventListener('DOMContentLoaded', () => {
   const appElement = document.querySelector('#resourceItemApp');
   if (appElement) {
-    Vue.createApp(window.ResourceItemApp).mount('#resourceItemApp');
+    const app = Vue.createApp(window.ResourceItemApp);
+    // Configurar delimitadores personalizados para evitar conflictos con Django
+    app.config.compilerOptions.delimiters = ['${', '}'];
+    app.mount('#resourceItemApp');
     
     // Ocultamos el formulario original hasta que llegue al paso 3 donde se muestra
     const formElement = document.querySelector('#resourceItemApp form');
