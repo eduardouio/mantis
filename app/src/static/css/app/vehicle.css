@@ -1,0 +1,47 @@
+  /* Alineación consistente para todos los inputs */
+  .form-control .input,
+  .form-control .select,
+  .form-control .textarea {
+    @apply h-10 min-h-10;
+  }
+  
+  .form-control .textarea {
+    @apply min-h-20;
+  }
+  
+  /* Efectos de hover y focus */
+  .form-control input:focus,
+  .form-control select:focus,
+  .form-control textarea:focus {
+    @apply ring-2 ring-blue-500 ring-opacity-50 border-blue-500 shadow-lg transition-all duration-200;
+  }
+  
+  .form-control:hover .input,
+  .form-control:hover .select,
+  .form-control:hover .textarea {
+    @apply border-blue-300 shadow-md;
+  }
+  
+  /* Espaciado consistente para labels */
+  .label {
+    @apply mb-0;
+  }
+  
+  .label-text {
+    @apply leading-tight;
+  }
+  
+  /* Alineación de checkboxes */
+  .checkbox {
+    @apply w-5 h-5;
+  }
+  
+  /* Grid alineado */
+  .grid.gap-3 > * {
+    @apply min-h-fit;
+  }
+  
+  /* Headers de secciones */
+  h3 {
+    @apply border-b border-gray-200 pb-2;
+  }
