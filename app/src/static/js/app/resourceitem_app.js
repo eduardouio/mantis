@@ -734,19 +734,26 @@ window.ResourceItemApp = {
             valid = false;
           }
           
-          // Campos comunes para plantas de tratamiento (no obligatorios, pero se recomienda completarlos)
-          const plantFields = [
-            { field: 'blower_brand', label: 'Marca del Blower' },
-            { field: 'engine_brand', label: 'Marca del Motor' },
-            { field: 'belt_brand', label: 'Marca de la Banda' }
-          ];
-          
-          for (const { field, label } of plantFields) {
-            if (!this.formData[field] || this.formData[field].trim() === '') {
-              // No son obligatorios pero mostramos una advertencia
-              this.errors[field] = `Se recomienda especificar ${label} para este tipo de equipo`;
-              // No establecemos valid = false porque no son obligatorios
+          // Solo verificamos campos específicos para plantas de tratamiento de agua residual
+          if (this.formData.subtype === 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL') {
+            // Estos campos son opcionales - no mostraremos advertencias
+            // Ya que confunde al usuario y no son realmente requeridos
+            // Dejamos los comentarios como referencia pero eliminamos las validaciones
+            /*
+            const plantFields = [
+              { field: 'blower_brand', label: 'Marca del Blower' },
+              { field: 'engine_brand', label: 'Marca del Motor' },
+              { field: 'belt_brand', label: 'Marca de la Banda' }
+            ];
+            
+            for (const { field, label } of plantFields) {
+              if (!this.formData[field] || this.formData[field].trim() === '') {
+                // No son obligatorios pero mostramos una advertencia
+                this.errors[field] = `Se recomienda especificar ${label} para este tipo de equipo`;
+                // No establecemos valid = false porque no son obligatorios
+              }
             }
+            */
           }
         }
         

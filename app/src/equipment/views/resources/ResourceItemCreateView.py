@@ -5,6 +5,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.db import models
 import json
 
 from equipment.models import ResourceItem
@@ -35,6 +36,17 @@ class ResourceItemCreateView(LoginRequiredMixin, TemplateView):
             # Si es AJAX, parsear los datos JSON
             if is_ajax:
                 data = json.loads(request.body.decode('utf-8'))
+                
+                # Para todos los campos booleanos: si no están presentes, establecer como False
+                # Primero obtenemos todos los campos booleanos del modelo
+                boolean_fields = [field.name for field in ResourceItem._meta.fields 
+                                if isinstance(field, models.BooleanField)]
+                
+                # Para cada campo booleano que no esté en data, establecerlo como False
+                for field_name in boolean_fields:
+                    if field_name not in data:
+                        data[field_name] = False
+                
                 form = ResourceItemForm(data)
             else:
                 # Si es un POST normal, usar los datos del formulario
