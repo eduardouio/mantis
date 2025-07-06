@@ -1,0 +1,240 @@
+  /* Forzar clases DaisyUI para todos los elementos del formulario Django */
+  .form-control input,
+  .form-control select,
+  .form-control textarea {
+    @apply input input-bordered w-full h-10 min-h-10 !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+  
+  .form-control textarea {
+    @apply textarea textarea-bordered min-h-20 !important;
+    height: auto !important;
+    min-height: 5rem !important;
+  }
+  
+  /* Asegurar que todos los tipos de input tengan la misma altura */
+  .form-control input[type="text"],
+  .form-control input[type="email"],
+  .form-control input[type="number"],
+  .form-control input[type="tel"],
+  .form-control input[type="date"],
+  .form-control input[type="checkbox"] {
+    @apply input input-bordered !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+  
+  .form-control select {
+    @apply select select-bordered !important;
+    height: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+  
+  /* Excepción para checkboxes */
+  .form-control input[type="checkbox"] {
+    @apply checkbox checkbox-primary !important;
+    height: 1.25rem !important;
+    width: 1.25rem !important;
+    min-height: 1.25rem !important;
+  }
+  
+  /* Efectos de hover y focus */
+  .form-control input:focus,
+  .form-control select:focus,
+  .form-control textarea:focus {
+    @apply ring-2 ring-blue-500 ring-opacity-50 border-blue-500 shadow-lg transition-all duration-200 !important;
+  }
+  
+  .form-control:hover input:not(:focus),
+  .form-control:hover select:not(:focus),
+  .form-control:hover textarea:not(:focus) {
+    @apply border-blue-300 shadow-md !important;
+  }
+  
+  /* Espaciado consistente para labels */
+  .label {
+    @apply mb-2 !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .label-text {
+    @apply leading-tight font-medium text-gray-700 !important;
+  }
+  
+  /* Alineación vertical de elementos en grids */
+  .grid > .form-control {
+    @apply flex flex-col justify-start !important;
+  }
+  
+  /* Espaciado consistente entre elementos */
+  .space-y-4 > .form-control {
+    margin-bottom: 1rem !important;
+  }
+  
+  /* Headers de secciones */
+  h3 {
+    @apply border-b border-gray-200 pb-2 mb-4 !important;
+  }
+  
+  /* Alineación específica para checkboxes en labels cursor-pointer */
+  .label.cursor-pointer {
+    @apply flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 !important;
+    height: auto !important;
+    min-height: 3rem !important;
+  }
+  
+  .label.cursor-pointer .label-text {
+    @apply text-sm font-medium text-gray-700 !important;
+  }
+  
+  /* Asegurar altura mínima consistente para todos los controles de formulario */
+  .form-control {
+    @apply min-h-fit !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* Mejorar la apariencia de los elementos deshabilitados */
+  .form-control input:disabled,
+  .form-control select:disabled,
+  .form-control textarea:disabled {
+    @apply bg-gray-100 text-gray-500 cursor-not-allowed !important;
+  }
+  
+  /* Normalizar apariencia de todos los inputs para que sean consistentes */
+  .form-control input,
+  .form-control select {
+    border-radius: 0.5rem !important;
+    border-width: 1px !important;
+    border-color: #d1d5db !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+  
+  /* Asegurar que los elementos de fecha tengan la misma apariencia */
+  .form-control input[type="date"] {
+    @apply input input-bordered !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: textfield !important;
+  }
+  
+  /* Normalizar select */
+  .form-control select {
+    @apply select select-bordered !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
+    background-position: right 0.5rem center !important;
+    background-repeat: no-repeat !important;
+    background-size: 1.5em 1.5em !important;
+    padding-right: 2.5rem !important;
+  }
+  
+  /* Badge con estilo suave personalizado */
+  .badge-soft {
+    @apply text-xs font-medium px-2.5 py-0.5 rounded-full !important;
+    border: 1px solid transparent !important;
+  }
+  
+  .badge-soft.badge-info {
+    @apply bg-blue-50 text-blue-700 border-blue-200 !important;
+  }
+  
+  .badge-soft.badge-warning {
+    @apply bg-orange-50 text-orange-700 border-orange-200 !important;
+  }
+  
+  .badge-soft.badge-secondary {
+    @apply bg-purple-50 text-purple-700 border-purple-200 !important;
+  }
+  
+  .badge-soft.badge-success {
+    @apply bg-green-50 text-green-700 border-green-200 !important;
+  }
+  
+  .badge-soft.badge-error {
+    @apply bg-red-50 text-red-700 border-red-200 !important;
+  }
+  
+  /* Efecto hover para badges */
+  .badge-soft:hover {
+    @apply shadow-sm transform scale-105 transition-all duration-200 !important;
+  }
+  
+  .badge-soft.badge-info:hover {
+    @apply bg-blue-100 border-blue-300 !important;
+  }
+  
+  .badge-soft.badge-warning:hover {
+    @apply bg-orange-100 border-orange-300 !important;
+  }
+  
+  .badge-soft.badge-secondary:hover {
+    @apply bg-purple-100 border-purple-300 !important;
+  }
+  
+  .badge-soft.badge-success:hover {
+    @apply bg-green-100 border-green-300 !important;
+  }
+  
+  .badge-soft.badge-error:hover {
+    @apply bg-red-100 border-red-300 !important;
+  }
+  
+  /* Animación de pulso para elementos críticos */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.05);
+    }
+  }
+  
+  /* Mejora para badges críticos */
+  .badge.critical {
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
+  }
+  
+  /* Colores específicos para estados de vencimiento */
+  .badge-expired {
+    background-color: #fecaca !important;
+    color: #991b1b !important;
+    border-color: #f87171 !important;
+  }
+  
+  .badge-expires-today {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    border-color: #dc2626 !important;
+    font-weight: bold !important;
+  }
+  
+  .badge-expires-soon {
+    background-color: #fca5a5 !important;
+    color: #7f1d1d !important;
+    border-color: #ef4444 !important;
+    font-weight: bold !important;
+  }
+  
+  .badge-expires-warning {
+    background-color: #fed7aa !important;
+    color: #9a3412 !important;
+    border-color: #fb923c !important;
+  }
+  
+  .badge-expires-caution {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+    border-color: #fbbf24 !important;
+  }
+  
+  .badge-valid {
+    background-color: #dcfce7 !important;
+    color: #166534 !important;
+    border-color: #4ade80 !important;
+  }
