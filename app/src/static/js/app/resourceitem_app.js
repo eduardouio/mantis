@@ -9,6 +9,7 @@
 // Solo declarar si no existe ya
 if (typeof window.ResourceItemApp === 'undefined') {
 window.ResourceItemApp = {
+  // NO incluir delimiters aquí, se configurará al crear la app
   data() {
     return {
       // Estado del asistente
@@ -25,6 +26,8 @@ window.ResourceItemApp = {
       isSaving: false,
       errors: {},
       successMessage: '',
+      isEditMode: false,
+      testMessage: 'Vue is working!',
       
       // Tabs de navegación para el paso 3
       activeTab: 'general',
@@ -38,14 +41,67 @@ window.ResourceItemApp = {
       
       // Campos y configuración
       formData: {
+        // Campos básicos
+        id: '',
         type: '',
         subtype: '',
-        // Campos compartidos para servicios y equipos
         name: '',
+        code: '',
+        serial_number: '',
+        brand: '',
+        model: '',
+        date_purchase: '',
         status: '',
         base_price: '',
         is_active: true, // Campo del modelo base, por defecto activo
-        notes: ''
+        notes: '',
+        
+        // Dimensiones
+        height: '',
+        width: '',
+        depth: '',
+        weight: '',
+        
+        // Capacidad
+        capacity_gallons: '',
+        plant_capacity: '',
+        
+        // Motivo de reparación
+        repair_reason: '',
+        
+        // Campos booleanos específicos para lavamanos
+        foot_pumps: false,
+        sink_soap_dispenser: false,
+        paper_towels: false,
+        
+        // Campos booleanos para baterías sanitarias
+        paper_dispenser: false,
+        soap_dispenser: false,
+        napkin_dispenser: false,
+        urinals: false,
+        seats: false,
+        toilet_pump: false,
+        sink_pump: false,
+        toilet_lid: false,
+        bathroom_bases: false,
+        ventilation_pipe: false,
+        
+        // Campos específicos para plantas de tratamiento
+        blower_brand: '',
+        blower_model: '',
+        engine_brand: '',
+        engine_model: '',
+        belt_brand: '',
+        belt_model: '',
+        belt_type: '',
+        blower_pulley_brand: '',
+        blower_pulley_model: '',
+        motor_pulley_brand: '',
+        motor_pulley_model: '',
+        electrical_panel_brand: '',
+        electrical_panel_model: '',
+        motor_guard_brand: '',
+        motor_guard_model: ''
       },
       
       // Visibilidad de secciones según tipo y subtipo
@@ -88,25 +144,33 @@ window.ResourceItemApp = {
       typeInstructions: {
         'EQUIPO': 'Los equipos requieren información específica según su subtipo.',
         'SERVICIO': 'Los servicios solo requieren información básica.'
-      },
-      
-      // Guarda el modo de edición (crear nuevo o editar existente)
-      isEditMode: false
+      }
     }
   },
   
   mounted() {
+    console.log("Vue app mounted");
+    console.log("Initial state:", {
+      currentStep: this.currentStep,
+      isEditMode: this.isEditMode,
+      formDataType: this.formData.type
+    });
+    
     // Inicializa con los valores actuales del formulario Django
     this.initializeFromForm();
     
     // Verificar si estamos en modo edición o creación
-    // Para un formulario de creación nuevo, siempre iniciar en el paso 1
-    const isCreateForm = window.location.pathname.includes('/crear/');
+    const isUpdateMode = document.getElementById('is_update') !== null;
     
-    // Si estamos editando un registro existente y ya tiene datos, podemos saltar pasos
-    if (!isCreateForm && this.formData.type) {
+    // En modo edición, saltamos directamente al paso 3 (formulario completo)
+    if (isUpdateMode) {
       this.isEditMode = true;
-      
+      // Ir directamente al paso 3 (formulario completo) en modo edición
+      this.currentStep = 3;
+      console.log("Modo edición detectado");
+    } 
+    // Si no es modo edición, comprobar el tipo ya existente para posible continuación
+    else if (this.formData.type) {
       // Si es un equipo y ya tiene subtipo, vamos directo al paso 3
       if (this.formData.type === 'EQUIPO' && this.formData.subtype) {
         this.currentStep = 3;
@@ -122,12 +186,25 @@ window.ResourceItemApp = {
     } else {
       // Para formularios nuevos, siempre comenzar en paso 1
       this.currentStep = 1;
+      console.log("Modo creación - Step 1");
     }
+    
+    console.log("Final state:", {
+      currentStep: this.currentStep,
+      isEditMode: this.isEditMode,
+      formDataType: this.formData.type
+    });
     
     this.updateVisibility();
     
     // Inicializar el contenedor del formulario con las clases de estilo del asistente
     this.updateWizardStyles();
+  },
+  
+  computed: {
+    showWizard() {
+      return this.currentStep < 3 && !this.isEditMode;
+    }
   },
   
   methods: {
@@ -837,6 +914,16 @@ window.ResourceItemApp = {
     },
     
     /**
+     * Obtiene la etiqueta legible de un subtipo de equipo
+     * @param {string} subtype - Valor del subtipo
+     * @returns {string} - Etiqueta legible
+     */
+    getSubtypeLabel(subtype) {
+      const subtypeObj = this.equipmentSubtypes.find(s => s.value === subtype);
+      return subtypeObj ? subtypeObj.label : subtype;
+    },
+    
+    /**
      * Muestra errores en el formulario
      */
     showErrors(errors) {
@@ -861,6 +948,91 @@ window.ResourceItemApp = {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       }
+    },
+    
+    /**
+     * Establece los datos de un equipo existente para edición
+     * Usado cuando se carga la página en modo edición
+     */
+    setEquipmentData(equipmentData) {
+      if (!equipmentData) return;
+      
+      console.log("Cargando datos de equipo para edición:", equipmentData);
+      
+      // Marcar como modo edición
+      this.isEditMode = true;
+      this.currentStep = 3; // Ir directamente al paso final (formulario completo)
+      
+      // Establecer datos básicos del equipo
+      this.formData.id = equipmentData.id;
+      this.formData.type = equipmentData.type;
+      this.formData.subtype = equipmentData.subtype || '';
+      this.formData.name = equipmentData.name || '';
+      this.formData.code = equipmentData.code || '';
+      this.formData.serial_number = equipmentData.serial_number || '';
+      this.formData.brand = equipmentData.brand || '';
+      this.formData.model = equipmentData.model || '';
+      this.formData.date_purchase = equipmentData.date_purchase || '';
+      this.formData.status = equipmentData.status || '';
+      this.formData.base_price = equipmentData.base_price || '';
+      
+      // Datos de dimensiones
+      this.formData.height = equipmentData.height || '';
+      this.formData.width = equipmentData.width || '';
+      this.formData.depth = equipmentData.depth || '';
+      this.formData.weight = equipmentData.weight || '';
+      
+      // Datos de capacidad
+      this.formData.capacity_gallons = equipmentData.capacity_gallons || '';
+      this.formData.plant_capacity = equipmentData.plant_capacity || '';
+      
+      // Motivo de reparación
+      this.formData.repair_reason = equipmentData.repair_reason || '';
+      
+      // Campos booleanos específicos - todos por defecto false
+      this.formData.foot_pumps = equipmentData.foot_pumps || false;
+      this.formData.sink_soap_dispenser = equipmentData.sink_soap_dispenser || false;
+      this.formData.paper_towels = equipmentData.paper_towels || false;
+      this.formData.paper_dispenser = equipmentData.paper_dispenser || false;
+      this.formData.soap_dispenser = equipmentData.soap_dispenser || false;
+      this.formData.napkin_dispenser = equipmentData.napkin_dispenser || false;
+      this.formData.urinals = equipmentData.urinals || false;
+      this.formData.seats = equipmentData.seats || false;
+      this.formData.toilet_pump = equipmentData.toilet_pump || false;
+      this.formData.sink_pump = equipmentData.sink_pump || false;
+      this.formData.toilet_lid = equipmentData.toilet_lid || false;
+      this.formData.bathroom_bases = equipmentData.bathroom_bases || false;
+      this.formData.ventilation_pipe = equipmentData.ventilation_pipe || false;
+      
+      // Campos específicos para plantas de tratamiento
+      this.formData.blower_brand = equipmentData.blower_brand || '';
+      this.formData.blower_model = equipmentData.blower_model || '';
+      this.formData.engine_brand = equipmentData.engine_brand || '';
+      this.formData.engine_model = equipmentData.engine_model || '';
+      this.formData.belt_brand = equipmentData.belt_brand || '';
+      this.formData.belt_model = equipmentData.belt_model || '';
+      this.formData.belt_type = equipmentData.belt_type || '';
+      this.formData.blower_pulley_brand = equipmentData.blower_pulley_brand || '';
+      this.formData.blower_pulley_model = equipmentData.blower_pulley_model || '';
+      this.formData.motor_pulley_brand = equipmentData.motor_pulley_brand || '';
+      this.formData.motor_pulley_model = equipmentData.motor_pulley_model || '';
+      this.formData.electrical_panel_brand = equipmentData.electrical_panel_brand || '';
+      this.formData.electrical_panel_model = equipmentData.electrical_panel_model || '';
+      this.formData.motor_guard_brand = equipmentData.motor_guard_brand || '';
+      this.formData.motor_guard_model = equipmentData.motor_guard_model || '';
+      
+      // Actualizar los campos del formulario HTML con los datos
+      this.syncFormDataToHtmlForm();
+      
+      // Actualizar visibilidad de campos según el tipo/subtipo
+      this.updateVisibility();
+      
+      // Forzar la actualización del DOM después de que Vue procese los cambios
+      this.$nextTick(() => {
+        this.updateVisibility();
+      });
+      
+      console.log("Datos de equipo cargados para edición:", this.formData);
     }
   }
 };
@@ -875,31 +1047,79 @@ window.ResourceItemApp.filters = {
 };
 
 // Inicializa la app de Vue cuando el documento esté listo
-document.addEventListener('DOMContentLoaded', () => {
+// Variable para evitar múltiples inicializaciones
+let vueAppInitialized = false;
+
+function initializeVueApp() {
+  console.log("Initializing Vue app");
+  
+  // Verificar si Vue ya está inicializado
+  if (vueAppInitialized) {
+    console.log("Vue app already initialized, skipping...");
+    return;
+  }
+  
   const appElement = document.querySelector('#resourceItemApp');
+  console.log("App element found:", appElement);
+  
   if (appElement) {
-    const app = Vue.createApp(window.ResourceItemApp);
-    // Configurar delimitadores personalizados para evitar conflictos con Django
-    app.config.compilerOptions.delimiters = ['${', '}'];
-    app.mount('#resourceItemApp');
-    
-    // Ocultamos el formulario original hasta que llegue al paso 3 donde se muestra
-    const formElement = document.querySelector('#resourceItemApp form');
-    if (formElement) {
-      // Mantenemos visible solo el título y los botones de navegación superior
-      const headerElement = document.querySelector('#resourceItemApp .flex.justify-between');
-      if (headerElement) {
-        headerElement.style.display = 'flex';
-      }
+    try {
+      console.log("Creating Vue app");
       
-      // Ocultamos el resto del formulario inicialmente
-      Array.from(formElement.children).forEach(child => {
-        if (child !== headerElement) {
-          child.dataset.originalDisplay = child.style.display;
-          child.style.display = 'none';
-        }
+      // Crear la aplicación Vue con delimitadores personalizados para evitar conflictos con Django
+      const app = Vue.createApp({
+        ...window.ResourceItemApp,
+        delimiters: ['${', '}']
       });
+      
+      console.log("Mounting Vue app");
+      const vueInstance = app.mount('#resourceItemApp');
+      console.log("Vue app mounted successfully", vueInstance);
+      
+      // Marcar como inicializado
+      vueAppInitialized = true;
+      
+      // Hacer el método setEquipmentData accesible globalmente
+      window.ResourceItemApp.setEquipmentData = function(equipmentData) {
+        if (vueInstance && vueInstance.setEquipmentData) {
+          vueInstance.setEquipmentData(equipmentData);
+        }
+      };
+      
+    } catch (error) {
+      console.error("Error mounting Vue app:", error);
+      // Mostrar un mensaje de error al usuario
+      appElement.innerHTML = `
+        <div class="alert alert-error">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <h3 class="font-bold">Error de aplicación</h3>
+              <div class="text-xs">No se pudo inicializar la aplicación Vue. Por favor, recarga la página.</div>
+            </div>
+          </div>
+        </div>
+      `;
     }
+  }
+}
+
+// Intentar múltiples eventos para asegurar la inicialización
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeVueApp);
+} else {
+  // DOM ya está cargado
+  initializeVueApp();
+}
+
+// También escuchar el evento load como respaldo
+window.addEventListener('load', function() {
+  console.log("Window load event fired");
+  if (!vueAppInitialized) {
+    console.log("Vue not initialized, trying again");
+    initializeVueApp();
   }
 });
 
