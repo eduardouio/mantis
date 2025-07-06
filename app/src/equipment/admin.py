@@ -8,22 +8,26 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
         'name',
         'code',
         'type',
+        'subtype',
         'brand',
         'model',
         'base_price',
         'status',
         'current_location',
+        'capacity_display',
         'is_active',
         'created_at',
     )
 
     list_filter = (
         'type',
+        'subtype',
         'status',
         'brand',
         'is_active',
         'created_at',
         'date_purchase',
+        'plant_capacity',
     )
 
     search_fields = (
@@ -31,40 +35,70 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
         'code',
         'brand',
         'model',
+        'serial_number',
         'current_location',
         'notes',
+        'repair_reason',
     )
 
     ordering = ('-created_at', 'name')
 
     fieldsets = (
-        ('Basic Information', {
-            'fields': ('name', 'code', 'type', 'brand', 'model', 'base_price')
+        ('Información Básica', {
+            'fields': ('name', 'code', 'type', 'subtype', 'brand', 'model', 'serial_number', 'date_purchase', 'base_price')
         }),
-        ('Physical Characteristics', {
+        ('Características Físicas', {
             'fields': ('height', 'width', 'depth', 'weight'),
             'classes': ('collapse',)
         }),
-        ('Status and Location', {
-            'fields': ('status', 'current_location', 'current_project_id', 'is_active')
+        ('Capacidad', {
+            'fields': ('capacity_gallons', 'plant_capacity'),
+            'classes': ('collapse',)
         }),
-        ('Important Dates', {
-            'fields': ('date_purchase', 'commitment_date', 'release_date')
+        ('Estado y Ubicación', {
+            'fields': ('status', 'repair_reason', 'current_location', 'current_project_id', 'is_active')
         }),
-        ('Additional Information', {
+        ('Fechas de Proyecto', {
+            'fields': ('commitment_date', 'release_date'),
+            'classes': ('collapse',)
+        }),
+        ('Características Lavamanos', {
+            'fields': ('foot_pumps', 'sink_soap_dispenser', 'paper_towels'),
+            'classes': ('collapse',)
+        }),
+        ('Características Baterías Sanitarias', {
+            'fields': ('paper_dispenser', 'soap_dispenser', 'napkin_dispenser', 'urinals', 'seats', 'toilet_pump', 'sink_pump', 'toilet_lid', 'bathroom_bases', 'ventilation_pipe'),
+            'classes': ('collapse',)
+        }),
+        ('Componentes Especiales - Blower', {
+            'fields': ('blower_brand', 'blower_model', 'blower_pulley_brand', 'blower_pulley_model'),
+            'classes': ('collapse',)
+        }),
+        ('Componentes Especiales - Motor', {
+            'fields': ('engine_brand', 'engine_model', 'motor_pulley_brand', 'motor_pulley_model', 'motor_guard_brand', 'motor_guard_model'),
+            'classes': ('collapse',)
+        }),
+        ('Componentes Especiales - Otros', {
+            'fields': ('belt_brand', 'belt_model', 'belt_type', 'electrical_panel_brand', 'electrical_panel_model'),
+            'classes': ('collapse',)
+        }),
+        ('Información Adicional', {
             'fields': ('notes',),
             'classes': ('collapse',)
         }),
-        ('Audit', {
+        ('Auditoría', {
             'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
             'classes': ('collapse',)
         })
     )
 
-    readonly_fields = ('created_at', 'updated_at',
-                       'id_user_created', 'id_user_updated')
+    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated', 'capacity_display')
 
     date_hierarchy = 'created_at'
+
+    def capacity_display(self, obj):
+        return obj.capacity_display
+    capacity_display.short_description = 'Capacidad'
 
 
 class VehicleAdmin(SimpleHistoryAdmin):
