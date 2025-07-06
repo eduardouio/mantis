@@ -150,55 +150,7 @@ window.ResourceItemApp = {
   
   mounted() {
     console.log("Vue app mounted");
-    console.log("Initial state:", {
-      currentStep: this.currentStep,
-      isEditMode: this.isEditMode,
-      formDataType: this.formData.type
-    });
-    
-    // Inicializa con los valores actuales del formulario Django
-    this.initializeFromForm();
-    
-    // Verificar si estamos en modo edición o creación
-    const isUpdateMode = document.getElementById('is_update') !== null;
-    
-    // En modo edición, saltamos directamente al paso 3 (formulario completo)
-    if (isUpdateMode) {
-      this.isEditMode = true;
-      // Ir directamente al paso 3 (formulario completo) en modo edición
-      this.currentStep = 3;
-      console.log("Modo edición detectado");
-    } 
-    // Si no es modo edición, comprobar el tipo ya existente para posible continuación
-    else if (this.formData.type) {
-      // Si es un equipo y ya tiene subtipo, vamos directo al paso 3
-      if (this.formData.type === 'EQUIPO' && this.formData.subtype) {
-        this.currentStep = 3;
-      }
-      // Si es un servicio, saltamos el paso 2
-      else if (this.formData.type === 'SERVICIO') {
-        this.currentStep = 3;
-      }
-      // Si es un equipo sin subtipo, vamos al paso 2
-      else if (this.formData.type === 'EQUIPO') {
-        this.currentStep = 2;
-      }
-    } else {
-      // Para formularios nuevos, siempre comenzar en paso 1
-      this.currentStep = 1;
-      console.log("Modo creación - Step 1");
-    }
-    
-    console.log("Final state:", {
-      currentStep: this.currentStep,
-      isEditMode: this.isEditMode,
-      formDataType: this.formData.type
-    });
-    
-    this.updateVisibility();
-    
-    // Inicializar el contenedor del formulario con las clases de estilo del asistente
-    this.updateWizardStyles();
+    this.initialize();
   },
   
   computed: {
@@ -333,37 +285,26 @@ window.ResourceItemApp = {
     },
     
     /**
-     * Inicializa el estado de Vue con valores del formulario Django
+     * Inicializa la aplicación Vue, cargando datos si es modo edición.
      */
-    initializeFromForm() {
-      // Recuperamos los selectores de los campos principales
-      const typeSelector = document.querySelector('[name="type"]');
-      const subtypeSelector = document.querySelector('[name="subtype"]');
-      const statusSelector = document.querySelector('[name="status"]');
-      
-      if (typeSelector) {
-        this.formData.type = typeSelector.value;
-        typeSelector.addEventListener('change', (e) => {
-          this.formData.type = e.target.value;
-          this.updateVisibility();
-        });
+    initialize() {
+      const isUpdateEl = document.getElementById('is_update');
+      const isUpdateMode = isUpdateEl && isUpdateEl.value === 'true';
+
+      if (isUpdateMode && window.equipmentData) {
+        console.log("Modo edición detectado. Cargando datos iniciales...");
+        // Usar Object.assign para fusionar los datos sin perder reactividad
+        Object.assign(this.formData, window.equipmentData);
+        this.isEditMode = true;
+        this.currentStep = 3;
+        console.log("Datos cargados en formData:", this.formData);
+      } else {
+        console.log("Modo creación. Iniciando en el paso 1.");
+        this.currentStep = 1;
       }
       
-      if (subtypeSelector) {
-        this.formData.subtype = subtypeSelector.value;
-        subtypeSelector.addEventListener('change', (e) => {
-          this.formData.subtype = e.target.value;
-          this.updateVisibility();
-        });
-      }
-      
-      if (statusSelector) {
-        this.formData.status = statusSelector.value;
-        statusSelector.addEventListener('change', (e) => {
-          this.formData.status = e.target.value;
-          this.updateVisibility();
-        });
-      }
+      this.updateVisibility();
+      this.updateWizardStyles();
     },
     
     /**
@@ -532,8 +473,7 @@ window.ResourceItemApp = {
       
       // Usar la URL actual para el envío del formulario
       const url = window.location.pathname;
-
-      const method = this.formData.id ? 'PUT' : 'POST';
+      const method = 'POST'; // Usar siempre POST
 
       fetch(url, {
         method: method,
@@ -615,7 +555,7 @@ window.ResourceItemApp = {
       
       // Usar la URL actual para el envío del formulario
       const url = window.location.pathname;
-      const method = this.formData.id ? 'PUT' : 'POST';
+      const method = 'POST'; // Usar siempre POST
       
       fetch(url, {
         method: method,

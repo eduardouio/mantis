@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.db import models
 import json
+from django.forms.models import model_to_dict
 
 from equipment.models import ResourceItem
 from equipment.forms.ResourceItemForm import ResourceItemForm
@@ -30,6 +31,18 @@ class ResourceItemUpdateView(LoginRequiredMixin, UpdateView):
         # Añadir indicadores para el modo de edición
         context['is_update'] = True
         context['equipment'] = self.object
+
+        # Serializar los datos del equipo para que Vue los pueda usar
+        equipment_data = model_to_dict(self.object)
+        
+        # Asegurarse de que el formato de fecha sea compatible con <input type="date">
+        if equipment_data.get('date_purchase'):
+            equipment_data['date_purchase'] = equipment_data['date_purchase'].strftime('%Y-%m-%d')
+        else:
+            equipment_data['date_purchase'] = ''
+
+        context['equipment_data_json'] = json.dumps(equipment_data)
+        
         return context
 
     def get_success_url(self):
