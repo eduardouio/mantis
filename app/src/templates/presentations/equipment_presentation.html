@@ -3,14 +3,22 @@
 {% block content %}
 <div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
-    <h1 class="text-2xl font-semibold text-blue-500">Ficha de Equipo</h1>
+    <h1 class="text-2xl font-semibold text-blue-500">
+      {% if equipment.type == 'SERVICIO' %}
+        Ficha de Servicio
+      {% else %}
+        Ficha de Equipo
+      {% endif %}
+    </h1>
     <div class="text-gray-500">
       <span class="badge {% if equipment.is_active %}badge-success{% else %}badge-error{% endif %}">
         {% if equipment.is_active %}Activo{% else %}Inactivo{% endif %}
       </span>
+      {% if equipment.type != 'SERVICIO' %}
       <span class="badge badge-outline ml-2 {{ status_info.status_class }}">
         {{ equipment.get_status_display }}
       </span>
+      {% endif %}
     </div>
   </div>
 
@@ -18,9 +26,45 @@
   <div class="tabs tabs-box w-full mb-4">
     <input type="radio" name="equipment_tabs" class="tab" aria-label="Información General" checked />
     <div class="tab-content bg-base-100 border-base-300 p-6">
-      <!-- Información básica en 3 columnas -->
+      <!-- Información básica adaptada según tipo -->
+      {% if equipment.type == 'SERVICIO' %}
+      <!-- Presentación para SERVICIOS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-10">
+        <!-- Columna 1: Datos principales del servicio -->
+        <div class="space-y-1 border-l-blue-300 border-l-[1px] pl-5">
+          <div>
+            <p class="text-gray-500 text-sm">Nombre del Servicio</p>
+            <p class="font-semibold text-gray-900">{{ equipment.name }}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Código</p>
+            <p class="font-semibold text-gray-900">{{ equipment.code|default:"No especificado" }}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Estado</p>
+            <p class="font-semibold text-gray-900">{% if equipment.is_active %}Activo{% else %}Inactivo{% endif %}</p>
+          </div>
+        </div>
+        
+        <!-- Columna 2: Información adicional del servicio -->
+        <div class="space-y-1 border-l-blue-300 border-l-[1px] pl-5">
+          <div>
+            <p class="text-gray-500 text-sm">Precio Base</p>
+            <p class="font-semibold text-gray-900">{% if equipment.base_price %}${{ equipment.base_price }}{% else %}No especificado{% endif %}</p>
+          </div>
+          
+          <div>
+            <p class="text-gray-500 text-sm">Fecha de Creación</p>
+            <p class="font-semibold text-gray-900">{{ equipment.created_at|date:"d-m-Y"|default:"No registrada" }}</p>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <!-- Presentación para EQUIPOS -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-10">
-        <!-- Columna 1: Datos principales -->
+        <!-- Columna 1: Datos principales del equipo -->
         <div class="space-y-1 border-l-blue-300 border-l-[1px] pl-5">
           <div>
             <p class="text-gray-500 text-sm">Nombre del Equipo</p>
@@ -29,17 +73,17 @@
           
           <div>
             <p class="text-gray-500 text-sm">Código / Tipo</p>
-            <p class="font-semibold text-gray-900">{{ equipment.code }} / {{ equipment.get_type_display }}</p>
+            <p class="font-semibold text-gray-900">{{ equipment.code|default:"No especificado" }} / {{ equipment.get_type_display }}</p>
           </div>
           
           <div>
             <p class="text-gray-500 text-sm">Subtipo</p>
-            <p class="font-semibold text-gray-900">{{ equipment.get_subtipo_display|default:"No especificado" }}</p>
+            <p class="font-semibold text-gray-900">{{ equipment.get_subtype_display|default:"No especificado" }}</p>
           </div>
           
           <div>
             <p class="text-gray-500 text-sm">Marca / Modelo</p>
-            <p class="font-semibold text-gray-900">{{ equipment.brand }} / {{ equipment.model|default:"N/A" }}</p>
+            <p class="font-semibold text-gray-900">{{ equipment.brand|default:"No especificada" }} / {{ equipment.model|default:"N/A" }}</p>
           </div>
         </div>
         
@@ -58,10 +102,10 @@
           <div>
             <p class="text-gray-500 text-sm">Capacidad</p>
             <p class="font-semibold text-gray-900">
-              {% if equipment.capacidad_display != "No especificada" %}
-                {{ equipment.capacidad_display }}
-              {% elif equipment.capacidad_planta %}
-                {{ equipment.capacidad_planta }}
+              {% if equipment.capacity_gallons != None %}
+                {{ equipment.capacity_gallons }} galones
+              {% elif equipment.plant_capacity %}
+                {{ equipment.plant_capacity }}
               {% else %}
                 No especificada
               {% endif %}
@@ -109,6 +153,7 @@
           </div>
         </div>
       </div>
+      {% endif %}
       
       <!-- Características específicas (si existen) -->
       {% if equipment.tiene_caracteristicas_especiales %}

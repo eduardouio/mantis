@@ -481,13 +481,21 @@ window.ResourceItemApp = {
           // Update form data with response (in case of new IDs, etc)
           this.formData = { ...this.formData, ...data };
           
-          // If this was a new item, update the URL
-          if (!this.formData.id && data.id) {
-            window.history.pushState({}, '', `/service/edit/${data.id}/`);
+          // Verificar si hay una URL de redirección en la respuesta
+          if (data.redirect) {
+            // Mostrar mensaje de éxito brevemente antes de redireccionar
+            setTimeout(() => {
+              window.location.href = data.redirect;
+            }, 1000); // Redireccionar después de 1 segundo
+          } else {
+            // Si no hay redirección, actualizar la URL si es un nuevo elemento
+            if (!this.formData.id && data.id) {
+              window.history.pushState({}, '', `/service/edit/${data.id}/`);
+            }
+            
+            // Scroll to top to show success message
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }
-          
-          // Scroll to top to show success message
-          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       })
       .catch(error => {
@@ -767,11 +775,23 @@ window.ResourceItemApp = {
     showErrors(errors) {
       this.errors = errors || {};
       
-      // Hacer scroll al primer error
+      // Agregar un mensaje general de error en la parte superior del formulario
       if (Object.keys(this.errors).length > 0) {
+        // Mostrar mensaje de error general
+        this.successMessage = ''; // Limpiar cualquier mensaje de éxito previo
+        
+        // Convertir errores del servidor a mensajes más amigables
+        if (this.errors.code && this.errors.code.includes('Ya existe Recurso/Equipo con este Equipment Code')) {
+          this.errors.code = 'El código ingresado ya existe. Por favor, utilice otro código.';
+        }
+        
+        // Hacer scroll al primer error
         const firstErrorField = document.querySelector(`[data-field="${Object.keys(this.errors)[0]}"]`);
         if (firstErrorField) {
           firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          // Si no se encuentra el campo, hacer scroll al principio del formulario
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       }
     }
