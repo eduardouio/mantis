@@ -14,49 +14,52 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         equipment = self.object
         today = timezone.now().date()
-        
+
         # Información básica
         context['title_section'] = f'Ficha de Equipo - {equipment.name}'
         context['title_page'] = f'Ficha de Equipo - {equipment.name}'
         context['today'] = today
-        
+
         # Obtener el parámetro de acción de la URL
         context['action'] = self.request.GET.get('action', None)
-        
+
         # Estadísticas de uso del equipo
         context.update(self._get_equipment_statistics(equipment))
-        
+
         # Información de proyectos asociados
         context.update(self._get_project_information(equipment))
-        
+
         # Información de estado y mantenimiento
         context.update(self._get_maintenance_information(equipment))
-        
+
         # Metadatos del sistema
         context.update(self._get_system_metadata(equipment))
-        
+
         # Características específicas del equipo
         context.update(self._get_equipment_characteristics(equipment))
-        
+
         # Componentes especiales (blower, motor, banda, etc.)
         context.update(self._get_special_components(equipment))
-        
+
         # Información detallada de capacidad
         context.update(self._get_capacity_information(equipment))
-        
+
         return context
 
     def _get_equipment_statistics(self, equipment):
         """Obtener estadísticas del equipo"""
-        project_assignments = ProjectResourceItem.objects.filter(resource_item=equipment)
+        project_assignments = ProjectResourceItem.objects.filter(
+            resource_item=equipment)
         active_assignments = project_assignments.filter(is_active=True)
-        
+
         # Calcular estadísticas
         total_projects = project_assignments.count()
         active_projects = active_assignments.count()
-        total_cost = sum(assignment.cost for assignment in project_assignments if assignment.cost)
-        total_maintenance_cost = sum(assignment.cost_manteinance for assignment in project_assignments if assignment.cost_manteinance)
-        
+        total_cost = sum(
+            assignment.cost for assignment in project_assignments if assignment.cost)
+        total_maintenance_cost = sum(
+            assignment.cost_manteinance for assignment in project_assignments if assignment.cost_manteinance)
+
         return {
             'total_projects': total_projects,
             'active_projects': active_projects,
@@ -71,10 +74,10 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         project_assignments = ProjectResourceItem.objects.filter(
             resource_item=equipment
         ).select_related('project', 'project__partner').order_by('-start_date')
-        
+
         current_assignment = project_assignments.filter(is_active=True).first()
         recent_assignments = project_assignments[:5]  # Últimos 5 proyectos
-        
+
         return {
             'current_assignment': current_assignment,
             'recent_assignments': recent_assignments,
@@ -84,13 +87,13 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
     def _get_maintenance_information(self, equipment):
         """Obtener información de mantenimiento y estado"""
         today = timezone.now().date()
-        
+
         # Verificar si hay información de mantenimiento programado
         active_assignments = ProjectResourceItem.objects.filter(
             resource_item=equipment,
             is_active=True
         )
-        
+
         maintenance_alerts = []
         for assignment in active_assignments:
             if assignment.end_date:
@@ -102,14 +105,14 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                         'project': assignment.project.partner.name if assignment.project and assignment.project.partner else 'Proyecto sin nombre',
                         'class': 'text-orange-600' if days_until_end > 7 else 'text-red-600'
                     })
-        
+
         # Estado del equipo
         status_info = {
             'status_class': self._get_status_class(equipment.status),
             'needs_attention': equipment.status in ['EN REPARACION', 'DANADO', 'BUSCAR'],
             'is_available': equipment.status in ['DISPONIBLE', 'LIBRE'],
         }
-        
+
         return {
             'maintenance_alerts': maintenance_alerts,
             'status_info': status_info,
@@ -135,11 +138,11 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         return {
             'created_info': {
                 'date': equipment.created_at,
-                'user': equipment.get_create_user(), # Usar el método de BaseModel
+                'user': equipment.get_create_user(),  # Usar el método de BaseModel
             },
             'updated_info': {
                 'date': equipment.updated_at,
-                'user': equipment.get_update_user(), # Usar el método de BaseModel
+                'user': equipment.get_update_user(),  # Usar el método de BaseModel
             },
             'system_info': {
                 'version': getattr(equipment, 'version', '1.0'),
@@ -151,7 +154,7 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
     def _get_equipment_characteristics(self, equipment):
         """Obtener características específicas del equipo según su subtipo"""
         characteristics = []
-        
+
         if equipment.subtype == 'LAVAMANOS':
             if equipment.foot_pumps:
                 characteristics.append('Bombas de Pie')
@@ -159,7 +162,7 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                 characteristics.append('Dispensador de Jabón')
             if equipment.paper_towels:
                 characteristics.append('Toallas de Papel')
-        
+
         elif equipment.subtype in ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER']:
             if equipment.paper_dispenser:
                 characteristics.append('Dispensador de Papel')
@@ -181,7 +184,7 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                 characteristics.append('Bases de Baño')
             if equipment.ventilation_pipe:
                 characteristics.append('Tubo de Ventilación')
-        
+
         elif equipment.subtype == 'CAMPER BAÑO':
             # CAMPER BAÑO comparte características con batería sanitaria según docs
             if equipment.paper_dispenser:
@@ -204,20 +207,22 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                 characteristics.append('Bases de Baño')
             if equipment.ventilation_pipe:
                 characteristics.append('Tubo de Ventilación')
-        
+
         elif equipment.subtype in ['TANQUES DE ALMACENAMIENTO AGUA CRUDA', 'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL']:
             if equipment.capacity_gallons:
-                characteristics.append(f'Capacidad: {equipment.capacity_gallons} Galones')
-        
+                characteristics.append(
+                    f'Capacidad: {equipment.capacity_gallons} Galones')
+
         elif equipment.subtype == 'ESTACION CUADRUPLE URINARIO':
             # Solo campos base según docs
             characteristics.append('Estación de 4 Urinarios')
-        
+
         # Para plantas de tratamiento, mostrar capacidad específica
         elif equipment.subtype in ['PLANTA DE TRATAMIENTO DE AGUA', 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL']:
             if equipment.plant_capacity:
-                characteristics.append(f'Capacidad: {equipment.plant_capacity}')
-        
+                characteristics.append(
+                    f'Capacidad: {equipment.plant_capacity}')
+
         return {
             'equipment_characteristics': characteristics,
             'has_characteristics': len(characteristics) > 0,
@@ -231,26 +236,26 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
             'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
             'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
         ]
-        
+
         if equipment.subtype not in special_subtypes:
             return {'has_special_components': False}
-        
+
         components = {}
-        
+
         # Información del Blower
         if equipment.blower_brand or equipment.blower_model:
             components['blower'] = {
                 'brand': equipment.blower_brand,
                 'model': equipment.blower_model,
             }
-        
+
         # Información del Motor
         if equipment.engine_brand or equipment.engine_model:
             components['engine'] = {
                 'brand': equipment.engine_brand,
                 'model': equipment.engine_model,
             }
-        
+
         # Información de la Banda
         if equipment.belt_brand or equipment.belt_model or equipment.belt_type:
             components['belt'] = {
@@ -258,34 +263,34 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                 'model': equipment.belt_model,
                 'type': equipment.belt_type,
             }
-        
+
         # Información de Pulleys
         if equipment.blower_pulley_brand or equipment.blower_pulley_model:
             components['blower_pulley'] = {
                 'brand': equipment.blower_pulley_brand,
                 'model': equipment.blower_pulley_model,
             }
-        
+
         if equipment.motor_pulley_brand or equipment.motor_pulley_model:
             components['motor_pulley'] = {
                 'brand': equipment.motor_pulley_brand,
                 'model': equipment.motor_pulley_model,
             }
-        
+
         # Información del Panel Eléctrico
         if equipment.electrical_panel_brand or equipment.electrical_panel_model:
             components['electrical_panel'] = {
                 'brand': equipment.electrical_panel_brand,
                 'model': equipment.electrical_panel_model,
             }
-        
+
         # Información del Guarda Motor
         if equipment.motor_guard_brand or equipment.motor_guard_model:
             components['motor_guard'] = {
                 'brand': equipment.motor_guard_brand,
                 'model': equipment.motor_guard_model,
             }
-        
+
         return {
             'special_components': components,
             'has_special_components': len(components) > 0,
@@ -298,7 +303,7 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
             'capacity_gallons': equipment.capacity_gallons,
             'plant_capacity': equipment.plant_capacity,
         }
-        
+
         # Información adicional según el subtipo
         if equipment.subtype in ['PLANTA DE TRATAMIENTO DE AGUA', 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL']:
             capacity_info['capacity_type'] = 'Capacidad de Planta'
@@ -306,7 +311,7 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         elif equipment.capacity_gallons:
             capacity_info['capacity_type'] = 'Capacidad de Almacenamiento'
             capacity_info['capacity_unit'] = 'Galones'
-        
+
         return {
             'capacity_info': capacity_info,
         }
