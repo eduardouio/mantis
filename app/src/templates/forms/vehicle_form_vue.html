@@ -1,0 +1,390 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block style %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/app/vehicle_form.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Contenedor principal de la aplicación Vue -->
+<div id="vehicle-form-app" class="vehicle-form-container" :class="{ 'loading': loading }">
+  <!-- Datos iniciales para Vue -->
+  {% if form_data %}
+  <div id="vehicle-data" style="display: none;">
+    {{ form_data|safe }}
+  </div>
+  {% endif %}
+
+  <!-- Mensajes de error -->
+  <div v-if="Object.keys(errors).length > 0" class="alert alert-error mb-6">
+    <div class="flex items-center">
+      <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <h3 class="font-medium">Por favor corrija los siguientes errores:</h3>
+    </div>
+    <ul class="mt-2 list-disc list-inside">
+      <li v-for="(error, field) in errors" :key="field">
+        ${ error.join(', ') }
+      </li>
+    </ul>
+  </div>
+
+  <!-- Encabezado del formulario -->
+  <div class="form-header">
+    <h1 class="form-title">${ vehicle.id ? 'Editar' : 'Nuevo' } Vehículo</h1>
+    <div class="flex items-center space-x-2">
+      <a :href="vehicle.id ? '/vehiculos/' + vehicle.id + '/' : '{% url 'vehicle_list' %}'" 
+         class="btn btn-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
+        </svg>
+        ${ vehicle.id ? 'Volver' : 'Cancelar' }
+      </a>
+      <button @click="submitForm" :disabled="loading" class="btn btn-primary">
+        <span v-if="loading" class="loading loading-spinner loading-sm"></span>
+        ${ loading ? 'Guardando...' : 'Guardar' }
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulario principal -->
+  <form @submit.prevent="submitForm" class="space-y-6">
+    {% csrf_token %}
+    
+    <!-- Pestañas del formulario -->
+    <div class="tabs tabs-boxed bg-gray-100 p-1 rounded-lg mb-6">
+      <a v-for="tab in tabs" 
+         :key="tab.id" 
+         @click="currentTab = tab.id" 
+         class="tab" 
+         :class="{ 'tab-active': currentTab === tab.id }">
+        ${ tab.name }
+      </a>
+    </div>
+
+    <!-- Contenido de las pestañas -->
+    <div class="tab-content">
+      <!-- Pestaña de Información General -->
+      <div v-show="currentTab === 'general'" class="space-y-6">
+        <!-- Sección de datos básicos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Datos del vehículo -->
+          <div class="space-y-4">
+            <h3 class="section-title">Datos del Vehículo</h3>
+            
+            <!-- Placa -->
+            <div class="form-group" :class="{ 'has-error': errors.no_plate }">
+              <label class="form-label required">Placa</label>
+              <input type="text" v-model="vehicle.no_plate" class="form-control" required>
+              <span class="error-message" v-if="errors.no_plate">${ errors.no_plate[0] }</span>
+            </div>
+
+            <!-- Tipo de vehículo -->
+            <div class="form-group" :class="{ 'has-error': errors.type }">
+              <label class="form-label required">Tipo de Vehículo</label>
+              <select v-model="vehicle.type" class="form-control" required>
+                <option value="">Seleccione un tipo</option>
+                <option v-for="type in vehicleTypes" :key="type.value" :value="type.value">
+                  ${ type.text }
+                </option>
+              </select>
+              <span class="error-message" v-if="errors.type">${ errors.type[0] }</span>
+            </div>
+
+            <!-- Marca -->
+            <div class="form-group" :class="{ 'has-error': errors.brand }">
+              <label class="form-label required">Marca</label>
+              <input type="text" v-model="vehicle.brand" class="form-control" required>
+              <span class="error-message" v-if="errors.brand">${ errors.brand[0] }</span>
+            </div>
+
+            <!-- Modelo -->
+            <div class="form-group" :class="{ 'has-error': errors.model }">
+              <label class="form-label required">Modelo</label>
+              <input type="text" v-model="vehicle.model" class="form-control" required>
+              <span class="error-message" v-if="errors.model">${ errors.model[0] }</span>
+            </div>
+
+            <!-- Año -->
+            <div class="form-group" :class="{ 'has-error': errors.year }">
+              <label class="form-label">Año</label>
+              <input type="number" v-model.number="vehicle.year" class="form-control" min="1900" :max="new Date().getFullYear() + 1">
+              <span class="error-message" v-if="errors.year">${ errors.year[0] }</span>
+            </div>
+          </div>
+
+          <!-- Datos técnicos -->
+          <div class="space-y-4">
+            <h3 class="section-title">Datos Técnicos</h3>
+            
+            <!-- Número de chasis -->
+            <div class="form-group" :class="{ 'has-error': errors.chassis_number }">
+              <label class="form-label">Número de Chasis</label>
+              <input type="text" v-model="vehicle.chassis_number" class="form-control">
+              <span class="error-message" v-if="errors.chassis_number">${ errors.chassis_number[0] }</span>
+            </div>
+
+            <!-- Número de motor -->
+            <div class="form-group" :class="{ 'has-error': errors.engine_number }">
+              <label class="form-label">Número de Motor</label>
+              <input type="text" v-model="vehicle.engine_number" class="form-control">
+              <span class="error-message" v-if="errors.engine_number">${ errors.engine_number[0] }</span>
+            </div>
+
+            <!-- Tipo de combustible -->
+            <div class="form-group" :class="{ 'has-error': errors.fuel_type }">
+              <label class="form-label">Combustible</label>
+              <select v-model="vehicle.fuel_type" class="form-control">
+                <option value="">Seleccione un tipo</option>
+                <option v-for="fuel in fuelTypes" :key="fuel.value" :value="fuel.value">
+                  ${ fuel.text }
+                </option>
+              </select>
+              <span class="error-message" v-if="errors.fuel_type">${ errors.fuel_type[0] }</span>
+            </div>
+
+            <!-- Transmisión -->
+            <div class="form-group" :class="{ 'has-error': errors.transmission }">
+              <label class="form-label">Transmisión</label>
+              <select v-model="vehicle.transmission" class="form-control">
+                <option value="">Seleccione un tipo</option>
+                <option v-for="trans in transmissionTypes" :key="trans.value" :value="trans.value">
+                  ${ trans.text }
+                </option>
+              </select>
+              <span class="error-message" v-if="errors.transmission">${ errors.transmission[0] }</span>
+            </div>
+          </div>
+
+          <!-- Datos de compra y seguro -->
+          <div class="space-y-4">
+            <h3 class="section-title">Datos de Compra</h3>
+            
+            <!-- Fecha de compra -->
+            <div class="form-group" :class="{ 'has-error': errors.purchase_date }">
+              <label class="form-label">Fecha de Compra</label>
+              <input type="date" v-model="vehicle.purchase_date" class="form-control">
+              <span class="error-message" v-if="errors.purchase_date">${ errors.purchase_date[0] }</span>
+            </div>
+
+            <!-- Precio de compra -->
+            <div class="form-group" :class="{ 'has-error': errors.purchase_price }">
+              <label class="form-label">Precio de Compra</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+                <input type="number" v-model.number="vehicle.purchase_price" step="0.01" class="form-control pl-7">
+              </div>
+              <span class="error-message" v-if="errors.purchase_price">${ errors.purchase_price[0] }</span>
+            </div>
+
+            <h3 class="section-title mt-8">Datos del Seguro</h3>
+            
+            <!-- Compañía de seguros -->
+            <div class="form-group" :class="{ 'has-error': errors.insurance_company }">
+              <label class="form-label">Compañía de Seguros</label>
+              <input type="text" v-model="vehicle.insurance_company" class="form-control">
+              <span class="error-message" v-if="errors.insurance_company">${ errors.insurance_company[0] }</span>
+            </div>
+
+            <!-- Número de póliza -->
+            <div class="form-group" :class="{ 'has-error': errors.insurance_policy }">
+              <label class="form-label">Número de Póliza</label>
+              <input type="text" v-model="vehicle.insurance_policy" class="form-control">
+              <span class="error-message" v-if="errors.insurance_policy">${ errors.insurance_policy[0] }</span>
+            </div>
+
+            <!-- Fecha de vencimiento del seguro -->
+            <div class="form-group" :class="{ 'has-error': errors.insurance_end_date }">
+              <label class="form-label">Vencimiento del Seguro</label>
+              <input type="date" v-model="vehicle.insurance_end_date" class="form-control">
+              <span class="error-message" v-if="errors.insurance_end_date">${ errors.insurance_end_date[0] }</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notas -->
+        <div class="form-group" :class="{ 'has-error': errors.notes }">
+          <label class="form-label">Notas Adicionales</label>
+          <textarea v-model="vehicle.notes" rows="3" class="form-control"></textarea>
+          <span class="error-message" v-if="errors.notes">${ errors.notes[0] }</span>
+        </div>
+      </div>
+
+      <!-- Pestaña de Certificaciones -->
+      <div v-show="currentTab === 'certifications'" class="space-y-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">Certificaciones del Vehículo</h3>
+          <button type="button" @click="openCertificationModal" class="btn btn-primary btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Agregar Certificación
+          </button>
+        </div>
+
+        <!-- Lista de certificaciones -->
+        <div v-if="certifications.length > 0" class="space-y-4">
+          <div v-for="(cert, index) in certifications" :key="cert.id || index" class="card">
+            <div class="card-header">
+              <h4 class="font-semibold">${ cert.name }</h4>
+              <div class="flex items-center space-x-2">
+                <span class="text-xs px-2 py-1 rounded-full" 
+                      :class="{ 'bg-green-100 text-green-800': cert.is_active, 'bg-gray-100 text-gray-800': !cert.is_active }">
+                  ${ cert.is_active ? 'Activo' : 'Inactivo' }
+                </span>
+                <button type="button" @click="removeCertification(index)" class="text-red-500 hover:text-red-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 22H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Fecha de Emisión</p>
+                  <p>${ formatDate(cert.date_start) }</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Fecha de Vencimiento</p>
+                  <p>${ formatDate(cert.date_end) }</p>
+                </div>
+                <div v-if="cert.description" class="col-span-2">
+                  <p class="text-sm text-gray-500">Descripción</p>
+                  <p>${ cert.description }</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else class="text-center py-8 bg-gray-50 rounded-lg">
+          <p class="text-gray-500">No hay certificaciones registradas</p>
+        </div>
+      </div>
+
+      <!-- Pestaña de Pases -->
+      <div v-show="currentTab === 'passes'" class="space-y-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold">Pases del Vehículo</h3>
+          <button type="button" @click="openPassModal" class="btn btn-primary btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Agregar Pase
+          </button>
+        </div>
+
+        <!-- Lista de pases -->
+        <div v-if="passes.length > 0" class="space-y-4">
+          <div v-for="(pass, index) in passes" :key="pass.id || index" class="card">
+            <div class="card-header">
+              <h4 class="font-semibold">Pase ${ pass.bloque }</h4>
+              <button type="button" @click="removePass(index)" class="text-red-500 hover:text-red-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 22H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-500">Bloque</p>
+                  <p>${ pass.bloque }</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-500">Fecha de Vencimiento</p>
+                  <p>${ formatDate(pass.fecha_caducidad) }</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else class="text-center py-8 bg-gray-50 rounded-lg">
+          <p class="text-gray-500">No hay pases registrados</p>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- Modal para agregar/editar certificación -->
+<dialog id="certificationModal" class="modal" ref="certificationModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">${ editingCertificationIndex !== null ? 'Editar' : 'Agregar' } Certificación</h3>
+      <button type="button" @click="closeCertificationModal" class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form @submit.prevent="saveCertification" class="space-y-4">
+        <div class="form-group" :class="{ 'has-error': modalErrors.name }">
+          <label class="form-label required">Tipo de Certificación</label>
+          <input type="text" v-model="currentCertification.name" class="form-control" required>
+          <span class="error-message" v-if="modalErrors.name">${ modalErrors.name[0] }</span>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group" :class="{ 'has-error': modalErrors.date_start }">
+            <label class="form-label required">Fecha de Emisión</label>
+            <input type="date" v-model="currentCertification.date_start" class="form-control" required>
+            <span class="error-message" v-if="modalErrors.date_start">${ modalErrors.date_start[0] }</span>
+          </div>
+          
+          <div class="form-group" :class="{ 'has-error': modalErrors.date_end }">
+            <label class="form-label required">Fecha de Vencimiento</label>
+            <input type="date" v-model="currentCertification.date_end" class="form-control" required>
+            <span class="error-message" v-if="modalErrors.date_end">${ modalErrors.date_end[0] }</span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Descripción</label>
+          <textarea v-model="currentCertification.description" rows="3" class="form-control"></textarea>
+        </div>
+        
+        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <button type="button" @click="closeCertificationModal" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</dialog>
+
+<!-- Modal para agregar/editar pase -->
+<dialog id="passModal" class="modal" ref="passModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">${ editingPassIndex !== null ? 'Editar' : 'Agregar' } Pase</h3>
+      <button type="button" @click="closePassModal" class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form @submit.prevent="savePass" class="space-y-4">
+        <div class="form-group" :class="{ 'has-error': modalErrors.bloque }">
+          <label class="form-label required">Bloque</label>
+          <input type="text" v-model="currentPass.bloque" class="form-control" required>
+          <span class="error-message" v-if="modalErrors.bloque">${ modalErrors.bloque[0] }</span>
+        </div>
+        
+        <div class="form-group" :class="{ 'has-error': modalErrors.fecha_caducidad }">
+          <label class="form-label required">Fecha de Vencimiento</label>
+          <input type="date" v-model="currentPass.fecha_caducidad" class="form-control" required>
+          <span class="error-message" v-if="modalErrors.fecha_caducidad">${ modalErrors.fecha_caducidad[0] }</span>
+        </div>
+        
+        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <button type="button" @click="closePassModal" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="{% static 'js/app/vehicle_form.js' %}"></script>
+{% endblock %}

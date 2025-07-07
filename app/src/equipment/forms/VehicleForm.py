@@ -6,7 +6,7 @@ class VehicleForm(forms.ModelForm):
     """
     Formulario para crear y actualizar vehículos
     """
-    
+
     # Campos ocultos para almacenar datos de certificaciones y pases
     certifications_data = forms.CharField(
         widget=forms.HiddenInput(),
@@ -16,7 +16,7 @@ class VehicleForm(forms.ModelForm):
         widget=forms.HiddenInput(),
         required=False
     )
-    
+
     class Meta:
         model = Vehicle
         fields = [
