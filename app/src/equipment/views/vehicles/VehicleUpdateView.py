@@ -17,7 +17,7 @@ class VehicleUpdateView(UpdateView):
         'insurance_issue_date', 'duedate_satellite', 'serial_number',
         'engine_number', 'chassis_number', 'notes', 'is_active'
     ]
-    success_url = reverse_lazy('equipment:vehicle_list')
+    success_url = reverse_lazy('vehicle_list')
 
     def get_object(self, queryset=None):
         return get_object_or_404(Vehicle, pk=self.kwargs['pk'], is_active=True)
@@ -40,4 +40,4 @@ class VehicleUpdateView(UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse_lazy('equipment:vehicle_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('vehicle_detail', kwargs={'pk': self.object.pk})

@@ -12,7 +12,7 @@ from equipment.views import (
     ResourceItemListView
 )
 
-urlpatterns = [
+urlpatterns= [
     # Vehicle URLs
     path('vehiculos/', VehicleListView.as_view(), name='vehicle_list'),
     path('vehiculos/<int:pk>/', VehicleDetailView.as_view(), name='vehicle_detail'),
@@ -24,6 +24,6 @@ urlpatterns = [
     path('equipos/<int:pk>/', ResourceItemDetailView.as_view(), name='resource_detail'),
     path('equipos/crear/', ResourceItemCreateView.as_view(), name='resource_create'),
     path('equipos/editar/<int:pk>/', ResourceItemUpdateView.as_view(), name='resource_update'),
-    path('equipos/eliminar/<int:pk>/', ResourceItemDeleteView.as_view(), name='resource_delete'),
+    path('equipos/eliminar/<int:pk>/',ResourceItemDeleteView.as_view(), name='resource_delete'),
 
 ]

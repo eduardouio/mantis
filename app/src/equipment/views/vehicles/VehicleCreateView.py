@@ -55,10 +55,14 @@ class VehicleCreateView(LoginRequiredMixin, CreateView):
         for certification_data in certifications_data:
             CertificationVehicle.objects.create(
                 vehicle=self.object,
-                name=certification_data.get('name'),  # Cambiar de certification_type a name
-                date_start=certification_data.get('date_start'),  # Cambiar de issue_date
-                date_end=certification_data.get('date_end'),  # Cambiar de expiry_date
-                description=certification_data.get('description') or None,  # Cambiar de notes
+                # Cambiar de certification_type a name
+                name=certification_data.get('name'),
+                date_start=certification_data.get(
+                    'date_start'),  # Cambiar de issue_date
+                date_end=certification_data.get(
+                    'date_end'),  # Cambiar de expiry_date
+                description=certification_data.get(
+                    'description') or None,  # Cambiar de notes
                 is_active=True
             )
 
