@@ -74,7 +74,8 @@ class TechnicalCreateView(LoginRequiredMixin, CreateView):
             )
 
     def post(self, request, *args, **kwargs):
-        """Manejar requests AJAX para agregar vacunas y pases"""
+        """Manejar requests AJAX para agregar vacunas y pases o envío del formulario completo"""
+        # Detectar si es una solicitud AJAX para acciones específicas
         if request.headers.get('Content-Type') == 'application/json':
             data = json.loads(request.body)
             action = data.get('action')
@@ -83,10 +84,35 @@ class TechnicalCreateView(LoginRequiredMixin, CreateView):
                 return self.handle_add_vaccination(data)
             elif action == 'add_pass':
                 return self.handle_add_pass(data)
-
-        # Para requests normales de formulario, continuar con el flujo normal
+        
+        # Inicializar objeto como None
         self.object = None
-        return super().post(request, *args, **kwargs)
+        
+        # Procesar el formulario normalmente
+        form = self.get_form()
+        if form.is_valid():
+            response = self.form_valid(form)
+            # Si es una solicitud AJAX, devolver JSON con URL de redirección
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                success_url = self.get_success_url()
+                return JsonResponse({
+                    'success': True,
+                    'message': f'Técnico {self.object.first_name} {self.object.last_name} creado exitosamente.',
+                    'redirect_url': success_url
+                })
+            return response
+        else:
+            # Si es una solicitud AJAX, devolver JSON con errores
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                errors = {}
+                for field, error_list in form.errors.items():
+                    errors[field] = [str(error) for error in error_list]
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Por favor corrija los errores en el formulario',
+                    'errors': errors
+                })
+            return self.form_invalid(form)
 
     def handle_add_vaccination(self, data):
         """Manejar adición de vacunación vía AJAX"""

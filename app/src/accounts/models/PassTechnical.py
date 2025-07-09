@@ -3,7 +3,7 @@ from accounts.models import Technical
 from common import BaseModel
 
 
-class PassTechnical(models.Model):
+class PassTechnical(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
