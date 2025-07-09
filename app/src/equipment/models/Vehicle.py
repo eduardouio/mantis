@@ -76,12 +76,6 @@ class Vehicle(BaseModel):
         blank=True,
         null=True
     )
-    motor_no = models.CharField(
-        'No. Motor',
-        max_length=255,
-        blank=True,
-        null=True
-    )
     color = models.CharField(
         'Color',
         max_length=255,
@@ -111,7 +105,7 @@ class Vehicle(BaseModel):
         blank=True,
         null=True,
         default=None
-    ) 
+    )
     date_mtop = models.DateField(
         'Fecha MTOP',
         blank=True,

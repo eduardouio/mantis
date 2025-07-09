@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{% static 'css/app/technical.css' %}">
 {% endblock style %}
 {% block content %}
-<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
+<div id="technical-form-app" class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
     <h1 class="text-2xl font-semibold text-blue-500">
       {% if object.pk %}Editar Técnico{% else %}Nuevo Técnico{% endif %}
@@ -34,12 +34,23 @@
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     
-    <!-- Mostrar errores generales del formulario -->
-    {% if form.non_field_errors %}
-      <div class="alert alert-error mb-4">
-        {{ form.non_field_errors }}
-      </div>
-    {% endif %}
+    <!-- Mostrar alertas y errores generales del formulario con Vue 3 -->
+    <div v-if="showAlert" :class="['alert mb-4', 'alert-' + alertType]">
+      <div v-if="alertType === 'error'" class="font-bold mb-2">Error</div>
+      <div v-else-if="alertType === 'success'" class="font-bold mb-2">Éxito</div>
+      <div v-else class="font-bold mb-2">Información</div>
+      <p v-html="alertMessage"></p>
+    </div>
+    
+    <!-- Mostrar errores de campos específicos -->
+    <div v-if="Object.keys(errors).length > 0" class="alert alert-error mb-4">
+      <div class="font-bold mb-2">Por favor corrige los siguientes errores:</div>
+      <ul class="list-disc pl-5">
+        <li v-for="(error, field) in errors" :key="field">
+          <span class="font-semibold">${field}:</span> ${error.join(', ')}
+        </li>
+      </ul>
+    </div>
     
     <!-- Tabs para organizar el formulario -->
     <div class="tabs tabs-box w-full mb-4">
@@ -340,7 +351,7 @@
                 <h3 class="text-lg font-semibold text-gray-700">Registros de Vacunación</h3>
                 <button type="button" 
                         class="btn btn-primary btn-sm"
-                        onclick="openVaccinationModal()">
+                        @click="openVaccinationModal">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                   </svg>
@@ -350,48 +361,39 @@
             </div>
             <div class="p-4">
               <!-- Lista de vacunas existentes -->
-              {% if object and object.vaccination_records.all %}
-                <div id="existingVaccinations" class="space-y-3 mb-4">
-                  {% for vaccination in object.vaccination_records.all %}
-                    <div class="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-colors">
-                      <div class="flex justify-between items-start">
-                        <div>
-                          <h4 class="font-medium text-gray-800">{{ vaccination.get_vaccine_type_display }}</h4>
-                          <p class="text-sm text-gray-600 mt-1">
-                            <span class="font-medium">Aplicada:</span> 
-                            {{ vaccination.application_date|date:"d/m/Y" }}
-                          </p>
-                          {% if vaccination.dose_number %}
-                            <p class="text-sm text-gray-600">
-                              <span class="font-medium">Dosis:</span> {{ vaccination.dose_number }}
-                            </p>
-                          {% endif %}
-                          {% if vaccination.next_dose_date %}
-                            <p class="text-sm text-gray-600">
-                              <span class="font-medium">Próxima dosis:</span> {{ vaccination.next_dose_date|date:"d/m/Y" }}
-                            </p>
-                          {% endif %}
-                          {% if vaccination.batch_number %}
-                            <p class="text-xs text-gray-500 mt-1">Lote: {{ vaccination.batch_number }}</p>
-                          {% endif %}
-                        </div>
-                        <div class="flex gap-1">
-                          <button type="button" class="btn btn-ghost btn-xs text-blue-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                          </button>
-                          <button type="button" class="btn btn-ghost btn-xs text-red-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
+              <div class="space-y-3 mb-4" v-if="vaccinations.length > 0">
+                <div v-for="(vaccination, index) in vaccinations" :key="index" class="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h4 class="font-medium text-gray-800">{{ VACCINE_TYPE_LABELS[vaccination.vaccine_type] }}</h4>
+                      <p class="text-sm text-gray-600 mt-1">
+                        <span class="font-medium">Aplicada:</span> 
+                        {{ formatDisplayDate(vaccination.application_date) }}
+                      </p>
+                      <p v-if="vaccination.dose_number" class="text-sm text-gray-600">
+                        <span class="font-medium">Dosis:</span> {{ vaccination.dose_number }}
+                      </p>
+                      <p v-if="vaccination.next_dose_date" class="text-sm text-gray-600">
+                        <span class="font-medium">Próxima dosis:</span> {{ formatDisplayDate(vaccination.next_dose_date) }}
+                      </p>
+                      <p v-if="vaccination.batch_number" class="text-xs text-gray-500 mt-1">Lote: {{ vaccination.batch_number }}</p>
                     </div>
-                  {% endfor %}
+                    <div class="flex gap-1">
+                      <button type="button" @click="editVaccination(index)" class="btn btn-ghost btn-xs text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+                      </button>
+                      <button type="button" @click="deleteVaccination(index)" class="btn btn-ghost btn-xs text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              {% endif %}
+              </div>
+              <div v-else class="text-center py-6 text-gray-500">No hay registros de vacunación</div>
               
               <!-- Lista de vacunas temporales (pendientes de guardar) -->
               <div id="tempVaccinationsList" class="space-y-3">
@@ -517,7 +519,7 @@
   <div class="modal-box w-11/12 max-w-2xl">
     <div class="flex justify-between items-center border-b pb-3 mb-4">
       <h3 class="font-bold text-lg text-gray-800">Agregar Registro de Vacunación</h3>
-      <button type="button" class="btn btn-sm btn-circle btn-ghost" onclick="closeVaccinationModal()">✕</button>
+      <button type="button" class="btn btn-sm btn-circle btn-ghost" @click="closeVaccinationModal">✕</button>
     </div>
     
     <form id="vaccinationForm" class="space-y-4">
@@ -584,8 +586,8 @@
       </div>
 
       <div class="modal-action">
-        <button type="button" class="btn btn-secondary" onclick="closeVaccinationModal()">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Guardar Vacunación</button>
+        <button type="button" class="btn btn-secondary" @click="closeVaccinationModal">Cancelar</button>
+        <button type="button" class="btn btn-primary" @click="saveVaccination">Guardar Vacunación</button>
       </div>
     </form>
   </div>
@@ -596,7 +598,7 @@
   <div class="modal-box w-11/12 max-w-xl">
     <div class="flex justify-between items-center border-b pb-3 mb-4">
       <h3 class="font-bold text-lg text-gray-800">Agregar Pase del Técnico</h3>
-      <button type="button" class="btn btn-sm btn-circle btn-ghost" onclick="closeTechnicalPassModal()">✕</button>
+      <button type="button" class="btn btn-sm btn-circle btn-ghost" @click="closePassModal">✕</button>
     </div>
     
     <form id="technicalPassForm" class="space-y-4">
@@ -636,13 +638,23 @@
       </div>
 
       <div class="modal-action">
-        <button type="button" class="btn btn-secondary" onclick="closeTechnicalPassModal()">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Guardar Pase</button>
+        <button type="button" class="btn btn-secondary" @click="closePassModal">Cancelar</button>
+        <button type="button" class="btn btn-primary" @click="savePass">Guardar Pase</button>
       </div>
     </form>
   </div>
 </div>
 {% block script %}
-<script src="/static/js/app/technical_app.js"></script>
-{% endblock %}
+<script>
+  // Inicializar datos del técnico si existe
+  window.existingTechnicalData = {% if object %}
+    // Serializar datos de técnico existente
+    JSON.parse('{{ technical_json|escapejs }}')
+  {% else %}
+    null
+  {% endif %};
+</script>
+
+<!-- Cargar el script de Vue 3 para el formulario técnico -->
+<script src="{% static 'js/app/technical_form_vue.js' %}"></script>
 {% endblock %}
