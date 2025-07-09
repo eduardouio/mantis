@@ -185,22 +185,25 @@ class Command(BaseCommand):
         self.create_camper_bano(faker)
         self.create_estacion_urinario(faker)
         self.create_bombas(faker)
-        
+
         print(f'Se han creado {ResourceItem.objects.count()} equipos en total')
 
     def create_bateria_sanitaria_hombre(self, faker):
         """Crear baterías sanitarias para hombres"""
         for i in range(5):
-            status = faker.random_element(['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
             ResourceItem.objects.create(
                 name=f"Batería Sanitaria Hombre {i+1}",
                 type='EQUIPO',
                 subtype='BATERIA SANITARIA HOMBRE',
-                brand=faker.random_element(['Portatil Pro', 'SaniTech', 'EcoPorta']),
+                brand=faker.random_element(
+                    ['Portatil Pro', 'SaniTech', 'EcoPorta']),
                 model=f'BSH-{faker.random_number(3)}',
                 code=f'BSH-{str(i+1).zfill(3)}',
                 serial_number=f'SN-BSH-{faker.unique.numerify("######")}',
-                date_purchase=faker.date_between(start_date='-5y', end_date='-1y'),
+                date_purchase=faker.date_between(
+                    start_date='-5y', end_date='-1y'),
                 height=faker.random_int(200, 250),
                 width=faker.random_int(100, 150),
                 depth=faker.random_int(100, 150),
@@ -226,16 +229,19 @@ class Command(BaseCommand):
     def create_bateria_sanitaria_mujer(self, faker):
         """Crear baterías sanitarias para mujeres"""
         for i in range(5):
-            status = faker.random_element(['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
             ResourceItem.objects.create(
                 name=f"Batería Sanitaria Mujer {i+1}",
                 type='EQUIPO',
                 subtype='BATERIA SANITARIA MUJER',
-                brand=faker.random_element(['Portatil Pro', 'SaniTech', 'EcoPorta']),
+                brand=faker.random_element(
+                    ['Portatil Pro', 'SaniTech', 'EcoPorta']),
                 model=f'BSM-{faker.random_number(3)}',
                 code=f'BSM-{str(i+1).zfill(3)}',
                 serial_number=f'SN-BSM-{faker.unique.numerify("######")}',
-                date_purchase=faker.date_between(start_date='-5y', end_date='-1y'),
+                date_purchase=faker.date_between(
+                    start_date='-5y', end_date='-1y'),
                 height=faker.random_int(200, 250),
                 width=faker.random_int(100, 150),
                 depth=faker.random_int(100, 150),
@@ -263,16 +269,19 @@ class Command(BaseCommand):
         capacidades = ['10M3', '15M3', '25M3']
         for i in range(3):
             capacidad = faker.random_element(capacidades)
-            status = faker.random_element(['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
             ResourceItem.objects.create(
                 name=f"Planta Tratamiento Agua {capacidad} - {i+1}",
                 type='EQUIPO',
                 subtype='PLANTA DE TRATAMIENTO DE AGUA',
-                brand=faker.random_element(['AquaTech', 'WaterPro', 'HydroClean']),
+                brand=faker.random_element(
+                    ['AquaTech', 'WaterPro', 'HydroClean']),
                 model=f'PTA-{faker.random_number(3)}',
                 code=f'PTA-{str(i+1).zfill(3)}',
                 serial_number=f'SN-PTA-{faker.unique.numerify("######")}',
-                date_purchase=faker.date_between(start_date='-5y', end_date='-1y'),
+                date_purchase=faker.date_between(
+                    start_date='-5y', end_date='-1y'),
                 height=faker.random_int(150, 200),
                 width=faker.random_int(200, 300),
                 depth=faker.random_int(200, 300),
@@ -305,16 +314,19 @@ class Command(BaseCommand):
         capacidades = ['10M3', '15M3', '25M3']
         for i in range(3):
             capacidad = faker.random_element(capacidades)
-            status = faker.random_element(['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
             ResourceItem.objects.create(
                 name=f"Planta Tratamiento Agua Residual {capacidad} - {i+1}",
                 type='EQUIPO',
                 subtype='PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
-                brand=faker.random_element(['AquaTech', 'WaterPro', 'HydroClean']),
+                brand=faker.random_element(
+                    ['AquaTech', 'WaterPro', 'HydroClean']),
                 model=f'PTAR-{faker.random_number(3)}',
                 code=f'PTAR-{str(i+1).zfill(3)}',
                 serial_number=f'SN-PTAR-{faker.unique.numerify("######")}',
-                date_purchase=faker.date_between(start_date='-5y', end_date='-1y'),
+                date_purchase=faker.date_between(
+                    start_date='-5y', end_date='-1y'),
                 height=faker.random_int(150, 200),
                 width=faker.random_int(200, 300),
                 depth=faker.random_int(200, 300),
@@ -349,16 +361,19 @@ class Command(BaseCommand):
         capacidades = [500, 750, 1000, 1500, 2000]
         for i in range(4):
             capacidad = faker.random_element(capacidades)
-            status = faker.random_element(['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
             ResourceItem.objects.create(
                 name=f"Tanque Agua Cruda {capacidad} gal - {i+1}",
                 type='EQUIPO',
                 subtype='TANQUES DE ALMACENAMIENTO AGUA CRUDA',
-                brand=faker.random_element(['TankTech', 'AquaStore', 'WaterTank']),
+                brand=faker.random_element(
+                    ['TankTech', 'AquaStore', 'WaterTank']),
                 model=f'TAC-{faker.random_number(3)}',
                 code=f'TAC-{str(i+1).zfill(3)}',
                 serial_number=f'SN-TAC-{faker.unique.numerify("######")}',
-                date_purchase=faker.date_between(start_date='-5y', end_date='-1y'),
+                date_purchase=faker.date_between(
+                    start_date='-5y', end_date='-1y'),
                 height=faker.random_int(180, 220),
                 width=faker.random_int(120, 180),
                 depth=faker.random_int(120, 180),
@@ -393,16 +408,19 @@ class Command(BaseCommand):
         capacidades = [500, 750, 1000, 1500, 2000]
         for i in range(4):
             capacidad = faker.random_element(capacidades)
-            status = faker.random_element(['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
             ResourceItem.objects.create(
                 name=f"Tanque Agua Residual {capacidad} gal - {i+1}",
                 type='EQUIPO',
                 subtype='TANQUES DE ALMACENAMIENTO AGUA RESIDUAL',
-                brand=faker.random_element(['TankTech', 'AquaStore', 'WaterTank']),
+                brand=faker.random_element(
+                    ['TankTech', 'AquaStore', 'WaterTank']),
                 model=f'TAR-{faker.random_number(3)}',
                 code=f'TAR-{str(i+1).zfill(3)}',
                 serial_number=f'SN-TAR-{faker.unique.numerify("######")}',
-                date_purchase=faker.date_between(start_date='-5y', end_date='-1y'),
+                date_purchase=faker.date_between(
+                    start_date='-5y', end_date='-1y'),
                 height=faker.random_int(180, 220),
                 width=faker.random_int(120, 180),
                 depth=faker.random_int(120, 180),
@@ -435,16 +453,19 @@ class Command(BaseCommand):
     def create_lavamanos(self, faker):
         """Crear lavamanos"""
         for i in range(6):
-            status = faker.random_element(['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
             ResourceItem.objects.create(
                 name=f"Lavamanos {i+1}",
                 type='EQUIPO',
                 subtype='LAVAMANOS',
-                brand=faker.random_element(['WashTech', 'CleanHands', 'SaniWash']),
+                brand=faker.random_element(
+                    ['WashTech', 'CleanHands', 'SaniWash']),
                 model=f'LM-{faker.random_number(3)}',
                 code=f'LM-{str(i+1).zfill(3)}',
                 serial_number=f'SN-LM-{faker.unique.numerify("######")}',
-                date_purchase=faker.date_between(start_date='-5y', end_date='-1y'),
+                date_purchase=faker.date_between(
+                    start_date='-5y', end_date='-1y'),
                 height=faker.random_int(80, 120),
                 width=faker.random_int(60, 100),
                 depth=faker.random_int(40, 80),
@@ -463,16 +484,19 @@ class Command(BaseCommand):
     def create_camper_bano(self, faker):
         """Crear camper baño"""
         for i in range(3):
-            status = faker.random_element(['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
             ResourceItem.objects.create(
                 name=f"Camper Baño {i+1}",
                 type='EQUIPO',
                 subtype='CAMPER BAÑO',
-                brand=faker.random_element(['CamperTech', 'MobileBath', 'PortaCamper']),
+                brand=faker.random_element(
+                    ['CamperTech', 'MobileBath', 'PortaCamper']),
                 model=f'CB-{faker.random_number(3)}',
                 code=f'CB-{str(i+1).zfill(3)}',
                 serial_number=f'SN-CB-{faker.unique.numerify("######")}',
-                date_purchase=faker.date_between(start_date='-5y', end_date='-1y'),
+                date_purchase=faker.date_between(
+                    start_date='-5y', end_date='-1y'),
                 height=faker.random_int(250, 300),
                 width=faker.random_int(200, 250),
                 depth=faker.random_int(150, 200),
@@ -498,16 +522,19 @@ class Command(BaseCommand):
     def create_estacion_urinario(self, faker):
         """Crear estaciones cuádruples de urinario"""
         for i in range(2):
-            status = faker.random_element(['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
             ResourceItem.objects.create(
                 name=f"Estación Cuádruple Urinario {i+1}",
                 type='EQUIPO',
                 subtype='ESTACION CUADRUPLE URINARIO',
-                brand=faker.random_element(['UriTech', 'QuadStation', 'MultiUri']),
+                brand=faker.random_element(
+                    ['UriTech', 'QuadStation', 'MultiUri']),
                 model=f'ECU-{faker.random_number(3)}',
                 code=f'ECU-{str(i+1).zfill(3)}',
                 serial_number=f'SN-ECU-{faker.unique.numerify("######")}',
-                date_purchase=faker.date_between(start_date='-5y', end_date='-1y'),
+                date_purchase=faker.date_between(
+                    start_date='-5y', end_date='-1y'),
                 height=faker.random_int(180, 220),
                 width=faker.random_int(300, 400),
                 depth=faker.random_int(80, 120),
@@ -522,17 +549,20 @@ class Command(BaseCommand):
     def create_bombas(self, faker):
         """Crear bombas"""
         for i in range(4):
-            status = faker.random_element(['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
             ResourceItem.objects.create(
                 name=f"Bomba {i+1}",
                 type='EQUIPO',
                 # No hay subtipo específico para bombas en TYPE_EQUIPMENT, usar None
                 subtype=None,
-                brand=faker.random_element(['PumpTech', 'AquaPump', 'FlowMaster']),
+                brand=faker.random_element(
+                    ['PumpTech', 'AquaPump', 'FlowMaster']),
                 model=f'B-{faker.random_number(3)}',
                 code=f'B-{str(i+1).zfill(3)}',
                 serial_number=f'SN-B-{faker.unique.numerify("######")}',
-                date_purchase=faker.date_between(start_date='-5y', end_date='-1y'),
+                date_purchase=faker.date_between(
+                    start_date='-5y', end_date='-1y'),
                 height=faker.random_int(40, 80),
                 width=faker.random_int(30, 60),
                 depth=faker.random_int(30, 60),
@@ -548,11 +578,33 @@ class Command(BaseCommand):
         if Vehicle.objects.exists():
             print('Ya existen los vehiculos')
             return True
+
         with open('seed/vehicles.json', 'r') as file:
             file_content = json.load(file)
 
-            for vehicle in file_content:
-                Vehicle.objects.create(**vehicle)
+            for vehicle_data in file_content:
+                # Convertir fechas de string a date objects
+                date_fields = [
+                    'due_date_matricula', 'date_matricula', 'date_mtop',
+                    'date_technical_review', 'insurance_expiration_date',
+                    'insurance_issue_date', 'duedate_satellite'
+                ]
+
+                for field in date_fields:
+                    if field in vehicle_data and vehicle_data[field]:
+                        if isinstance(vehicle_data[field], str):
+                            try:
+                                vehicle_data[field] = datetime.strptime(
+                                    vehicle_data[field], '%Y-%m-%d'
+                                ).date()
+                            except ValueError:
+                                vehicle_data[field] = None
+                        elif vehicle_data[field] is None:
+                            pass  # Mantener None
+                    else:
+                        vehicle_data[field] = None
+
+                Vehicle.objects.create(**vehicle_data)
 
     def load_suppliers(self, faker):
         if Partner.objects.exists():
@@ -630,97 +682,6 @@ class Command(BaseCommand):
         # Seleccionar aleatoriamente técnicos que tendrán pases (entre 60% y 80%)
         selected_technicals_count = int(
             len(technicals) * random.uniform(0.6, 0.8))
-        selected_technicals = random.sample(
-            list(technicals), k=selected_technicals_count)
-
-        for technical in selected_technicals:
-            # Fecha de caducidad entre 3 meses y 2 años en el futuro
-            fecha_caducidad = faker.date_between(
-                start_date='+3m', end_date='+2y')
-
-            # Seleccionar un bloque aleatorio
-            bloque = random.choice(bloques)
-
-            PassTechnical.objects.create(
-                technical=technical,
-                bloque=bloque,
-                fecha_caducidad=fecha_caducidad
-            )
-
-        print(f'Se han creado {PassTechnical.objects.count()} pases técnicos')
-
-    def load_vehicle_passes(self, faker):
-        if PassVehicle.objects.exists():
-            print('Ya existen pases de vehículos')
-            return True
-
-        vehicles = Vehicle.objects.all()
-        if not vehicles.exists():
-            print('No hay vehículos para asignar pases. Ejecute load_vehicle primero.')
-            return
-
-        bloque_choices = [choice[0] for choice in PassVehicle.BLOQUE_CHOICES]
-
-        for vehicle in vehicles:
-            # Decidir aleatoriamente si este vehículo tendrá pases (e.g., 70% de probabilidad)
-            if random.random() < 0.7:
-                # Crear entre 1 y 3 pases para el vehículo
-                num_passes = random.randint(1, 3)
-                selected_bloques = random.sample(
-                    bloque_choices, min(num_passes, len(bloque_choices)))
-
-                for bloque in selected_bloques:
-                    fecha_caducidad = faker.date_between(
-                        start_date='+3m', end_date='+2y')
-                    PassVehicle.objects.create(
-                        vehicle=vehicle,
-                        bloque=bloque,
-                        fecha_caducidad=fecha_caducidad
-                    )
-
-        print(
-            f'Se han creado {PassVehicle.objects.count()} pases de vehículos')
-
-    def load_vehicle_certifications(self, faker):
-        if CertificationVehicle.objects.exists():
-            print('Ya existen certificaciones de vehículos')
-            return True
-
-        vehicles = Vehicle.objects.all()
-        if not vehicles.exists():
-            print(
-                'No hay vehículos para asignar certificaciones. Ejecute load_vehicle primero.')
-            return
-
-        certification_name_choices = [
-            choice[0] for choice in CertificationVehicle.CERTIFICATION_NAME_CHOICES]
-
-        for vehicle in vehicles:
-            # Decidir aleatoriamente si este vehículo tendrá certificaciones (e.g., 80% de probabilidad)
-            if random.random() < 0.8:
-                # Crear entre 1 y len(certification_name_choices) certificaciones para el vehículo
-                num_certifications = random.randint(
-                    1, len(certification_name_choices))
-                selected_cert_names = random.sample(
-                    certification_name_choices, num_certifications)
-
-                for cert_name in selected_cert_names:
-                    date_start = faker.date_between(
-                        start_date='-2y', end_date='-1m')
-                    date_end = faker.date_between(
-                        start_date='+1m', end_date='+2y')
-                    description = faker.sentence() if random.random() < 0.5 else None
-
-                    CertificationVehicle.objects.create(
-                        vehicle=vehicle,
-                        name=cert_name,
-                        date_start=date_start,
-                        date_end=date_end,
-                        description=description
-                    )
-
-        print(
-            f'Se han creado {CertificationVehicle.objects.count()} certificaciones de vehículos')
         selected_technicals = random.sample(
             list(technicals), k=selected_technicals_count)
 
