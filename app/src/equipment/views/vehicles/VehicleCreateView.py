@@ -23,6 +23,10 @@ class VehicleCreateView(LoginRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['title_section'] = 'Registrar Nuevo Vehículo'
         context['title_page'] = 'Registrar Nuevo Vehículo'
+
+        # Añadir datos necesarios para Vue
+        context['vehicle'] = None  # Para nuevo vehículo
+
         return context
 
     @transaction.atomic

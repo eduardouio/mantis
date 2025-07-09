@@ -4,12 +4,12 @@ from common.BaseModel import BaseModel
 
 class CertificationVehicle(BaseModel):
     CERTIFICATION_NAME_CHOICES = (
-        ('INSPECCION_VOLUMETRICA', 'Inspección Volumétrica'),
-        ('MEDICION_DE_ESPESORES', 'Medición de Espesores'),
-        ('INSPECCION_DE_SEGURIDAD', 'Inspección de Seguridad'),
-        ('PRUEBA_HIDROSTATICA', 'Prueba Hidrostática'),
+        ('INSPECCION VOLUMETRICA', 'Inspección Volumétrica'),
+        ('MEDICION DE ESPESORES', 'Medición de Espesores'),
+        ('INSPECCION DE SEGURIDAD', 'Inspección de Seguridad'),
+        ('PRUEBA HIDROSTATICA', 'Prueba Hidrostática'),
     )
-    
+
     vehicle = models.ForeignKey(
         'equipment.Vehicle',
         on_delete=models.CASCADE,
