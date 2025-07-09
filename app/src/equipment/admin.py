@@ -144,7 +144,7 @@ class VehicleAdmin(SimpleHistoryAdmin):
             'fields': ('no_plate', 'brand', 'model', 'type_vehicle', 'year', 'color')
         }),
         ('Detalles Técnicos', {
-            'fields': ('serial_number', 'engine_number', 'chassis_number', 'chasis', 'motor_no')
+            'fields': ('serial_number', 'engine_number', 'chassis_number')
         }),
         ('Estado y Propietario', {
             'fields': ('status_vehicle', 'owner_transport', 'is_active')
@@ -153,11 +153,11 @@ class VehicleAdmin(SimpleHistoryAdmin):
             'fields': ('date_matricula', 'due_date_matricula', 'due_date_cert_oper', 'date_mtop', 'date_technical_review')
         }),
         ('Información de Seguros', {
-            'fields': ('nro_poliza', 'insurance_company', 'insurance_issue_date', 'insurance_expiration_date'),
+            'fields': ('nro_poliza', 'insurance_company', 'insurance_issue_date', 'insurance_expiration_date', 'duedate_satellite'),
             'classes': ('collapse',)
         }),
         ('Información Adicional', {
-            'fields': ('duedate_satellite', 'notes'),
+            'fields': ('notes',),
             'classes': ('collapse',)
         }),
         ('Auditoría', {
@@ -166,8 +166,7 @@ class VehicleAdmin(SimpleHistoryAdmin):
         })
     )
 
-    readonly_fields = ('created_at', 'updated_at',
-                       'id_user_created', 'id_user_updated')
+    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
 
     date_hierarchy = 'created_at'
 
