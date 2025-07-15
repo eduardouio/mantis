@@ -69,12 +69,15 @@ CSRF_TRUSTED_ORIGINS = [
     'http://54.91.246.31',
     'https://54.91.246.31',
     'http://localhost',
+    'https://146.190.56.181:8080/',
     'http://127.0.0.1',
     'http://localhost:8000',
     'http://127.0.0.1:8000',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
     'http://localhost:5173',
+    'http://146.190.56.181:8080',
+    '146.190.56.181:8080'
 ]
 
 
