@@ -496,7 +496,7 @@
   <div class="modal-box w-11/12 max-w-2xl">
     <div class="flex justify-between items-center border-b pb-3 mb-4">
       <h3 class="font-bold text-lg text-gray-800">Agregar Certificación</h3>
-      <button type="button" class="btn btn-sm btn-circle btn-ghost" onclick="closeCertificationModal()">✕</button>
+      <button type="button" class="btn btn-sm btn-circle btn-ghost" @click="closeCertificationModal()">✕</button>
     </div>
     
     <form id="certificationForm" @submit.prevent="addCertification" class="space-y-4">
@@ -543,12 +543,12 @@
       </div>
 
       <div class="modal-action">
-        <button type="button" class="btn btn-secondary" onclick="closeCertificationModal()">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Guardar Certificación</button>
+        <button type="button" class="btn btn-secondary" @click="closeCertificationModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" @click="addCertification()">Guardar Certificación</button>
       </div>
     </form>
   </div>
-  <div class="modal-backdrop" onclick="closeCertificationModal()"></div>
+  <div class="modal-backdrop" @click="closeCertificationModal()"></div>
 </div>
 
 <!-- Modal para Pases -->
@@ -556,7 +556,7 @@
   <div class="modal-box w-11/12 max-w-xl">
     <div class="flex justify-between items-center border-b pb-3 mb-4">
       <h3 class="font-bold text-lg text-gray-800">Agregar Pase</h3>
-      <button type="button" class="btn btn-sm btn-circle btn-ghost" onclick="closePassModal()">✕</button>
+      <button type="button" class="btn btn-sm btn-circle btn-ghost" @click="closePassModal()">✕</button>
     </div>
     
     <form id="passForm" @submit.prevent="addPass" class="space-y-4">
@@ -596,35 +596,37 @@
       </div>
 
       <div class="modal-action">
-        <button type="button" class="btn btn-secondary" onclick="closePassModal()">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Guardar Pase</button>
+        <button type="button" class="btn btn-secondary" @click="closePassModal()">Cancelar</button>
+        <button type="button" class="btn btn-primary" @click="addPass()">Guardar Pase</button>
       </div>
     </form>
   </div>
-  <div class="modal-backdrop" onclick="closePassModal()"></div>
+  <div class="modal-backdrop" @click="closePassModal()"></div>
 </div>
 {% block script %}
 <script>
 // Datos existentes para Vue si estamos editando
 window.vehicleData = {
-  vehicle: {
-    {% if vehicle %}
-    id: {{ vehicle.id }},
-    brand: '{{ vehicle.brand|default:"" }}',
-    model: '{{ vehicle.model|default:"" }}',
-    type_vehicle: '{{ vehicle.type_vehicle|default:"" }}',
-    year: {{ vehicle.year|default:"null" }},
-    no_plate: '{{ vehicle.no_plate|default:"" }}',
-    owner_transport: '{{ vehicle.owner_transport|default:"PEISOL" }}',
-    status_vehicle: '{{ vehicle.status_vehicle|default:"DISPONIBLE" }}',
-    color: '{{ vehicle.color|default:"" }}',
-    chassis_number: '{{ vehicle.chassis_number|default:"" }}',
-    engine_number: '{{ vehicle.engine_number|default:"" }}',
-    serial_number: '{{ vehicle.serial_number|default:"" }}',
-    is_active: {{ vehicle.is_active|yesno:"true,false" }},
-    notes: '{{ vehicle.notes|default:"" }}',
-    {% endif %}
-  },
+  vehicle: {% if vehicle %}
+    {
+      id: {{ vehicle.id }},
+      brand: '{{ vehicle.brand|default:"" }}',
+      model: '{{ vehicle.model|default:"" }}',
+      type_vehicle: '{{ vehicle.type_vehicle|default:"" }}',
+      year: {{ vehicle.year|default:"null" }},
+      no_plate: '{{ vehicle.no_plate|default:"" }}',
+      owner_transport: '{{ vehicle.owner_transport|default:"PEISOL" }}',
+      status_vehicle: '{{ vehicle.status_vehicle|default:"DISPONIBLE" }}',
+      color: '{{ vehicle.color|default:"" }}',
+      chassis_number: '{{ vehicle.chassis_number|default:"" }}',
+      engine_number: '{{ vehicle.engine_number|default:"" }}',
+      serial_number: '{{ vehicle.serial_number|default:"" }}',
+      is_active: {{ vehicle.is_active|yesno:"true,false" }},
+      notes: '{{ vehicle.notes|default:"" }}'
+    }
+  {% else %}
+    null
+  {% endif %},
   certifications: [
     {% if vehicle and vehicle.certificationvehicle_set.all %}
     {% for certification in vehicle.certificationvehicle_set.all %}
@@ -648,6 +650,8 @@ window.vehicleData = {
     {% endif %}
   ]
 };
+
+console.log('Initial vehicleData from template:', window.vehicleData);
 </script>
 <script src="{% static 'js/app/vehicle_app.js' %}"></script>
 {% endblock %}

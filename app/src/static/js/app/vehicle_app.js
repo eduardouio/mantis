@@ -1,11 +1,15 @@
 (function() {
   'use strict';
   
+  console.log('Loading vehicle_app.js...');
+  
   // Verificar que Vue esté disponible
   if (typeof Vue === 'undefined') {
     console.error('Vue.js no está cargado');
     return;
   }
+  
+  console.log('Vue.js is available, continuing...');
 
   // Verificar si ya existe una instancia global y desmontarla
   if (window.vehicleAppInstance) {
@@ -155,24 +159,60 @@
     },
     
     mounted() {
+      console.log('Vue app mounted. Loading existing data...');
       // Cargar datos existentes si estamos editando
       this.loadExistingData();
+      console.log('Initial state:', {
+        certifications: this.certifications,
+        passes: this.passes
+      });
+      
+      // Agregar event listener para el formulario principal
+      const mainForm = document.querySelector('form[method="post"]');
+      if (mainForm) {
+        mainForm.addEventListener('submit', (e) => {
+          console.log('Form submission detected. Current data:', {
+            certifications: this.certifications,
+            passes: this.passes
+          });
+          
+          // Asegurarse de que los datos están actualizados antes del submit
+          this.updateFormData();
+          
+          // Verificar que los campos ocultos tienen los datos correctos
+          const certificationsInput = document.querySelector('input[name="certifications_data"]');
+          const passesInput = document.querySelector('input[name="passes_data"]');
+          
+          console.log('Hidden fields before submit:', {
+            certifications_data: certificationsInput ? certificationsInput.value : 'not found',
+            passes_data: passesInput ? passesInput.value : 'not found'
+          });
+        });
+      }
     },
     
     methods: {
       loadExistingData() {
+        console.log('Loading existing data. Window vehicleData:', window.vehicleData);
+        
         // Cargar certificaciones existentes si hay datos del vehículo
         if (window.vehicleData && window.vehicleData.certifications) {
           this.certifications = window.vehicleData.certifications;
+          console.log('Loaded certifications:', this.certifications);
         }
         
         // Cargar pases existentes si hay datos del vehículo
         if (window.vehicleData && window.vehicleData.passes) {
           this.passes = window.vehicleData.passes;
+          console.log('Loaded passes:', this.passes);
         }
+        
+        // Actualizar campos ocultos con datos iniciales
+        this.updateFormData();
       },
       
       openCertificationModal() {
+        console.log('Opening certification modal...');
         this.currentCertification = {
           name: '',
           date_start: '',
@@ -184,17 +224,21 @@
         const modal = document.getElementById('certificationModal');
         if (modal) {
           modal.classList.add('modal-open');
+          console.log('Certification modal opened');
         }
       },
       
       closeCertificationModal() {
+        console.log('Closing certification modal...');
         const modal = document.getElementById('certificationModal');
         if (modal) {
           modal.classList.remove('modal-open');
+          console.log('Certification modal closed');
         }
       },
       
       openPassModal() {
+        console.log('Opening pass modal...');
         this.currentPass = {
           bloque: '',
           fecha_caducidad: ''
@@ -204,17 +248,22 @@
         const modal = document.getElementById('passModal');
         if (modal) {
           modal.classList.add('modal-open');
+          console.log('Pass modal opened');
         }
       },
       
       closePassModal() {
+        console.log('Closing pass modal...');
         const modal = document.getElementById('passModal');
         if (modal) {
           modal.classList.remove('modal-open');
+          console.log('Pass modal closed');
         }
       },
       
       addCertification() {
+        console.log('Adding certification:', this.currentCertification);
+        
         if (!this.currentCertification.name || !this.currentCertification.date_start) {
           this.showToast('error', 'Tipo de certificación y fecha de inicio son requeridos');
           return;
@@ -235,6 +284,7 @@
           this.showToast('success', 'Certificación agregada correctamente');
         }
         
+        console.log('Certifications after add:', this.certifications);
         this.updateFormData();
         this.closeCertificationModal();
       },
@@ -254,6 +304,8 @@
       },
       
       addPass() {
+        console.log('Adding pass:', this.currentPass);
+        
         if (!this.currentPass.bloque || !this.currentPass.fecha_caducidad) {
           this.showToast('error', 'Bloque y fecha de caducidad son requeridos');
           return;
@@ -276,6 +328,7 @@
           this.showToast('success', 'Pase agregado correctamente');
         }
         
+        console.log('Passes after add:', this.passes);
         this.updateFormData();
         this.closePassModal();
       },
@@ -299,12 +352,23 @@
         const certificationsInput = document.querySelector('input[name="certifications_data"]');
         const passesInput = document.querySelector('input[name="passes_data"]');
         
+        console.log('Updating form data:', {
+          certifications: this.certifications,
+          passes: this.passes
+        });
+        
         if (certificationsInput) {
           certificationsInput.value = JSON.stringify(this.certifications);
+          console.log('Certifications data updated:', certificationsInput.value);
+        } else {
+          console.warn('Certifications input not found');
         }
         
         if (passesInput) {
           passesInput.value = JSON.stringify(this.passes);
+          console.log('Passes data updated:', passesInput.value);
+        } else {
+          console.warn('Passes input not found');
         }
       },
       
@@ -397,6 +461,7 @@
     }
 
     try {
+      console.log('Mounting Vue app...');
       const mountedApp = vehicleApp.mount('#vehicleApp');
       console.log('Vue app mounted successfully');
       
@@ -418,38 +483,5 @@
     // El DOM ya está listo
     setTimeout(mountVueApp, 0);
   }
-
-  // Funciones globales para compatibilidad con onclick
-  window.openCertificationModal = function() {
-    if (window.vehicleAppInstance && typeof window.vehicleAppInstance.openCertificationModal === 'function') {
-      window.vehicleAppInstance.openCertificationModal();
-    } else {
-      console.warn('openCertificationModal function not available');
-    }
-  };
-
-  window.closeCertificationModal = function() {
-    if (window.vehicleAppInstance && typeof window.vehicleAppInstance.closeCertificationModal === 'function') {
-      window.vehicleAppInstance.closeCertificationModal();
-    } else {
-      console.warn('closeCertificationModal function not available');
-    }
-  };
-
-  window.openPassModal = function() {
-    if (window.vehicleAppInstance && typeof window.vehicleAppInstance.openPassModal === 'function') {
-      window.vehicleAppInstance.openPassModal();
-    } else {
-      console.warn('openPassModal function not available');
-    }
-  };
-
-  window.closePassModal = function() {
-    if (window.vehicleAppInstance && typeof window.vehicleAppInstance.closePassModal === 'function') {
-      window.vehicleAppInstance.closePassModal();
-    } else {
-      console.warn('closePassModal function not available');
-    }
-  };
 
 })();
