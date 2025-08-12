@@ -14,7 +14,7 @@ class TechnicalDetailView(LoginRequiredMixin, DetailView):
         context['title_page'] = 'Ficha de Técnico'
         context['title_section'] = 'Ficha de Técnico'
         context['action'] = self.request.GET.get('action', None)
-        
+
         # Agregar fecha de hoy para comparaciones en la plantilla
         context['today'] = date.today()
 
@@ -22,36 +22,44 @@ class TechnicalDetailView(LoginRequiredMixin, DetailView):
         vaccination_records = VaccinationRecord.get_all_by_technical(
             technical_id=self.object.id
         )
-        
+
         # Enriquecer datos de vacunación con estado de completitud
         for record in vaccination_records:
             record.is_complete = self._is_vaccination_complete(record)
-        
+
         context['vaccination_records'] = vaccination_records
 
         # Obtener todos los pases técnicos asociados al técnico
         pass_technical = PassTechnical.objects.filter(technical=self.object)
-        
+
         # Enriquecer pases con información de expiración
         for pass_item in pass_technical:
-            pass_item.expiry_status = self._get_expiry_status(pass_item.fecha_caducidad)
-        
+            pass_item.expiry_status = self._get_expiry_status(
+                pass_item.fecha_caducidad)
+
         context['pass_technical'] = pass_technical
 
         # Información de expiración de certificados
-        context['license_expiry_details'] = self._get_expiry_status(self.object.license_expiry_date)
-        context['defensive_driving_expiry_details'] = self._get_expiry_status(self.object.defensive_driving_certificate_expiry_date)
-        context['mae_expiry_details'] = self._get_expiry_status(self.object.mae_certificate_expiry_date)
-        context['medical_expiry_details'] = self._get_expiry_status(self.object.medical_certificate_expiry_date)
-        
+        context['license_expiry_details'] = self._get_expiry_status(
+            self.object.license_expiry_date)
+        context['defensive_driving_expiry_details'] = self._get_expiry_status(
+            self.object.defensive_driving_certificate_expiry_date)
+        context['mae_expiry_details'] = self._get_expiry_status(
+            self.object.mae_certificate_expiry_date)
+        context['medical_expiry_details'] = self._get_expiry_status(
+            self.object.medical_certificate_expiry_date)
+
         # Información Quest con estado de expiración
         if self.object.quest_end_date:
-            context['quest_end_details'] = self._get_expiry_status(self.object.quest_end_date)
+            context['quest_end_details'] = self._get_expiry_status(
+                self.object.quest_end_date)
 
         # Estadísticas para metadatos
         context['expired_certificates_count'] = self._count_expired_certificates()
-        context['expiring_certificates_count'] = self._count_expiring_certificates(days=30)
-        context['complete_vaccinations_count'] = sum(1 for rec in vaccination_records if self._is_vaccination_complete(rec))
+        context['expiring_certificates_count'] = self._count_expiring_certificates(
+            days=30)
+        context['complete_vaccinations_count'] = sum(
+            1 for rec in vaccination_records if self._is_vaccination_complete(rec))
 
         return context
 
@@ -59,10 +67,10 @@ class TechnicalDetailView(LoginRequiredMixin, DetailView):
         """Calcula el estado de expiración de una fecha dada"""
         if not expiry_date:
             return None
-            
+
         today = date.today()
         days_remaining = (expiry_date - today).days
-        
+
         if days_remaining < 0:
             return {
                 'days_remaining': abs(days_remaining),
@@ -93,7 +101,7 @@ class TechnicalDetailView(LoginRequiredMixin, DetailView):
         # Verificar si tiene fecha de aplicación (básico para considerar que se inició)
         if not vaccination_record.application_date:
             return False
-            
+
         # Criterio específico por tipo de vacuna
         if hasattr(vaccination_record, 'vaccine_type'):
             if vaccination_record.vaccine_type == 'COVID19':
@@ -109,12 +117,13 @@ class TechnicalDetailView(LoginRequiredMixin, DetailView):
             elif vaccination_record.vaccine_type == 'TETANUS':
                 # Tétanos dura varios años, verificar si la aplicación fue reciente
                 if vaccination_record.application_date:
-                    years_since_application = (date.today() - vaccination_record.application_date).days / 365
+                    years_since_application = (
+                        date.today() - vaccination_record.application_date).days / 365
                     return years_since_application < 10  # Tétanos dura ~10 años
-        
+
         # Default: si tiene fecha de aplicación y no hay próxima dosis pendiente
         return vaccination_record.application_date is not None and (
-            vaccination_record.next_dose_date is None or 
+            vaccination_record.next_dose_date is None or
             vaccination_record.next_dose_date < date.today()
         )
 
@@ -122,18 +131,18 @@ class TechnicalDetailView(LoginRequiredMixin, DetailView):
         """Cuenta certificados vencidos"""
         today = date.today()
         expired_count = 0
-        
+
         certificates = [
             self.object.license_expiry_date,
             self.object.defensive_driving_certificate_expiry_date,
             self.object.mae_certificate_expiry_date,
             self.object.medical_certificate_expiry_date
         ]
-        
+
         for cert_date in certificates:
             if cert_date and cert_date < today:
                 expired_count += 1
-                
+
         return expired_count
 
     def _count_expiring_certificates(self, days=30):
@@ -141,16 +150,16 @@ class TechnicalDetailView(LoginRequiredMixin, DetailView):
         today = date.today()
         expiring_date = today + timedelta(days=days)
         expiring_count = 0
-        
+
         certificates = [
             self.object.license_expiry_date,
             self.object.defensive_driving_certificate_expiry_date,
             self.object.mae_certificate_expiry_date,
             self.object.medical_certificate_expiry_date
         ]
-        
+
         for cert_date in certificates:
             if cert_date and today <= cert_date <= expiring_date:
                 expiring_count += 1
-                
+
         return expiring_count
