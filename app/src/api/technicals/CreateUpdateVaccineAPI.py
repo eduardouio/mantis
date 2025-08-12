@@ -1,7 +1,5 @@
 from django.http import JsonResponse
 from django.views import View
-from django.utils.decorators import method_decorator  # noqa: F401
-from django.views.decorators.csrf import csrf_exempt  # noqa: F401
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 import json
