@@ -6,6 +6,8 @@
 //           DELETE    /api/technicals/delete_vaccine/
 
 (function(){
+	if(window.__TECH_PRES_INIT__){ return; }
+	window.__TECH_PRES_INIT__ = true;
 	const jsonEl = document.getElementById('technical-data');
 	if(!jsonEl) return;
 	let state = {};
@@ -41,6 +43,29 @@
 	const passMeta = el('passMeta');
 	const passMetaContent = el('passMetaContent');
 
+	// Guardar opciones originales de bloque para reconstruir
+	let originalBloqueOptions = null;
+	function cacheOriginalBloqueOptions(){
+		if(originalBloqueOptions) return; // ya cacheado
+		originalBloqueOptions = Array.from(passBloque.options).map(o=>({value:o.value, text:o.textContent}));
+	}
+
+	function refreshPassBloqueOptions(currentEditingBloque=null){
+		if(!passBloque) return;
+		cacheOriginalBloqueOptions();
+		const used = new Set(state.passes.map(p=>p.bloque));
+		// Si estamos editando, permitir que el bloque actual siga visible
+		if(currentEditingBloque) used.delete(currentEditingBloque);
+		// Reconstruir
+		passBloque.innerHTML = '';
+		originalBloqueOptions.forEach(o=>{
+			if(o.value && used.has(o.value)) return; // ocultar usados
+			const opt = document.createElement('option');
+			opt.value = o.value; opt.textContent = o.text;
+			passBloque.appendChild(opt);
+		});
+	}
+
 	function renderPassList(){
 		passList.innerHTML = '';
 		if(!state.passes || !state.passes.length){
@@ -67,7 +92,7 @@
 
 	function loadPass(id){
 		const p = state.passes.find(x=>x.id===id); if(!p) return;
-		passId.value = p.id; passBloque.value = p.bloque; passFecha.value = p.fecha_caducidad; passDeleteBtn.classList.remove('hidden');
+		passId.value = p.id; refreshPassBloqueOptions(p.bloque); passBloque.value = p.bloque; passBloque.disabled = true; passFecha.value = p.fecha_caducidad; passDeleteBtn.classList.remove('hidden');
 		// Mostrar metadatos simples
 		if(passMeta && passMetaContent){
 			const remaining = daysRemaining(p.fecha_caducidad);
@@ -77,12 +102,21 @@
 		}
 	}
 
-	function resetPass(){ passId.value=''; passBloque.value=''; passFecha.value=''; passDeleteBtn.classList.add('hidden'); setMsg(passMsg,'',true); if(passMeta) passMeta.classList.add('hidden'); }
+	function resetPass(){ passId.value=''; passBloque.disabled = false; refreshPassBloqueOptions(null); passBloque.value=''; passFecha.value=''; passDeleteBtn.classList.add('hidden'); setMsg(passMsg,'',true); if(passMeta) passMeta.classList.add('hidden'); }
 	passResetBtn && passResetBtn.addEventListener('click', resetPass);
 
-	passForm && passForm.addEventListener('submit', async e => {
+	let passSubmitting = false;
+	if(passForm && !passForm.dataset.bound){
+	passForm.addEventListener('submit', async e => {
 		e.preventDefault();
+		if(passSubmitting) return; // evitar doble envío
+		passSubmitting = true; passSaveBtn.disabled = true;
 		try {
+			// Validar que el bloque aún no esté tomado (por seguridad extra frontend)
+			const bloqueVal = passBloque.value;
+			if(!passId.value && state.passes.some(p=>p.bloque===bloqueVal)){
+				setMsg(passMsg, 'Bloque ya registrado', false); return;
+			}
 			const payload = { technical_id: state.technical_id, bloque: passBloque.value, fecha_caducidad: passFecha.value };
 			if(passId.value){ payload.id = parseInt(passId.value,10); }
 			const method = passId.value ? 'PUT':'POST';
@@ -92,9 +126,14 @@
 			if(idx>=0) state.passes[idx]=rec; else state.passes.push(rec);
 			renderPassList();
 			setMsg(passMsg, passId.value? 'Actualizado':'Creado');
-			if(!passId.value) resetPass();
+			if(!passId.value){ resetPass(); } else { // si editando, refrescar lista de opciones manteniendo bloque
+				refreshPassBloqueOptions(rec.bloque); passBloque.value = rec.bloque;
+			}
 		} catch(err){ setMsg(passMsg, err.message,false); }
+		finally { passSubmitting = false; passSaveBtn.disabled = false; }
 	});
+	passForm.dataset.bound = '1';
+	}
 
 	// Evitar doble registro del listener y doble confirmación
 	if(passDeleteBtn && !passDeleteBtn.dataset.bound){
@@ -108,7 +147,7 @@
 				if(!ok){ deletingPass = false; return; }
 				await fetchJSON('/api/technicals/delete_pass_technical/', {method:'DELETE', body: JSON.stringify({id: parseInt(passId.value,10)})});
 				state.passes = state.passes.filter(p=>p.id!==parseInt(passId.value,10));
-				renderPassList(); resetPass(); setMsg(passMsg,'Eliminado');
+				renderPassList(); resetPass(); refreshPassBloqueOptions(null); setMsg(passMsg,'Eliminado');
 			} catch(err){ setMsg(passMsg, err.message,false); }
 			finally { deletingPass = false; }
 		});
@@ -188,14 +227,23 @@
 		} catch(err){ setMsg(vaccineMsg, err.message,false); }
 	});
 
-	vaccineDeleteBtn && vaccineDeleteBtn.addEventListener('click', async ()=>{
-		if(!vaccineId.value) return; if(!confirm('Eliminar vacuna?')) return;
-		try {
-			await fetchJSON('/api/technicals/delete_vaccine/', {method:'DELETE', body: JSON.stringify({id: parseInt(vaccineId.value,10)})});
-			state.vaccines = state.vaccines.filter(v=>v.id!==parseInt(vaccineId.value,10));
-			renderVaccines(); resetVaccine(); setMsg(vaccineMsg,'Eliminada');
-		} catch(err){ setMsg(vaccineMsg, err.message,false); }
-	});
+	if(vaccineDeleteBtn && !vaccineDeleteBtn.dataset.bound){
+		let deletingVaccine = false;
+		vaccineDeleteBtn.addEventListener('click', async ()=>{
+			if(deletingVaccine) return;
+			if(!vaccineId.value) return;
+			deletingVaccine = true;
+			try {
+				const ok = confirm('Eliminar vacuna?');
+				if(!ok){ deletingVaccine = false; return; }
+				await fetchJSON('/api/technicals/delete_vaccine/', {method:'DELETE', body: JSON.stringify({id: parseInt(vaccineId.value,10)})});
+				state.vaccines = state.vaccines.filter(v=>v.id!==parseInt(vaccineId.value,10));
+				renderVaccines(); resetVaccine(); setMsg(vaccineMsg,'Eliminada');
+			} catch(err){ setMsg(vaccineMsg, err.message,false); }
+			finally { deletingVaccine = false; }
+		});
+		vaccineDeleteBtn.dataset.bound = '1';
+	}
 
 	// ---- Cálculo helper expiración ----
 	function daysRemaining(dateStr){ if(!dateStr) return null; const today = new Date(); today.setHours(0,0,0,0); const d = new Date(dateStr); if(isNaN(d)) return null; d.setHours(0,0,0,0); return Math.ceil((d - today)/86400000); }
@@ -203,5 +251,6 @@
 
 	// Inicializar
 	state.passes = state.passes || []; state.vaccines = state.vaccines || [];
+	refreshPassBloqueOptions(null);
 	renderPassList(); renderVaccines();
 })();
