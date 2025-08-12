@@ -2,671 +2,227 @@
 {% load static %}
 {% block style %}{% endblock %}
 {% block content %}
-<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
-  <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
-    <h1 class="text-2xl font-semibold text-blue-500">{{ title_section|default:"Formulario de Vehículo" }}</h1>
-    <div class="text-gray-500">
-      <div class="flex flex-wrap gap-3">
-        {% if request.resolver_match.url_name != 'vehicle_create' %}
-        <a href="{% url 'vehicle_detail' request.resolver_match.kwargs.pk %}?action=delete" 
-           class="btn btn-soft btn-error">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" stroke="currentColor" fill="none">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-          </svg>
-          Eliminar
-        </a>
-        <a href="{% url 'vehicle_detail' vehicle.id %}" 
-           class="btn btn-soft btn-info">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2" viewBox="0 0 24 24" stroke="currentColor" fill="none">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-          </svg>
-          Ver Ficha
-        </a>
-        {% endif %}
-        <a href="{% url 'vehicle_list' %}" 
-           class="btn btn-secondary">
-          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-            <path d="M9 6l-6 6l6 6" />
-          </svg>
-          Cancelar
-        </a>
-      </div>
+<div class="max-w-5xl mx-auto p-6 bg-white rounded-2xl shadow border border-t-8 border-t-blue-500">
+  <div class="flex flex-wrap gap-2 justify-between items-center mb-4 pb-2 border-b">
+    <h1 class="text-xl font-semibold text-blue-600">{{ title_section|default:"Formulario de Vehículo" }}</h1>
+    <div class="flex flex-wrap gap-2">
+      {% if request.resolver_match.url_name != 'vehicle_create' %}
+        <a href="{% url 'vehicle_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-soft btn-error">Eliminar</a>
+        <a href="{% url 'vehicle_detail' vehicle.id %}" class="btn btn-soft btn-info">Ver Ficha</a>
+      {% endif %}
+      <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">Cancelar</a>
     </div>
   </div>
 
-  <!-- Error Messages -->
   {% if form.errors %}
-  <div class="bg-red-50 border-l-4 border-red-400 p-6 mb-8 rounded-r-xl shadow-lg">
-    <div class="flex items-center">
-      <div class="flex-shrink-0">
-        <svg class="h-8 w-8 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-        </svg>
-      </div>
-      <div class="ml-4">
-        <h3 class="text-lg font-medium text-red-800">Error en el formulario</h3>
-        <p class="text-red-700">Por favor, corrige los errores marcados en rojo antes de continuar.</p>
-      </div>
-    </div>
+  <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-xl mb-6">
+    <p class="text-red-700 font-medium text-sm">Hay errores en el formulario. Revisa los campos marcados.</p>
   </div>
   {% endif %}
 
-  <form action="" method="post" class="space-y-4">
+  <form method="post" class="space-y-6">
     {% csrf_token %}
-    
-  <!-- Formulario simplificado: solo campos base del modelo Vehicle -->
-
-    <!-- Tabs para organizar la información -->
-    <div class="tabs tabs-box w-full mb-4">
-      <input type="radio" name="form_tabs" class="tab" aria-label="Información General" checked />
-      <div class="tab-content bg-base-100 border-base-300 p-6">
-        <!-- Información básica en 3 columnas -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-          <!-- Columna 1: Datos del vehículo -->
-          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
-            <h3 class="font-medium text-gray-700 mb-4 text-base">Datos del Vehículo</h3>
-            
-            <!-- Placa -->
-            <div class="form-control">
-              <label class="label pb-2">
-                <span class="label-text text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-                  Placa
-                </span>
-              </label>
-              <input type="text" 
-                     name="{{ form.no_plate.html_name }}" 
-                     value="{{ form.no_plate.value|default:'' }}" 
-                     class="input input-bordered w-full h-10" 
-                     placeholder="Ingrese la placa del vehículo"
-                     {% if form.no_plate.field.required %}required{% endif %}>
-              {% if form.no_plate.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.no_plate.errors.0 }}</span></label>
-              {% endif %}
-            </div>
-
-            <!-- Tipo de Vehículo -->
-            <div class="form-control">
-              <label class="label pb-2">
-                <span class="label-text text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-                  Tipo
-                </span>
-              </label>
-              <select name="{{ form.type_vehicle.html_name }}" 
-                      class="select select-bordered w-full h-10"
-                      {% if form.type_vehicle.field.required %}required{% endif %}>
-                <option value="">Seleccione un tipo</option>
-                {% for value, label in form.type_vehicle.field.choices %}
-                  <option value="{{ value }}" {% if form.type_vehicle.value == value %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-              </select>
-              {% if form.type_vehicle.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.type_vehicle.errors.0 }}</span></label>
-              {% endif %}
-            </div>
-
-            <!-- Marca / Modelo -->
-            <div class="grid grid-cols-2 gap-3">
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Marca</span>
-                </label>
-                <input type="text" 
-                       name="{{ form.brand.html_name }}" 
-                      {% extends 'base/base.html' %}
-                      {% block content %}
-                      <div class="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
-                        <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
-                          <h1 class="text-2xl font-semibold text-blue-500">
-                            {% if object.pk %}Editar Vehículo{% else %}Nuevo Vehículo{% endif %}
-                          </h1>
-                          <div class="flex gap-2">
-                            {% if object.pk %}
-                            <a href="{% url 'vehicle_detail' object.id %}" class="btn btn-secondary">Ver Detalle</a>
-                            {% endif %}
-                            <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">Cancelar</a>
-                          </div>
-                        </div>
-
-                        <form method="post" class="space-y-6">
-                          {% csrf_token %}
-
-                          {% if form.non_field_errors %}
-                          <div class="alert alert-error">
-                            {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
-                          </div>
-                          {% endif %}
-
-                          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Placa -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.no_plate.label }}</span></label>
-                              {{ form.no_plate }}
-                              {% if form.no_plate.errors %}<span class="text-error text-xs">{{ form.no_plate.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Tipo -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.type_vehicle.label }}</span></label>
-                              {{ form.type_vehicle }}
-                              {% if form.type_vehicle.errors %}<span class="text-error text-xs">{{ form.type_vehicle.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Marca -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.brand.label }}</span></label>
-                              {{ form.brand }}
-                              {% if form.brand.errors %}<span class="text-error text-xs">{{ form.brand.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Modelo -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.model.label }}</span></label>
-                              {{ form.model }}
-                              {% if form.model.errors %}<span class="text-error text-xs">{{ form.model.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Año -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.year.label }}</span></label>
-                              {{ form.year }}
-                              {% if form.year.errors %}<span class="text-error text-xs">{{ form.year.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Propietario -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.owner_transport.label }}</span></label>
-                              {{ form.owner_transport }}
-                              {% if form.owner_transport.errors %}<span class="text-error text-xs">{{ form.owner_transport.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Estado Vehículo -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.status_vehicle.label }}</span></label>
-                              {{ form.status_vehicle }}
-                              {% if form.status_vehicle.errors %}<span class="text-error text-xs">{{ form.status_vehicle.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Color -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.color.label }}</span></label>
-                              {{ form.color }}
-                              {% if form.color.errors %}<span class="text-error text-xs">{{ form.color.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Número de Chasis -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.chassis_number.label }}</span></label>
-                              {{ form.chassis_number }}
-                              {% if form.chassis_number.errors %}<span class="text-error text-xs">{{ form.chassis_number.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Número de Motor -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.engine_number.label }}</span></label>
-                              {{ form.engine_number }}
-                              {% if form.engine_number.errors %}<span class="text-error text-xs">{{ form.engine_number.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Número de Serie -->
-                            <div class="form-control">
-                              <label class="label"><span class="label-text">{{ form.serial_number.label }}</span></label>
-                              {{ form.serial_number }}
-                              {% if form.serial_number.errors %}<span class="text-error text-xs">{{ form.serial_number.errors.0 }}</span>{% endif %}
-                            </div>
-                            <!-- Activo -->
-                            <div class="form-control">
-                              <label class="cursor-pointer flex gap-2 items-center mt-8">
-                                {{ form.is_active }} <span class="label-text">{{ form.is_active.label }}</span>
-                              </label>
-                            </div>
-                            <!-- Notas -->
-                            <div class="md:col-span-2 form-control">
-                              <label class="label"><span class="label-text">{{ form.notes.label }}</span></label>
-                              {{ form.notes }}
-                              {% if form.notes.errors %}<span class="text-error text-xs">{{ form.notes.errors.0 }}</span>{% endif %}
-                            </div>
-                          </div>
-
-                          <div class="flex justify-center gap-3 border-t pt-4">
-                            <button type="submit" class="btn btn-primary">
-                              {% if object.pk %}Actualizar{% else %}Crear{% endif %} Vehículo
-                            </button>
-                            <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">Cancelar</a>
-                          </div>
-                        </form>
-                      </div>
-                      {% endblock %}
-                     name="{{ form.engine_number.html_name }}" 
-                     value="{{ form.engine_number.value|default:'' }}" 
-                     class="input input-bordered w-full h-10" 
-                     placeholder="Número de motor">
-              {% if form.engine_number.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.engine_number.errors.0 }}</span></label>
-              {% endif %}
-            </div>
-
-            <!-- Número de Serie -->
-            <div class="form-control">
-              <label class="label pb-2">
-                <span class="label-text text-sm font-semibold text-gray-700">Serie</span>
-              </label>
-              <input type="text" 
-                     name="{{ form.serial_number.html_name }}" 
-                     value="{{ form.serial_number.value|default:'' }}" 
-                     class="input input-bordered w-full h-10" 
-                     placeholder="Número de serie">
-              {% if form.serial_number.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.serial_number.errors.0 }}</span></label>
-              {% endif %}
-            </div>
-
-            <!-- Estado del Vehículo -->
-            <div class="form-control">
-              <label class="label pb-2">
-                <span class="label-text text-sm font-semibold text-gray-700">Estado</span>
-              </label>
-              <select name="{{ form.status_vehicle.html_name }}" 
-                      class="select select-bordered w-full h-10">
-                {% for value, label in form.status_vehicle.field.choices %}
-                  <option value="{{ value }}" {% if form.status_vehicle.value == value %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-              </select>
-              {% if form.status_vehicle.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.status_vehicle.errors.0 }}</span></label>
-              {% endif %}
-            </div>
-
-            <!-- Estado Activo -->
-            <div class="form-control">
-              <label class="label cursor-pointer bg-gray-50 rounded-xl p-3 hover:bg-gray-100 transition-colors duration-200 h-10 min-h-10">
-                <span class="label-text text-sm font-semibold text-gray-700 flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  Activo
-                </span>
-                <input type="checkbox" 
-                       name="{{ form.is_active.html_name }}" 
-                       {% if form.is_active.value %}checked{% endif %} 
-                       class="checkbox checkbox-primary">
-              </label>
-              {% if form.is_active.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.is_active.errors.0 }}</span></label>
-              {% endif %}
-            </div>
-          </div>
-          
-          <!-- Columna 3: Información de seguros -->
-          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
-            <h3 class="font-medium text-gray-700 mb-4 text-base">Seguros</h3>
-            
-            <!-- Compañía de Seguros -->
-            <div class="form-control">
-              <label class="label pb-2">
-                <span class="label-text text-sm font-semibold text-gray-700">Compañía</span>
-              </label>
-              <input type="text" 
-                     name="{{ form.insurance_company.html_name }}" 
-                     value="{{ form.insurance_company.value|default:'' }}" 
-                     class="input input-bordered w-full h-10" 
-                     placeholder="Compañía de seguros">
-              {% if form.insurance_company.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.insurance_company.errors.0 }}</span></label>
-              {% endif %}
-            </div>
-
-            <!-- Número de Póliza -->
-            <div class="form-control">
-              <label class="label pb-2">
-                <span class="label-text text-sm font-semibold text-gray-700">Póliza</span>
-              </label>
-              <input type="text" 
-                     name="{{ form.nro_poliza.html_name }}" 
-                     value="{{ form.nro_poliza.value|default:'' }}" 
-                     class="input input-bordered w-full h-10" 
-                     placeholder="Número de póliza">
-              {% if form.nro_poliza.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.nro_poliza.errors.0 }}</span></label>
-              {% endif %}
-            </div>
-
-            <!-- Vigencia Póliza -->
-            <div class="grid grid-cols-2 gap-3">
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Emisión</span>
-                </label>
-                <input type="date" 
-                       name="{{ form.insurance_issue_date.html_name }}" 
-                       value="{{ form.insurance_issue_date.value|date:'Y-m-d'|default:'' }}" 
-                       class="input input-bordered w-full h-10">
-                {% if form.insurance_issue_date.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.insurance_issue_date.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Vencimiento</span>
-                </label>
-                <input type="date" 
-                       name="{{ form.insurance_expiration_date.html_name }}" 
-                       value="{{ form.insurance_expiration_date.value|date:'Y-m-d'|default:'' }}" 
-                       class="input input-bordered w-full h-10">
-                {% if form.insurance_expiration_date.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.insurance_expiration_date.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-            </div>
-
-            <!-- Vencimiento Satelital -->
-            <div class="form-control">
-              <label class="label pb-2">
-                <span class="label-text text-sm font-semibold text-gray-700">Satelital</span>
-              </label>
-              <input type="date" 
-                     name="{{ form.duedate_satellite.html_name }}" 
-                     value="{{ form.duedate_satellite.value|date:'Y-m-d'|default:'' }}" 
-                     class="input input-bordered w-full h-10">
-              {% if form.duedate_satellite.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.duedate_satellite.errors.0 }}</span></label>
-              {% endif %}
-            </div>
-          </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Columna 1: Datos básicos -->
+      <div class="space-y-4">
+        <h3 class="text-sm font-semibold text-gray-600 tracking-wide">Datos Básicos</h3>
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Placa</span></label>
+          <input name="{{ form.no_plate.html_name }}" value="{{ form.no_plate.value|default:'' }}" type="text" class="input input-bordered h-9" placeholder="Placa" {% if form.no_plate.field.required %}required{% endif %}>
+          {% if form.no_plate.errors %}<span class="text-xs text-red-500">{{ form.no_plate.errors.0 }}</span>{% endif %}
         </div>
-
-        <!-- Notas -->
-        <div class="mt-6 p-4 bg-gray-50 rounded border border-gray-200">
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Tipo</span></label>
+          <select name="{{ form.type_vehicle.html_name }}" class="select select-bordered h-9" {% if form.type_vehicle.field.required %}required{% endif %}>
+            <option value="">Seleccione</option>
+            {% for value, label in form.type_vehicle.field.choices %}
+              <option value="{{ value }}" {% if form.type_vehicle.value == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          {% if form.type_vehicle.errors %}<span class="text-xs text-red-500">{{ form.type_vehicle.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="grid grid-cols-2 gap-3">
           <div class="form-control">
-            <label class="label pb-2">
-              <span class="label-text text-sm font-semibold text-gray-700">Notas</span>
-              <span class="label-text-alt text-gray-500 text-xs">Información adicional</span>
-            </label>
-            <textarea name="{{ form.notes.html_name }}" 
-                      class="textarea textarea-bordered w-full min-h-20" 
-                      placeholder="Ingrese notas adicionales sobre el vehículo">{{ form.notes.value|default:'' }}</textarea>
-            {% if form.notes.errors %}
-              <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.notes.errors.0 }}</span></label>
-            {% endif %}
+            <label class="label pb-1"><span class="label-text text-xs font-semibold">Marca</span></label>
+            <input name="{{ form.brand.html_name }}" value="{{ form.brand.value|default:'' }}" class="input input-bordered h-9" placeholder="Marca">
+            {% if form.brand.errors %}<span class="text-xs text-red-500">{{ form.brand.errors.0 }}</span>{% endif %}
           </div>
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text text-xs font-semibold">Modelo</span></label>
+            <input name="{{ form.model.html_name }}" value="{{ form.model.value|default:'' }}" class="input input-bordered h-9" placeholder="Modelo">
+            {% if form.model.errors %}<span class="text-xs text-red-500">{{ form.model.errors.0 }}</span>{% endif %}
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Año</span></label>
+          <input name="{{ form.year.html_name }}" value="{{ form.year.value|default:'' }}" type="number" class="input input-bordered h-9" placeholder="Año">
+          {% if form.year.errors %}<span class="text-xs text-red-500">{{ form.year.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Propietario</span></label>
+          <input name="{{ form.owner_transport.html_name }}" value="{{ form.owner_transport.value|default:'PEISOL' }}" class="input input-bordered h-9" placeholder="Propietario">
+          {% if form.owner_transport.errors %}<span class="text-xs text-red-500">{{ form.owner_transport.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Estado</span></label>
+          <select name="{{ form.status_vehicle.html_name }}" class="select select-bordered h-9">
+            {% for value, label in form.status_vehicle.field.choices %}
+              <option value="{{ value }}" {% if form.status_vehicle.value == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          {% if form.status_vehicle.errors %}<span class="text-xs text-red-500">{{ form.status_vehicle.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text text-xs font-semibold">Color</span></label>
+            <input name="{{ form.color.html_name }}" value="{{ form.color.value|default:'' }}" class="input input-bordered h-9" placeholder="Color">
+            {% if form.color.errors %}<span class="text-xs text-red-500">{{ form.color.errors.0 }}</span>{% endif %}
+          </div>
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text text-xs font-semibold">Chasis</span></label>
+            <input name="{{ form.chassis_number.html_name }}" value="{{ form.chassis_number.value|default:'' }}" class="input input-bordered h-9" placeholder="Chasis">
+            {% if form.chassis_number.errors %}<span class="text-xs text-red-500">{{ form.chassis_number.errors.0 }}</span>{% endif %}
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text text-xs font-semibold">Motor</span></label>
+            <input name="{{ form.engine_number.html_name }}" value="{{ form.engine_number.value|default:'' }}" class="input input-bordered h-9" placeholder="Motor">
+            {% if form.engine_number.errors %}<span class="text-xs text-red-500">{{ form.engine_number.errors.0 }}</span>{% endif %}
+          </div>
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text text-xs font-semibold">Serie</span></label>
+            <input name="{{ form.serial_number.html_name }}" value="{{ form.serial_number.value|default:'' }}" class="input input-bordered h-9" placeholder="Serie">
+            {% if form.serial_number.errors %}<span class="text-xs text-red-500">{{ form.serial_number.errors.0 }}</span>{% endif %}
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer gap-2 pb-1"><input type="checkbox" name="{{ form.is_active.html_name }}" class="checkbox checkbox-primary" {% if form.is_active.value %}checked{% endif %}><span class="label-text text-xs font-semibold">Activo</span></label>
+          {% if form.is_active.errors %}<span class="text-xs text-red-500">{{ form.is_active.errors.0 }}</span>{% endif %}
         </div>
       </div>
 
-      <input type="radio" name="form_tabs" class="tab" aria-label="Documentos y Certificados" />
-      <div class="tab-content bg-base-100 border-base-300 p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Documentos Oficiales -->
-          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
-            <h3 class="font-medium text-gray-700 mb-4 text-base">Matrícula</h3>
-            <div class="space-y-4">
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Fecha Matrícula</span>
-                </label>
-                <input type="date" 
-                       name="{{ form.date_matricula.html_name }}" 
-                       value="{{ form.date_matricula.value|date:'Y-m-d'|default:'' }}" 
-                       class="input input-bordered w-full h-10">
-                {% if form.date_matricula.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.date_matricula.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Vencimiento</span>
-                </label>
-                <input type="date" 
-                       name="{{ form.due_date_matricula.html_name }}" 
-                       value="{{ form.due_date_matricula.value|date:'Y-m-d'|default:'' }}" 
-                       class="input input-bordered w-full h-10">
-                {% if form.due_date_matricula.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.due_date_matricula.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-            </div>
+      <!-- Columna 2: Seguros -->
+      <div class="space-y-4">
+        <h3 class="text-sm font-semibold text-gray-600 tracking-wide">Seguros</h3>
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Compañía</span></label>
+          <input name="{{ form.insurance_company.html_name }}" value="{{ form.insurance_company.value|default:'' }}" class="input input-bordered h-9" placeholder="Compañía">
+          {% if form.insurance_company.errors %}<span class="text-xs text-red-500">{{ form.insurance_company.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Póliza</span></label>
+          <input name="{{ form.nro_poliza.html_name }}" value="{{ form.nro_poliza.value|default:'' }}" class="input input-bordered h-9" placeholder="Póliza">
+          {% if form.nro_poliza.errors %}<span class="text-xs text-red-500">{{ form.nro_poliza.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text text-xs font-semibold">Emisión</span></label>
+            <input type="date" name="{{ form.insurance_issue_date.html_name }}" value="{{ form.insurance_issue_date.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            {% if form.insurance_issue_date.errors %}<span class="text-xs text-red-500">{{ form.insurance_issue_date.errors.0 }}</span>{% endif %}
           </div>
-          
-          <!-- Certificado de Operación -->
-          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
-            <h3 class="font-medium text-gray-700 mb-4 text-base">Certificado de Operación</h3>
-            <div class="space-y-4">
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Vencimiento</span>
-                </label>
-                <input type="date" 
-                       name="{{ form.due_date_cert_oper.html_name }}" 
-                       value="{{ form.due_date_cert_oper.value|date:'Y-m-d'|default:'' }}" 
-                       class="input input-bordered w-full h-10">
-                {% if form.due_date_cert_oper.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.due_date_cert_oper.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-            </div>
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text text-xs font-semibold">Vencimiento</span></label>
+            <input type="date" name="{{ form.insurance_expiration_date.html_name }}" value="{{ form.insurance_expiration_date.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            {% if form.insurance_expiration_date.errors %}<span class="text-xs text-red-500">{{ form.insurance_expiration_date.errors.0 }}</span>{% endif %}
           </div>
-          
-          <!-- MTOP -->
-          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
-            <h3 class="font-medium text-gray-700 mb-4 text-base">MTOP</h3>
-            <div class="space-y-4">
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Fecha MTOP</span>
-                </label>
-                <input type="date" 
-                       name="{{ form.date_mtop.html_name }}" 
-                       value="{{ form.date_mtop.value|date:'Y-m-d'|default:'' }}" 
-                       class="input input-bordered w-full h-10">
-                {% if form.date_mtop.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.date_mtop.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-            </div>
+        </div>
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Satelital</span></label>
+          <input type="date" name="{{ form.duedate_satellite.html_name }}" value="{{ form.duedate_satellite.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+          {% if form.duedate_satellite.errors %}<span class="text-xs text-red-500">{{ form.duedate_satellite.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="divider my-2"></div>
+        <h3 class="text-sm font-semibold text-gray-600 tracking-wide">Documentos</h3>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text text-xs font-semibold">Fecha Matrícula</span></label>
+            <input type="date" name="{{ form.date_matricula.html_name }}" value="{{ form.date_matricula.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            {% if form.date_matricula.errors %}<span class="text-xs text-red-500">{{ form.date_matricula.errors.0 }}</span>{% endif %}
           </div>
-          
-          <!-- Revisión Técnica -->
-          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
-            <h3 class="font-medium text-gray-700 mb-4 text-base">Revisión Técnica</h3>
-            <div class="space-y-4">
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Fecha Revisión</span>
-                </label>
-                <input type="date" 
-                       name="{{ form.date_technical_review.html_name }}" 
-                       value="{{ form.date_technical_review.value|date:'Y-m-d'|default:'' }}" 
-                       class="input input-bordered w-full h-10">
-                {% if form.date_technical_review.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.date_technical_review.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-            </div>
+          <div class="form-control">
+            <label class="label pb-1"><span class="label-text text-xs font-semibold">Venc. Matrícula</span></label>
+            <input type="date" name="{{ form.due_date_matricula.html_name }}" value="{{ form.due_date_matricula.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            {% if form.due_date_matricula.errors %}<span class="text-xs text-red-500">{{ form.due_date_matricula.errors.0 }}</span>{% endif %}
           </div>
+        </div>
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Venc. Cert. Operación</span></label>
+          <input type="date" name="{{ form.due_date_cert_oper.html_name }}" value="{{ form.due_date_cert_oper.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+          {% if form.due_date_cert_oper.errors %}<span class="text-xs text-red-500">{{ form.due_date_cert_oper.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Fecha MTOP</span></label>
+          <input type="date" name="{{ form.date_mtop.html_name }}" value="{{ form.date_mtop.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+          {% if form.date_mtop.errors %}<span class="text-xs text-red-500">{{ form.date_mtop.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Fecha Rev. Técnica</span></label>
+          <input type="date" name="{{ form.date_technical_review.html_name }}" value="{{ form.date_technical_review.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+          {% if form.date_technical_review.errors %}<span class="text-xs text-red-500">{{ form.date_technical_review.errors.0 }}</span>{% endif %}
         </div>
       </div>
 
-      <input type="radio" name="form_tabs" class="tab" aria-label="Certificados y Pases" />
-      <div class="tab-content bg-base-100 border-base-300 p-6">
-        <div id="vehicleApp"></div>
+      <!-- Columna 3: Notas y espacio para app JS -->
+      <div class="space-y-4">
+        <h3 class="text-sm font-semibold text-gray-600 tracking-wide">Notas</h3>
+        <div class="form-control">
+          <textarea name="{{ form.notes.html_name }}" class="textarea textarea-bordered min-h-40" placeholder="Notas adicionales">{{ form.notes.value|default:'' }}</textarea>
+          {% if form.notes.errors %}<span class="text-xs text-red-500">{{ form.notes.errors.0 }}</span>{% endif %}
+        </div>
       </div>
     </div>
 
-    <!-- Botones de acción -->
-    <div class="flex flex-wrap justify-center gap-2 mt-6 border-t pt-4">
-      <button type="submit" class="btn btn-primary">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-floppy">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-          <path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2"/>
-          <path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/>
-          <path d="M14 4l0 4l-6 0l0 -4"/>
-        </svg>
-      Guardar Vehículo
-      </button>
-      <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">
-        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="12" height="12" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-          <path d="M9 6l-6 6l6 6" />
-        </svg>
-        Cancelar
-      </a>
+    <div class="flex justify-center gap-3 pt-4 border-t">
+      <button type="submit" class="btn btn-primary">Guardar</button>
+      <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">Cancelar</a>
     </div>
   </form>
 </div>
-
-<!-- Modal para Certificaciones -->
-<div id="certificationModal" class="modal">
-  <div class="modal-box w-11/12 max-w-2xl">
-    <div class="flex justify-between items-center border-b pb-3 mb-4">
-      <h3 class="font-bold text-lg text-gray-800">Agregar Certificación</h3>
-      <button type="button" class="btn btn-sm btn-circle btn-ghost" @click="closeCertificationModal()">✕</button>
-    </div>
-    
-    <form id="certificationForm" @submit.prevent="addCertification" class="space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        
-        <!-- Tipo de Certificación -->
-        <div class="form-control md:col-span-2">
-          <label class="label">
-            <span class="label-text font-semibold">Tipo de Certificación</span>
-          </label>
-          <select v-model="currentCertification.name" class="select select-bordered w-full" required>
-            <option value="">Seleccione una certificación</option>
-            <option value="INSPECCION VOLUMETRICA">Inspección Volumétrica</option>
-            <option value="MEDICION DE ESPESORES">Medición de Espesores</option>
-            <option value="INSPECCION DE SEGURIDAD">Inspección de Seguridad</option>
-            <option value="PRUEBA HIDROSTATICA">Prueba Hidrostática</option>
-          </select>
-        </div>
-
-        <!-- Fecha de Inicio -->
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-semibold">Fecha de Inicio</span>
-          </label>
-          <input type="date" v-model="currentCertification.date_start" class="input input-bordered w-full" required>
-        </div>
-
-        <!-- Fecha de Fin -->
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-semibold">Fecha de Fin</span>
-          </label>
-          <input type="date" v-model="currentCertification.date_end" class="input input-bordered w-full" required>
-        </div>
-
-        <!-- Descripción -->
-        <div class="form-control md:col-span-2">
-          <label class="label">
-            <span class="label-text font-semibold">Descripción</span>
-          </label>
-          <textarea v-model="currentCertification.description" class="textarea textarea-bordered w-full min-h-20" placeholder="Descripción de la certificación (opcional)"></textarea>
-        </div>
-
-      </div>
-
-      <div class="modal-action">
-        <button type="button" class="btn btn-secondary" @click="closeCertificationModal()">Cancelar</button>
-        <button type="button" class="btn btn-primary" @click="addCertification()">Guardar Certificación</button>
-      </div>
-    </form>
-  </div>
-  <div class="modal-backdrop" @click="closeCertificationModal()"></div>
-</div>
-
-<!-- Modal para Pases -->
-<div id="passModal" class="modal">
-  <div class="modal-box w-11/12 max-w-xl">
-    <div class="flex justify-between items-center border-b pb-3 mb-4">
-      <h3 class="font-bold text-lg text-gray-800">Agregar Pase</h3>
-      <button type="button" class="btn btn-sm btn-circle btn-ghost" @click="closePassModal()">✕</button>
-    </div>
-    
-    <form id="passForm" @submit.prevent="addPass" class="space-y-4">
-      
-      <!-- Bloque -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text font-semibold">Bloque</span>
-        </label>
-        <select v-model="currentPass.bloque" class="select select-bordered w-full" required>
-          <option value="">Seleccione un bloque</option>
-          <option value="PETROECUADOR">PETROECUADOR</option>
-          <option value="SHAYA">SHAYA</option>
-          <option value="CONSORCIO SHUSHUFINDI">CONSORCIO SHUSHUFINDI</option>
-          <option value="ENAP SIPEC">ENAP SIPEC</option>
-          <option value="ORION">ORION</option>
-          <option value="ANDES PETROLEUM">ANDES PETROLEUM</option>
-          <option value="PARDALIS SERVICES">PARDALIS SERVICES</option>
-          <option value="FRONTERA ENERGY">FRONTERA ENERGY</option>
-          <option value="GRAN TIERRA">GRAN TIERRA</option>
-          <option value="PCR">PCR</option>
-          <option value="HALLIBURTON">HALLIBURTON</option>
-          <option value="GENTE OIL">GENTE OIL</option>
-          <option value="TRIBIOL GAS">TRIBIOL GAS</option>
-          <option value="ADICO">ADICO</option>
-          <option value="CUYAVENO PETRO">CUYAVENO PETRO</option>
-          <option value="GEOPARK">GEOPARK</option>
-        </select>
-      </div>
-
-      <!-- Fecha de Caducidad -->
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text font-semibold">Fecha de Caducidad</span>
-        </label>
-        <input type="date" v-model="currentPass.fecha_caducidad" class="input input-bordered w-full" required>
-      </div>
-
-      <div class="modal-action">
-        <button type="button" class="btn btn-secondary" @click="closePassModal()">Cancelar</button>
-        <button type="button" class="btn btn-primary" @click="addPass()">Guardar Pase</button>
-      </div>
-    </form>
-  </div>
-  <div class="modal-backdrop" @click="closePassModal()"></div>
-</div>
-{% block script %}
-<script>
-// Datos existentes para Vue si estamos editando
-window.vehicleData = {
-  vehicle: {% if vehicle %}
-    {
-      id: {{ vehicle.id }},
-      brand: '{{ vehicle.brand|default:"" }}',
-      model: '{{ vehicle.model|default:"" }}',
-      type_vehicle: '{{ vehicle.type_vehicle|default:"" }}',
-      year: {{ vehicle.year|default:"null" }},
-      no_plate: '{{ vehicle.no_plate|default:"" }}',
-      owner_transport: '{{ vehicle.owner_transport|default:"PEISOL" }}',
-      status_vehicle: '{{ vehicle.status_vehicle|default:"DISPONIBLE" }}',
-      color: '{{ vehicle.color|default:"" }}',
-      chassis_number: '{{ vehicle.chassis_number|default:"" }}',
-      engine_number: '{{ vehicle.engine_number|default:"" }}',
-      serial_number: '{{ vehicle.serial_number|default:"" }}',
-      is_active: {{ vehicle.is_active|yesno:"true,false" }},
-      notes: '{{ vehicle.notes|default:"" }}'
-    }
-  {% else %}
-    null
-  {% endif %},
-  certifications: [
-    {% if vehicle and vehicle.certificationvehicle_set.all %}
-    {% for certification in vehicle.certificationvehicle_set.all %}
-    {
-      name: '{{ certification.name }}',
-      date_start: '{{ certification.date_start|date:"Y-m-d" }}',
-      date_end: '{{ certification.date_end|date:"Y-m-d"|default:"" }}',
-      description: '{{ certification.description|default:"" }}'
-    }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-    {% endif %}
-  ],
-  passes: [
-    {% if vehicle and vehicle.passvehicle_set.all %}
-    {% for pass in vehicle.passvehicle_set.all %}
-    {
-      bloque: '{{ pass.bloque }}',
-      fecha_caducidad: '{{ pass.fecha_caducidad|date:"Y-m-d" }}'
-    }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-    {% endif %}
-  ]
-};
-
-console.log('Initial vehicleData from template:', window.vehicleData);
-</script>
-<!-- Eliminado vehicle_app.js obsoleto -->
 {% endblock %}
+
+{% block script %}
+<script id="vehicle-data" type="application/json">
+{
+  "vehicle": {% if vehicle %}{
+    "id": {{ vehicle.id }},
+    "brand": "{{ vehicle.brand|default:''|escapejs }}",
+    "model": "{{ vehicle.model|default:''|escapejs }}",
+    "type_vehicle": "{{ vehicle.type_vehicle|default:''|escapejs }}",
+    "year": {% if vehicle.year %}{{ vehicle.year }}{% else %}null{% endif %},
+    "no_plate": "{{ vehicle.no_plate|default:''|escapejs }}",
+    "owner_transport": "{{ vehicle.owner_transport|default:'PEISOL'|escapejs }}",
+    "status_vehicle": "{{ vehicle.status_vehicle|default:'DISPONIBLE'|escapejs }}",
+    "color": "{{ vehicle.color|default:''|escapejs }}",
+    "chassis_number": "{{ vehicle.chassis_number|default:''|escapejs }}",
+    "engine_number": "{{ vehicle.engine_number|default:''|escapejs }}",
+    "serial_number": "{{ vehicle.serial_number|default:''|escapejs }}",
+    "is_active": {% if vehicle.is_active %}true{% else %}false{% endif %},
+    "notes": "{{ vehicle.notes|default:''|escapejs }}"
+  }{% else %}null{% endif %},
+  "certifications": [
+    {% if vehicle %}{% for c in vehicle.certificationvehicle_set.all %}{
+      "name": "{{ c.name|escapejs }}",
+      "date_start": "{{ c.date_start|date:'Y-m-d' }}",
+      "date_end": "{{ c.date_end|date:'Y-m-d'|default:'' }}",
+      "description": "{{ c.description|default:''|escapejs }}"
+    }{% if not forloop.last %},{% endif %}{% endfor %}{% endif %}
+  ],
+  "passes": [
+    {% if vehicle %}{% for p in vehicle.passvehicle_set.all %}{
+      "bloque": "{{ p.bloque|escapejs }}",
+      "fecha_caducidad": "{{ p.fecha_caducidad|date:'Y-m-d' }}"
+    }{% if not forloop.last %},{% endif %}{% endfor %}{% endif %}
+  ]
+}
+</script>
+<script>
+(function(){
+  try {
+    const raw = document.getElementById('vehicle-data').textContent.trim();
+    window.vehicleData = JSON.parse(raw);
+    console.log('vehicleData', window.vehicleData);
+  } catch(e) { console.error('Error parseando vehicle-data', e); }
+})();
+</script>
 {% endblock %}
