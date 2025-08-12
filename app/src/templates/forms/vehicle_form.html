@@ -1,8 +1,6 @@
 {% extends 'base/base.html' %}
 {% load static %}
-{% block style %}
-<link rel="stylesheet" href="{% static 'css/app/vehicle.css' %}">
-{% endblock %}
+{% block style %}{% endblock %}
 {% block content %}
 <div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
@@ -57,9 +55,7 @@
   <form action="" method="post" class="space-y-4">
     {% csrf_token %}
     
-    <!-- Campos ocultos para datos de certificaciones y pases -->
-    {{ form.certifications_data }}
-    {{ form.passes_data }}
+  <!-- Formulario simplificado: solo campos base del modelo Vehicle -->
 
     <!-- Tabs para organizar la información -->
     <div class="tabs tabs-box w-full mb-4">
@@ -119,102 +115,120 @@
                 </label>
                 <input type="text" 
                        name="{{ form.brand.html_name }}" 
-                       value="{{ form.brand.value|default:'' }}" 
-                       class="input input-bordered w-full h-10" 
-                       placeholder="Marca">
-                {% if form.brand.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.brand.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Modelo</span>
-                </label>
-                <input type="text" 
-                       name="{{ form.model.html_name }}" 
-                       value="{{ form.model.value|default:'' }}" 
-                       class="input input-bordered w-full h-10" 
-                       placeholder="Modelo">
-                {% if form.model.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.model.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-            </div>
+                      {% extends 'base/base.html' %}
+                      {% block content %}
+                      <div class="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
+                        <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
+                          <h1 class="text-2xl font-semibold text-blue-500">
+                            {% if object.pk %}Editar Vehículo{% else %}Nuevo Vehículo{% endif %}
+                          </h1>
+                          <div class="flex gap-2">
+                            {% if object.pk %}
+                            <a href="{% url 'vehicle_detail' object.id %}" class="btn btn-secondary">Ver Detalle</a>
+                            {% endif %}
+                            <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">Cancelar</a>
+                          </div>
+                        </div>
 
-            <!-- Año / Color -->
-            <div class="grid grid-cols-2 gap-3">
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Año</span>
-                </label>
-                <input type="number" 
-                       name="{{ form.year.html_name }}" 
-                       value="{{ form.year.value|default:'' }}" 
-                       class="input input-bordered w-full h-10" 
-                       placeholder="2024" 
-                       min="1900" 
-                       max="2030">
-                {% if form.year.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.year.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-              <div class="form-control">
-                <label class="label pb-2">
-                  <span class="label-text text-sm font-semibold text-gray-700">Color</span>
-                </label>
-                <input type="text" 
-                       name="{{ form.color.html_name }}" 
-                       value="{{ form.color.value|default:'' }}" 
-                       class="input input-bordered w-full h-10" 
-                       placeholder="Color">
-                {% if form.color.errors %}
-                  <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.color.errors.0 }}</span></label>
-                {% endif %}
-              </div>
-            </div>
+                        <form method="post" class="space-y-6">
+                          {% csrf_token %}
 
-            <!-- Propietario -->
-            <div class="form-control">
-              <label class="label pb-2">
-                <span class="label-text text-sm font-semibold text-gray-700">Propietario</span>
-              </label>
-              <select name="{{ form.owner_transport.html_name }}" 
-                      class="select select-bordered w-full h-10">
-                {% for value, label in form.owner_transport.field.choices %}
-                  <option value="{{ value }}" {% if form.owner_transport.value == value %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-              </select>
-              {% if form.owner_transport.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.owner_transport.errors.0 }}</span></label>
-              {% endif %}
-            </div>
-          </div>
-          
-          <!-- Columna 2: Datos técnicos -->
-          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
-            <h3 class="font-medium text-gray-700 mb-4 text-base">Datos Técnicos</h3>
-            
-            <!-- Número de Chasis -->
-            <div class="form-control">
-              <label class="label pb-2">
-                <span class="label-text text-sm font-semibold text-gray-700">Chasis</span>
-              </label>
-              <input type="text" 
-                     name="{{ form.chassis_number.html_name }}" 
-                     value="{{ form.chassis_number.value|default:'' }}" 
-                     class="input input-bordered w-full h-10" 
-                     placeholder="Número de chasis">
-              {% if form.chassis_number.errors %}
-                <label class="label"><span class="label-text-alt text-red-500 font-medium text-xs">{{ form.chassis_number.errors.0 }}</span></label>
-              {% endif %}
-            </div>
+                          {% if form.non_field_errors %}
+                          <div class="alert alert-error">
+                            {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+                          </div>
+                          {% endif %}
 
-            <!-- Número de Motor -->
-            <div class="form-control">
-              <label class="label pb-2">
-                <span class="label-text text-sm font-semibold text-gray-700">Motor</span>
-              </label>
-              <input type="text" 
+                          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Placa -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.no_plate.label }}</span></label>
+                              {{ form.no_plate }}
+                              {% if form.no_plate.errors %}<span class="text-error text-xs">{{ form.no_plate.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Tipo -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.type_vehicle.label }}</span></label>
+                              {{ form.type_vehicle }}
+                              {% if form.type_vehicle.errors %}<span class="text-error text-xs">{{ form.type_vehicle.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Marca -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.brand.label }}</span></label>
+                              {{ form.brand }}
+                              {% if form.brand.errors %}<span class="text-error text-xs">{{ form.brand.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Modelo -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.model.label }}</span></label>
+                              {{ form.model }}
+                              {% if form.model.errors %}<span class="text-error text-xs">{{ form.model.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Año -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.year.label }}</span></label>
+                              {{ form.year }}
+                              {% if form.year.errors %}<span class="text-error text-xs">{{ form.year.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Propietario -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.owner_transport.label }}</span></label>
+                              {{ form.owner_transport }}
+                              {% if form.owner_transport.errors %}<span class="text-error text-xs">{{ form.owner_transport.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Estado Vehículo -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.status_vehicle.label }}</span></label>
+                              {{ form.status_vehicle }}
+                              {% if form.status_vehicle.errors %}<span class="text-error text-xs">{{ form.status_vehicle.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Color -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.color.label }}</span></label>
+                              {{ form.color }}
+                              {% if form.color.errors %}<span class="text-error text-xs">{{ form.color.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Número de Chasis -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.chassis_number.label }}</span></label>
+                              {{ form.chassis_number }}
+                              {% if form.chassis_number.errors %}<span class="text-error text-xs">{{ form.chassis_number.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Número de Motor -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.engine_number.label }}</span></label>
+                              {{ form.engine_number }}
+                              {% if form.engine_number.errors %}<span class="text-error text-xs">{{ form.engine_number.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Número de Serie -->
+                            <div class="form-control">
+                              <label class="label"><span class="label-text">{{ form.serial_number.label }}</span></label>
+                              {{ form.serial_number }}
+                              {% if form.serial_number.errors %}<span class="text-error text-xs">{{ form.serial_number.errors.0 }}</span>{% endif %}
+                            </div>
+                            <!-- Activo -->
+                            <div class="form-control">
+                              <label class="cursor-pointer flex gap-2 items-center mt-8">
+                                {{ form.is_active }} <span class="label-text">{{ form.is_active.label }}</span>
+                              </label>
+                            </div>
+                            <!-- Notas -->
+                            <div class="md:col-span-2 form-control">
+                              <label class="label"><span class="label-text">{{ form.notes.label }}</span></label>
+                              {{ form.notes }}
+                              {% if form.notes.errors %}<span class="text-error text-xs">{{ form.notes.errors.0 }}</span>{% endif %}
+                            </div>
+                          </div>
+
+                          <div class="flex justify-center gap-3 border-t pt-4">
+                            <button type="submit" class="btn btn-primary">
+                              {% if object.pk %}Actualizar{% else %}Crear{% endif %} Vehículo
+                            </button>
+                            <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">Cancelar</a>
+                          </div>
+                        </form>
+                      </div>
+                      {% endblock %}
                      name="{{ form.engine_number.html_name }}" 
                      value="{{ form.engine_number.value|default:'' }}" 
                      class="input input-bordered w-full h-10" 
@@ -653,6 +667,6 @@ window.vehicleData = {
 
 console.log('Initial vehicleData from template:', window.vehicleData);
 </script>
-<script src="{% static 'js/app/vehicle_app.js' %}"></script>
+<!-- Eliminado vehicle_app.js obsoleto -->
 {% endblock %}
 {% endblock %}

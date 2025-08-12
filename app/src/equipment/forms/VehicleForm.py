@@ -3,19 +3,7 @@ from equipment.models import Vehicle
 
 
 class VehicleForm(forms.ModelForm):
-    """
-    Formulario para crear y actualizar vehículos
-    """
-
-    # Campos ocultos para almacenar datos de certificaciones y pases
-    certifications_data = forms.CharField(
-        widget=forms.HiddenInput(),
-        required=False
-    )
-    passes_data = forms.CharField(
-        widget=forms.HiddenInput(),
-        required=False
-    )
+    """Formulario simplificado: solo campos del modelo base Vehicle."""
 
     class Meta:
         model = Vehicle
