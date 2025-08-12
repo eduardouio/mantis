@@ -456,7 +456,7 @@ class TestResourceItemCreateView:
             'depth': '0',
             'weight': '0',
             'description': 'Servicio de mantenimiento preventivo y correctivo',
-            'base_price': '250.00',  # Precio base del servicio
+            # base_price eliminado del modelo
         }
         
         initial_count = ResourceItem.objects.count()
