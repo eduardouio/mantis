@@ -14,7 +14,7 @@ from equipment.forms.ResourceItemForm import ResourceItemForm
 
 @method_decorator(csrf_exempt, name='dispatch')
 class ResourceItemCreateView(LoginRequiredMixin, TemplateView):
-    template_name = 'forms/equipment_form.html'
+    template_name = 'forms/resource_item_form.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
