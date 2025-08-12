@@ -97,7 +97,7 @@
 		if(passMeta && passMetaContent){
 			const remaining = daysRemaining(p.fecha_caducidad);
 			const estado = remaining===null? 'Sin fecha': (remaining<0? 'Vencido': remaining+' días');
-			passMetaContent.textContent = `ID: ${p.id}\nBloque: ${displayBloque(p.bloque)}\nCaducidad: ${fmt(p.fecha_caducidad)} (${estado})\nCreado: ${p.created_at||''}\nActualizado: ${p.updated_at||''}\nActivo: ${p.is_active? 'Sí':'No'}${p.notes? `\nNotas: ${p.notes}`:''}`;
+			passMetaContent.textContent = `ID: ${p.id}\nCreado: ${p.created_at||''}\nActualizado: ${p.updated_at||''}\nActivo: ${p.is_active? 'Sí':'No'}${p.notes? `\nNotas: ${p.notes}`:''}`;
 			passMeta.classList.remove('hidden');
 		}
 	}
@@ -168,6 +168,8 @@
 	const vaccineDeleteBtn = el('vaccineDeleteBtn');
 	const vaccineMsg = el('vaccineFormMsg');
 	const vaccineTableBody = qs('#vaccineTable tbody');
+	const vaccineMeta = el('vaccineMeta');
+	const vaccineMetaContent = el('vaccineMetaContent');
 
 	function renderVaccines(){
 		vaccineTableBody.innerHTML = '';
@@ -196,8 +198,13 @@
 	function loadVaccine(id){
 		const v = state.vaccines.find(x=>x.id===id); if(!v) return;
 		vaccineId.value = v.id; vaccineType.value = v.vaccine_type; applicationDate.value = v.application_date; nextDoseDate.value = v.next_dose_date || ''; batchNumber.value = v.batch_number || ''; doseNumber.value = v.dose_number || ''; vaccineNotes.value = v.notes || ''; vaccineDeleteBtn.classList.remove('hidden');
+		// Mostrar metadatos del BaseModel
+		if(vaccineMeta && vaccineMetaContent){
+			vaccineMetaContent.textContent = `ID: ${v.id}\nCreado: ${v.created_at||''}\nActualizado: ${v.updated_at||''}\nActivo: ${v.is_active? 'Sí':'No'}${v.notes? `\nNotas: ${v.notes}`:''}`;
+			vaccineMeta.classList.remove('hidden');
+		}
 	}
-	function resetVaccine(){ vaccineId.value=''; vaccineType.value=''; applicationDate.value=''; nextDoseDate.value=''; batchNumber.value=''; doseNumber.value=''; vaccineNotes.value=''; vaccineDeleteBtn.classList.add('hidden'); setMsg(vaccineMsg,'',true); }
+	function resetVaccine(){ vaccineId.value=''; vaccineType.value=''; applicationDate.value=''; nextDoseDate.value=''; batchNumber.value=''; doseNumber.value=''; vaccineNotes.value=''; vaccineDeleteBtn.classList.add('hidden'); setMsg(vaccineMsg,'',true); if(vaccineMeta) vaccineMeta.classList.add('hidden'); }
 	vaccineResetBtn && vaccineResetBtn.addEventListener('click', resetVaccine);
 
 	vaccineForm && vaccineForm.addEventListener('submit', async e => {

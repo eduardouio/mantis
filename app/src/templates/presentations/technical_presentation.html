@@ -383,6 +383,13 @@
               <div class="col-span-4 md:col-span-3"></div>
               <div class="col-span-8 md:col-span-9"><div id="vaccineFormMsg" class="text-xs mt-1"></div></div>
             </div>
+            <!-- Recuadro Metadatos Vacuna Seleccionada -->
+            <div class="grid grid-cols-12 mt-2 hidden" id="vaccineMeta">
+              <div class="col-span-4 md:col-span-3"></div>
+              <div class="col-span-8 md:col-span-9">
+                <div id="vaccineMetaContent" class="text-[11px] leading-snug whitespace-pre-line p-2 border rounded bg-white"></div>
+              </div>
+            </div>
           </form>
         </div>
         <!-- Lista Vacunas -->
@@ -667,7 +674,7 @@
   {% if pass_technical %}{% for p in pass_technical %}{% if p.is_active %}{"id": {{ p.id }}, "bloque": "{{ p.bloque }}", "fecha_caducidad": "{{ p.fecha_caducidad|date:'Y-m-d' }}", "created_at": "{{ p.created_at|date:'Y-m-d H:i' }}", "updated_at": "{{ p.updated_at|date:'Y-m-d H:i' }}", "is_active": true, "notes": "{{ p.notes|default:''|escapejs }}"}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}{% endif %}
   ],
   "vaccines": [
-  {% if vaccination_records %}{% for r in vaccination_records %}{% if r.is_active %}{"id": {{ r.id }}, "vaccine_type": "{{ r.vaccine_type }}", "application_date": "{{ r.application_date|date:'Y-m-d' }}", "next_dose_date": "{{ r.next_dose_date|date:'Y-m-d'|default:'' }}", "batch_number": "{{ r.batch_number|default:''|escapejs }}", "dose_number": {% if r.dose_number %}{{ r.dose_number }}{% else %}null{% endif %}, "notes": "{{ r.notes|default:''|escapejs }}", "is_complete": {% if r.is_complete %}true{% else %}false{% endif %} }{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}{% endif %}
+  {% if vaccination_records %}{% for r in vaccination_records %}{% if r.is_active %}{"id": {{ r.id }}, "vaccine_type": "{{ r.vaccine_type }}", "application_date": "{{ r.application_date|date:'Y-m-d' }}", "next_dose_date": "{{ r.next_dose_date|date:'Y-m-d'|default:'' }}", "batch_number": "{{ r.batch_number|default:''|escapejs }}", "dose_number": {% if r.dose_number %}{{ r.dose_number }}{% else %}null{% endif %}, "notes": "{{ r.notes|default:''|escapejs }}", "created_at": "{{ r.created_at|date:'Y-m-d H:i' }}", "updated_at": "{{ r.updated_at|date:'Y-m-d H:i' }}", "is_active": {{ r.is_active|yesno:"true,false" }}, "is_complete": {% if r.is_complete %}true{% else %}false{% endif %} }{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}{% endif %}
   ]
 }</script>
 <script src="{% static 'js/app/app-technical-presentation.js' %}"></script>
