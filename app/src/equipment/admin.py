@@ -11,7 +11,6 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
         'subtype',
         'brand',
         'model',
-        'base_price',
         'status',
         'current_location',
         'capacity_display',
@@ -45,7 +44,7 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
 
     fieldsets = (
         ('Información Básica', {
-            'fields': ('name', 'code', 'type', 'subtype', 'brand', 'model', 'serial_number', 'date_purchase', 'base_price')
+            'fields': ('name', 'code', 'type', 'subtype', 'brand', 'model', 'serial_number', 'date_purchase')
         }),
         ('Características Físicas', {
             'fields': ('height', 'width', 'depth', 'weight'),

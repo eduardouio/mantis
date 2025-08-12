@@ -8,6 +8,12 @@ TYPE_RECORD = (
     ('SERVICIO', 'SERVICIO')
 )
 
+TYPE_FASES = (
+    ('MONOFASICO', 'MONOFASICO'),
+    ('BIFASICO', 'BIFASICO'),
+    ('TRIFASICO', 'TRIFASICO'),
+)
+
 TYPE_EQUIPMENT = (
     ('LAVAMANOS', 'LAVAMANOS'),
     ('BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA HOMBRE'),
@@ -127,16 +133,6 @@ class ResourceItem(BaseModel):
         max_length=255,
         choices=STATUS_CHOICES,
         default='DISPONIBLE'
-    )
-
-    # Precio base de alquiler del equipo
-    base_price = models.DecimalField(
-        'Base Rental Price',
-        max_digits=10,
-        decimal_places=2,
-        blank=True,
-        null=True,
-        help_text='Valor base de alquiler del equipo'
     )
 
     # Simplificar campos de capacidad - todo en galones
@@ -262,6 +258,20 @@ class ResourceItem(BaseModel):
     )
 
     # Campos para equipos especiales (blower, motor, banda, etc.)
+    relay_engine = models.CharField(
+        'Marca del Relay del Motor',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para aguas residuales'
+    )
+    relay_blower = models.CharField(
+        'Marca del Relay del Blower',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para aguas residuales'
+    )
     blower_brand = models.CharField(
         'Marca del Blower',
         max_length=255,
@@ -275,6 +285,14 @@ class ResourceItem(BaseModel):
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
+    )
+    engine_fases = models.CharField(
+        'Fases del Motor',
+        max_length=255,
+        blank=True,
+        null=True,
+        choices=TYPE_FASES,
+        help_text='solo para plantas'
     )
     engine_brand = models.CharField(
         'Marca del Motor',
@@ -369,9 +387,87 @@ class ResourceItem(BaseModel):
         help_text='Solo para plantas y tanques'
     )
 
+    # para plantas de agua potable
+    pump_filter = models.CharField(
+        'Bomba de filtracion',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas de agua potable'
+    )
+    pump_pressure = models.CharField(
+        'Bomba de Presión',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas de agua potable'
+    )
+    pump_dosing = models.CharField(
+        'Bomba Dosificadora',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas de agua potable'
+    )
+    sand_carbon_filter = models.CharField(
+        'Filtro de Arena y Carbón',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas de agua potable'
+    )
+    hidroneumatic_tank = models.CharField(
+        'Tanque Hidroneumático',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas de agua potable'
+    )
+    uv_filter = models.CharField(
+        'Filtro UV',
+        max_length=255,
+        blank=True,
+        null=True,
+        help_text='Solo para plantas de agua potable'
+    )
+
     def clean(self):
         """Validaciones personalizadas del modelo"""
         from django.core.exceptions import ValidationError
+
+        # --- Definiciones de campos por subtipo (para validaciones dinámicas) ---
+        sanitary_subtypes = ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER']
+        plant_potable_subtype = 'PLANTA DE TRATAMIENTO DE AGUA'
+        plant_residual_subtype = 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL'
+        tank_subtypes = [
+            'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
+            'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
+        ]
+
+        lavamanos_fields = ['foot_pumps', 'sink_soap_dispenser', 'paper_towels']
+        sanitary_fields = [
+            'paper_dispenser', 'soap_dispenser', 'napkin_dispenser', 'urinals', 'seats',
+            'toilet_pump', 'sink_pump', 'toilet_lid', 'bathroom_bases', 'ventilation_pipe'
+        ]
+        plant_common_fields = [
+            'blower_brand', 'blower_model', 'engine_brand', 'engine_model', 'belt_brand',
+            'belt_model', 'belt_type', 'blower_pulley_brand', 'blower_pulley_model',
+            'motor_pulley_brand', 'motor_pulley_model', 'electrical_panel_brand',
+            'electrical_panel_model', 'motor_guard_brand', 'motor_guard_model'
+        ]
+        plant_potable_only_fields = [
+            'pump_filter', 'pump_pressure', 'pump_dosing', 'sand_carbon_filter',
+            'hidroneumatic_tank', 'uv_filter'
+        ]
+        plant_residual_only_fields = ['relay_engine', 'relay_blower']
+
+        # Campos que sólo aplican a plantas (potables o residuales) y tanques
+        special_subtypes = [
+            plant_potable_subtype,
+            plant_residual_subtype,
+            *tank_subtypes
+        ]
+        special_fields = plant_common_fields
 
         # Validar que si el estado es "EN REPARACION" se especifique el motivo
         if self.status == 'EN REPARACION' and not self.repair_reason:
@@ -380,43 +476,49 @@ class ResourceItem(BaseModel):
             })
 
         # Validar que los campos específicos solo se usen con los subtypes correctos
+        # Reglas por subtipo
         if self.subtype == 'LAVAMANOS':
-            # Solo validar campos específicos de lavamanos
-            pass
-        elif self.subtype in ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER']:
-            # Validar que urinals solo se use en baterías de hombre
-            if self.subtype == 'BATERIA SANITARIA MUJER' and self.urinals:
-                raise ValidationError({
-                    'urinals': 'Los urinals solo aplican para baterías sanitarias de hombre'
-                })
-        elif self.subtype == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL':
-            # Validar que se especifique la capacidad de planta
-            if not self.plant_capacity:
-                raise ValidationError({
-                    'plant_capacity': 'Debe especificar la capacidad de la planta para este tipo de equipo'
-                })
-
-        # Validar que los campos de blower, motor, banda, etc. solo se llenen para los subtypes correctos
-        special_subtypes = [
-            'PLANTA DE TRATAMIENTO DE AGUA',
-            'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
-            'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
-            'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
-        ]
-        special_fields = [
-            'blower_brand', 'blower_model', 'engine_brand', 'engine_model',
-            'belt_brand', 'belt_model', 'belt_type',
-            'blower_pulley_brand', 'blower_pulley_model',
-            'motor_pulley_brand', 'motor_pulley_model',
-            'electrical_panel_brand', 'electrical_panel_model',
-            'motor_guard_brand', 'motor_guard_model'
-        ]
-        if self.subtype not in special_subtypes:
-            for campo in special_fields:
+            # No hay validaciones extra, pero otros grupos no deben usarse
+            for campo in sanitary_fields + plant_common_fields + plant_potable_only_fields + plant_residual_only_fields:
                 if getattr(self, campo):
-                    raise ValidationError({
-                        campo: f'Este campo solo aplica para plantas y tanques.'
-                    })
+                    raise ValidationError({campo: 'Este campo no aplica para Lavamanos'})
+
+        elif self.subtype in sanitary_subtypes:
+            # Validar urinals solo en HOMBRE
+            if self.subtype == 'BATERIA SANITARIA MUJER' and self.urinals:
+                raise ValidationError({'urinals': 'Los urinals solo aplican para baterías sanitarias de hombre'})
+            # Campos exclusivos de sanitario no deben aparecer en otros subtypes – se controla en otras ramas
+            for campo in lavamanos_fields + plant_common_fields + plant_potable_only_fields + plant_residual_only_fields:
+                if getattr(self, campo):
+                    raise ValidationError({campo: 'Este campo no aplica para baterías sanitarias'})
+
+        elif self.subtype == plant_potable_subtype:
+            # Plantas potables: pueden usar plant_common_fields + plant_potable_only_fields
+            for campo in sanitary_fields + lavamanos_fields + plant_residual_only_fields:
+                if getattr(self, campo):
+                    raise ValidationError({campo: 'Este campo no aplica para plantas de agua potable'})
+
+        elif self.subtype == plant_residual_subtype:
+            # Requiere plant_capacity
+            if not self.plant_capacity:
+                raise ValidationError({'plant_capacity': 'Debe especificar la capacidad de la planta para este tipo de equipo'})
+            # Plantas residuales: pueden tener plant_common_fields + plant_residual_only_fields
+            for campo in sanitary_fields + lavamanos_fields + plant_potable_only_fields:
+                if getattr(self, campo):
+                    raise ValidationError({campo: 'Este campo no aplica para plantas de agua residual'})
+
+        elif self.subtype in tank_subtypes:
+            # Tanques: sólo plant_common_fields
+            for campo in sanitary_fields + lavamanos_fields + plant_potable_only_fields + plant_residual_only_fields:
+                if getattr(self, campo):
+                    raise ValidationError({campo: 'Este campo no aplica para tanques'})
+
+        # Si no hay subtype (o uno no contemplado) ningún campo especializado debe estar presente
+        else:
+            all_specialized = lavamanos_fields + sanitary_fields + plant_common_fields + plant_potable_only_fields + plant_residual_only_fields
+            for campo in all_specialized:
+                if getattr(self, campo):
+                    raise ValidationError({campo: 'Este campo no aplica sin un subtipo válido'})
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -435,10 +537,17 @@ class ResourceItem(BaseModel):
     def has_characteristics(self):
         """Verifies if the equipment has specific characteristics configured"""
         characteristics = [
-            self.foot_pumps, self.sink_soap_dispenser, self.paper_dispenser,
-            self.soap_dispenser, self.napkin_dispenser, self.urinals,
-            self.seats, self.toilet_pump, self.sink_pump, self.toilet_lid,
-            self.bathroom_bases, self.ventilation_pipe
+            # Lavamanos
+            self.foot_pumps, self.sink_soap_dispenser, self.paper_towels,
+            # Sanitarios
+            self.paper_dispenser, self.soap_dispenser, self.napkin_dispenser,
+            self.urinals, self.seats, self.toilet_pump, self.sink_pump,
+            self.toilet_lid, self.bathroom_bases, self.ventilation_pipe,
+            # Plantas / tanques (componentes principales)
+            self.blower_brand, self.engine_brand, self.belt_brand,
+            self.pump_filter, self.pump_pressure, self.pump_dosing,
+            self.sand_carbon_filter, self.hidroneumatic_tank, self.uv_filter,
+            self.relay_engine, self.relay_blower
         ]
         return any(characteristics)
 
@@ -476,6 +585,28 @@ class ResourceItem(BaseModel):
                 characteristics.append('Bathroom Bases')
             if self.ventilation_pipe:
                 characteristics.append('Ventilation Pipe')
+
+        # Plantas y tanques (mostrar solo campos presentes)
+        if self.subtype in [
+            'PLANTA DE TRATAMIENTO DE AGUA', 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
+            'TANQUES DE ALMACENAMIENTO AGUA CRUDA', 'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
+        ]:
+            mapping = {
+                'blower_brand': 'Blower',
+                'engine_brand': 'Motor',
+                'belt_brand': 'Banda',
+                'pump_filter': 'Bomba Filtración',
+                'pump_pressure': 'Bomba Presión',
+                'pump_dosing': 'Bomba Dosificadora',
+                'sand_carbon_filter': 'Filtro Arena/Carbón',
+                'hidroneumatic_tank': 'Tanque Hidroneumático',
+                'uv_filter': 'Filtro UV',
+                'relay_engine': 'Relay Motor',
+                'relay_blower': 'Relay Blower'
+            }
+            for field, label in mapping.items():
+                if getattr(self, field):
+                    characteristics.append(label)
 
         return characteristics
 
