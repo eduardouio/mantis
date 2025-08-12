@@ -49,3 +49,6 @@ Este es un proyecto web desarrollado en **Django** que utiliza **Tailwind CSS** 
 - **Consistencia**: Seguir patrones existentes
 - **Modularidad**: Separación clara por funcionalidad
 - **Reutilización**: Componentes y templates base
+
+### pruebas automatizadas
+   Se esta usando pytest para las pruebas,el entornio se encuentra configuardo, existe un test  /app/src/tests/BaseTestView.py, este se hereda en todos los test que se hacen a vistas de django, tiene validaciones para sesion de usuario
