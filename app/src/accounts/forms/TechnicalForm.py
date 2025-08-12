@@ -4,18 +4,9 @@ from accounts.models import Technical
 
 class TechnicalForm(forms.ModelForm):
     """
-    Formulario para crear y actualizar técnicos
+    Formulario simplificado para crear y actualizar técnicos
+    Solo maneja campos del modelo base Technical
     """
-    
-    # Campos ocultos para almacenar datos de vacunas y pases
-    vaccinations_data = forms.CharField(
-        widget=forms.HiddenInput(),
-        required=False
-    )
-    passes_data = forms.CharField(
-        widget=forms.HiddenInput(),
-        required=False
-    )
     
     class Meta:
         model = Technical
@@ -23,12 +14,13 @@ class TechnicalForm(forms.ModelForm):
             'first_name', 'last_name', 'email', 'dni', 'birth_date',
             'nro_phone', 'work_area', 'date_joined',
             'license_issue_date', 'license_expiry_date',
-            'defensive_driving_certificate_issue_date', 'defensive_driving_certificate_expiry_date',
+            'defensive_driving_certificate_issue_date', 
+            'defensive_driving_certificate_expiry_date',
             'mae_certificate_issue_date', 'mae_certificate_expiry_date',
             'medical_certificate_issue_date', 'medical_certificate_expiry_date',
             'is_iess_affiliated', 'has_life_insurance_policy',
-            'quest_ncst_code', 'quest_instructor', 'quest_start_date', 'quest_end_date',
-            'notes', 'is_active'
+            'quest_ncst_code', 'quest_instructor', 'quest_start_date', 
+            'quest_end_date', 'notes', 'is_active'
         ]
         
         widgets = {
@@ -114,7 +106,7 @@ class TechnicalForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={
                 'class': 'textarea textarea-bordered',
                 'rows': 8,
-                'placeholder': 'Observaciones adicionales sobre el técnico...'
+                'placeholder': 'Observaciones adicionales...'
             }),
             'is_iess_affiliated': forms.CheckboxInput(attrs={
                 'class': 'checkbox checkbox-primary'
@@ -166,75 +158,43 @@ class TechnicalForm(forms.ModelForm):
         # Configuración adicional para campos específicos
         self.fields['work_area'].empty_label = "Seleccione un área"
         
-        # Configurar formato de fecha para todos los campos de fecha
-        date_fields = [
-            'birth_date', 'date_joined', 'license_issue_date', 
-            'license_expiry_date', 'defensive_driving_certificate_issue_date',
-            'defensive_driving_certificate_expiry_date', 'mae_certificate_issue_date',
-            'mae_certificate_expiry_date', 'medical_certificate_issue_date',
-            'medical_certificate_expiry_date', 'quest_start_date', 'quest_end_date'
-        ]
-        
-        for field_name in date_fields:
-            if field_name in self.fields:
-                self.fields[field_name].input_formats = ['%Y-%m-%d']
-        
-        # Establecer is_active como True por defecto para nuevos registros
-        if not self.instance.pk:
-            self.fields['is_active'].initial = True
-        
     def clean_dni(self):
-        """Validación personalizada para la cédula"""
         dni = self.cleaned_data.get('dni')
         if dni:
-            # Remover espacios y guiones
+            # Eliminar espacios y guiones
             dni = dni.replace(' ', '').replace('-', '')
             
-            # Validar que solo contenga números
+            # Verificar que contiene solo números
             if not dni.isdigit():
-                raise forms.ValidationError("La cédula debe contener solo números.")
+                raise forms.ValidationError(
+                    "La cédula debe contener solo números."
+                )
             
-            # Validar longitud (Ecuador: 10 dígitos)
+            # Verificar longitud (10 dígitos para Ecuador)
             if len(dni) != 10:
-                raise forms.ValidationError("La cédula debe tener 10 dígitos.")
-                
+                raise forms.ValidationError(
+                    "La cédula debe tener exactamente 10 dígitos."
+                )
+        
         return dni
     
     def clean_nro_phone(self):
-        """Validación personalizada para el número de teléfono"""
         phone = self.cleaned_data.get('nro_phone')
         if phone:
-            # Remover espacios, guiones y paréntesis
-            phone = phone.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+            # Eliminar espacios, guiones y paréntesis
+            clean_phone = phone.replace(' ', '').replace('-', '').replace(
+                '(', '').replace(')', '')
             
-            # Validar que solo contenga números
-            if not phone.isdigit():
-                raise forms.ValidationError("El número de teléfono debe contener solo números.")
+            # Verificar que contiene solo números
+            if not clean_phone.isdigit():
+                raise forms.ValidationError(
+                    "El número de teléfono debe contener solo números."
+                )
             
-            # Validar longitud (Ecuador: 9-10 dígitos)
-            if len(phone) < 9 or len(phone) > 10:
-                raise forms.ValidationError("El número de teléfono debe tener entre 9 y 10 dígitos.")
-                
+            # Verificar longitud mínima
+            if len(clean_phone) < 7:
+                raise forms.ValidationError(
+                    "El número de teléfono debe tener al menos 7 dígitos."
+                )
+        
         return phone
-    
-    def clean(self):
-        """Validaciones generales del formulario"""
-        cleaned_data = super().clean()
-        
-        # Validar fechas de licencia
-        license_issue = cleaned_data.get('license_issue_date')
-        license_expiry = cleaned_data.get('license_expiry_date')
-        
-        if license_issue and license_expiry:
-            if license_expiry <= license_issue:
-                raise forms.ValidationError("La fecha de caducidad de la licencia debe ser posterior a la fecha de emisión.")
-        
-        # Validar fechas Quest
-        quest_start = cleaned_data.get('quest_start_date')
-        quest_end = cleaned_data.get('quest_end_date')
-        
-        if quest_start and quest_end:
-            if quest_end <= quest_start:
-                raise forms.ValidationError("La fecha de fin Quest debe ser posterior a la fecha de inicio.")
-        
-        return cleaned_data
