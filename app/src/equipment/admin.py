@@ -92,7 +92,8 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
         })
     )
 
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated', 'capacity_display')
+    readonly_fields = ('created_at', 'updated_at',
+                       'id_user_created', 'id_user_updated', 'capacity_display')
 
     date_hierarchy = 'created_at'
 
@@ -166,7 +167,8 @@ class VehicleAdmin(SimpleHistoryAdmin):
         })
     )
 
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
+    readonly_fields = ('created_at', 'updated_at',
+                       'id_user_created', 'id_user_updated')
 
     date_hierarchy = 'created_at'
 

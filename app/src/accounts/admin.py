@@ -125,8 +125,10 @@ class LicenseAdmin(SimpleHistoryAdmin):
         'expires_on',
     )
 
-    search_fields = ('license_key', 'user__first_name', 'user__last_name', 'enterprise')
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
+    search_fields = ('license_key', 'user__first_name',
+                     'user__last_name', 'enterprise')
+    readonly_fields = ('created_at', 'updated_at',
+                       'id_user_created', 'id_user_updated')
     ordering = ('-created_at',)
 
 
@@ -178,7 +180,7 @@ class TechnicalAdmin(SimpleHistoryAdmin):
         'is_iess_affiliated',
         'has_life_insurance_policy',
         'is_active',
-        'created_at',
+        'created_at', 'updated_at',
     )
 
     list_filter = (
@@ -190,8 +192,12 @@ class TechnicalAdmin(SimpleHistoryAdmin):
         'created_at',
     )
 
-    search_fields = ('first_name', 'last_name', 'email', 'dni', 'quest_ncst_code')
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
+    search_fields = (
+        'first_name', 'last_name', 'email', 'dni', 'quest_ncst_code'
+    )
+    readonly_fields = (
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+    )
     ordering = ('-created_at',)
 
 
@@ -209,7 +215,8 @@ class VaccinationRecordAdmin(SimpleHistoryAdmin):
         }),
         ('BaseModel Fields', {
             'fields': (
-                'notes', 'is_active', 'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'notes', 'is_active', 'created_at', 'updated_at',
+                'id_user_created', 'id_user_updated'
             )
         }),
     )
@@ -224,23 +231,25 @@ class VaccinationRecordAdmin(SimpleHistoryAdmin):
         'created_at',
         'updated_at',
     )
-    
+
     list_filter = (
         'vaccine_type',
         'application_date',
         'is_active',
         'created_at',
     )
-    
+
     search_fields = (
         'batch_number',
         'technical__first_name',
         'technical__last_name',
         'vaccine_type',
     )
-    
+
     autocomplete_fields = ['technical']
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
+    readonly_fields = (
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+    )
     ordering = ('-application_date',)
 
 
@@ -251,27 +260,52 @@ class PassTechnicalAdmin(SimpleHistoryAdmin):
                 'technical', 'bloque', 'fecha_caducidad'
             )
         }),
+        ('Estado', {
+            'fields': (
+                'is_active',
+            )
+        }),
+        ('Información Adicional', {
+            'fields': ('notes',),
+            'classes': ('collapse',)
+        }),
+        ('Auditoría', {
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created',
+                'id_user_updated'
+            ),
+            'classes': ('collapse',)
+        }),
     )
 
     list_display = (
         'technical',
         'bloque',
         'fecha_caducidad',
+        'is_active',
+        'created_at',
+        'updated_at',
     )
-    
+
     list_filter = (
         'bloque',
         'fecha_caducidad',
+        'is_active',
+        'created_at',
     )
-    
+
     search_fields = (
         'technical__first_name',
         'technical__last_name',
         'bloque',
+        'notes',
     )
-    
+
     autocomplete_fields = ['technical']
-    ordering = ('-fecha_caducidad',)
+    ordering = ('-fecha_caducidad', '-created_at')
+    readonly_fields = (
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+    )
 
 
 admin.site.register(CustomUserModel, CustomUserModelAdmin)

@@ -18,12 +18,12 @@ class PartnerAdmin(SimpleHistoryAdmin):
         'phone',
         'name_contact',
         'is_active',
-        'created_at',
+        'created_at', 'updated_at',
     )
 
     list_filter = (
         'is_active',
-        'created_at',
+        'created_at', 'updated_at',
     )
 
     search_fields = (
@@ -35,9 +35,9 @@ class PartnerAdmin(SimpleHistoryAdmin):
         'address',
         'notes',
     )
-    
+
     ordering = ('-created_at', 'name')
-    
+
     fieldsets = (
         ('Información Básica', {
             'fields': ('name', 'business_tax_id', 'email', 'phone', 'address')
@@ -57,12 +57,17 @@ class PartnerAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created',
+                'id_user_updated'
+            ),
             'classes': ('collapse',)
         })
     )
-    
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
+
+    readonly_fields = (
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+    )
     date_hierarchy = 'created_at'
 
 
@@ -75,7 +80,7 @@ class ProjectAdmin(SimpleHistoryAdmin):
         'end_date',
         'is_closed',
         'is_active',
-        'created_at',
+        'created_at', 'updated_at',
     )
 
     list_filter = (
@@ -96,12 +101,14 @@ class ProjectAdmin(SimpleHistoryAdmin):
         'TechnicalResponsible',
         'notes',
     )
-    
+
     ordering = ('-start_date', '-created_at')
-    
+
     fieldsets = (
         ('Información del Proyecto', {
-            'fields': ('partner', 'place', 'avrebiature', 'TechnicalResponsible')
+            'fields': (
+                'partner', 'place', 'avrebiature', 'TechnicalResponsible'
+            )
         }),
         ('Fechas', {
             'fields': ('start_date', 'end_date', 'is_closed')
@@ -117,14 +124,19 @@ class ProjectAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created',
+                'id_user_updated'
+            ),
             'classes': ('collapse',)
         })
     )
-    
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
+
+    readonly_fields = (
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+    )
     date_hierarchy = 'start_date'
-    
+
     def get_project_name(self, obj):
         return f"{obj.partner.name} - {obj.place or 'Sin lugar'}"
     get_project_name.short_description = 'Proyecto'
@@ -139,7 +151,7 @@ class ProjectResourceItemAdmin(SimpleHistoryAdmin):
         'end_date',
         'retired_date',
         'is_active',
-        'created_at',
+        'created_at', 'updated_at',
     )
 
     list_filter = (
@@ -159,15 +171,18 @@ class ProjectResourceItemAdmin(SimpleHistoryAdmin):
         'motive_retired',
         'notes',
     )
-    
+
     ordering = ('-start_date', '-created_at')
-    
+
     fieldsets = (
         ('Asignación', {
             'fields': ('project', 'resource_item')
         }),
         ('Costos y Mantenimiento', {
-            'fields': ('cost', 'cost_manteinance', 'mantenance_frequency', 'times_mantenance')
+            'fields': (
+                'cost', 'cost_manteinance', 'mantenance_frequency',
+                'times_mantenance'
+            )
         }),
         ('Fechas de Operación', {
             'fields': ('start_date', 'end_date', 'retired_date')
@@ -184,18 +199,25 @@ class ProjectResourceItemAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created',
+                'id_user_updated'
+            ),
             'classes': ('collapse',)
         })
     )
-    
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
+
+    readonly_fields = (
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+    )
     date_hierarchy = 'start_date'
-    
+
     def get_project_name(self, obj):
-        return f"{obj.project.partner.name} - {obj.project.place or 'Sin lugar'}"
+        partner_name = obj.project.partner.name
+        place = obj.project.place or 'Sin lugar'
+        return f"{partner_name} - {place}"
     get_project_name.short_description = 'Proyecto'
-    
+
     def get_resource_name(self, obj):
         return f"{obj.resource_item.name} ({obj.resource_item.code})"
     get_resource_name.short_description = 'Recurso'
@@ -208,7 +230,7 @@ class WorkOrderAdmin(SimpleHistoryAdmin):
         'tecnical',
         'date',
         'is_active',
-        'created_at',
+        'created_at', 'updated_at',
     )
 
     list_filter = (
@@ -227,9 +249,9 @@ class WorkOrderAdmin(SimpleHistoryAdmin):
         'tecnical__user__last_name',
         'notes',
     )
-    
+
     ordering = ('-date', '-created_at')
-    
+
     fieldsets = (
         ('Información de la Orden', {
             'fields': ('work_order', 'project', 'tecnical', 'date')
@@ -242,14 +264,19 @@ class WorkOrderAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created',
+                'id_user_updated'
+            ),
             'classes': ('collapse',)
         })
     )
-    
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
+
+    readonly_fields = (
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+    )
     date_hierarchy = 'date'
-    
+
     def get_project_name(self, obj):
         return f"{obj.project.partner.name} - {obj.project.place or 'Sin lugar'}"
     get_project_name.short_description = 'Proyecto'
@@ -265,7 +292,7 @@ class WorkOrderDetailAdmin(SimpleHistoryAdmin):
         'total_hours',
         'cost',
         'is_active',
-        'created_at',
+        'created_at', 'updated_at',
     )
 
     list_filter = (
@@ -288,9 +315,9 @@ class WorkOrderDetailAdmin(SimpleHistoryAdmin):
         'volume_transported',
         'notes',
     )
-    
+
     ordering = ('-start_hour', '-created_at')
-    
+
     fieldsets = (
         ('Información Básica', {
             'fields': ('work_order', 'resource_item', 'type_service', 'cost')
@@ -299,13 +326,17 @@ class WorkOrderDetailAdmin(SimpleHistoryAdmin):
             'fields': ('location', 'start_hour', 'end_hour', 'total_hours')
         }),
         ('Transporte', {
-            'fields': ('origin_site', 'destination_site', 'volume_transported', 'unit'),
+            'fields': (
+                'origin_site', 'destination_site', 'volume_transported', 'unit'
+            ),
             'classes': ('collapse',)
         }),
         ('Material Transportado', {
-            'fields': ('mat_transported_aguas_negras', 'mat_transported_aguas_grises', 
-                      'mat_transported_agua_limpa', 'mat_trasported_lodos_activos', 
-                      'mat_trasported_agua_residual_tratada'),
+            'fields': (
+                'mat_transported_aguas_negras', 'mat_transported_aguas_grises',
+                'mat_transported_agua_limpa', 'mat_trasported_lodos_activos',
+                'mat_trasported_agua_residual_tratada'
+            ),
             'classes': ('collapse',)
         }),
         ('Estado', {
@@ -316,20 +347,28 @@ class WorkOrderDetailAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created',
+                'id_user_updated'
+            ),
             'classes': ('collapse',)
         })
     )
-    
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
+
+    readonly_fields = (
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+    )
     date_hierarchy = 'start_hour'
-    
+
     def get_work_order(self, obj):
         return obj.work_order.work_order
     get_work_order.short_description = 'Orden de Trabajo'
-    
+
     def get_resource_item(self, obj):
-        return f"{obj.resource_item.resource_item.name} ({obj.resource_item.resource_item.code})"
+        # Mostrar nombre y código del recurso asociado
+        name = obj.resource_item.resource_item.name
+        code = obj.resource_item.resource_item.code
+        return f"{name} ({code})"
     get_resource_item.short_description = 'Recurso'
 
 
@@ -341,7 +380,7 @@ class WorkOrderMaintenanceAdmin(SimpleHistoryAdmin):
         'use_chemical',
         'use_disinfectant',
         'is_active',
-        'created_at',
+        'created_at', 'updated_at',
     )
 
     list_filter = (
@@ -362,9 +401,9 @@ class WorkOrderMaintenanceAdmin(SimpleHistoryAdmin):
         'work_order_detail__location',
         'notes',
     )
-    
+
     ordering = ('-created_at',)
-    
+
     fieldsets = (
         ('Detalle de Orden', {
             'fields': ('work_order_detail',)
@@ -373,7 +412,10 @@ class WorkOrderMaintenanceAdmin(SimpleHistoryAdmin):
             'fields': ('work_vaccum', 'work_cleaning', 'use_chemical')
         }),
         ('Materiales Utilizados', {
-            'fields': ('use_toilet_paper', 'use_tz', 'use_soap', 'use_trash_bag', 'use_disinfectant'),
+            'fields': (
+                'use_toilet_paper', 'use_tz', 'use_soap', 'use_trash_bag',
+                'use_disinfectant'
+            ),
             'classes': ('collapse',)
         }),
         ('Estado', {
@@ -384,14 +426,19 @@ class WorkOrderMaintenanceAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created',
+                'id_user_updated'
+            ),
             'classes': ('collapse',)
         })
     )
-    
-    readonly_fields = ('created_at', 'updated_at', 'id_user_created', 'id_user_updated')
+
+    readonly_fields = (
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+    )
     date_hierarchy = 'created_at'
-    
+
     def get_work_order(self, obj):
         return obj.work_order_detail.work_order.work_order
     get_work_order.short_description = 'Orden de Trabajo'
