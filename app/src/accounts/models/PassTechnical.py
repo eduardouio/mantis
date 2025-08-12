@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import Technical
-from common import BaseModel
+from common.BaseModel import BaseModel
 
 
 class PassTechnical(BaseModel):

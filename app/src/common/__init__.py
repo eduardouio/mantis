@@ -1,7 +1,2 @@
-from .EmailBackEndAuth  import EmailBackEndAuth
-from .BaseModel import BaseModel
-
-__all__ = [
-    'EmailBackEndAuth',
-    'BaseModel',
-]
+# El __init__.py está vacío para evitar importaciones circulares durante la inicialización de Django
+# Los módulos se deben importar directamente donde se necesiten

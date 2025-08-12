@@ -19,12 +19,10 @@
 from django.db import models
 from simple_history.models import HistoricalRecords
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth import get_user_model
 
 # django-crum
 from crum import get_current_user
-
-# Modelo de usuario Peronalizado
-from accounts.models.CustomUserModel import CustomUserModel
 
 
 class BaseModel(models.Model):
@@ -119,14 +117,16 @@ class BaseModel(models.Model):
     def get_create_user(self):
         '''Retorna el usuario creador del registro.'''
         try:
-            return CustomUserModel.objects.get(pk=self.id_user_created)
+            User = get_user_model()
+            return User.objects.get(pk=self.id_user_created)
         except ObjectDoesNotExist:
             return None
 
     def get_update_user(self):
         '''Retorna el usuario ultimo en actualizar el registro '''
         try:
-            return CustomUserModel.objects.get(pk=self.id_user_updated)
+            User = get_user_model()
+            return User.objects.get(pk=self.id_user_updated)
         except ObjectDoesNotExist:
             return None
 
