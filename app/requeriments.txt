@@ -10,6 +10,7 @@ Faker==19.0.0
 pytest==7.4.2
 pytest-django==4.5.2
 pytest-mock==3.11.1
+psycopg2-binary
 ipdb
 django-utils-six
 django-cors-headers

@@ -86,3 +86,40 @@ DROP TABLE IF EXISTS django_session CASCADE;
 
 -- Eliminar tablas de user_sessions si existen
 DROP TABLE IF EXISTS user_sessions_session CASCADE;
+
+
+```bash
+
+# configuraciuon en secrets 
+
+DATABASES = {
+    'TEST': {
+        "ENGINE": "django.db.backends.postgresql",
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    },
+    'PRODUCTION': {
+        "ENGINE": "django.db.backends.postgresql",
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    },
+    'DEVELOPMENT': {
+        "ENGINE": "django.db.backends.postgresql",
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+
+DEFAULT_DB = {
+    'default': DATABASES['#ENVIRONMENT']
+}
