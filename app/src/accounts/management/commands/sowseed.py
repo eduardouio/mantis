@@ -4,6 +4,7 @@ import random
 from faker import Faker
 from datetime import date, datetime
 import json
+import re
 from datetime import timedelta
 from accounts.models import Technical, License, VaccinationRecord, PassTechnical
 from equipment.models import ResourceItem, Vehicle, PassVehicle, CertificationVehicle
@@ -210,7 +211,7 @@ class Command(BaseCommand):
                 weight=faker.random_int(80, 120),
                 status=status,
                 repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                base_price=faker.random_int(15000, 25000),
+                # base_price eliminado
                 # Usar los nombres de campos del modelo
                 paper_dispenser=faker.boolean(),
                 soap_dispenser=faker.boolean(),
@@ -248,7 +249,7 @@ class Command(BaseCommand):
                 weight=faker.random_int(80, 120),
                 status=status,
                 repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                base_price=faker.random_int(15000, 25000),
+                # base_price eliminado
                 # Usar los nombres de campos del modelo (sin urinales para mujeres)
                 paper_dispenser=faker.boolean(),
                 soap_dispenser=faker.boolean(),
@@ -288,7 +289,7 @@ class Command(BaseCommand):
                 weight=faker.random_int(500, 800),
                 status=status,
                 repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                base_price=faker.random_int(80000, 120000),
+                # base_price eliminado
                 # Usar los nombres de campos del modelo
                 blower_brand=faker.company(),
                 blower_model=faker.bothify(text='BLW-##??'),
@@ -333,7 +334,7 @@ class Command(BaseCommand):
                 weight=faker.random_int(500, 800),
                 status=status,
                 repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                base_price=faker.random_int(80000, 120000),
+                # base_price eliminado
                 # Campo obligatorio para este tipo
                 plant_capacity=capacidad,
                 # Usar los nombres de campos del modelo
@@ -380,7 +381,7 @@ class Command(BaseCommand):
                 weight=faker.random_int(100, 200),
                 status=status,
                 repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                base_price=faker.random_int(20000, 35000),
+                # base_price eliminado
                 # Usar el nombre correcto del campo
                 capacity_gallons=capacidad,
                 # Campos específicos para tanques
@@ -427,7 +428,7 @@ class Command(BaseCommand):
                 weight=faker.random_int(100, 200),
                 status=status,
                 repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                base_price=faker.random_int(20000, 35000),
+                # base_price eliminado
                 # Usar el nombre correcto del campo
                 capacity_gallons=capacidad,
                 # Campos específicos para tanques
@@ -472,7 +473,7 @@ class Command(BaseCommand):
                 weight=faker.random_int(15, 30),
                 status=status,
                 repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                base_price=faker.random_int(5000, 10000),
+                # base_price eliminado
                 # Usar los nombres de campos del modelo
                 foot_pumps=faker.boolean(),
                 sink_soap_dispenser=faker.boolean(),
@@ -503,7 +504,7 @@ class Command(BaseCommand):
                 weight=faker.random_int(200, 300),
                 status=status,
                 repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                base_price=faker.random_int(40000, 60000),
+                # base_price eliminado
                 # Usar los nombres de campos del modelo (igual que batería sanitaria hombre)
                 paper_dispenser=faker.boolean(),
                 soap_dispenser=faker.boolean(),
@@ -541,7 +542,7 @@ class Command(BaseCommand):
                 weight=faker.random_int(80, 120),
                 status=status,
                 repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                base_price=faker.random_int(25000, 40000),
+                # base_price eliminado
                 notes='Estación cuádruple de urinarios',
                 is_active=True
             )
@@ -569,7 +570,7 @@ class Command(BaseCommand):
                 weight=faker.random_int(10, 25),
                 status=status,
                 repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                base_price=faker.random_int(8000, 15000),
+                # base_price eliminado
                 notes='Bomba de agua',
                 is_active=True
             )
@@ -614,10 +615,24 @@ class Command(BaseCommand):
         with open('seed/suppliers.json', 'r') as file:
             file_content = json.load(file)
 
+        print('creamos los proveedores')
         for supplier in file_content:
-            Partner.objects.create(
-                **supplier
-            )
+            # Normalizar y truncar teléfono para ajustarse a max_length=20
+            raw_phone = supplier.get('phone')
+            if raw_phone:
+                # Mantener dígitos y '+' inicial; eliminar otros separadores
+                cleaned = re.sub(r'[^0-9+]', '', raw_phone.strip())
+                if len(cleaned) > 20:
+                    cleaned = cleaned[:20]
+                supplier['phone'] = cleaned if cleaned else None
+            else:
+                supplier['phone'] = None
+
+            try:
+                Partner.objects.create(**supplier)
+            except Exception as e:
+                print(f"Error creando proveedor RUC={supplier.get('business_tax_id')} nombre={supplier.get('name')}: {e}")
+        print('Proveedores creados')
 
     def load_vaccination_records(self, faker):
         if VaccinationRecord.objects.exists():
