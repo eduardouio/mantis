@@ -51,8 +51,7 @@ window.ResourceItemApp = {
         brand: '',
         model: '',
         date_purchase: '',
-        status: '',
-        base_price: '',
+  status: '',
         is_active: true, // Campo del modelo base, por defecto activo
         notes: '',
         
@@ -676,11 +675,7 @@ window.ResourceItemApp = {
         this.formData.code = null;
       }
       
-      // Validar precio base (debe ser un número positivo si se proporciona)
-      if (this.formData.base_price && (isNaN(this.formData.base_price) || parseFloat(this.formData.base_price) < 0)) {
-        this.errors.base_price = 'El precio base debe ser un valor numérico positivo';
-        valid = false;
-      }
+  // Campo base_price eliminado del modelo (se omite validación)
       // Otras validaciones específicas pueden agregarse aquí
       
       return valid;
@@ -726,11 +721,7 @@ window.ResourceItemApp = {
         valid = false;
       }
       
-      // Precio base (debe ser un número positivo si se proporciona)
-      if (this.formData.base_price && (isNaN(this.formData.base_price) || parseFloat(this.formData.base_price) < 0)) {
-        this.errors.base_price = 'El precio base debe ser un valor numérico positivo';
-        valid = false;
-      }
+  // Campo base_price eliminado del modelo (se omite validación)
       
       // Validar dimensiones (deben ser números positivos si se proporcionan)
       const dimensionFields = ['height', 'width', 'depth', 'weight'];
@@ -913,8 +904,7 @@ window.ResourceItemApp = {
       this.formData.brand = equipmentData.brand || '';
       this.formData.model = equipmentData.model || '';
       this.formData.date_purchase = equipmentData.date_purchase || '';
-      this.formData.status = equipmentData.status || '';
-      this.formData.base_price = equipmentData.base_price || '';
+  this.formData.status = equipmentData.status || '';
       
       // Datos de dimensiones
       this.formData.height = equipmentData.height || '';

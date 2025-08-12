@@ -160,7 +160,7 @@
     const c = (state.certifications||[]).find(x=>x.id===id); if(!c) return;
     certId.value = c.id; certName.value = c.name; certDateStart.value = c.date_start; certDateEnd.value = c.date_end; certDescription.value = c.description || ''; certDeleteBtn && certDeleteBtn.classList.remove('hidden');
     if(certMeta && certMetaContent){
-      certMetaContent.textContent = `ID: ${c.id}\nCreado: ${c.created_at||''}\nActualizado: ${c.updated_at||''}\nActivo: ${c.is_active? 'Sí':'No'}${c.description? `\nDescripción: ${c.description}`:''}`;
+      certMetaContent.textContent = `ID: ${c.id}\nCreado: ${c.created_at||''}\nActualizado: ${c.updated_at||''}\nActivo: ${c.is_active? 'Sí':'No'}`;
       certMeta.classList.remove('hidden');
     }
   }
