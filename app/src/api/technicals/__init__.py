@@ -1,11 +1,11 @@
-from .CreateUpdatePassTehcnicalAPI import CreateUpdatePassTehcnicalAPI
+from .CreateUpdatePassTechnicalAPI import CreateUpdatePassTechnicalAPI
 from .CreateUpdateVaccineAPI import CreateUpdateVaccineAPI
 from .DeletePassTechnicalAPI import DeletePassTechnicalAPI
 from .DeleteVaccineAPI import DeleteVaccineAPI
 
 
 __all__ = [
-    'CreateUpdatePassTehcnicalAPI',
+    'CreateUpdatePassTechnicalAPI',
     'CreateUpdateVaccineAPI',
     'DeletePassTechnicalAPI',
     'DeleteVaccineAPI',

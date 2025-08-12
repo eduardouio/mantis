@@ -7,7 +7,7 @@ from api.vehicles import (
 )
 
 from api.technicals import (
-    CreateUpdatePassTehcnicalAPI,
+    CreateUpdatePassTechnicalAPI,
     CreateUpdateVaccineAPI,
     DeletePassTechnicalAPI,
     DeleteVaccineAPI,
@@ -20,7 +20,7 @@ urlpatterns = [
     path('vehicles/pass_vehicle/', PassVehicleCreateUpdateAPI.as_view(), name='api_pass_vehicle_create_update'),
     path('vehicles/pass_vehicle/<int:pk>/', PassVehicleDeleteAPI.as_view(), name='api_pass_vehicle_delete'),
     # technicals
-    path('technicals/create_update_pass_technical/', CreateUpdatePassTehcnicalAPI.as_view(), name='api_create_update_pass_technical'),
+    path('technicals/create_update_pass_technical/', CreateUpdatePassTechnicalAPI.as_view(), name='api_create_update_pass_technical'),
     path('technicals/create_update_vaccine/', CreateUpdateVaccineAPI.as_view(), name='api_create_update_vaccine'),
     path('technicals/delete_pass_technical/', DeletePassTechnicalAPI.as_view(), name='api_delete_pass_technical'),
     path('technicals/delete_vaccine/', DeleteVaccineAPI.as_view(), name='api_delete_vaccine'),
