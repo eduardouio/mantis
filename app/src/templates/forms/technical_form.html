@@ -187,7 +187,10 @@
           <!-- Licencia de Conducir -->
           <div class="card bg-gray-50 shadow-sm">
             <div class="card-body p-4">
-              <h4 class="card-title text-sm text-gray-700 mb-2">Licencia de Conducir</h4>
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="card-title text-sm text-gray-700">Licencia de Conducir</h4>
+                <span id="licenseExpiryBadge" class="badge badge-ghost badge-sm" style="display: none;"></span>
+              </div>
               <div class="space-y-2">
                 <div class="form-control">
                   <label class="label py-1">
@@ -208,7 +211,10 @@
           <!-- Certificado de Manejo Defensivo -->
           <div class="card bg-gray-50 shadow-sm">
             <div class="card-body p-4">
-              <h4 class="card-title text-sm text-gray-700 mb-2">Certificado de Manejo Defensivo</h4>
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="card-title text-sm text-gray-700">Certificado de Manejo Defensivo</h4>
+                <span id="defensiveDrivingExpiryBadge" class="badge badge-ghost badge-sm" style="display: none;"></span>
+              </div>
               <div class="space-y-2">
                 <div class="form-control">
                   <label class="label py-1">
@@ -229,7 +235,10 @@
           <!-- Certificado MAE -->
           <div class="card bg-gray-50 shadow-sm">
             <div class="card-body p-4">
-              <h4 class="card-title text-sm text-gray-700 mb-2">Certificado MAE</h4>
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="card-title text-sm text-gray-700">Certificado MAE</h4>
+                <span id="maeExpiryBadge" class="badge badge-ghost badge-sm" style="display: none;"></span>
+              </div>
               <div class="space-y-2">
                 <div class="form-control">
                   <label class="label py-1">
@@ -250,7 +259,10 @@
           <!-- Certificado Médico -->
           <div class="card bg-gray-50 shadow-sm">
             <div class="card-body p-4">
-              <h4 class="card-title text-sm text-gray-700 mb-2">Certificado Médico</h4>
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="card-title text-sm text-gray-700">Certificado Médico</h4>
+                <span id="medicalExpiryBadge" class="badge badge-ghost badge-sm" style="display: none;"></span>
+              </div>
               <div class="space-y-2">
                 <div class="form-control">
                   <label class="label py-1">
@@ -275,7 +287,10 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Información Quest -->
           <div class="space-y-4">
-            <h4 class="text-lg font-medium text-gray-700">Certificación Quest</h4>
+            <div class="flex justify-between items-center">
+              <h4 class="text-lg font-medium text-gray-700">Certificación Quest</h4>
+              <span id="questExpiryBadge" class="badge badge-ghost badge-sm" style="display: none;"></span>
+            </div>
             
             <div class="form-control">
               <label class="label">
@@ -342,4 +357,23 @@
     </div>
   </form>
 </div>
+
+<!-- Script para manejo de certificados -->
+{% load static %}
+<script src="{% static 'js/app/app-technical_form.js' %}"></script>
+
+<!-- Estilos adicionales para las animaciones -->
+<style>
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.certificate-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+</style>
 {% endblock %}
