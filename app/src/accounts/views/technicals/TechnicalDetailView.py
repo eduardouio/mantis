@@ -29,8 +29,10 @@ class TechnicalDetailView(LoginRequiredMixin, DetailView):
 
         context['vaccination_records'] = vaccination_records
 
-        # Obtener todos los pases técnicos asociados al técnico
-        pass_technical = PassTechnical.objects.filter(technical=self.object)
+        # Obtener todos los pases técnicos activos asociados al técnico
+        pass_technical = PassTechnical.objects.filter(
+            technical=self.object, is_active=True
+        )
 
         # Enriquecer pases con información de expiración
         for pass_item in pass_technical:

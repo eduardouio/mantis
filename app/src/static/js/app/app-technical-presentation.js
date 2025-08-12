@@ -96,14 +96,24 @@
 		} catch(err){ setMsg(passMsg, err.message,false); }
 	});
 
-	passDeleteBtn && passDeleteBtn.addEventListener('click', async ()=>{
-		if(!passId.value) return; if(!confirm('Eliminar pase?')) return;
-		try {
-			await fetchJSON('/api/technicals/delete_pass_technical/', {method:'DELETE', body: JSON.stringify({id: parseInt(passId.value,10)})});
-			state.passes = state.passes.filter(p=>p.id!==parseInt(passId.value,10));
-			renderPassList(); resetPass(); setMsg(passMsg,'Eliminado');
-		} catch(err){ setMsg(passMsg, err.message,false); }
-	});
+	// Evitar doble registro del listener y doble confirmación
+	if(passDeleteBtn && !passDeleteBtn.dataset.bound){
+		let deletingPass = false;
+		passDeleteBtn.addEventListener('click', async ()=>{
+			if(deletingPass) return; // ya en proceso
+			if(!passId.value) return;
+			deletingPass = true;
+			try {
+				const ok = confirm('Eliminar pase?');
+				if(!ok){ deletingPass = false; return; }
+				await fetchJSON('/api/technicals/delete_pass_technical/', {method:'DELETE', body: JSON.stringify({id: parseInt(passId.value,10)})});
+				state.passes = state.passes.filter(p=>p.id!==parseInt(passId.value,10));
+				renderPassList(); resetPass(); setMsg(passMsg,'Eliminado');
+			} catch(err){ setMsg(passMsg, err.message,false); }
+			finally { deletingPass = false; }
+		});
+		passDeleteBtn.dataset.bound = '1';
+	}
 
 	// ---- VACUNAS ----
 	const vaccineForm = el('vaccineForm');
