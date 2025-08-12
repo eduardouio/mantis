@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
 {% block content %}
 <div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
@@ -450,4 +450,7 @@
   </div>
   {% endif %}
 </div>
+{% block script %}
+<script src="{% static 'js/app/app-vehicles-presentations.js' %}"></script>
+{% endblock %}
 {% endblock %}
