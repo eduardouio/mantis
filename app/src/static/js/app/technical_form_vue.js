@@ -236,6 +236,10 @@ const app = Vue.createApp({
       passes: [],
       vaccinations: [],
       
+      // Diccionarios para labels
+      VACCINE_TYPE_LABELS: VACCINE_TYPE_LABELS,
+      BLOQUE_LABELS: BLOQUE_LABELS,
+      
       // Variables para el modal de vacunación
       currentVaccination: {
         id: null,

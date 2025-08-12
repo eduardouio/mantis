@@ -47,7 +47,7 @@
       <div class="font-bold mb-2">Por favor corrige los siguientes errores:</div>
       <ul class="list-disc pl-5">
         <li v-for="(error, field) in errors" :key="field">
-          <span class="font-semibold">${field}:</span> ${error.join(', ')}
+          <span class="font-semibold" v-text="field"></span>: <span v-text="error.join(', ')"></span>
         </li>
       </ul>
     </div>
@@ -365,18 +365,18 @@
                 <div v-for="(vaccination, index) in vaccinations" :key="index" class="border border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-colors">
                   <div class="flex justify-between items-start">
                     <div>
-                      <h4 class="font-medium text-gray-800">{{ VACCINE_TYPE_LABELS[vaccination.vaccine_type] }}</h4>
+                      <h4 class="font-medium text-gray-800" v-text="VACCINE_TYPE_LABELS[vaccination.vaccine_type]"></h4>
                       <p class="text-sm text-gray-600 mt-1">
                         <span class="font-medium">Aplicada:</span> 
-                        {{ formatDisplayDate(vaccination.application_date) }}
+                        <span v-text="formatDisplayDate(vaccination.application_date)"></span>
                       </p>
                       <p v-if="vaccination.dose_number" class="text-sm text-gray-600">
-                        <span class="font-medium">Dosis:</span> {{ vaccination.dose_number }}
+                        <span class="font-medium">Dosis:</span> <span v-text="vaccination.dose_number"></span>
                       </p>
                       <p v-if="vaccination.next_dose_date" class="text-sm text-gray-600">
-                        <span class="font-medium">Próxima dosis:</span> {{ formatDisplayDate(vaccination.next_dose_date) }}
+                        <span class="font-medium">Próxima dosis:</span> <span v-text="formatDisplayDate(vaccination.next_dose_date)"></span>
                       </p>
-                      <p v-if="vaccination.batch_number" class="text-xs text-gray-500 mt-1">Lote: {{ vaccination.batch_number }}</p>
+                      <p v-if="vaccination.batch_number" class="text-xs text-gray-500 mt-1">Lote: <span v-text="vaccination.batch_number"></span></p>
                     </div>
                     <div class="flex gap-1">
                       <button type="button" @click="editVaccination(index)" class="btn btn-ghost btn-xs text-blue-600">
@@ -647,14 +647,10 @@
 {% block script %}
 <script>
   // Inicializar datos del técnico si existe
-  window.existingTechnicalData = {% if object %}
-    // Serializar datos de técnico existente
-    JSON.parse('{{ technical_json|escapejs }}')
-  {% else %}
-    null
-  {% endif %};
+  window.existingTechnicalData = JSON.parse('{{ technical_json|escapejs }}')
 </script>
 
 <!-- Cargar el script de Vue 3 para el formulario técnico -->
 <script src="{% static 'js/app/technical_form_vue.js' %}"></script>
+{% endblock %}
 {% endblock %}
