@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
 {% block content %}
 <div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
@@ -235,121 +235,136 @@
       </div>
     </div>
 
-    <input type="radio" name="my_tabs_6" class="tab" aria-label="Pases y Vacunas" />
+    <!-- Nueva pestaña Pases -->
+    <input type="radio" name="my_tabs_6" class="tab" aria-label="Pases" />
     <div class="tab-content bg-base-100 border-base-300 p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Sección de Pases Técnicos -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Formulario Pases -->
         <div>
-          <h3 class="text-md font-semibold text-blue-500 mb-2">Pase Técnico</h3>
-          {% if pass_technical %}
-            <div class="grid grid-cols-1 gap-4">
-              {% for pass in pass_technical %}
-              <div class="p-2 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
-                <div class="grid grid-cols-2 gap-1 text-sm">
-                  <div>
-                    <span class="text-gray-500">Bloque:</span>
-                    <span>{{ pass.get_bloque_display }}</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-500">Caducidad:</span>
-                    <span>{{ pass.fecha_caducidad|date:"d-m-Y" }}</span>
-                    {% if pass.expiry_status %}
-                      <span class="{{ pass.expiry_status.class }}">({{ pass.expiry_status.text }})</span>
-                    {% endif %}
-                  </div>
-                </div>
-                {% if pass.numero_pase %}
-                <div class="text-sm">
-                  <span class="text-gray-500">Número:</span>
-                  <span>{{ pass.numero_pase }}</span>
-                </div>
-                {% endif %}
-              </div>
-              {% endfor %}
+          <h3 class="text-md font-semibold text-blue-500 mb-3">Gestionar Pase</h3>
+          <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <form id="passForm" class="space-y-3">
+            <input type="hidden" id="pass_id">
+            <div class="form-control">
+              <label class="label py-1"><span class="label-text text-xs font-semibold">Bloque</span></label>
+              <select id="pass_bloque" class="select select-bordered select-sm" required>
+                <option value="">Seleccione</option>
+                <option value="petroecuador">Petroecuador</option>
+                <option value="shaya">Shaya</option>
+                <option value="consorcio_shushufindi">Consorcio Shushufindi</option>
+                <option value="enap_sipec">ENAP SIPEC</option>
+                <option value="orion">Tarjeta Orion</option>
+                <option value="andes_petroleum">Andes Petroleum</option>
+                <option value="pardalis_services">Pardalis Services</option>
+                <option value="frontera_energy">Frontera Energy</option>
+                <option value="gran_tierra">Gran Tierra</option>
+                <option value="pcr">PCR</option>
+                <option value="halliburton">Halliburton</option>
+                <option value="gente_oil">Gente Oil</option>
+                <option value="tribiol_gas">Tribiol Gas</option>
+                <option value="adico">Adico</option>
+                <option value="cuyaveno_petro">Cuyaveno Petro</option>
+                <option value="geopark">Geopark</option>
+              </select>
             </div>
-          {% else %}
-            <p class="text-gray-700">No hay información de pases técnicos.</p>
-          {% endif %}
+            <div class="form-control">
+              <label class="label py-1"><span class="label-text text-xs font-semibold">Fecha Caducidad</span></label>
+              <input id="pass_fecha_caducidad" type="date" class="input input-bordered input-sm" required>
+            </div>
+            <div class="flex flex-wrap gap-2 pt-2">
+              <button type="submit" class="btn btn-primary btn-sm" id="passSaveBtn">Guardar</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="passResetBtn">Nuevo</button>
+              <button type="button" class="btn btn-error btn-sm hidden" id="passDeleteBtn">Eliminar</button>
+            </div>
+            <div id="passFormMsg" class="text-xs mt-1"></div>
+            <!-- Recuadro Metadatos Pase Seleccionado -->
+            <div id="passMeta" class="mt-2 hidden">
+              <div id="passMetaContent" class="text-[11px] leading-snug whitespace-pre-line p-2 border rounded bg-white"></div>
+            </div>
+          </form>
+          </div>
         </div>
-
-        <!-- Sección de Registros de Vacunación -->
+        <!-- Lista Pases -->
         <div>
-          <h3 class="text-md font-semibold text-blue-500 mb-2">Vacunaciones</h3>
-          {% if vaccination_records %}
-            <div class="overflow-y-auto max-h-60">
-              <table class="table table-zebra">
-                <thead>
-                  <tr class="bg-gray-200 border-b-blue-500">
-                    <th class="text-left">Vacuna</th>
-                    <th class="text-center">Fecha Aplicación</th>
-                    <th class="text-center">Próxima Dosis</th>
-                    <th class="text-center">Lote</th>
-                    <th class="text-center">Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for record in vaccination_records %}
-                  <tr>
-                    <td class="border-b-gray-300">
-                      <div class="flex items-center gap-2">
-                        {% if record.is_complete %}
-                          <svg xmlns="http://www.w3.org/2000/svg" class="text-success" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M3 3m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" />
-                            <path d="M9 12l2 2l4 -4" />
-                          </svg>
-                        {% else %}
-                          <svg xmlns="http://www.w3.org/2000/svg" class="text-error" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M12 9v4" />
-                            <path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" />
-                            <path d="M12 16h.01" />
-                          </svg>
-                        {% endif %}
-                        <span class="font-medium">{{ record.get_vaccine_type_display }}</span>
-                      </div>
-                    </td>
-                    <td class="border-b-gray-300 text-center">
-                      {% if record.application_date %}
-                        {{ record.application_date|date:"d/m/Y" }}
-                      {% else %}
-                        <span class="text-gray-400">No registrada</span>
-                      {% endif %}
-                    </td>
-                    <td class="border-b-gray-300 text-center">
-                      {% if record.next_dose_date %}
-                        {{ record.next_dose_date|date:"d/m/Y" }}
-                        {% if record.next_dose_date > today %}
-                          <span class="text-xs text-orange-600">(Pendiente)</span>
-                        {% elif record.next_dose_date < today %}
-                          <span class="text-xs text-red-600">(Vencida)</span>
-                        {% endif %}
-                      {% else %}
-                        <span class="text-gray-400">-</span>
-                      {% endif %}
-                    </td>
-                    <td class="border-b-gray-300 text-center">
-                      {% if record.batch_number %}
-                        <span class="text-xs font-mono">{{ record.batch_number }}</span>
-                      {% else %}
-                        <span class="text-gray-400">-</span>
-                      {% endif %}
-                    </td>
-                    <td class="border-b-gray-300 text-center">
-                      {% if record.is_complete %}
-                        <span class="badge badge-success badge-sm">Completa</span>
-                      {% else %}
-                        <span class="badge badge-warning badge-sm">Pendiente</span>
-                      {% endif %}
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+          <h3 class="text-md font-semibold text-blue-500 mb-3">Pases Registrados</h3>
+          <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <div id="passList" class="space-y-2 max-h-80 overflow-y-auto"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Nueva pestaña Vacunas -->
+    <input type="radio" name="my_tabs_6" class="tab" aria-label="Vacunas" />
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Formulario Vacunas -->
+        <div>
+          <h3 class="text-md font-semibold text-blue-500 mb-3">Registrar Vacuna</h3>
+          <form id="vaccineForm" class="space-y-3">
+            <input type="hidden" id="vaccine_id">
+            <div class="form-control">
+              <label class="label py-1"><span class="label-text text-xs font-semibold">Tipo de Vacuna</span></label>
+              <select id="vaccine_type" class="select select-bordered select-sm" required>
+                <option value="">Seleccione</option>
+                <option value="HEPATITIS_A_B">Hepatitis A y B</option>
+                <option value="TETANUS">Tétanos</option>
+                <option value="TYPHOID">Tifoidea</option>
+                <option value="YELLOW_FEVER">Fiebre Amarilla</option>
+                <option value="INFLUENZA">Influenza</option>
+                <option value="MEASLES">Sarampión</option>
+                <option value="COVID">Covid-19</option>
+                <option value="OTHER">Otra</option>
+              </select>
             </div>
-          {% else %}
-            <p class="text-gray-700">No hay registros de vacunación.</p>
-          {% endif %}
+            <div class="grid grid-cols-2 gap-3">
+              <div class="form-control">
+                <label class="label py-1"><span class="label-text text-xs font-semibold">Aplicación</span></label>
+                <input id="application_date" type="date" class="input input-bordered input-sm" required>
+              </div>
+              <div class="form-control">
+                <label class="label py-1"><span class="label-text text-xs font-semibold">Próx. Dosis</span></label>
+                <input id="next_dose_date" type="date" class="input input-bordered input-sm">
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div class="form-control col-span-2">
+                <label class="label py-1"><span class="label-text text-xs font-semibold">Lote</span></label>
+                <input id="batch_number" type="text" class="input input-bordered input-sm" placeholder="Lote">
+              </div>
+              <div class="form-control">
+                <label class="label py-1"><span class="label-text text-xs font-semibold">Dosis #</span></label>
+                <input id="dose_number" type="number" min="1" class="input input-bordered input-sm" placeholder="N°">
+              </div>
+            </div>
+            <div class="form-control">
+              <label class="label py-1"><span class="label-text text-xs font-semibold">Notas</span></label>
+              <textarea id="vaccine_notes" class="textarea textarea-bordered textarea-sm" rows="2" placeholder="Notas"></textarea>
+            </div>
+            <div class="flex flex-wrap gap-2 pt-2">
+              <button type="submit" class="btn btn-primary btn-sm" id="vaccineSaveBtn">Guardar</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="vaccineResetBtn">Nuevo</button>
+              <button type="button" class="btn btn-error btn-sm hidden" id="vaccineDeleteBtn">Eliminar</button>
+            </div>
+            <div id="vaccineFormMsg" class="text-xs mt-1"></div>
+          </form>
+        </div>
+        <!-- Lista Vacunas -->
+        <div>
+          <h3 class="text-md font-semibold text-blue-500 mb-3">Vacunas Registradas</h3>
+          <div class="overflow-y-auto max-h-80">
+            <table class="table table-xs" id="vaccineTable">
+              <thead>
+                <tr>
+                  <th>Vacuna</th>
+                  <th>Aplicación</th>
+                  <th>Próx.</th>
+                  <th>Lote</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -536,6 +551,15 @@
   {% endif %}
 </div>
 {% block script %}
-<script src="{% static 'js/app-technical-presentation.js' %}"></script>
+<script id="technical-data" type="application/json">{
+  "technical_id": {{ technical.id }},
+  "passes": [
+  {% if pass_technical %}{% for p in pass_technical %}{"id": {{ p.id }}, "bloque": "{{ p.bloque }}", "fecha_caducidad": "{{ p.fecha_caducidad|date:'Y-m-d' }}", "created_at": "{{ p.created_at|date:'Y-m-d H:i' }}", "updated_at": "{{ p.updated_at|date:'Y-m-d H:i' }}", "is_active": {% if p.is_active %}true{% else %}false{% endif %}, "notes": "{{ p.notes|default:''|escapejs }}"}{% if not forloop.last %},{% endif %}{% endfor %}{% endif %}
+  ],
+  "vaccines": [
+    {% if vaccination_records %}{% for r in vaccination_records %}{"id": {{ r.id }}, "vaccine_type": "{{ r.vaccine_type }}", "application_date": "{{ r.application_date|date:'Y-m-d' }}", "next_dose_date": "{{ r.next_dose_date|date:'Y-m-d'|default:'' }}", "batch_number": "{{ r.batch_number|default:''|escapejs }}", "dose_number": {% if r.dose_number %}{{ r.dose_number }}{% else %}null{% endif %}, "notes": "{{ r.notes|default:''|escapejs }}", "is_complete": {% if r.is_complete %}true{% else %}false{% endif %} }{% if not forloop.last %},{% endif %}{% endfor %}{% endif %}
+  ]
+}</script>
+<script src="{% static 'js/app/app-technical-presentation.js' %}"></script>
 {% endblock %}
 {% endblock %}
