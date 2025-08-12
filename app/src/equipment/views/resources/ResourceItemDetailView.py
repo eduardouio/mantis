@@ -315,6 +315,4 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         return {
             'capacity_info': capacity_info,
         }
-        return {
-            'capacity_info': capacity_info,
-        }
+       
