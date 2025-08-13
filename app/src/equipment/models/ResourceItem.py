@@ -1,77 +1,394 @@
 from django.db import models
 from common.BaseModel import BaseModel
-# from django.core.exceptions import ObjectDoesNotExist  # eliminado (no usado)
 from datetime import date
 
-TYPE_RECORD = (
-    ('EQUIPO', 'EQUIPO'),
-    ('SERVICIO', 'SERVICIO')
-)
-
-TYPE_FASES = (
-    ('MONOFASICO', 'MONOFASICO'),
-    ('BIFASICO', 'BIFASICO'),
-    ('TRIFASICO', 'TRIFASICO'),
+# opciones Para Campos
+FASES_COUNT = (
+    ('1', '1 FASE'),
+    ('2', '2 FASES'),
+    ('3', '3 FASES'),
 )
 
 TYPE_EQUIPMENT = (
-    ('LAVAMANOS', 'LAVAMANOS'),
-    ('BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA HOMBRE'),
-    ('BATERIA SANITARIA MUJER', 'BATERIA SANITARIA MUJER'),
-    ('PLANTA DE TRATAMIENTO DE AGUA', 'PLANTA DE TRATAMIENTO DE AGUA POTABLE'),
-    ('PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
-     'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL'),
-    ('TANQUES DE ALMACENAMIENTO AGUA CRUDA',
-     'TANQUES DE ALMACENAMIENTO AGUA CRUDA'),
-    ('TANQUES DE ALMACENAMIENTO AGUA RESIDUAL',
-     'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'),
-    ('CAMPER BAÑO', 'CAMPER BAÑO'),
-    ('ESTACION CUADRUPLE URINARIO', 'ESTACION CUADRUPLE URINARIO'),
+    ('SERVIC', 'SERVICIO'),
+    ('LVMNOS', 'LAVAMANOS'),
+    ('BTSNHM', 'BATERIA SANITARIA HOMBRE'),
+    ('BTSNMJ', 'BATERIA SANITARIA MUJER'),
+    ('EST4UR', 'ESTACION CUADRUPLE URINARIO'),
+    ('CMPRBN', 'CAMPER BAÑO'),
+    ('PTRTAP', 'PLANTA DE TRATAMIENTO DE AGUA POTABLE'),
+    ('PTRTAR', 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL'),
+    ('TNQAAC', 'TANQUES DE ALMACENAMIENTO AGUA CRUDA'),
+    ('TNQAAR', 'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'),
+)
+DISPONIBILITY_STATUS = (
+    ('DISPONIBLE', 'DISPONIBLE'),
+    ('RENTADO', 'RENTADO'),
+    ('FUERA DE SERVICIO', 'FUERA DE SERVICIO'),
+)
+STATUS_EQUIPMENT = (
+    ('FUNCIONANDO', 'FUNCIONANDO'),
+    ('DAÑADO', 'DAÑADO'),
+    ('INCOMPLETO', 'INCOMPLETO'),
+    ('EN REPARACION', 'EN REPARACION'),
 )
 
-CAPACIDAD_PLANTA_CHOICES = (
-    ('10M3', '10M3'),
-    ('15M3', '15M3'),
-    ('25M3', '25M3'),
-)
+SERVICES_FIELDS = [
+    'id',
+    'name',
+    'is_service',
+    'code',
+    'is_active',
+    'created_at',
+    'updated_at',
+    'id_user_created',
+    'id_user_updated'
+]
+
+# columnas por equipo
+LVMNOS_FIELDS = [
+    'id',
+    'name',
+    'is_service',
+    'code',
+    'type_equipment',
+    'brand',
+    'model',
+    'serial_number',
+    'date_purchase',
+    'height',
+    'width',
+    'depth',
+    'weight',
+    'capacity_gallons',
+    'have_foot_pumps',
+    'have_soap_dispenser',
+    'have_napkin_dispenser',
+    'have_paper_towels',
+    'stst_repair_reason',
+    'stst_status_equipment',
+    'stst_status_disponibility',
+    'stst_current_location',
+    'stst_current_project_id',
+    'stst_commitment_date',
+    'stst_release_date',
+    'is_active',
+    'created_at',
+    'updated_at',
+    'id_user_created',
+    'id_user_updated'
+]
+
+# check list Batería Sanitaria Hombre
+BTSNHM_FIELDS = [
+    'id',
+    'name',
+    'is_service',
+    'code',
+    'type_equipment',
+    'brand',
+    'model',
+    'serial_number',
+    'date_purchase',
+    'height',
+    'width',
+    'depth',
+    'weight',
+    'capacity_gallons',
+    'have_paper_dispenser',
+    'have_soap_dispenser',
+    'have_napkin_dispenser',
+    'have_urinals',
+    'have_seat',
+    'have_toilet_pump',
+    'have_sink_pump',
+    'have_toilet_lid',
+    'have_bathroom_bases',
+    'have_ventilation_pipe',
+    'stst_repair_reason',
+    'stst_status_equipment',
+    'stst_status_disponibility',
+    'stst_current_location',
+    'stst_current_project_id',
+    'stst_commitment_date',
+    'stst_release_date',
+    'is_active',
+    'created_at',
+    'updated_at',
+    'id_user_created',
+    'id_user_updated'
+]
+
+# check list Batería Sanitaria Mujer
+BTSNMJ_FIELDS = [
+    'id',
+    'name',
+    'is_service',
+    'code',
+    'type_equipment',
+    'brand',
+    'model',
+    'serial_number',
+    'date_purchase',
+    'height',
+    'width',
+    'depth',
+    'weight',
+    'capacity_gallons',
+    'have_paper_dispenser',
+    'have_soap_dispenser',
+    'have_napkin_dispenser',
+    'have_urinals',
+    'have_seat',
+    'have_toilet_pump',
+    'have_sink_pump',
+    'have_toilet_lid',
+    'have_bathroom_bases',
+    'have_ventilation_pipe',
+    'stst_repair_reason',
+    'stst_status_equipment',
+    'stst_status_disponibility',
+    'stst_current_location',
+    'stst_current_project_id',
+    'stst_commitment_date',
+    'stst_release_date',
+    'is_active',
+    'created_at',
+    'updated_at',
+    'id_user_created',
+    'id_user_updated'
+]
+
+# check list Estación Cuádruple Urinario
+EST4UR_FIELDS = [
+    'id',
+    'name',
+    'is_service',
+    'code',
+    'type_equipment',
+    'brand',
+    'model',
+    'serial_number',
+    'date_purchase',
+    'height',
+    'width',
+    'depth',
+    'weight',
+    'capacity_gallons',
+    'have_paper_dispenser',
+    'have_soap_dispenser',
+    'have_napkin_dispenser',
+    'have_urinals',
+    'have_toilet_pump',
+    'have_sink_pump',
+    'have_toilet_lid',
+    'have_foot_pumps',
+    'have_paper_towels',
+    'stst_repair_reason',
+    'stst_status_equipment',
+    'stst_status_disponibility',
+    'stst_current_location',
+    'stst_current_project_id',
+    'stst_commitment_date',
+    'stst_release_date',
+    'is_active',
+    'created_at',
+    'updated_at',
+    'id_user_created',
+    'id_user_updated'
+]
+
+# check list Camper Baño
+CMPRBN_FIELDS = [
+    'id',
+    'name',
+    'is_service',
+    'code',
+    'type_equipment',
+    'brand',
+    'model',
+    'serial_number',
+    'date_purchase',
+    'height',
+    'width',
+    'depth',
+    'weight',
+    'capacity_gallons',
+    'have_paper_dispenser',
+    'have_soap_dispenser',
+    'have_napkin_dispenser',
+    'have_urinals',
+    'have_seat',
+    'have_toilet_pump',
+    'have_sink_pump',
+    'have_toilet_lid',
+    'have_bathroom_bases',
+    'have_ventilation_pipe',
+    'have_foot_pumps',
+    'have_paper_towels',
+    'stst_repair_reason',
+    'stst_status_equipment',
+    'stst_status_disponibility',
+    'stst_current_location',
+    'stst_current_project_id',
+    'stst_commitment_date',
+    'stst_release_date',
+    'is_active',
+    'created_at',
+    'updated_at',
+    'id_user_created',
+    'id_user_updated'
+]
+# check list Planta de Tratamiento de Agua Potable
+PTRTAP_FIELDS = [
+    'id',
+    'name',
+    'is_service',
+    'code',
+    'type_equipment',
+    'brand',
+    'model',
+    'serial_number',
+    'date_purchase',
+    'height',
+    'width',
+    'depth',
+    'weight',
+    'capacity_gallons',
+    'relay_engine',
+    'relay_blower',
+    'blower_brand',
+    'blower_model',
+    'engine_fases',
+    'engine_brand',
+    'engine_model',
+    'belt_brand',
+    'belt_model',
+    'belt_type',
+    'blower_pulley_brand',
+    'blower_pulley_model',
+    'motor_pulley_brand',
+    'motor_pulley_model',
+    'electrical_panel_brand',
+    'electrical_panel_model',
+    'engine_guard_brand',
+    'engine_guard_model',
+    'pump_filter',
+    'pump_pressure',
+    'pump_dosing',
+    'sand_carbon_filter',
+    'hidroneumatic_tank',
+    'uv_filter',
+    'have_blower_brand',
+    'have_belt_brand',
+    'have_blower_pulley',
+    'have_motor_pulley',
+    'have_electrical_panel',
+    'have_motor_guard',
+    'have_relay_engine',
+    'have_relay_blower',
+    'have_uv_filter',
+    'have_pump_filter',
+    'have_pump_dosing',
+    'have_pump_pressure',
+    'have_engine',
+    'have_engine_guard',
+    'have_hidroneumatic_tank',
+    'have_sand_carbon_filter',
+    'stst_repair_reason',
+    'stst_status_equipment',
+    'stst_status_disponibility',
+    'stst_current_location',
+    'stst_current_project_id',
+    'stst_commitment_date',
+    'stst_release_date',
+    'is_active',
+    'created_at',
+    'updated_at',
+    'id_user_created',
+    'id_user_updated'
+]
+
+PTRTAR_FIELDS = [
+     'id',
+    'name',
+    'is_service',
+    'code',
+    'type_equipment',
+    'brand',
+    'model',
+    'serial_number',
+    'date_purchase',
+    'height',
+    'width',
+    'depth',
+    'weight',
+    'capacity_gallons',
+    'relay_engine',
+    'relay_blower',
+    'blower_brand',
+    'blower_model',
+    'engine_fases',
+    'engine_brand',
+    'engine_model',
+    'belt_brand',
+    'belt_model',
+    'belt_type',
+    'blower_pulley_brand',
+    'blower_pulley_model',
+    'motor_pulley_brand',
+    'motor_pulley_model',
+    'electrical_panel_brand',
+    'electrical_panel_model',
+    'engine_guard_brand',
+    'engine_guard_model',
+    'have_blower_brand',
+    'have_belt_brand',
+    'have_blower_pulley',
+    'have_motor_pulley',
+    'have_electrical_panel',
+    'have_motor_guard',
+    'have_relay_engine',
+    'have_relay_blower',
+    'have_pump_dosing',
+    'have_pump_pressure',
+    'have_engine',
+    'have_engine_guard',
+    'have_hidroneumatic_tank',
+    'stst_repair_reason', 'stst_status_equipment',
+    'stst_status_disponibility', 'stst_current_location',
+    'stst_current_project_id', 'stst_commitment_date',
+    'stst_release_date',
+    'is_active', 'created_at', 'updated_at',
+    'id_user_created', 'id_user_updated'
+]
 
 
 class ResourceItem(BaseModel):
-    TYPE_CHOICES = [
-        ('EQUIPO', 'Equipo'),
-        ('SERVICIO', 'Servicio'),
-    ]
-
-    STATUS_CHOICES = [
-        ('DISPONIBLE', 'Disponible'),
-        ('RENTADO', 'Rentado'),
-        ('EN REPARACION', 'En Reparación'),
-        ('FUERA DE SERVICIO', 'Fuera de Servicio'),
-    ]
-
+    # campos compartidos por Servicio y Equipo
     id = models.AutoField(
         primary_key=True
     )
     name = models.CharField(
-        'Nombre Equipo',
+        'Nombre Equipo/Servicio',
         max_length=255
     )
-    type = models.CharField(
-        'Tipo',
-        max_length=255,
-        choices=TYPE_RECORD,
-        default='EQUIPO'
+    code = models.CharField(
+        'Codigo Equipo/Servicio',
+        max_length=50,
+        unique=True,
+        blank=True,
+        null=True
     )
-
-    # Nuevo campo para subtype de equipo
-    subtype = models.CharField(
+    # campos base de equipos
+    type_equipment = models.CharField(
         'Equipment Subtype',
         max_length=255,
         choices=TYPE_EQUIPMENT,
         blank=True,
-        null=True
+        null=True,
+        help_text='Si es un Servicio este campo en nulo'
     )
-
     brand = models.CharField(
         'Brand',
         max_length=255,
@@ -84,13 +401,6 @@ class ResourceItem(BaseModel):
         blank=True,
         null=True,
         default='N/A'
-    )
-    code = models.CharField(
-        'Equipment Code',
-        max_length=50,
-        unique=True,
-        blank=True,
-        null=True
     )
     serial_number = models.CharField(
         'Serial Number',
@@ -128,14 +438,6 @@ class ResourceItem(BaseModel):
         null=True,
         default=None
     )
-    status = models.CharField(
-        'Status',
-        max_length=255,
-        choices=STATUS_CHOICES,
-        default='DISPONIBLE'
-    )
-
-    # Simplificar campos de capacidad - todo en galones
     capacity_gallons = models.DecimalField(
         'Capacity (gallons)',
         max_digits=10,
@@ -144,119 +446,155 @@ class ResourceItem(BaseModel):
         null=True,
         help_text='Capacidad del equipo en galones'
     )
-
-    # Campo específico para plantas de tratamiento de agua residual
     plant_capacity = models.CharField(
-        'Plant Capacity',
-        max_length=10,
-        choices=CAPACIDAD_PLANTA_CHOICES,
+        'Capacidad de Planta',
+        max_length=255,
         blank=True,
         null=True,
-        help_text='Solo para plantas de tratamiento de agua residual'
+        help_text='Capacidad específica para plantas de tratamiento'
     )
 
-    # Campos específicos para LAVAMANOS
-    foot_pumps = models.BooleanField(
+    # checklists
+    have_foot_pumps = models.BooleanField(
         'Foot Pumps',
         default=False,
         help_text='Solo para lavamanos'
     )
-    sink_soap_dispenser = models.BooleanField(
-        'Soap Dispenser',
-        default=False,
-        help_text='Solo para lavamanos'
-    )
-    paper_towels = models.BooleanField(
-        'Paper Towels',
-        default=False,
-        help_text='Solo para lavamanos'
-    )
-
-    # Campos específicos para BATERÍAS SANITARIAS (HOMBRE Y MUJER)
-    paper_dispenser = models.BooleanField(
+    have_paper_dispenser = models.BooleanField(
         'Paper Dispenser',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    soap_dispenser = models.BooleanField(
+    have_soap_dispenser = models.BooleanField(
         'Soap Dispenser',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    napkin_dispenser = models.BooleanField(
+    have_napkin_dispenser = models.BooleanField(
         'Dispensador de Servilletas',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    urinals = models.BooleanField(
+    have_paper_towels = models.BooleanField(
+        'Paper Towels',
+        default=False,
+        help_text='Para lavamanos y equipos especiales'
+    )
+    have_urinals = models.BooleanField(
         'Urinarios',
         default=False,
         help_text='Solo para baterías sanitarias de hombre'
     )
-    seats = models.BooleanField(
+    have_seat = models.BooleanField(
         'Asiento',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    toilet_pump = models.BooleanField(
+    have_toilet_pump = models.BooleanField(
         'Bomba de Baño',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    sink_pump = models.BooleanField(
+    have_sink_pump = models.BooleanField(
         'Bomba de Lavamanos',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    toilet_lid = models.BooleanField(
+    have_toilet_lid = models.BooleanField(
         'Llave de Baño',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    bathroom_bases = models.BooleanField(
+    have_bathroom_bases = models.BooleanField(
         'Bases de Baño',
         default=False,
         help_text='Para baterías sanitarias'
     )
-    ventilation_pipe = models.BooleanField(
+    have_ventilation_pipe = models.BooleanField(
         'Tubo de Ventilación',
         default=False,
         help_text='Para baterías sanitarias'
     )
-
-    # Campo para motivo de reparación
-    repair_reason = models.TextField(
-        'Motivo de Reparación',
-        blank=True,
-        null=True,
-        help_text='Especificar motivo cuando el estado sea "EN REPARACION"'
+    have_blower_brand = models.BooleanField(
+        'Tiene Blower',
+        default=False,
+        help_text='Para plantas de tratamiento'
     )
-
-    # Estos campos se actualizan cada vez que el equipo cambia de proyecto
-    # o de ubicación, no se actualiza manualmente
-    # se libera cuando un proyecto termina, o libera el equipo
-    current_location = models.CharField(
-        'Ubicación Actual',
-        max_length=255,
-        blank=True,
-        null=True
+    have_belt_brand = models.BooleanField(
+        'Tiene Banda',
+        default=False,
+        help_text='Para plantas de tratamiento'
     )
-    current_project_id = models.SmallIntegerField(
-        'ID del Proyecto Actual',
-        blank=True,
-        null=True
+    have_blower_pulley = models.BooleanField(
+        'Tiene Pulley del Blower',
+        default=False,
+        help_text='Para plantas de tratamiento'
     )
-    commitment_date = models.DateField(
-        'Fecha de Ocupación',
-        blank=True,
-        null=True
+    have_motor_pulley = models.BooleanField(
+        'Tiene Pulley del Motor',
+        default=False,
+        help_text='Para plantas de tratamiento'
     )
-    release_date = models.DateField(
-        'Fecha de Liberación',
-        blank=True,
-        null=True
+    have_electrical_panel = models.BooleanField(
+        'Tiene Panel Eléctrico',
+        default=False,
+        help_text='Para plantas de tratamiento'
     )
-
+    have_motor_guard = models.BooleanField(
+        'Tiene Guarda Motor',
+        default=False,
+        help_text='Para plantas de tratamiento'
+    )
+    have_relay_engine = models.BooleanField(
+        'Tiene Relay del Motor',
+        default=False,
+        help_text='Para plantas de tratamiento'
+    )
+    have_relay_blower = models.BooleanField(
+        'Tiene Relay del Blower',
+        default=False,
+        help_text='Para plantas de tratamiento'
+    )
+    have_uv_filter = models.BooleanField(
+        'Tiene Filtro UV',
+        default=False,
+        help_text='Para plantas de agua potable'
+    )
+    have_pump_filter = models.BooleanField(
+        'Tiene Bomba de Filtración',
+        default=False,
+        help_text='Para plantas de agua potable'
+    )
+    have_pump_dosing = models.BooleanField(
+        'Tiene Bomba Dosificadora',
+        default=False,
+        help_text='Para plantas de tratamiento'
+    )
+    have_pump_pressure = models.BooleanField(
+        'Tiene Bomba de Presión',
+        default=False,
+        help_text='Para plantas de tratamiento'
+    )
+    have_engine = models.BooleanField(
+        'Tiene Motor',
+        default=False,
+        help_text='Para plantas de tratamiento'
+    )
+    have_engine_guard = models.BooleanField(
+        'Tiene Guarda del Motor',
+        default=False,
+        help_text='Para plantas de tratamiento'
+    )
+    have_hidroneumatic_tank = models.BooleanField(
+        'Tiene Tanque Hidroneumático',
+        default=False,
+        help_text='Para plantas de agua potable'
+    )
+    have_sand_carbon_filter = models.BooleanField(
+        'Tiene Filtro de Arena y Carbón',
+        default=False,
+        help_text='Para plantas de agua potable'
+    )
     # Campos para equipos especiales (blower, motor, banda, etc.)
     relay_engine = models.CharField(
         'Marca del Relay del Motor',
@@ -291,7 +629,7 @@ class ResourceItem(BaseModel):
         max_length=255,
         blank=True,
         null=True,
-        choices=TYPE_FASES,
+        choices=FASES_COUNT,
         help_text='solo para plantas'
     )
     engine_brand = models.CharField(
@@ -372,14 +710,14 @@ class ResourceItem(BaseModel):
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    motor_guard_brand = models.CharField(
+    engine_guard_brand = models.CharField(
         'Marca de la Guardia del Motor',
         max_length=255,
         blank=True,
         null=True,
         help_text='Solo para plantas y tanques'
     )
-    motor_guard_model = models.CharField(
+    engine_guard_model = models.CharField(
         'Modelo Guarda Motor',
         max_length=255,
         blank=True,
@@ -430,202 +768,47 @@ class ResourceItem(BaseModel):
         null=True,
         help_text='Solo para plantas de agua potable'
     )
-
-    def clean(self):
-        """Validaciones personalizadas del modelo"""
-        from django.core.exceptions import ValidationError
-
-        # Definiciones de campos por subtipo (validaciones dinámicas)
-        # Subtipos que comparten accesorios sanitarios
-        sanitary_subtypes = [
-            'BATERIA SANITARIA HOMBRE',
-            'BATERIA SANITARIA MUJER',
-            'CAMPER BAÑO',
-            'ESTACION CUADRUPLE URINARIO'
-        ]
-        plant_potable_subtype = 'PLANTA DE TRATAMIENTO DE AGUA'
-        plant_residual_subtype = 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL'
-        tank_subtypes = [
-            'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
-            'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
-        ]
-
-        lavamanos_fields = [
-            'foot_pumps', 'sink_soap_dispenser', 'paper_towels'
-        ]
-        sanitary_fields = [
-            'paper_dispenser', 'soap_dispenser', 'napkin_dispenser',
-            'urinals', 'seats', 'toilet_pump', 'sink_pump', 'toilet_lid',
-            'bathroom_bases', 'ventilation_pipe'
-        ]
-        plant_common_fields = [
-            'blower_brand', 'blower_model', 'engine_brand', 'engine_model',
-            'belt_brand', 'belt_model', 'belt_type', 'blower_pulley_brand',
-            'blower_pulley_model', 'motor_pulley_brand', 'motor_pulley_model',
-            'electrical_panel_brand', 'electrical_panel_model',
-            'motor_guard_brand', 'motor_guard_model'
-        ]
-        plant_potable_only_fields = [
-            'pump_filter', 'pump_pressure', 'pump_dosing',
-            'sand_carbon_filter', 'hidroneumatic_tank', 'uv_filter'
-        ]
-        plant_residual_only_fields = ['relay_engine', 'relay_blower']
-
-    # (variables special_* eliminadas por no usarse directamente)
-
-        # Validar que si el estado es "EN REPARACION" se especifique el motivo
-        if self.status == 'EN REPARACION' and not self.repair_reason:
-            raise ValidationError({
-                'repair_reason': 'Indique motivo (estado EN REPARACION)'
-            })
-
-    # Validar uso correcto según subtipo
-        # Reglas por subtipo
-        if self.subtype == 'LAVAMANOS':
-            invalid_fields = (sanitary_fields + plant_common_fields +
-                              plant_potable_only_fields +
-                              plant_residual_only_fields)
-            for campo in invalid_fields:
-                if getattr(self, campo):
-                    raise ValidationError({campo: 'No aplica para Lavamanos'})
-        elif self.subtype in sanitary_subtypes:
-            if self.subtype == 'BATERIA SANITARIA MUJER' and self.urinals:
-                raise ValidationError({'urinals': 'Urinals solo baterías H'})
-            invalid_fields = (lavamanos_fields + plant_common_fields +
-                              plant_potable_only_fields +
-                              plant_residual_only_fields)
-            for campo in invalid_fields:
-                if getattr(self, campo):
-                    raise ValidationError({campo: 'No aplica (sanitario)'})
-        elif self.subtype == plant_potable_subtype:
-            invalid_fields = (sanitary_fields + lavamanos_fields +
-                              plant_residual_only_fields)
-            for campo in invalid_fields:
-                if getattr(self, campo):
-                    raise ValidationError({campo: 'No aplica (potable)'})
-        elif self.subtype == plant_residual_subtype:
-            if not self.plant_capacity:
-                raise ValidationError({'plant_capacity': 'Requerido'})
-            invalid_fields = (sanitary_fields + lavamanos_fields +
-                              plant_potable_only_fields)
-            for campo in invalid_fields:
-                if getattr(self, campo):
-                    raise ValidationError({campo: 'No aplica (residual)'})
-        elif self.subtype in tank_subtypes:
-            invalid_fields = (sanitary_fields + lavamanos_fields +
-                              plant_potable_only_fields +
-                              plant_residual_only_fields)
-            for campo in invalid_fields:
-                if getattr(self, campo):
-                    raise ValidationError({campo: 'No aplica para tanques'})
-        else:
-            all_fields = (lavamanos_fields + sanitary_fields +
-                          plant_common_fields + plant_potable_only_fields +
-                          plant_residual_only_fields)
-            for campo in all_fields:
-                if getattr(self, campo):
-                    raise ValidationError({campo: 'No aplica (sin subtipo)'})
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
-
-    @property
-    def capacity_display(self):
-        """Muestra la capacidad con su unidad de forma legible"""
-        if self.capacity_gallons:
-            return f"{self.capacity_gallons} Galones"
-        if (self.subtype == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL' and
-                self.plant_capacity):
-            return f"{self.plant_capacity}"
-        return "No especificada"
-
-    @property
-    def has_characteristics(self):
-        """Retorna True si existe al menos una característica relevante."""
-        chars = [
-            self.foot_pumps, self.sink_soap_dispenser, self.paper_towels,
-            self.paper_dispenser, self.soap_dispenser, self.napkin_dispenser,
-            self.urinals, self.seats, self.toilet_pump, self.sink_pump,
-            self.toilet_lid, self.bathroom_bases, self.ventilation_pipe,
-            self.blower_brand, self.engine_brand, self.belt_brand,
-            self.pump_filter, self.pump_pressure, self.pump_dosing,
-            self.sand_carbon_filter, self.hidroneumatic_tank, self.uv_filter,
-            self.relay_engine, self.relay_blower
-        ]
-        return any(chars)
-
-    @property
-    def get_active_characteristics(self):
-        """Lista de características activas legibles."""
-        chars = []
-        if self.subtype == 'LAVAMANOS':
-            mapping = [
-                (self.foot_pumps, 'Foot Pumps'),
-                (self.sink_soap_dispenser, 'Soap Dispenser'),
-                (self.paper_towels, 'Paper Towels')
-            ]
-            chars += [label for cond, label in mapping if cond]
-        elif self.subtype in [
-            'BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER',
-            'CAMPER BAÑO', 'ESTACION CUADRUPLE URINARIO'
-        ]:
-            mapping = [
-                (self.paper_dispenser, 'Paper Dispenser'),
-                (self.soap_dispenser, 'Soap Dispenser'),
-                (self.napkin_dispenser, 'Napkin Dispenser'),
-                (self.urinals, 'Urinals'),
-                (self.seats, 'Seats'),
-                (self.toilet_pump, 'Toilet Pump'),
-                (self.sink_pump, 'Sink Pump'),
-                (self.toilet_lid, 'Toilet Lid'),
-                (self.bathroom_bases, 'Bathroom Bases'),
-                (self.ventilation_pipe, 'Ventilation Pipe')
-            ]
-            chars += [label for cond, label in mapping if cond]
-        if self.subtype in [
-            'PLANTA DE TRATAMIENTO DE AGUA',
-            'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
-            'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
-            'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
-        ]:
-            mapping = [
-                (self.blower_brand, 'Blower'),
-                (self.engine_brand, 'Motor'),
-                (self.belt_brand, 'Banda'),
-                (self.pump_filter, 'Bomba Filtración'),
-                (self.pump_pressure, 'Bomba Presión'),
-                (self.pump_dosing, 'Bomba Dosificadora'),
-                (self.sand_carbon_filter, 'Filtro Arena/Carbón'),
-                (self.hidroneumatic_tank, 'Tanque Hidroneumático'),
-                (self.uv_filter, 'Filtro UV'),
-                (self.relay_engine, 'Relay Motor'),
-                (self.relay_blower, 'Relay Blower')
-            ]
-            chars += [label for cond, label in mapping if cond]
-        return chars
-
-    @classmethod
-    def get_free_equipment(cls):
-        today = date.today()
-        return cls.objects.filter(
-            status='DISPONIBLE',
-            is_active=True,
-            type='EQUIPO',
-            release_date__lte=today
-        )
-
-    def __str__(self):
-        capacity_str = ""
-        if (self.subtype == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL' and
-                self.plant_capacity):
-            capacity_str = f" - {self.plant_capacity}"
-        elif self.capacity_gallons:
-            capacity_str = f" - {self.capacity_gallons} Galones"
-        return f"{self.name}{capacity_str}"
+    stst_repair_reason = models.TextField(
+        'Motivo de Reparación',
+        blank=True,
+        null=True,
+        help_text='Especificar motivo cuando el estado sea "EN REPARACION"'
+    )
+    stst_status_equipment = models.CharField(
+        'Status',
+        max_length=255,
+        choices=STATUS_EQUIPMENT,
+        default='FUNCIONANDO'
+    )
+    stst_status_disponibility = models.CharField(
+        'Estado de Disponibilidad',
+        max_length=255,
+        choices=DISPONIBILITY_STATUS,
+        default='DISPONIBLE'
+    )
+    stst_current_location = models.CharField(
+        'Ubicación Actual',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    stst_current_project_id = models.SmallIntegerField(
+        'ID del Proyecto Actual',
+        blank=True,
+        null=True
+    )
+    stst_commitment_date = models.DateField(
+        'Fecha de Ocupación',
+        blank=True,
+        null=True
+    )
+    stst_release_date = models.DateField(
+        'Fecha de Liberación',
+        blank=True,
+        null=True
+    )
 
     class Meta:
-        verbose_name = 'Recurso/Equipo'
-        verbose_name_plural = 'Recursos/Equipos'
+        verbose_name = 'Resource Item'
+        verbose_name_plural = 'Resource Items'
         ordering = ['name']
-        unique_together = (('code', 'serial_number'),)
