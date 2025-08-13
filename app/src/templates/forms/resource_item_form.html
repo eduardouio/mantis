@@ -573,6 +573,18 @@
                 <input type="text" v-model="formData.engine_model" class="input input-bordered w-full" placeholder="Ingrese el modelo del motor">
                 <div v-if="errors.engine_model" class="text-error text-sm mt-1">${ errors.engine_model  }</div>
               </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Fases del Motor:</span>
+                </label>
+                <select v-model="formData.engine_fases" class="select select-bordered w-full">
+                  <option value="">Seleccione fases</option>
+                  <option value="MONOFASICO">Monofásico</option>
+                  <option value="BIFASICO">Bifásico</option>
+                  <option value="TRIFASICO">Trifásico</option>
+                </select>
+                <div v-if="errors.engine_fases" class="text-error text-sm mt-1">${ errors.engine_fases }</div>
+              </div>
             </div>
             
             <!-- Tercera fila - Banda -->
