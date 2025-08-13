@@ -243,6 +243,28 @@
             <p class="text-sm text-gray-600">Modelo: {{ special_components.motor_guard.model|default:"No especificado" }}</p>
           </div>
           {% endif %}
+
+          {% if special_components.potable_plant %}
+          <div class="p-3 bg-white rounded border col-span-1 md:col-span-2">
+            <h5 class="font-medium text-gray-700 mb-2">Componentes Planta Agua Potable</h5>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              {% if special_components.potable_plant.pump_filter %}<p><span class="font-medium">Bomba Filtración:</span> {{ special_components.potable_plant.pump_filter }}</p>{% endif %}
+              {% if special_components.potable_plant.pump_pressure %}<p><span class="font-medium">Bomba Presión:</span> {{ special_components.potable_plant.pump_pressure }}</p>{% endif %}
+              {% if special_components.potable_plant.pump_dosing %}<p><span class="font-medium">Bomba Dosificadora:</span> {{ special_components.potable_plant.pump_dosing }}</p>{% endif %}
+              {% if special_components.potable_plant.sand_carbon_filter %}<p><span class="font-medium">Filtro Arena/Carbón:</span> {{ special_components.potable_plant.sand_carbon_filter }}</p>{% endif %}
+              {% if special_components.potable_plant.hidroneumatic_tank %}<p><span class="font-medium">Tanque Hidroneumático:</span> {{ special_components.potable_plant.hidroneumatic_tank }}</p>{% endif %}
+              {% if special_components.potable_plant.uv_filter %}<p><span class="font-medium">Filtro UV:</span> {{ special_components.potable_plant.uv_filter }}</p>{% endif %}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if special_components.residual_relays %}
+          <div class="p-3 bg-white rounded border">
+            <h5 class="font-medium text-gray-700 mb-2">Relays Planta Residual</h5>
+            {% if special_components.residual_relays.relay_engine %}<p class="text-sm text-gray-600">Relay Motor: {{ special_components.residual_relays.relay_engine }}</p>{% endif %}
+            {% if special_components.residual_relays.relay_blower %}<p class="text-sm text-gray-600">Relay Blower: {{ special_components.residual_relays.relay_blower }}</p>{% endif %}
+          </div>
+          {% endif %}
         </div>
       </div>
       {% endif %}

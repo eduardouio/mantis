@@ -291,6 +291,38 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                 'model': equipment.motor_guard_model,
             }
 
+        # Componentes específicos para planta de agua potable
+        if equipment.subtype == 'PLANTA DE TRATAMIENTO DE AGUA':
+            potable_components = {}
+            if equipment.pump_filter:
+                potable_components['pump_filter'] = equipment.pump_filter
+            if equipment.pump_pressure:
+                potable_components['pump_pressure'] = equipment.pump_pressure
+            if equipment.pump_dosing:
+                potable_components['pump_dosing'] = equipment.pump_dosing
+            if equipment.sand_carbon_filter:
+                potable_components['sand_carbon_filter'] = (
+                    equipment.sand_carbon_filter
+                )
+            if equipment.hidroneumatic_tank:
+                potable_components['hidroneumatic_tank'] = (
+                    equipment.hidroneumatic_tank
+                )
+            if equipment.uv_filter:
+                potable_components['uv_filter'] = equipment.uv_filter
+            if potable_components:
+                components['potable_plant'] = potable_components
+
+        # Componentes específicos para planta de agua residual (relays)
+        if equipment.subtype == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL':
+            residual_components = {}
+            if equipment.relay_engine:
+                residual_components['relay_engine'] = equipment.relay_engine
+            if equipment.relay_blower:
+                residual_components['relay_blower'] = equipment.relay_blower
+            if residual_components:
+                components['residual_relays'] = residual_components
+
         return {
             'special_components': components,
             'has_special_components': len(components) > 0,
@@ -305,7 +337,10 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         }
 
         # Información adicional según el subtipo
-        if equipment.subtype in ['PLANTA DE TRATAMIENTO DE AGUA', 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL']:
+        if equipment.subtype in [
+            'PLANTA DE TRATAMIENTO DE AGUA',
+            'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL'
+        ]:
             capacity_info['capacity_type'] = 'Capacidad de Planta'
             capacity_info['capacity_unit'] = 'M³/día'
         elif equipment.capacity_gallons:

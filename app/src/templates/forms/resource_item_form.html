@@ -675,6 +675,60 @@
                 <div v-if="errors.motor_guard_model" class="text-error text-sm mt-1">${ errors.motor_guard_model  }</div>
               </div>
             </div>
+            
+            <!-- Componentes específicos planta Agua Potable -->
+            <div v-if="formData.subtype === 'PLANTA DE TRATAMIENTO DE AGUA'" class="mt-8">
+              <h5 class="font-medium text-gray-600 mb-3">Componentes Planta Agua Potable</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label"><span class="label-text">Bomba Filtro:</span></label>
+                  <input type="text" v-model="formData.pump_filter" class="input input-bordered w-full" placeholder="Marca / Modelo bomba filtro">
+                  <div v-if="errors.pump_filter" class="text-error text-sm mt-1">${ errors.pump_filter }</div>
+                </div>
+                <div class="form-control">
+                  <label class="label"><span class="label-text">Bomba Presión:</span></label>
+                  <input type="text" v-model="formData.pump_pressure" class="input input-bordered w-full" placeholder="Marca / Modelo bomba presión">
+                  <div v-if="errors.pump_pressure" class="text-error text-sm mt-1">${ errors.pump_pressure }</div>
+                </div>
+                <div class="form-control">
+                  <label class="label"><span class="label-text">Bomba Dosificadora:</span></label>
+                  <input type="text" v-model="formData.pump_dosing" class="input input-bordered w-full" placeholder="Marca / Modelo bomba dosificadora">
+                  <div v-if="errors.pump_dosing" class="text-error text-sm mt-1">${ errors.pump_dosing }</div>
+                </div>
+                <div class="form-control">
+                  <label class="label"><span class="label-text">Filtro Arena / Carbón:</span></label>
+                  <input type="text" v-model="formData.sand_carbon_filter" class="input input-bordered w-full" placeholder="Detalle filtro arena / carbón">
+                  <div v-if="errors.sand_carbon_filter" class="text-error text-sm mt-1">${ errors.sand_carbon_filter }</div>
+                </div>
+                <div class="form-control">
+                  <label class="label"><span class="label-text">Tanque Hidroneumático:</span></label>
+                  <input type="text" v-model="formData.hidroneumatic_tank" class="input input-bordered w-full" placeholder="Capacidad / Modelo tanque hidroneumático">
+                  <div v-if="errors.hidroneumatic_tank" class="text-error text-sm mt-1">${ errors.hidroneumatic_tank }</div>
+                </div>
+                <div class="form-control">
+                  <label class="label"><span class="label-text">Filtro UV:</span></label>
+                  <input type="text" v-model="formData.uv_filter" class="input input-bordered w-full" placeholder="Detalle filtro UV">
+                  <div v-if="errors.uv_filter" class="text-error text-sm mt-1">${ errors.uv_filter }</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Relays específicos planta Agua Residual -->
+            <div v-if="formData.subtype === 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL'" class="mt-8">
+              <h5 class="font-medium text-gray-600 mb-3">Relays Planta Agua Residual</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label"><span class="label-text">Relay Motor:</span></label>
+                  <input type="text" v-model="formData.relay_engine" class="input input-bordered w-full" placeholder="Marca / Modelo relay motor">
+                  <div v-if="errors.relay_engine" class="text-error text-sm mt-1">${ errors.relay_engine }</div>
+                </div>
+                <div class="form-control">
+                  <label class="label"><span class="label-text">Relay Blower:</span></label>
+                  <input type="text" v-model="formData.relay_blower" class="input input-bordered w-full" placeholder="Marca / Modelo relay blower">
+                  <div v-if="errors.relay_blower" class="text-error text-sm mt-1">${ errors.relay_blower }</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
