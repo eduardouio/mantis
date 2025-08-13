@@ -17,7 +17,6 @@ python manage.py sowseed
 ```
 
 
-
 # un solo comando para **unix**
 ```bash
 ./manage.py makemigrations accounts &&
@@ -176,3 +175,335 @@ Este es un proyecto web desarrollado en **Django** que utiliza **Tailwind CSS** 
 - **Consistencia**: Seguir patrones existentes
 - **Modularidad**: Separación clara por funcionalidad
 - **Reutilización**: Componentes y templates base
+
+
+- listado de adicionales
+    documento de planilla
+    subir adjunto de OC ordend de compra
+    SIbir adjunto de cotizacion
+    check list de equipos
+
+    
+
+## Tabla de Códigos de Equipos
+
+| Código | Descripción |
+|--------|-------------|
+| LVMNOS | LAVAMANOS |
+| BTSNHM | BATERIA SANITARIA HOMBRE |
+| BTSNMU | BATERIA SANITARIA MUJER |
+| PTRTAP | PLANTA DE TRATAMIENTO DE AGUA POTABLE |
+| PTRTAR | PLANTA DE TRATAMIENTO DE AGUA RESIDUAL |
+| TNQAAC | TANQUES DE ALMACENAMIENTO AGUA CRUDA |
+| TNQAAR | TANQUES DE ALMACENAMIENTO AGUA RESIDUAL |
+| EST4UR | ESTACION CUADRUPLE URINARIO |
+| CMPRBN | CAMPER BAÑO |
+
+## Documentación del Modelo ResourceItem
+
+### Campos del Modelo
+
+#### Campos Básicos
+| Campo | Tipo | Descripción | Requerido |
+|-------|------|-------------|-----------|
+| `id` | AutoField | ID único del registro | ✅ |
+| `name` | CharField(255) | Nombre del Equipo/Servicio | ✅ |
+| `is_service` | BooleanField | Tipo: True=Servicio, False=Equipo | ✅ |
+| `code` | CharField(50) | Código único del equipo/servicio | ❌ |
+| `type_equipment` | CharField | Subtipo de equipo (choices) | ❌ |
+| `brand` | CharField(255) | Marca del equipo | ❌ |
+| `model` | CharField(255) | Modelo del equipo | ❌ |
+| `serial_number` | CharField(255) | Número de serie | ❌ |
+| `date_purchase` | DateField | Fecha de compra | ❌ |
+
+#### Dimensiones Físicas
+| Campo | Tipo | Descripción | Unidad |
+|-------|------|-------------|--------|
+| `height` | PositiveSmallIntegerField | Altura del equipo | cm |
+| `width` | PositiveSmallIntegerField | Ancho del equipo | cm |
+| `depth` | PositiveSmallIntegerField | Profundidad del equipo | cm |
+| `weight` | PositiveSmallIntegerField | Peso del equipo | kg |
+
+#### Capacidades
+| Campo | Tipo | Descripción | Uso |
+|-------|------|-------------|-----|
+| `capacity_gallons` | DecimalField(10,2) | Capacidad en galones | Equipos generales |
+| `plant_capacity` | CharField(255) | Capacidad específica | Plantas de tratamiento |
+
+#### Campos de Estado (stst_*)
+| Campo | Tipo | Descripción | Valores |
+|-------|------|-------------|---------|
+| `stst_repair_reason` | TextField | Motivo de reparación | Texto libre |
+| `stst_status_equipment` | CharField | Estado del equipo | FUNCIONANDO, DAÑADO, INCOMPLETO, EN REPARACION |
+| `stst_status_disponibility` | CharField | Disponibilidad | DISPONIBLE, RENTADO, FUERA DE SERVICIO |
+| `stst_current_location` | CharField(255) | Ubicación actual | Texto libre |
+| `stst_current_project_id` | SmallIntegerField | ID del proyecto actual | Número |
+| `stst_commitment_date` | DateField | Fecha de ocupación | Fecha |
+| `stst_release_date` | DateField | Fecha de liberación | Fecha |
+
+### Campos de Checklist (have_*)
+
+#### Para Equipos Sanitarios
+| Campo | Aplicable a | Descripción |
+|-------|-------------|-------------|
+| `have_foot_pumps` | LVMNOS, EST4UR, CMPRBN | Bombas de pie |
+| `have_paper_dispenser` | BTSNHM, BTSNMJ, EST4UR, CMPRBN | Dispensador de papel |
+| `have_soap_dispenser` | Todos los sanitarios | Dispensador de jabón |
+| `have_napkin_dispenser` | Todos los sanitarios | Dispensador de servilletas |
+| `have_paper_towels` | LVMNOS, EST4UR, CMPRBN | Toallas de papel |
+| `have_urinals` | BTSNHM, EST4UR, CMPRBN | Urinarios |
+| `have_seat` | BTSNHM, BTSNMJ, CMPRBN | Asientos |
+| `have_toilet_pump` | Baterías sanitarias | Bomba de baño |
+| `have_sink_pump` | Baterías sanitarias | Bomba de lavamanos |
+| `have_toilet_lid` | Baterías sanitarias | Llave de baño |
+| `have_bathroom_bases` | Baterías sanitarias | Bases de baño |
+| `have_ventilation_pipe` | Baterías sanitarias | Tubo de ventilación |
+
+#### Para Plantas de Tratamiento
+| Campo | PTRTAP | PTRTAR | Descripción |
+|-------|--------|--------|-------------|
+| `have_blower_brand` | ✅ | ✅ | Tiene Blower |
+| `have_belt_brand` | ✅ | ✅ | Tiene Banda |
+| `have_blower_pulley` | ✅ | ✅ | Tiene Pulley del Blower |
+| `have_motor_pulley` | ✅ | ✅ | Tiene Pulley del Motor |
+| `have_electrical_panel` | ✅ | ✅ | Tiene Panel Eléctrico |
+| `have_motor_guard` | ✅ | ✅ | Tiene Guarda Motor |
+| `have_pump_dosing` | ✅ | ✅ | Tiene Bomba Dosificadora |
+| `have_pump_pressure` | ✅ | ✅ | Tiene Bomba de Presión |
+| `have_engine` | ✅ | ✅ | Tiene Motor |
+| `have_engine_guard` | ✅ | ✅ | Tiene Guarda del Motor |
+| `have_hidroneumatic_tank` | ✅ | ✅ | Tiene Tanque Hidroneumático |
+| `have_relay_engine` | ✅ | ✅ | Tiene Relay del Motor |
+| `have_relay_blower` | ✅ | ✅ | Tiene Relay del Blower |
+| `have_uv_filter` | ✅ | ❌ | Tiene Filtro UV |
+| `have_pump_filter` | ✅ | ❌ | Tiene Bomba de Filtración |
+| `have_sand_carbon_filter` | ✅ | ❌ | Tiene Filtro de Arena y Carbón |
+
+### Check Lists por Tipo de Equipo
+
+#### LVMNOS - Lavamanos
+```python
+LVMNOS_FIELDS = [
+    'have_foot_pumps',
+    'have_soap_dispenser', 
+    'have_napkin_dispenser',
+    'have_paper_towels'
+]
+```
+
+#### BTSNHM - Batería Sanitaria Hombre
+```python
+BTSNHM_CHECK_LIST_FIELDS = [
+    'have_paper_dispenser',
+    'have_soap_dispenser',
+    'have_napkin_dispenser', 
+    'have_urinals',
+    'have_seat',
+    'have_toilet_pump',
+    'have_sink_pump',
+    'have_toilet_lid',
+    'have_bathroom_bases',
+    'have_ventilation_pipe'
+]
+```
+
+#### BTSNMJ - Batería Sanitaria Mujer
+```python
+BTSNMJ_CHECK_LIST_FIELDS = [
+    'have_paper_dispenser',
+    'have_soap_dispenser',
+    'have_napkin_dispenser',
+    'have_seat',
+    'have_toilet_pump', 
+    'have_sink_pump',
+    'have_toilet_lid',
+    'have_bathroom_bases',
+    'have_ventilation_pipe'
+]
+```
+
+#### EST4UR - Estación Cuádruple Urinario
+```python
+EST4UR_CHECK_LIST_FIELDS = [
+    'have_paper_dispenser',
+    'have_soap_dispenser',
+    'have_napkin_dispenser',
+    'have_urinals',
+    'have_toilet_pump',
+    'have_sink_pump', 
+    'have_toilet_lid',
+    'have_foot_pumps',
+    'have_paper_towels'
+]
+```
+
+#### CMPRBN - Camper Baño
+```python
+CMPRBN_CHECK_LIST_FIELDS = [
+    'have_paper_dispenser',
+    'have_soap_dispenser',
+    'have_napkin_dispenser',
+    'have_urinals',
+    'have_seat',
+    'have_toilet_pump',
+    'have_sink_pump',
+    'have_toilet_lid',
+    'have_bathroom_bases',
+    'have_ventilation_pipe',
+    'have_foot_pumps',
+    'have_paper_towels'
+]
+```
+
+#### PTRTAP - Planta de Tratamiento de Agua Potable
+```python
+PTRTAP_CHECK_LIST_FIELDS = [
+    'have_blower_brand',
+    'have_belt_brand', 
+    'have_blower_pulley',
+    'have_motor_pulley',
+    'have_electrical_panel',
+    'have_motor_guard',
+    'have_relay_engine',
+    'have_relay_blower',
+    'have_uv_filter',
+    'have_pump_filter',
+    'have_pump_dosing',
+    'have_pump_pressure',
+    'have_engine',
+    'have_engine_guard',
+    'have_hidroneumatic_tank', 
+    'have_sand_carbon_filter'
+]
+```
+
+#### PTRTAR - Planta de Tratamiento de Agua Residual
+```python
+PTRTAR_CHECK_LIST = [
+    'have_blower_brand',
+    'have_belt_brand',
+    'have_blower_pulley',
+    'have_motor_pulley',
+    'have_electrical_panel',
+    'have_motor_guard',
+    'have_relay_engine',
+    'have_relay_blower',
+    'have_pump_dosing',
+    'have_pump_pressure',
+    'have_engine',
+    'have_engine_guard',
+    'have_hidroneumatic_tank'
+]
+```
+
+### Validaciones del Modelo
+
+#### Agrupaciones de Validación
+| Grupo | Campos Incluidos | Uso |
+|-------|------------------|-----|
+| `lavamanos_fields` | have_foot_pumps, have_soap_dispenser, have_paper_towels | Solo para LVMNOS |
+| `sanitary_fields` | have_paper_dispenser, have_soap_dispenser, have_napkin_dispenser, have_urinals, have_seat, have_toilet_pump, have_sink_pump, have_toilet_lid, have_bathroom_bases, have_ventilation_pipe | Para equipos sanitarios |
+| `plant_common_fields` | have_blower_brand, have_belt_brand, have_blower_pulley, have_motor_pulley, have_electrical_panel, have_motor_guard, have_pump_dosing, have_pump_pressure, have_engine, have_engine_guard, have_hidroneumatic_tank | Común para ambas plantas |
+| `plant_potable_only_fields` | have_uv_filter, have_pump_filter, have_sand_carbon_filter | Solo para PTRTAP |
+| `plant_residual_only_fields` | have_relay_engine, have_relay_blower | Solo para PTRTAR |
+
+#### Reglas de Validación por Tipo
+| Tipo de Equipo | Campos Permitidos | Campos Prohibidos | Validaciones Especiales |
+|----------------|-------------------|-------------------|------------------------|
+| LVMNOS | lavamanos_fields | sanitary_fields + plant_* | - |
+| BTSNHM, BTSNMJ, EST4UR, CMPRBN | sanitary_fields | lavamanos_fields + plant_* | BTSNMJ no puede tener urinals |
+| PTRTAP | plant_common_fields + plant_potable_only_fields | sanitary_fields + lavamanos_fields + plant_residual_only_fields | - |
+| PTRTAR | plant_common_fields + plant_residual_only_fields | sanitary_fields + lavamanos_fields + plant_potable_only_fields | Requiere plant_capacity |
+| TNQAAC, TNQAAR | Ninguno específico | Todos los checklist | - |
+
+#### Validaciones Especiales
+- **Estado EN REPARACION**: Requiere `stst_repair_reason`
+- **BATERIA SANITARIA MUJER**: No puede tener `have_urinals = True`
+- **PLANTA DE TRATAMIENTO DE AGUA RESIDUAL**: Requiere `plant_capacity` no nulo
+
+### Tabla Completa de Campos del Modelo
+
+| Campo | Tipo de Dato | Obligatorio/Valor por Defecto |
+|-------|--------------|-------------------------------|
+| **Campos Básicos** | | |
+| `id` | AutoField | Obligatorio (PK) |
+| `name` | CharField(255) | Obligatorio |
+| `is_service` | BooleanField | False |
+| `code` | CharField(50) | None (unique=True) |
+| `type_equipment` | CharField(255) | None |
+| `brand` | CharField(255) | None |
+| `model` | CharField(255) | 'N/A' |
+| `serial_number` | CharField(255) | None |
+| `date_purchase` | DateField | None |
+| **Dimensiones Físicas** | | |
+| `height` | PositiveSmallIntegerField | None |
+| `width` | PositiveSmallIntegerField | None |
+| `depth` | PositiveSmallIntegerField | None |
+| `weight` | PositiveSmallIntegerField | None |
+| **Capacidades** | | |
+| `capacity_gallons` | DecimalField(10,2) | None |
+| `plant_capacity` | CharField(255) | None |
+| **Campos Checklist Sanitarios** | | |
+| `have_foot_pumps` | BooleanField | False |
+| `have_paper_dispenser` | BooleanField | False |
+| `have_soap_dispenser` | BooleanField | False |
+| `have_napkin_dispenser` | BooleanField | False |
+| `have_paper_towels` | BooleanField | False |
+| `have_urinals` | BooleanField | False |
+| `have_seat` | BooleanField | False |
+| `have_toilet_pump` | BooleanField | False |
+| `have_sink_pump` | BooleanField | False |
+| `have_toilet_lid` | BooleanField | False |
+| `have_bathroom_bases` | BooleanField | False |
+| `have_ventilation_pipe` | BooleanField | False |
+| **Campos Checklist Plantas** | | |
+| `have_blower_brand` | BooleanField | False |
+| `have_belt_brand` | BooleanField | False |
+| `have_blower_pulley` | BooleanField | False |
+| `have_motor_pulley` | BooleanField | False |
+| `have_electrical_panel` | BooleanField | False |
+| `have_motor_guard` | BooleanField | False |
+| `have_relay_engine` | BooleanField | False |
+| `have_relay_blower` | BooleanField | False |
+| `have_uv_filter` | BooleanField | False |
+| `have_pump_filter` | BooleanField | False |
+| `have_pump_dosing` | BooleanField | False |
+| `have_pump_pressure` | BooleanField | False |
+| `have_engine` | BooleanField | False |
+| `have_engine_guard` | BooleanField | False |
+| `have_hidroneumatic_tank` | BooleanField | False |
+| `have_sand_carbon_filter` | BooleanField | False |
+| **Equipos Especiales - Marca/Modelo** | | |
+| `relay_engine` | CharField(255) | None |
+| `relay_blower` | CharField(255) | None |
+| `blower_brand` | CharField(255) | None |
+| `blower_model` | CharField(255) | None |
+| `engine_fases` | CharField(255) | None |
+| `engine_brand` | CharField(255) | None |
+| `engine_model` | CharField(255) | None |
+| `belt_brand` | CharField(255) | None |
+| `belt_model` | CharField(255) | None |
+| `belt_type` | CharField(1) | None |
+| `blower_pulley_brand` | CharField(255) | None |
+| `blower_pulley_model` | CharField(255) | None |
+| `motor_pulley_brand` | CharField(255) | None |
+| `motor_pulley_model` | CharField(255) | None |
+| `electrical_panel_brand` | CharField(255) | None |
+| `electrical_panel_model` | CharField(255) | None |
+| `engine_guard_brand` | CharField(255) | None |
+| `engine_guard_model` | CharField(255) | None |
+| **Plantas de Agua Potable** | | |
+| `pump_filter` | CharField(255) | None |
+| `pump_pressure` | CharField(255) | None |
+| `pump_dosing` | CharField(255) | None |
+| `sand_carbon_filter` | CharField(255) | None |
+| `hidroneumatic_tank` | CharField(255) | None |
+| `uv_filter` | CharField(255) | None |
+| **Estado del Equipo** | | |
+| `stst_repair_reason` | TextField | None |
+| `stst_status_equipment` | CharField(255) | 'FUNCIONANDO' |
+| `stst_status_disponibility` | CharField(255) | 'DISPONIBLE' |
+| `stst_current_location` | CharField(255) | None |
+| `stst_current_project_id` | SmallIntegerField | None |
+| `stst_commitment_date` | DateField | None |
+| `stst_release_date` | DateField | None |
