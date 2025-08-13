@@ -18,10 +18,22 @@ class PartnerDetailView(LoginRequiredMixin, DetailView):
         )
         
         # Agregar proyectos asociados al contexto
-        context['projects'] = Project.objects.filter(
+        projects = Project.objects.filter(
             partner=self.object,
             is_active=True
         ).order_by('-created_at')
+        
+        context['projects'] = projects
+        
+        # Agregar estadísticas de proyectos
+        context['projects_stats'] = {
+            'total': projects.count(),
+            'active': projects.filter(is_closed=False, is_active=True).count(),
+            'closed': projects.filter(is_closed=True).count(),
+            'inactive': projects.filter(
+                is_active=False, is_closed=False
+            ).count(),
+        }
 
         if 'action' not in self.request.GET:
             return context
@@ -34,7 +46,10 @@ class PartnerDetailView(LoginRequiredMixin, DetailView):
         elif context['action'] == 'updated':
             message = 'El socio de negocio ha sido actualizado con éxito.'
         elif context['action'] == 'no_delete':
-            message = 'No es posible eliminar el socio de negocio. Existen dependencias.'
+            message = (
+                'No es posible eliminar el socio de negocio. '
+                'Existen dependencias.'
+            )
         elif context['action'] == 'delete':
             message = 'Esta acción es irreversible. ¿Desea continuar?.'
 
