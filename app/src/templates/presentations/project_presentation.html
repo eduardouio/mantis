@@ -1,48 +1,608 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="w-4/5 mx-auto p-4 bg-white rounded-2xl shadow-md space-y-6 border border-t-[15px] border-t-blue-500">
-  <div class="flex justify-between items-center border-b-blue-500 border-b pb-1">
-    <h1 class="text-2xl font-semibold text-blue-500">Ficha de Proyecto</h1>
-    {# Ícono opcional aquí #}
+<div class="w-4/5 mx-auto p-6 bg-white rounded-2xl shadow-md space-y-6 border border-t-[15px] border-t-blue-500">
+  <div class="flex justify-between items-center border-b-blue-500 border-b pb-3">
+    <h1 class="text-3xl font-semibold text-blue-500">Ficha de Proyecto</h1>
+    <div class="flex gap-2">
+      <button class="btn btn-sm btn-outline btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14,2 14,8 20,8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10,9 9,9 8,9"></polyline>
+        </svg>
+        Exportar PDF
+      </button>
+      <button class="btn btn-sm btn-outline btn-success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7,10 12,15 17,10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Descargar
+      </button>
+    </div>
   </div>
 
   {# Información del Proyecto #}
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div>
-        <p class="text-sm text-gray-500">Estado Proyecto</p>
-        <p class="font-semibold text-gray-900">
-          {% if project.is_active %} 
-          <span class="badge badge-success">Activo</span>
-          {% else %} 
-          <span class="badge badge-error">Inactivo</span>
-          {% endif %}
-        </p>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+    <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-l-4 border-blue-500">
+      <p class="text-sm text-gray-600">Estado Proyecto</p>
+      <p class="font-semibold text-gray-900">
+        {% if project.is_active %} 
+        <span class="badge badge-success gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20,6 9,17 4,12"></polyline>
+          </svg>
+          Activo
+        </span>
+        {% else %} 
+        <span class="badge badge-error gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+          Inactivo
+        </span>
+        {% endif %}
+      </p>
+    </div>
+    <div class="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border-l-4 border-green-500">
+      <p class="text-sm text-gray-600">Cliente</p>
+      <p class="font-semibold text-gray-900">
+        <a href="{% if project.partner_id %}{% url 'partner_detail' project.partner_id %}{% else %}#{% endif %}" class="link link-hover text-primary">
+          {{ project.partner|default:"TUSCANY PERFORACION PETROLERA TUSCANYPERF S A" }}
+        </a>
+      </p>
+    </div>
+    <div class="bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg border-l-4 border-orange-500">
+      <p class="text-sm text-gray-600">Lugar</p>
+      <p class="font-semibold text-gray-900">{{ project.place|default:"SHUSHUFINDI" }}</p>
+    </div>
+    <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-l-4 border-purple-500">
+      <p class="text-sm text-gray-600">Fecha de Inicio</p>
+      <p class="font-semibold text-gray-900">{{ project.start_date|date:"Y-m-d"|default:"2025-08-01" }}</p>
+    </div>
+    <div class="bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-lg border-l-4 border-red-500">
+      <p class="text-sm text-gray-600">Fecha de Fin</p>
+      <p class="font-semibold text-gray-900">{{ project.end_date|date:"Y-m-d"|default:"2025-11-06" }}</p>
+    </div>
+    <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg border-l-4 border-indigo-500">
+      <p class="text-sm text-gray-600">Duración</p>
+      <p class="font-semibold text-gray-900">
+        <span class="badge badge-info">97 días</span>
+      </p>
+    </div>
+    <div class="bg-gradient-to-r from-teal-50 to-teal-100 p-4 rounded-lg border-l-4 border-teal-500">
+      <p class="text-sm text-gray-600">Nombre de Contacto</p>
+      <p class="font-semibold text-gray-900">{{ project.contact_name|default:"CARLOS CENTENO" }}</p>
+    </div>
+    <div class="bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border-l-4 border-yellow-500">
+      <p class="text-sm text-gray-600">Teléfono de Contacto</p>
+      <p class="font-semibold text-gray-900">{{ project.phone_contact|default:"0993265" }}</p>
+    </div>
+    <div class="bg-gradient-to-r from-pink-50 to-pink-100 p-4 rounded-lg border-l-4 border-pink-500">
+      <p class="text-sm text-gray-600">Valor Total</p>
+      <p class="font-semibold text-gray-900 text-lg">
+        <span class="text-green-600">$97,485.00</span>
+      </p>
+    </div>
+  </div>
+
+  {# Tabs para organizar el contenido #}
+  <div class="tabs tabs-lifted">
+    <input type="radio" name="project_tabs" class="tab" aria-label="Equipos y Servicios" checked />
+    <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+      {# Equipos y Servicios Asignados al Proyecto #}
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <rect x="6" y="4" width="12" height="16" rx="2"></rect>
+              <rect x="9" y="8" width="6" height="9" rx="1"></rect>
+              <circle cx="12" cy="6" r="0.5"></circle>
+              <circle cx="13.5" cy="12" r="0.5"></circle>
+              <path d="M6 20h12"></path>
+            </svg>
+            Equipos y Servicios Asignados
+          </h2>
+          <div class="stats shadow">
+            <div class="stat">
+              <div class="stat-title">Total Items</div>
+              <div class="stat-value text-primary">4</div>
+            </div>
+            <div class="stat">
+              <div class="stat-title">Costo Mensual</div>
+              <div class="stat-value text-success">$1,005</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full">
+            <thead>
+              <tr class="bg-base-200">
+                <th>#</th>
+                <th>Tipo</th>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th class="text-right">Costo Renta</th>
+                <th class="text-right">Costo Mant.</th>
+                <th>Frecuencia</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover:bg-base-50">
+                <td>1</td>
+                <td><span class="badge badge-primary">EQUIPO</span></td>
+                <td class="font-mono">LAV-001</td>
+                <td>Lavamanos Portátil Industrial</td>
+                <td><span class="badge badge-success">RENTADO</span></td>
+                <td class="text-right font-semibold">$120.00</td>
+                <td class="text-right font-semibold">$25.00</td>
+                <td><span class="badge badge-outline">SEMANAL</span></td>
+                <td>2025-08-01</td>
+                <td>2025-11-06</td>
+                <td class="text-center">
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="12" cy="5" r="1"></circle>
+                        <circle cx="12" cy="19" r="1"></circle>
+                      </svg>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li><a>Ver Detalle</a></li>
+                      <li><a>Editar</a></li>
+                      <li><a>Programar Mantenimiento</a></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-base-50">
+                <td>2</td>
+                <td><span class="badge badge-primary">EQUIPO</span></td>
+                <td class="font-mono">BSH-002</td>
+                <td>Batería Sanitaria Hombre</td>
+                <td><span class="badge badge-success">RENTADO</span></td>
+                <td class="text-right font-semibold">$150.00</td>
+                <td class="text-right font-semibold">$30.00</td>
+                <td><span class="badge badge-outline">QUINCENAL</span></td>
+                <td>2025-08-01</td>
+                <td>2025-11-06</td>
+                <td class="text-center">
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="12" cy="5" r="1"></circle>
+                        <circle cx="12" cy="19" r="1"></circle>
+                      </svg>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li><a>Ver Detalle</a></li>
+                      <li><a>Editar</a></li>
+                      <li><a>Programar Mantenimiento</a></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-base-50">
+                <td>3</td>
+                <td><span class="badge badge-secondary">SERVICIO</span></td>
+                <td class="font-mono">MANT-001</td>
+                <td>Mantenimiento y Limpieza</td>
+                <td><span class="badge badge-info">PROGRAMADO</span></td>
+                <td class="text-right font-semibold">$80.00</td>
+                <td class="text-right font-semibold">$0.00</td>
+                <td><span class="badge badge-outline">MENSUAL</span></td>
+                <td>2025-08-01</td>
+                <td>2025-11-06</td>
+                <td class="text-center">
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="12" cy="5" r="1"></circle>
+                        <circle cx="12" cy="19" r="1"></circle>
+                      </svg>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li><a>Ver Detalle</a></li>
+                      <li><a>Editar</a></li>
+                      <li><a>Programar Mantenimiento</a></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-base-50">
+                <td>4</td>
+                <td><span class="badge badge-primary">EQUIPO</span></td>
+                <td class="font-mono">PTA-003</td>
+                <td>Planta Tratamiento Agua 15M3</td>
+                <td><span class="badge badge-success">RENTADO</span></td>
+                <td class="text-right font-semibold">$500.00</td>
+                <td class="text-right font-semibold">$100.00</td>
+                <td><span class="badge badge-outline">MENSUAL</span></td>
+                <td>2025-08-01</td>
+                <td>2025-11-06</td>
+                <td class="text-center">
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <circle cx="12" cy="5" r="1"></circle>
+                        <circle cx="12" cy="19" r="1"></circle>
+                      </svg>
+                    </div>
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li><a>Ver Detalle</a></li>
+                      <li><a>Editar</a></li>
+                      <li><a>Programar Mantenimiento</a></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="bg-base-200 font-semibold">
+                <td colspan="5" class="text-lg">Total Mensual:</td>
+                <td class="text-right text-lg text-green-600">$850.00</td>
+                <td class="text-right text-lg text-blue-600">$155.00</td>
+                <td colspan="4"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
-      <div>
-        <p class="text-sm text-gray-500">Cliente</p>
-        <p class="font-semibold text-gray-900"><a href="{% if project.partner_id %}{% url 'partner_detail' project.partner_id %}{% else %}#{% endif %}" class="link link-hover text-primary">{{ project.partner }}</a></p>
+    </div>
+
+    <input type="radio" name="project_tabs" class="tab" aria-label="Órdenes de Trabajo" />
+    <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+      {# Órdenes De Trabajo del Proyecto #}
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+              <path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" />
+            </svg>
+            Órdenes De Trabajo
+          </h2>
+          <div class="stats shadow">
+            <div class="stat">
+              <div class="stat-title">Total Órdenes</div>
+              <div class="stat-value text-primary">8</div>
+            </div>
+            <div class="stat">
+              <div class="stat-title">Completadas</div>
+              <div class="stat-value text-success">5</div>
+            </div>
+            <div class="stat">
+              <div class="stat-title">Pendientes</div>
+              <div class="stat-value text-warning">3</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full">
+            <thead>
+              <tr class="bg-base-200">
+                <th>#</th>
+                <th>Orden</th>
+                <th>Fecha</th>
+                <th>Técnico</th>
+                <th>Equipos</th>
+                <th>Tipo Servicio</th>
+                <th>Estado</th>
+                <th>Horas</th>
+                <th>Costo</th>
+                <th class="text-center">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover:bg-base-50">
+                <td>1</td>
+                <td class="font-mono">OT-2025-001</td>
+                <td>2025-08-05</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar placeholder">
+                      <div class="bg-neutral text-neutral-content rounded-full w-8">
+                        <span class="text-xs">JC</span>
+                      </div>
+                    </div>
+                    <span>Juan Carlos López</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="badge badge-outline">LAV-001</div>
+                  <div class="badge badge-outline">BSH-002</div>
+                </td>
+                <td><span class="badge badge-primary">MANTENIMIENTO</span></td>
+                <td><span class="badge badge-success">COMPLETADA</span></td>
+                <td>4.5</td>
+                <td class="text-right font-semibold">$225.00</td>
+                <td class="text-center">
+                  <div class="join">
+                    <button class="btn btn-xs btn-ghost" title="Ver Detalle">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+                        <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"></path>
+                      </svg>
+                    </button>
+                    <button class="btn btn-xs btn-ghost" title="Editar">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
+                        <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-base-50">
+                <td>2</td>
+                <td class="font-mono">OT-2025-002</td>
+                <td>2025-08-12</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar placeholder">
+                      <div class="bg-neutral text-neutral-content rounded-full w-8">
+                        <span class="text-xs">MR</span>
+                      </div>
+                    </div>
+                    <span>María Rodríguez</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="badge badge-outline">PTA-003</div>
+                </td>
+                <td><span class="badge badge-info">ALQUILER</span></td>
+                <td><span class="badge badge-warning">PENDIENTE</span></td>
+                <td>-</td>
+                <td class="text-right font-semibold">$500.00</td>
+                <td class="text-center">
+                  <div class="join">
+                    <button class="btn btn-xs btn-ghost" title="Ver Detalle">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+                        <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"></path>
+                      </svg>
+                    </button>
+                    <button class="btn btn-xs btn-ghost" title="Editar">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
+                        <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="hover:bg-base-50">
+                <td>3</td>
+                <td class="font-mono">OT-2025-003</td>
+                <td>2025-08-18</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="avatar placeholder">
+                      <div class="bg-neutral text-neutral-content rounded-full w-8">
+                        <span class="text-xs">AS</span>
+                      </div>
+                    </div>
+                    <span>Antonio Silva</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="badge badge-outline">MANT-001</div>
+                </td>
+                <td><span class="badge badge-secondary">LOGISTICA</span></td>
+                <td><span class="badge badge-success">COMPLETADA</span></td>
+                <td>6.0</td>
+                <td class="text-right font-semibold">$300.00</td>
+                <td class="text-center">
+                  <div class="join">
+                    <button class="btn btn-xs btn-ghost" title="Ver Detalle">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"></path>
+                        <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6"></path>
+                      </svg>
+                    </button>
+                    <button class="btn btn-xs btn-ghost" title="Editar">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"></path>
+                        <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="bg-base-200 font-semibold">
+                <td colspan="7" class="text-lg">Total Órdenes:</td>
+                <td class="text-lg text-primary">10.5 hrs</td>
+                <td class="text-right text-lg text-green-600">$1,025.00</td>
+                <td></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
-      <div>
-        <p class="text-sm text-gray-500">Lugar</p>
-        <p class="font-semibold text-gray-900">{{ project.place }}</p>
+    </div>
+
+    <input type="radio" name="project_tabs" class="tab" aria-label="Calendario Mantenimientos" />
+    <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+      {# Calendario de Mantenimientos #}
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+              <path d="M16 3v4" />
+              <path d="M8 3v4" />
+              <path d="M4 11h16" />
+              <path d="M8 15h2v2h-2z" />
+            </svg>
+            Calendario de Mantenimientos
+          </h2>
+          <div class="join">
+            <button class="btn btn-sm join-item btn-outline">Mes</button>
+            <button class="btn btn-sm join-item btn-active">Cronograma</button>
+            <button class="btn btn-sm join-item btn-outline">Lista</button>
+          </div>
+        </div>
+
+        {# Vista de cronograma de mantenimientos #}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {# Cronograma visual #}
+          <div class="card bg-base-100 shadow border">
+            <div class="card-body">
+              <h3 class="card-title text-lg">Cronograma Agosto 2025</h3>
+              <div class="space-y-3">
+                <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                  <div class="text-center">
+                    <div class="text-lg font-bold text-blue-600">05</div>
+                    <div class="text-xs text-gray-500">AGO</div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="font-semibold">Mantenimiento LAV-001</div>
+                    <div class="text-sm text-gray-600">Lavamanos - Limpieza semanal</div>
+                    <div class="text-xs text-gray-500">Técnico: Juan Carlos López</div>
+                  </div>
+                  <span class="badge badge-primary">SEMANAL</span>
+                </div>
+                
+                <div class="flex items-center gap-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-500">
+                  <div class="text-center">
+                    <div class="text-lg font-bold text-green-600">12</div>
+                    <div class="text-xs text-gray-500">AGO</div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="font-semibold">Mantenimiento BSH-002</div>
+                    <div class="text-sm text-gray-600">Batería Sanitaria - Limpieza quincenal</div>
+                    <div class="text-xs text-gray-500">Técnico: María Rodríguez</div>
+                  </div>
+                  <span class="badge badge-secondary">QUINCENAL</span>
+                </div>
+                
+                <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                  <div class="text-center">
+                    <div class="text-lg font-bold text-yellow-600">15</div>
+                    <div class="text-xs text-gray-500">AGO</div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="font-semibold">Mantenimiento PTA-003</div>
+                    <div class="text-sm text-gray-600">Planta Tratamiento - Mantenimiento mensual</div>
+                    <div class="text-xs text-gray-500">Técnico: Antonio Silva</div>
+                  </div>
+                  <span class="badge badge-warning">MENSUAL</span>
+                </div>
+                
+                <div class="flex items-center gap-3 p-3 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                  <div class="text-center">
+                    <div class="text-lg font-bold text-purple-600">22</div>
+                    <div class="text-xs text-gray-500">AGO</div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="font-semibold">Servicio MANT-001</div>
+                    <div class="text-sm text-gray-600">Limpieza general - Servicio mensual</div>
+                    <div class="text-xs text-gray-500">Técnico: Juan Carlos López</div>
+                  </div>
+                  <span class="badge badge-info">SERVICIO</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {# Estadísticas de mantenimientos #}
+          <div class="space-y-4">
+            <div class="card bg-base-100 shadow border">
+              <div class="card-body">
+                <h3 class="card-title text-lg">Estadísticas de Mantenimiento</h3>
+                <div class="stats stats-vertical shadow">
+                  <div class="stat">
+                    <div class="stat-figure text-primary">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v20m8-10H4"></path>
+                      </svg>
+                    </div>
+                    <div class="stat-title">Este Mes</div>
+                    <div class="stat-value text-primary">12</div>
+                    <div class="stat-desc">mantenimientos programados</div>
+                  </div>
+                  
+                  <div class="stat">
+                    <div class="stat-figure text-secondary">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20,6 9,17 4,12"></polyline>
+                      </svg>
+                    </div>
+                    <div class="stat-title">Completados</div>
+                    <div class="stat-value text-secondary">8</div>
+                    <div class="stat-desc">67% completado</div>
+                  </div>
+                  
+                  <div class="stat">
+                    <div class="stat-figure text-accent">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12,6 12,12 16,14"></polyline>
+                      </svg>
+                    </div>
+                    <div class="stat-title">Pendientes</div>
+                    <div class="stat-value text-accent">4</div>
+                    <div class="stat-desc">próximos 7 días</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {# Próximos mantenimientos #}
+            <div class="card bg-base-100 shadow border">
+              <div class="card-body">
+                <h3 class="card-title text-lg">Próximos Mantenimientos</h3>
+                <div class="space-y-2">
+                  <div class="alert alert-info">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <path d="M12 6v6l4 2"></path>
+                    </svg>
+                    <span><strong>Mañana:</strong> Mantenimiento LAV-001</span>
+                  </div>
+                  <div class="alert alert-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                      <line x1="12" y1="9" x2="12" y2="13"></line>
+                      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <span><strong>En 3 días:</strong> Revisión PTA-003</span>
+                  </div>
+                  <div class="alert alert-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="20,6 9,17 4,12"></polyline>
+                    </svg>
+                    <span><strong>Completado:</strong> Limpieza BSH-002</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <p class="text-sm text-gray-500">Fecha de Inicio</p>
-        <p class="font-semibold text-gray-900">{{ project.start_date|date:"Y-m-d" }}</p>
-      </div>
-      <div>
-        <p class="text-sm text-gray-500">Fecha de Fin</p>
-        <p class="font-semibold text-gray-900">{{ project.end_date|date:"Y-m-d" }}</p>
-      </div>
-      <div>
-        <p class="text-sm text-gray-500">Nombre de Contacto</p>
-        <p class="font-semibold text-gray-900">{{ project.contact_name }}</p>
-      </div>
-      <div>
-        <p class="text-sm text-gray-500">Teléfono de Contacto</p>
-        <p class="font-semibold text-gray-900">{{ project.phone_contact }}</p>
-      </div>
+    </div>
   </div>
 
   {# Equipos Asignados al Proyecto #}
@@ -251,9 +811,8 @@
       </a>
   </div>
   {% endif %}
-
-  <!-- Modal para Equipos -->
-  <input type="checkbox" id="equipmentModal" class="modal-toggle" />
+</div>
+{% endblock %}
   <div class="modal modal-bottom sm:modal-middle" id="equipmentModalVue"> {# ID cambiado para evitar conflicto si Bootstrap JS sigue activo #}
     <div class="modal-box w-11/12 max-w-2xl" v-if="selectedEquipment">
       <h3 class="font-bold text-lg">
@@ -294,26 +853,79 @@
           <input type="number" class="input input-bordered w-full text-right" v-model.number="selectedEquipment.projectResource.times_mantenance">
         </div>
       </div>
-      <div class="modal-action">
-        <button class="btn btn-primary" @click="updateProjectEquipment(selectedEquipment)" onclick="document.getElementById('equipmentModal').checked = false;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 4h10l4 4v10a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2" /><path d="M12 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M14 4l0 4l-6 0l0 -4" /></svg>
-          Guardar
-        </button>
-        <button class="btn btn-ghost" onclick="document.getElementById('equipmentModal').checked = false;">Cancelar</button>
-      </div>
     </div>
   </div>
+
+  {# Botones de acción #}
+  <div class="mt-8 pt-6 border-t">
+    <div class="flex flex-wrap justify-center gap-3">
+        <a href="{% url 'project_create' %}" class="btn btn-outline btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" />
+            </svg>
+            Nuevo Proyecto
+        </a>
+        <a href="{% url 'project_update' project.id %}" class="btn btn-outline btn-info">
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" />
+            </svg>
+            Editar Proyecto
+        </a>
+        <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-outline btn-error">
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+            </svg>
+            Eliminar Proyecto
+        </a>
+        <a href="{% url 'project_list' %}" class="btn btn-outline btn-neutral">
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.25" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M9 6l-6 6l6 6"></path>
+                <path d="M21 6l-6 6l6 6"></path>
+            </svg>
+            Volver al Listado
+        </a>
+    </div>
+  </div>
+  
+  {# Modal de confirmación de eliminación #}
+  {% if action == 'delete' %}
+  <div class="flex justify-center mt-6 mb-6">
+      <div class="alert alert-warning max-w-md">
+          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          <span>¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.</span>
+      </div>
+  </div>
+  <div class="flex justify-center mb-6">
+      <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-error">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+               <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+          </svg>
+          Confirmar Eliminación
+      </a>
+       <a href="{% url 'project_detail' project.id %}" class="btn btn-outline ml-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.25" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M9 6l-6 6l6 6"></path>
+              <path d="M21 6l-6 6l6 6"></path>
+          </svg>
+          Cancelar
+      </a>
+  </div>
+  {% endif %}
 </div>
-{% endblock %}
+
 
 {% block script %}
 <script>
-  // Asegúrate que estas variables globales se definan antes de que se monte la app Vue.
+  // Variables globales para Vue.js (si son necesarias)
   var csrf_token = '{{ csrf_token }}';
-  var free_equipment = {{ free_equipment|safe }};
-  var project_resource = {{ project_resource|safe }};
-  var project = {{ project_json|safe }};
-  // Estas URLs no se usan en el JS proporcionado, pero las mantengo por si acaso.
+  // Se pueden agregar más variables cuando se implemente la funcionalidad real
+  
+  // Funcionalidad básica para los tabs
+  document.addEventListener('DOMContentLoaded', function() {
+    // Los tabs de DaisyUI funcionan automáticamente
+    console.log('Presentación del proyecto cargada');
+  });
 </script>
-<script src="/static/js/app/project_app.js"></script>
 {% endblock %}
