@@ -106,11 +106,17 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                         'class': 'text-orange-600' if days_until_end > 7 else 'text-red-600'
                     })
 
-        # Estado del equipo
+        # Estado del equipo (usar campos reales del modelo)
+        equipment_status = getattr(equipment, 'stst_status_equipment', None)
+        availability_status = getattr(equipment, 'stst_status_disponibility', None)
+
         status_info = {
-            'status_class': self._get_status_class(equipment.status),
-            'needs_attention': equipment.status in ['EN REPARACION', 'DANADO', 'BUSCAR'],
-            'is_available': equipment.status in ['DISPONIBLE', 'LIBRE'],
+            'equipment_status': equipment_status,
+            'availability_status': availability_status,
+            'equipment_status_class': self._get_status_class(equipment_status),
+            'availability_status_class': self._get_status_class(availability_status),
+            'needs_attention': equipment_status in ['EN REPARACION', 'DAÑADO', 'INCOMPLETO'],
+            'is_available': availability_status in ['DISPONIBLE'],
         }
 
         return {
@@ -125,7 +131,10 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
             'LIBRE': 'text-green-600',
             'RENTADO': 'text-blue-600',
             'EN REPARACION': 'text-red-600',
-            'DANADO': 'text-red-600',
+            'DANADO': 'text-red-600',  # sin tilde por compatibilidad
+            'DAÑADO': 'text-red-600',  # con tilde (valor real en modelo)
+            'INCOMPLETO': 'text-orange-600',
+            'FUERA DE SERVICIO': 'text-gray-600',
             'BUSCAR': 'text-orange-600',
             'INDEFINIDO': 'text-gray-600',
             'STAND BY': 'text-yellow-600',
@@ -155,71 +164,73 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         """Obtener características específicas del equipo según su subtipo"""
         characteristics = []
 
-        if equipment.subtype == 'LAVAMANOS':
-            if equipment.foot_pumps:
+        te = getattr(equipment, 'type_equipment', None)
+
+        if te == 'LVMNOS':  # Lavamanos
+            if getattr(equipment, 'have_foot_pumps', False):
                 characteristics.append('Bombas de Pie')
-            if equipment.sink_soap_dispenser:
+            if getattr(equipment, 'have_soap_dispenser', False):
                 characteristics.append('Dispensador de Jabón')
-            if equipment.paper_towels:
+            if getattr(equipment, 'have_paper_towels', False):
                 characteristics.append('Toallas de Papel')
 
-        elif equipment.subtype in ['BATERIA SANITARIA HOMBRE', 'BATERIA SANITARIA MUJER']:
-            if equipment.paper_dispenser:
+        elif te in ['BTSNHM', 'BTSNMJ']:
+            if getattr(equipment, 'have_paper_dispenser', False):
                 characteristics.append('Dispensador de Papel')
-            if equipment.soap_dispenser:
+            if getattr(equipment, 'have_soap_dispenser', False):
                 characteristics.append('Dispensador de Jabón')
-            if equipment.napkin_dispenser:
+            if getattr(equipment, 'have_napkin_dispenser', False):
                 characteristics.append('Dispensador de Servilletas')
-            if equipment.urinals:
+            if getattr(equipment, 'have_urinals', False):
                 characteristics.append('Urinarios')
-            if equipment.seats:
+            if getattr(equipment, 'have_seat', False):
                 characteristics.append('Asientos')
-            if equipment.toilet_pump:
+            if getattr(equipment, 'have_toilet_pump', False):
                 characteristics.append('Bomba de Baño')
-            if equipment.sink_pump:
+            if getattr(equipment, 'have_sink_pump', False):
                 characteristics.append('Bomba de Lavamanos')
-            if equipment.toilet_lid:
+            if getattr(equipment, 'have_toilet_lid', False):
                 characteristics.append('Llave de Baño')
-            if equipment.bathroom_bases:
+            if getattr(equipment, 'have_bathroom_bases', False):
                 characteristics.append('Bases de Baño')
-            if equipment.ventilation_pipe:
+            if getattr(equipment, 'have_ventilation_pipe', False):
                 characteristics.append('Tubo de Ventilación')
 
-        elif equipment.subtype == 'CAMPER BAÑO':
+        elif te == 'CMPRBN':
             # CAMPER BAÑO comparte características con batería sanitaria según docs
-            if equipment.paper_dispenser:
+            if getattr(equipment, 'have_paper_dispenser', False):
                 characteristics.append('Dispensador de Papel')
-            if equipment.soap_dispenser:
+            if getattr(equipment, 'have_soap_dispenser', False):
                 characteristics.append('Dispensador de Jabón')
-            if equipment.napkin_dispenser:
+            if getattr(equipment, 'have_napkin_dispenser', False):
                 characteristics.append('Dispensador de Servilletas')
-            if equipment.urinals:
+            if getattr(equipment, 'have_urinals', False):
                 characteristics.append('Urinarios')
-            if equipment.seats:
+            if getattr(equipment, 'have_seat', False):
                 characteristics.append('Asientos')
-            if equipment.toilet_pump:
+            if getattr(equipment, 'have_toilet_pump', False):
                 characteristics.append('Bomba de Baño')
-            if equipment.sink_pump:
+            if getattr(equipment, 'have_sink_pump', False):
                 characteristics.append('Bomba de Lavamanos')
-            if equipment.toilet_lid:
+            if getattr(equipment, 'have_toilet_lid', False):
                 characteristics.append('Llave de Baño')
-            if equipment.bathroom_bases:
+            if getattr(equipment, 'have_bathroom_bases', False):
                 characteristics.append('Bases de Baño')
-            if equipment.ventilation_pipe:
+            if getattr(equipment, 'have_ventilation_pipe', False):
                 characteristics.append('Tubo de Ventilación')
 
-        elif equipment.subtype in ['TANQUES DE ALMACENAMIENTO AGUA CRUDA', 'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL']:
-            if equipment.capacity_gallons:
+        elif te in ['TNQAAC', 'TNQAAR']:
+            if getattr(equipment, 'capacity_gallons', None):
                 characteristics.append(
                     f'Capacidad: {equipment.capacity_gallons} Galones')
 
-        elif equipment.subtype == 'ESTACION CUADRUPLE URINARIO':
+        elif te == 'EST4UR':
             # Solo campos base según docs
             characteristics.append('Estación de 4 Urinarios')
 
         # Para plantas de tratamiento, mostrar capacidad específica
-        elif equipment.subtype in ['PLANTA DE TRATAMIENTO DE AGUA', 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL']:
-            if equipment.plant_capacity:
+        elif te in ['PTRTAP', 'PTRTAR']:
+            if getattr(equipment, 'plant_capacity', None):
                 characteristics.append(
                     f'Capacidad: {equipment.plant_capacity}')
 
@@ -230,14 +241,9 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
 
     def _get_special_components(self, equipment):
         """Obtener información de componentes especiales (blower, motor, banda, etc.)"""
-        special_subtypes = [
-            'PLANTA DE TRATAMIENTO DE AGUA',
-            'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
-            'TANQUES DE ALMACENAMIENTO AGUA CRUDA',
-            'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL'
-        ]
+        special_subtypes = ['PTRTAP', 'PTRTAR', 'TNQAAC', 'TNQAAR']
 
-        if equipment.subtype not in special_subtypes:
+        if getattr(equipment, 'type_equipment', None) not in special_subtypes:
             return {'has_special_components': False}
 
         components = {}
@@ -292,7 +298,7 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
             }
 
         # Componentes específicos para planta de agua potable
-        if equipment.subtype == 'PLANTA DE TRATAMIENTO DE AGUA':
+        if getattr(equipment, 'type_equipment', None) == 'PTRTAP':
             potable_components = {}
             if equipment.pump_filter:
                 potable_components['pump_filter'] = equipment.pump_filter
@@ -318,8 +324,8 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
             if potable_components:
                 components['potable_plant'] = potable_components
 
-    # Componentes planta agua residual (8 campos solicitados)
-        if equipment.subtype == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL':
+        # Componentes planta agua residual (8 campos solicitados)
+        if getattr(equipment, 'type_equipment', None) == 'PTRTAR':
             residual_components = {}
             if equipment.pump_filter:
                 residual_components['pump_filter'] = equipment.pump_filter
@@ -351,20 +357,25 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
 
     def _get_capacity_information(self, equipment):
         """Obtener información detallada de capacidad del equipo"""
+        # Calcular una representación amigable de la capacidad
+        te = getattr(equipment, 'type_equipment', None)
+        capacity_display = None
+        if te in ['PTRTAP', 'PTRTAR'] and getattr(equipment, 'plant_capacity', None):
+            capacity_display = f"{equipment.plant_capacity}"
+        elif getattr(equipment, 'capacity_gallons', None):
+            capacity_display = f"{equipment.capacity_gallons} gal"
+
         capacity_info = {
-            'capacity_display': equipment.capacity_display,
+            'capacity_display': capacity_display,
             'capacity_gallons': equipment.capacity_gallons,
             'plant_capacity': equipment.plant_capacity,
         }
 
         # Información adicional según el subtipo
-        if equipment.subtype in [
-            'PLANTA DE TRATAMIENTO DE AGUA',
-            'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL'
-        ]:
+        if te in ['PTRTAP', 'PTRTAR']:
             capacity_info['capacity_type'] = 'Capacidad de Planta'
             capacity_info['capacity_unit'] = 'M³/día'
-        elif equipment.capacity_gallons:
+        elif getattr(equipment, 'capacity_gallons', None):
             capacity_info['capacity_type'] = 'Capacidad de Almacenamiento'
             capacity_info['capacity_unit'] = 'Galones'
 
