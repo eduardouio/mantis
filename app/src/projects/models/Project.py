@@ -1,6 +1,5 @@
 from django.db import models
 from common.BaseModel import BaseModel
-from projects.models import Partner
 from equipment.models import ResourceItem
 from django.core.exceptions import ObjectDoesNotExist
 from accounts.models import Technical
