@@ -6,6 +6,7 @@ from .Project import (
                         WorkOrderDetail,
                         WorkOrderMaintenance
 )
+from .PaymentSheet import PaymentSheet
 
 
 __all__ = [
@@ -14,5 +15,7 @@ __all__ = [
     'ProjectResourceItem',
     'WorkOrder',
     'WorkOrderDetail',
-    'WorkOrderMaintenance'
+    'WorkOrderMaintenance',
+    'PaymentSheet',
+    'PaymentSheetDetail',
 ]

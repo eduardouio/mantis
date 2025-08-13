@@ -27,7 +27,7 @@ class ResourceItemListView(LoginRequiredMixin, ListView):
         # Filtros específicos
         status = self.request.GET.get('status')
         if status:
-            queryset = queryset.filter(status=status)
+            queryset = queryset.filter(stst_status_equipment=status)
 
         brand = self.request.GET.get('brand')
         if brand:
@@ -43,27 +43,35 @@ class ResourceItemListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['title_section'] = 'Listado De Equipos Registrados'
         context['title_page'] = 'Listado De Equipos'
-        
+
         # Variables para filtros
         context['search'] = self.request.GET.get('search', '')
         context['status'] = self.request.GET.get('status', '')
         context['brand'] = self.request.GET.get('brand', '')
         context['is_active'] = self.request.GET.get('is_active', '')
-        
+
         # Opciones para los selectores
-        context['status_choices'] = ResourceItem._meta.get_field('status').choices
+        context['status_choices'] = (
+            ResourceItem._meta
+            .get_field('stst_status_equipment')
+            .choices
+        )
         context['active_choices'] = [('true', 'Activo'), ('false', 'Inactivo')]
-        
+
         # Obtener marcas únicas para el filtro
-        context['brand_choices'] = ResourceItem.objects.values_list('brand', flat=True).distinct().order_by('brand')
+        context['brand_choices'] = (
+            ResourceItem.objects
+            .values_list('brand', flat=True)
+            .distinct()
+            .order_by('brand')
+        )
 
         # Manejo de mensajes de acciones
-        if 'action' not in self.request.GET:
-            return context
-        message = ''
-        if self.request.GET.get('action') == 'deleted':
-            message = 'El equipo ha sido eliminado con éxito.'
+        if 'action' in self.request.GET:
+            message = ''
+            if self.request.GET.get('action') == 'deleted':
+                message = 'El equipo ha sido eliminado con éxito.'
+            context['action'] = self.request.GET.get('action')
+            context['message'] = message
 
-        context['action'] = self.request.GET.get('action')
-        context['message'] = message
         return context
