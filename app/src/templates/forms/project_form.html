@@ -40,194 +40,136 @@
       </div>
     {% endif %}
     
-    <!-- Tabs para organizar el formulario -->
-    <div class="tabs tabs-box w-full mb-4">
-      <!-- Tab 1: Información del Proyecto -->
-      <input type="radio" name="form_tabs" class="tab" aria-label="Información del Proyecto" checked />
-      <div class="tab-content bg-base-100 border-base-300 p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Datos Principales -->
-          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
-            <h3 class="text-lg font-medium text-blue-600 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" />
-              </svg>
-              Información Principal
-            </h3>
-            
-            <div class="form-control">
-              <label class="label" for="{{ form.partner.id_for_label }}">
-                <span class="label-text">Cliente:</span>
-              </label>
-              {{ form.partner }}
-              {% if form.partner.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.partner.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="form-control">
-              <label class="label" for="{{ form.place.id_for_label }}">
-                <span class="label-text">Lugar/Campamento:</span>
-              </label>
-              {{ form.place }}
-              {% if form.place.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.place.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="form-control">
-              <label class="label" for="{{ form.contact_name.id_for_label }}">
-                <span class="label-text">Nombre de Contacto:</span>
-              </label>
-              {{ form.contact_name }}
-              {% if form.contact_name.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.contact_name.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="form-control">
-              <label class="label" for="{{ form.phone_contact.id_for_label }}">
-                <span class="label-text">Teléfono de Contacto:</span>
-              </label>
-              {{ form.phone_contact }}
-              {% if form.phone_contact.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.phone_contact.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-          </div>
-
-          <!-- Fechas y Estado -->
-          <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
-            <h3 class="text-lg font-medium text-blue-600 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" />
-              </svg>
-              Fechas y Estado
-            </h3>
-            
-            <div class="form-control">
-              <label class="label" for="{{ form.start_date.id_for_label }}">
-                <span class="label-text">Fecha de Inicio:</span>
-              </label>
-              {{ form.start_date }}
-              {% if form.start_date.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.start_date.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <div class="form-control">
-              <label class="label" for="{{ form.end_date.id_for_label }}">
-                <span class="label-text">Fecha de Fin:</span>
-              </label>
-              {{ form.end_date }}
-              {% if form.end_date.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.end_date.errors.0 }}</span>
-                </div>
-              {% endif %}
-            </div>
-
-            <!-- Estado del Proyecto -->
-            <div class="mt-4">
-              <div class="form-control">
-                <label class="label cursor-pointer">
-                  <span class="label-text">Proyecto Activo:</span>
-                  {{ form.is_active }}
-                </label>
-                {% if form.is_active.errors %}
-                  <div class="label">
-                    <span class="label-text-alt text-error">{{ form.is_active.errors.0 }}</span>
-                  </div>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Notas -->
-        <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+    <!-- Formulario del Proyecto -->
+    <div class="bg-base-100 border border-gray-200 rounded-lg p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Datos Principales -->
+        <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
           <h3 class="text-lg font-medium text-blue-600 mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 9h.01" /><path d="M11 12h1v4h1" />
             </svg>
-            Notas y Observaciones
+            Información Principal
           </h3>
           
           <div class="form-control">
-            <label class="label" for="{{ form.notes.id_for_label }}">
-              <span class="label-text">Notas del Proyecto:</span>
+            <label class="label" for="{{ form.partner.id_for_label }}">
+              <span class="label-text">Cliente:</span>
             </label>
-            {{ form.notes }}
-            {% if form.notes.errors %}
+            {{ form.partner }}
+            {% if form.partner.errors %}
               <div class="label">
-                <span class="label-text-alt text-error">{{ form.notes.errors.0 }}</span>
+                <span class="label-text-alt text-error">{{ form.partner.errors.0 }}</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="form-control">
+            <label class="label" for="{{ form.place.id_for_label }}">
+              <span class="label-text">Lugar/Campamento:</span>
+            </label>
+            {{ form.place }}
+            {% if form.place.errors %}
+              <div class="label">
+                <span class="label-text-alt text-error">{{ form.place.errors.0 }}</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="form-control">
+            <label class="label" for="{{ form.contact_name.id_for_label }}">
+              <span class="label-text">Nombre de Contacto:</span>
+            </label>
+            {{ form.contact_name }}
+            {% if form.contact_name.errors %}
+              <div class="label">
+                <span class="label-text-alt text-error">{{ form.contact_name.errors.0 }}</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="form-control">
+            <label class="label" for="{{ form.phone_contact.id_for_label }}">
+              <span class="label-text">Teléfono de Contacto:</span>
+            </label>
+            {{ form.phone_contact }}
+            {% if form.phone_contact.errors %}
+              <div class="label">
+                <span class="label-text-alt text-error">{{ form.phone_contact.errors.0 }}</span>
               </div>
             {% endif %}
           </div>
         </div>
-      </div>
 
-      <!-- Tab 2: Equipos y Recursos -->
-      <input type="radio" name="form_tabs" class="tab" aria-label="Equipos y Recursos" />
-      <div class="tab-content bg-base-100 border-base-300 p-6">
-        <div class="space-y-6">
-          <!-- Lista de Equipos -->
-          <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
-            <div class="border-b border-gray-200 p-4">
-              <div class="flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-gray-700">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9z" /><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                  </svg>
-                  Equipos Asignados al Proyecto
-                </h3>
-                <button type="button" 
-                        class="btn btn-primary btn-sm"
-                        onclick="openEquipmentModal()">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                  </svg>
-                  Agregar Equipo
-                </button>
+        <!-- Fechas y Estado -->
+        <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
+          <h3 class="text-lg font-medium text-blue-600 mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" />
+            </svg>
+            Fechas y Estado
+          </h3>
+          
+          <div class="form-control">
+            <label class="label" for="{{ form.start_date.id_for_label }}">
+              <span class="label-text">Fecha de Inicio:</span>
+            </label>
+            {{ form.start_date }}
+            {% if form.start_date.errors %}
+              <div class="label">
+                <span class="label-text-alt text-error">{{ form.start_date.errors.0 }}</span>
               </div>
-            </div>
-            <div class="p-4">
-              <!-- Instrucciones -->
-              <div class="alert alert-info mb-4">
-                <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  <span>Agregue los equipos que formarán parte de este proyecto. Puede configurar costos y fechas específicas para cada equipo.</span>
+            {% endif %}
+          </div>
+
+          <div class="form-control">
+            <label class="label" for="{{ form.end_date.id_for_label }}">
+              <span class="label-text">Fecha de Fin:</span>
+            </label>
+            {{ form.end_date }}
+            {% if form.end_date.errors %}
+              <div class="label">
+                <span class="label-text-alt text-error">{{ form.end_date.errors.0 }}</span>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Estado del Proyecto -->
+          <div class="mt-4">
+            <div class="form-control">
+              <label class="label cursor-pointer">
+                <span class="label-text">Proyecto Activo:</span>
+                {{ form.is_active }}
+              </label>
+              {% if form.is_active.errors %}
+                <div class="label">
+                  <span class="label-text-alt text-error">{{ form.is_active.errors.0 }}</span>
                 </div>
-              </div>
-
-              <!-- Lista de equipos agregados -->
-              <div id="equipment-list" class="space-y-3">
-                <!-- Los equipos se mostrarán aquí dinámicamente -->
-              </div>
-
-              <!-- Mensaje cuando no hay equipos -->
-              <div id="no-equipment-message" class="text-center py-8">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto text-gray-400 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
-                </svg>
-                <p class="text-gray-500 text-sm">No hay equipos asignados al proyecto</p>
-                <p class="text-gray-400 text-xs mt-1">Haz clic en "Agregar Equipo" para comenzar</p>
-              </div>
-
-              <!-- Campos ocultos para equipos (serán generados dinámicamente) -->
-              <div id="equipment-hidden-fields"></div>
+              {% endif %}
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Notas -->
+      <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <h3 class="text-lg font-medium text-blue-600 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+          </svg>
+          Notas y Observaciones
+        </h3>
+        
+        <div class="form-control">
+          <label class="label" for="{{ form.notes.id_for_label }}">
+            <span class="label-text">Notas del Proyecto:</span>
+          </label>
+          {{ form.notes }}
+          {% if form.notes.errors %}
+            <div class="label">
+              <span class="label-text-alt text-error">{{ form.notes.errors.0 }}</span>
+            </div>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -254,191 +196,25 @@
   </form>
 </div>
 
-<!-- Modal para Agregar Equipos -->
-<div id="equipmentModal" class="modal">
-  <div class="modal-box w-11/12 max-w-4xl">
-    <div class="flex justify-between items-center border-b pb-3 mb-4">
-      <h3 class="font-bold text-lg text-gray-800">Agregar Equipo al Proyecto</h3>
-      <button type="button" class="btn btn-sm btn-circle btn-ghost" onclick="closeEquipmentModal()">✕</button>
-    </div>
-    
-    <form id="equipmentForm" class="space-y-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        
-        <!-- Selección de Equipo -->
-        <div class="form-control md:col-span-3">
-          <label class="label">
-            <span class="label-text font-semibold">Equipo/Recurso</span>
-          </label>
-          <select name="resource_item" class="select select-bordered w-full" required>
-            <option value="">Seleccione un equipo...</option>
-            {% for resource in available_resources %}
-            <option value="{{ resource.id }}" data-name="{{ resource.name }}" data-code="{{ resource.code }}" data-type="{{ resource.type }}">
-              {{ resource.name }} - {{ resource.code }} ({{ resource.get_type_display }})
-            </option>
-            {% endfor %}
-          </select>
-        </div>
 
-        <!-- Costos -->
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-semibold">Costo General</span>
-          </label>
-          <div class="input-group">
-            <span class="bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l-lg text-sm flex items-center">$</span>
-            <input type="number" name="cost" step="0.01" min="0" class="input input-bordered w-full rounded-l-none" placeholder="0.00" required>
-          </div>
-        </div>
-
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-semibold">Costo Mantenimiento</span>
-          </label>
-          <div class="input-group">
-            <span class="bg-gray-100 px-3 py-2 border border-r-0 border-gray-300 rounded-l-lg text-sm flex items-center">$</span>
-            <input type="number" name="cost_maintenance" step="0.01" min="0" class="input input-bordered w-full rounded-l-none" placeholder="0.00" required>
-          </div>
-        </div>
-
-        <!-- Fechas -->
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-semibold">Fecha Inicio Operaciones</span>
-          </label>
-          <input type="date" name="start_date" class="input input-bordered w-full" required>
-        </div>
-
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-semibold">Fecha Fin Operaciones</span>
-          </label>
-          <input type="date" name="end_date" class="input input-bordered w-full" required>
-        </div>
-
-        <!-- Configuración de Mantenimiento -->
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-semibold">Frecuencia Mantenimiento</span>
-          </label>
-          <select name="maintenance_frequency" class="select select-bordered w-full" required>
-            <option value="">Seleccione frecuencia...</option>
-            <option value="DIARIO">DIARIO</option>
-            <option value="SEMANAL">SEMANAL</option>
-            <option value="QUINCENAL">QUINCENAL</option>
-            <option value="MENSUAL">MENSUAL</option>
-            <option value="BIMENSUAL">BIMENSUAL</option>
-            <option value="TRIMESTRAL">TRIMESTRAL</option>
-            <option value="SEMESTRAL">SEMESTRAL</option>
-          </select>
-        </div>
-
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-semibold">Veces de Mantenimiento</span>
-          </label>
-          <input type="number" name="times_maintenance" min="1" value="1" class="input input-bordered w-full" required>
-        </div>
-
-        <!-- Notas -->
-        <div class="form-control md:col-span-3">
-          <label class="label">
-            <span class="label-text font-semibold">Notas del Equipo</span>
-          </label>
-          <textarea name="notes" class="textarea textarea-bordered w-full min-h-20" placeholder="Observaciones específicas del equipo en este proyecto..."></textarea>
-        </div>
-
-      </div>
-
-      <div class="modal-action">
-        <button type="button" class="btn btn-secondary" onclick="closeEquipmentModal()">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Agregar Equipo</button>
-      </div>
-    </form>
-  </div>
-</div>
 
 <style>
-  /* ...existing styles from equipment_form.html... */
+  /* Estilos básicos del formulario */
   .form-control input,
   .form-control select,
   .form-control textarea {
-    @apply input input-bordered w-full h-10 min-h-10 !important;
-    height: 2.5rem !important;
-    min-height: 2.5rem !important;
+    @apply input input-bordered w-full !important;
   }
   
   .form-control textarea {
-    @apply textarea textarea-bordered min-h-20 !important;
-    height: auto !important;
+    @apply textarea textarea-bordered !important;
     min-height: 5rem !important;
-  }
-  
-  .form-control input[type="checkbox"] {
-    @apply checkbox checkbox-primary !important;
-    height: 1.25rem !important;
-    width: 1.25rem !important;
-    min-height: 1.25rem !important;
   }
   
   .form-control input:focus,
   .form-control select:focus,
   .form-control textarea:focus {
     @apply ring-2 ring-blue-500 ring-opacity-50 border-blue-500 shadow-lg transition-all duration-200 !important;
-  }
-  
-  .label.cursor-pointer {
-    @apply flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 !important;
-    height: auto !important;
-    min-height: 3rem !important;
-  }
-  
-  /* Animaciones para agregar/remover equipos */
-  .equipment-item {
-    animation: slideInDown 0.3s ease-out;
-  }
-  
-  .equipment-item.removing {
-    animation: slideOutUp 0.3s ease-in;
-  }
-  
-  @keyframes slideInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes slideOutUp {
-    from {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-  }
-  
-  /* Mejoras para input-groups */
-  .input-group {
-    @apply flex w-full !important;
-  }
-  
-  .input-group span {
-    @apply border-gray-300 bg-gray-100 text-gray-600 !important;
-    display: flex !important;
-    align-items: center !important;
-    border-right: 0 !important;
-  }
-  
-  .input-group input {
-    @apply border-l-0 rounded-l-none !important;
-    flex: 1 !important;
   }
 </style>
 
@@ -447,286 +223,11 @@
 {% block script %}
 <script>
 $(document).ready(function() {
-    let equipmentList = [];
-    let equipmentCounter = 0;
-
-    // Función para abrir el modal de equipos
-    window.openEquipmentModal = function() {
-        document.getElementById('equipmentModal').classList.add('modal-open');
-        // Sincronizar fechas del proyecto con el modal
-        syncProjectDates();
-    };
-
-    // Función para cerrar el modal de equipos
-    window.closeEquipmentModal = function() {
-        document.getElementById('equipmentModal').classList.remove('modal-open');
-        document.getElementById('equipmentForm').reset();
-    };
-
-    // Función para sincronizar fechas del proyecto
-    function syncProjectDates() {
-        const projectStartDate = document.querySelector('input[name="start_date"]');
-        const projectEndDate = document.querySelector('input[name="end_date"]');
-        const modalStartDate = document.querySelector('#equipmentModal input[name="start_date"]');
-        const modalEndDate = document.querySelector('#equipmentModal input[name="end_date"]');
-        
-        if (projectStartDate.value && modalStartDate) {
-            modalStartDate.value = projectStartDate.value;
-        }
-        if (projectEndDate.value && modalEndDate) {
-            modalEndDate.value = projectEndDate.value;
-        }
-    }
-
-    // Función para agregar equipo a la lista
-    function addEquipmentToList(equipmentData) {
-        equipmentCounter++;
-        const equipment = {
-            id: equipmentCounter,
-            ...equipmentData
-        };
-        
-        equipmentList.push(equipment);
-        renderEquipmentList();
-        generateHiddenFields();
-    }
-
-    // Función para remover equipo de la lista
-    function removeEquipmentFromList(equipmentId) {
-        equipmentList = equipmentList.filter(eq => eq.id !== equipmentId);
-        renderEquipmentList();
-        generateHiddenFields();
-    }
-
-    // Función para renderizar la lista de equipos
-    function renderEquipmentList() {
-        const container = document.getElementById('equipment-list');
-        const noEquipmentMessage = document.getElementById('no-equipment-message');
-        
-        if (equipmentList.length === 0) {
-            container.innerHTML = '';
-            noEquipmentMessage.style.display = 'block';
-            return;
-        }
-        
-        noEquipmentMessage.style.display = 'none';
-        
-        container.innerHTML = equipmentList.map(equipment => `
-            <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors equipment-item" data-id="${equipment.id}">
-                <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                        <div class="flex items-start justify-between mb-3">
-                            <div>
-                                <h4 class="font-medium text-gray-800 text-lg">${equipment.resource_name}</h4>
-                                <p class="text-sm text-gray-600">
-                                    <span class="font-medium">Código:</span> ${equipment.resource_code}
-                                    <span class="ml-3 font-medium">Tipo:</span> ${equipment.resource_type}
-                                </p>
-                            </div>
-                            <div class="flex gap-1">
-                                <button type="button" class="btn btn-ghost btn-xs text-blue-600" onclick="editEquipment(${equipment.id})">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                </button>
-                                <button type="button" class="btn btn-ghost btn-xs text-red-600" onclick="removeEquipment(${equipment.id})">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                            <div>
-                                <span class="font-medium text-gray-600">Costo General:</span>
-                                <p class="text-gray-800">$${parseFloat(equipment.cost).toFixed(2)}</p>
-                            </div>
-                            <div>
-                                <span class="font-medium text-gray-600">Costo Mantenimiento:</span>
-                                <p class="text-gray-800">$${parseFloat(equipment.cost_maintenance).toFixed(2)}</p>
-                            </div>
-                            <div>
-                                <span class="font-medium text-gray-600">Inicio Operaciones:</span>
-                                <p class="text-gray-800">${formatDate(equipment.start_date)}</p>
-                            </div>
-                            <div>
-                                <span class="font-medium text-gray-600">Fin Operaciones:</span>
-                                <p class="text-gray-800">${formatDate(equipment.end_date)}</p>
-                            </div>
-                            <div>
-                                <span class="font-medium text-gray-600">Frecuencia Mantenimiento:</span>
-                                <p class="text-gray-800">${equipment.maintenance_frequency}</p>
-                            </div>
-                            <div>
-                                <span class="font-medium text-gray-600">Veces Mantenimiento:</span>
-                                <p class="text-gray-800">${equipment.times_maintenance}</p>
-                            </div>
-                            ${equipment.notes ? `
-                            <div class="md:col-span-2">
-                                <span class="font-medium text-gray-600">Notas:</span>
-                                <p class="text-gray-800">${equipment.notes}</p>
-                            </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Función para generar campos ocultos
-    function generateHiddenFields() {
-        const container = document.getElementById('equipment-hidden-fields');
-        container.innerHTML = equipmentList.map((equipment, index) => `
-            <input type="hidden" name="equipment_${index}_resource_item" value="${equipment.resource_item}">
-            <input type="hidden" name="equipment_${index}_cost" value="${equipment.cost}">
-            <input type="hidden" name="equipment_${index}_cost_maintenance" value="${equipment.cost_maintenance}">
-            <input type="hidden" name="equipment_${index}_start_date" value="${equipment.start_date}">
-            <input type="hidden" name="equipment_${index}_end_date" value="${equipment.end_date}">
-            <input type="hidden" name="equipment_${index}_maintenance_frequency" value="${equipment.maintenance_frequency}">
-            <input type="hidden" name="equipment_${index}_times_maintenance" value="${equipment.times_maintenance}">
-            <input type="hidden" name="equipment_${index}_notes" value="${equipment.notes || ''}">
-        `).join('');
-    }
-
-    // Función para formatear fechas
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('es-ES');
-    }
-
-    // Función para remover equipo (expuesta globalmente)
-    window.removeEquipment = function(equipmentId) {
-        if (confirm('¿Está seguro de que desea remover este equipo del proyecto?')) {
-            removeEquipmentFromList(equipmentId);
-        }
-    };
-
-    // Función para editar equipo (placeholder)
-    window.editEquipment = function(equipmentId) {
-        const equipment = equipmentList.find(eq => eq.id === equipmentId);
-        if (equipment) {
-            // Cargar datos en el modal
-            const form = document.getElementById('equipmentForm');
-            form.querySelector('select[name="resource_item"]').value = equipment.resource_item;
-            form.querySelector('input[name="cost"]').value = equipment.cost;
-            form.querySelector('input[name="cost_maintenance"]').value = equipment.cost_maintenance;
-            form.querySelector('input[name="start_date"]').value = equipment.start_date;
-            form.querySelector('input[name="end_date"]').value = equipment.end_date;
-            form.querySelector('select[name="maintenance_frequency"]').value = equipment.maintenance_frequency;
-            form.querySelector('input[name="times_maintenance"]').value = equipment.times_maintenance;
-            form.querySelector('textarea[name="notes"]').value = equipment.notes || '';
-            
-            // Marcar como edición
-            form.setAttribute('data-editing', equipmentId);
-            
-            openEquipmentModal();
-        }
-    };
-
-    // Manejar envío del formulario de equipos
-    document.getElementById('equipmentForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        const resourceSelect = this.querySelector('select[name="resource_item"]');
-        const selectedOption = resourceSelect.options[resourceSelect.selectedIndex];
-        
-        if (!selectedOption.value) {
-            alert('Por favor seleccione un equipo.');
-            return;
-        }
-
-        // Validar que el equipo no esté ya agregado (excepto si estamos editando)
-        const editingId = this.getAttribute('data-editing');
-        const resourceExists = equipmentList.some(eq => 
-            eq.resource_item === selectedOption.value && 
-            (!editingId || eq.id != editingId)
-        );
-        
-        if (resourceExists) {
-            alert('Este equipo ya está agregado al proyecto.');
-            return;
-        }
-
-        const equipmentData = {
-            resource_item: selectedOption.value,
-            resource_name: selectedOption.getAttribute('data-name'),
-            resource_code: selectedOption.getAttribute('data-code'),
-            resource_type: selectedOption.getAttribute('data-type'),
-            cost: formData.get('cost'),
-            cost_maintenance: formData.get('cost_maintenance'),
-            start_date: formData.get('start_date'),
-            end_date: formData.get('end_date'),
-            maintenance_frequency: formData.get('maintenance_frequency'),
-            times_maintenance: formData.get('times_maintenance'),
-            notes: formData.get('notes')
-        };
-
-        if (editingId) {
-            // Actualizar equipo existente
-            const index = equipmentList.findIndex(eq => eq.id == editingId);
-            if (index !== -1) {
-                equipmentList[index] = { ...equipmentList[index], ...equipmentData };
-                renderEquipmentList();
-                generateHiddenFields();
-            }
-            this.removeAttribute('data-editing');
-        } else {
-            // Agregar nuevo equipo
-            addEquipmentToList(equipmentData);
-        }
-
-        closeEquipmentModal();
+    // Validación básica del formulario
+    $('#project-form').on('submit', function(e) {
+        // Validaciones adicionales si son necesarias
+        console.log('Enviando proyecto...');
     });
-
-    // Cerrar modal al hacer clic fuera
-    document.addEventListener('click', function(event) {
-        const equipmentModal = document.getElementById('equipmentModal');
-        if (event.target === equipmentModal) {
-            closeEquipmentModal();
-        }
-    });
-
-    // Validación del formulario principal
-    document.getElementById('project-form').addEventListener('submit', function(e) {
-        // Agregar validación adicional si es necesaria
-        console.log('Enviando proyecto con equipos:', equipmentList);
-    });
-
-    // Sincronizar fechas del proyecto con equipos cuando cambien
-    const projectStartDate = document.querySelector('input[name="start_date"]');
-    const projectEndDate = document.querySelector('input[name="end_date"]');
-    
-    if (projectStartDate) {
-        projectStartDate.addEventListener('change', function() {
-            // Actualizar fechas de equipos existentes si están vacías o son anteriores
-            equipmentList.forEach(equipment => {
-                if (!equipment.start_date || equipment.start_date < this.value) {
-                    equipment.start_date = this.value;
-                }
-            });
-            renderEquipmentList();
-            generateHiddenFields();
-        });
-    }
-    
-    if (projectEndDate) {
-        projectEndDate.addEventListener('change', function() {
-            // Actualizar fechas de equipos existentes si están vacías o son posteriores
-            equipmentList.forEach(equipment => {
-                if (!equipment.end_date || equipment.end_date > this.value) {
-                    equipment.end_date = this.value;
-                }
-            });
-            renderEquipmentList();
-            generateHiddenFields();
-        });
-    }
-
-    // Inicializar vista
-    renderEquipmentList();
 });
 </script>
 {% endblock %}
