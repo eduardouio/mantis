@@ -27,74 +27,54 @@
   </div>
 
   {# Información del Proyecto #}
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-    <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-l-4 border-blue-500">
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-1">
+    <div class="p-1">
       <p class="text-sm text-gray-600">Estado Proyecto</p>
       <p class="font-semibold text-gray-900">
-        {% if project.is_active %} 
-        <span class="badge badge-success gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="20,6 9,17 4,12"></polyline>
-          </svg>
-          Activo
-        </span>
-        {% else %} 
-        <span class="badge badge-error gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="15" y1="9" x2="9" y2="15"></line>
-            <line x1="9" y1="9" x2="15" y2="15"></line>
-          </svg>
-          Inactivo
-        </span>
-        {% endif %}
+        {% if project.is_active %}Activo{% else %}Inactivo{% endif %}
       </p>
     </div>
-    <div class="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border-l-4 border-green-500">
+    <div class="p-1">
       <p class="text-sm text-gray-600">Cliente</p>
       <p class="font-semibold text-gray-900">
-        <a href="{% if project.partner_id %}{% url 'partner_detail' project.partner_id %}{% else %}#{% endif %}" class="link link-hover text-primary">
+        <a href="{% if project.partner_id %}{% url 'partner_detail' project.partner_id %}{% else %}#{% endif %}" class="link link-hover">
           {{ project.partner|default:"TUSCANY PERFORACION PETROLERA TUSCANYPERF S A" }}
         </a>
       </p>
     </div>
-    <div class="bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg border-l-4 border-orange-500">
+    <div class="p-1">
       <p class="text-sm text-gray-600">Lugar</p>
       <p class="font-semibold text-gray-900">{{ project.place|default:"SHUSHUFINDI" }}</p>
     </div>
-    <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-l-4 border-purple-500">
+    <div class="p-1">
       <p class="text-sm text-gray-600">Fecha de Inicio</p>
       <p class="font-semibold text-gray-900">{{ project.start_date|date:"Y-m-d"|default:"2025-08-01" }}</p>
     </div>
-    <div class="bg-gradient-to-r from-red-50 to-red-100 p-4 rounded-lg border-l-4 border-red-500">
+    <div class="p-1">
       <p class="text-sm text-gray-600">Fecha de Fin</p>
       <p class="font-semibold text-gray-900">{{ project.end_date|date:"Y-m-d"|default:"2025-11-06" }}</p>
     </div>
-    <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg border-l-4 border-indigo-500">
+    <div class="p-1">
       <p class="text-sm text-gray-600">Duración</p>
-      <p class="font-semibold text-gray-900">
-        <span class="badge badge-info">97 días</span>
-      </p>
+      <p class="font-semibold text-gray-900">97 días</p>
     </div>
-    <div class="bg-gradient-to-r from-teal-50 to-teal-100 p-4 rounded-lg border-l-4 border-teal-500">
+    <div class="p-1">
       <p class="text-sm text-gray-600">Nombre de Contacto</p>
       <p class="font-semibold text-gray-900">{{ project.contact_name|default:"CARLOS CENTENO" }}</p>
     </div>
-    <div class="bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border-l-4 border-yellow-500">
+    <div class="p-1">
       <p class="text-sm text-gray-600">Teléfono de Contacto</p>
       <p class="font-semibold text-gray-900">{{ project.phone_contact|default:"0993265" }}</p>
     </div>
-    <div class="bg-gradient-to-r from-pink-50 to-pink-100 p-4 rounded-lg border-l-4 border-pink-500">
+    <div class="p-1">
       <p class="text-sm text-gray-600">Valor Total</p>
-      <p class="font-semibold text-gray-900 text-lg">
-        <span class="text-green-600">$97,485.00</span>
-      </p>
+      <p class="font-semibold text-gray-900">$97,485.00</p>
     </div>
   </div>
 
   {# Tabs para organizar el contenido #}
   <div class="tabs tabs-lifted">
-    <input type="radio" name="project_tabs" class="tab" aria-label="Equipos y Servicios" checked />
+    <input type="radio" name="project_tabs" class="tab bg-blue-300 rounded-t" aria-label="Equipos y Servicios" checked />
     <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
       {# Equipos y Servicios Asignados al Proyecto #}
       <div class="space-y-4">
@@ -110,16 +90,6 @@
             </svg>
             Equipos y Servicios Asignados
           </h2>
-          <div class="stats shadow">
-            <div class="stat">
-              <div class="stat-title">Total Items</div>
-              <div class="stat-value text-primary">4</div>
-            </div>
-            <div class="stat">
-              <div class="stat-title">Costo Mensual</div>
-              <div class="stat-value text-success">$1,005</div>
-            </div>
-          </div>
         </div>
         
         <div class="overflow-x-auto">
@@ -266,7 +236,7 @@
       </div>
     </div>
 
-    <input type="radio" name="project_tabs" class="tab" aria-label="Órdenes de Trabajo" />
+    <input type="radio" name="project_tabs" class="tab bg-yellow-300 rounded-t" aria-label="Órdenes de Trabajo" />
     <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
       {# Órdenes De Trabajo del Proyecto #}
       <div class="space-y-4">
@@ -280,20 +250,6 @@
             </svg>
             Órdenes De Trabajo
           </h2>
-          <div class="stats shadow">
-            <div class="stat">
-              <div class="stat-title">Total Órdenes</div>
-              <div class="stat-value text-primary">8</div>
-            </div>
-            <div class="stat">
-              <div class="stat-title">Completadas</div>
-              <div class="stat-value text-success">5</div>
-            </div>
-            <div class="stat">
-              <div class="stat-title">Pendientes</div>
-              <div class="stat-value text-warning">3</div>
-            </div>
-          </div>
         </div>
         
         <div class="overflow-x-auto">
@@ -442,7 +398,7 @@
       </div>
     </div>
 
-    <input type="radio" name="project_tabs" class="tab" aria-label="Calendario Mantenimientos" />
+    <input type="radio" name="project_tabs" class="tab bg-red-300 rounded-t" aria-label="Calendario Mantenimientos" />
     <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
       {# Calendario de Mantenimientos #}
       <div class="space-y-4">
@@ -466,7 +422,7 @@
         </div>
 
         {# Vista de cronograma de mantenimientos #}
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-6">
           {# Cronograma visual #}
           <div class="card bg-base-100 shadow border">
             <div class="card-body">
@@ -526,235 +482,13 @@
               </div>
             </div>
           </div>
+        </div>
 
-          {# Estadísticas de mantenimientos #}
-          <div class="space-y-4">
-            <div class="card bg-base-100 shadow border">
-              <div class="card-body">
-                <h3 class="card-title text-lg">Estadísticas de Mantenimiento</h3>
-                <div class="stats stats-vertical shadow">
-                  <div class="stat">
-                    <div class="stat-figure text-primary">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2v20m8-10H4"></path>
-                      </svg>
-                    </div>
-                    <div class="stat-title">Este Mes</div>
-                    <div class="stat-value text-primary">12</div>
-                    <div class="stat-desc">mantenimientos programados</div>
-                  </div>
-                  
-                  <div class="stat">
-                    <div class="stat-figure text-secondary">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="20,6 9,17 4,12"></polyline>
-                      </svg>
-                    </div>
-                    <div class="stat-title">Completados</div>
-                    <div class="stat-value text-secondary">8</div>
-                    <div class="stat-desc">67% completado</div>
-                  </div>
-                  
-                  <div class="stat">
-                    <div class="stat-figure text-accent">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12,6 12,12 16,14"></polyline>
-                      </svg>
-                    </div>
-                    <div class="stat-title">Pendientes</div>
-                    <div class="stat-value text-accent">4</div>
-                    <div class="stat-desc">próximos 7 días</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {# Próximos mantenimientos #}
-            <div class="card bg-base-100 shadow border">
-              <div class="card-body">
-                <h3 class="card-title text-lg">Próximos Mantenimientos</h3>
-                <div class="space-y-2">
-                  <div class="alert alert-info">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <path d="M12 6v6l4 2"></path>
-                    </svg>
-                    <span><strong>Mañana:</strong> Mantenimiento LAV-001</span>
-                  </div>
-                  <div class="alert alert-warning">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                      <line x1="12" y1="9" x2="12" y2="13"></line>
-                      <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                    </svg>
-                    <span><strong>En 3 días:</strong> Revisión PTA-003</span>
-                  </div>
-                  <div class="alert alert-success">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <polyline points="20,6 9,17 4,12"></polyline>
-                    </svg>
-                    <span><strong>Completado:</strong> Limpieza BSH-002</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
   </div>
 
-  {# Equipos Asignados al Proyecto #}
-  <div class="card bg-base-100 shadow-xl border border-gray-500">
-    <div class="card-body">
-      <h2 class="card-title">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><rect x="6" y="4" width="12" height="16" rx="2"></rect><rect x="9" y="8" width="6" height="9" rx="1"></rect><circle cx="12" cy="6" r="0.5"></circle><circle cx="13.5" cy="12" r="0.5"></circle><path d="M6 20h12"></path></svg>
-        Equipos Asignados al Proyecto
-      </h2>
-      <div class="flex flex-col lg:flex-row gap-6 mt-4">
-        <div class="w-full lg:w-2/3">
-          <div class="flex justify-between items-center mb-2">
-            <h3 class="font-semibold text-lg">Equipos en Proyecto</h3>
-            <input type="text" v-model="queryFilterProject" class="input input-sm input-bordered" placeholder="Buscar en proyecto" @keyup="filterProjectEquipments">
-          </div>
-          <div class="overflow-x-auto">
-            <table class="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Tipo</th>
-                  <th>Código</th>
-                  <th class="text-right">Renta</th>
-                  <th class="text-right">Mant.</th>
-                  <th>Frec.</th>
-                  <th class="text-center">Acción</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-if="filteredProjectEquipment.length === 0">
-                    <td colspan="7" class="text-center py-4">
-                        <div class="flex flex-col items-center justify-center text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            <p>Este proyecto no tiene equipos asignados.</p>
-                            <p class="text-sm">Puede asignarlos desde la lista de "Equipos Disponibles".</p>
-                        </div>
-                    </td>
-                </tr>
-                <tr v-for="item, idx in filteredProjectEquipment" :key="item.id" :class="{'text-error': (parseFloat(item.projectResource.cost) === 0 && parseFloat(item.projectResource.cost_manteinance) === 0)}">
-                  <td>[[ idx + 1 ]]</td>
-                  <td @click="selectedEquipment=item" data-bs-toggle="modal" data-bs-target="#equipmentModal" class="cursor-pointer hover:text-primary">
-                    <span v-if="(parseFloat(item.projectResource.cost) === 0 && parseFloat(item.projectResource.cost_manteinance) === 0)">⚠️ </span>
-                    <a :href="'{% url 'resource_detail' 0 %}'.replace('0', item.resourceItem.id)" target="_blank" @click.stop> <!-- Enlace al detalle del equipo -->
-                       [[ item.resourceItem.name ]]
-                    </a>
-                  </td>
-                  <td>[[ item.resourceItem.code ]]</td>
-                  <td class="text-right">[[ costFormat(item.projectResource.cost) ]]</td>
-                  <td class="text-right">[[ costFormat(item.projectResource.cost_manteinance) ]]</td>
-                  <td>[[ item.projectResource.times_mantenance ]] [[ item.projectResource.mantenance_frequency ]]</td>
-                  <td class="text-center">
-                    <button class="btn btn-xs btn-ghost text-info" title="Editar Equipo" data-bs-toggle="modal" data-bs-target="#equipmentModal" @click="selectedEquipment=item">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
-                    </button>
-                    <button v-if="!item.confirm_delete" class="btn btn-xs btn-ghost text-error" title="Eliminar Equipo" @click="deleteEquipment(item)">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 12h6" /><path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z" /></svg>
-                    </button>
-                    <button v-else class="btn btn-xs btn-error" title="Confirmar Eliminación" @click="deleteEquipment(item)">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /></svg>
-                      Confirmar
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="w-full lg:w-1/3">
-          <div class="flex justify-between items-center mb-2">
-            <h3 class="font-semibold text-lg text-success">Equipos Disponibles</h3>
-            <input type="text" v-model="queryFilterFree" class="input input-sm input-bordered" placeholder="Buscar disponibles" @keyup="filterFreeEquipment">
-          </div>
-          <div class="overflow-x-auto max-h-96">
-            <table class="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Tipo</th>
-                  <th>Código</th>
-                  <th class="text-center">Acción</th>
-                </tr>
-              </thead>
-              <tbody>
-                 <tr v-if="filteredAllEquipment.length === 0">
-                    <td colspan="4" class="text-center py-4 text-gray-500">No hay equipos disponibles.</td>
-                </tr>
-                <tr v-for="item, idx in filteredAllEquipment" :key="item.id">
-                  <td>[[ idx + 1 ]]</td>
-                  <td>[[ item.name ]]</td>
-                  <td>[[ item.code ]]</td>
-                  <td class="text-center">
-                    <button class="btn btn-xs btn-ghost text-primary" @click="asignEquipment(item)" title="Asignar Equipo">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 12h6" /><path d="M12 9v6" /><path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z" /></svg>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      {# Órdenes De Trabajo del Proyecto #}
-      <div class="card bg-base-100 shadow-xl border border-gray-500">
-        <div class="card-body">
-          <h2 class="card-title">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5" /></svg>
-            Órdenes De Trabajo del Proyecto
-          </h2>
-          <div class="mt-4">
-            {% if work_orders %}
-            <div class="overflow-x-auto">
-              <table class="table table-zebra w-full">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Fecha</th>
-                    <th>Equipos</th>
-                    <th>Técnico</th>
-                    <th class="text-center">Acción</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for item in work_orders %}
-                  <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ item.date|date:"Y-m-d" }}</td>
-                    <td>{{ item.equipment_count }}</td> {# Asumiendo que tienes un conteo o una forma de mostrar los equipos #}
-                    <td><a href="{% if item.tecnical_id %}{% url 'technical_detail' item.tecnical_id %}{% else %}#{% endif %}" class="link link-hover text-primary">{{ item.tecnical }}</a></td>
-                    <td class="text-center">
-                      <button class="btn btn-xs btn-ghost text-primary" title="Ver Detalle">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
-                      </button>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-            {% else %}
-            <div class="text-center py-10">
-                <div class="flex flex-col items-center justify-center text-gray-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
-                    <p class="text-xl">No hay órdenes de trabajo para este proyecto.</p>
-                </div>
-            </div>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div class="mt-6 pt-4 border-t">
     <div class="flex flex-wrap justify-center gap-2">
