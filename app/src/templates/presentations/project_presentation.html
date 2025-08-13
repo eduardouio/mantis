@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto p-4 bg-white rounded-2xl shadow-md space-y-6 border border-t-[15px] border-t-blue-500">
+<div class="w-4/5 mx-auto p-4 bg-white rounded-2xl shadow-md space-y-6 border border-t-[15px] border-t-blue-500">
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1">
     <h1 class="text-2xl font-semibold text-blue-500">Ficha de Proyecto</h1>
     {# Ícono opcional aquí #}
@@ -313,14 +313,7 @@
   var free_equipment = {{ free_equipment|safe }};
   var project_resource = {{ project_resource|safe }};
   var project = {{ project_json|safe }};
-  var urlBase = "{% url 'project_add_equipment' %}"; // project_add_equipment
-  var deleteUrl = "{% url 'project_delete_equipment' %}"; // project_delete_equipment
-  var successUrl = "{% url 'project_detail' project.id %}"; // project_detail
-  var updateUrl = "{% url 'project_update_equipment' %}"; // project_update_equipment
   // Estas URLs no se usan en el JS proporcionado, pero las mantengo por si acaso.
-  var projectResourceAddUrl = "{% url 'project_add_resource' %}"; // project_add_resource
-  var projectResourceUpdUrl = "{% url 'project_update_resource' %}"; // project_update_resource
-  var projectResourceDelUrl = "{% url 'project_delete_resource' %}"; // project_delete_resource
 </script>
 <script src="/static/js/app/project_app.js"></script>
-{% endblock %
+{% endblock %}
