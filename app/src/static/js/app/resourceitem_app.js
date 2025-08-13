@@ -90,6 +90,7 @@ window.ResourceItemApp = {
         blower_model: '',
         engine_brand: '',
         engine_model: '',
+  engine_fases: '',
         belt_brand: '',
         belt_model: '',
         belt_type: '',
@@ -100,7 +101,19 @@ window.ResourceItemApp = {
         electrical_panel_brand: '',
         electrical_panel_model: '',
         motor_guard_brand: '',
-        motor_guard_model: ''
+  motor_guard_model: '',
+
+  // Componentes Planta Agua Potable
+  pump_filter: '',
+  pump_pressure: '',
+  pump_dosing: '',
+  sand_carbon_filter: '',
+  hidroneumatic_tank: '',
+  uv_filter: '',
+
+  // Relays Planta Agua Residual
+  relay_engine: '',
+  relay_blower: ''
       },
       
       // Visibilidad de secciones según tipo y subtipo
@@ -939,6 +952,7 @@ window.ResourceItemApp = {
       this.formData.blower_model = equipmentData.blower_model || '';
       this.formData.engine_brand = equipmentData.engine_brand || '';
       this.formData.engine_model = equipmentData.engine_model || '';
+  this.formData.engine_fases = equipmentData.engine_fases || '';
       this.formData.belt_brand = equipmentData.belt_brand || '';
       this.formData.belt_model = equipmentData.belt_model || '';
       this.formData.belt_type = equipmentData.belt_type || '';
@@ -950,6 +964,18 @@ window.ResourceItemApp = {
       this.formData.electrical_panel_model = equipmentData.electrical_panel_model || '';
       this.formData.motor_guard_brand = equipmentData.motor_guard_brand || '';
       this.formData.motor_guard_model = equipmentData.motor_guard_model || '';
+
+  // Componentes Planta Agua Potable
+  this.formData.pump_filter = equipmentData.pump_filter || '';
+  this.formData.pump_pressure = equipmentData.pump_pressure || '';
+  this.formData.pump_dosing = equipmentData.pump_dosing || '';
+  this.formData.sand_carbon_filter = equipmentData.sand_carbon_filter || '';
+  this.formData.hidroneumatic_tank = equipmentData.hidroneumatic_tank || '';
+  this.formData.uv_filter = equipmentData.uv_filter || '';
+
+  // Relays Planta Agua Residual
+  this.formData.relay_engine = equipmentData.relay_engine || '';
+  this.formData.relay_blower = equipmentData.relay_blower || '';
       
       // Actualizar los campos del formulario HTML con los datos
       this.syncFormDataToHtmlForm();
