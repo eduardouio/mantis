@@ -310,12 +310,33 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                 )
             if equipment.uv_filter:
                 potable_components['uv_filter'] = equipment.uv_filter
+            # Incluir relays si existen (mostrar todo junto en planta potable)
+            if equipment.relay_engine:
+                potable_components['relay_engine'] = equipment.relay_engine
+            if equipment.relay_blower:
+                potable_components['relay_blower'] = equipment.relay_blower
             if potable_components:
                 components['potable_plant'] = potable_components
 
-        # Componentes específicos para planta de agua residual (relays)
+    # Componentes planta agua residual (8 campos solicitados)
         if equipment.subtype == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL':
             residual_components = {}
+            if equipment.pump_filter:
+                residual_components['pump_filter'] = equipment.pump_filter
+            if equipment.pump_pressure:
+                residual_components['pump_pressure'] = equipment.pump_pressure
+            if equipment.pump_dosing:
+                residual_components['pump_dosing'] = equipment.pump_dosing
+            if equipment.sand_carbon_filter:
+                residual_components['sand_carbon_filter'] = (
+                    equipment.sand_carbon_filter
+                )
+            if equipment.hidroneumatic_tank:
+                residual_components['hidroneumatic_tank'] = (
+                    equipment.hidroneumatic_tank
+                )
+            if equipment.uv_filter:
+                residual_components['uv_filter'] = equipment.uv_filter
             if equipment.relay_engine:
                 residual_components['relay_engine'] = equipment.relay_engine
             if equipment.relay_blower:
