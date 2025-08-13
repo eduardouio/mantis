@@ -7,26 +7,24 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
     list_display = (
         'name',
         'code',
-        'type',
-        'subtype',
+        'type_equipment',
         'brand',
         'model',
-        'status',
-        'current_location',
-        'capacity_display',
+        'stst_status_equipment',
+        'stst_status_disponibility',
+        'stst_current_location',
         'is_active',
         'created_at',
     )
 
     list_filter = (
-        'type',
-        'subtype',
-        'status',
+        'type_equipment',
+        'stst_status_equipment',
+        'stst_status_disponibility',
         'brand',
         'is_active',
         'created_at',
         'date_purchase',
-        'plant_capacity',
     )
 
     search_fields = (
@@ -35,69 +33,102 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
         'brand',
         'model',
         'serial_number',
-        'current_location',
-        'notes',
-        'repair_reason',
+        'stst_current_location',
+        'stst_repair_reason',
     )
 
     ordering = ('-created_at', 'name')
 
     fieldsets = (
         ('Información Básica', {
-            'fields': ('name', 'code', 'type', 'subtype', 'brand', 'model', 'serial_number', 'date_purchase')
+            'fields': (
+                'name', 'code', 'type_equipment', 'brand', 'model', 
+                'serial_number', 'date_purchase',
+                'height', 'width', 'depth', 'weight',
+                'capacity_gallons', 'plant_capacity'
+            )
         }),
-        ('Características Físicas', {
-            'fields': ('height', 'width', 'depth', 'weight'),
+        ('Estado y Disponibilidad', {
+            'fields': (
+                'stst_status_equipment', 'stst_status_disponibility',
+                'stst_repair_reason', 'stst_current_location',
+                'stst_current_project_id', 'stst_commitment_date',
+                'stst_release_date', 'is_active'
+            )
+        }),
+        ('Características de Lavamanos', {
+            'fields': (
+                'have_foot_pumps', 'have_soap_dispenser', 'have_paper_towels'
+            ),
             'classes': ('collapse',)
         }),
-        ('Capacidad', {
-            'fields': ('capacity_gallons', 'plant_capacity'),
+        ('Características de Baterías Sanitarias', {
+            'fields': (
+                'have_paper_dispenser', 'have_napkin_dispenser', 'have_urinals',
+                'have_seat', 'have_toilet_pump', 'have_sink_pump',
+                'have_toilet_lid', 'have_bathroom_bases', 'have_ventilation_pipe'
+            ),
             'classes': ('collapse',)
         }),
-        ('Estado y Ubicación', {
-            'fields': ('status', 'repair_reason', 'current_location', 'current_project_id', 'is_active')
-        }),
-        ('Fechas de Proyecto', {
-            'fields': ('commitment_date', 'release_date'),
+        ('Componentes - Blower', {
+            'fields': (
+                'have_blower_brand', 'blower_brand', 'blower_model',
+                'have_blower_pulley', 'blower_pulley_brand', 'blower_pulley_model'
+            ),
             'classes': ('collapse',)
         }),
-        ('Características Lavamanos', {
-            'fields': ('foot_pumps', 'sink_soap_dispenser', 'paper_towels'),
+        ('Componentes - Motor', {
+            'fields': (
+                'have_engine', 'engine_brand', 'engine_model', 'engine_fases',
+                'have_motor_pulley', 'motor_pulley_brand', 'motor_pulley_model',
+                'have_motor_guard', 'engine_guard_brand', 'engine_guard_model'
+            ),
             'classes': ('collapse',)
         }),
-        ('Características Baterías Sanitarias', {
-            'fields': ('paper_dispenser', 'soap_dispenser', 'napkin_dispenser', 'urinals', 'seats', 'toilet_pump', 'sink_pump', 'toilet_lid', 'bathroom_bases', 'ventilation_pipe'),
+        ('Componentes - Bandas y Panel', {
+            'fields': (
+                'have_belt_brand', 'belt_brand', 'belt_model', 'belt_type',
+                'have_electrical_panel', 'electrical_panel_brand', 'electrical_panel_model'
+            ),
             'classes': ('collapse',)
         }),
-        ('Componentes Especiales - Blower', {
-            'fields': ('blower_brand', 'blower_model', 'blower_pulley_brand', 'blower_pulley_model'),
+        ('Componentes - Relés', {
+            'fields': (
+                'have_relay_engine', 'relay_engine',
+                'have_relay_blower', 'relay_blower'
+            ),
             'classes': ('collapse',)
         }),
-        ('Componentes Especiales - Motor', {
-            'fields': ('engine_brand', 'engine_model', 'motor_pulley_brand', 'motor_pulley_model', 'motor_guard_brand', 'motor_guard_model'),
-            'classes': ('collapse',)
-        }),
-        ('Componentes Especiales - Otros', {
-            'fields': ('belt_brand', 'belt_model', 'belt_type', 'electrical_panel_brand', 'electrical_panel_model'),
-            'classes': ('collapse',)
-        }),
-        ('Información Adicional', {
-            'fields': ('notes',),
+        ('Componentes - Plantas de Tratamiento', {
+            'fields': (
+                'have_uv_filter', 'uv_filter',
+                'have_pump_filter', 'pump_filter',
+                'have_pump_pressure', 'pump_pressure',
+                'have_pump_dosing', 'pump_dosing',
+                'have_sand_carbon_filter', 'sand_carbon_filter',
+                'have_hidroneumatic_tank', 'hidroneumatic_tank'
+            ),
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': (
+                'created_at', 'updated_at',
+                'id_user_created', 'id_user_updated'
+            ),
             'classes': ('collapse',)
         })
     )
 
-    readonly_fields = ('created_at', 'updated_at',
-                       'id_user_created', 'id_user_updated', 'capacity_display')
+    readonly_fields = (
+        'created_at', 'updated_at',
+        'id_user_created', 'id_user_updated',
+        'capacity_display'
+    )
 
     date_hierarchy = 'created_at'
 
     def capacity_display(self, obj):
-        return obj.capacity_display
+        return obj.capacity_display() if callable(getattr(obj, 'capacity_display', None)) else 'N/A'
     capacity_display.short_description = 'Capacidad'
 
 
