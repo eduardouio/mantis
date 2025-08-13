@@ -186,85 +186,70 @@
       {% if has_special_components %}
       <div class="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
         <h4 class="font-medium text-green-700 mb-3">Componentes Especiales</h4>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {% if special_components.blower %}
-          <div class="p-3 bg-white rounded border">
-            <h5 class="font-medium text-gray-700 mb-2">Blower</h5>
-            <p class="text-sm text-gray-600">Marca: {{ special_components.blower.brand|default:"No especificada" }}</p>
-            <p class="text-sm text-gray-600">Modelo: {{ special_components.blower.model|default:"No especificado" }}</p>
-          </div>
-          {% endif %}
-          
-          {% if special_components.engine %}
-          <div class="p-3 bg-white rounded border">
-            <h5 class="font-medium text-gray-700 mb-2">Motor</h5>
-            <p class="text-sm text-gray-600">Marca: {{ special_components.engine.brand|default:"No especificada" }}</p>
-            <p class="text-sm text-gray-600">Modelo: {{ special_components.engine.model|default:"No especificado" }}</p>
-          </div>
-          {% endif %}
-          
-          {% if special_components.belt %}
-          <div class="p-3 bg-white rounded border">
-            <h5 class="font-medium text-gray-700 mb-2">Banda</h5>
-            <p class="text-sm text-gray-600">Marca: {{ special_components.belt.brand|default:"No especificada" }}</p>
-            <p class="text-sm text-gray-600">Modelo: {{ special_components.belt.model|default:"No especificado" }}</p>
-            <p class="text-sm text-gray-600">Tipo: {{ special_components.belt.type|default:"No especificado" }}</p>
-          </div>
-          {% endif %}
-          
-          {% if special_components.blower_pulley %}
-          <div class="p-3 bg-white rounded border">
-            <h5 class="font-medium text-gray-700 mb-2">Pulley del Blower</h5>
-            <p class="text-sm text-gray-600">Marca: {{ special_components.blower_pulley.brand|default:"No especificada" }}</p>
-            <p class="text-sm text-gray-600">Modelo: {{ special_components.blower_pulley.model|default:"No especificado" }}</p>
-          </div>
-          {% endif %}
-          
-          {% if special_components.motor_pulley %}
-          <div class="p-3 bg-white rounded border">
-            <h5 class="font-medium text-gray-700 mb-2">Pulley del Motor</h5>
-            <p class="text-sm text-gray-600">Marca: {{ special_components.motor_pulley.brand|default:"No especificada" }}</p>
-            <p class="text-sm text-gray-600">Modelo: {{ special_components.motor_pulley.model|default:"No especificado" }}</p>
-          </div>
-          {% endif %}
-          
-          {% if special_components.electrical_panel %}
-          <div class="p-3 bg-white rounded border">
-            <h5 class="font-medium text-gray-700 mb-2">Panel Eléctrico</h5>
-            <p class="text-sm text-gray-600">Marca: {{ special_components.electrical_panel.brand|default:"No especificada" }}</p>
-            <p class="text-sm text-gray-600">Modelo: {{ special_components.electrical_panel.model|default:"No especificado" }}</p>
-          </div>
-          {% endif %}
-          
-          {% if special_components.motor_guard %}
-          <div class="p-3 bg-white rounded border">
-            <h5 class="font-medium text-gray-700 mb-2">Guarda Motor</h5>
-            <p class="text-sm text-gray-600">Marca: {{ special_components.motor_guard.brand|default:"No especificada" }}</p>
-            <p class="text-sm text-gray-600">Modelo: {{ special_components.motor_guard.model|default:"No especificado" }}</p>
-          </div>
-          {% endif %}
+        <div class="p-3 bg-white rounded border">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+            <!-- Blower -->
+            {% if special_components.blower %}
+            <p><span class="text-muted">Blower - Marca:</span> <strong>{{ special_components.blower.brand|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Blower - Modelo:</span> <strong>{{ special_components.blower.model|default:"No registra" }}</strong></p>
+            {% endif %}
+            
+            <!-- Motor -->
+            {% if special_components.engine %}
+            <p><span class="text-muted">Motor - Marca:</span> <strong>{{ special_components.engine.brand|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Motor - Modelo:</span> <strong>{{ special_components.engine.model|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Motor - Fases:</span> <strong>{{ equipment.engine_fases|default:"No registra" }}</strong></p>
+            {% endif %}
+            
+            <!-- Banda -->
+            {% if special_components.belt %}
+            <p><span class="text-muted">Banda - Marca:</span> <strong>{{ special_components.belt.brand|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Banda - Modelo:</span> <strong>{{ special_components.belt.model|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Banda - Tipo:</span> <strong>{{ special_components.belt.type|default:"No registra" }}</strong></p>
+            {% endif %}
+            
+            <!-- Pulley del Blower -->
+            {% if special_components.blower_pulley %}
+            <p><span class="text-muted">Pulley Blower - Marca:</span> <strong>{{ special_components.blower_pulley.brand|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Pulley Blower - Modelo:</span> <strong>{{ special_components.blower_pulley.model|default:"No registra" }}</strong></p>
+            {% endif %}
+            
+            <!-- Pulley del Motor -->
+            {% if special_components.motor_pulley %}
+            <p><span class="text-muted">Pulley Motor - Marca:</span> <strong>{{ special_components.motor_pulley.brand|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Pulley Motor - Modelo:</span> <strong>{{ special_components.motor_pulley.model|default:"No registra" }}</strong></p>
+            {% endif %}
+            
+            <!-- Panel Eléctrico -->
+            {% if special_components.electrical_panel %}
+            <p><span class="text-muted">Panel Eléctrico - Marca:</span> <strong>{{ special_components.electrical_panel.brand|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Panel Eléctrico - Modelo:</span> <strong>{{ special_components.electrical_panel.model|default:"No registra" }}</strong></p>
+            {% endif %}
+            
+            <!-- Guarda Motor -->
+            {% if special_components.motor_guard %}
+            <p><span class="text-muted">Guarda Motor - Marca:</span> <strong>{{ special_components.motor_guard.brand|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Guarda Motor - Modelo:</span> <strong>{{ special_components.motor_guard.model|default:"No registra" }}</strong></p>
+            {% endif %}
 
-          {% if special_components.potable_plant %}
-          <div class="p-3 bg-white rounded border col-span-1 md:col-span-2">
-            <h5 class="font-medium text-gray-700 mb-2">Componentes Planta Agua Potable</h5>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-              {% if special_components.potable_plant.pump_filter %}<p><span class="font-medium">Bomba Filtración:</span> {{ special_components.potable_plant.pump_filter }}</p>{% endif %}
-              {% if special_components.potable_plant.pump_pressure %}<p><span class="font-medium">Bomba Presión:</span> {{ special_components.potable_plant.pump_pressure }}</p>{% endif %}
-              {% if special_components.potable_plant.pump_dosing %}<p><span class="font-medium">Bomba Dosificadora:</span> {{ special_components.potable_plant.pump_dosing }}</p>{% endif %}
-              {% if special_components.potable_plant.sand_carbon_filter %}<p><span class="font-medium">Filtro Arena/Carbón:</span> {{ special_components.potable_plant.sand_carbon_filter }}</p>{% endif %}
-              {% if special_components.potable_plant.hidroneumatic_tank %}<p><span class="font-medium">Tanque Hidroneumático:</span> {{ special_components.potable_plant.hidroneumatic_tank }}</p>{% endif %}
-              {% if special_components.potable_plant.uv_filter %}<p><span class="font-medium">Filtro UV:</span> {{ special_components.potable_plant.uv_filter }}</p>{% endif %}
-            </div>
-          </div>
-          {% endif %}
+            <!-- Componentes específicos para plantas de agua potable -->
+            {% if equipment.subtype == 'PLANTA DE TRATAMIENTO DE AGUA' %}
+            <p><span class="text-muted">Bomba Filtración:</span> <strong>{{ equipment.pump_filter|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Bomba Presión:</span> <strong>{{ equipment.pump_pressure|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Bomba Dosificadora:</span> <strong>{{ equipment.pump_dosing|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Filtro Arena/Carbón:</span> <strong>{{ equipment.sand_carbon_filter|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Tanque Hidroneumático:</span> <strong>{{ equipment.hidroneumatic_tank|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Filtro UV:</span> <strong>{{ equipment.uv_filter|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Relay Motor:</span> <strong>{{ equipment.relay_engine|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Relay Blower:</span> <strong>{{ equipment.relay_blower|default:"No registra" }}</strong></p>
+            {% endif %}
 
-          {% if special_components.residual_relays %}
-          <div class="p-3 bg-white rounded border">
-            <h5 class="font-medium text-gray-700 mb-2">Relays Planta Residual</h5>
-            {% if special_components.residual_relays.relay_engine %}<p class="text-sm text-gray-600">Relay Motor: {{ special_components.residual_relays.relay_engine }}</p>{% endif %}
-            {% if special_components.residual_relays.relay_blower %}<p class="text-sm text-gray-600">Relay Blower: {{ special_components.residual_relays.relay_blower }}</p>{% endif %}
+            <!-- Componentes específicos para plantas de agua residual -->
+            {% if equipment.subtype == 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL' %}
+            <p><span class="text-muted">Relay Motor:</span> <strong>{{ equipment.relay_engine|default:"No registra" }}</strong></p>
+            <p><span class="text-muted">Relay Blower:</span> <strong>{{ equipment.relay_blower|default:"No registra" }}</strong></p>
+            {% endif %}
           </div>
-          {% endif %}
         </div>
       </div>
       {% endif %}
