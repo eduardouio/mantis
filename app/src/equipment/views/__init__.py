@@ -3,15 +3,14 @@ from equipment.views.vehicles import (
     VehicleListView,
     VehicleUpdateView,
     VehicleDetailView,
-    VehicleDeleteView
+    VehicleDeleteView,
 )
 
 from equipment.views.resources import (
-    ResourceItemCreateView,
+    ResourceItemCreateUpdateView,
     ResourceItemDetailView,
-    ResourceItemUpdateView,
     ResourceItemDeleteView,
-    ResourceItemListView
+    ResourceItemListView,
 )
 
 __all__ = [
@@ -20,9 +19,8 @@ __all__ = [
     'VehicleUpdateView',
     'VehicleDetailView',
     'VehicleDeleteView',
-    'ResourceItemCreateView',
+    'ResourceItemCreateUpdateView',
     'ResourceItemDetailView',
-    'ResourceItemUpdateView',
     'ResourceItemDeleteView',
-    'ResourceItemListView'
+    'ResourceItemListView',
 ]
