@@ -11,17 +11,18 @@ class ResourceItemListView(LoginRequiredMixin, ListView):
     ordering = ['name']
 
     def get_queryset(self):
-        queryset = ResourceItem.objects.all().order_by('name')
+        # Solo equipos activos (soft delete via is_active)
+        queryset = ResourceItem.get_all().order_by('name')
 
         # Filtros de búsqueda
         search = self.request.GET.get('search')
         if search:
             queryset = queryset.filter(
-                Q(name__icontains=search) |
-                Q(code__icontains=search) |
-                Q(brand__icontains=search) |
-                Q(model__icontains=search) |
-                Q(serial_number__icontains=search)
+                Q(name__icontains=search)
+                | Q(code__icontains=search)
+                | Q(brand__icontains=search)
+                | Q(model__icontains=search)
+                | Q(serial_number__icontains=search)
             )
 
         # Filtros específicos
@@ -32,10 +33,6 @@ class ResourceItemListView(LoginRequiredMixin, ListView):
         brand = self.request.GET.get('brand')
         if brand:
             queryset = queryset.filter(brand__icontains=brand)
-
-        is_active = self.request.GET.get('is_active')
-        if is_active:
-            queryset = queryset.filter(is_active=is_active == 'true')
 
         return queryset.distinct()
 
@@ -48,20 +45,21 @@ class ResourceItemListView(LoginRequiredMixin, ListView):
         context['search'] = self.request.GET.get('search', '')
         context['status'] = self.request.GET.get('status', '')
         context['brand'] = self.request.GET.get('brand', '')
-        context['is_active'] = self.request.GET.get('is_active', '')
+        # Compatibilidad: siempre se listan activos
+        context['is_active'] = 'true'
 
         # Opciones para los selectores
         context['status_choices'] = (
-            ResourceItem._meta
-            .get_field('stst_status_equipment')
-            .choices
+            ResourceItem._meta.get_field('stst_status_equipment').choices
         )
-        context['active_choices'] = [('true', 'Activo'), ('false', 'Inactivo')]
+        # Compatibilidad: solo opción Activo
+        context['active_choices'] = [('true', 'Activo')]
 
         # Obtener marcas únicas para el filtro
         context['brand_choices'] = (
-            ResourceItem.objects
-            .values_list('brand', flat=True)
+            ResourceItem.objects.values_list('brand', flat=True)
+            .exclude(brand__isnull=True)
+            .exclude(brand__exact='')
             .distinct()
             .order_by('brand')
         )
