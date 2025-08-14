@@ -290,11 +290,11 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                 'model': equipment.electrical_panel_model,
             }
 
-        # Información del Guarda Motor
-        if equipment.motor_guard_brand or equipment.motor_guard_model:
+        # Información del Guarda Motor (usar campos correctos engine_guard_*)
+        if equipment.engine_guard_brand or equipment.engine_guard_model:
             components['motor_guard'] = {
-                'brand': equipment.motor_guard_brand,
-                'model': equipment.motor_guard_model,
+                'brand': equipment.engine_guard_brand,
+                'model': equipment.engine_guard_model,
             }
 
         # Componentes específicos para planta de agua potable
@@ -367,8 +367,8 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
 
         capacity_info = {
             'capacity_display': capacity_display,
-            'capacity_gallons': equipment.capacity_gallons,
-            'plant_capacity': equipment.plant_capacity,
+            'capacity_gallons': getattr(equipment, 'capacity_gallons', None),
+            'plant_capacity': getattr(equipment, 'plant_capacity', None),
         }
 
         # Información adicional según el subtipo
