@@ -68,7 +68,15 @@ class ResourceItemCreateUpdateView(LoginRequiredMixin, TemplateView):
 
             # Validar el formulario
             if form.is_valid():
-                resource = form.save()
+                resource = form.save(commit=False)
+                
+                # Establecer el estado del equipo
+                if not instance:
+                    # Si es nuevo, siempre "FUNCIONANDO"
+                    resource.stst_status_equipment = 'FUNCIONANDO'
+                # Si es actualización, mantiene su estado actual
+                
+                resource.save()
 
                 # Redirigir a la vista de detalle con parámetro de acción
                 action = 'updated' if instance else 'created'

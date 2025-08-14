@@ -25,7 +25,6 @@ TYPE_EQUIPMENT = (
 DISPONIBILITY_STATUS = (
     ('DISPONIBLE', 'DISPONIBLE'),
     ('RENTADO', 'RENTADO'),
-    ('FUERA DE SERVICIO', 'FUERA DE SERVICIO'),
 )
 STATUS_EQUIPMENT = (
     ('FUNCIONANDO', 'FUNCIONANDO'),
@@ -382,7 +381,7 @@ class ResourceItem(BaseModel):
     )
     # campos base de equipos
     type_equipment = models.CharField(
-        'Equipment Subtype',
+        'Subtipo de Equipo',
         max_length=255,
         choices=TYPE_EQUIPMENT,
         blank=True,
@@ -390,56 +389,56 @@ class ResourceItem(BaseModel):
         help_text='Si es un Servicio este campo en nulo'
     )
     brand = models.CharField(
-        'Brand',
+        'Marca',
         max_length=255,
         blank=True,
         null=True
     )
     model = models.CharField(
-        'Model',
+        'Modelo',
         max_length=255,
         blank=True,
         null=True,
         default='N/A'
     )
     serial_number = models.CharField(
-        'Serial Number',
+        'Número de Serie',
         max_length=255,
         blank=True,
         null=True,
     )
     date_purchase = models.DateField(
-        'Purchase Date',
+        'Fecha de Compra',
         blank=True,
         null=True,
         default=None
     )
     height = models.PositiveSmallIntegerField(
-        'Height (cm)',
+        'Altura (cm)',
         blank=True,
         null=True,
         default=None
     )
     width = models.PositiveSmallIntegerField(
-        'Width (cm)',
+        'Ancho (cm)',
         blank=True,
         null=True,
         default=None
     )
     depth = models.PositiveSmallIntegerField(
-        'Depth (cm)',
+        'Profundidad (cm)',
         blank=True,
         null=True,
         default=None
     )
     weight = models.PositiveSmallIntegerField(
-        'Weight (kg)',
+        'Peso (kg)',
         blank=True,
         null=True,
         default=None
     )
     capacity_gallons = models.DecimalField(
-        'Capacity (gallons)',
+        'Capacidad (galones)',
         max_digits=10,
         decimal_places=2,
         blank=True,
@@ -456,17 +455,17 @@ class ResourceItem(BaseModel):
 
     # checklists
     have_foot_pumps = models.BooleanField(
-        'Foot Pumps',
+        'Bombas de Pie',
         default=False,
         help_text='Solo para lavamanos'
     )
     have_paper_dispenser = models.BooleanField(
-        'Paper Dispenser',
+        'Dispensador de Papel',
         default=False,
         help_text='Para baterías sanitarias'
     )
     have_soap_dispenser = models.BooleanField(
-        'Soap Dispenser',
+        'Dispensador de Jabón',
         default=False,
         help_text='Para baterías sanitarias'
     )
@@ -476,7 +475,7 @@ class ResourceItem(BaseModel):
         help_text='Para baterías sanitarias'
     )
     have_paper_towels = models.BooleanField(
-        'Paper Towels',
+        'Toallas de Papel',
         default=False,
         help_text='Para lavamanos y equipos especiales'
     )
@@ -809,8 +808,8 @@ class ResourceItem(BaseModel):
     )
 
     class Meta:
-        verbose_name = 'Resource Item'
-        verbose_name_plural = 'Resource Items'
+        verbose_name = 'Recurso'
+        verbose_name_plural = 'Recursos'
         ordering = ['name']
     # ===== Helper API de presentación =====
     
@@ -919,6 +918,15 @@ class ResourceItem(BaseModel):
         }
         real_name = aliases.get(field_name, field_name)
         try:
+            # Si el campo tiene choices, usar su display
+            try:
+                field = self._meta.get_field(real_name)
+                if getattr(field, 'choices', None):
+                    display_method = f"get_{real_name}_display"
+                    if hasattr(self, display_method):
+                        return getattr(self, display_method)()
+            except Exception:
+                pass
             return getattr(self, real_name)
         except Exception:
             return None

@@ -10,7 +10,7 @@ class ResourceItemForm(forms.ModelForm):
             'serial_number', 'date_purchase', 'height', 'width',
             'depth', 'weight', 'capacity_gallons', 'plant_capacity',
             # Estado y disponibilidad
-            'stst_status_equipment', 'stst_status_disponibility',
+            'stst_status_disponibility',
             'stst_repair_reason', 'stst_current_location',
             'stst_current_project_id', 'stst_commitment_date',
             'stst_release_date',
@@ -38,61 +38,60 @@ class ResourceItemForm(forms.ModelForm):
         ]
 
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'code': forms.TextInput(attrs={'class': 'form-control'}),
-            'type_equipment': forms.Select(attrs={'class': 'form-control'}),
-            'brand': forms.TextInput(attrs={'class': 'form-control'}),
-            'model': forms.TextInput(attrs={'class': 'form-control'}),
-            'serial_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'code': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'type_equipment': forms.Select(attrs={'class': 'select select-bordered select-md w-full'}),
+            'brand': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'model': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'serial_number': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
             'date_purchase': forms.DateInput(
-                attrs={'class': 'form-control', 'type': 'date'}
+                attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}
             ),
-            'height': forms.NumberInput(attrs={'class': 'form-control'}),
-            'width': forms.NumberInput(attrs={'class': 'form-control'}),
-            'depth': forms.NumberInput(attrs={'class': 'form-control'}),
-            'weight': forms.NumberInput(attrs={'class': 'form-control'}),
+            'height': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'width': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'depth': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'weight': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
             'capacity_gallons': forms.NumberInput(
-                attrs={'class': 'form-control', 'step': '0.01'}
+                attrs={'class': 'input input-bordered input-md w-full', 'step': '0.01'}
             ),
-            'plant_capacity': forms.TextInput(attrs={'class': 'form-control'}),
-            'stst_status_equipment': forms.Select(attrs={'class': 'form-control'}),
-            'stst_status_disponibility': forms.Select(attrs={'class': 'form-control'}),
+            'plant_capacity': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'stst_status_disponibility': forms.Select(attrs={'class': 'select select-bordered select-md w-full'}),
             'stst_repair_reason': forms.Textarea(
-                attrs={'class': 'form-control', 'rows': 3}
+                attrs={'class': 'textarea textarea-bordered textarea-md w-full', 'rows': 3}
             ),
-            'stst_current_location': forms.TextInput(attrs={'class': 'form-control'}),
-            'stst_current_project_id': forms.NumberInput(attrs={'class': 'form-control'}),
+            'stst_current_location': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'stst_current_project_id': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
             'stst_commitment_date': forms.DateInput(
-                attrs={'class': 'form-control', 'type': 'date'}
+                attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}
             ),
             'stst_release_date': forms.DateInput(
-                attrs={'class': 'form-control', 'type': 'date'}
+                attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}
             ),
             # Componentes de equipos
-            'blower_brand': forms.TextInput(attrs={'class': 'form-control'}),
-            'blower_model': forms.TextInput(attrs={'class': 'form-control'}),
-            'engine_brand': forms.TextInput(attrs={'class': 'form-control'}),
-            'engine_model': forms.TextInput(attrs={'class': 'form-control'}),
-            'engine_fases': forms.Select(attrs={'class': 'form-control'}),
-            'belt_brand': forms.TextInput(attrs={'class': 'form-control'}),
-            'belt_model': forms.TextInput(attrs={'class': 'form-control'}),
-            'belt_type': forms.Select(attrs={'class': 'form-control'}),
-            'blower_pulley_brand': forms.TextInput(attrs={'class': 'form-control'}),
-            'blower_pulley_model': forms.TextInput(attrs={'class': 'form-control'}),
-            'motor_pulley_brand': forms.TextInput(attrs={'class': 'form-control'}),
-            'motor_pulley_model': forms.TextInput(attrs={'class': 'form-control'}),
-            'electrical_panel_brand': forms.TextInput(attrs={'class': 'form-control'}),
-            'electrical_panel_model': forms.TextInput(attrs={'class': 'form-control'}),
-            'engine_guard_brand': forms.TextInput(attrs={'class': 'form-control'}),
-            'engine_guard_model': forms.TextInput(attrs={'class': 'form-control'}),
-            'pump_filter': forms.TextInput(attrs={'class': 'form-control'}),
-            'pump_pressure': forms.TextInput(attrs={'class': 'form-control'}),
-            'pump_dosing': forms.TextInput(attrs={'class': 'form-control'}),
-            'sand_carbon_filter': forms.TextInput(attrs={'class': 'form-control'}),
-            'hidroneumatic_tank': forms.TextInput(attrs={'class': 'form-control'}),
-            'uv_filter': forms.TextInput(attrs={'class': 'form-control'}),
-            'relay_engine': forms.TextInput(attrs={'class': 'form-control'}),
-            'relay_blower': forms.TextInput(attrs={'class': 'form-control'}),
+            'blower_brand': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'blower_model': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'engine_brand': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'engine_model': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'engine_fases': forms.Select(attrs={'class': 'select select-bordered select-md w-full'}),
+            'belt_brand': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'belt_model': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'belt_type': forms.Select(attrs={'class': 'select select-bordered select-md w-full'}),
+            'blower_pulley_brand': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'blower_pulley_model': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'motor_pulley_brand': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'motor_pulley_model': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'electrical_panel_brand': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'electrical_panel_model': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'engine_guard_brand': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'engine_guard_model': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'pump_filter': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'pump_pressure': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'pump_dosing': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'sand_carbon_filter': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'hidroneumatic_tank': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'uv_filter': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'relay_engine': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'relay_blower': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -172,22 +171,13 @@ class ResourceItemForm(forms.ModelForm):
                 )
 
         # Hacer que el motivo de reparación sea requerido si el estado es "EN REPARACION"
-        if self.instance and self.instance.stst_status_equipment == 'EN REPARACION':
-            self.fields['stst_repair_reason'].required = True
+        # Esta validación ahora se maneja en el modelo o en otra parte del sistema
+        # ya que stst_status_equipment se gestiona automáticamente
 
     def clean(self):
         cleaned_data = super().clean()
-        status = cleaned_data.get('stst_status_equipment')
-        repair_reason = cleaned_data.get('stst_repair_reason')
         type_equipment = cleaned_data.get('type_equipment')
         have_urinals = cleaned_data.get('have_urinals', False)
-
-        # Validar que si el estado es "EN REPARACION" se proporcione un motivo
-        if status == 'EN REPARACION' and not repair_reason:
-            self.add_error(
-                'stst_repair_reason',
-                'Se requiere especificar el motivo de la reparación cuando el estado es "EN REPARACION"'
-            )
 
         # Validar que los urinarios solo estén en baterías sanitarias de hombre
         if type_equipment == 'BTSNMJ' and have_urinals:
