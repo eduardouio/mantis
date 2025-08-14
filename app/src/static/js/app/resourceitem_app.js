@@ -39,6 +39,67 @@ window.ResourceItemApp = {
         { id: 'notes', name: 'Notas' }
       ],
       
+      // Mapeo de campos a mostrar por tipo y subtipo
+      fieldVisibility: {
+        // Campos generales para todos los tipos
+        general: ['name', 'code', 'serial_number', 'brand', 'model', 'date_purchase', 'status', 'notes'],
+        
+        // Campos específicos por subtipo
+        bySubtype: {
+          // Plantas de tratamiento
+          'PLANTA DE TRATAMIENTO DE AGUA': [
+            'plant_capacity', 'blower_brand', 'blower_model', 'engine_brand', 'engine_model', 
+            'engine_fases', 'belt_brand', 'belt_model', 'belt_type', 'blower_pulley_brand',
+            'blower_pulley_model', 'motor_pulley_brand', 'motor_pulley_model',
+            'electrical_panel_brand', 'electrical_panel_model', 'motor_guard_brand',
+            'motor_guard_model', 'pump_filter', 'pump_pressure', 'pump_dosing',
+            'sand_carbon_filter', 'hidroneumatic_tank', 'uv_filter'
+          ],
+          'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL': [
+            'plant_capacity', 'blower_brand', 'blower_model', 'engine_brand', 'engine_model', 
+            'engine_fases', 'belt_brand', 'belt_model', 'belt_type', 'blower_pulley_brand',
+            'blower_pulley_model', 'motor_pulley_brand', 'motor_pulley_model',
+            'electrical_panel_brand', 'electrical_panel_model', 'motor_guard_brand',
+            'motor_guard_model', 'relay_engine', 'relay_blower'
+          ],
+          
+          // Tanques
+          'TANQUES DE ALMACENAMIENTO AGUA CRUDA': ['capacity_gallons'],
+          'TANQUES DE ALMACENAMIENTO AGUA RESIDUAL': ['capacity_gallons'],
+          
+          // Lavamanos
+          'LAVAMANOS': [
+            'foot_pumps', 'sink_soap_dispenser', 'paper_towels'
+          ],
+          
+          // Baterías sanitarias
+          'BATERIA SANITARIA HOMBRE': [
+            'paper_dispenser', 'soap_dispenser', 'napkin_dispenser', 'urinals', 'seats',
+            'toilet_pump', 'sink_pump', 'toilet_lid', 'bathroom_bases', 'ventilation_pipe'
+          ],
+          'BATERIA SANITARIA MUJER': [
+            'paper_dispenser', 'soap_dispenser', 'napkin_dispenser', 'seats',
+            'toilet_pump', 'sink_pump', 'toilet_lid', 'bathroom_bases', 'ventilation_pipe'
+          ],
+          
+          // Otros equipos
+          'CAMPER BAÑO': [
+            'paper_dispenser', 'soap_dispenser', 'napkin_dispenser', 'seats',
+            'toilet_pump', 'sink_pump', 'toilet_lid', 'bathroom_bases', 'ventilation_pipe'
+          ],
+          'ESTACION CUADRUPLE URINARIO': [
+            'urinals', 'ventilation_pipe'
+          ]
+        },
+        
+        // Campos que siempre deben mostrarse en modo edición (incluyendo booleanos)
+        alwaysInEditMode: [
+          'foot_pumps', 'sink_soap_dispenser', 'paper_towels', 'paper_dispenser',
+          'soap_dispenser', 'napkin_dispenser', 'urinals', 'seats', 'toilet_pump',
+          'sink_pump', 'toilet_lid', 'bathroom_bases', 'ventilation_pipe'
+        ]
+      },
+      
       // Campos y configuración
       formData: {
         // Campos básicos
@@ -320,71 +381,55 @@ window.ResourceItemApp = {
     },
     
     /**
+     * Determina si un campo debe mostrarse según el tipo/subtipo de recurso
+     * @param {string} fieldName - Nombre del campo a verificar
+     * @returns {boolean} - True si el campo debe mostrarse
+     */
+    shouldShowField(fieldName) {
+      // Si estamos en modo edición y el campo está en alwaysInEditMode, mostrarlo
+      if (this.isEditMode && this.fieldVisibility.alwaysInEditMode.includes(fieldName)) {
+        return true;
+      }
+      
+      // Si es un campo general, mostrarlo
+      if (this.fieldVisibility.general.includes(fieldName)) {
+        return true;
+      }
+      
+      // Si no hay subtipo seleccionado, no mostrar campos específicos
+      if (!this.formData.subtype) {
+        return false;
+      }
+      
+      // Verificar si el campo está en los campos específicos del subtipo
+      const subtypeFields = this.fieldVisibility.bySubtype[this.formData.subtype] || [];
+      return subtypeFields.includes(fieldName);
+    },
+    
+    /**
+     * Obtiene las clases CSS para un campo según su visibilidad
+     * @param {string} fieldName - Nombre del campo
+     * @returns {string} - Clases CSS
+     */
+    getFieldClasses(fieldName) {
+      return {
+        'hidden': !this.shouldShowField(fieldName),
+        'block': this.shouldShowField(fieldName)
+      };
+    },
+    
+    /**
      * Actualiza la visibilidad de campos según el tipo y subtipo seleccionado
      */
     updateVisibility() {
-      // Visibilidad basada en tipo de equipo
-      this.visibility.equipmentFields = this.formData.type === 'EQUIPO';
-      
-      // Visibilidad basada en estado
-      this.visibility.repairReasonField = this.formData.status === 'EN REPARACION';
-      
-      // Visibilidad basada en subtipo
-      if (this.formData.type === 'EQUIPO' && this.formData.subtype) {
-        // Lavamanos
-        this.visibility.lavandinosSection = this.formData.subtype === 'LAVAMANOS';
-        
-        // Baterías sanitarias, Camper Baño y Estación Cuádruple Urinario (comparten los mismos campos)
-        this.visibility.sanitarySection = 
-          this.formData.subtype === 'BATERIA SANITARIA HOMBRE' || 
-          this.formData.subtype === 'BATERIA SANITARIA MUJER' ||
-          this.formData.subtype === 'CAMPER BAÑO' ||
-          this.formData.subtype === 'ESTACION CUADRUPLE URINARIO';
-        
-        // Urinales (solo para baterías sanitarias de hombre y camper baño)
-        this.visibility.urinalsField = 
-          this.formData.subtype === 'BATERIA SANITARIA HOMBRE' || 
-          this.formData.subtype === 'CAMPER BAÑO';
-        
-        // Si es batería sanitaria de mujer, desmarcamos los urinales
-        if (this.formData.subtype === 'BATERIA SANITARIA MUJER') {
-          const urinalsCheckbox = document.querySelector('[name="urinals"]');
-          if (urinalsCheckbox) urinalsCheckbox.checked = false;
-        }
-        
-        // Capacidad de planta (plantas de tratamiento)
-        this.visibility.plantCapacityField = 
-          this.formData.subtype === 'PLANTA DE TRATAMIENTO DE AGUA RESIDUAL';
-        
-        // Campos especiales para plantas y tanques
-        this.visibility.specialFieldsSection = this.specialSubtypes.includes(this.formData.subtype);
-        
-        // Campo de capacidad en galones (tanques)
-        const isTank = this.tankSubtypes.includes(this.formData.subtype);
-        
-        // Mostrar sección de dimensiones para todos los tipos
-        this.toggleElement('#dimensions_section', true);
-        
-        // Mostrar/ocultar campos específicos según subtipo
-        if (isTank) {
-          this.toggleElement('#capacity_gallons_field', true);
-        } else {
-          this.toggleElement('#capacity_gallons_field', false);
-        }
-        
-      } else {
-        // Ocultar todas las secciones especiales si no es equipo o no tiene subtipo
-        this.visibility.lavandinosSection = false;
-        this.visibility.sanitarySection = false;
-        this.visibility.urinalsField = false;
-        this.visibility.plantCapacityField = false;
-        this.visibility.specialFieldsSection = false;
-      }
+      // Este método se mantiene por compatibilidad, pero la lógica se maneja en shouldShowField
+      // Los cambios de visibilidad ahora se manejan de forma reactiva
       
       // Si no es equipo, ocultar todas las secciones relacionadas con equipos
       if (this.formData.type !== 'EQUIPO') {
         this.toggleElement('#dimensions_section, #caracteristicas_section', false);
       }
+    },
       
       // Aplicamos los cambios de visibilidad al DOM después de que Vue actualice
       this.$nextTick(() => {
@@ -401,6 +446,26 @@ window.ResourceItemApp = {
       if (djangoForm) {
         djangoForm.style.display = this.currentStep === 3 ? 'block' : 'none';
       }
+      
+      // Seleccionar todos los elementos con atributo data-field
+      const fieldElements = document.querySelectorAll('[data-field]');
+      
+      fieldElements.forEach(element => {
+        const fieldName = element.getAttribute('data-field');
+        const parentElement = element.closest('.form-group') || element.closest('.form-control') || element;
+        
+        if (this.shouldShowField(fieldName)) {
+          parentElement.style.display = '';
+          if (parentElement.classList) {
+            parentElement.classList.remove('hidden');
+          }
+        } else {
+          parentElement.style.display = 'none';
+          if (parentElement.classList) {
+            parentElement.classList.add('hidden');
+          }
+        }
+      });
       
       // Campos generales de equipo
       this.toggleElement('#brand_div, #model_div, #date_purchase_div, #dimensions_section, #subtipo_div, #capacidad_div', 

@@ -13,6 +13,8 @@ from api.technicals import (
     DeleteVaccineAPI,
 )
 
+from api.resources import UpdateResourceAPI
+
 urlpatterns = [
     # vehicles
     path('vehicles/cert_vehicle/', CertVehicleCreateUpdateAPI.as_view(), name='api_cert_vehicle_create_update'),
@@ -24,4 +26,6 @@ urlpatterns = [
     path('technicals/create_update_vaccine/', CreateUpdateVaccineAPI.as_view(), name='api_create_update_vaccine'),
     path('technicals/delete_pass_technical/', DeletePassTechnicalAPI.as_view(), name='api_delete_pass_technical'),
     path('technicals/delete_vaccine/', DeleteVaccineAPI.as_view(), name='api_delete_vaccine'),
+    # resources
+    path('resources/update/', UpdateResourceAPI.as_view(), name='api_update_resource'),
 ]
