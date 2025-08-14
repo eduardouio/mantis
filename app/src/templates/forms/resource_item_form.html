@@ -23,11 +23,18 @@
       <div>
         <div class="space-y-4">
           {% for field in left_bound_fields %}
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text text-sm font-medium">{{ field.label }}</span>
-              </label>
-              {{ field }}
+            <div class="form-control field-row" data-field-name="{{ field.name }}">
+              {% if field.field.widget.input_type == 'checkbox' %}
+                <label class="label cursor-pointer items-center gap-2">
+                  {{ field }}
+                  <span class="label-text text-sm font-medium">{{ field.label }}</span>
+                </label>
+              {% else %}
+                <label class="label">
+                  <span class="label-text text-sm font-medium">{{ field.label }}</span>
+                </label>
+                {{ field }}
+              {% endif %}
               {% if field.errors %}
                 <label class="label">
                   <span class="label-text-alt text-error">{{ field.errors.0 }}</span>
@@ -41,11 +48,18 @@
       <div>
         <div class="space-y-4">
           {% for field in right_bound_fields %}
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text text-sm font-medium">{{ field.label }}</span>
-              </label>
-              {{ field }}
+            <div class="form-control field-row" data-field-name="{{ field.name }}">
+              {% if field.field.widget.input_type == 'checkbox' %}
+                <label class="label cursor-pointer items-center gap-2">
+                  {{ field }}
+                  <span class="label-text text-sm font-medium">{{ field.label }}</span>
+                </label>
+              {% else %}
+                <label class="label">
+                  <span class="label-text text-sm font-medium">{{ field.label }}</span>
+                </label>
+                {{ field }}
+              {% endif %}
               {% if field.errors %}
                 <label class="label">
                   <span class="label-text-alt text-error">{{ field.errors.0 }}</span>
@@ -86,4 +100,50 @@
     </div>
   </form>
 </div>
+{% block script %}
+{{ block.super }}
+<script>
+  (function() {
+    // Mapa tipo -> campos permitido, provisto por la vista
+    const typeFieldsMap = JSON.parse('{{ type_fields_map_json|escapejs }}');
+    const initialType = '{{ initial_type|default:"SERVIC" }}';
+
+    // Recolectar todos los contenedores de campos por nombre
+    const fieldRows = Array.from(document.querySelectorAll('.field-row'));
+    const fieldRowByName = {};
+    fieldRows.forEach(row => {
+      const name = row.getAttribute('data-field-name');
+      if (name) fieldRowByName[name] = row;
+    });
+
+    // Select de tipo
+    const typeSelect = document.getElementById('id_type_equipment');
+
+    function showOnly(fields) {
+      const allowed = new Set(fields);
+      fieldRows.forEach(row => {
+        const name = row.getAttribute('data-field-name');
+        // Siempre mostrar 'name' y 'code' como mínimos
+        const mustShow = allowed.has(name) || name === 'name' || name === 'code' || name === 'type_equipment';
+        row.style.display = mustShow ? '' : 'none';
+      });
+    }
+
+    function applyType(typeVal) {
+      const fields = typeFieldsMap[typeVal] || typeFieldsMap['SERVIC'] || [];
+      showOnly(fields);
+    }
+
+    if (typeSelect) {
+      typeSelect.addEventListener('change', (e) => applyType(e.target.value));
+      // Aplicar inicial
+      const current = typeSelect.value || initialType;
+      applyType(current);
+    } else {
+      // Fallback
+      applyType(initialType);
+    }
+  })();
+  </script>
+{% endblock %}
 {% endblock %}
