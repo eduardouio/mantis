@@ -1,9 +1,11 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block content %}
-<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500" data-equipment-id="{{ equipment.id }}" data-api-update="{% url 'api_update_resource' %}">
+<div class="max-w-7xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500" data-equipment-id="{{ equipment.id }}" data-api-update="{% url 'api_update_resource' %}">
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
-    <h1 class="text-2xl font-semibold text-blue-500">Ficha de Recurso</h1>
+    <h1 class="text-2xl font-semibold text-blue-500">
+      {% if equipment.code %}[{{ equipment.code }}] {% endif %}{{ equipment.name|default:'Sin nombre'|upper }}
+    </h1>
     <div class="flex flex-wrap gap-2 text-gray-500">
       <!-- Badge Estado Activo/Inactivo -->
       <span data-active-badge class="badge {% if equipment.is_active %}badge-success{% else %}badge-error{% endif %}">

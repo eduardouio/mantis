@@ -34,7 +34,9 @@ class ResourceItemForm(forms.ModelForm):
             'have_pump_pressure', 'pump_pressure',
             'have_pump_dosing', 'pump_dosing',
             'have_sand_carbon_filter', 'sand_carbon_filter',
-            'have_hidroneumatic_tank', 'hidroneumatic_tank'
+            'have_hidroneumatic_tank', 'hidroneumatic_tank',
+            # BaseModel
+            'notes'
         ]
 
         widgets = {
@@ -92,6 +94,9 @@ class ResourceItemForm(forms.ModelForm):
             'uv_filter': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
             'relay_engine': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
             'relay_blower': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'notes': forms.Textarea(
+                attrs={'class': 'textarea textarea-bordered textarea-md w-full', 'rows': 4}
+            ),
         }
 
     def __init__(self, *args, **kwargs):
@@ -110,6 +115,8 @@ class ResourceItemForm(forms.ModelForm):
         self.fields['stst_current_project_id'].required = False
         self.fields['stst_commitment_date'].required = False
         self.fields['stst_release_date'].required = False
+        if 'notes' in self.fields:
+            self.fields['notes'].required = False
 
         # Campos de componentes condicionales
         component_fields = [

@@ -20,53 +20,59 @@
     {% endif %}
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+      <!-- Columna izquierda: campos NO checkbox -->
       <div>
         <div class="space-y-4">
-          {% for field in left_bound_fields %}
-            <div class="form-control field-row" data-field-name="{{ field.name }}">
-              {% if field.field.widget.input_type == 'checkbox' %}
-                <label class="label cursor-pointer items-center gap-2">
-                  {{ field }}
-                  <span class="label-text text-sm font-medium">{{ field.label }}</span>
-                </label>
-              {% else %}
+          {% for field in form %}
+              {% if field.field.widget.input_type != 'checkbox' and field.name != 'notes' %}
+              <div class="form-control field-row" data-field-name="{{ field.name }}">
                 <label class="label">
                   <span class="label-text text-sm font-medium">{{ field.label }}</span>
                 </label>
                 {{ field }}
-              {% endif %}
-              {% if field.errors %}
-                <label class="label">
-                  <span class="label-text-alt text-error">{{ field.errors.0 }}</span>
-                </label>
-              {% endif %}
-            </div>
+                {% if field.errors %}
+                  <label class="label">
+                    <span class="label-text-alt text-error">{{ field.errors.0 }}</span>
+                  </label>
+                {% endif %}
+              </div>
+            {% endif %}
           {% endfor %}
         </div>
       </div>
 
+      <!-- Columna derecha: SOLO checkboxes -->
       <div>
-        <div class="space-y-4">
-          {% for field in right_bound_fields %}
-            <div class="form-control field-row" data-field-name="{{ field.name }}">
-              {% if field.field.widget.input_type == 'checkbox' %}
+        <div class="space-y-2">
+          {% for field in form %}
+            {% if field.field.widget.input_type == 'checkbox' %}
+              <div class="form-control field-row" data-field-name="{{ field.name }}">
                 <label class="label cursor-pointer items-center gap-2">
                   {{ field }}
                   <span class="label-text text-sm font-medium">{{ field.label }}</span>
                 </label>
-              {% else %}
+                {% if field.errors %}
+                  <label class="label">
+                    <span class="label-text-alt text-error">{{ field.errors.0 }}</span>
+                  </label>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+            {# Campo de notas debajo de los checks #}
+            {% if form.notes %}
+            <div class="form-control field-row mt-4" data-field-name="notes">
+              <label class="label">
+                <span class="label-text text-sm font-medium">{{ form.notes.label|default:'Notas' }}</span>
+              </label>
+              {{ form.notes }}
+              {% if form.notes.errors %}
                 <label class="label">
-                  <span class="label-text text-sm font-medium">{{ field.label }}</span>
-                </label>
-                {{ field }}
-              {% endif %}
-              {% if field.errors %}
-                <label class="label">
-                  <span class="label-text-alt text-error">{{ field.errors.0 }}</span>
+                  <span class="label-text-alt text-error">{{ form.notes.errors.0 }}</span>
                 </label>
               {% endif %}
             </div>
-          {% endfor %}
+            {% endif %}
         </div>
       </div>
     </div>
@@ -124,7 +130,7 @@
       fieldRows.forEach(row => {
         const name = row.getAttribute('data-field-name');
         // Siempre mostrar 'name' y 'code' como mínimos
-        const mustShow = allowed.has(name) || name === 'name' || name === 'code' || name === 'type_equipment';
+    const mustShow = allowed.has(name) || name === 'name' || name === 'code' || name === 'type_equipment' || name === 'notes';
         row.style.display = mustShow ? '' : 'none';
       });
     }
