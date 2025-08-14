@@ -1,14 +1,19 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
 {% block content %}
-<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
+<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500" data-equipment-id="{{ equipment.id }}" data-api-update="{% url 'api_update_resource' %}">
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
     <h1 class="text-2xl font-semibold text-blue-500">Ficha de Recurso</h1>
     <div class="flex flex-wrap gap-2 text-gray-500">
       <!-- Badge Estado Activo/Inactivo -->
-      <span class="badge {% if equipment.is_active %}badge-success{% else %}badge-error{% endif %}">
+      <span data-active-badge class="badge {% if equipment.is_active %}badge-success{% else %}badge-error{% endif %}">
         {% if equipment.is_active %}ACTIVO{% else %}INACTIVO{% endif %}
       </span>
+      <!-- Toggle Activo/Inactivo -->
+      <label class="flex items-center gap-2 ml-1">
+        <input type="checkbox" class="checkbox checkbox-sm js-field-toggle" data-field="is_active" {% if equipment.is_active %}checked{% endif %}>
+        <span class="text-xs text-gray-600">Activo</span>
+      </label>
       
       <!-- Badge Disponibilidad -->
       {% with availability=equipment.stst_status_disponibility %}
@@ -20,7 +25,7 @@
       
       <!-- Badge Estado Técnico -->
       {% with est=equipment.stst_status_equipment %}
-        <span class="badge text-white text-sm
+        <span data-tech-status data-variant="badge" class="badge text-white text-sm
           {% if est == 'FUNCIONANDO' %}badge-success{% elif est == 'EN REPARACION' %}badge-warning{% elif est == 'DAÑADO' or est == 'DANADO' %}badge-error{% elif est == 'INCOMPLETO' %}badge-warning{% else %}badge-neutral{% endif %}">
           {{ est|default:'Sin estado' }}
         </span>
@@ -33,39 +38,29 @@
     <!-- TAB 1: Información General -->
     <input type="radio" name="res_tabs" class="tab" aria-label="Información General" checked />
     <div class="tab-content bg-base-100 border-base-300 p-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-10">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-10">
         <!-- Col 1: Comunes -->
-        <div class="space-y-1 border-l-blue-300 border-l-[1px] pl-5">
-          {% for item in equipment.present_common_fields %}
-            <div>
-              <p class="text-gray-500 text-sm">{{ item.label }}</p>
-              <p class="font-semibold text-gray-900">{{ item.value|default:'No registrado' }}</p>
-            </div>
-          {% empty %}
-            <div class="text-gray-400">Sin campos comunes</div>
-          {% endfor %}
-        </div>
-
-        <!-- Col 2: Específicos -->
-        <div class="space-y-1 border-l-blue-300 border-l-[1px] pl-5">
-          {% for item in equipment.present_specific_fields %}
-            <div>
-              <p class="text-gray-500 text-sm">{{ item.label }}</p>
-              <p class="font-semibold text-gray-900">{{ item.value|default:'—' }}</p>
-            </div>
-          {% empty %}
-            <div class="text-gray-400">Sin campos específicos</div>
-          {% endfor %}
+        <div class="border-l-blue-300 border-l-[1px] pl-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+            {% for item in equipment.present_common_fields %}
+              <div>
+                <p class="text-gray-500 text-sm">{{ item.label }}</p>
+                <p class="font-semibold text-gray-900">{{ item.value|default:'No registrado' }}</p>
+              </div>
+            {% empty %}
+              <div class="text-gray-400">Sin campos comunes</div>
+            {% endfor %}
+          </div>
         </div>
 
         <!-- Col 3: Checklist have_* -->
         <div class="space-y-1 border-l-blue-300 border-l-[1px] pl-5">
-          <p class="text-gray-500 text-sm">Checklist</p>
+          <p class="text-gray-800 text-sm">Checklist</p>
           <div class="space-y-1">
             {% for item in equipment.present_have_fields %}
               <label class="flex items-center gap-2">
-                <input type="checkbox" class="checkbox checkbox-sm" {% if item.value %}checked{% endif %} disabled>
-                <span class="font-semibold text-gray-900">{{ item.label }}</span>
+                <input type="checkbox" class="checkbox checkbox-sm js-have-toggle" data-field="{{ item.name }}" {% if item.value %}checked{% endif %}>
+                <span class="text-gray-900">{{ item.label }}</span>
               </label>
             {% empty %}
               <div class="text-gray-400">Sin checklist para este tipo</div>
@@ -91,7 +86,7 @@
           <div>
             <p class="text-gray-500 text-sm">Estado Técnico</p>
             {% with est=equipment.stst_status_equipment %}
-              <span class="inline-block px-3 py-1 rounded-full text-white text-sm font-semibold
+              <span data-tech-status data-variant="pill" class="inline-block px-3 py-1 rounded-full text-white text-sm font-semibold
                 {% if est == 'FUNCIONANDO' %}bg-green-600{% elif est == 'EN REPARACION' %}bg-red-600{% elif est == 'DAÑADO' or est == 'DANADO' %}bg-red-600{% elif est == 'INCOMPLETO' %}bg-yellow-600{% else %}bg-gray-600{% endif %}">{{ est|default:'—' }}</span>
             {% endwith %}
           </div>
@@ -192,7 +187,10 @@
       </div>
     </div>
   </div>
-
+<div class="mt-6 pt-2 border border-gray-200 p-2 rounded">
+    <h3 class="text-md font-semibold text-blue-500 mb-2">Notas</h3>
+    <p class="text-gray-800 whitespace-pre-line">{{ equipment.notes|default:'Sin notas' }}</p>
+  </div>
   <!-- Botones de acción -->
   <div class="flex flex-wrap justify-center gap-2 mt-3 border-t pt-3">
     <a href="{% url 'resource_create' %}" class="btn btn-soft btn-default">
@@ -222,7 +220,6 @@
       Volver al Listado
     </a>
   </div>
-
   <!-- Confirmación de eliminación -->
   {% if action == 'delete' %}
   <div class="mt-4 p-3 bg-red-50 rounded-md border border-red-200">
@@ -239,6 +236,9 @@
       </a>
     </div>
   </div>
-  {% endif %}
+  {% endif %} 
 </div>
+{% block script %}
+<script src="{% static 'js/app/app-resources-presentations.js' %}"></script>
+{% endblock %}
 {% endblock %}

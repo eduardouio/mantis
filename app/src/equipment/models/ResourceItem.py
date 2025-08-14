@@ -1,6 +1,7 @@
 from django.db import models
+from django.core.exceptions import FieldDoesNotExist
 from common.BaseModel import BaseModel
-from datetime import date
+ 
 
 # opciones Para Campos
 FASES_COUNT = (
@@ -138,7 +139,6 @@ BTSNMJ_FIELDS = [
     'have_paper_dispenser',
     'have_soap_dispenser',
     'have_napkin_dispenser',
-    'have_urinals',
     'have_seat',
     'have_toilet_pump',
     'have_sink_pump',
@@ -310,7 +310,7 @@ PTRTAP_FIELDS = [
 ]
 
 PTRTAR_FIELDS = [
-     'id',
+    'id',
     'name',
     'is_service',
     'code',
@@ -812,3 +812,265 @@ class ResourceItem(BaseModel):
         verbose_name = 'Resource Item'
         verbose_name_plural = 'Resource Items'
         ordering = ['name']
+    # ===== Helper API de presentación =====
+    
+    @classmethod
+    def _fields_by_type(cls):
+        """Mapa tipo -> lista de campos (usa constantes de este módulo)."""
+        mapping = {
+            'LVMNOS': LVMNOS_FIELDS,
+            'BTSNHM': BTSNHM_FIELDS,
+            'BTSNMJ': BTSNMJ_FIELDS,
+            'EST4UR': EST4UR_FIELDS,
+            'CMPRBN': CMPRBN_FIELDS,
+            'PTRTAP': PTRTAP_FIELDS,
+            'PTRTAR': PTRTAR_FIELDS,
+            # Si existen TNQAAC_FIELDS/TNQAAR_FIELDS, agregarlas aquí
+        }
+        return mapping
+
+    @classmethod
+    def _metadata_fields(cls):
+        # Campos de BaseModel considerados metadatos para la vista
+        return [
+            'notes', 'created_at', 'updated_at',
+            'id_user_created', 'id_user_updated', 'is_active'
+        ]
+
+    @classmethod
+    def _state_fields_prefix(cls):
+        return 'stst_'
+
+    @classmethod
+    def common_fields_all_types(cls):
+        """Intersección de campos comunes entre todos los tipos definidos.
+        Excluye campos de estado y metadatos.
+        """
+        mapping = cls._fields_by_type()
+        lists = [set(fields) for fields in mapping.values() if fields]
+        if not lists:
+            return []
+        intersection = set.intersection(*lists)
+        # Excluir estado y metadatos
+        intersection = {
+            f for f in intersection
+            if not f.startswith(cls._state_fields_prefix())
+            and f not in cls._metadata_fields()
+        }
+        # Orden estable por nombre
+        return sorted(intersection)
+
+    @property
+    def all_fields_for_type(self):
+        """Campos aplicables al tipo; si no hay lista,
+        usa fallback de modelo.
+        """
+        mapping = self._fields_by_type()
+        fields = mapping.get(self.type_equipment)
+        if fields:
+            return fields
+        # Fallback: campos del modelo (solo nombres de field concretos)
+        model_field_names = [
+            f.name for f in self._meta.get_fields() if hasattr(f, 'attname')
+        ]
+        return [
+            f for f in model_field_names
+            if not f.startswith('_')
+        ]
+
+    @property
+    def state_fields(self):
+        prefix = self._state_fields_prefix()
+        return [f for f in self.all_fields_for_type if f.startswith(prefix)]
+
+    @property
+    def metadata_fields(self):
+        return [
+            f for f in self._metadata_fields()
+        ]
+
+    @property
+    def common_fields(self):
+        return self.common_fields_all_types()
+
+    @property
+    def specific_fields(self):
+        """Campos específicos del tipo (excluye comunes,
+        estado y metadatos).
+        """
+        commons = set(self.common_fields)
+        state = set(self.state_fields)
+        meta = set(self._metadata_fields())
+        return [
+            f for f in self.all_fields_for_type
+            if f not in commons and f not in state and f not in meta
+        ]
+
+    def get_field_value(self, field_name: str):
+        """Obtiene el valor del campo por nombre, seguro para plantillas.
+        Si no existe el campo, retorna None.
+        """
+        # Mapeos de alias que podrían existir en definiciones antiguas
+        aliases = {
+            'status': 'stst_status_equipment',
+            'availability': 'stst_status_disponibility',
+            'commitment_date': 'stst_commitment_date',
+            'release_date': 'stst_release_date',
+        }
+        real_name = aliases.get(field_name, field_name)
+        try:
+            return getattr(self, real_name)
+        except Exception:
+            return None
+
+    @classmethod
+    def _humanize(cls, name: str) -> str:
+        # Generar etiqueta legible a partir del nombre del campo
+        return name.replace('_', ' ').replace('stst ', '').strip().title()
+
+    def get_field_label(self, field_name: str) -> str:
+        """Obtiene verbose_name del campo si existe;
+        si no, humaniza el nombre.
+        """
+        try:
+            field = self._meta.get_field(field_name)
+            base_label = str(field.verbose_name)
+        except FieldDoesNotExist:
+            # Remover prefijo de estado si aparece
+            prefix = self._state_fields_prefix()
+            if field_name.startswith(prefix):
+                base_label = self._humanize(field_name[len(prefix):])
+            else:
+                base_label = self._humanize(field_name)
+
+        # Mapa de etiquetas en español por nombre de campo
+        label_map = {
+            # básicos
+            'id': 'ID',
+            'name': 'Nombre Equipo/Servicio',
+            'code': 'Código Equipo/Servicio',
+            'type_equipment': 'Subtipo de equipo',
+            'brand': 'Marca',
+            'model': 'Modelo',
+            'serial_number': 'Número de serie',
+            'date_purchase': 'Fecha de compra',
+            'height': 'Altura (cm)',
+            'width': 'Ancho (cm)',
+            'depth': 'Profundidad (cm)',
+            'weight': 'Peso (kg)',
+            'capacity_gallons': 'Capacidad (galones)',
+            'plant_capacity': 'Capacidad de Planta',
+            'is_service': 'Es servicio',
+            # estado
+            'stst_status_equipment': 'Estado técnico',
+            'stst_status_disponibility': 'Disponibilidad',
+            'stst_current_location': 'Ubicación Actual',
+            'stst_current_project_id': 'ID del Proyecto Actual',
+            'stst_commitment_date': 'Fecha de Ocupación',
+            'stst_release_date': 'Fecha de Liberación',
+            'stst_repair_reason': 'Motivo de Reparación',
+            # checklist comunes
+            'have_foot_pumps': 'Pedales de pie',
+            'have_paper_dispenser': 'Dispensador de papel',
+            'have_soap_dispenser': 'Dispensador de jabón',
+            'have_napkin_dispenser': 'Dispensador de servilletas',
+            'have_paper_towels': 'Toallas de papel',
+            'have_urinals': 'Urinarios',
+            'have_seat': 'Asiento',
+            'have_toilet_pump': 'Bomba de baño',
+            'have_sink_pump': 'Bomba de lavamanos',
+            'have_toilet_lid': 'Llave de baño',
+            'have_bathroom_bases': 'Bases de baño',
+            'have_ventilation_pipe': 'Tubo de ventilación',
+            # componentes especiales
+            'relay_engine': 'Marca del Relay del Motor',
+            'relay_blower': 'Marca del Relay del Blower',
+            'blower_brand': 'Marca del Blower',
+            'blower_model': 'Modelo del Blower',
+            'engine_fases': 'Fases del Motor',
+            'engine_brand': 'Marca del Motor',
+            'engine_model': 'Modelo del Motor',
+            'belt_brand': 'Marca de la Banda',
+            'belt_model': 'Modelo de la Banda',
+            'belt_type': 'Tipo de Banda',
+            'blower_pulley_brand': 'Marca de la Pulley del Blower',
+            'blower_pulley_model': 'Modelo de la Pulley del Blower',
+            'motor_pulley_brand': 'Marca de la Pulley del Motor',
+            'motor_pulley_model': 'Modelo de la Pulley del Motor',
+            'electrical_panel_brand': 'Marca del Panel Eléctrico',
+            'electrical_panel_model': 'Modelo del Panel Eléctrico',
+            'engine_guard_brand': 'Marca de la Guardia del Motor',
+            'engine_guard_model': 'Modelo Guarda Motor',
+            'pump_filter': 'Bomba de filtración',
+            'pump_pressure': 'Bomba de presión',
+            'pump_dosing': 'Bomba dosificadora',
+            'sand_carbon_filter': 'Filtro de Arena y Carbón',
+            'hidroneumatic_tank': 'Tanque Hidroneumático',
+            'uv_filter': 'Filtro UV',
+        }
+
+        return label_map.get(field_name, base_label)
+
+    # ---------- Presentación lista de items ----------
+    def as_field_items(self, field_names):
+        """Devuelve [{'name','label','value'}] para nombres de campos.
+        """
+        items = []
+        for name in field_names:
+            items.append({
+                'name': name,
+                'label': self.get_field_label(name),
+                'value': self.get_field_value(name),
+            })
+        return items
+
+    @property
+    def present_common_fields(self):
+        # Excluir booleanos (checklist) de la columna de comunes
+        boolean_set = set(self.boolean_fields)
+        fields = [f for f in self.common_fields if f not in boolean_set]
+        return self.as_field_items(fields)
+
+    @property
+    def present_specific_fields(self):
+        # Excluir booleanos (checklist) de la columna de específicos
+        boolean_set = set(self.boolean_fields)
+        fields = [f for f in self.specific_fields if f not in boolean_set]
+        return self.as_field_items(fields)
+
+    @property
+    def present_state_fields(self):
+        return self.as_field_items(self.state_fields)
+
+    @property
+    def present_metadata_fields(self):
+        return self.as_field_items(self.metadata_fields)
+
+    # ---------- Checklist (campos booleanos) ----------
+    @property
+    def boolean_fields(self):
+        """Devuelve los nombres de campos booleanos aplicables al tipo.
+        Excluye campos de estado (stst_*) y metadatos.
+        """
+        names = []
+        for name in self.all_fields_for_type:
+            # Filtrar estado y metadatos
+            if name.startswith(self._state_fields_prefix()):
+                continue
+            if name in self._metadata_fields():
+                continue
+            try:
+                field = self._meta.get_field(name)
+                # Usar tipo real del modelo cuando exista
+                if isinstance(field, models.BooleanField):
+                    names.append(name)
+            except FieldDoesNotExist:
+                # Si no existe en el modelo pero sigue la convención have_*
+                if name.startswith('have_'):
+                    names.append(name)
+        return names
+
+    @property
+    def present_have_fields(self):
+        """Items de checklist (booleanos) para la vista."""
+        return self.as_field_items(self.boolean_fields)
