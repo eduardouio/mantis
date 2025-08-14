@@ -487,6 +487,161 @@
         </div>
       </div>
     </div>
+
+    <!-- TAB 4: Metadatos -->
+    <input type="radio" name="project_tabs" class="tab bg-gray-300 rounded-t" aria-label="Metadatos" />
+    <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+      {# Metadatos del Proyecto #}
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+              <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
+              <path d="M9 9l1 0" />
+              <path d="M9 13l6 0" />
+              <path d="M9 17l6 0" />
+            </svg>
+            Información de Auditoría
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Registro Inicial -->
+          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+              </svg>
+              Registro Inicial
+            </h4>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Fecha de Creación:</span>
+                <span class="font-medium">{{ project.created_at|date:"d/m/Y H:i" }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Usuario Creador:</span>
+                <span class="font-medium">
+                  {% if project.get_create_user %}
+                    {{ project.get_create_user.get_full_name|default:project.get_create_user.email }}
+                  {% else %}
+                    Sistema/Anónimo
+                  {% endif %}
+                </span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">ID Usuario:</span>
+                <span class="font-medium">{{ project.id_user_created|default:"0" }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Última Modificación -->
+          <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                <path d="M16 5l3 3" />
+              </svg>
+              Última Modificación
+            </h4>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">Fecha de Actualización:</span>
+                <span class="font-medium">{{ project.updated_at|date:"d/m/Y H:i" }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">Usuario Actualizador:</span>
+                <span class="font-medium">
+                  {% if project.get_update_user %}
+                    {{ project.get_update_user.get_full_name|default:project.get_update_user.email }}
+                  {% else %}
+                    Sistema/Anónimo
+                  {% endif %}
+                </span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">ID Usuario:</span>
+                <span class="font-medium">{{ project.id_user_updated|default:"0" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado y Control -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <!-- Estado del Proyecto -->
+          <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                <path d="M12 7v5l3 3" />
+              </svg>
+              Estado del Proyecto
+            </h4>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-blue-600">Estado Activo:</span>
+                <span class="font-medium">
+                  {% if project.is_active %}
+                    <span class="badge badge-success badge-sm">Activo</span>
+                  {% else %}
+                    <span class="badge badge-error badge-sm">Inactivo</span>
+                  {% endif %}
+                </span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-blue-600">Proyecto Cerrado:</span>
+                <span class="font-medium">
+                  {% if project.is_closed %}
+                    <span class="badge badge-warning badge-sm">Cerrado</span>
+                  {% else %}
+                    <span class="badge badge-info badge-sm">Abierto</span>
+                  {% endif %}
+                </span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-blue-600">ID del Proyecto:</span>
+                <span class="font-medium">#{{ project.id }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Historial y Auditoría -->
+          <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+            <h4 class="font-medium text-green-700 mb-3 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                <path d="M12 7v5l3 3" />
+              </svg>
+              Historial
+            </h4>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-green-600">Versiones Históricas:</span>
+                <span class="font-medium">{{ project.history.count }} cambios</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-green-600">Días desde creación:</span>
+                <span class="font-medium">{{ project.created_at|timesince }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-green-600">Última modificación:</span>
+                <span class="font-medium">{{ project.updated_at|timesince }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 
