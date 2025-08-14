@@ -16,48 +16,80 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         faker = Faker(['es_ES'])
-        print('creamos el superuser')
-        self.createSuperUser()
-        print('creamos los tecnicos')
-        self.load_technical(faker)
-        print('creamos los registros de jornadas')
+        print('creamos los usuarios')
+        self.create_users()
         print('creamos las licencias')
         self.load_license(faker)
-        print('creamos los equipos')
-        self.load_equipment(faker)
-        print('creamos los vehiculos')
-        self.load_vehicle(faker)
-        print('creamos los proveedores')
-        self.load_suppliers(faker)
-        print('creamos los registros de vacunación')
-        self.load_vaccination_records(faker)
-        print('creamos los pases técnicos')
-        self.load_technical_passes(faker)
-        print('creamos los pases de vehículos')
-        self.load_vehicle_passes(faker)
-        print('creamos las certificaciones de vehículos')
-        self.load_vehicle_certifications(faker)
+        # print('creamos los tecnicos')
+        # self.load_technical(faker)
+        # print('creamos los registros de jornadas')
+        # print('creamos los equipos')
+        # self.load_equipment(faker)
+        # print('creamos los vehiculos')
+        # self.load_vehicle(faker)
+        # print('creamos los proveedores')
+        # self.load_suppliers(faker)
+        # print('creamos los registros de vacunación')
+        # self.load_vaccination_records(faker)
+        # print('creamos los pases técnicos')
+        # self.load_technical_passes(faker)
+        # print('creamos los pases de vehículos')
+        # self.load_vehicle_passes(faker)
+        # print('creamos las certificaciones de vehículos')
+        # self.load_vehicle_certifications(faker)
 
-    def createSuperUser(self):
-        user = CustomUserModel.get('eduardouio7@gmail.com')
-        if user:
-            print('Ya existe el usuario')
-            return True
-        user = CustomUserModel(
-            email='eduardouio7@gmail.com',
-            is_staff=True,
-            is_superuser=True
-        )
-        user.set_password('seguro')
-        user.save()
+    def create_users(self):
+        users_to_create = {
+            'juan.verdezoto@peisol.com.ec': {
+                'first_name': 'Juan', 'last_name': 'Verdezoto',
+                'is_staff': True, 'is_superuser': False
+            },
+            'hse@peisol.com.ec': {
+                'first_name': 'Maryuri', 'last_name': 'HSE',
+                'is_staff': True, 'is_superuser': False
+            },
+            'operaciones@peisol.com.ec': {
+                'first_name': 'Blanca', 'last_name': 'Operaciones',
+                'is_staff': True, 'is_superuser': False
+            },
+            'contabilidad@peisol.com.ec': {
+                'first_name': 'Usuario', 'last_name': 'Contabilidad',
+                'is_staff': True, 'is_superuser': False
+            },
+            'luisa.guevara@peisol.com.ec': {
+                'first_name': 'Luisa', 'last_name': 'Guevara',
+                'is_staff': True, 'is_superuser': False
+            },
+            'logistica@peisol.com.ec': {
+                'first_name': 'Usuario', 'last_name': 'Logistica',
+                'is_staff': True, 'is_superuser': False
+            },
+            'eduardouio7@gmail.com': {
+                'first_name': 'Eduardo', 'last_name': 'Superuser',
+                'is_staff': True, 'is_superuser': True
+            },
+            'test@peisol.com.ec': {
+                'first_name': 'Usuario', 'last_name': 'Pruebas',
+                'is_staff': False, 'is_superuser': False
+            },
+        }
 
-        user_test = CustomUserModel(
-            email='test@peisol.com.ec',
-            first_name='Usuario',
-            last_name='Pruebas'
-        )
-        user_test.set_password('seguro')
-        user_test.save()
+        for email, details in users_to_create.items():
+            user = CustomUserModel.get(email)
+            if user:
+                print(f'Ya existe el usuario {email}')
+                continue
+
+            user = CustomUserModel(
+                email=email,
+                first_name=details['first_name'],
+                last_name=details['last_name'],
+                is_staff=details['is_staff'],
+                is_superuser=details['is_superuser']
+            )
+            user.set_password('seguro')
+            user.save()
+            print(f'Usuario {email} creado.')
 
     def load_technical(self, faker):
         if Technical.objects.count() >= 20:
