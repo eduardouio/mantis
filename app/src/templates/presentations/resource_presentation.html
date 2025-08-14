@@ -38,7 +38,7 @@
     <!-- TAB 1: Información General -->
     <input type="radio" name="res_tabs" class="tab" aria-label="Información General" checked />
     <div class="tab-content bg-base-100 border-base-300 p-6">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-10">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-10">
         <!-- Col 1: Comunes -->
         <div class="border-l-blue-300 border-l-[1px] pl-5">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
@@ -49,6 +49,20 @@
               </div>
             {% empty %}
               <div class="text-gray-400">Sin campos comunes</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Col 2: Específicos -->
+        <div class="border-l-blue-300 border-l-[1px] pl-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+            {% for item in equipment.present_specific_fields %}
+              <div>
+                <p class="text-gray-500 text-sm">{{ item.label }}</p>
+                <p class="font-semibold text-gray-900">{{ item.value|default:'No registrado' }}</p>
+              </div>
+            {% empty %}
+              <div class="text-gray-400">Sin campos específicos</div>
             {% endfor %}
           </div>
         </div>

@@ -4,7 +4,7 @@ from django.test import RequestFactory, Client
 from django.contrib.messages.storage.fallback import FallbackStorage
 from accounts.models import CustomUserModel
 
-from equipment.views.resources.ResourceItemCreateView import ResourceItemCreateView
+from app.src.equipment.views.resources.ResourceItemCreateUpdateView import ResourceItemCreateView
 from equipment.models.ResourceItem import ResourceItem
 from equipment.forms.ResourceItemForm import ResourceItemForm
 
