@@ -175,7 +175,7 @@ class Command(BaseCommand):
             print('Ya existen los equipos')
             return True
 
-        # Crear equipos basados en la documentación usando campos básicos
+    # Crear equipos basados en la documentación usando campos del modelo actual
         self.create_bateria_sanitaria_hombre(faker)
         self.create_bateria_sanitaria_mujer(faker)
         self.create_plantas_tratamiento_agua(faker)
@@ -192,12 +192,13 @@ class Command(BaseCommand):
     def create_bateria_sanitaria_hombre(self, faker):
         """Crear baterías sanitarias para hombres"""
         for i in range(5):
-            status = faker.random_element(
-                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            disp_status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'FUERA DE SERVICIO'])
+            eq_status = faker.random_element(
+                ['FUNCIONANDO', 'DAÑADO', 'INCOMPLETO', 'EN REPARACION'])
             ResourceItem.objects.create(
                 name=f"Batería Sanitaria Hombre {i+1}",
-                type='EQUIPO',
-                subtype='BATERIA SANITARIA HOMBRE',
+                type_equipment='BTSNHM',
                 brand=faker.random_element(
                     ['Portatil Pro', 'SaniTech', 'EcoPorta']),
                 model=f'BSH-{faker.random_number(3)}',
@@ -209,33 +210,37 @@ class Command(BaseCommand):
                 width=faker.random_int(100, 150),
                 depth=faker.random_int(100, 150),
                 weight=faker.random_int(80, 120),
-                status=status,
-                repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                # base_price eliminado
-                # Usar los nombres de campos del modelo
-                paper_dispenser=faker.boolean(),
-                soap_dispenser=faker.boolean(),
-                napkin_dispenser=faker.boolean(),
-                urinals=faker.boolean(),
-                seats=faker.boolean(),
-                toilet_pump=faker.boolean(),
-                sink_pump=faker.boolean(),
-                toilet_lid=faker.boolean(),
-                bathroom_bases=faker.boolean(),
-                ventilation_pipe=faker.boolean(),
-                notes=f'Batería sanitaria equipada con accesorios varios',
-                is_active=True
+                # checklist
+                have_paper_dispenser=faker.boolean(),
+                have_soap_dispenser=faker.boolean(),
+                have_napkin_dispenser=faker.boolean(),
+                have_urinals=faker.boolean(),
+                have_seat=faker.boolean(),
+                have_toilet_pump=faker.boolean(),
+                have_sink_pump=faker.boolean(),
+                have_toilet_lid=faker.boolean(),
+                have_bathroom_bases=faker.boolean(),
+                have_ventilation_pipe=faker.boolean(),
+                # estados
+                stst_status_disponibility=disp_status,
+                stst_status_equipment=eq_status,
+                stst_repair_reason=(
+                    faker.sentence()
+                    if eq_status == 'EN REPARACION' else None
+                ),
+                is_active=True,
             )
 
     def create_bateria_sanitaria_mujer(self, faker):
         """Crear baterías sanitarias para mujeres"""
         for i in range(5):
-            status = faker.random_element(
-                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            disp_status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'FUERA DE SERVICIO'])
+            eq_status = faker.random_element(
+                ['FUNCIONANDO', 'DAÑADO', 'INCOMPLETO', 'EN REPARACION'])
             ResourceItem.objects.create(
                 name=f"Batería Sanitaria Mujer {i+1}",
-                type='EQUIPO',
-                subtype='BATERIA SANITARIA MUJER',
+                type_equipment='BTSNMJ',
                 brand=faker.random_element(
                     ['Portatil Pro', 'SaniTech', 'EcoPorta']),
                 model=f'BSM-{faker.random_number(3)}',
@@ -247,22 +252,25 @@ class Command(BaseCommand):
                 width=faker.random_int(100, 150),
                 depth=faker.random_int(100, 150),
                 weight=faker.random_int(80, 120),
-                status=status,
-                repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                # base_price eliminado
-                # Usar los nombres de campos del modelo (sin urinales para mujeres)
-                paper_dispenser=faker.boolean(),
-                soap_dispenser=faker.boolean(),
-                napkin_dispenser=faker.boolean(),
-                urinals=False,
-                seats=faker.boolean(),
-                toilet_pump=faker.boolean(),
-                sink_pump=faker.boolean(),
-                toilet_lid=faker.boolean(),
-                bathroom_bases=faker.boolean(),
-                ventilation_pipe=faker.boolean(),
-                notes=f'Batería sanitaria equipada con accesorios varios',
-                is_active=True
+                # checklist (sin urinarios)
+                have_paper_dispenser=faker.boolean(),
+                have_soap_dispenser=faker.boolean(),
+                have_napkin_dispenser=faker.boolean(),
+                have_urinals=False,
+                have_seat=faker.boolean(),
+                have_toilet_pump=faker.boolean(),
+                have_sink_pump=faker.boolean(),
+                have_toilet_lid=faker.boolean(),
+                have_bathroom_bases=faker.boolean(),
+                have_ventilation_pipe=faker.boolean(),
+                # estados
+                stst_status_disponibility=disp_status,
+                stst_status_equipment=eq_status,
+                stst_repair_reason=(
+                    faker.sentence()
+                    if eq_status == 'EN REPARACION' else None
+                ),
+                is_active=True,
             )
 
     def create_plantas_tratamiento_agua(self, faker):
@@ -270,12 +278,13 @@ class Command(BaseCommand):
         capacidades = ['10M3', '15M3', '25M3']
         for i in range(3):
             capacidad = faker.random_element(capacidades)
-            status = faker.random_element(
-                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            disp_status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'FUERA DE SERVICIO'])
+            eq_status = faker.random_element(
+                ['FUNCIONANDO', 'DAÑADO', 'INCOMPLETO', 'EN REPARACION'])
             ResourceItem.objects.create(
-                name=f"Planta Tratamiento Agua {capacidad} - {i+1}",
-                type='EQUIPO',
-                subtype='PLANTA DE TRATAMIENTO DE AGUA',
+                name=f"Planta Tratamiento Agua Potable {capacidad} - {i+1}",
+                type_equipment='PTRTAP',
                 brand=faker.random_element(
                     ['AquaTech', 'WaterPro', 'HydroClean']),
                 model=f'PTA-{faker.random_number(3)}',
@@ -287,12 +296,11 @@ class Command(BaseCommand):
                 width=faker.random_int(200, 300),
                 depth=faker.random_int(200, 300),
                 weight=faker.random_int(500, 800),
-                status=status,
-                repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                # base_price eliminado
-                # Usar los nombres de campos del modelo
+                plant_capacity=capacidad,
+                # componentes
                 blower_brand=faker.company(),
                 blower_model=faker.bothify(text='BLW-##??'),
+                engine_fases=faker.random_element(['1', '2', '3']),
                 engine_brand=faker.company(),
                 engine_model=faker.bothify(text='MOT-##??'),
                 belt_brand=faker.company(),
@@ -304,10 +312,38 @@ class Command(BaseCommand):
                 motor_pulley_model=faker.bothify(text='PLM-##??'),
                 electrical_panel_brand=faker.company(),
                 electrical_panel_model=faker.bothify(text='TBE-##??'),
-                motor_guard_brand=faker.company(),
-                motor_guard_model=faker.bothify(text='GDM-##??'),
-                notes=f'Planta de tratamiento de agua de {capacidad}',
-                is_active=True
+                engine_guard_brand=faker.company(),
+                engine_guard_model=faker.bothify(text='GDM-##??'),
+                # específicos potable
+                pump_filter=faker.bothify(text='PF-##??'),
+                pump_pressure=faker.bothify(text='PP-##??'),
+                pump_dosing=faker.bothify(text='PD-##??'),
+                sand_carbon_filter=faker.bothify(text='SCF-##??'),
+                hidroneumatic_tank=faker.bothify(text='HT-##??'),
+                uv_filter=faker.bothify(text='UV-##??'),
+                # flags de disponibilidad de componentes
+                have_blower_brand=True,
+                have_belt_brand=True,
+                have_blower_pulley=True,
+                have_motor_pulley=True,
+                have_electrical_panel=True,
+                have_motor_guard=True,
+                have_engine=True,
+                have_engine_guard=True,
+                have_uv_filter=True,
+                have_pump_filter=True,
+                have_pump_dosing=True,
+                have_pump_pressure=True,
+                have_hidroneumatic_tank=True,
+                have_sand_carbon_filter=True,
+                # estados
+                stst_status_disponibility=disp_status,
+                stst_status_equipment=eq_status,
+                stst_repair_reason=(
+                    faker.sentence()
+                    if eq_status == 'EN REPARACION' else None
+                ),
+                is_active=True,
             )
 
     def create_plantas_tratamiento_agua_residual(self, faker):
@@ -315,12 +351,13 @@ class Command(BaseCommand):
         capacidades = ['10M3', '15M3', '25M3']
         for i in range(3):
             capacidad = faker.random_element(capacidades)
-            status = faker.random_element(
-                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            disp_status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'FUERA DE SERVICIO'])
+            eq_status = faker.random_element(
+                ['FUNCIONANDO', 'DAÑADO', 'INCOMPLETO', 'EN REPARACION'])
             ResourceItem.objects.create(
                 name=f"Planta Tratamiento Agua Residual {capacidad} - {i+1}",
-                type='EQUIPO',
-                subtype='PLANTA DE TRATAMIENTO DE AGUA RESIDUAL',
+                type_equipment='PTRTAR',
                 brand=faker.random_element(
                     ['AquaTech', 'WaterPro', 'HydroClean']),
                 model=f'PTAR-{faker.random_number(3)}',
@@ -332,14 +369,10 @@ class Command(BaseCommand):
                 width=faker.random_int(200, 300),
                 depth=faker.random_int(200, 300),
                 weight=faker.random_int(500, 800),
-                status=status,
-                repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                # base_price eliminado
-                # Campo obligatorio para este tipo
                 plant_capacity=capacidad,
-                # Usar los nombres de campos del modelo
                 blower_brand=faker.company(),
                 blower_model=faker.bothify(text='BLW-##??'),
+                engine_fases=faker.random_element(['1', '2', '3']),
                 engine_brand=faker.company(),
                 engine_model=faker.bothify(text='MOT-##??'),
                 belt_brand=faker.company(),
@@ -351,10 +384,28 @@ class Command(BaseCommand):
                 motor_pulley_model=faker.bothify(text='PLM-##??'),
                 electrical_panel_brand=faker.company(),
                 electrical_panel_model=faker.bothify(text='TBE-##??'),
-                motor_guard_brand=faker.company(),
-                motor_guard_model=faker.bothify(text='GDM-##??'),
-                notes=f'Planta de tratamiento de agua residual de {capacidad}',
-                is_active=True
+                engine_guard_brand=faker.company(),
+                engine_guard_model=faker.bothify(text='GDM-##??'),
+                relay_engine=faker.bothify(text='RE-##??'),
+                relay_blower=faker.bothify(text='RB-##??'),
+                have_blower_brand=True,
+                have_belt_brand=True,
+                have_blower_pulley=True,
+                have_motor_pulley=True,
+                have_electrical_panel=True,
+                have_motor_guard=True,
+                have_relay_engine=True,
+                have_relay_blower=True,
+                have_engine=True,
+                have_engine_guard=True,
+                # estados
+                stst_status_disponibility=disp_status,
+                stst_status_equipment=eq_status,
+                stst_repair_reason=(
+                    faker.sentence()
+                    if eq_status == 'EN REPARACION' else None
+                ),
+                is_active=True,
             )
 
     def create_tanques_agua_cruda(self, faker):
@@ -362,12 +413,13 @@ class Command(BaseCommand):
         capacidades = [500, 750, 1000, 1500, 2000]
         for i in range(4):
             capacidad = faker.random_element(capacidades)
-            status = faker.random_element(
-                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            disp_status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'FUERA DE SERVICIO'])
+            eq_status = faker.random_element(
+                ['FUNCIONANDO', 'DAÑADO', 'INCOMPLETO', 'EN REPARACION'])
             ResourceItem.objects.create(
                 name=f"Tanque Agua Cruda {capacidad} gal - {i+1}",
-                type='EQUIPO',
-                subtype='TANQUES DE ALMACENAMIENTO AGUA CRUDA',
+                type_equipment='TNQAAC',
                 brand=faker.random_element(
                     ['TankTech', 'AquaStore', 'WaterTank']),
                 model=f'TAC-{faker.random_number(3)}',
@@ -379,12 +431,8 @@ class Command(BaseCommand):
                 width=faker.random_int(120, 180),
                 depth=faker.random_int(120, 180),
                 weight=faker.random_int(100, 200),
-                status=status,
-                repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                # base_price eliminado
-                # Usar el nombre correcto del campo
                 capacity_gallons=capacidad,
-                # Campos específicos para tanques
+                # componentes (opcionales)
                 blower_brand=faker.company(),
                 blower_model=faker.bothify(text='BLW-##??'),
                 engine_brand=faker.company(),
@@ -398,10 +446,25 @@ class Command(BaseCommand):
                 motor_pulley_model=faker.bothify(text='PLM-##??'),
                 electrical_panel_brand=faker.company(),
                 electrical_panel_model=faker.bothify(text='TBE-##??'),
-                motor_guard_brand=faker.company(),
-                motor_guard_model=faker.bothify(text='GDM-##??'),
-                notes=f'Tanque de almacenamiento de agua cruda con capacidad de {capacidad} galones',
-                is_active=True
+                engine_guard_brand=faker.company(),
+                engine_guard_model=faker.bothify(text='GDM-##??'),
+                # flags
+                have_blower_brand=True,
+                have_belt_brand=True,
+                have_blower_pulley=True,
+                have_motor_pulley=True,
+                have_electrical_panel=True,
+                have_motor_guard=True,
+                have_engine=True,
+                have_engine_guard=True,
+                # estados
+                stst_status_disponibility=disp_status,
+                stst_status_equipment=eq_status,
+                stst_repair_reason=(
+                    faker.sentence()
+                    if eq_status == 'EN REPARACION' else None
+                ),
+                is_active=True,
             )
 
     def create_tanques_agua_residual(self, faker):
@@ -409,12 +472,13 @@ class Command(BaseCommand):
         capacidades = [500, 750, 1000, 1500, 2000]
         for i in range(4):
             capacidad = faker.random_element(capacidades)
-            status = faker.random_element(
-                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            disp_status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'FUERA DE SERVICIO'])
+            eq_status = faker.random_element(
+                ['FUNCIONANDO', 'DAÑADO', 'INCOMPLETO', 'EN REPARACION'])
             ResourceItem.objects.create(
                 name=f"Tanque Agua Residual {capacidad} gal - {i+1}",
-                type='EQUIPO',
-                subtype='TANQUES DE ALMACENAMIENTO AGUA RESIDUAL',
+                type_equipment='TNQAAR',
                 brand=faker.random_element(
                     ['TankTech', 'AquaStore', 'WaterTank']),
                 model=f'TAR-{faker.random_number(3)}',
@@ -426,12 +490,8 @@ class Command(BaseCommand):
                 width=faker.random_int(120, 180),
                 depth=faker.random_int(120, 180),
                 weight=faker.random_int(100, 200),
-                status=status,
-                repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                # base_price eliminado
-                # Usar el nombre correcto del campo
                 capacity_gallons=capacidad,
-                # Campos específicos para tanques
+                # componentes (opcionales)
                 blower_brand=faker.company(),
                 blower_model=faker.bothify(text='BLW-##??'),
                 engine_brand=faker.company(),
@@ -445,21 +505,37 @@ class Command(BaseCommand):
                 motor_pulley_model=faker.bothify(text='PLM-##??'),
                 electrical_panel_brand=faker.company(),
                 electrical_panel_model=faker.bothify(text='TBE-##??'),
-                motor_guard_brand=faker.company(),
-                motor_guard_model=faker.bothify(text='GDM-##??'),
-                notes=f'Tanque de almacenamiento de agua residual con capacidad de {capacidad} galones',
-                is_active=True
+                engine_guard_brand=faker.company(),
+                engine_guard_model=faker.bothify(text='GDM-##??'),
+                # flags
+                have_blower_brand=True,
+                have_belt_brand=True,
+                have_blower_pulley=True,
+                have_motor_pulley=True,
+                have_electrical_panel=True,
+                have_motor_guard=True,
+                have_engine=True,
+                have_engine_guard=True,
+                # estados
+                stst_status_disponibility=disp_status,
+                stst_status_equipment=eq_status,
+                stst_repair_reason=(
+                    faker.sentence()
+                    if eq_status == 'EN REPARACION' else None
+                ),
+                is_active=True,
             )
 
     def create_lavamanos(self, faker):
         """Crear lavamanos"""
         for i in range(6):
-            status = faker.random_element(
-                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            disp_status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'FUERA DE SERVICIO'])
+            eq_status = faker.random_element(
+                ['FUNCIONANDO', 'DAÑADO', 'INCOMPLETO', 'EN REPARACION'])
             ResourceItem.objects.create(
                 name=f"Lavamanos {i+1}",
-                type='EQUIPO',
-                subtype='LAVAMANOS',
+                type_equipment='LVMNOS',
                 brand=faker.random_element(
                     ['WashTech', 'CleanHands', 'SaniWash']),
                 model=f'LM-{faker.random_number(3)}',
@@ -471,26 +547,30 @@ class Command(BaseCommand):
                 width=faker.random_int(60, 100),
                 depth=faker.random_int(40, 80),
                 weight=faker.random_int(15, 30),
-                status=status,
-                repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                # base_price eliminado
-                # Usar los nombres de campos del modelo
-                foot_pumps=faker.boolean(),
-                sink_soap_dispenser=faker.boolean(),
-                paper_towels=faker.boolean(),
-                notes=f'Lavamanos con accesorios varios',
-                is_active=True
+                # checklist
+                have_foot_pumps=faker.boolean(),
+                have_soap_dispenser=faker.boolean(),
+                have_paper_towels=faker.boolean(),
+                # estados
+                stst_status_disponibility=disp_status,
+                stst_status_equipment=eq_status,
+                stst_repair_reason=(
+                    faker.sentence()
+                    if eq_status == 'EN REPARACION' else None
+                ),
+                is_active=True,
             )
 
     def create_camper_bano(self, faker):
         """Crear camper baño"""
         for i in range(3):
-            status = faker.random_element(
-                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            disp_status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'FUERA DE SERVICIO'])
+            eq_status = faker.random_element(
+                ['FUNCIONANDO', 'DAÑADO', 'INCOMPLETO', 'EN REPARACION'])
             ResourceItem.objects.create(
                 name=f"Camper Baño {i+1}",
-                type='EQUIPO',
-                subtype='CAMPER BAÑO',
+                type_equipment='CMPRBN',
                 brand=faker.random_element(
                     ['CamperTech', 'MobileBath', 'PortaCamper']),
                 model=f'CB-{faker.random_number(3)}',
@@ -502,33 +582,39 @@ class Command(BaseCommand):
                 width=faker.random_int(200, 250),
                 depth=faker.random_int(150, 200),
                 weight=faker.random_int(200, 300),
-                status=status,
-                repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                # base_price eliminado
-                # Usar los nombres de campos del modelo (igual que batería sanitaria hombre)
-                paper_dispenser=faker.boolean(),
-                soap_dispenser=faker.boolean(),
-                napkin_dispenser=faker.boolean(),
-                urinals=faker.boolean(),
-                seats=faker.boolean(),
-                toilet_pump=faker.boolean(),
-                sink_pump=faker.boolean(),
-                toilet_lid=faker.boolean(),
-                bathroom_bases=faker.boolean(),
-                ventilation_pipe=faker.boolean(),
-                notes=f'Camper baño equipado con accesorios varios',
-                is_active=True
+                # checklist (igual que batería hombre + extras)
+                have_paper_dispenser=faker.boolean(),
+                have_soap_dispenser=faker.boolean(),
+                have_napkin_dispenser=faker.boolean(),
+                have_urinals=faker.boolean(),
+                have_seat=faker.boolean(),
+                have_toilet_pump=faker.boolean(),
+                have_sink_pump=faker.boolean(),
+                have_toilet_lid=faker.boolean(),
+                have_bathroom_bases=faker.boolean(),
+                have_ventilation_pipe=faker.boolean(),
+                have_foot_pumps=faker.boolean(),
+                have_paper_towels=faker.boolean(),
+                # estados
+                stst_status_disponibility=disp_status,
+                stst_status_equipment=eq_status,
+                stst_repair_reason=(
+                    faker.sentence()
+                    if eq_status == 'EN REPARACION' else None
+                ),
+                is_active=True,
             )
 
     def create_estacion_urinario(self, faker):
         """Crear estaciones cuádruples de urinario"""
         for i in range(2):
-            status = faker.random_element(
-                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            disp_status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'FUERA DE SERVICIO'])
+            eq_status = faker.random_element(
+                ['FUNCIONANDO', 'DAÑADO', 'INCOMPLETO', 'EN REPARACION'])
             ResourceItem.objects.create(
                 name=f"Estación Cuádruple Urinario {i+1}",
-                type='EQUIPO',
-                subtype='ESTACION CUADRUPLE URINARIO',
+                type_equipment='EST4UR',
                 brand=faker.random_element(
                     ['UriTech', 'QuadStation', 'MultiUri']),
                 model=f'ECU-{faker.random_number(3)}',
@@ -540,23 +626,38 @@ class Command(BaseCommand):
                 width=faker.random_int(300, 400),
                 depth=faker.random_int(80, 120),
                 weight=faker.random_int(80, 120),
-                status=status,
-                repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                # base_price eliminado
-                notes='Estación cuádruple de urinarios',
-                is_active=True
+                # checklist relevante
+                have_paper_dispenser=faker.boolean(),
+                have_soap_dispenser=faker.boolean(),
+                have_napkin_dispenser=faker.boolean(),
+                have_urinals=True,
+                have_toilet_pump=faker.boolean(),
+                have_sink_pump=faker.boolean(),
+                have_toilet_lid=faker.boolean(),
+                have_foot_pumps=faker.boolean(),
+                have_paper_towels=faker.boolean(),
+                # estados
+                stst_status_disponibility=disp_status,
+                stst_status_equipment=eq_status,
+                stst_repair_reason=(
+                    faker.sentence()
+                    if eq_status == 'EN REPARACION' else None
+                ),
+                is_active=True,
             )
 
     def create_bombas(self, faker):
         """Crear bombas"""
         for i in range(4):
-            status = faker.random_element(
-                ['DISPONIBLE', 'RENTADO', 'EN REPARACION', 'FUERA DE SERVICIO'])
+            disp_status = faker.random_element(
+                ['DISPONIBLE', 'RENTADO', 'FUERA DE SERVICIO'])
+            eq_status = faker.random_element(
+                ['FUNCIONANDO', 'DAÑADO', 'INCOMPLETO', 'EN REPARACION'])
             ResourceItem.objects.create(
                 name=f"Bomba {i+1}",
-                type='EQUIPO',
-                # No hay subtipo específico para bombas en TYPE_EQUIPMENT, usar None
-                subtype=None,
+                # No hay type_equipment específico para bombas en
+                # TYPE_EQUIPMENT
+                type_equipment=None,
                 brand=faker.random_element(
                     ['PumpTech', 'AquaPump', 'FlowMaster']),
                 model=f'B-{faker.random_number(3)}',
@@ -568,11 +669,14 @@ class Command(BaseCommand):
                 width=faker.random_int(30, 60),
                 depth=faker.random_int(30, 60),
                 weight=faker.random_int(10, 25),
-                status=status,
-                repair_reason=faker.sentence() if status == 'EN REPARACION' else None,
-                # base_price eliminado
-                notes='Bomba de agua',
-                is_active=True
+                # estados
+                stst_status_disponibility=disp_status,
+                stst_status_equipment=eq_status,
+                stst_repair_reason=(
+                    faker.sentence()
+                    if eq_status == 'EN REPARACION' else None
+                ),
+                is_active=True,
             )
 
     def load_vehicle(self, faker):
