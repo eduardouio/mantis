@@ -86,29 +86,19 @@
   <div class="mt-6 pt-4 border-t">
     <div class="flex flex-wrap justify-center gap-2">
         <a href="{% url 'license_create' %}" class="btn btn-sm btn-outline btn-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" />
-            </svg>
+            <i class="las la-plus text-xl"></i>
             Agregar Nueva
         </a>
         <a href="{% url 'license_update' license.id %}" class="btn btn-sm btn-outline btn-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" />
-            </svg>
+            <i class="las la-edit text-xl"></i>
             Editar
         </a>
         <a href="{% url 'license_detail' license.id %}?action=delete" class="btn btn-sm btn-outline btn-error">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-            </svg>
+            <i class="las la-trash text-xl"></i>
             Eliminar
         </a>
         <a href="{% url 'license_list' %}" class="btn btn-sm btn-outline border-black">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.25" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M9 6l-6 6l6 6"></path>
-                <path d="M21 6l-6 6l6 6"></path>
-            </svg>
+            <i class="las la-arrow-left text-xl"></i>
             Volver al Listado
         </a>
     </div>
@@ -117,23 +107,17 @@
     {% if action == 'delete' %}
     <div class="flex justify-center mt-6 mb-6">
         <div class="alert alert-warning max-w-md">
-            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            <i class="las la-exclamation-triangle text-2xl"></i>
             <span>¿Estás seguro de que deseas eliminar esta licencia? Esta acción no se puede deshacer.</span>
         </div>
     </div>
     <div class="flex justify-center mb-6">
         <a href="{% url 'license_delete' request.resolver_match.kwargs.pk %}" class="btn btn-error">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-            </svg>
+            <i class="las la-trash text-xl"></i>
             Confirmar Eliminación
         </a>
          <a href="{% url 'license_detail' license.id %}" class="btn btn-outline ml-2 border-black">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.25" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M9 6l-6 6l6 6"></path>
-                <path d="M21 6l-6 6l6 6"></path>
-            </svg>
+            <i class="las la-times text-xl"></i>
             Cancelar
         </a>
     </div>

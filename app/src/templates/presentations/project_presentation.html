@@ -434,14 +434,7 @@
       <div class="space-y-4">
         <div class="flex justify-between items-center">
           <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <path d="M14 3v4a1 1 0 0 0 1 1h4" />
-              <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
-              <path d="M9 9l1 0" />
-              <path d="M9 13l6 0" />
-              <path d="M9 17l6 0" />
-            </svg>
+            <i class="las la-file-alt text-3xl text-gray-600"></i>
             Información de Auditoría
           </h2>
         </div>
@@ -450,11 +443,7 @@
           <!-- Registro Inicial -->
           <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
             <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-              </svg>
+              <i class="las la-play-circle text-lg text-green-500"></i>
               Registro Inicial
             </h4>
             <div class="space-y-2 text-sm">
@@ -482,12 +471,7 @@
           <!-- Última Modificación -->
           <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
             <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                <path d="M16 5l3 3" />
-              </svg>
+              <i class="las la-edit text-lg text-blue-500"></i>
               Última Modificación
             </h4>
             <div class="space-y-2 text-sm">
@@ -521,29 +505,19 @@
   <div class="mt-6 pt-4 border-t">
     <div class="flex flex-wrap justify-center gap-2">
         <a href="{% url 'project_create' %}" class="btn btn-sm btn-outline btn-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" />
-            </svg>
+            <i class="las la-plus text-lg"></i>
             Nuevo Proyecto
         </a>
         <a href="{% url 'project_update' project.id %}" class="btn btn-sm btn-outline btn-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" />
-            </svg>
+            <i class="las la-edit text-lg"></i>
             Editar Proyecto
         </a>
         <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-sm btn-outline btn-error">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-            </svg>
+            <i class="las la-trash text-lg"></i>
             Eliminar Proyecto
         </a>
         <a href="{% url 'project_list' %}" class="btn btn-sm btn-outline border-black">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.25" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M9 6l-6 6l6 6"></path>
-                <path d="M21 6l-6 6l6 6"></path>
-            </svg>
+            <i class="las la-arrow-left text-lg"></i>
             Volver al Listado
         </a>
     </div>
@@ -552,23 +526,17 @@
   {% if action == 'delete' %}
   <div class="flex justify-center mt-6 mb-6">
       <div class="alert alert-warning max-w-md">
-          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          <i class="las la-exclamation-triangle text-warning"></i>
           <span>¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.</span>
       </div>
   </div>
   <div class="flex justify-center mb-6">
       <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-error">
-          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-               <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-          </svg>
+          <i class="las la-trash text-lg"></i>
           Confirmar Eliminación
       </a>
        <a href="{% url 'project_detail' project.id %}" class="btn btn-outline ml-2 border-black">
-          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.25" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M9 6l-6 6l6 6"></path>
-              <path d="M21 6l-6 6l6 6"></path>
-          </svg>
+          <i class="las la-times text-lg"></i>
           Cancelar
       </a>
   </div>
@@ -623,29 +591,19 @@
   <div class="mt-8 pt-6 border-t">
     <div class="flex flex-wrap justify-center gap-3">
         <a href="{% url 'project_create' %}" class="btn btn-outline btn-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" />
-            </svg>
+            <i class="las la-plus text-xl"></i>
             Nuevo Proyecto
         </a>
         <a href="{% url 'project_update' project.id %}" class="btn btn-outline btn-info">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" />
-            </svg>
+            <i class="las la-edit text-xl"></i>
             Editar Proyecto
         </a>
         <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-outline btn-error">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-            </svg>
+            <i class="las la-trash text-xl"></i>
             Eliminar Proyecto
         </a>
         <a href="{% url 'project_list' %}" class="btn btn-outline btn-neutral">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="18" height="18" viewBox="0 0 24 24" stroke-width="1.25" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M9 6l-6 6l6 6"></path>
-                <path d="M21 6l-6 6l6 6"></path>
-            </svg>
+            <i class="las la-arrow-left text-xl"></i>
             Volver al Listado
         </a>
     </div>
@@ -655,23 +613,17 @@
   {% if action == 'delete' %}
   <div class="flex justify-center mt-6 mb-6">
       <div class="alert alert-warning max-w-md">
-          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          <i class="las la-exclamation-triangle text-warning"></i>
           <span>¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.</span>
       </div>
   </div>
   <div class="flex justify-center mb-6">
       <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-error">
-          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-               <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7l16 0" /><path d="M10 11l0 6" /><path d="M14 11l0 6" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-          </svg>
+          <i class="las la-trash text-lg"></i>
           Confirmar Eliminación
       </a>
        <a href="{% url 'project_detail' project.id %}" class="btn btn-outline ml-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-2" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.25" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M9 6l-6 6l6 6"></path>
-              <path d="M21 6l-6 6l6 6"></path>
-          </svg>
+          <i class="las la-times text-lg"></i>
           Cancelar
       </a>
   </div>
