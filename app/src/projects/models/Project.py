@@ -63,6 +63,13 @@ class Project(BaseModel):
         default=False
     )
 
+    class Meta:
+        verbose_name = 'Proyecto'
+        verbose_name_plural = 'Proyectos'
+
+    def __str__(self):
+        return f'Proyecto {self.id} - {self.partner.name}'
+
 
 class ProjectResourceItem(BaseModel):
     id = models.AutoField(

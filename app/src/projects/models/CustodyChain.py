@@ -48,6 +48,12 @@ class CustodyChain(BaseModel):
         SheetProject,
         on_delete=models.PROTECT
     )
+    consecutive = models.CharField(
+        'Consecutivo',
+        max_length=6,
+        blank=True,
+        null=True
+    )
     activity_date = models.DateField(
         'Fecha'
     )
@@ -58,15 +64,21 @@ class CustodyChain(BaseModel):
         null=True
     )
     start_time = models.TimeField(
-        'Hora de inicio'
+        'Hora de inicio',
+        blank=True,
+        null=True
     )
     end_time = models.TimeField(
-        'Hora de Salida'
+        'Hora de Salida',
+        blank=True,
+        null=True
     )
     time_duration = models.DecimalField(
         'Horas Totales',
         max_digits=10,
         decimal_places=2,
+        blank=True,
+        null=True
     )
     contact_name = models.CharField(
         'Nombre de Contacto',
