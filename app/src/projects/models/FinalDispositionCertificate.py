@@ -1,6 +1,30 @@
+"""Certificado de Disposición Final (CDF) y su detalle.
+
+FinalDispositionCertificate:
+    Documento que cierra el ciclo de una planilla (``SheetProject``).
+    Se emite al concluir un período y consolida volúmenes retirados / tratados
+    (barriles, galones, m³). No maneja estados: una vez creado queda como
+    registro histórico.
+
+Flujo resumido:
+    1. Se cierra el período (planilla) del proyecto.
+    2. Se generan los totales a partir de cadenas de custodia asociadas.
+    3. Se emite el certificado (número, fecha, texto descriptivo y totales).
+
+FinalDispositionCertificateDetail:
+    Liga cada cadena de custodia incluida y detalla cantidades normalizadas
+    por unidad (bbl, gal, m³) y el concepto (``detail``).
+
+Notas de diseño:
+        - ``nro_document`` admite un formato codificado
+            (ej: PSL-CDF-YYYYMMDD-#####).
+    - Totales agregados podrían validarse contra la suma de los detalles.
+    - Relaciones usan ``PROTECT`` para evitar pérdida de trazabilidad.
+"""
+
+
 from common.BaseModel import BaseModel
-from projects.models.Partner import Partner
-from projects.models.PaymentSheet import PaymentSheet
+from projects.models.SheetProject import SheetProject
 from projects.models.CustodyChain import CustodyChain
 from django.db import models
 
@@ -9,12 +33,8 @@ class FinalDispositionCertificate(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
-    partner = models.ForeignKey(
-        Partner,
-        on_delete=models.PROTECT
-    )
     payment_sheet = models.ForeignKey(
-        PaymentSheet,
+        SheetProject,
         on_delete=models.PROTECT
     )
     nro_document = models.CharField(
@@ -38,10 +58,21 @@ class FinalDispositionCertificate(BaseModel):
         'Total de Barriles',
         default=0
     )
+    total_gallons = models.PositiveSmallIntegerField(
+        'Total de Galones',
+        default=0
+    )
     total_m3 = models.PositiveSmallIntegerField(
         'Total Metros Cubicos',
         default=0
     )
+
+    class Meta:
+        verbose_name = 'Certificado de Disposición Final'
+        verbose_name_plural = 'Certificados de Disposición Final'
+
+    def __str__(self):
+        return self.nro_document
 
 
 class FinalDispositionCertificateDetail(BaseModel):
@@ -56,16 +87,20 @@ class FinalDispositionCertificateDetail(BaseModel):
         CustodyChain,
         on_delete=models.PROTECT
     )
-    quantity = models.DecimalField(
-        'Cantidad',
-        max_digits=10,
-        decimal_places=2,
+    detail = models.CharField(
+        'detalle',
+        max_length=255,
+        default='AGUAS NEGRAS Y GRISES'
+    )
+    quantity_bbl = models.PositiveSmallIntegerField(
+        'Barriles',
         default=0
     )
-    unit = models.CharField(
-        'Unidad',
-        max_length=255,
-        choices=(
-            ''
-        )
+    quantity_gallons = models.PositiveSmallIntegerField(
+        'Galones',
+        default=0
+    )
+    quantity_m3 = models.PositiveSmallIntegerField(
+        'Metros Cúbicos',
+        default=0
     )

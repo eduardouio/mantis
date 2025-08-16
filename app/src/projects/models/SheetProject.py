@@ -1,3 +1,36 @@
+"""Modelos para planillas de proyectos (SheetProject y detalles).
+
+SheetProject:
+    Representa la planilla / período de trabajo facturable de un proyecto.
+    Registra un rango (``date_start`` → ``date_end``) y acumula consumo,
+    referencias comerciales y totales monetarios. Sirve como punto de control
+    ("cut-off") para agrupación de trabajos y generación de factura.
+
+Estados (``status``):
+    IN_PROGRESS:
+        Período abierto; se pueden seguir agregando detalles.
+    INVOICED:
+        Planilla facturada; se considera cerrada. Para nuevos trabajos se crea
+        una nueva planilla.
+    CANCELLED:
+        Planilla cancelada; no se agregan más trabajos. Puede migrar a
+        INVOICED sólo si se decide facturar lo acumulado.
+
+Notas:
+    - Asociada a múltiples cadenas de custodia / recursos vía detalles.
+    - No altera el estado del ``Project`` (independiente de ``is_closed``).
+    - Campos de totales (bbls, m3, subtotal, impuestos, total) pueden ser
+      recalculados por signals o tareas (no implementado aquí).
+
+SheetProjectDetail:
+    Ítems detallados de la planilla: recurso, cantidad, precios y medidas.
+
+Pendiente (revisión futura):
+        - Verificar consistencia de los choices 'DAIS'/'DIAS' en
+            ``unit_measurement``.
+"""
+
+
 from projects.models.Project import Project
 from django.db import models
 from app.src.common.BaseModel import BaseModel
@@ -31,10 +64,9 @@ class SheetProject(BaseModel):
         'Estado',
         max_length=50,
         choices=(
-            ('IN_PROGRESS', 'En Ejecución'),
-            ('FINALIZED', 'Finalizado'),
-            ('INVOICED', 'Facturado'),
-            ('CANCELLED', 'Cancelado')
+            ('IN_PROGRESS', 'EN EJECUCIÓN'),
+            ('INVOICED', 'FACTURADO'),
+            ('CANCELLED', 'CANCELADO')
         ),
         default='IN_PROGRESS'
     )
@@ -124,13 +156,21 @@ class SheetProjectDetail(BaseModel):
         on_delete=models.PROTECT
     )
     resource_item = models.ForeignKey(
-        ProjectResourceItem,
+        ResourceItem,
         on_delete=models.PROTECT
     )
     detail = models.TextField(
         'Detalle',
         blank=True,
         null=True
+    )
+    item_unity = models.CharField(
+        'Unidad del Item',
+        max_length=100,
+        choices=(
+            ('DIAS', 'DÍAS'),
+            ('UNIDAD', 'UNIDAD'),
+        )
     )
     quantity = models.DecimalField(
         'Cantidad',

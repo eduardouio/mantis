@@ -51,6 +51,10 @@ class BaseModel(models.Model):
         default=True,
         help_text='Estado del registro.'
     )
+    is_deleted = models.BooleanField(
+        'eliminado',
+        default=False
+    )
     id_user_created = models.PositiveIntegerField(
         'usuario creador',
         default=0,

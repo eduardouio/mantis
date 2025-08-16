@@ -1,9 +1,22 @@
+"""Modelo Partner: registro maestro de clientes facturables.
+
+Descripción:
+    Representa a las entidades (clientes finales) a las que se emiten
+    planillas y facturas. El servicio puede ejecutarse para un tercero,
+    pero en el sistema se referencia siempre al cliente final.
+
+Notas:
+    - Solo se registran clientes finales; intermediarios se gestionan fuera.
+    - ``business_tax_id`` (RUC) es único y actúa como identificador fiscal.
+    - Datos de contacto (email, phone, name_contact) son opcionales.
+    - Hereda de ``BaseModel`` (timestamps, estado lógico, etc.).
+    - Evitar duplicados validando RUC antes de crear.
+"""
+
 from django.db import models
 from common.BaseModel import BaseModel
-from accounts.models import Technical
 
 
-# todos los socios de negocio son clientes
 class Partner(BaseModel):
     id = models.AutoField(
         primary_key=True
@@ -44,6 +57,10 @@ class Partner(BaseModel):
         blank=True,
         null=True
     )
+
+    class Meta:
+        verbose_name = 'Clientes'
+        verbose_name_plural = 'Clientes'
 
     def __str__(self):
         return self.name

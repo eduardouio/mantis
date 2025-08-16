@@ -1,7 +1,32 @@
+"""Modelos relacionados con la gestión de proyectos.
+
+Resumen:
+    Project:
+        Proyecto contratado por un cliente (``partner``).
+        Mientras está activo (``is_closed = False``) se pueden asociar recursos
+        (equipos / ítems) vía ``ProjectResourceItem``.
+        El cierre lógico se controla solo con ``is_closed``; no se eliminan
+        registros para preservar el historial,
+        para esto se usa el booleando de BaseModel ``is_deleted``.
+
+    ProjectResourceItem:
+        Vincula un recurso físico (``ResourceItem``) a un proyecto y registra:
+            - Costos de renta y mantenimiento.
+            - Frecuencia de mantenimiento en días.
+            - Rango de fechas de operación (``start_date`` → ``end_date``).
+        Mientras el rango está vigente el recurso puede mostrarse en
+        calendarios / mantenimientos. Al retirarse se marca ``is_retired`` y se
+        documentan fecha y motivo.
+
+Notas de diseño:
+    - IDs: AutoField incremental estándar.
+    - No hay borrado físico; se preserva auditoría.
+    - Relaciones usan ``PROTECT`` para mantener integridad.
+"""
+
 from django.db import models
 from common.BaseModel import BaseModel
 from equipment.models import ResourceItem
-from django.core.exceptions import ObjectDoesNotExist
 
 
 class Project(BaseModel):
@@ -12,22 +37,9 @@ class Project(BaseModel):
         'projects.Partner',
         on_delete=models.PROTECT
     )
-    TechnicalResponsible = models.CharField(
-        'Técnico Responsable',
-        max_length=255,
-        blank=True,
-        null=True
-    )
     place = models.CharField(
         'Campamento',
         max_length=50,
-        blank=True,
-        null=True,
-        default=None
-    )
-    avrebiature = models.CharField(
-        'Abreviatura',
-        max_length=10,
         blank=True,
         null=True,
         default=None
@@ -51,17 +63,6 @@ class Project(BaseModel):
         default=False
     )
 
-    @classmethod
-    def get_project_by_id(cls, id_project):
-        try:
-            return Project.objects.get(id=id_project)
-        except ObjectDoesNotExist:
-            return None
-
-    @classmethod
-    def get_equipment(cls, project):
-        return ProjectResourceItem.objects.filter(project=project)
-
 
 class ProjectResourceItem(BaseModel):
     id = models.AutoField(
@@ -75,18 +76,18 @@ class ProjectResourceItem(BaseModel):
         ResourceItem,
         on_delete=models.PROTECT
     )
-    cost = models.DecimalField(
-        'Costo General',
+    cost_rent = models.DecimalField(
+        'Costo Renta',
         max_digits=10,
         decimal_places=2
     )
-    cost_manteinance = models.DecimalField(
+    cost_maintenance = models.DecimalField(
         'Costo de Mantenimiento',
         max_digits=10,
         decimal_places=2
     )
-    mantenance_frequency = models.PositiveIntegerField(
-        'Frecuencia de Mantenimiento',
+    maintenance_days_frequency = models.PositiveIntegerField(
+        'Frecuencia de Mantenimiento (días)',
         default=1
     )
     start_date = models.DateField(
@@ -94,6 +95,10 @@ class ProjectResourceItem(BaseModel):
     )
     end_date = models.DateField(
         'Fecha de Fin Operaciones'
+    )
+    is_retired = models.BooleanField(
+        'Retirado',
+        default=False
     )
     retired_date = models.DateField(
         'Fecha de Retiro',
@@ -106,25 +111,9 @@ class ProjectResourceItem(BaseModel):
         null=True
     )
 
-    @classmethod
-    def get_by_id(cls, id_project_equipment):
-        try:
-            return ProjectResourceItem.objects.get(id=id_project_equipment)
-        except ObjectDoesNotExist:
-            return None
-
-    @classmethod
-    def get_by_project_resource_id(cls, id_project_equipment):
-        try:
-            return ProjectResourceItem.objects.get(id=id_project_equipment)
-        except ObjectDoesNotExist:
-            return None
-
-    @classmethod
-    def get_project_equipment(cls, project):
-        return ProjectResourceItem.objects.filter(
-            project=project, is_active=True
-        )
-
     class Meta:
-        unique_together = ('project', 'resource_item')
+        verbose_name = 'Recurso del Proyecto'
+        verbose_name_plural = 'Recursos del Proyecto'
+
+    def __str__(self):
+        return f'{self.project.partner.name} - {self.resource_item.name}'
