@@ -37,7 +37,7 @@ class Project(BaseModel):
         'projects.Partner',
         on_delete=models.PROTECT
     )
-    place = models.CharField(
+    location = models.CharField(
         'Campamento',
         max_length=50,
         blank=True,
@@ -48,7 +48,7 @@ class Project(BaseModel):
         'Nombre de Contacto',
         max_length=255
     )
-    phone_contact = models.CharField(
+    contact_phone = models.CharField(
         'Teléfono de Contacto',
         max_length=15
     )
@@ -76,36 +76,36 @@ class ProjectResourceItem(BaseModel):
         ResourceItem,
         on_delete=models.PROTECT
     )
-    cost_rent = models.DecimalField(
+    rent_cost = models.DecimalField(
         'Costo Renta',
         max_digits=10,
         decimal_places=2
     )
-    cost_maintenance = models.DecimalField(
+    maintenance_cost = models.DecimalField(
         'Costo de Mantenimiento',
         max_digits=10,
         decimal_places=2
     )
-    maintenance_days_frequency = models.PositiveIntegerField(
+    maintenance_interval_days = models.PositiveIntegerField(
         'Frecuencia de Mantenimiento (días)',
         default=1
     )
-    start_date = models.DateField(
+    operation_start_date = models.DateField(
         'Fecha de Inicio Operaciones'
     )
-    end_date = models.DateField(
+    operation_end_date = models.DateField(
         'Fecha de Fin Operaciones'
     )
     is_retired = models.BooleanField(
         'Retirado',
         default=False
     )
-    retired_date = models.DateField(
+    retirement_date = models.DateField(
         'Fecha de Retiro',
         blank=True,
         null=True
     )
-    motive_retired = models.TextField(
+    retirement_reason = models.TextField(
         'Motivo de Retiro',
         blank=True,
         null=True

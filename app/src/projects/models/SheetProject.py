@@ -45,17 +45,17 @@ class SheetProject(BaseModel):
         Project,
         on_delete=models.PROTECT
     )
-    date = models.DateField(
-        'Fecha',
+    issue_date = models.DateField(
+        'Fecha de Emisión',
         blank=True,
         null=True
     )
-    date_start = models.DateField(
+    period_start = models.DateField(
         'Fecha de Inicio',
         blank=True,
         null=True
     )
-    date_end = models.DateField(
+    period_end = models.DateField(
         'Fecha de Fin',
         blank=True,
         null=True
@@ -70,7 +70,7 @@ class SheetProject(BaseModel):
         ),
         default='IN_PROGRESS'
     )
-    series = models.CharField(
+    series_code = models.CharField(
         'Serie',
         max_length=50,
         default='PSL-PS-00000-00'
@@ -80,43 +80,43 @@ class SheetProject(BaseModel):
         max_length=50,
         default='ALQUILER DE EQUIPOS'
     )
-    total_bbls = models.DecimalField(
+    total_gallons = models.PositiveSmallIntegerField(
+        'Total de Galones',
+        default=0
+    )
+    total_barrels = models.PositiveSmallIntegerField(
         'Total de Barriles',
-        max_digits=10,
-        decimal_places=2,
         default=0
     )
-    total_m3 = models.DecimalField(
+    total_cubic_meters = models.PositiveSmallIntegerField(
         'Total de Metros Cúbicos',
-        max_digits=10,
-        decimal_places=2,
         default=0
     )
-    ref_po_client = models.CharField(
+    client_po_reference = models.CharField(
         'Referencia PO Cliente',
         max_length=50,
         blank=True,
         null=True
     )
-    ref_contact = models.CharField(
+    contact_reference = models.CharField(
         'Referencia de Contacto',
         max_length=50,
         blank=True,
         null=True
     )
-    ref_contact_tel = models.CharField(
+    contact_phone_reference = models.CharField(
         'Referencia de Teléfono de Contacto',
         max_length=50,
         blank=True,
         null=True
     )
-    ref_nro_final_disposition = models.CharField(
+    final_disposition_reference = models.CharField(
         'Referencia de Disposición Final',
         max_length=50,
         blank=True,
         null=True
     )
-    ref_nro_invoice = models.CharField(
+    invoice_reference = models.CharField(
         'Referencia de Factura',
         max_length=50,
         blank=True,
@@ -128,7 +128,7 @@ class SheetProject(BaseModel):
         decimal_places=2,
         default=0
     )
-    taxes = models.DecimalField(
+    tax_amount = models.DecimalField(
         'IVA',
         max_digits=10,
         decimal_places=2,

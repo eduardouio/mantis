@@ -48,7 +48,7 @@ class CustodyChain(BaseModel):
         SheetProject,
         on_delete=models.PROTECT
     )
-    date = models.DateField(
+    activity_date = models.DateField(
         'Fecha'
     )
     location = models.CharField(
@@ -57,24 +57,24 @@ class CustodyChain(BaseModel):
         blank=True,
         null=True
     )
-    start_hour = models.TimeField(
+    start_time = models.TimeField(
         'Hora de inicio'
     )
-    end_hour = models.TimeField(
+    end_time = models.TimeField(
         'Hora de Salida'
     )
-    total_hours = models.DecimalField(
+    time_duration = models.DecimalField(
         'Horas Totales',
         max_digits=10,
         decimal_places=2,
     )
-    ref_contact_name = models.CharField(
+    contact_name = models.CharField(
         'Nombre de Contacto',
         max_length=255,
         blank=True,
         null=True
     )
-    ref_contact_position = models.CharField(
+    contact_position = models.CharField(
         'Cargo de Contacto',
         max_length=255,
         blank=True,
@@ -84,11 +84,11 @@ class CustodyChain(BaseModel):
         'Total de Galones',
         default=0
     )
-    total_bbl = models.PositiveSmallIntegerField(
+    total_barrels = models.PositiveSmallIntegerField(
         'Total de Barriles',
         default=0
     )
-    total_m3 = models.PositiveSmallIntegerField(
+    total_cubic_meters = models.PositiveSmallIntegerField(
         'Total de Metros Cúbicos',
         default=0
     )
