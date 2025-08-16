@@ -58,13 +58,13 @@
           </div>
 
           <div class="form-control">
-            <label class="label" for="{{ form.place.id_for_label }}">
-              <span class="label-text">Lugar/Campamento:</span>
+            <label class="label" for="{{ form.location.id_for_label }}">
+              <span class="label-text">Campamento / Ubicación:</span>
             </label>
-            {{ form.place }}
-            {% if form.place.errors %}
+            {{ form.location }}
+            {% if form.location.errors %}
               <div class="label">
-                <span class="label-text-alt text-error">{{ form.place.errors.0 }}</span>
+                <span class="label-text-alt text-error">{{ form.location.errors.0 }}</span>
               </div>
             {% endif %}
           </div>
@@ -82,13 +82,13 @@
           </div>
 
           <div class="form-control">
-            <label class="label" for="{{ form.phone_contact.id_for_label }}">
+            <label class="label" for="{{ form.contact_phone.id_for_label }}">
               <span class="label-text">Teléfono de Contacto:</span>
             </label>
-            {{ form.phone_contact }}
-            {% if form.phone_contact.errors %}
+            {{ form.contact_phone }}
+            {% if form.contact_phone.errors %}
               <div class="label">
-                <span class="label-text-alt text-error">{{ form.phone_contact.errors.0 }}</span>
+                <span class="label-text-alt text-error">{{ form.contact_phone.errors.0 }}</span>
               </div>
             {% endif %}
           </div>
@@ -129,38 +129,21 @@
           <div class="mt-4">
             <div class="form-control">
               <label class="label cursor-pointer">
-                <span class="label-text">Proyecto Activo:</span>
-                {{ form.is_active }}
+                <span class="label-text">Proyecto Cerrado:</span>
+                {{ form.is_closed }}
               </label>
-              {% if form.is_active.errors %}
+              {% if form.is_closed.errors %}
                 <div class="label">
-                  <span class="label-text-alt text-error">{{ form.is_active.errors.0 }}</span>
+                  <span class="label-text-alt text-error">{{ form.is_closed.errors.0 }}</span>
                 </div>
               {% endif %}
+              <p class="text-xs text-gray-500 mt-1">Marca esta casilla cuando el proyecto ya no admita nuevos recursos.</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Notas -->
-      <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <h3 class="text-lg font-medium text-blue-600 mb-4">
-          <i class="las la-file-alt text-xl"></i>
-          Notas y Observaciones
-        </h3>
-        
-        <div class="form-control">
-          <label class="label" for="{{ form.notes.id_for_label }}">
-            <span class="label-text">Notas del Proyecto:</span>
-          </label>
-          {{ form.notes }}
-          {% if form.notes.errors %}
-            <div class="label">
-              <span class="label-text-alt text-error">{{ form.notes.errors.0 }}</span>
-            </div>
-          {% endif %}
-        </div>
-      </div>
+  <!-- Sección de notas eliminada: el modelo ya no incluye 'notes'. -->
     </div>
 
     <!-- Botones de acción -->

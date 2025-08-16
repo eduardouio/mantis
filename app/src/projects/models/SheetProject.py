@@ -33,7 +33,7 @@ Pendiente (revisión futura):
 
 from projects.models.Project import Project
 from django.db import models
-from app.src.common.BaseModel import BaseModel
+from common.BaseModel import BaseModel
 from equipment.models.ResourceItem import ResourceItem
 
 

@@ -3,31 +3,42 @@ from projects.models import Project
 
 
 class ProjectForm(forms.ModelForm):
+    """Formulario de creación/edición de Project adaptado al nuevo modelo.
+
+    Cambios respecto a la versión previa:
+        - place  -> location
+        - phone_contact -> contact_phone
+        - is_active -> is_closed (antes check = activo, ahora check = cerrado)
+        - Se elimina 'notes' (el modelo actual ya no lo expone)
+    """
+
     class Meta:
         model = Project
         fields = [
-            'partner', 'place', 'contact_name', 'phone_contact', 'start_date',
-            'end_date', 'is_active', 'notes'
+            'partner', 'location', 'contact_name', 'contact_phone',
+            'start_date', 'end_date', 'is_closed'
         ]
         widgets = {
             'partner': forms.Select(
                 attrs={'class': 'select select-bordered select-md w-full'}
             ),
-            'notes': forms.Textarea(
+            'location': forms.TextInput(
                 attrs={
-                    'class': 'textarea textarea-bordered w-full',
-                    'rows': 4,
-                    'placeholder': 'Observaciones y notas del proyecto...'
+                    'class': 'input input-bordered input-md w-full',
+                    'placeholder': 'Campamento / Ubicación'
                 }
             ),
-            'place': forms.TextInput(
-                attrs={'class': 'input input-bordered input-md w-full'}
-            ),
             'contact_name': forms.TextInput(
-                attrs={'class': 'input input-bordered input-md w-full'}
+                attrs={
+                    'class': 'input input-bordered input-md w-full',
+                    'placeholder': 'Nombre de contacto principal'
+                }
             ),
-            'phone_contact': forms.TextInput(
-                attrs={'class': 'input input-bordered input-md w-full'}
+            'contact_phone': forms.TextInput(
+                attrs={
+                    'class': 'input input-bordered input-md w-full',
+                    'placeholder': '+593...'  # Ajustar formato esperado
+                }
             ),
             'start_date': forms.DateInput(
                 attrs={
@@ -43,7 +54,18 @@ class ProjectForm(forms.ModelForm):
                 },
                 format='%Y-%m-%d'
             ),
-            'is_active': forms.CheckboxInput(
+            'is_closed': forms.CheckboxInput(
                 attrs={'class': 'checkbox checkbox-md'}
             )
         }
+
+    def clean(self):
+        data = super().clean()
+        start = data.get('start_date')
+        end = data.get('end_date')
+        if start and end and end < start:
+            self.add_error(
+                'end_date',
+                'La fecha de fin no puede ser anterior a la fecha de inicio.'
+            )
+        return data
