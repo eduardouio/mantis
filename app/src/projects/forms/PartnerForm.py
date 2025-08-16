@@ -44,7 +44,10 @@ class PartnerForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={
                 'class': 'textarea textarea-bordered w-full min-h-20',
                 'rows': 4,
-                'placeholder': 'Observaciones adicionales sobre el socio de negocio'
+                'placeholder': (
+                    'Observaciones adicionales sobre el socio de '
+                    'negocio'
+                )
             }),
             'is_active': forms.CheckboxInput(attrs={
                 'class': 'checkbox checkbox-primary'

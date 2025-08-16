@@ -2,7 +2,7 @@
 
 SheetProject:
     Representa la planilla / período de trabajo facturable de un proyecto.
-    Registra un rango (``date_start`` → ``date_end``) y acumula consumo,
+    Registra un rango (``period_start`` → ``period_end``) y acumula consumo,
     referencias comerciales y totales monetarios. Sirve como punto de control
     ("cut-off") para agrupación de trabajos y generación de factura.
 
@@ -142,7 +142,7 @@ class SheetProject(BaseModel):
     )
 
     class Meta:
-        unique_together = ('project', 'date_start', 'date_end')
+        unique_together = ('project', 'period_start', 'period_end')
         verbose_name = 'Planilla de Proyecto'
         verbose_name_plural = 'Planillas de Proyecto'
 

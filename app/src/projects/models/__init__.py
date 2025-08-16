@@ -1,6 +1,9 @@
 from projects.models.Project import (
-    Project, 
+    Project,
     ProjectResourceItem
+)
+from projects.models.Partner import (
+    Partner
 )
 from projects.models.CustodyChain import (
     CustodyChain,
@@ -15,13 +18,14 @@ from .SheetProject import (
     SheetProjectDetail
 )
 
-all = [
-    Project,
-    ProjectResourceItem,
-    SheetProject,
-    SheetProjectDetail,
-    CustodyChain,
-    ChainCustodyDetail,
-    FinalDispositionCertificate,
-    FinalDispositionCertificateDetail
+__all__ = [
+    'Partner',
+    'Project',
+    'ProjectResourceItem',
+    'SheetProject',
+    'SheetProjectDetail',
+    'CustodyChain',
+    'ChainCustodyDetail',
+    'FinalDispositionCertificate',
+    'FinalDispositionCertificateDetail'
 ]
