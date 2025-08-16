@@ -3,17 +3,17 @@
 {% block content %}
 <div class="w-4/5 mx-auto p-6 bg-white rounded-2xl shadow-md space-y-6 border border-t-[15px] border-t-blue-500">
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-3">
-    <h5 class="font-semibold text-blue-500">#{{ project.id }}{{ project.place }} {{ project.partner }}</h5>
+    <h5 class="font-semibold text-blue-500">#{{ project.id }} {{ project.location|default:'(Sin ubicación)' }} {{ project.partner }}</h5>
     <div class="flex gap-2">
-      {% if project.is_active %}
-        <span class="badge badge-success badge-lg">
-          <i class="las la-check-circle"></i>
-          Activo
+      {% if project.is_closed %}
+        <span class="badge badge-warning badge-lg">
+          <i class="las la-lock"></i>
+          Cerrado
         </span>
       {% else %}
-        <span class="badge badge-error badge-lg">
-          <i class="las la-times-circle"></i>
-          Inactivo
+        <span class="badge badge-success badge-lg">
+          <i class="las la-play-circle"></i>
+          Abierto
         </span>
       {% endif %}
     </div>
@@ -24,7 +24,7 @@
     <div class="p-1">
       <p class="text-sm text-gray-600">Estado Proyecto</p>
       <p class="font-semibold text-gray-900">
-        {% if project.is_active %}Activo{% else %}Inactivo{% endif %}
+        {% if project.is_closed %}Cerrado{% else %}Abierto{% endif %}
       </p>
     </div>
     <div class="p-1">
@@ -36,8 +36,8 @@
       </p>
     </div>
     <div class="p-1">
-      <p class="text-sm text-gray-600">Lugar</p>
-      <p class="font-semibold text-gray-900">{{ project.place }}</p>
+      <p class="text-sm text-gray-600">Campamento / Ubicación</p>
+      <p class="font-semibold text-gray-900">{{ project.location|default:'—' }}</p>
     </div>
     <div class="p-1">
       <p class="text-sm text-gray-600">Fecha de Inicio</p>
@@ -57,7 +57,7 @@
     </div>
     <div class="p-1">
       <p class="text-sm text-gray-600">Teléfono de Contacto</p>
-      <p class="font-semibold text-gray-900">{{ project.phone_contact }}</p>
+      <p class="font-semibold text-gray-900">{{ project.contact_phone }}</p>
     </div>
     <div class="p-1">
       <p class="text-sm text-gray-600">Valor Total</p>
