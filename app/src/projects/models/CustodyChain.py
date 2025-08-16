@@ -9,22 +9,16 @@ class CustodyChain(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
+    technical = models.ForeignKey(
+        Technical,
+        on_delete=models.PROTECT,
+    )
     payment_sheet = models.ForeignKey(
         PaymentSheet,
         on_delete=models.PROTECT
     )
-    tecnical = models.ForeignKey(
-        Technical,
-        on_delete=models.PROTECT
-    )
     date = models.DateField(
         'Fecha'
-    )
-    plate_vehicle = models.CharField(
-        'Placa del Vehículo',
-        max_length=10,
-        blank=True,
-        null=True
     )
     ref_contact_name = models.CharField(
         'Nombre de Contacto',
@@ -38,51 +32,17 @@ class CustodyChain(BaseModel):
         blank=True,
         null=True
     )
-    total_gallons = models.DecimalField(
+    total_gallons = models.PositiveSmallIntegerField(
         'Total de Galones',
-        max_digits=10,
-        decimal_places=2,
         default=0
     )
-    total_bbl = models.DecimalField(
+    total_bbl = models.PositiveSmallIntegerField(
         'Total de Barriles',
-        max_digits=10,
-        decimal_places=2,
         default=0
     )
-    total_m3 = models.DecimalField(
+    total_m3 = models.PositiveSmallIntegerField(
         'Total de Metros Cúbicos',
-        max_digits=10,
-        decimal_places=2,
         default=0
-    )
-    have_sewage = models.BooleanField(
-        'Tiene Aguas Residuales',
-        default=False
-    )
-    have_graywater = models.BooleanField(
-        'Tiene Aguas Grises',
-        default=False
-    )
-    have_clean_water = models.BooleanField(
-        'Tiene Agua Limpia',
-        default=False
-    )
-    have_activated_sludge = models.BooleanField(
-        'Tiene Lodos Activados',
-        default=False
-    )
-    have_treated_wastewater = models.BooleanField(
-        'Tiene Aguas Residuales Tratadas',
-        default=False
-    )
-    have_clean_grease = models.BooleanField(
-        'Tiene Grasas Limpias',
-        default=False
-    )
-    have_logistic = models.BooleanField(
-        'Tiene Logística',
-        default=False
     )
 
 
@@ -98,74 +58,22 @@ class CustodyChainDetail(BaseModel):
         ResourceItem,
         on_delete=models.PROTECT
     )
-    type_service = models.CharField(
-        'Tipo de Servicio',
-        max_length=255,
-        choices=SERVICES_CHOICES
-    )
-    cost = models.DecimalField(
-        'Costo',
-        max_digits=10,
-        decimal_places=2,
-        default=0
-    )
     location = models.CharField(
         'Ubicación',
-        max_length=255
+        max_length=255,
+        blank=True,
+        null=True
     )
-    start_hour = models.DateTimeField(
+    start_hour = models.TimeField(
         'Hora de inicio'
     )
-    end_hour = models.DateTimeField(
+    end_hour = models.TimeField(
         'Hora de Salida'
     )
     total_hours = models.DecimalField(
         'Horas Totales',
         max_digits=10,
         decimal_places=2,
-    )
-    origin_site = models.CharField(
-        'Origen',
-        max_length=255,
-        null=True,
-        blank=True,
-        default=None
-    )
-    destination_site = models.CharField(
-        'Destino',
-        max_length=255,
-        null=True,
-        blank=True,
-        default=None
-    )
-    mat_transported_aguas_negras = models.BooleanField(
-        'Aguas Negras',
-        default=False
-    )
-    mat_transported_aguas_grises = models.BooleanField(
-        'Aguas Grises',
-        default=False
-    )
-    mat_transported_agua_limpa = models.BooleanField(
-        'Agua Limpia',
-        default=False
-    )
-    mat_trasported_lodos_activos = models.BooleanField(
-        'Lodos Activos',
-        default=False
-    )
-    mat_trasported_agua_residual_tratada = models.BooleanField(
-        'Agua Residual Tratada',
-        default=False
-    )
-    volume_transported = models.CharField(
-        'Volumen Transportado',
-        max_length=255,
-    )
-    unit = models.CharField(
-        'Unidad',
-        max_length=255,
-        choices=UNIT
     )
 
 
@@ -181,4 +89,3 @@ class ChainCustodyDetail(BaseModel):
         ResourceItem,
         on_delete=models.PROTECT
     )
-
