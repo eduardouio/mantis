@@ -6,10 +6,7 @@
   <div class="flex flex-wrap gap-2 justify-between items-center mb-4 pb-2 border-b">
     <h1 class="text-xl font-semibold text-blue-600">{{ title_section|default:"Formulario de Vehículo" }}</h1>
     <div class="flex flex-wrap gap-2">
-      {% if request.resolver_match.url_name != 'vehicle_create' %}
-        <a href="{% url 'vehicle_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-soft btn-error">Eliminar</a>
-        <a href="{% url 'vehicle_detail' vehicle.id %}" class="btn btn-soft btn-info">Ver Ficha</a>
-      {% endif %}
+    
       <a href="{% url 'vehicle_list' %}" class="btn btn-secondary">Cancelar</a>
     </div>
   </div>
