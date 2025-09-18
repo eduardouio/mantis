@@ -146,6 +146,9 @@ class SheetProject(BaseModel):
         verbose_name = 'Planilla de Proyecto'
         verbose_name_plural = 'Planillas de Proyecto'
 
+    def __str__(self):
+        return f'Planilla {self.id} - Proyecto {self.project.partner.name}'
+
 
 class SheetProjectDetail(BaseModel):
     id = models.AutoField(
