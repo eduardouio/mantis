@@ -9,11 +9,6 @@ CHOICES_TYPE_VEHICLE = (
     ('AUTO', 'AUTO')
 )
 
-CHOICES_OWNER = (
-    ('PEISOL', 'PEISOL'),
-    ('CONTRATANANTE', 'CONTRATANANTE'),
-)
-
 CHOICES_STATUS_CERT = (
     ('VIGENTE', 'VIGENTE'),
     ('VENCIDO', 'VENCIDO'),
@@ -85,7 +80,6 @@ class Vehicle(BaseModel):
     owner_transport = models.CharField(
         'Propietario',
         max_length=255,
-        choices=CHOICES_OWNER,
         default='PEISOL'
     )
     due_date_matricula = models.DateField(
