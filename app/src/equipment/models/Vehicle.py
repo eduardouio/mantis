@@ -62,8 +62,13 @@ class Vehicle(BaseModel):
         choices=CHOICES_STATUS_VEHICLES,
         default='DISPONIBLE'
     )
-    status_cert_oper = (
-        'Estado Certificado'
+    status_cert_oper = models.CharField(
+        'Estado Certificado',
+        max_length=100,
+        choices=CHOICES_STATUS_CERT,
+        default='VIGENTE',
+        blank=True,
+        null=True
     )
     chasis = models.CharField(
         'Chasis',

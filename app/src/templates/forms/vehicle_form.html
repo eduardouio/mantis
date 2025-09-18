@@ -155,6 +155,16 @@
           {% if form.due_date_cert_oper.errors %}<span class="text-xs text-red-500">{{ form.due_date_cert_oper.errors.0 }}</span>{% endif %}
         </div>
         <div class="form-control">
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Estado Certificado</span></label>
+          <select name="{{ form.status_cert_oper.html_name }}" class="select select-bordered h-9">
+            <option value="">Seleccione</option>
+            {% for value, label in form.status_cert_oper.field.choices %}
+              <option value="{{ value }}" {% if form.status_cert_oper.value == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          {% if form.status_cert_oper.errors %}<span class="text-xs text-red-500">{{ form.status_cert_oper.errors.0 }}</span>{% endif %}
+        </div>
+        <div class="form-control">
           <label class="label pb-1 flex justify-between items-center"><span class="label-text text-xs font-semibold">Fecha MTOP</span><span id="mtopExpiryBadge" class="badge badge-ghost badge-sm hidden"></span></label>
           <input id="id_date_mtop" type="date" name="{{ form.date_mtop.html_name }}" value="{{ form.date_mtop.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
           {% if form.date_mtop.errors %}<span class="text-xs text-red-500">{{ form.date_mtop.errors.0 }}</span>{% endif %}
@@ -201,7 +211,18 @@
     "engine_number": "{{ vehicle.engine_number|default:''|escapejs }}",
     "serial_number": "{{ vehicle.serial_number|default:''|escapejs }}",
     "is_active": {% if vehicle.is_active %}true{% else %}false{% endif %},
-    "notes": "{{ vehicle.notes|default:''|escapejs }}"
+    "notes": "{{ vehicle.notes|default:''|escapejs }}",
+    "insurance_company": "{{ vehicle.insurance_company|default:''|escapejs }}",
+    "nro_poliza": "{{ vehicle.nro_poliza|default:''|escapejs }}",
+    "insurance_issue_date": "{{ vehicle.insurance_issue_date|date:'Y-m-d'|default:''|escapejs }}",
+    "insurance_expiration_date": "{{ vehicle.insurance_expiration_date|date:'Y-m-d'|default:''|escapejs }}",
+    "duedate_satellite": "{{ vehicle.duedate_satellite|date:'Y-m-d'|default:''|escapejs }}",
+    "date_matricula": "{{ vehicle.date_matricula|date:'Y-m-d'|default:''|escapejs }}",
+    "due_date_matricula": "{{ vehicle.due_date_matricula|date:'Y-m-d'|default:''|escapejs }}",
+    "due_date_cert_oper": "{{ vehicle.due_date_cert_oper|date:'Y-m-d'|default:''|escapejs }}",
+    "status_cert_oper": "{{ vehicle.status_cert_oper|default:''|escapejs }}",
+    "date_mtop": "{{ vehicle.date_mtop|date:'Y-m-d'|default:''|escapejs }}",
+    "date_technical_review": "{{ vehicle.date_technical_review|date:'Y-m-d'|default:''|escapejs }}"
   }{% else %}null{% endif %},
   "certifications": [
     {% if vehicle %}{% for c in vehicle.certificationvehicle_set.all %}{
