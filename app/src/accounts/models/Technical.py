@@ -134,3 +134,11 @@ class Technical(BaseModel):
         'Activo?',
         default=True
     )
+
+    class Meta:
+        verbose_name = 'Técnico'
+        verbose_name_plural = 'Técnicos'
+        ordering = ['last_name', 'first_name']
+
+    def __str__(self):
+        return f"TEC. {self.first_name} {self.last_name}"
