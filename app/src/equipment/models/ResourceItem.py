@@ -811,7 +811,9 @@ class ResourceItem(BaseModel):
         verbose_name = 'Recurso'
         verbose_name_plural = 'Recursos'
         ordering = ['name']
-    # ===== Helper API de presentación =====
+    
+    def __str__(self):
+        return f'{self.code} -> {self.name}'
     
     @classmethod
     def _fields_by_type(cls):
