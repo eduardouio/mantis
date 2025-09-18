@@ -110,7 +110,7 @@ class CustodyChain(BaseModel):
         verbose_name_plural = 'Cadenas de Custodia'
 
     def __str__(self):
-        return '{}-{}'.format(self.sheet_project.id, self.date)
+        return f'{self.sheet_project.id}-{self.activity_date}'
 
 
 class ChainCustodyDetail(BaseModel):
