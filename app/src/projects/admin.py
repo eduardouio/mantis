@@ -196,21 +196,24 @@ class SheetProjectDetailAdmin(BaseModelAdmin):
 @admin.register(CustodyChain)
 class CustodyChainAdmin(BaseModelAdmin):
     list_display = (
-        'id', 'technical', 'sheet_project', 'activity_date', 'location',
-        'time_duration', 'total_gallons', 'total_barrels', 'total_cubic_meters'
+    'id', 'consecutive', 'technical', 'sheet_project',
+    'activity_date', 'location', 'time_duration',
+    'total_gallons', 'total_barrels', 'total_cubic_meters'
     )
     list_filter = (
         'technical', 'sheet_project', 'activity_date', 'is_active'
     )
     search_fields = (
-        'technical__first_name', 'technical__last_name', 'location'
+        'consecutive',
+        'technical__first_name', 'technical__last_name',
+        'location'
     )
     # readonly heredado
     fieldsets = (
         ('Cadena', {
             'fields': (
-                'technical', 'sheet_project', 'activity_date', 'location',
-                'start_time', 'end_time', 'time_duration', 'consecutive'
+                'technical', 'sheet_project', 'consecutive', 'activity_date',
+                'location', 'start_time', 'end_time', 'time_duration'
             )
         }),
         ('Contacto', {
@@ -223,7 +226,9 @@ class CustodyChainAdmin(BaseModelAdmin):
         }),
         ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'), 'classes': ('collapse',)
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+            ), 'classes': ('collapse',)
         })
     )
 
@@ -269,7 +274,8 @@ class FinalDispositionCertificateAdmin(BaseModelAdmin):
     fieldsets = (
         ('Certificado', {
             'fields': (
-                'payment_sheet', 'nro_document', 'date', 'text_document', 'is_active'
+                'payment_sheet', 'nro_document', 'date',
+                'text_document', 'is_active'
             )
         }),
         ('Totales', {
@@ -277,7 +283,9 @@ class FinalDispositionCertificateAdmin(BaseModelAdmin):
         }),
         ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'), 'classes': ('collapse',)
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+            ), 'classes': ('collapse',)
         })
     )
 
@@ -292,7 +300,9 @@ class FinalDispositionCertificateDetailAdmin(BaseModelAdmin):
         'final_disposition_certificate', 'custody_chain', 'is_active'
     )
     search_fields = (
-        'final_disposition_certificate__nro_document', 'custody_chain__technical__first_name', 'detail'
+    'final_disposition_certificate__nro_document',
+    'custody_chain__technical__first_name',
+    'detail'
     )
     # readonly heredado
     fieldsets = (
@@ -304,6 +314,8 @@ class FinalDispositionCertificateDetailAdmin(BaseModelAdmin):
         }),
         ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'), 'classes': ('collapse',)
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+            ), 'classes': ('collapse',)
         })
     )
