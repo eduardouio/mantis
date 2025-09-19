@@ -79,6 +79,10 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:3000',
     'http://localhost:5173',
     'http://146.190.56.181:8080',
+	'https://mantis.peisol.com.ec',
+	'https://www.mantis.peisol.com.ec',
+	'http://mantis.peisol.com.ec',
+    'http://www.mantis.peisol.com.ec',
 ]
 
 
