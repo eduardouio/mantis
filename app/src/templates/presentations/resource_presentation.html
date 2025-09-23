@@ -144,8 +144,8 @@
             <div class="space-y-2">
               <div><span class="text-gray-500 text-sm">Cliente:</span> <span class="font-medium">{{ current_assignment.project.partner.name }}</span></div>
               <div><span class="text-gray-500 text-sm">Campamento:</span> <span class="font-medium">{{ current_assignment.project.location|default:'No especificado' }}</span></div>
-              <div><span class="text-gray-500 text-sm">Periodo:</span> <span class="font-medium">{{ current_assignment.start_date|date:'d/m/Y' }} - {{ current_assignment.end_date|date:'d/m/Y' }}</span></div>
-              <div><span class="text-gray-500 text-sm">Costo:</span> <span class="font-medium">${{ current_assignment.cost|floatformat:2 }}</span></div>
+              <div><span class="text-gray-500 text-sm">Periodo:</span> <span class="font-medium">{{ current_assignment.operation_start_date|date:'d/m/Y' }} - {{ current_assignment.operation_end_date|date:'d/m/Y' }}</span></div>
+              <div><span class="text-gray-500 text-sm">Costo:</span> <span class="font-medium">${{ current_assignment.rent_cost|floatformat:2 }}</span></div>
             </div>
           </div>
           {% else %}
@@ -163,7 +163,7 @@
               <div class="flex justify-between items-start">
                 <div>
                   <p class="font-medium text-sm">{{ assignment.project.partner.name }}</p>
-                  <p class="text-xs text-gray-500">{{ assignment.start_date|date:'d/m/Y' }} - {{ assignment.end_date|date:'d/m/Y' }}</p>
+                  <p class="text-xs text-gray-500">{{ assignment.operation_start_date|date:'d/m/Y' }} - {{ assignment.operation_end_date|date:'d/m/Y' }}</p>
                 </div>
                 <span class="badge badge-sm {% if not assignment.is_retired %}badge-success{% else %}badge-outline{% endif %}">{% if not assignment.is_retired %}Vigente{% else %}Retirado{% endif %}</span>
               </div>

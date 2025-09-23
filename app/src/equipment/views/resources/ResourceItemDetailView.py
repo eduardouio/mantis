@@ -56,9 +56,11 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         total_projects = project_assignments.count()
         active_projects = active_assignments.count()
         total_cost = sum(
-            assignment.cost for assignment in project_assignments if assignment.cost)
+            assignment.rent_cost for assignment in project_assignments
+            if assignment.rent_cost)
         total_maintenance_cost = sum(
-            assignment.cost_manteinance for assignment in project_assignments if assignment.cost_manteinance)
+            assignment.maintenance_cost for assignment in project_assignments
+            if assignment.maintenance_cost)
 
         return {
             'total_projects': total_projects,
@@ -73,7 +75,9 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         """Obtener información de proyectos asociados"""
         project_assignments = ProjectResourceItem.objects.filter(
             resource_item=equipment
-        ).select_related('project', 'project__partner').order_by('-start_date')
+        ).select_related(
+            'project', 'project__partner'
+        ).order_by('-operation_start_date')
 
         current_assignment = project_assignments.filter(is_active=True).first()
         recent_assignments = project_assignments[:5]  # Últimos 5 proyectos
@@ -96,8 +100,8 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
 
         maintenance_alerts = []
         for assignment in active_assignments:
-            if assignment.end_date:
-                days_until_end = (assignment.end_date - today).days
+            if assignment.operation_end_date:
+                days_until_end = (assignment.operation_end_date - today).days
                 if days_until_end <= 30:
                     maintenance_alerts.append({
                         'type': 'end_project',
