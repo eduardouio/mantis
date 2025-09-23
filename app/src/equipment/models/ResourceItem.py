@@ -362,6 +362,66 @@ PTRTAR_FIELDS = [
     'id_user_created', 'id_user_updated'
 ]
 
+# check list Tanques de Almacenamiento Agua Cruda
+TNQAAC_FIELDS = [
+    'id',
+    'name',
+    'is_service',
+    'code',
+    'type_equipment',
+    'brand',
+    'model',
+    'serial_number',
+    'date_purchase',
+    'height',
+    'width',
+    'depth',
+    'weight',
+    'capacity_gallons',
+    'stst_repair_reason',
+    'stst_status_equipment',
+    'stst_status_disponibility',
+    'stst_current_location',
+    'stst_current_project_id',
+    'stst_commitment_date',
+    'stst_release_date',
+    'is_active',
+    'created_at',
+    'updated_at',
+    'id_user_created',
+    'id_user_updated'
+]
+
+# check list Tanques de Almacenamiento Agua Residual
+TNQAAR_FIELDS = [
+    'id',
+    'name',
+    'is_service',
+    'code',
+    'type_equipment',
+    'brand',
+    'model',
+    'serial_number',
+    'date_purchase',
+    'height',
+    'width',
+    'depth',
+    'weight',
+    'capacity_gallons',
+    'stst_repair_reason',
+    'stst_status_equipment',
+    'stst_status_disponibility',
+    'stst_current_location',
+    'stst_current_project_id',
+    'stst_commitment_date',
+    'stst_release_date',
+    'is_active',
+    'created_at',
+    'updated_at',
+    'id_user_created',
+    'id_user_updated'
+]
+
 
 class ResourceItem(BaseModel):
     # campos compartidos por Servicio y Equipo
@@ -826,7 +886,8 @@ class ResourceItem(BaseModel):
             'CMPRBN': CMPRBN_FIELDS,
             'PTRTAP': PTRTAP_FIELDS,
             'PTRTAR': PTRTAR_FIELDS,
-            # Si existen TNQAAC_FIELDS/TNQAAR_FIELDS, agregarlas aquí
+            'TNQAAC': TNQAAC_FIELDS,
+            'TNQAAR': TNQAAR_FIELDS,
         }
         return mapping
 

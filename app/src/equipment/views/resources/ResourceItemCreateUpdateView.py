@@ -16,6 +16,8 @@ from equipment.models.ResourceItem import (
     CMPRBN_FIELDS,
     PTRTAP_FIELDS,
     PTRTAR_FIELDS,
+    TNQAAC_FIELDS,
+    TNQAAR_FIELDS,
 )
 
 
@@ -54,6 +56,8 @@ class ResourceItemCreateUpdateView(LoginRequiredMixin, TemplateView):
             'CMPRBN': CMPRBN_FIELDS,
             'PTRTAP': PTRTAP_FIELDS,
             'PTRTAR': PTRTAR_FIELDS,
+            'TNQAAC': TNQAAC_FIELDS,
+            'TNQAAR': TNQAAR_FIELDS,
         }
         allowed_map = {
             key: [f for f in fields if f in all_form_fields]
