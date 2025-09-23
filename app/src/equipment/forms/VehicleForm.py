@@ -36,8 +36,8 @@ class VehicleForm(forms.ModelForm):
             'no_plate': forms.TextInput(attrs={
                 'class': 'input input-bordered input-md w-full'
             }),
-            'owner_transport': forms.Select(attrs={
-                'class': 'select select-bordered select-md w-full'
+            'owner_transport': forms.TextInput(attrs={
+                'class': 'input input-bordered input-md w-full'
             }),
             'status_vehicle': forms.Select(attrs={
                 'class': 'select select-bordered select-md w-full'

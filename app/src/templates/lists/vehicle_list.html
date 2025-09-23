@@ -106,7 +106,7 @@
                 <td class="text-center hidden md:table-cell">{{ vehicle.year|default_if_none:"-" }}</td>
                 <td class="text-center hidden md:table-cell">
                     <span class="badge {% if vehicle.owner_transport == 'PEISOL' %}badge-success{% else %}badge-info{% endif %} badge-sm">
-                        {{ vehicle.get_owner_transport_display }}
+                        {{ vehicle.owner_transport|default:"No especificado" }}
                     </span>
                 </td>
                 <td class="text-center hidden lg:table-cell">

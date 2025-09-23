@@ -54,7 +54,7 @@
                 <i class="las la-user text-blue-500"></i>
                 <p class="text-gray-500 text-sm">Propietario</p>
               </div>
-              <p class="font-semibold text-gray-900 pl-6">{{ vehicle.get_owner_transport_display }}</p>
+              <p class="font-semibold text-gray-900 pl-6">{{ vehicle.owner_transport|default:"No especificado" }}</p>
             </div>
           </div>
         </div>

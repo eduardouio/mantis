@@ -63,7 +63,13 @@ class VehicleListView(LoginRequiredMixin, ListView):
             'type_vehicle').choices
         context['vehicle_statuses'] = Vehicle._meta.get_field(
             'status_vehicle').choices
-        context['owner_choices'] = Vehicle._meta.get_field(
-            'owner_transport').choices
+        # Obtener valores únicos de owner_transport existentes en la BD
+        context['owner_choices'] = Vehicle.objects.exclude(
+            owner_transport__isnull=True
+        ).exclude(
+            owner_transport__exact=''
+        ).values_list(
+            'owner_transport', 'owner_transport'
+        ).distinct().order_by('owner_transport')
 
         return context
