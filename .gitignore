@@ -19,7 +19,10 @@ __pycache__/*
 /app/front
 
 *.pyc
-migrations/*
+# Migration files except __init__.py
+**/migrations/*.py
+!**/migrations/__init__.py
+**/migrations/__pycache__/
 
 # Backup files # 
 *.bak 
