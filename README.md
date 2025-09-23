@@ -27,8 +27,14 @@ python manage.py sowseed
 
 # un solo comando para windows
 ```bash
-sudo systemctl restart matis.service
-sudo systemctl restart daem
+sudo systemctl daemon-reload
+sudo systemctl restart mantis.service
+sudo systemctl restart nginx
+
+``` bash
+sudo systemctl daemon-reload &&
+sudo systemctl restart mantis.service &&
+sudo systemctl restart nginx
 
 
 ```sql
