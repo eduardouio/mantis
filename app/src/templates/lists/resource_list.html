@@ -63,44 +63,52 @@
 </div>
 
 <div class="w-[95%] mx-auto overflow-x-auto">
-    <table id="datatable" class="table table-bordered table-striped w-full">
+    <table id="datatable" class="table w-full border border-gray-300">
         <thead>
             <tr>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Código</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Nombre</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Marca</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell">N/S</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Estado Físico</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600">Estado</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell">Acciones</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">#</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 text-left px-2 py-1">Código</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Tipo</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Nombre</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Marca</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">N/S</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Estado</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Disponibilidad</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell text-left px-2 py-1">Acciones</th>
             </tr>
         </thead>
         <tbody>
             {% for item in equipments %}
-            <tr class="hover:bg-gray-50">
-                <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
-                <td class="text-center">
+            <tr class="hover:bg-gray-50"> 
+                <td class="text-left hidden md:table-cell px-2 py-1">{{ forloop.counter }}</td>
+                <td class="text-left px-2 py-1">
                     <a href="{% url 'resource_detail' item.id %}" class="link link-hover text-primary md:hidden font-semibold">{{ item.code }}</a>
                     <span class="hidden md:inline font-semibold">{{ item.code }}</span>
                 </td>
-                <td class="text-center hidden md:table-cell">{{ item.name }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.brand|default_if_none:"-" }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.serial_number|default_if_none:"-" }}</td>
-                <td class="text-center hidden md:table-cell">
-                    <span class="badge badge-outline badge-sm">{{ item.get_stst_status_equipment_display }}</span>
+                <td class="text-left hidden lg:table-cell px-2 py-1">
+                    {% if item.type_equipment %}
+                        <span class="text-xs text-gray-700">{{ item.get_type_equipment_display }}</span>
+                    {% else %}
+                        <span class="text-gray-400 text-xs">SERVICIO</span>
+                    {% endif %}
                 </td>
-                <td class="text-center">
-                    <div class="flex flex-col gap-1">
-                        {% if item.is_active %}
-                            <span class="badge badge-success badge-sm">Activo</span>
-                        {% else %}
-                            <span class="badge badge-error badge-sm">Inactivo</span>
-                        {% endif %}
-                    </div>
+                <td class="text-left hidden md:table-cell px-2 py-1">{{ item.name }}</td>
+                <td class="text-left hidden md:table-cell px-2 py-1">{{ item.brand|default_if_none:"-" }}</td>
+                <td class="text-left hidden md:table-cell px-2 py-1">{{ item.serial_number|default_if_none:"-" }}</td>
+                <td class="text-left hidden md:table-cell px-2 py-1">
+                    <span class="text-xs text-gray-700">{{ item.get_stst_status_equipment_display }}</span>
                 </td>
-                <td class="text-center hidden md:table-cell">
-                    <div class="flex gap-1 justify-center">
+                <td class="text-left hidden lg:table-cell px-2 py-1">
+                    {% if item.stst_status_disponibility == 'DISPONIBLE' %}
+                        <span class="badge badge-success badge-xs">{{ item.get_stst_status_disponibility_display }}</span>
+                    {% elif item.stst_status_disponibility == 'RENTADO' %}
+                        <span class="badge badge-info badge-xs">{{ item.get_stst_status_disponibility_display }}</span>
+                    {% else %}
+                        <span class="text-xs text-gray-400">-</span>
+                    {% endif %}
+                </td>
+                <td class="text-left hidden md:table-cell px-2 py-1">
+                    <div class="flex gap-1 justify-start">
                         <a href="{% url 'resource_detail' item.id %}" class="btn btn-xs btn-info" title="Ver detalles">
                             <i class="las la-eye text-sm"></i>
                         </a>
@@ -112,7 +120,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="8" class="text-center py-8">
+                <td colspan="9" class="text-center py-4 px-2">
                     <div class="flex flex-col items-center gap-2">
                         <i class="las la-check-circle text-gray-400 text-5xl"></i>
                         <span class="text-gray-500">No se encontraron equipos</span>
