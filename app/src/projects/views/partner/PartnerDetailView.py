@@ -1,6 +1,7 @@
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from projects.models import Partner, Project
+from common.PartnerCompleteInfo import PartnerCompleteInfo
 
 
 class PartnerDetailView(LoginRequiredMixin, DetailView):
@@ -34,6 +35,35 @@ class PartnerDetailView(LoginRequiredMixin, DetailView):
                 is_active=False, is_closed=False
             ).count(),
         }
+
+        # Agregar información completa del partner
+        try:
+            partner_complete_info = PartnerCompleteInfo(self.object.id)
+            context['partner_complete_info'] = partner_complete_info.get_complete_information()
+        except Exception as e:
+            # En caso de error, proporcionar datos por defecto
+            context['partner_complete_info'] = {
+                'projects_summary': {'total_projects': 0, 'active_projects': 0, 'closed_projects': 0},
+                'financial_summary': {
+                    'total_business_value': 0, 'total_rent_costs': 0, 'total_maintenance_costs': 0,
+                    'total_invoiced_amount': 0, 'total_pending_amount': 0, 'average_project_value': 0,
+                    'invoiced_sheets_count': 0, 'pending_sheets_count': 0, 'cancelled_sheets_count': 0
+                },
+                'operational_statistics': {
+                    'active_equipment_count': 0, 'total_equipment_assigned': 0, 'retired_equipment_count': 0,
+                    'average_project_duration': 0, 'equipment_utilization_rate': 0, 'most_used_equipment_type': 'N/A',
+                    'equipment_by_type': []
+                },
+                'maintenance_alerts': [],
+                'recent_activity': [],
+                'partner_basic_info': {
+                    'created_at': self.object.created_at,
+                    'updated_at': self.object.updated_at,
+                    'is_active': self.object.is_active
+                }
+            }
+            # Log del error para debugging (opcional)
+            print(f"Error obteniendo información completa del partner {self.object.id}: {str(e)}")
 
         if 'action' not in self.request.GET:
             return context
