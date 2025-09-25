@@ -192,86 +192,100 @@
           </div>
         </div>
 
-        <!-- Estados Detallados del Equipo -->
+        <!-- Información de Proyecto y Fechas -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div class="space-y-3 border-l-blue-300 border-l-[1px] pl-5">
-            <div>
-              <p class="text-gray-500 text-sm">Disponibilidad</p>
-              {% with availability=equipment.stst_status_disponibility %}
-                <span class="inline-block px-3 py-1 rounded-full text-white text-sm font-semibold
-                  {% if availability == 'DISPONIBLE' %}bg-green-600{% elif availability == 'RENTADO' %}bg-blue-600{% else %}bg-gray-600{% endif %}">{{ availability|default:'—' }}</span>
-              {% endwith %}
-            </div>
-            <div>
-              <p class="text-gray-500 text-sm">Estado Técnico</p>
-              {% with est=equipment.stst_status_equipment %}
-                <span data-tech-status data-variant="pill" class="inline-block px-3 py-1 rounded-full text-white text-sm font-semibold
-                  {% if est == 'FUNCIONANDO' %}bg-green-600{% elif est == 'EN REPARACION' %}bg-red-600{% elif est == 'DAÑADO' or est == 'DANADO' %}bg-red-600{% elif est == 'INCOMPLETO' %}bg-yellow-600{% else %}bg-gray-600{% endif %}">{{ est|default:'—' }}</span>
-              {% endwith %}
-            </div>
-          </div>
-          <div class="space-y-3 border-l-blue-300 border-l-[1px] pl-5">
-            <div>
-              <p class="text-gray-500 text-sm">Ubicación Actual</p>
-              <p class="font-semibold text-gray-900">{{ equipment.stst_current_location|default:'—' }}</p>
-            </div>
-            <div>
-              <p class="text-gray-500 text-sm">Proyecto Actual</p>
-              <p class="font-semibold text-gray-900">{% if current_assignment %}{{ current_assignment.project.partner.name }}{% else %}—{% endif %}</p>
-            </div>
-          </div>
-          <div class="space-y-3 border-l-blue-300 border-l-[1px] pl-5">
-            <div>
-              <p class="text-gray-500 text-sm">Fecha de Ocupación</p>
-              <p class="font-semibold text-gray-900">{{ equipment.stst_commitment_date|date:'d-m-Y'|default:'—' }}</p>
-            </div>
-            <div>
-              <p class="text-gray-500 text-sm">Fecha de Liberación</p>
-              <p class="font-semibold text-gray-900">{{ equipment.stst_release_date|date:'d-m-Y'|default:'—' }}</p>
-            </div>
-            {% if equipment.stst_repair_reason %}
-            <div>
-              <p class="text-gray-500 text-sm">Motivo Reparación</p>
-              <p class="font-semibold text-gray-900">{{ equipment.stst_repair_reason }}</p>
-            </div>
+          <!-- Proyecto Actual -->
+          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-blue-200">
+            <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+              <i class="las la-project-diagram text-lg"></i>
+              Proyecto Actual
+            </h4>
+            {% if current_assignment %}
+              <div class="text-center">
+                <div class="font-bold text-lg text-green-700 mb-1">
+                  {{ current_assignment.project.partner.name }}
+                </div>
+                <div class="text-sm text-gray-600 mb-2">
+                  {{ current_assignment.project.location|default:'No especificado' }}
+                </div>
+                <span class="badge badge-success">ACTIVO</span>
+                {% if current_assignment.rent_cost %}
+                  <p class="text-sm text-gray-600 mt-2">
+                    <i class="las la-dollar-sign"></i> ${{ current_assignment.rent_cost|floatformat:2 }}
+                  </p>
+                {% endif %}
+              </div>
+            {% else %}
+              <div class="text-center">
+                <div class="text-lg text-gray-500 mb-2">Sin Proyecto</div>
+                <span class="badge badge-neutral">DISPONIBLE</span>
+              </div>
             {% endif %}
+          </div>
+
+          <!-- Fecha de Ocupación -->
+          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-blue-200">
+            <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+              <i class="las la-calendar-plus text-lg"></i>
+              Fecha de Ocupación
+            </h4>
+            <div class="text-center">
+              {% if equipment.stst_commitment_date %}
+                <div class="text-2xl font-bold text-blue-700">
+                  {{ equipment.stst_commitment_date|date:'d' }}
+                </div>
+                <div class="text-sm text-gray-600">
+                  {{ equipment.stst_commitment_date|date:'M Y' }}
+                </div>
+                <span class="badge badge-info mt-2">OCUPADO</span>
+              {% else %}
+                <div class="text-lg text-gray-500 mb-2">Sin Fecha</div>
+                <span class="badge badge-neutral">LIBRE</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Fecha de Liberación -->
+          <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-blue-200">
+            <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+              <i class="las la-calendar-minus text-lg"></i>
+              Fecha de Liberación
+            </h4>
+            <div class="text-center">
+              {% if equipment.stst_release_date %}
+                <div class="text-2xl font-bold text-purple-700">
+                  {{ equipment.stst_release_date|date:'d' }}
+                </div>
+                <div class="text-sm text-gray-600">
+                  {{ equipment.stst_release_date|date:'M Y' }}
+                </div>
+                {% if equipment.stst_release_date > today %}
+                  <span class="badge badge-warning mt-2">PENDIENTE</span>
+                {% else %}
+                  <span class="badge badge-success mt-2">LIBERADO</span>
+                {% endif %}
+              {% else %}
+                <div class="text-lg text-gray-500 mb-2">Sin Fecha</div>
+                <span class="badge badge-neutral">N/A</span>
+              {% endif %}
+            </div>
           </div>
         </div>
 
-        <!-- Información de Proyectos y Análisis -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <!-- Proyecto Actual -->
-          <div>
-            <h3 class="text-md font-semibold text-blue-500 mb-2">Proyecto Actual</h3>
-            {% if current_assignment %}
-            <div class="p-4 bg-green-50 rounded-lg border border-green-200">
-              <div class="space-y-2">
-                <div><span class="text-gray-500 text-sm">Cliente:</span> <span class="font-medium">{{ current_assignment.project.partner.name }}</span></div>
-                <div><span class="text-gray-500 text-sm">Campamento:</span> <span class="font-medium">{{ current_assignment.project.location|default:'No especificado' }}</span></div>
-                <div><span class="text-gray-500 text-sm">Periodo:</span> <span class="font-medium">{{ current_assignment.operation_start_date|date:'d/m/Y' }} - {{ current_assignment.operation_end_date|date:'d/m/Y' }}</span></div>
-                <div><span class="text-gray-500 text-sm">Costo:</span> <span class="font-medium">${{ current_assignment.rent_cost|floatformat:2 }}</span></div>
-              </div>
-            </div>
-            {% else %}
-            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 text-center">
-              <p class="text-gray-500">No hay proyecto asignado actualmente</p>
-            </div>
-            {% endif %}
-          </div>
-
-          <!-- Información de Renta -->
-          {% if rental_analysis %}
+        <!-- Información Adicional de Renta -->
+        {% if rental_analysis %}
+          <div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
             <div class="p-4 bg-green-50 rounded-lg border border-green-200">
               <h4 class="font-medium text-green-700 mb-3 flex items-center gap-2">
                 <i class="las la-handshake text-lg"></i>
-                Información de Renta
+                Información de Renta Activa
               </h4>
-              <div class="space-y-2">
-                <div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="text-center">
                   <span class="text-gray-600 text-sm">Cliente:</span>
-                  <div class="font-medium">{{ rental_analysis.project_partner }}</div>
+                  <div class="font-medium text-lg">{{ rental_analysis.project_partner }}</div>
                 </div>
-                <div>
+                <div class="text-center">
                   <span class="text-gray-600 text-sm">Estado:</span>
                   <div>
                     <span class="badge 
@@ -282,36 +296,14 @@
                     </span>
                   </div>
                 </div>
-                <div>
+                <div class="text-center">
                   <span class="text-gray-600 text-sm">Días restantes:</span>
-                  <div class="font-medium">{{ rental_analysis.remaining_days|default:'N/A' }}</div>
+                  <div class="font-medium text-lg">{{ rental_analysis.remaining_days|default:'N/A' }}</div>
                 </div>
               </div>
             </div>
-          {% else %}
-            <!-- Historial de Proyectos si no hay renta activa -->
-            <div>
-              <h3 class="text-md font-semibold text-blue-500 mb-2">Historial de Proyectos</h3>
-              {% if recent_assignments %}
-              <div class="space-y-2 max-h-64 overflow-y-auto">
-                {% for assignment in recent_assignments %}
-                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200">
-                  <div class="flex justify-between items-start">
-                    <div>
-                      <p class="font-medium text-sm">{{ assignment.project.partner.name }}</p>
-                      <p class="text-xs text-gray-500">{{ assignment.operation_start_date|date:'d/m/Y' }} - {{ assignment.operation_end_date|date:'d/m/Y' }}</p>
-                    </div>
-                    <span class="badge badge-sm {% if not assignment.is_retired %}badge-success{% else %}badge-outline{% endif %}">{% if not assignment.is_retired %}Vigente{% else %}Retirado{% endif %}</span>
-                  </div>
-                </div>
-                {% endfor %}
-              </div>
-              {% else %}
-              <div class="p-4 bg-gray-50 rounded-lg border border-gray-200 text-center"><p class="text-gray-500">Sin historial de proyectos</p></div>
-              {% endif %}
-            </div>
-          {% endif %}
-        </div>
+          </div>
+        {% endif %}
 
         <!-- Detalles del Análisis -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
