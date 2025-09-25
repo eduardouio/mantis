@@ -25,6 +25,11 @@ class VehicleDetailView(DetailView):
         # Obtener pases del vehículo
         context['passes'] = PassVehicle.get_by_vehicle(vehicle.id)
 
+        # Opciones para formularios
+        context['certification_choices'] = (
+            CertificationVehicle.CERTIFICATION_NAME_CHOICES
+        )
+
         # Información de auditoría
         context['created_user'] = vehicle.get_create_user()
         context['updated_user'] = vehicle.get_update_user()

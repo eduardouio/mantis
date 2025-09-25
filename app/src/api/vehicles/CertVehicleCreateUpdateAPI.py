@@ -21,7 +21,7 @@ class CertVehicleCreateUpdateAPI(View):
         """Crear una nueva certificación de vehículo"""
         try:
             data = json.loads(request.body)
-            return self._create_or_update_certification(data)
+            return self._create_or_update_certification(data, request=request)
         except json.JSONDecodeError:
             return JsonResponse({
                 'success': False,
@@ -45,7 +45,7 @@ class CertVehicleCreateUpdateAPI(View):
                     'error': 'ID de la certificación es requerido para actualización'
                 }, status=400)
             
-            return self._create_or_update_certification(data, cert_id)
+            return self._create_or_update_certification(data, cert_id, request)
         except json.JSONDecodeError:
             return JsonResponse({
                 'success': False,
@@ -57,7 +57,9 @@ class CertVehicleCreateUpdateAPI(View):
                 'error': str(e)
             }, status=500)
     
-    def _create_or_update_certification(self, data, cert_id=None):
+    def _create_or_update_certification(
+        self, data, cert_id=None, request=None
+    ):
         """Método privado para crear o actualizar una certificación"""
         # Validar datos requeridos
         required_fields = ['vehicle_id', 'name', 'date_start', 'date_end']
@@ -108,7 +110,7 @@ class CertVehicleCreateUpdateAPI(View):
                 certification.date_start = date_start
                 certification.date_end = date_end
                 certification.description = data.get('description', '')
-                certification.updated_by = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
+
                 action = 'actualizada'
             else:
                 # Crear nueva certificación
@@ -117,8 +119,7 @@ class CertVehicleCreateUpdateAPI(View):
                     name=data['name'],
                     date_start=date_start,
                     date_end=date_end,
-                    description=data.get('description', ''),
-                    created_by=request.user if hasattr(request, 'user') and request.user.is_authenticated else None
+                    description=data.get('description', '')
                 )
                 action = 'creada'
             

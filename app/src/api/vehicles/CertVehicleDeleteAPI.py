@@ -31,7 +31,6 @@ class CertVehicleDeleteAPI(View):
             
             # Realizar soft delete
             certification.is_active = False
-            certification.updated_by = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
             certification.save()
             
             return JsonResponse({
@@ -75,7 +74,6 @@ class CertVehicleDeleteAPI(View):
                 try:
                     certification = get_object_or_404(CertificationVehicle, id=cert_id, is_active=True)
                     certification.is_active = False
-                    certification.updated_by = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
                     certification.save()
                     
                     deleted_certifications.append({

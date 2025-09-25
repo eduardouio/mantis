@@ -367,7 +367,12 @@
               <label for="cert_name" class="label">
                 <span class="label-text">Nombre del Certificado</span>
               </label>
-              <input type="text" id="cert_name" class="input input-bordered w-full" required>
+              <select id="cert_name" class="select select-bordered w-full" required>
+                <option value="">Seleccione un certificado</option>
+                {% for choice in certification_choices %}
+                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                {% endfor %}
+              </select>
             </div>
             
             <div class="grid grid-cols-1 gap-3">
@@ -402,6 +407,7 @@
               </button>
               <button type="button" id="certDeleteBtn" class="btn btn-ghost text-red-500 hidden">
                 <i class="fas fa-trash"></i>
+                eliminar
               </button>
             </div>
             

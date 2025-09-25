@@ -21,7 +21,7 @@ class PassVehicleCreateUpdateAPI(View):
         """Crear un nuevo pase de vehículo"""
         try:
             data = json.loads(request.body)
-            return self._create_or_update_pass(data)
+            return self._create_or_update_pass(data, request=request)
         except json.JSONDecodeError:
             return JsonResponse({
                 'success': False,
@@ -45,7 +45,7 @@ class PassVehicleCreateUpdateAPI(View):
                     'error': 'ID del pase es requerido para actualización'
                 }, status=400)
             
-            return self._create_or_update_pass(data, pass_id)
+            return self._create_or_update_pass(data, pass_id, request)
         except json.JSONDecodeError:
             return JsonResponse({
                 'success': False,
@@ -57,7 +57,7 @@ class PassVehicleCreateUpdateAPI(View):
                 'error': str(e)
             }, status=500)
     
-    def _create_or_update_pass(self, data, pass_id=None):
+    def _create_or_update_pass(self, data, pass_id=None, request=None):
         """Método privado para crear o actualizar un pase"""
         # Validar datos requeridos
         required_fields = ['vehicle_id', 'bloque', 'fecha_caducidad']
@@ -96,15 +96,14 @@ class PassVehicleCreateUpdateAPI(View):
                 pass_vehicle.vehicle = vehicle
                 pass_vehicle.bloque = data['bloque']
                 pass_vehicle.fecha_caducidad = fecha_caducidad
-                pass_vehicle.updated_by = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
+
                 action = 'actualizado'
             else:
                 # Crear nuevo pase
                 pass_vehicle = PassVehicle(
                     vehicle=vehicle,
                     bloque=data['bloque'],
-                    fecha_caducidad=fecha_caducidad,
-                    created_by=request.user if hasattr(request, 'user') and request.user.is_authenticated else None
+                    fecha_caducidad=fecha_caducidad
                 )
                 action = 'creado'
             

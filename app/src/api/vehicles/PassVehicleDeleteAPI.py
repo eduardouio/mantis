@@ -31,7 +31,6 @@ class PassVehicleDeleteAPI(View):
             
             # Realizar soft delete
             pass_vehicle.is_active = False
-            pass_vehicle.updated_by = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
             pass_vehicle.save()
             
             return JsonResponse({
@@ -74,7 +73,6 @@ class PassVehicleDeleteAPI(View):
                 try:
                     pass_vehicle = get_object_or_404(PassVehicle, id=pass_id, is_active=True)
                     pass_vehicle.is_active = False
-                    pass_vehicle.updated_by = request.user if hasattr(request, 'user') and request.user.is_authenticated else None
                     pass_vehicle.save()
                     
                     deleted_passes.append({
