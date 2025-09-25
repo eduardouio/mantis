@@ -67,125 +67,158 @@
       </div>
     </div>
 
-    <input type="radio" name="detail_tabs" class="tab" aria-label="Proyectos" />
+    <input type="radio" name="detail_tabs" class="tab" aria-label="Equipos Asignados" />
     <div class="tab-content bg-base-100 border-base-300 p-6">
-      <!-- Proyectos del Socio -->
+      <!-- Equipos Asignados del Socio -->
       <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
         <div class="border-b border-gray-200 p-4">
           <div class="flex justify-between items-center">
             <div>
-              <h3 class="text-lg font-semibold text-gray-700">Proyectos Asociados</h3>
-              <p class="text-sm text-gray-500 mt-1">Proyectos activos e inactivos del socio</p>
+              <h3 class="text-lg font-semibold text-gray-700">Equipos Asignados</h3>
+              <p class="text-sm text-gray-500 mt-1">Listado de todos los equipos asignados a proyectos del socio</p>
             </div>
             <a href="{% url 'project_create' %}?partner={{ partner.pk }}" 
                class="btn btn-primary btn-sm">
               <i class="las la-plus text-xl"></i>
-              Crear Proyecto
+              Nuevo Proyecto
             </a>
           </div>
         </div>
         <div class="p-4">
-          {% if projects %}
-            <!-- Estadísticas rápidas -->
+          {% if partner_complete_info.equipment_assignments %}
+            <!-- Estadísticas rápidas de equipos -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
               <div class="p-3 bg-blue-50 rounded-lg text-center">
-                <div class="text-2xl font-bold text-blue-600">{{ projects_stats.total }}</div>
-                <div class="text-xs text-blue-500">Total Proyectos</div>
+                <div class="text-2xl font-bold text-blue-600">{{ partner_complete_info.operational_statistics.total_equipment_assigned }}</div>
+                <div class="text-xs text-blue-500">Total Equipos</div>
               </div>
               <div class="p-3 bg-green-50 rounded-lg text-center">
-                <div class="text-2xl font-bold text-green-600">{{ projects_stats.active }}</div>
+                <div class="text-2xl font-bold text-green-600">{{ partner_complete_info.operational_statistics.active_equipment_count }}</div>
                 <div class="text-xs text-green-500">Activos</div>
               </div>
               <div class="p-3 bg-yellow-50 rounded-lg text-center">
-                <div class="text-2xl font-bold text-yellow-600">{{ projects_stats.closed }}</div>
-                <div class="text-xs text-yellow-500">Cerrados</div>
+                <div class="text-2xl font-bold text-yellow-600">{{ partner_complete_info.operational_statistics.retired_equipment_count }}</div>
+                <div class="text-xs text-yellow-500">Retirados</div>
               </div>
               <div class="p-3 bg-purple-50 rounded-lg text-center">
-                <div class="text-2xl font-bold text-purple-600">{{ projects_stats.inactive }}</div>
-                <div class="text-xs text-purple-500">Inactivos</div>
+                <div class="text-2xl font-bold text-purple-600">${{ partner_complete_info.financial_summary.total_equipment_costs|floatformat:2 }}</div>
+                <div class="text-xs text-purple-500">Costo Total</div>
               </div>
             </div>
             
-            <!-- Lista de proyectos -->
-            <div class="space-y-4">
-              {% for project in projects %}
-                <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                  <div class="flex justify-between items-start">
-                    <div class="flex-1">
-                      <div class="flex items-start justify-between mb-3">
-                        <div>
-                          <h4 class="font-semibold text-gray-800 text-lg">
-                            {% if project.location %}{{ project.location }}{% else %}Proyecto #{{ project.id }}{% endif %}
-                            {% if project.avrebiature %}
-                              <span class="ml-2 px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded-full font-medium">{{ project.avrebiature }}</span>
-                            {% endif %}
-                          </h4>
-                          <div class="flex flex-wrap gap-2 mt-2">
-                            <span class="badge {% if project.is_closed %}badge-warning{% else %}badge-success{% endif %} badge-sm">
-                              {% if project.is_closed %}Cerrado{% else %}Abierto{% endif %}
-                            </span>
-                            {% if project.TechnicalResponsible %}
-                              <span class="badge badge-outline badge-sm">{{ project.TechnicalResponsible }}</span>
-                            {% endif %}
-                          </div>
-                        </div>
-                        <div class="flex gap-1">
-                          <a href="{% url 'project_detail' project.pk %}" class="btn btn-ghost btn-xs text-blue-600" title="Ver detalle">
-                            <i class="las la-eye text-xl"></i>
-                          </a>
-                          <a href="{% url 'project_edit' project.pk %}" class="btn btn-ghost btn-xs text-yellow-600" title="Editar">
-                            <i class="las la-edit text-xl"></i>
-                          </a>
-                        </div>
+            <!-- Tabla de equipos -->
+            <div class="overflow-x-auto">
+              <table class="table table-zebra w-full text-sm">
+                <thead>
+                  <tr class="bg-gray-100">
+                    <th class="text-left">Código</th>
+                    <th class="text-left">Nombre del Equipo</th>
+                    <th class="text-left">Tipo</th>
+                    <th class="text-left">Proyecto</th>
+                    <th class="text-left">Fechas Operación</th>
+                    <th class="text-right">Costo Renta</th>
+                    <th class="text-right">Costo Mantto.</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for assignment in partner_complete_info.equipment_assignments %}
+                  <tr class="hover:bg-gray-50">
+                    <td class="font-mono text-xs">
+                      <span class="badge badge-outline badge-sm">{{ assignment.equipment_code|default:"S/C" }}</span>
+                    </td>
+                    <td>
+                      <div class="flex flex-col">
+                        <span class="font-medium text-gray-900">{{ assignment.equipment_name }}</span>
+                        <span class="text-xs text-gray-500">{{ assignment.equipment_brand }} {{ assignment.equipment_model }}</span>
                       </div>
-                      
-                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <div class="space-y-2">
-                          <div class="flex items-center gap-2">
-                            <i class="las la-user text-gray-400"></i>
-                            <span class="text-gray-500">Contacto:</span>
-                            <span class="font-medium">{{ project.contact_name }}</span>
-                          </div>
-                          <div class="flex items-center gap-2">
-                            <i class="las la-phone text-gray-400"></i>
-                            <span class="text-gray-500">Teléfono:</span>
-                            <span class="font-medium">{{ project.contact_phone }}</span>
-                          </div>
-                        </div>
-                        <div class="space-y-2">
-                          <div class="flex items-center gap-2">
-                            <i class="las la-calendar text-gray-400"></i>
-                            <span class="text-gray-500">Inicio:</span>
-                            <span class="font-medium">{{ project.start_date|date:"d/m/Y" }}</span>
-                          </div>
-                          <div class="flex items-center gap-2">
-                            <i class="las la-calendar-check text-gray-400"></i>
-                            <span class="text-gray-500">Fin:</span>
-                            <span class="font-medium">{{ project.end_date|date:"d/m/Y" }}</span>
-                          </div>
-                        </div>
+                    </td>
+                    <td>
+                      <span class="badge badge-info badge-sm">{{ assignment.equipment_type|default:"N/A" }}</span>
+                    </td>
+                    <td>
+                      <div class="flex flex-col">
+                        <span class="font-medium text-sm">Proyecto #{{ assignment.project_id }}</span>
+                        <span class="text-xs text-gray-500">{{ assignment.project_location|default:"Sin ubicación" }}</span>
                       </div>
-                      
-                      <!-- Duración del proyecto -->
-                      <div class="mt-3 pt-3 border-t border-gray-100">
-                        <div class="flex items-center justify-between text-xs text-gray-500">
-                          <span>Período: {{ project.start_date|date:"d/m/Y" }} - {{ project.end_date|date:"d/m/Y" }}</span>
-                          <span>Creado: {{ project.created_at|date:"d/m/Y" }}</span>
-                        </div>
+                    </td>
+                    <td>
+                      <div class="flex flex-col text-xs">
+                        <span><strong>Inicio:</strong> {{ assignment.operation_start_date|date:"d/m/Y" }}</span>
+                        <span><strong>Fin:</strong> {{ assignment.operation_end_date|date:"d/m/Y" }}</span>
+                        {% if assignment.operation_days %}
+                        <span class="text-gray-500">({{ assignment.operation_days }} días)</span>
+                        {% endif %}
                       </div>
-                    </div>
-                  </div>
+                    </td>
+                    <td class="text-right font-mono text-sm">
+                      ${{ assignment.rent_cost|floatformat:2 }}
+                    </td>
+                    <td class="text-right font-mono text-sm">
+                      ${{ assignment.maintenance_cost|floatformat:2 }}
+                    </td>
+                    <td class="text-center">
+                      {% if assignment.is_retired %}
+                        <span class="badge badge-warning badge-sm">Retirado</span>
+                        {% if assignment.retirement_date %}
+                        <div class="text-xs text-gray-500 mt-1">{{ assignment.retirement_date|date:"d/m/Y" }}</div>
+                        {% endif %}
+                      {% else %}
+                        <span class="badge badge-success badge-sm">Activo</span>
+                      {% endif %}
+                    </td>
+                    <td class="text-center">
+                      <div class="flex gap-1 justify-center">
+                        <a href="{% url 'resource_detail' assignment.equipment_id %}" 
+                           class="btn btn-ghost btn-xs text-blue-600" 
+                           title="Ver equipo">
+                          <i class="las la-eye"></i>
+                        </a>
+                        <a href="{% url 'project_detail' assignment.project_id %}" 
+                           class="btn btn-ghost btn-xs text-green-600" 
+                           title="Ver proyecto">
+                          <i class="las la-project-diagram"></i>
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Resumen adicional -->
+            <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div class="text-center">
+                  <span class="text-gray-600">Valor Total Asignaciones:</span>
+                  <span class="font-bold text-green-600 ml-2">${{ partner_complete_info.financial_summary.total_equipment_costs|floatformat:2 }}</span>
                 </div>
-              {% endfor %}
+                <div class="text-center">
+                  <span class="text-gray-600">Mantenimiento cada:</span>
+                  <span class="font-bold text-blue-600 ml-2">
+                    {% if partner_complete_info.equipment_assignments.0.maintenance_interval_days %}
+                      {{ partner_complete_info.equipment_assignments.0.maintenance_interval_days }} días (promedio)
+                    {% else %}
+                      Variable
+                    {% endif %}
+                  </span>
+                </div>
+                <div class="text-center">
+                  <span class="text-gray-600">Tasa Utilización:</span>
+                  <span class="font-bold text-purple-600 ml-2">{{ partner_complete_info.operational_statistics.equipment_utilization_rate|floatformat:1 }}%</span>
+                </div>
+              </div>
             </div>
           {% else %}
             <div class="text-center py-12">
-              <i class="las la-folder-open text-6xl text-gray-300 mb-4"></i>
-              <h4 class="text-lg font-medium text-gray-500 mb-2">No hay proyectos asociados</h4>
-              <p class="text-gray-400 text-sm mb-4">Este socio aún no tiene proyectos registrados en el sistema</p>
+              <i class="las la-tools text-6xl text-gray-300 mb-4"></i>
+              <h4 class="text-lg font-medium text-gray-500 mb-2">No hay equipos asignados</h4>
+              <p class="text-gray-400 text-sm mb-4">Este socio aún no tiene equipos asignados a ningún proyecto</p>
               <a href="{% url 'project_create' %}?partner={{ partner.pk }}" class="btn btn-primary btn-sm">
                 <i class="las la-plus text-xl"></i>
-                Crear Primer Proyecto
+                Crear Proyecto y Asignar Equipos
               </a>
             </div>
           {% endif %}
