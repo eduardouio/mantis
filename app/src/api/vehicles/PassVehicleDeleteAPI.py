@@ -14,17 +14,11 @@ class PassVehicleDeleteAPI(View):
     API para eliminar pases de vehículos (soft delete).
     """
     
-    def delete(self, request):
+    def delete(self, request, pk):
         """Eliminar un pase de vehículo (soft delete)"""
         try:
-            data = json.loads(request.body)
-            pass_id = data.get('id')
-            
-            if not pass_id:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'ID del pase es requerido'
-                }, status=400)
+            # El ID viene del parámetro pk de la URL
+            pass_id = pk
             
             # Buscar el pase
             pass_vehicle = get_object_or_404(PassVehicle, id=pass_id, is_active=True)

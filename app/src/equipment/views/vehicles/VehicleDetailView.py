@@ -29,6 +29,7 @@ class VehicleDetailView(DetailView):
         context['certification_choices'] = (
             CertificationVehicle.CERTIFICATION_NAME_CHOICES
         )
+        context['pass_bloque_choices'] = PassVehicle.BLOQUE_CHOICES
 
         # Información de auditoría
         context['created_user'] = vehicle.get_create_user()

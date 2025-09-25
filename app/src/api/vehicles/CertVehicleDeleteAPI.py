@@ -14,17 +14,11 @@ class CertVehicleDeleteAPI(View):
     API para eliminar certificaciones de vehículos (soft delete).
     """
     
-    def delete(self, request):
+    def delete(self, request, pk):
         """Eliminar una certificación de vehículo (soft delete)"""
         try:
-            data = json.loads(request.body)
-            cert_id = data.get('id')
-            
-            if not cert_id:
-                return JsonResponse({
-                    'success': False,
-                    'error': 'ID de la certificación es requerido'
-                }, status=400)
+            # El ID viene del parámetro pk de la URL
+            cert_id = pk
             
             # Buscar la certificación
             certification = get_object_or_404(CertificationVehicle, id=cert_id, is_active=True)

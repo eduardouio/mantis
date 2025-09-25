@@ -302,7 +302,7 @@
               </label>
               <select id="pass_bloque" class="select select-bordered w-full" required>
                 <option value="" disabled selected>Seleccione un bloque</option>
-                {% for value, label in PASS_BLOQUE_CHOICES %}
+                {% for value, label in pass_bloque_choices %}
                   <option value="{{ value }}">{{ label }}</option>
                 {% endfor %}
               </select>
