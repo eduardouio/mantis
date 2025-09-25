@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils import timezone
 from equipment.models import ResourceItem
 from projects.models import ProjectResourceItem
+from common.StatusResourceItem import StatusResourceItem
 
 
 class ResourceItemDetailView(LoginRequiredMixin, DetailView):
@@ -43,6 +44,9 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
 
         # Información detallada de capacidad
         context.update(self._get_capacity_information(equipment))
+
+        # Información de estado del equipo usando StatusResourceItem
+        context.update(self._get_equipment_status_analysis(equipment))
 
         return context
 
@@ -386,4 +390,89 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         return {
             'capacity_info': capacity_info,
         }
+
+    def _get_equipment_status_analysis(self, equipment):
+        """Obtener análisis completo del estado del equipo"""
+        try:
+            # Crear analizador de estado
+            analyzer = StatusResourceItem(equipment)
+            status_report = analyzer.get_status_report()
+
+            return {
+                'status_analysis': status_report,
+                'equipment_completeness': {
+                    'is_complete': status_report['completeness']['is_complete'],
+                    'completion_percentage': status_report['completeness']['completion_percentage'],
+                    'missing_items': status_report['completeness']['missing_items'],
+                    'missing_count': len(status_report['completeness']['missing_items']),
+                },
+                'equipment_availability': {
+                    'status': status_report['availability']['status'],
+                    'current_location': status_report['availability']['current_location'],
+                    'commitment_date': status_report['availability']['commitment_date'],
+                    'release_date': status_report['availability']['release_date'],
+                },
+                'project_analysis': status_report.get('project_info'),
+                'rental_analysis': status_report.get('rental_info'),
+                'inconsistencies_analysis': {
+                    'found': status_report['inconsistencies']['found'],
+                    'needs_update': status_report['inconsistencies']['needs_update'],
+                    'count': len(status_report['inconsistencies']['found']),
+                },
+                'recommendations': status_report['recommendations'],
+                'status_class_mapping': self._get_status_analysis_classes(status_report),
+            }
+        except Exception as e:
+            # En caso de error, devolver información básica
+            return {
+                'status_analysis': None,
+                'equipment_completeness': {
+                    'is_complete': False,
+                    'completion_percentage': 0,
+                    'missing_items': [],
+                    'missing_count': 0,
+                },
+                'equipment_availability': {
+                    'status': getattr(equipment, 'stst_status_disponibility', 'DESCONOCIDO'),
+                    'current_location': getattr(equipment, 'stst_current_location', None),
+                    'commitment_date': getattr(equipment, 'stst_commitment_date', None),
+                    'release_date': getattr(equipment, 'stst_release_date', None),
+                },
+                'project_analysis': None,
+                'rental_analysis': None,
+                'inconsistencies_analysis': {
+                    'found': [],
+                    'needs_update': False,
+                    'count': 0,
+                },
+                'recommendations': [f'Error al analizar estado: {str(e)}'],
+                'status_class_mapping': {},
+            }
+
+    def _get_status_analysis_classes(self, status_report):
+        """Obtener clases CSS para los diferentes estados"""
+        completeness = status_report['completeness']
+        inconsistencies = status_report['inconsistencies']
+        availability = status_report['availability']['status']
+        
+        classes = {
+            'completeness_class': 'text-green-600' if completeness['is_complete'] else 'text-red-600',
+            'availability_class': self._get_status_class(availability),
+            'inconsistencies_class': 'text-red-600' if inconsistencies['needs_update'] else 'text-green-600',
+            'completion_badge': 'badge-success' if completeness['is_complete'] else 'badge-error',
+            'inconsistencies_badge': 'badge-error' if inconsistencies['needs_update'] else 'badge-success',
+        }
+        
+        # Clase general del estado del equipo
+        if completeness['is_complete'] and not inconsistencies['needs_update']:
+            classes['overall_status_class'] = 'text-green-600'
+            classes['overall_badge'] = 'badge-success'
+        elif inconsistencies['needs_update']:
+            classes['overall_status_class'] = 'text-red-600'
+            classes['overall_badge'] = 'badge-error'
+        else:
+            classes['overall_status_class'] = 'text-yellow-600'
+            classes['overall_badge'] = 'badge-warning'
+        
+        return classes
        
