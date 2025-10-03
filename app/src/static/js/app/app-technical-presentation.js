@@ -25,7 +25,16 @@
 		return data;
 	};
 
-	const fmt = d => d ? new Date(d).toLocaleDateString('es-EC') : '';
+	const fmt = d => {
+		if (!d) return '';
+		// Crear fecha local para evitar problemas de zona horaria
+		const parts = d.split('-');
+		if (parts.length === 3) {
+			const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+			return date.toLocaleDateString('es-EC');
+		}
+		return new Date(d).toLocaleDateString('es-EC');
+	};
 	const qs = sel => document.querySelector(sel);
 	const el = id => document.getElementById(id);
 	const setMsg = (container, msg, ok=true) => { container.textContent = msg; container.className = ok? 'text-xs text-green-600':'text-xs text-red-600'; };
@@ -252,7 +261,16 @@
 	}
 
 	// ---- Cálculo helper expiración ----
-	function daysRemaining(dateStr){ if(!dateStr) return null; const today = new Date(); today.setHours(0,0,0,0); const d = new Date(dateStr); if(isNaN(d)) return null; d.setHours(0,0,0,0); return Math.ceil((d - today)/86400000); }
+	function daysRemaining(dateStr){ 
+		if(!dateStr) return null; 
+		const today = new Date(); 
+		today.setHours(0,0,0,0); 
+		const d = new Date(dateStr); 
+		if(isNaN(d)) return null; 
+		d.setHours(0,0,0,0); 
+		// Usar la misma lógica que Django: diferencia en días
+		return Math.floor((d - today) / (24 * 60 * 60 * 1000)); 
+	}
 	function badgeFromRemaining(days){ if(days===null) return ''; if(days<0) return '<span class="badge badge-error badge-xs">Vencido</span>'; if(days===0) return '<span class="badge badge-error badge-xs">HOY</span>'; if(days<15) return `<span class=\"badge badge-error badge-xs\">${days}d</span>`; if(days<60) return `<span class=\"badge badge-warning badge-xs\">${days}d</span>`; if(days<90) return `<span class=\"badge badge-info badge-xs\">${days}d</span>`; return `<span class=\"badge badge-success badge-xs\">${days}d</span>`; }
 
 	// ---- MODAL CARNET DE VACUNAS ----
