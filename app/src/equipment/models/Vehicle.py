@@ -148,19 +148,25 @@ class Vehicle(BaseModel):
         null=True
     )
     insurance_expiration_date = models.DateField(
-        'Fecha Vencimiento Póliza',
+        'Vencimiento Póliza',
         blank=True,
         null=True,
         default=None
     )
     insurance_issue_date = models.DateField(
-        'Fecha Emisión Póliza',
+        'Emisión Póliza',
         blank=True,
         null=True,
         default=None
     )
-    duedate_satellite = models.DateField(
-        'Fecha Vencimiento Satelital',
+    date_satellite = models.DateField(
+        'Vencimiento Satelital',
+        blank=True,
+        null=True,
+        default=None
+    )
+    due_date_satellite = models.DateField(
+        'Vencimiento Satelital',
         blank=True,
         null=True,
         default=None

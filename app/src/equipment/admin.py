@@ -184,7 +184,7 @@ class VehicleAdmin(SimpleHistoryAdmin):
             'fields': ('date_matricula', 'due_date_matricula', 'due_date_cert_oper', 'date_mtop', 'date_technical_review')
         }),
         ('Información de Seguros', {
-            'fields': ('nro_poliza', 'insurance_company', 'insurance_issue_date', 'insurance_expiration_date', 'duedate_satellite'),
+            'fields': ('nro_poliza', 'insurance_company', 'insurance_issue_date', 'insurance_expiration_date', 'due_date_satellite'),
             'classes': ('collapse',)
         }),
         ('Información Adicional', {

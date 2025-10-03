@@ -8,7 +8,7 @@ const VEHICLE_DATE_CONFIG = {
     name: 'Seguro'
   },
   satellite: {
-    endField: 'id_duedate_satellite',
+    endField: 'id_due_date_satellite',
     badgeId: 'satelliteExpiryBadge',
     name: 'Satelital'
   },

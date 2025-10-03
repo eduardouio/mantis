@@ -18,7 +18,7 @@
     "insurance_company": "LATINA SEGUROS",
     "insurance_expiration_date": "2026-03-13",
     "insurance_issue_date": "2025-03-13",
-    "duedate_satellite": "2025-07-30",
+    "due_date_satellite": "2025-07-30",
     "chassis_number": "LJ11KDBD8P1301511"
   },
   {
@@ -40,7 +40,7 @@
     "insurance_company": "LATINA SEGUROS",
     "insurance_expiration_date": "2026-03-13",
     "insurance_issue_date": "2025-03-13",
-    "duedate_satellite": "2025-07-30",
+    "due_date_satellite": "2025-07-30",
     "chassis_number": "LJ11KDBD3P1102673"
   },
   {
@@ -62,7 +62,7 @@
     "insurance_company": "LATINA SEGUROS",
     "insurance_expiration_date": "2026-03-13",
     "insurance_issue_date": "2025-03-13",
-    "duedate_satellite": "2025-07-30",
+    "due_date_satellite": "2025-07-30",
     "chassis_number": "LVBV4JBB6SY002471"
   },
   {
@@ -84,7 +84,7 @@
     "insurance_company": "LATINA SEGUROS",
     "insurance_expiration_date": "2026-03-13",
     "insurance_issue_date": "2025-03-13",
-    "duedate_satellite": "2025-07-30",
+    "due_date_satellite": "2025-07-30",
     "chassis_number": "LJ11KEBD9R1900443"
   },
   {
@@ -106,7 +106,7 @@
     "insurance_company": "LATINA SEGUROS",
     "insurance_expiration_date": "2026-03-13",
     "insurance_issue_date": "2025-03-13",
-    "duedate_satellite": "2025-07-30",
+    "due_date_satellite": "2025-07-30",
     "chassis_number": "LVBV4JBB3PY004430"
   },
   {
@@ -128,7 +128,7 @@
     "insurance_company": "LATINA SEGUROS",
     "insurance_expiration_date": "2026-03-13",
     "insurance_issue_date": "2025-03-13",
-    "duedate_satellite": "2025-07-30",
+    "due_date_satellite": "2025-07-30",
     "chassis_number": "LJ11PABE5SC018232"
   }
 ]

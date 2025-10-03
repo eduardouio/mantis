@@ -15,7 +15,7 @@ class VehicleForm(forms.ModelForm):
             # Campos de seguros
             'insurance_company', 'nro_poliza',
             'insurance_issue_date', 'insurance_expiration_date',
-            'duedate_satellite',
+            'due_date_satellite',
             # Campos de documentos
             'date_matricula', 'due_date_matricula', 'due_date_cert_oper',
             'status_cert_oper', 'date_mtop', 'date_technical_review'
@@ -76,7 +76,7 @@ class VehicleForm(forms.ModelForm):
                 'class': 'input input-bordered input-md w-full',
                 'type': 'date'
             }),
-            'duedate_satellite': forms.DateInput(attrs={
+            'due_date_satellite': forms.DateInput(attrs={
                 'class': 'input input-bordered input-md w-full',
                 'type': 'date'
             }),

@@ -724,7 +724,7 @@ class Command(BaseCommand):
                 date_fields = [
                     'due_date_matricula', 'date_matricula', 'date_mtop',
                     'date_technical_review', 'insurance_expiration_date',
-                    'insurance_issue_date', 'duedate_satellite'
+                    'insurance_issue_date', 'due_date_satellite'
                 ]
 
                 for field in date_fields:
