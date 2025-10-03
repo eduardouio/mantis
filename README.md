@@ -513,3 +513,13 @@ PTRTAR_CHECK_LIST = [
 | `stst_current_project_id` | SmallIntegerField | None |
 | `stst_commitment_date` | DateField | None |
 | `stst_release_date` | DateField | None |
+
+```sql
+-- Ajustar secuencias para tablas con datos preexistentes
+
+SELECT setval('accounts_historicaltechnical_history_id_seq', (SELECT MAX(history_id) FROM accounts_historicaltechnical)+1);
+SELECT setval('accounts_passtechnical_id_seq', (SELECT MAX(id) FROM accounts_passtechnical)+1);
+SELECT setval('accounts_historicalpasstechnical_history_id_seq', (SELECT MAX(history_id) FROM accounts_historicalpasstechnical)+1);
+SELECT setval('accounts_license_id_seq', (SELECT MAX(id) FROM accounts_license)+1);
+SELECT setval('accounts_historicallicense_history_id_seq', (SELECT MAX(history_id) FROM accounts_historicallicense)+1);
+
