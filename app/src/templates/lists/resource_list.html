@@ -67,11 +67,13 @@
         <thead>
             <tr>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">#</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Nombre</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 text-left px-2 py-1">Código</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Tipo</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Capacidad</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">SERIE</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Capacidad</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Estado</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Proyecto</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Liberación</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Disponibilidad</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 no-export hidden md:table-cell text-left px-2 py-1">Acciones</th>
             </tr>
@@ -80,10 +82,6 @@
             {% for item in equipments %}
             <tr class="hover:bg-gray-50"> 
                 <td class="text-left hidden md:table-cell px-2 py-1">{{ forloop.counter }}</td>
-                <td class="text-left px-2 py-1">
-                    <a href="{% url 'resource_detail' item.id %}" class="link link-hover text-primary md:hidden font-semibold">{{ item.code }}</a>
-                    <span class="hidden md:inline">{{ item.code }}</span>
-                </td>
                 <td class="text-left hidden lg:table-cell px-2 py-1">
                     {% if item.type_equipment %}
                         <span class=" text-gray-700">{{ item.get_type_equipment_display }}</span>
@@ -91,6 +89,11 @@
                         <span class="text-gray-400 ">SERVICIO</span>
                     {% endif %}
                 </td>
+                <td class="text-left px-2 py-1">
+                    <a href="{% url 'resource_detail' item.id %}" class="link link-hover text-primary md:hidden font-semibold">{{ item.code }}</a>
+                    <span class="hidden md:inline">{{ item.code }}</span>
+                </td>
+                <td class="text-left hidden md:table-cell px-2 py-1">{{ item.serial_number|default_if_none:"-" }}</td>
                 <td class="text-left hidden md:table-cell px-2 py-1">
                     {% if item.capacity_gallons %}
                         {{ item.capacity_gallons }} gal
@@ -100,9 +103,22 @@
                         -
                     {% endif %}
                 </td>
-                <td class="text-left hidden md:table-cell px-2 py-1">{{ item.serial_number|default_if_none:"-" }}</td>
                 <td class="text-left hidden md:table-cell px-2 py-1">
                     <span class="text-gray-700">{{ item.get_stst_status_equipment_display }}</span>
+                </td>
+                <td class="text-left hidden lg:table-cell px-2 py-1">
+                    {% if item.stst_current_project_id %}
+                        Proyecto {{ item.stst_current_project_id }}
+                    {% else %}
+                        EN BASE PEISOL
+                    {% endif %}
+                </td>
+                <td class="text-left hidden lg:table-cell px-2 py-1">
+                    {% if item.stst_release_date %}
+                        {{ item.stst_release_date|date:"d-m-Y" }}
+                    {% else %}
+                        NO APLICA
+                    {% endif %}
                 </td>
                 <td class="hidden lg:table-cell px-2 py-1">
                     {% if item.stst_status_disponibility == 'DISPONIBLE' %}
@@ -126,7 +142,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="8" class="text-center py-4 px-2">
+                <td colspan="10" class="text-center py-4 px-2">
                     <div class="flex flex-col items-center gap-2">
                         <i class="las la-check-circle text-gray-400 text-5xl"></i>
                         <span class="text-gray-500">No se encontraron equipos</span>
