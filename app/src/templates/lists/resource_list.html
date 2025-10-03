@@ -69,7 +69,7 @@
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">#</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 text-left px-2 py-1">Código</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Tipo</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Nombre</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Capacidad</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">SERIE</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Estado</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Disponibilidad</th>
@@ -91,7 +91,15 @@
                         <span class="text-gray-400 ">SERVICIO</span>
                     {% endif %}
                 </td>
-                <td class="text-left hidden md:table-cell px-2 py-1">{{ item.name }}</td>
+                <td class="text-left hidden md:table-cell px-2 py-1">
+                    {% if item.capacity_gallons %}
+                        {{ item.capacity_gallons }} gal
+                    {% elif item.plant_capacity %}
+                        {{ item.plant_capacity }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
                 <td class="text-left hidden md:table-cell px-2 py-1">{{ item.serial_number|default_if_none:"-" }}</td>
                 <td class="text-left hidden md:table-cell px-2 py-1">
                     <span class="text-gray-700">{{ item.get_stst_status_equipment_display }}</span>
