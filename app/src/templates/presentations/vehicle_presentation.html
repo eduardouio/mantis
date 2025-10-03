@@ -130,35 +130,65 @@
             <div class="bg-white p-3 rounded-lg border border-blue-100">
               <div class="flex items-center gap-2">
                 <i class="las la-calendar-check text-blue-500"></i>
-                <p class="text-gray-500 text-sm">Vigencia Póliza</p>
+                <p class="text-gray-500 text-sm">Póliza de Seguro</p>
               </div>
-              <p class="font-semibold text-gray-900 pl-6">
-                {% if vehicle.insurance_issue_date and vehicle.insurance_expiration_date %}
-                  {{ vehicle.insurance_issue_date|date:"d-m-Y" }} al {{ vehicle.insurance_expiration_date|date:"d-m-Y" }}
-                  {% if vehicle.insurance_expiration_date and insurance_expiry_details %}
-                    <span class="{{ insurance_expiry_details.class }}">({{ insurance_expiry_details.text }})</span>
-                  {% endif %}
-                {% else %}
-                  <span class='text-gray-400 text-sm italic'>No registrada</span>
-                {% endif %}
-              </p>
+              <div class="pl-6 space-y-1">
+                <p class="text-sm">
+                  <span class="text-gray-600">Emisión:</span>
+                  <span class="font-semibold text-gray-900">
+                    {% if vehicle.insurance_issue_date %}
+                      {{ vehicle.insurance_issue_date|date:"d-m-Y" }}
+                    {% else %}
+                      <span class='text-gray-400 italic'>No registrada</span>
+                    {% endif %}
+                  </span>
+                </p>
+                <p class="text-sm">
+                  <span class="text-gray-600">Vencimiento:</span>
+                  <span class="font-semibold text-gray-900">
+                    {% if vehicle.insurance_expiration_date %}
+                      {{ vehicle.insurance_expiration_date|date:"d-m-Y" }}
+                      {% if insurance_expiry_details %}
+                        <span class="{{ insurance_expiry_details.class }}">({{ insurance_expiry_details.text }})</span>
+                      {% endif %}
+                    {% else %}
+                      <span class='text-gray-400 italic'>No registrada</span>
+                    {% endif %}
+                  </span>
+                </p>
+              </div>
             </div>
             
             <div class="bg-white p-3 rounded-lg border border-blue-100">
               <div class="flex items-center gap-2">
                 <i class="las la-satellite text-blue-500"></i>
-                <p class="text-gray-500 text-sm">Vencimiento Satelital</p>
+                <p class="text-gray-500 text-sm">Satelital</p>
               </div>
-              <p class="font-semibold text-gray-900 pl-6">
-                {% if vehicle.due_date_satellite %}
-                  {{ vehicle.due_date_satellite|date:"d-m-Y" }}
-                  {% if satellite_expiry_details %}
-                    <span class="{{ satellite_expiry_details.class }}">({{ satellite_expiry_details.text }})</span>
-                  {% endif %}
-                {% else %}
-                  <span class='text-gray-400 text-sm italic'>No registrado</span>
-                {% endif %}
-              </p>
+              <div class="pl-6 space-y-1">
+                <p class="text-sm">
+                  <span class="text-gray-600">Emisión:</span>
+                  <span class="font-semibold text-gray-900">
+                    {% if vehicle.date_satellite %}
+                      {{ vehicle.date_satellite|date:"d-m-Y" }}
+                    {% else %}
+                      <span class='text-gray-400 italic'>No registrada</span>
+                    {% endif %}
+                  </span>
+                </p>
+                <p class="text-sm">
+                  <span class="text-gray-600">Vencimiento:</span>
+                  <span class="font-semibold text-gray-900">
+                    {% if vehicle.due_date_satellite %}
+                      {{ vehicle.due_date_satellite|date:"d-m-Y" }}
+                      {% if satellite_expiry_details %}
+                        <span class="{{ satellite_expiry_details.class }}">({{ satellite_expiry_details.text }})</span>
+                      {% endif %}
+                    {% else %}
+                      <span class='text-gray-400 italic'>No registrado</span>
+                    {% endif %}
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -187,7 +217,7 @@
           <div class="text-sm border border-gray-200 rounded-lg p-2 bg-white">
             <div class="grid grid-cols-2 gap-1">
               <div>
-                <span class="text-gray-500">Fecha:</span>
+                <span class="text-gray-500">Emisión:</span>
                 <span>{{ vehicle.date_matricula|date:"d-m-Y"|default:"N/A" }}</span>
               </div>
               <div>
@@ -207,7 +237,11 @@
         <div class="p-2 bg-gray-50 rounded-lg shadow-sm border border-gray-200 bg-gray-100">
           <p class="font-medium text-gray-700">Certificado de Operación</p>
           <div class="text-sm border border-gray-200 rounded-lg p-2 bg-white">
-            <div class="grid grid-cols-1 gap-1">
+            <div class="grid grid-cols-2 gap-1">
+              <div>
+                <span class="text-gray-500">Emisión:</span>
+                <span>{{ vehicle.date_cert_oper|date:"d-m-Y"|default:"N/A" }}</span>
+              </div>
               <div>
                 <span class="text-gray-500">Vencimiento:</span>
                 <span>
@@ -225,10 +259,19 @@
         <div class="p-2 bg-gray-50 rounded-lg shadow-sm border border-gray-200 bg-gray-100">
           <p class="font-medium text-gray-700">MTOP</p>
           <div class="text-sm border border-gray-200 rounded-lg p-2 bg-white">
-            <div class="grid grid-cols-1 gap-1">
+            <div class="grid grid-cols-2 gap-1">
               <div>
-                <span class="text-gray-500">Fecha:</span>
+                <span class="text-gray-500">Emisión:</span>
                 <span>{{ vehicle.date_mtop|date:"d-m-Y"|default:"N/A" }}</span>
+              </div>
+              <div>
+                <span class="text-gray-500">Vencimiento:</span>
+                <span>
+                  {{ vehicle.due_date_mtop|date:"d-m-Y"|default:"N/A" }}
+                  {% if vehicle.due_date_mtop and mtop_expiry_details %}
+                    <span class="{{ mtop_expiry_details.class }}">({{ mtop_expiry_details.text }})</span>
+                  {% endif %}
+                </span>
               </div>
             </div>
           </div>
@@ -238,10 +281,19 @@
         <div class="p-2 bg-gray-50 rounded-lg shadow-sm border border-gray-200 bg-gray-100">
           <p class="font-medium text-gray-700">Revisión Técnica</p>
           <div class="text-sm border border-gray-200 rounded-lg p-2 bg-white">
-            <div class="grid grid-cols-1 gap-1">
+            <div class="grid grid-cols-2 gap-1">
               <div>
-                <span class="text-gray-500">Fecha:</span>
+                <span class="text-gray-500">Emisión:</span>
                 <span>{{ vehicle.date_technical_review|date:"d-m-Y"|default:"N/A" }}</span>
+              </div>
+              <div>
+                <span class="text-gray-500">Vencimiento:</span>
+                <span>
+                  {{ vehicle.due_date_technical_review|date:"d-m-Y"|default:"N/A" }}
+                  {% if vehicle.due_date_technical_review and technical_review_expiry_details %}
+                    <span class="{{ technical_review_expiry_details.class }}">({{ technical_review_expiry_details.text }})</span>
+                  {% endif %}
+                </span>
               </div>
             </div>
           </div>

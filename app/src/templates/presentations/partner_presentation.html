@@ -1,10 +1,8 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
-  <div class="flex justify-between items-center border-b-blue-500 bo        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
-            <i class="las la-edit text-lg text-gray-500"></i>
+<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-blue-300 border-t-[15px] border-t-blue-300">
+  <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
     <h1 class="text-2xl font-semibold text-blue-500">Ficha de Socio de Negocio</h1>
     <div class="text-gray-500">
       <span class="badge {% if partner.is_active %}badge-success{% else %}badge-error{% endif %}">
@@ -14,57 +12,112 @@
   </div>
 
   <!-- Tabs para organizar la información -->
-  <div class="tabs tabs-box w-full mb-4">
-    <input type="radio" name="detail_tabs" class="tab" aria-label="Información General" checked />
+  <div class="tabs tabs-box w-full mb-4 bg-gray-50">
+    <div class="tabs tabs-boxed p-1 rounded-xl mb-4">
+      <input type="radio" name="detail_tabs" class="tab tab-lifted" aria-label="Información General" checked />
     <div class="tab-content bg-base-100 border-base-300 p-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Datos Principales -->
-        <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
-          <h3 class="text-lg font-medium text-blue-600 mb-4">Datos Principales</h3>
-          <div>
-            <p class="text-sm text-gray-500">RUC</p>
-            <p class="font-semibold text-gray-900">{{ partner.business_tax_id }}</p>
-          </div>
-          <div>
-            <p class="text-sm text-gray-500">Nombre</p>
-            <p class="font-semibold text-gray-900">{{ partner.name }}</p>
-          </div>
-          <div>
-            <p class="text-sm text-gray-500">Correo Electrónico</p>
-            <p class="font-semibold text-gray-900">{{ partner.email|default:"No registrado" }}</p>
-          </div>
-          <div>
-            <p class="text-sm text-gray-500">Teléfono</p>
-            <p class="font-semibold text-gray-900">{{ partner.phone|default:"No registrado" }}</p>
+      <!-- Información básica en 3 columnas para mejor aprovechamiento del espacio -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Columna 1: Datos Principales -->
+        <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-blue-200">
+          <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+            <i class="las la-building text-lg text-blue-600"></i>
+            Datos Principales
+          </h4>
+          <div class="space-y-3">
+            <div class="bg-white p-3 rounded-lg border border-blue-100">
+              <div class="flex items-center gap-2">
+                <i class="las la-id-card text-blue-500"></i>
+                <p class="text-gray-500 text-sm">RUC</p>
+              </div>
+              <p class="font-semibold text-gray-900 pl-6">{{ partner.business_tax_id }}</p>
+            </div>
+            
+            <div class="bg-white p-3 rounded-lg border border-blue-100">
+              <div class="flex items-center gap-2">
+                <i class="las la-user-tie text-blue-500"></i>
+                <p class="text-gray-500 text-sm">Nombre</p>
+              </div>
+              <p class="font-semibold text-gray-900 pl-6">{{ partner.name }}</p>
+            </div>
+            
+            <div class="bg-white p-3 rounded-lg border border-blue-100">
+              <div class="flex items-center gap-2">
+                <i class="las la-info-circle text-blue-500"></i>
+                <p class="text-gray-500 text-sm">Estado</p>
+              </div>
+              <p class="font-semibold text-gray-900 pl-6">
+                <span class="badge {% if partner.is_active %}badge-success{% else %}badge-error{% endif %}">
+                  {% if partner.is_active %}Activo{% else %}Inactivo{% endif %}
+                </span>
+              </p>
+            </div>
           </div>
         </div>
-
-        <!-- Datos de Contacto y Ubicación -->
-        <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
-          <h3 class="text-lg font-medium text-blue-600 mb-4">Contacto y Ubicación</h3>
-          
-          <div>
-            <p class="text-sm text-gray-500">Dirección</p>
-            <p class="font-semibold text-gray-900">{{ partner.address }}</p>
+        
+        <!-- Columna 2: Datos de Contacto -->
+        <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-blue-200">
+          <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+            <i class="las la-address-book text-lg text-blue-600"></i>
+            Datos de Contacto
+          </h4>
+          <div class="space-y-3">
+            <div class="bg-white p-3 rounded-lg border border-blue-100">
+              <div class="flex items-center gap-2">
+                <i class="las la-envelope text-blue-500"></i>
+                <p class="text-gray-500 text-sm">Correo Electrónico</p>
+              </div>
+              <p class="font-semibold text-gray-900 pl-6">{{ partner.email|default:"<span class='text-gray-400 text-sm italic'>No registrado</span>"|safe }}</p>
+            </div>
+            
+            <div class="bg-white p-3 rounded-lg border border-blue-100">
+              <div class="flex items-center gap-2">
+                <i class="las la-phone text-blue-500"></i>
+                <p class="text-gray-500 text-sm">Teléfono</p>
+              </div>
+              <p class="font-semibold text-gray-900 pl-6">{{ partner.phone|default:"<span class='text-gray-400 text-sm italic'>No registrado</span>"|safe }}</p>
+            </div>
+            
+            <div class="bg-white p-3 rounded-lg border border-blue-100">
+              <div class="flex items-center gap-2">
+                <i class="las la-user text-blue-500"></i>
+                <p class="text-gray-500 text-sm">Nombre de Contacto</p>
+              </div>
+              <p class="font-semibold text-gray-900 pl-6">{{ partner.name_contact|default:"<span class='text-gray-400 text-sm italic'>No registrado</span>"|safe }}</p>
+            </div>
           </div>
-          <div>
-            <p class="text-sm text-gray-500">Nombre de Contacto</p>
-            <p class="font-semibold text-gray-900">{% if partner.name_contact %}{{ partner.name_contact }}{% else %}No Registrado{% endif %}</p>
-          </div>
-          <div>
-            <p class="text-sm text-gray-500">Estado</p>
-            <span class="badge {% if partner.is_active %}badge-success{% else %}badge-error{% endif %}">
-              {% if partner.is_active %}Activo{% else %}Inactivo{% endif %}
-            </span>
+        </div>
+        
+        <!-- Columna 3: Información de Ubicación -->
+        <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-blue-200">
+          <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+            <i class="las la-map-marker text-lg text-blue-600"></i>
+            Información de Ubicación
+          </h4>
+          <div class="space-y-3">
+            <div class="bg-white p-3 rounded-lg border border-blue-100">
+              <div class="flex items-center gap-2">
+                <i class="las la-map-marked-alt text-blue-500"></i>
+                <p class="text-gray-500 text-sm">Dirección</p>
+              </div>
+              <p class="font-semibold text-gray-900 pl-6">{{ partner.address|default:"<span class='text-gray-400 text-sm italic'>No registrado</span>"|safe }}</p>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Notas -->
+      
+      <!-- Notas (si existen) -->
+      {% if partner.notes %}
       <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-        <h3 class="text-lg font-medium text-blue-600 mb-4">Notas y Observaciones</h3>
-        <p class="font-semibold text-gray-900">{% if partner.notes %}{{ partner.notes }}{% else %}Sin Observaciones{% endif %}</p>
+        <h4 class="font-medium text-gray-700 mb-2 flex items-center gap-2">
+          <i class="las la-sticky-note text-lg text-gray-600"></i>
+          Notas y Observaciones
+        </h4>
+        <div class="bg-white p-3 rounded border border-gray-200">
+          <p class="text-gray-700">{{ partner.notes }}</p>
+        </div>
       </div>
+      {% endif %}
     </div>
 
     <input type="radio" name="detail_tabs" class="tab" aria-label="Equipos Asignados" />

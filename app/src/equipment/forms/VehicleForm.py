@@ -15,10 +15,12 @@ class VehicleForm(forms.ModelForm):
             # Campos de seguros
             'insurance_company', 'nro_poliza',
             'insurance_issue_date', 'insurance_expiration_date',
-            'due_date_satellite',
+            'date_satellite', 'due_date_satellite',
             # Campos de documentos
-            'date_matricula', 'due_date_matricula', 'due_date_cert_oper',
-            'status_cert_oper', 'date_mtop', 'date_technical_review'
+            'date_matricula', 'due_date_matricula',
+            'date_cert_oper', 'due_date_cert_oper', 'status_cert_oper',
+            'date_mtop', 'due_date_mtop',
+            'date_technical_review', 'due_date_technical_review'
         ]
         widgets = {
             'brand': forms.TextInput(attrs={
@@ -76,6 +78,10 @@ class VehicleForm(forms.ModelForm):
                 'class': 'input input-bordered input-md w-full',
                 'type': 'date'
             }),
+            'date_satellite': forms.DateInput(attrs={
+                'class': 'input input-bordered input-md w-full',
+                'type': 'date'
+            }),
             'due_date_satellite': forms.DateInput(attrs={
                 'class': 'input input-bordered input-md w-full',
                 'type': 'date'
@@ -89,6 +95,10 @@ class VehicleForm(forms.ModelForm):
                 'class': 'input input-bordered input-md w-full',
                 'type': 'date'
             }),
+            'date_cert_oper': forms.DateInput(attrs={
+                'class': 'input input-bordered input-md w-full',
+                'type': 'date'
+            }),
             'due_date_cert_oper': forms.DateInput(attrs={
                 'class': 'input input-bordered input-md w-full',
                 'type': 'date'
@@ -97,7 +107,15 @@ class VehicleForm(forms.ModelForm):
                 'class': 'input input-bordered input-md w-full',
                 'type': 'date'
             }),
+            'due_date_mtop': forms.DateInput(attrs={
+                'class': 'input input-bordered input-md w-full',
+                'type': 'date'
+            }),
             'date_technical_review': forms.DateInput(attrs={
+                'class': 'input input-bordered input-md w-full',
+                'type': 'date'
+            }),
+            'due_date_technical_review': forms.DateInput(attrs={
                 'class': 'input input-bordered input-md w-full',
                 'type': 'date'
             }),
