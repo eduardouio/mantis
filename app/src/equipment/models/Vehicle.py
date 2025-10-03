@@ -87,8 +87,8 @@ class Vehicle(BaseModel):
         max_length=255,
         default='PEISOL'
     )
-    due_date_matricula = models.DateField(
-        'Vecimiento Matricula',
+    date_cert_oper = models.DateField(
+        'Fecha Certificado de Operacion',
         blank=True,
         null=True,
         default=None
@@ -105,14 +105,32 @@ class Vehicle(BaseModel):
         null=True,
         default=None
     )
+    due_date_matricula = models.DateField(
+        'Vecimiento Matricula',
+        blank=True,
+        null=True,
+        default=None
+    )
     date_mtop = models.DateField(
         'Fecha MTOP',
         blank=True,
         null=True,
         default=None
     )
+    due_date_mtop = models.DateField(
+        'Fecha Vencimiento MTOP',
+        blank=True,
+        null=True,
+        default=None
+    )
     date_technical_review = models.DateField(
         'Fecha Revisión Técnica',
+        blank=True,
+        null=True,
+        default=None
+    )
+    due_date_technical_review = models.DateField(
+        'Fecha Vencimiento Revisión Técnica',
         blank=True,
         null=True,
         default=None
