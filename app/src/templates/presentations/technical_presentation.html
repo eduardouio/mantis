@@ -5,9 +5,7 @@
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
     <h1 class="text-2xl font-semibold text-blue-500">Ficha de Técnico</h1>
     <div class="text-gray-500">
-      <span class="badge {%            <button id="openVaccineCardBtn" class="btn btn-sm btn-outline btn-info">
-              <i class="las la-file-medical text-lg"></i>
-              Ver Tarjeta de Vacunasical.is_active %}badge-success{% else %}badge-error{% endif %}">
+      <span class="badge {% if technical.is_active %}badge-success{% else %}badge-error{% endif %}">
         {% if technical.is_active %}Activo{% else %}Inactivo{% endif %}
       </span>
     </div>
