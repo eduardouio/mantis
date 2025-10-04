@@ -9,14 +9,14 @@ class ResourcesAvailableAPI(View):
 
     Retorna recursos que:
         - Estén activos (is_active=True)
-        - Tengan status DISPONIBLE
-        - No estén en servicio (is_service=False)
+        - Tengan estado de disponibilidad DISPONIBLE
+        - No sean servicios (type_equipment != 'SERVIC')
     """
 
     def get(self, request):
         """Obtener lista de recursos disponibles."""
         try:
-            # Filtros base
+            # Filtros base: Solo equipos disponibles y activos
             filters = Q(
                 is_active=True,
                 stst_status_disponibility='DISPONIBLE'
@@ -46,12 +46,8 @@ class ResourcesAvailableAPI(View):
                 'exclude_services', 'true'
             ).lower() == 'true'
             if exclude_services:
-                # Asumiendo que is_service existe en el modelo
-                # Si no existe, usar type_equipment != 'SERVIC'
-                try:
-                    filters &= Q(type_equipment__ne='SERVIC')
-                except Exception:
-                    pass
+                # Excluir servicios usando ~Q (negación)
+                filters &= ~Q(type_equipment='SERVIC')
 
             # Obtener recursos
             resources = ResourceItem.objects.filter(filters).order_by(
