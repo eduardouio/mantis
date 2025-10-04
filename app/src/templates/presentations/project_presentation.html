@@ -123,111 +123,73 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="hover:bg-base-50">
-                <td>1</td>
-                <td><span class="badge badge-primary">EQUIPO</span></td>
-                <td class="font-mono">LAV-001</td>
-                <td>Lavamanos Portátil Industrial</td>
-                <td><span class="badge badge-success">RENTADO</span></td>
-                <td class="text-right font-semibold">$120.00</td>
-                <td class="text-right font-semibold">$25.00</td>
-                <td><span class="badge badge-outline">SEMANAL</span></td>
-                <td>2025-08-01</td>
-                <td>2025-11-06</td>
-                <td class="text-center">
-                  <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
-                      <i class="las la-ellipsis-v"></i>
+              {% if assigned_equipment %}
+                {% for equipment in assigned_equipment %}
+                <tr class="hover:bg-base-50">
+                  <td>{{ forloop.counter }}</td>
+                  <td>
+                    <span class="badge {% if equipment.is_service %}badge-secondary{% else %}badge-primary{% endif %}">
+                      {% if equipment.is_service %}SERVICIO{% else %}EQUIPO{% endif %}
+                    </span>
+                  </td>
+                  <td class="font-mono">{{ equipment.resource_code }}</td>
+                  <td>{{ equipment.resource_name }}</td>
+                  <td>
+                    {% if equipment.is_retired %}
+                      <span class="badge badge-error">RETIRADO</span>
+                    {% elif equipment.status_disponibility %}
+                      <span class="badge badge-success">{{ equipment.status_disponibility }}</span>
+                    {% else %}
+                      <span class="badge badge-info">ASIGNADO</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-right font-semibold">${{ equipment.rent_cost|floatformat:2 }}</td>
+                  <td class="text-right font-semibold">${{ equipment.maintenance_cost|floatformat:2 }}</td>
+                  <td>
+                    <span class="badge badge-outline">
+                      {% if equipment.maintenance_interval_days == 1 %}DIARIO
+                      {% elif equipment.maintenance_interval_days == 7 %}SEMANAL
+                      {% elif equipment.maintenance_interval_days == 15 %}QUINCENAL
+                      {% elif equipment.maintenance_interval_days == 30 %}MENSUAL
+                      {% else %}{{ equipment.maintenance_interval_days }} días
+                      {% endif %}
+                    </span>
+                  </td>
+                  <td>{{ equipment.operation_start_date|default:"N/A" }}</td>
+                  <td>{{ equipment.operation_end_date|default:"N/A" }}</td>
+                  <td class="text-center">
+                    <div class="dropdown dropdown-end">
+                      <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+                        <i class="las la-ellipsis-v"></i>
+                      </div>
+                      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                        <li><a>Ver Detalle</a></li>
+                        <li><a>Editar</a></li>
+                        <li><a>Programar Mantenimiento</a></li>
+                      </ul>
                     </div>
-                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                      <li><a>Ver Detalle</a></li>
-                      <li><a>Editar</a></li>
-                      <li><a>Programar Mantenimiento</a></li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-              <tr class="hover:bg-base-50">
-                <td>2</td>
-                <td><span class="badge badge-primary">EQUIPO</span></td>
-                <td class="font-mono">BSH-002</td>
-                <td>Batería Sanitaria Hombre</td>
-                <td><span class="badge badge-success">RENTADO</span></td>
-                <td class="text-right font-semibold">$150.00</td>
-                <td class="text-right font-semibold">$30.00</td>
-                <td><span class="badge badge-outline">QUINCENAL</span></td>
-                <td>2025-08-01</td>
-                <td>2025-11-06</td>
-                <td class="text-center">
-                  <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
-                      <i class="las la-ellipsis-v"></i>
-                    </div>
-                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                      <li><a>Ver Detalle</a></li>
-                      <li><a>Editar</a></li>
-                      <li><a>Programar Mantenimiento</a></li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-              <tr class="hover:bg-base-50">
-                <td>3</td>
-                <td><span class="badge badge-secondary">SERVICIO</span></td>
-                <td class="font-mono">MANT-001</td>
-                <td>Mantenimiento y Limpieza</td>
-                <td><span class="badge badge-info">PROGRAMADO</span></td>
-                <td class="text-right font-semibold">$80.00</td>
-                <td class="text-right font-semibold">$0.00</td>
-                <td><span class="badge badge-outline">MENSUAL</span></td>
-                <td>2025-08-01</td>
-                <td>2025-11-06</td>
-                <td class="text-center">
-                  <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
-                      <i class="las la-ellipsis-v"></i>
-                    </div>
-                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                      <li><a>Ver Detalle</a></li>
-                      <li><a>Editar</a></li>
-                      <li><a>Programar Mantenimiento</a></li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-              <tr class="hover:bg-base-50">
-                <td>4</td>
-                <td><span class="badge badge-primary">EQUIPO</span></td>
-                <td class="font-mono">PTA-003</td>
-                <td>Planta Tratamiento Agua 15M3</td>
-                <td><span class="badge badge-success">RENTADO</span></td>
-                <td class="text-right font-semibold">$500.00</td>
-                <td class="text-right font-semibold">$100.00</td>
-                <td><span class="badge badge-outline">MENSUAL</span></td>
-                <td>2025-08-01</td>
-                <td>2025-11-06</td>
-                <td class="text-center">
-                  <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
-                      <i class="las la-ellipsis-v"></i>
-                    </div>
-                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                      <li><a>Ver Detalle</a></li>
-                      <li><a>Editar</a></li>
-                      <li><a>Programar Mantenimiento</a></li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="11" class="text-center text-gray-500 py-8">
+                    <i class="las la-inbox text-4xl"></i>
+                    <p>No hay equipos asignados a este proyecto</p>
+                  </td>
+                </tr>
+              {% endif %}
             </tbody>
+            {% if assigned_equipment %}
             <tfoot>
               <tr class="bg-base-200 font-semibold">
                 <td colspan="5" class="text-lg">Total Mensual:</td>
-                <td class="text-right text-lg text-green-600">$850.00</td>
-                <td class="text-right text-lg text-blue-600">$155.00</td>
+                <td class="text-right text-lg text-green-600">${{ total_monthly_rent|floatformat:2 }}</td>
+                <td class="text-right text-lg text-blue-600">${{ total_monthly_maintenance|floatformat:2 }}</td>
                 <td colspan="4"></td>
               </tr>
             </tfoot>
+            {% endif %}
           </table>
         </div>
       </div>
@@ -235,12 +197,12 @@
 
     <input type="radio" name="project_tabs" role="tab" class="tab bg-blue-300" aria-label="Órdenes de Trabajo" />
     <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-4">
-      {# Órdenes De Trabajo del Proyecto #}
+      {# Planillas del Proyecto (SheetProject) #}
       <div class="space-y-3">
         <div class="flex justify-between items-center">
           <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-            <i class="las la-truck text-yellow-600 text-xl"></i>
-            Órdenes De Trabajo
+            <i class="las la-file-invoice-dollar text-blue-600 text-xl"></i>
+            Planillas del Proyecto
           </h2>
         </div>
         
@@ -249,124 +211,85 @@
             <thead>
               <tr class="bg-base-200">
                 <th>#</th>
-                <th>Orden</th>
-                <th>Fecha</th>
-                <th>Técnico</th>
-                <th>Equipos</th>
-                <th>Tipo Servicio</th>
+                <th>Serie</th>
                 <th>Estado</th>
-                <th>Horas</th>
-                <th>Costo</th>
+                <th>Fecha Emisión</th>
+                <th>Período Inicio</th>
+                <th>Período Fin</th>
+                <th>Tipo Servicio</th>
+                <th class="text-right">Galones</th>
+                <th class="text-right">Barriles</th>
+                <th class="text-right">M³</th>
+                <th class="text-right">Subtotal</th>
+                <th class="text-right">IVA</th>
+                <th class="text-right">Total</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="hover:bg-base-50">
-                <td>1</td>
-                <td class="font-mono">OT-2025-001</td>
-                <td>2025-08-05</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <div class="avatar placeholder">
-                      <div class="bg-neutral text-neutral-content rounded-full w-8">
-                        <span class="text-xs">JC</span>
-                      </div>
+              {% if project_sheets %}
+                {% for sheet in project_sheets %}
+                <tr class="hover:bg-base-50">
+                  <td>{{ forloop.counter }}</td>
+                  <td class="font-mono">{{ sheet.series_code }}</td>
+                  <td>
+                    {% if sheet.status == 'IN_PROGRESS' %}
+                      <span class="badge badge-warning">EN EJECUCIÓN</span>
+                    {% elif sheet.status == 'INVOICED' %}
+                      <span class="badge badge-success">FACTURADO</span>
+                    {% elif sheet.status == 'CANCELLED' %}
+                      <span class="badge badge-error">CANCELADO</span>
+                    {% else %}
+                      <span class="badge badge-info">{{ sheet.status }}</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ sheet.issue_date|default:"N/A" }}</td>
+                  <td>{{ sheet.period_start|default:"N/A" }}</td>
+                  <td>{{ sheet.period_end|default:"N/A" }}</td>
+                  <td><span class="badge badge-outline">{{ sheet.service_type }}</span></td>
+                  <td class="text-right">{{ sheet.total_gallons|default:"0" }}</td>
+                  <td class="text-right">{{ sheet.total_barrels|default:"0" }}</td>
+                  <td class="text-right">{{ sheet.total_cubic_meters|default:"0" }}</td>
+                  <td class="text-right font-semibold">${{ sheet.subtotal|floatformat:2 }}</td>
+                  <td class="text-right">${{ sheet.tax_amount|floatformat:2 }}</td>
+                  <td class="text-right font-bold text-green-600">${{ sheet.total|floatformat:2 }}</td>
+                  <td class="text-center">
+                    <div class="join">
+                      <button class="btn btn-xs btn-ghost" title="Ver Detalle">
+                        <i class="las la-eye"></i>
+                      </button>
+                      <button class="btn btn-xs btn-ghost" title="Editar">
+                        <i class="las la-edit"></i>
+                      </button>
                     </div>
-                    <span>Juan Carlos López</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="badge badge-outline">LAV-001</div>
-                  <div class="badge badge-outline">BSH-002</div>
-                </td>
-                <td><span class="badge badge-primary">MANTENIMIENTO</span></td>
-                <td><span class="badge badge-success">COMPLETADA</span></td>
-                <td>4.5</td>
-                <td class="text-right font-semibold">$225.00</td>
-                <td class="text-center">
-                  <div class="join">
-                    <button class="btn btn-xs btn-ghost" title="Ver Detalle">
-                      <i class="las la-eye"></i>
-                    </button>
-                    <button class="btn btn-xs btn-ghost" title="Editar">
-                      <i class="las la-edit"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="hover:bg-base-50">
-                <td>2</td>
-                <td class="font-mono">OT-2025-002</td>
-                <td>2025-08-12</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <div class="avatar placeholder">
-                      <div class="bg-neutral text-neutral-content rounded-full w-8">
-                        <span class="text-xs">MR</span>
-                      </div>
-                    </div>
-                    <span>María Rodríguez</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="badge badge-outline">PTA-003</div>
-                </td>
-                <td><span class="badge badge-info">ALQUILER</span></td>
-                <td><span class="badge badge-warning">PENDIENTE</span></td>
-                <td>-</td>
-                <td class="text-right font-semibold">$500.00</td>
-                <td class="text-center">
-                  <div class="join">
-                    <button class="btn btn-xs btn-ghost" title="Ver Detalle">
-                      <i class="las la-eye"></i>
-                    </button>
-                    <button class="btn btn-xs btn-ghost" title="Editar">
-                      <i class="las la-edit"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              <tr class="hover:bg-base-50">
-                <td>3</td>
-                <td class="font-mono">OT-2025-003</td>
-                <td>2025-08-18</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <div class="avatar placeholder">
-                      <div class="bg-neutral text-neutral-content rounded-full w-8">
-                        <span class="text-xs">AS</span>
-                      </div>
-                    </div>
-                    <span>Antonio Silva</span>
-                  </div>
-                </td>
-                <td>
-                  <div class="badge badge-outline">MANT-001</div>
-                </td>
-                <td><span class="badge badge-secondary">LOGISTICA</span></td>
-                <td><span class="badge badge-success">COMPLETADA</span></td>
-                <td>6.0</td>
-                <td class="text-right font-semibold">$300.00</td>
-                <td class="text-center">
-                  <div class="join">
-                    <button class="btn btn-xs btn-ghost" title="Ver Detalle">
-                      <i class="las la-eye"></i>
-                    </button>
-                    <button class="btn btn-xs btn-ghost" title="Editar">
-                      <i class="las la-edit"></i>
-                    </button>
-                  </div>
-                </td>
-              </tr>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="14" class="text-center text-gray-500 py-8">
+                    <i class="las la-inbox text-4xl"></i>
+                    <p>No hay planillas registradas para este proyecto</p>
+                  </td>
+                </tr>
+              {% endif %}
             </tbody>
+            {% if project_sheets %}
             <tfoot>
               <tr class="bg-base-200 font-semibold">
-                <td colspan="7" class="text-lg">Total Órdenes:</td>
-                <td class="text-lg text-primary">10.5 hrs</td>
-                <td class="text-right text-lg text-green-600">$1,025.00</td>
+                <td colspan="10" class="text-lg">Totales:</td>
+                <td class="text-right text-lg text-blue-600">
+                  ${% widthratio project_sheets|length 1 1 as sheet_count %}
+                  {{ project_sheets|length|floatformat:0 }} planilla{{ project_sheets|length|pluralize }}
+                </td>
+                <td class="text-right text-lg"></td>
+                <td class="text-right text-lg text-green-600">
+                  ${% for sheet in project_sheets %}{{ sheet.total|add:0 }}{% if not forloop.last %}+{% endif %}{% endfor %}
+                </td>
                 <td></td>
               </tr>
             </tfoot>
+            {% endif %}
           </table>
         </div>
       </div>
