@@ -48,10 +48,10 @@
          {% if title_page != 'Inicio Sesion' %}
          {% if not popup_window %}
          <!-- Nuevo Navbar Responsivo para Items de Menú -->
-         <div class="navbar bg-base-100 shadow-lg mb-1">
+         <div class="navbar bg-base-100 shadow-lg mb-1 min-h-[3rem] h-14">
             <div class="navbar-start">
                <div class="dropdown">
-                  <label tabindex="0" class="btn btn-ghost lg:hidden">
+                  <label tabindex="0" class="btn btn-ghost btn-sm lg:hidden">
                      <i class="las la-bars text-xl"></i>
                   </label>
                   <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1000] p-2 shadow bg-base-100 rounded-box w-52">
@@ -129,18 +129,18 @@
                      </li>
                   </ul>
                </div>
-               <a class="btn btn-ghost normal-case text-xl" href="{% url 'home' %}">
-                  <img src="/static/img/logo.png" alt="Logo" class="h-8 rounded" />
+               <a class="btn btn-ghost btn-sm normal-case text-lg" href="{% url 'home' %}">
+                  <img src="/static/img/logo.png" alt="Logo" class="h-7 rounded" />
                </a>
             </div>
             <div class="navbar-center hidden lg:flex">
-               <ul class="menu menu-horizontal px-1">
+               <ul class="menu menu-horizontal menu-sm px-1">
                   <!-- Equipos -->
                   <li>
                      <details>
-                        <summary>
-                           <i class="las la-desktop inline-block mr-1 text-xl"></i>
-                           Equipos
+                        <summary class="py-2">
+                           <i class="las la-desktop inline-block mr-1 text-lg"></i>
+                           <span class="text-sm">Equipos</span>
                         </summary>
                         <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50">
                            <li><a  class="whitespace-nowrap bg-base-100" href="{% url 'resource_list' %}"><i class="las la-list mr-2"></i>Listar Equipos</a></li>
@@ -151,9 +151,9 @@
                   <!-- Vehículos -->
                   <li>
                      <details>
-                        <summary>
-                           <i class="las la-truck inline-block mr-1 text-xl"></i>
-                           Vehículos
+                        <summary class="py-2">
+                           <i class="las la-truck inline-block mr-1 text-lg"></i>
+                           <span class="text-sm">Vehículos</span>
                         </summary>
                         <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50">
                            <li><a  class="whitespace-nowrap bg-base-100" href="{% url 'vehicle_list' %}"><i class="las la-list mr-2"></i>Listar Vehículos</a></li>
@@ -164,9 +164,9 @@
                   <!-- Técnicos -->
                   <li>
                      <details>
-                        <summary>
-                           <i class="las la-users inline-block mr-1 text-xl"></i>
-                           Técnicos
+                        <summary class="py-2">
+                           <i class="las la-users inline-block mr-1 text-lg"></i>
+                           <span class="text-sm">Técnicos</span>
                         </summary>
                         <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50">
                            <li><a  class="whitespace-nowrap bg-base-100" href="{% url 'technical_list' %}"><i class="las la-list mr-2"></i>Listar Técnicos</a></li>
@@ -177,9 +177,9 @@
                   <!-- Proyectos -->
                   <li>
                      <details>
-                        <summary>
-                           <i class="las la-project-diagram inline-block mr-1 text-xl"></i>
-                           Proyectos
+                        <summary class="py-2">
+                           <i class="las la-project-diagram inline-block mr-1 text-lg"></i>
+                           <span class="text-sm">Proyectos</span>
                         </summary>
                         <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50">
                            <li><a  class="whitespace-nowrap bg-base-100" href="{% url 'partner_list' %}"><i class="las la-handshake mr-2"></i>Listar Clientes</a></li>
@@ -191,9 +191,9 @@
                   <!-- Planificación -->
                   <li>
                      <details>
-                        <summary>
-                           <i class="las la-calendar inline-block mr-1 text-xl"></i>
-                           Planificación
+                        <summary class="py-2">
+                           <i class="las la-calendar inline-block mr-1 text-lg"></i>
+                           <span class="text-sm">Planificación</span>
                         </summary>
                         <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50">
                            <li><a  class="whitespace-nowrap bg-base-100" href="#"><i class="las la-eye mr-2"></i>Ver Planificación</a></li>
@@ -204,9 +204,9 @@
                   <!-- Reportes -->
                   <li>
                      <details>
-                        <summary>
-                           <i class="las la-chart-bar inline-block mr-1 text-xl"></i>
-                           Reportes
+                        <summary class="py-2">
+                           <i class="las la-chart-bar inline-block mr-1 text-lg"></i>
+                           <span class="text-sm">Reportes</span>
                         </summary>
                         <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50">
                            <li><a  class="whitespace-nowrap bg-base-100" href="#"><i class="las la-tools mr-2"></i>Reporte de Mantenimiento</a></li>
@@ -221,13 +221,33 @@
                </ul>
             </div>
             <div class="navbar-end hidden lg:flex">
-                <ul class="menu menu-horizontal px-1">
-                    <!-- Salir para desktop -->
+                <ul class="menu menu-horizontal menu-sm px-1">
+                    <!-- Dropdown de Usuario -->
                     <li>
-                        <a class="btn btn-ghost text-error border border-black" href="{% url 'logout' %}">
-                           <i class="las la-sign-out-alt inline-block mr-1 text-xl"></i>
-                           Salir
-                        </a>
+                        <details>
+                           <summary class="py-2">
+                              <div class="flex items-center gap-2">
+                                 <div class="avatar placeholder">
+                                    <div class="bg-neutral text-neutral-content rounded-full w-8">
+                                       <span class="text-xs">{{ user.first_name.0|default:"U" }}{{ user.last_name.0|default:"" }}</span>
+                                    </div>
+                                 </div>
+                                 <span class="text-sm">{{ user.get_full_name|default:user.username }}</span>
+                              </div>
+                           </summary>
+                           <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50 w-52">
+                              <li>
+                                 <a class="whitespace-nowrap bg-base-100" href="#">
+                                    <i class="las la-user mr-2"></i>Mi Perfil
+                                 </a>
+                              </li>
+                              <li>
+                                 <a class="whitespace-nowrap bg-base-100 text-error" href="{% url 'logout' %}">
+                                    <i class="las la-sign-out-alt mr-2"></i>Salir
+                                 </a>
+                              </li>
+                           </ul>
+                        </details>
                      </li>
                 </ul>
             </div>
