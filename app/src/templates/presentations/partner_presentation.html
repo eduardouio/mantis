@@ -634,27 +634,27 @@
 
   <!-- Botones de acción -->
   <div class="flex flex-wrap justify-center gap-2 mt-6 border-t pt-4">
-    <a href="{% url 'partner_create' %}" class="btn btn-sm btn-outline btn-dark">
+    <a href="{% url 'partner_create' %}" class="btn btn-primary btn-sm">
       <i class="las la-plus text-xl"></i>
       Agregar Nuevo
     </a>
-    <a href="{% url 'partner_update' partner.id %}" class="btn btn-sm btn-outline btn-dark">
+    <a href="{% url 'partner_update' partner.id %}" class="btn btn-primary btn-sm">
       <i class="las la-edit text-xl"></i>
       Editar
     </a>
-    <a href="{% url 'partner_detail' partner.id %}?action=delete" class="btn btn-sm btn-outline btn-error">
+    <a href="{% url 'partner_detail' partner.id %}?action=delete" class="btn btn-primary btn-sm">
       <i class="las la-trash text-xl"></i>
       Eliminar
     </a>
-    <a href="{% url 'partner_list' %}" class="btn btn-sm btn-outline border-black">
+    <a href="{% url 'partner_list' %}" class="btn btn-primary btn-sm">
       <i class="las la-arrow-left text-xl"></i>
       Volver al Listado
     </a>
-    <a href="{% url 'partner_detail' partner.id %}?action=delete" class="btn btn-sm btn-outline btn-error">
+    <a href="{% url 'partner_detail' partner.id %}?action=delete" class="btn btn-primary btn-sm">
       <i class="las la-trash text-lg"></i>
       Confirmar Eliminación
     </a>
-    <a href="{% url 'partner_detail' partner.id %}" class="btn btn-outline ml-2 border-black">
+    <a href="{% url 'partner_detail' partner.id %}" class="btn btn-primary btn-sm ml-2">
       <i class="las la-times text-lg"></i>
       Cancelar
     </a>
@@ -668,12 +668,12 @@
     </div>
   </div>
   <div class="flex justify-center mb-6">
-    <a href="{% url 'partner_delete' request.resolver_match.kwargs.pk %}" class="btn btn-error">
+    <a href="{% url 'partner_delete' request.resolver_match.kwargs.pk %}" class="btn btn-primary btn-sm">
       <i class="las la-trash text-lg"></i>
       </svg>
       Confirmar Eliminación
     </a>
-    <a href="{% url 'partner_detail' partner.id %}" class="btn btn-outline ml-2 border-black">
+    <a href="{% url 'partner_detail' partner.id %}" class="btn btn-primary btn-sm ml-2">
       Cancelar
     </a>
   </div>

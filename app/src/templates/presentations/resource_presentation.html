@@ -361,7 +361,7 @@
               </div>
               {% if inconsistencies_analysis.needs_update %}
                 <div class="mt-4 text-center">
-                  <button class="btn btn-warning" onclick="updateEquipmentStatus({{ equipment.id }})">
+                  <button class="btn btn-primary btn-sm" onclick="updateEquipmentStatus({{ equipment.id }})">
                     <i class="las la-tools"></i>
                     Corregir Automáticamente
                   </button>
@@ -410,19 +410,19 @@
   </div>
   <!-- Botones de acción -->
   <div class="flex flex-wrap justify-center gap-2 mt-3 border-t pt-3">
-    <a href="{% url 'resource_create' %}" class="btn btn-soft btn-default">
+    <a href="{% url 'resource_create' %}" class="btn btn-primary btn-sm">
       <i class="las la-plus text-xl"></i>
       Nuevo
     </a>
-    <a href="{% url 'resource_update' equipment.id %}" class="btn btn-soft">
+    <a href="{% url 'resource_update' equipment.id %}" class="btn btn-primary btn-sm">
       <i class="las la-edit text-xl"></i>
       Editar
     </a>
-    <a href="{% url 'resource_detail' equipment.id %}?action=delete" class="btn btn-soft btn-error">
+    <a href="{% url 'resource_detail' equipment.id %}?action=delete" class="btn btn-primary btn-sm">
       <i class="las la-trash text-xl"></i>
       Eliminar
     </a>
-    <a href="{% url 'resource_list' %}" class="btn btn-sm btn-outline border-black">
+    <a href="{% url 'resource_list' %}" class="btn btn-primary btn-sm">
       <i class="las la-arrow-left text-xl"></i>
       Volver al Listado
     </a>
@@ -432,8 +432,8 @@
   <div class="mt-4 p-3 bg-red-50 rounded-md border border-red-200">
     <p class="text-red-700 mb-2">¿Estás seguro de que deseas eliminar este equipo? Esta acción no se puede deshacer.</p>
     <div class="flex justify-center gap-2">
-      <a href="{% url 'resource_delete' equipment.id %}" class="btn btn-soft btn-error">Confirmar Eliminación</a>
-      <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-outline ml-2 border-black">
+      <a href="{% url 'resource_delete' equipment.id %}" class="btn btn-primary btn-sm">Confirmar Eliminación</a>
+      <a href="{% url 'resource_detail' equipment.id %}" class="btn btn-primary btn-sm ml-2">
         <i class="las la-times text-xl"></i>
         Cancelar
       </a>

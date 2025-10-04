@@ -5,7 +5,7 @@
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
     <h1 class="text-2xl font-semibold text-blue-500">Ficha de Técnico</h1>
     <div class="flex items-center gap-3">
-      <button id="openVaccineCardBtn" class="btn btn-sm btn-outline btn-info">
+      <button id="openVaccineCardBtn" class="btn btn-primary btn-sm">
         <i class="las la-file-medical text-lg"></i>
         Ver Tarjeta de Vacunas
       </button>
@@ -454,7 +454,7 @@
         <div>
           <div class="flex justify-between items-center mb-3">
             <h3 class="text-md font-semibold text-blue-500">Vacunas Registradas</h3>
-            <button id="openVaccineCardBtn" class="btn btn-sm btn-outline btn-info">
+            <button id="openVaccineCardBtn" class="btn btn-primary btn-sm">
               <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14,2 14,8 20,8"></polyline>
@@ -601,19 +601,19 @@
 
   <!-- Botones de acción - más compactos -->
   <div class="flex flex-wrap justify-center gap-2 mt-3 border-t pt-3">
-    <a href="{% url 'technical_create' %}" class="btn btn-primary">
+    <a href="{% url 'technical_create' %}" class="btn btn-primary btn-sm">
       <i class="las la-plus text-xl"></i>
       Nuevo
     </a>
-    <a href="{% url 'technical_update' technical.id %}" class="btn btn-primary">
+    <a href="{% url 'technical_update' technical.id %}" class="btn btn-primary btn-sm">
       <i class="las la-edit text-xl"></i>
       Editar
     </a>
-    <a href="{% url 'technical_detail' technical.id %}?action=delete" class="btn btn-error">
+    <a href="{% url 'technical_detail' technical.id %}?action=delete" class="btn btn-primary btn-sm">
       <i class="las la-trash text-xl"></i>
       Eliminar
     </a>
-    <a href="{% url 'technical_list' %}" class="btn btn-secondary">
+    <a href="{% url 'technical_list' %}" class="btn btn-primary btn-sm">
       <i class="las la-arrow-left text-xl"></i>
       Volver atrás
     </a>
@@ -624,10 +624,10 @@
   <div class="mt-4 p-3 bg-red-50 rounded-md border border-red-200">
     <p class="text-red-700 mb-2">¿Estás seguro de que deseas eliminar este técnico? Esta acción no se puede deshacer.</p>
     <div class="flex justify-center gap-2">
-      <a href="{% url 'technical_delete' request.resolver_match.kwargs.pk %}" class="btn btn-soft btn-error">
+      <a href="{% url 'technical_delete' request.resolver_match.kwargs.pk %}" class="btn btn-primary btn-sm">
         Confirmar Eliminación
       </a>
-      <a href="{% url 'technical_detail' technical.id %}" class="btn btn-secondary">
+      <a href="{% url 'technical_detail' technical.id %}" class="btn btn-primary btn-sm">
         <i class="las la-times text-lg"></i>
         Cancelar
       </a>
@@ -687,7 +687,7 @@
         Imprimir
       </button>
       <form method="dialog">
-        <button class="btn btn-sm">Cerrar</button>
+        <button class="btn btn-primary btn-sm">Cerrar</button>
       </form>
     </div>
   </div>

@@ -6,16 +6,16 @@
         <h1 class="text-2xl font-semibold text-primary mb-2 md:mb-0">{{ title_section }}</h1>
         <div class="flex flex-wrap gap-2">
             {% if request.resolver_match.url_name != 'license_create' %}    
-            <a href="{% url 'license_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-sm btn-outline btn-error">
+            <a href="{% url 'license_detail' request.resolver_match.kwargs.pk %}?action=delete" class="btn btn-primary btn-sm">
                 <i class="las la-trash text-lg"></i>
                 Eliminar
             </a>
-            <a href="{% url 'license_detail' license.id %}" class="btn btn-sm btn-outline btn-info border-black">
+            <a href="{% url 'license_detail' license.id %}" class="btn btn-primary btn-sm">
                 <i class="las la-arrow-left text-lg"></i>
                 Volver a Ficha
             </a>
             {% endif %}
-            <a href="{% url 'license_list' %}" class="btn btn-secondary">
+            <a href="{% url 'license_list' %}" class="btn btn-primary btn-sm">
                 <i class="las la-times text-lg"></i>
                 Cancelar
             </a>
@@ -110,11 +110,11 @@
                 </div>
 
                 <div class="card-actions justify-end mt-6">
-                    <button type="submit" class="btn btn-primary border border-black">
+                    <button type="submit" class="btn btn-primary btn-sm">
                         <i class="las la-save text-xl"></i>
                         Guardar Licencia
                     </button>
-                    <a href="{% url 'license_list' %}" class="btn btn-secondary">
+                    <a href="{% url 'license_list' %}" class="btn btn-primary btn-sm">
                         <i class="las la-times text-xl"></i>
                         Cancelar
                     </a>

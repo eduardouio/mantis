@@ -94,15 +94,19 @@
 
   {# Tabs para organizar el contenido #}
   <div role="tablist" class="tabs tabs-lifted mt-4 bg-gray-100 border border-blue-100 p-1">
-    <input type="radio" name="project_tabs" role="tab" class="tab bg-red-300" aria-label="Equipos y Servicios" checked />
+    <input type="radio" name="project_tabs" role="tab" class="tab bg-red-300" aria-label="Equipos Asignados" checked />
     <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-4">
       {# Equipos y Servicios Asignados al Proyecto #}
       <div class="space-y-3">
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center mb-4">
           <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <i class="las la-tools text-blue-600 text-xl"></i>
-            Equipos y Servicios Asignados
+            Equipos Asignados
           </h2>
+          <button class="btn btn-primary btn-sm">
+            <i class="las la-plus text-lg"></i>
+            Asignar Equipo
+          </button>
         </div>
         
         <div class="overflow-x-auto">
@@ -199,11 +203,31 @@
     <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-4">
       {# Planillas del Proyecto (SheetProject) #}
       <div class="space-y-3">
-        <div class="flex justify-between items-center">
+        <div class="flex justify-between items-center mb-4">
           <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <i class="las la-file-invoice-dollar text-blue-600 text-xl"></i>
             Planillas del Proyecto
           </h2>
+          {% if project_sheets %}
+            {% with last_sheet=project_sheets.0 %}
+              {% if last_sheet.status == 'IN_PROGRESS' %}
+                <button class="btn btn-success btn-sm">
+                  <i class="las la-plus text-lg"></i>
+                  Agregar Orden de Trabajo
+                </button>
+              {% else %}
+                <button class="btn btn-sm btn-disabled" title="La última planilla debe estar en ejecución para agregar órdenes">
+                  <i class="las la-plus text-lg"></i>
+                  Agregar Orden de Trabajo
+                </button>
+              {% endif %}
+            {% endwith %}
+          {% else %}
+            <button class="btn btn-primary btn-sm">
+              <i class="las la-plus text-lg"></i>
+              Crear Primera Planilla
+            </button>
+          {% endif %}
         </div>
         
         <div class="overflow-x-auto">
@@ -497,19 +521,19 @@
   {# Botones de acción #}
   <div class="mt-8 pt-6 border-t">
     <div class="flex flex-wrap justify-center gap-3">
-        <a href="{% url 'project_create' %}" class="btn btn-outline btn-primary">
+        <a href="{% url 'project_create' %}" class="btn btn-primary btn-sm">
             <i class="las la-plus text-xl"></i>
             Nuevo Proyecto
         </a>
-        <a href="{% url 'project_update' project.id %}" class="btn btn-outline btn-info">
+        <a href="{% url 'project_update' project.id %}" class="btn btn-primary btn-sm">
             <i class="las la-edit text-xl"></i>
             Editar Proyecto
         </a>
-        <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-outline btn-error">
+        <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-primary btn-sm">
             <i class="las la-trash text-xl"></i>
             Eliminar Proyecto
         </a>
-        <a href="{% url 'project_list' %}" class="btn btn-outline btn-neutral">
+        <a href="{% url 'project_list' %}" class="btn btn-primary btn-sm">
             <i class="las la-arrow-left text-xl"></i>
             Volver al Listado
         </a>
@@ -525,11 +549,11 @@
       </div>
   </div>
   <div class="flex justify-center mb-4">
-      <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-sm btn-error">
+      <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-primary btn-sm">
           <i class="las la-trash"></i>
           Confirmar Eliminación
       </a>
-       <a href="{% url 'project_detail' project.id %}" class="btn btn-sm btn-outline ml-2">
+       <a href="{% url 'project_detail' project.id %}" class="btn btn-primary btn-sm ml-2">
           <i class="las la-times"></i>
           Cancelar
       </a>
@@ -541,14 +565,65 @@
 
 {% block script %}
 <script>
-  // Variables globales para Vue.js (si son necesarias)
+  // Variables globales
   var csrf_token = '{{ csrf_token }}';
-  // Se pueden agregar más variables cuando se implemente la funcionalidad real
+  var project_id = {{ project.id }};
   
-  // Funcionalidad básica para los tabs
+  // Funcionalidad para los botones
   document.addEventListener('DOMContentLoaded', function() {
-    // Los tabs de DaisyUI funcionan automáticamente
-    console.log('Presentación del proyecto cargada');
+    console.log('Presentación del proyecto cargada - ID:', project_id);
+    
+    // Manejador para el botón "Asignar Equipo"
+    const btnAsignarEquipo = document.querySelector('.btn-primary.btn-sm');
+    if (btnAsignarEquipo && btnAsignarEquipo.textContent.includes('Asignar Equipo')) {
+      btnAsignarEquipo.addEventListener('click', function(e) {
+        e.preventDefault();
+        // TODO: Implementar lógica para asignar equipo
+        // Opciones: abrir modal, redireccionar a formulario, etc.
+        console.log('Asignar equipo al proyecto:', project_id);
+        
+        // Ejemplo temporal con alert
+        alert('Funcionalidad "Asignar Equipo" - Por implementar\nProyecto ID: ' + project_id);
+        
+        // Cuando implementes, puedes hacer algo como:
+        // window.location.href = '/projects/' + project_id + '/assign-equipment/';
+        // O abrir un modal con el formulario
+      });
+    }
+    
+    // Manejador para el botón "Agregar Orden de Trabajo"
+    const btnAgregarOrden = document.querySelector('.btn-success.btn-sm');
+    if (btnAgregarOrden && btnAgregarOrden.textContent.includes('Agregar Orden de Trabajo')) {
+      btnAgregarOrden.addEventListener('click', function(e) {
+        e.preventDefault();
+        // TODO: Implementar lógica para agregar orden de trabajo
+        console.log('Agregar orden de trabajo al proyecto:', project_id);
+        
+        // Ejemplo temporal con alert
+        alert('Funcionalidad "Agregar Orden de Trabajo" - Por implementar\nProyecto ID: ' + project_id);
+        
+        // Cuando implementes, puedes hacer algo como:
+        // window.location.href = '/projects/' + project_id + '/add-work-order/';
+      });
+    }
+    
+    // Manejador para el botón "Crear Primera Planilla"
+    const btnCrearPlanilla = document.querySelectorAll('.btn-primary.btn-sm');
+    btnCrearPlanilla.forEach(function(btn) {
+      if (btn.textContent.includes('Crear Primera Planilla')) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          // TODO: Implementar lógica para crear primera planilla
+          console.log('Crear primera planilla para proyecto:', project_id);
+          
+          // Ejemplo temporal con alert
+          alert('Funcionalidad "Crear Primera Planilla" - Por implementar\nProyecto ID: ' + project_id);
+          
+          // Cuando implementes:
+          // window.location.href = '/projects/' + project_id + '/create-sheet/';
+        });
+      }
+    });
   });
 </script>
 {% endblock %}
