@@ -1,79 +1,106 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block content %}
-<div class="w-4/5 mx-auto p-6 bg-white rounded-2xl shadow-md space-y-6 border border-t-[15px] border-t-blue-500">
-  <div class="flex justify-between items-center border-b-blue-500 border-b pb-3">
-    <h5 class="font-semibold text-blue-500">#{{ project.id }} {{ project.location|default:'(Sin ubicación)' }} {{ project.partner }}</h5>
-    <div class="flex gap-2">
-      {% if project.is_closed %}
-        <span class="badge badge-warning badge-lg">
-          <i class="las la-lock"></i>
-          Cerrado
-        </span>
-      {% else %}
-        <span class="badge badge-success badge-lg">
-          <i class="las la-play-circle"></i>
-          Abierto
-        </span>
-      {% endif %}
+<div class="w-[90%] mx-auto p-4 bg-white rounded-2xl shadow-md border border-blue-300 border-t-[15px] border-t-blue-300">
+  <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
+    <h1 class="text-xl font-semibold text-blue-500">Ficha de Proyecto</h1>
+    <div class="text-gray-500">
+      <span class="badge {% if project.is_closed %}badge-warning{% else %}badge-success{% endif %}">
+        {% if project.is_closed %}Cerrado{% else %}Abierto{% endif %}
+      </span>
     </div>
   </div>
 
   {# Información del Proyecto #}
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-1">
-    <div class="p-1">
-      <p class="text-sm text-gray-600">Estado Proyecto</p>
-      <p class="font-semibold text-gray-900">
-        {% if project.is_closed %}Cerrado{% else %}Abierto{% endif %}
-      </p>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <!-- Columna 1 -->
+    <div class="space-y-2">
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-hashtag text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">ID Proyecto:</span>
+        <span class="font-semibold text-sm">#{{ project.id }}</span>
+      </div>
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-building text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Cliente:</span>
+        <span class="font-semibold text-sm">
+          <a href="{% if project.partner_id %}{% url 'partner_detail' project.partner_id %}{% else %}#{% endif %}" class="link link-hover">
+            {{ project.partner }}
+          </a>
+        </span>
+      </div>
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-map-marker text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Ubicación:</span>
+        <span class="font-semibold text-sm">{{ project.location|default:"N/A" }}</span>
+      </div>
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-info-circle text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Estado:</span>
+        <span class="badge badge-sm {% if project.is_closed %}badge-warning{% else %}badge-success{% endif %}">
+          {% if project.is_closed %}Cerrado{% else %}Abierto{% endif %}
+        </span>
+      </div>
     </div>
-    <div class="p-1">
-      <p class="text-sm text-gray-600">Cliente</p>
-      <p class="font-semibold text-gray-900">
-        <a href="{% if project.partner_id %}{% url 'partner_detail' project.partner_id %}{% else %}#{% endif %}" class="link link-hover">
-          {{ project.partner }}
-        </a>
-      </p>
+
+    <!-- Columna 2 -->
+    <div class="space-y-2">
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-calendar-check text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Fecha Inicio:</span>
+        <span class="font-semibold text-sm">{{ project.start_date|date:"d/m/Y" }}</span>
+      </div>
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-calendar-times text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Fecha Fin:</span>
+        <span class="font-semibold text-sm">{{ project.end_date|date:"d/m/Y" }}</span>
+      </div>
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-hourglass-half text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Duración:</span>
+        <span class="font-semibold text-sm">97 días</span>
+      </div>
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-dollar-sign text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Valor Total:</span>
+        <span class="font-semibold text-sm text-green-600">$97,485.00</span>
+      </div>
     </div>
-    <div class="p-1">
-      <p class="text-sm text-gray-600">Campamento / Ubicación</p>
-      <p class="font-semibold text-gray-900">{{ project.location|default:'—' }}</p>
-    </div>
-    <div class="p-1">
-      <p class="text-sm text-gray-600">Fecha de Inicio</p>
-      <p class="font-semibold text-gray-900">{{ project.start_date|date:"Y-m-d" }}</p>
-    </div>
-    <div class="p-1">
-      <p class="text-sm text-gray-600">Fecha de Fin</p>
-      <p class="font-semibold text-gray-900">{{ project.end_date|date:"Y-m-d" }}</p>
-    </div>
-    <div class="p-1">
-      <p class="text-sm text-gray-600">Duración</p>
-      <p class="font-semibold text-gray-900">97 días</p>
-    </div>
-    <div class="p-1">
-      <p class="text-sm text-gray-600">Nombre de Contacto</p>
-      <p class="font-semibold text-gray-900">{{ project.contact_name }}</p>
-    </div>
-    <div class="p-1">
-      <p class="text-sm text-gray-600">Teléfono de Contacto</p>
-      <p class="font-semibold text-gray-900">{{ project.contact_phone }}</p>
-    </div>
-    <div class="p-1">
-      <p class="text-sm text-gray-600">Valor Total</p>
-      <p class="font-semibold text-gray-900">$97,485.00</p>
+
+    <!-- Columna 3 -->
+    <div class="space-y-2">
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-user text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Contacto:</span>
+        <span class="font-semibold text-sm">{{ project.contact_name|default:"N/A" }}</span>
+      </div>
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-phone text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Teléfono:</span>
+        <span class="font-semibold text-sm">{{ project.contact_phone|default:"N/A" }}</span>
+      </div>
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-envelope text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Email:</span>
+        <span class="font-semibold text-sm">{{ project.contact_email|default:"N/A" }}</span>
+      </div>
+      <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+        <i class="las la-sticky-note text-blue-500"></i>
+        <span class="text-xs text-gray-500 w-32">Notas:</span>
+        <span class="font-semibold text-sm">{{ project.notes|truncatewords:5|default:"N/A" }}</span>
+      </div>
     </div>
   </div>
 
   {# Tabs para organizar el contenido #}
-  <div class="tabs tabs-lifted">
-    <input type="radio" name="project_tabs" class="tab bg-blue-300 rounded-t" aria-label="Equipos y Servicios" checked />
-    <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+  <div role="tablist" class="tabs tabs-lifted mt-4 bg-gray-100 border border-blue-100 p-1">
+    <input type="radio" name="project_tabs" role="tab" class="tab bg-red-300" aria-label="Equipos y Servicios" checked />
+    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-4">
       {# Equipos y Servicios Asignados al Proyecto #}
-      <div class="space-y-4">
+      <div class="space-y-3">
         <div class="flex justify-between items-center">
-          <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-3">
-            <i class="las la-tools text-blue-600" style="font-size: 28px;"></i>
+          <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <i class="las la-tools text-blue-600 text-xl"></i>
             Equipos y Servicios Asignados
           </h2>
         </div>
@@ -206,13 +233,13 @@
       </div>
     </div>
 
-    <input type="radio" name="project_tabs" class="tab bg-yellow-300 rounded-t" aria-label="Órdenes de Trabajo" />
-    <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+    <input type="radio" name="project_tabs" role="tab" class="tab bg-blue-300" aria-label="Órdenes de Trabajo" />
+    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-4">
       {# Órdenes De Trabajo del Proyecto #}
-      <div class="space-y-4">
+      <div class="space-y-3">
         <div class="flex justify-between items-center">
-          <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-3">
-            <i class="las la-truck text-yellow-600" style="font-size: 28px;"></i>
+          <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <i class="las la-truck text-yellow-600 text-xl"></i>
             Órdenes De Trabajo
           </h2>
         </div>
@@ -345,19 +372,19 @@
       </div>
     </div>
 
-    <input type="radio" name="project_tabs" class="tab bg-red-300 rounded-t" aria-label="Calendario Mantenimientos" />
-    <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+    <input type="radio" name="project_tabs" role="tab" class="tab bg-orange-300" aria-label="Calendario Mantenimientos" />
+    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-4">
       {# Calendario de Mantenimientos #}
-      <div class="space-y-4">
+      <div class="space-y-3">
         <div class="flex justify-between items-center">
-          <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-3">
-            <i class="las la-calendar text-red-600" style="font-size: 28px;"></i>
+          <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <i class="las la-calendar text-red-600 text-xl"></i>
             Calendario de Mantenimientos
           </h2>
           <div class="join">
-            <button class="btn btn-sm join-item btn-outline">Mes</button>
-            <button class="btn btn-sm join-item btn-active">Cronograma</button>
-            <button class="btn btn-sm join-item btn-outline">Lista</button>
+            <button class="btn btn-xs join-item btn-outline">Mes</button>
+            <button class="btn btn-xs join-item btn-active">Cronograma</button>
+            <button class="btn btn-xs join-item btn-outline">Lista</button>
           </div>
         </div>
 
@@ -428,18 +455,18 @@
     </div>
 
     <!-- TAB 4: Metadatos -->
-    <input type="radio" name="project_tabs" class="tab bg-gray-300 rounded-t" aria-label="Metadatos" />
-    <div class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+    <input type="radio" name="project_tabs" role="tab" class="tab bg-lime-300" aria-label="Metadatos" />
+    <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-4">
       {# Metadatos del Proyecto #}
-      <div class="space-y-4">
-        <div class="flex justify-between items-center">
-          <h2 class="text-2xl font-semibold text-gray-800 flex items-center gap-3">
-            <i class="las la-file-alt text-3xl text-gray-600"></i>
+      <div class="space-y-3">
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <i class="las la-file-alt text-xl text-gray-600"></i>
             Información de Auditoría
           </h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Registro Inicial -->
           <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
             <h4 class="font-medium text-gray-700 mb-3 flex items-center gap-2">
@@ -501,49 +528,6 @@
     </div>
   </div>
 
-
-  <div class="mt-6 pt-4 border-t">
-    <div class="flex flex-wrap justify-center gap-2">
-        <a href="{% url 'project_create' %}" class="btn btn-sm btn-outline btn-dark">
-            <i class="las la-plus text-lg"></i>
-            Nuevo Proyecto
-        </a>
-        <a href="{% url 'project_update' project.id %}" class="btn btn-sm btn-outline btn-dark">
-            <i class="las la-edit text-lg"></i>
-            Editar Proyecto
-        </a>
-        <a href="{% url 'project_detail' project.id %}?action=delete" class="btn btn-sm btn-outline btn-error">
-            <i class="las la-trash text-lg"></i>
-            Eliminar Proyecto
-        </a>
-        <a href="{% url 'project_list' %}" class="btn btn-sm btn-outline border-black">
-            <i class="las la-arrow-left text-lg"></i>
-            Volver al Listado
-        </a>
-    </div>
-  </div>
-  
-  {% if action == 'delete' %}
-  <div class="flex justify-center mt-6 mb-6">
-      <div class="alert alert-warning max-w-md">
-          <i class="las la-exclamation-triangle text-warning"></i>
-          <span>¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.</span>
-      </div>
-  </div>
-  <div class="flex justify-center mb-6">
-      <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-error">
-          <i class="las la-trash text-lg"></i>
-          Confirmar Eliminación
-      </a>
-       <a href="{% url 'project_detail' project.id %}" class="btn btn-outline ml-2 border-black">
-          <i class="las la-times text-lg"></i>
-          Cancelar
-      </a>
-  </div>
-  {% endif %}
-</div>
-</div> {# Cierre del contenedor de tabs #}
-{% endblock %}
   <div class="modal modal-bottom sm:modal-middle" id="equipmentModalVue"> {# ID cambiado para evitar conflicto si Bootstrap JS sigue activo #}
     <div class="modal-box w-11/12 max-w-2xl" v-if="selectedEquipment">
       <h3 class="font-bold text-lg">
@@ -611,25 +595,26 @@
   
   {# Modal de confirmación de eliminación #}
   {% if action == 'delete' %}
-  <div class="flex justify-center mt-6 mb-6">
+  <div class="flex justify-center mt-4 mb-4">
       <div class="alert alert-warning max-w-md">
           <i class="las la-exclamation-triangle text-warning"></i>
           <span>¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.</span>
       </div>
   </div>
-  <div class="flex justify-center mb-6">
-      <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-error">
-          <i class="las la-trash text-lg"></i>
+  <div class="flex justify-center mb-4">
+      <a href="{% url 'project_delete' request.resolver_match.kwargs.pk %}" class="btn btn-sm btn-error">
+          <i class="las la-trash"></i>
           Confirmar Eliminación
       </a>
-       <a href="{% url 'project_detail' project.id %}" class="btn btn-outline ml-2">
-          <i class="las la-times text-lg"></i>
+       <a href="{% url 'project_detail' project.id %}" class="btn btn-sm btn-outline ml-2">
+          <i class="las la-times"></i>
           Cancelar
       </a>
   </div>
   {% endif %}
 </div>
 
+{% endblock %}
 
 {% block script %}
 <script>
@@ -644,3 +629,4 @@
   });
 </script>
 {% endblock %}
+
