@@ -184,16 +184,6 @@
                 </tr>
               {% endif %}
             </tbody>
-            {% if assigned_equipment %}
-            <tfoot>
-              <tr class="bg-base-200 font-semibold">
-                <td colspan="5" class="text-lg">Total Mensual:</td>
-                <td class="text-right text-lg text-green-600">${{ total_monthly_rent|floatformat:2 }}</td>
-                <td class="text-right text-lg text-blue-600">${{ total_monthly_maintenance|floatformat:2 }}</td>
-                <td colspan="4"></td>
-              </tr>
-            </tfoot>
-            {% endif %}
           </table>
         </div>
       </div>
@@ -544,11 +534,11 @@
             
             <div class="grid grid-cols-[180px_1fr] items-center gap-2">
               <label class="label py-1 justify-start">
-                <span class="label-text text-xs font-medium">Equipo Seleccionado:</span>
+                <span class="label-text font-medium">Equipo Seleccionado:</span>
               </label>
               <input 
                 type="text" 
-                class="input input-bordered input-sm w-full" 
+                class="input input-bordered w-full" 
                 id="selected_equipment_name" 
                 readonly
               />
@@ -556,11 +546,11 @@
             
             <div class="grid grid-cols-[180px_1fr] items-center gap-2">
               <label class="label py-1 justify-start">
-                <span class="label-text text-xs font-medium">Código:</span>
+                <span class="label-text font-medium">Código:</span>
               </label>
               <input 
                 type="text" 
-                class="input input-bordered input-sm w-full" 
+                class="input input-bordered w-full" 
                 id="selected_equipment_code" 
                 readonly
               />
@@ -568,9 +558,9 @@
 
             <div class="grid grid-cols-[180px_1fr] items-center gap-2">
               <label class="label py-1 justify-start">
-                <span class="label-text text-xs font-medium">Intervalo Mantenimiento:</span>
+                <span class="label-text font-medium">Intervalo Mantenimiento:</span>
               </label>
-              <select class="select select-bordered select-sm w-full" id="maintenance_interval">
+              <select class="select select-bordered w-full" id="maintenance_interval">
                 <option value="1">Diario (1 día)</option>
                 <option value="7">Semanal (7 días)</option>
                 <option value="15" selected>Quincenal (15 días)</option>
@@ -589,13 +579,13 @@
             
             <div class="grid grid-cols-[200px_1fr] items-center gap-2">
               <label class="label py-1 justify-start">
-                <span class="label-text text-xs font-medium">Costo Renta Mensual: <span class="text-error">*</span></span>
+                <span class="label-text font-medium">Costo Renta Mensual: <span class="text-error">*</span></span>
               </label>
               <input 
                 type="number" 
                 step="0.01" 
                 min="0"
-                class="input input-bordered input-sm text-right w-full" 
+                class="input input-bordered text-right w-full" 
                 id="rent_cost"
                 placeholder="0.00"
                 required
@@ -604,13 +594,13 @@
 
             <div class="grid grid-cols-[200px_1fr] items-center gap-2">
               <label class="label py-1 justify-start">
-                <span class="label-text text-xs font-medium">Costo Mantenimiento: <span class="text-error">*</span></span>
+                <span class="label-text font-medium">Costo Mantenimiento: <span class="text-error">*</span></span>
               </label>
               <input 
                 type="number" 
                 step="0.01" 
                 min="0"
-                class="input input-bordered input-sm text-right w-full" 
+                class="input input-bordered text-right w-full" 
                 id="maintenance_cost"
                 placeholder="0.00"
                 required
@@ -619,11 +609,11 @@
 
             <div class="grid grid-cols-[200px_1fr] items-center gap-2">
               <label class="label py-1 justify-start">
-                <span class="label-text text-xs font-medium">Fecha Inicio: <span class="text-error">*</span></span>
+                <span class="label-text font-medium">Fecha Inicio: <span class="text-error">*</span></span>
               </label>
               <input 
                 type="date" 
-                class="input input-bordered input-sm w-full" 
+                class="input input-bordered w-full" 
                 id="operation_start_date"
                 value="{{ project.start_date|date:'Y-m-d' }}"
                 required
@@ -632,11 +622,11 @@
 
             <div class="grid grid-cols-[200px_1fr] items-center gap-2">
               <label class="label py-1 justify-start">
-                <span class="label-text text-xs font-medium">Fecha Fin:</span>
+                <span class="label-text font-medium">Fecha Fin:</span>
               </label>
               <input 
                 type="date" 
-                class="input input-bordered input-sm w-full" 
+                class="input input-bordered w-full" 
                 id="operation_end_date"
                 value="{{ project.end_date|date:'Y-m-d' }}"
               />
@@ -647,7 +637,7 @@
         <div class="modal-action">
           <button 
             type="button" 
-            class="btn btn-primary btn-sm" 
+            class="btn btn-primary" 
             id="btn_save_assignment"
           >
             <i class="las la-save"></i>
@@ -655,9 +645,10 @@
           </button>
           <button 
             type="button" 
-            class="btn btn-ghost btn-sm" 
+            class="btn btn-error" 
             onclick="resetAssignmentForm()"
           >
+          <i class="las la-times"></i>
             Cancelar
           </button>
         </div>
@@ -874,12 +865,12 @@
       return;
     }
     
-    // Preparar datos
+    // Preparar datos - enviar como string con 2 decimales
     const assignmentData = {
       project_id: project_id,
       resource_item_id: selectedEquipmentId,
-      rent_cost: parseFloat(rentCost),
-      maintenance_cost: parseFloat(maintenanceCost),
+      rent_cost: parseFloat(rentCost).toFixed(2),
+      maintenance_cost: parseFloat(maintenanceCost).toFixed(2),
       operation_start_date: startDate,
       operation_end_date: document.getElementById('operation_end_date').value || null,
       maintenance_interval_days: parseInt(document.getElementById('maintenance_interval').value)

@@ -69,7 +69,10 @@ class AllProjectData:
                 'resource_name': resource.name,
                 'resource_code': resource.code,
                 'resource_type': getattr(resource, 'type_equipment', None),
-                'is_service': resource.is_service,
+                'is_service': (
+                    resource.type_equipment == 'SERVIC'
+                    if resource.type_equipment else False
+                ),
                 'rent_cost': float(pr_item.rent_cost),
                 'maintenance_cost': float(pr_item.maintenance_cost),
                 'maintenance_interval_days': (
