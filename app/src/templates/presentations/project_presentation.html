@@ -686,9 +686,16 @@
               type="text" 
               class="input input-bordered input-sm w-full" 
               id="sheet_series_code"
-              value="PSL-PS-00000-00"
-              placeholder="PSL-PS-00000-00"
+              value="Cargando..."
+              placeholder="PSL-PS-2025-1000"
+              readonly
             />
+            <label class="label">
+              <span class="label-text-alt text-info">
+                <i class="las la-info-circle"></i>
+                Serie generada automáticamente
+              </span>
+            </label>
           </div>
 
           <div class="form-control">
@@ -739,23 +746,11 @@
           </div>
         </div>
 
-        {# Columna 2: Referencias y Totales #}
+        {# Columna 2: Referencias #}
         <div class="space-y-3 border-l-4 border-green-400 pl-4">
           <h4 class="font-semibold text-sm text-green-600 mb-3">
             <i class="las la-file-alt"></i> Referencias
           </h4>
-
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text font-medium">Ref. PO Cliente:</span>
-            </label>
-            <input 
-              type="text" 
-              class="input input-bordered input-sm w-full" 
-              id="sheet_client_po_reference"
-              placeholder="Número de orden de compra"
-            />
-          </div>
 
           <div class="form-control">
             <label class="label">
@@ -780,73 +775,6 @@
               placeholder="Teléfono del contacto"
             />
           </div>
-
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text font-medium">Disposición Final:</span>
-            </label>
-            <input 
-              type="text" 
-              class="input input-bordered input-sm w-full" 
-              id="sheet_final_disposition_reference"
-              placeholder="Referencia de disposición"
-            />
-          </div>
-
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text font-medium">Ref. Factura:</span>
-            </label>
-            <input 
-              type="text" 
-              class="input input-bordered input-sm w-full" 
-              id="sheet_invoice_reference"
-              placeholder="Número de factura"
-            />
-          </div>
-        </div>
-      </div>
-
-      {# Información de volúmenes (opcional) #}
-      <div class="divider">Volúmenes (Opcional)</div>
-      <div class="grid grid-cols-3 gap-4">
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-medium">Galones:</span>
-          </label>
-          <input 
-            type="number" 
-            min="0"
-            class="input input-bordered input-sm w-full text-right" 
-            id="sheet_total_gallons"
-            value="0"
-          />
-        </div>
-
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-medium">Barriles:</span>
-          </label>
-          <input 
-            type="number" 
-            min="0"
-            class="input input-bordered input-sm w-full text-right" 
-            id="sheet_total_barrels"
-            value="0"
-          />
-        </div>
-
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-medium">Metros Cúbicos:</span>
-          </label>
-          <input 
-            type="number" 
-            min="0"
-            class="input input-bordered input-sm w-full text-right" 
-            id="sheet_total_cubic_meters"
-            value="0"
-          />
         </div>
       </div>
 
@@ -1174,22 +1102,33 @@
   // ============================================================
   
   /**
+   * Cargar el siguiente código de serie
+   */
+  function loadNextSeriesCode() {
+    fetch('/api/workorders/sheets/?next_series=true')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success && data.series_code) {
+          document.getElementById('sheet_series_code').value = data.series_code;
+        }
+      })
+      .catch(error => {
+        console.error('Error al cargar código de serie:', error);
+        // Mantener el valor por defecto si hay error
+      });
+  }
+  
+  /**
    * Resetear formulario de planilla
    */
   function resetSheetForm() {
-    document.getElementById('sheet_series_code').value = 'PSL-PS-00000-00';
+    document.getElementById('sheet_series_code').value = 'Cargando...';
     document.getElementById('sheet_service_type').value = 'ALQUILER DE EQUIPOS';
     document.getElementById('sheet_issue_date').value = '';
     document.getElementById('sheet_period_start').value = '';
     document.getElementById('sheet_period_end').value = '';
-    document.getElementById('sheet_client_po_reference').value = '';
     document.getElementById('sheet_contact_reference').value = '';
     document.getElementById('sheet_contact_phone_reference').value = '';
-    document.getElementById('sheet_final_disposition_reference').value = '';
-    document.getElementById('sheet_invoice_reference').value = '';
-    document.getElementById('sheet_total_gallons').value = '0';
-    document.getElementById('sheet_total_barrels').value = '0';
-    document.getElementById('sheet_total_cubic_meters').value = '0';
     
     document.getElementById('modal_create_sheet').close();
   }
@@ -1214,14 +1153,8 @@
       issue_date: document.getElementById('sheet_issue_date').value || null,
       period_start: periodStart,
       period_end: document.getElementById('sheet_period_end').value || null,
-      client_po_reference: document.getElementById('sheet_client_po_reference').value || null,
       contact_reference: document.getElementById('sheet_contact_reference').value || null,
       contact_phone_reference: document.getElementById('sheet_contact_phone_reference').value || null,
-      final_disposition_reference: document.getElementById('sheet_final_disposition_reference').value || null,
-      invoice_reference: document.getElementById('sheet_invoice_reference').value || null,
-      total_gallons: parseInt(document.getElementById('sheet_total_gallons').value) || 0,
-      total_barrels: parseInt(document.getElementById('sheet_total_barrels').value) || 0,
-      total_cubic_meters: parseInt(document.getElementById('sheet_total_cubic_meters').value) || 0,
       status: 'IN_PROGRESS',
       subtotal: 0,
       tax_amount: 0,
@@ -1274,16 +1207,28 @@
     console.log('Presentación del proyecto cargada - ID:', project_id);
     
     // Observer para detectar cuando se abre el modal de equipos
-    const modal = document.getElementById('modal_assign_equipment');
-    const observer = new MutationObserver((mutations) => {
+    const modalEquipment = document.getElementById('modal_assign_equipment');
+    const observerEquipment = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'open' && modal.hasAttribute('open')) {
+        if (mutation.attributeName === 'open' && modalEquipment.hasAttribute('open')) {
           loadAvailableEquipment();
         }
       });
     });
     
-    observer.observe(modal, { attributes: true });
+    observerEquipment.observe(modalEquipment, { attributes: true });
+    
+    // Observer para detectar cuando se abre el modal de planilla
+    const modalSheet = document.getElementById('modal_create_sheet');
+    const observerSheet = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'open' && modalSheet.hasAttribute('open')) {
+          loadNextSeriesCode();
+        }
+      });
+    });
+    
+    observerSheet.observe(modalSheet, { attributes: true });
     
     // Listener para guardar planilla
     const btnSaveSheet = document.getElementById('btn_save_sheet');

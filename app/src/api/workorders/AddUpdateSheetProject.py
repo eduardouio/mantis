@@ -44,8 +44,17 @@ class AddUpdateSheetProjectAPI(View):
             }, status=500)
 
     def get(self, request):
-        """Obtener una hoja de trabajo por ID."""
+        """Obtener una hoja de trabajo por ID o el siguiente código de serie."""
         try:
+            # Si se solicita el siguiente código de serie
+            if request.GET.get('next_series'):
+                next_code = SheetProject.generate_next_series_code()
+                return JsonResponse({
+                    'success': True,
+                    'series_code': next_code
+                })
+            
+            # Obtener hoja de trabajo por ID
             sheet_id = request.GET.get('id')
             if not sheet_id:
                 return JsonResponse({

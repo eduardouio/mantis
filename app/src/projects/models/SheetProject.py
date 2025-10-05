@@ -1,40 +1,8 @@
-"""Modelos para planillas de proyectos (SheetProject y detalles).
-
-SheetProject:
-    Representa la planilla / período de trabajo facturable de un proyecto.
-    Registra un rango (``period_start`` → ``period_end``) y acumula consumo,
-    referencias comerciales y totales monetarios. Sirve como punto de control
-    ("cut-off") para agrupación de trabajos y generación de factura.
-
-Estados (``status``):
-    IN_PROGRESS:
-        Período abierto; se pueden seguir agregando detalles.
-    INVOICED:
-        Planilla facturada; se considera cerrada. Para nuevos trabajos se crea
-        una nueva planilla.
-    CANCELLED:
-        Planilla cancelada; no se agregan más trabajos. Puede migrar a
-        INVOICED sólo si se decide facturar lo acumulado.
-
-Notas:
-    - Asociada a múltiples cadenas de custodia / recursos vía detalles.
-    - No altera el estado del ``Project`` (independiente de ``is_closed``).
-    - Campos de totales (bbls, m3, subtotal, impuestos, total) pueden ser
-      recalculados por signals o tareas (no implementado aquí).
-
-SheetProjectDetail:
-    Ítems detallados de la planilla: recurso, cantidad, precios y medidas.
-
-Pendiente (revisión futura):
-        - Verificar consistencia de los choices 'DAIS'/'DIAS' en
-            ``unit_measurement``.
-"""
-
-
 from projects.models.Project import Project
 from django.db import models
 from common.BaseModel import BaseModel
 from equipment.models.ResourceItem import ResourceItem
+from datetime import datetime
 
 
 class SheetProject(BaseModel):
@@ -46,108 +14,142 @@ class SheetProject(BaseModel):
         on_delete=models.PROTECT
     )
     issue_date = models.DateField(
-        'Fecha de Emisión',
+        "Fecha de Emisión",
         blank=True,
         null=True
     )
     period_start = models.DateField(
-        'Fecha de Inicio',
+        "Fecha de Inicio",
         blank=True,
         null=True
     )
     period_end = models.DateField(
-        'Fecha de Fin',
+        "Fecha de Fin",
         blank=True,
         null=True
     )
     status = models.CharField(
-        'Estado',
+        "Estado",
         max_length=50,
         choices=(
-            ('IN_PROGRESS', 'EN EJECUCIÓN'),
-            ('INVOICED', 'FACTURADO'),
-            ('CANCELLED', 'CANCELADO')
+            ("IN_PROGRESS", "EN EJECUCIÓN"),
+            ("INVOICED", "FACTURADO"),
+            ("CANCELLED", "CANCELADO"),
         ),
-        default='IN_PROGRESS'
+        default="IN_PROGRESS",
     )
     series_code = models.CharField(
-        'Serie',
+        "Serie",
         max_length=50,
-        default='PSL-PS-00000-00'
+        default="PSL-PS-00000-00"
     )
     service_type = models.CharField(
-        'Tipo de Servicio',
+        "Tipo de Servicio",
         max_length=50,
-        default='ALQUILER DE EQUIPOS'
+        choices=(
+            ("ALQUILER", "ALQUILER"),
+            ("MANTENIMIENTO", "MANTENIMIENTO"),
+            ("ALQUILER Y MANTENIMIENTO", "ALQUILER Y MANTENIMIENTO"),
+        ),
+        default="ALQUILER Y MANTENIMIENTO",
     )
     total_gallons = models.PositiveSmallIntegerField(
-        'Total de Galones',
+        "Total de Galones",
         default=0
     )
     total_barrels = models.PositiveSmallIntegerField(
-        'Total de Barriles',
+        "Total de Barriles",
         default=0
     )
     total_cubic_meters = models.PositiveSmallIntegerField(
-        'Total de Metros Cúbicos',
+        "Total de Metros Cúbicos",
         default=0
     )
     client_po_reference = models.CharField(
-        'Referencia PO Cliente',
+        "Referencia PO Cliente",
         max_length=50,
         blank=True,
         null=True
     )
     contact_reference = models.CharField(
-        'Referencia de Contacto',
+        "Referencia de Contacto",
         max_length=50,
         blank=True,
         null=True
     )
     contact_phone_reference = models.CharField(
-        'Referencia de Teléfono de Contacto',
+        "Referencia de Teléfono de Contacto",
         max_length=50,
         blank=True,
         null=True
     )
     final_disposition_reference = models.CharField(
-        'Referencia de Disposición Final',
+        "Referencia de Disposición Final",
         max_length=50,
         blank=True,
         null=True
     )
     invoice_reference = models.CharField(
-        'Referencia de Factura',
+        "Referencia de Factura",
         max_length=50,
         blank=True,
         null=True
     )
     subtotal = models.DecimalField(
-        'Monto Total',
+        "Monto Total",
         max_digits=10,
         decimal_places=2,
         default=0
     )
     tax_amount = models.DecimalField(
-        'IVA',
+        "IVA",
         max_digits=10,
         decimal_places=2,
         default=0
     )
     total = models.DecimalField(
-        'Total',
+        "Total",
         max_digits=10,
         decimal_places=2,
         default=0
     )
 
     class Meta:
-        unique_together = ('project', 'period_start', 'period_end')
-        verbose_name = 'Planilla de Proyecto'
-        verbose_name_plural = 'Planillas de Proyecto'
+        unique_together = ("project", "period_start", "period_end")
+        verbose_name = "Planilla de Proyecto"
+        verbose_name_plural = "Planillas de Proyecto"
 
     def __str__(self):
-        return f'Planilla {self.id} - Proyecto {self.project.partner.name}'
+        return f"Planilla {self.id} - Proyecto {self.project.partner.name}"
+
+    @staticmethod
+    def get_next_series_code():
+        """
+        Formato: PSL-PS-YYYY-NNNN
+        Donde:
+            - PSL-PS: Prefijo fijo
+            - YYYY: Año actual
+            - NNNN: Consecutivo de 4 dígitos empezando en 1000
+        """
+
+        current_year = datetime.now().year
+        prefix = f"PSL-PS-{current_year}-"
+
+        last_sheet = (
+            SheetProject.objects.filter(
+                series_code__startswith=prefix,
+            )
+            .order_by("-id")
+            .first()
+        )
+
+        if last_sheet:
+            last_number = int(last_sheet.series_code.split("-")[-1])
+            next_number = last_number + 1
+        else:
+            next_number = 1000
+
+        return f"{prefix}{next_number:04d}"
 
 
 class SheetProjectDetail(BaseModel):
@@ -163,54 +165,53 @@ class SheetProjectDetail(BaseModel):
         on_delete=models.PROTECT
     )
     detail = models.TextField(
-        'Detalle',
+        "Detalle",
         blank=True,
         null=True
     )
     item_unity = models.CharField(
-        'Unidad del Item',
+        "Unidad del Item",
         max_length=100,
         choices=(
-            ('DIAS', 'DÍAS'),
-            ('UNIDAD', 'UNIDAD'),
-        )
+            ("DIAS", "DÍAS"),
+            ("UNIDAD", "UNIDAD"),
+        ),
     )
     quantity = models.DecimalField(
-        'Cantidad',
+        "Cantidad",
         max_digits=10,
         decimal_places=2,
         default=0
     )
     unit_price = models.DecimalField(
-        'Precio Unitario',
+        "Precio Unitario",
         max_digits=10,
         decimal_places=2,
         default=0
     )
     total_line = models.DecimalField(
-        'Total Línea',
+        "Total Línea",
         max_digits=10,
         decimal_places=2,
         default=0
     )
     unit_measurement = models.CharField(
-        'Unidad de Medida',
+        "Unidad de Medida",
         max_length=50,
         choices=(
-            ('UNITY', 'Unidad'),
-            ('DAIS', 'Días')
+            ("UNITY", "Unidad"),
+            ("DAIS", "Días")
         ),
-        default='DAIS'
+        default="DAIS",
     )
-
     total_price = models.DecimalField(
-        'Precio Total',
+        "Precio Total",
         max_digits=10,
         decimal_places=2,
         default=0
     )
 
     class Meta:
-        unique_together = ('sheet_project', 'resource_item')
-        verbose_name = 'Detalle de Planilla de Proyecto'
-        verbose_name_plural = 'Detalles de Planilla de Proyecto'
+        unique_together = ("sheet_project", "resource_item")
+        verbose_name = "Detalle de Planilla de Proyecto"
+        verbose_name_plural = "Detalles de Planilla de Proyecto"
