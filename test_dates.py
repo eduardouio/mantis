@@ -33,3 +33,5 @@ if vaccination_data['next_dose_date']:
 
 print("\nDespués del formateo:")
 print(vaccination_data)
+
+
