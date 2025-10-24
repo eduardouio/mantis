@@ -517,54 +517,44 @@ PTRTAR_CHECK_LIST = [
 ```sql
 -- Ajustar secuencias para tablas con datos preexistentes
 
-SELECT setval('accounts_historicaltechnical_history_id_seq', (SELECT MAX(history_id) FROM accounts_historicaltechnical)+1);
-SELECT setval('accounts_passtechnical_id_seq', (SELECT MAX(id) FROM accounts_passtechnical)+1);
-SELECT setval('accounts_historicalpasstechnical_history_id_seq', (SELECT MAX(history_id) FROM accounts_historicalpasstechnical)+1);
-SELECT setval('accounts_license_id_seq', (SELECT MAX(id) FROM accounts_license)+1);
-SELECT setval('accounts_historicallicense_history_id_seq', (SELECT MAX(history_id) FROM accounts_historicallicense)+1);
-
-
-
--- ...existing code...
-SELECT setval('accounts_historicallicense_history_id_seq', (SELECT MAX(history_id) FROM accounts_historicallicense)+1);
-
--- Script completo para ajustar todas las secuencias después de importar datos
-
--- === ACCOUNTS ===
-SELECT setval('accounts_customusermodel_id_seq', (SELECT COALESCE(MAX(id), 0) FROM accounts_customusermodel)+1);
-SELECT setval('accounts_technical_id_seq', (SELECT COALESCE(MAX(id), 0) FROM accounts_technical)+1);
-SELECT setval('accounts_historicaltechnical_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM accounts_historicaltechnical)+1);
-SELECT setval('accounts_passtechnical_id_seq', (SELECT COALESCE(MAX(id), 0) FROM accounts_passtechnical)+1);
-SELECT setval('accounts_historicalpasstechnical_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM accounts_historicalpasstechnical)+1);
-SELECT setval('accounts_license_id_seq', (SELECT COALESCE(MAX(id), 0) FROM accounts_license)+1);
-SELECT setval('accounts_historicallicense_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM accounts_historicallicense)+1);
-SELECT setval('accounts_vaccinationrecord_id_seq', (SELECT COALESCE(MAX(id), 0) FROM accounts_vaccinationrecord)+1);
-SELECT setval('accounts_historicalvaccinationrecord_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM accounts_historicalvaccinationrecord)+1);
-
--- === EQUIPMENT ===
-SELECT setval('equipment_resourceitem_id_seq', (SELECT COALESCE(MAX(id), 0) FROM equipment_resourceitem)+1);
-SELECT setval('equipment_historicalresourceitem_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM equipment_historicalresourceitem)+1);
-SELECT setval('equipment_vehicle_id_seq', (SELECT COALESCE(MAX(id), 0) FROM equipment_vehicle)+1);
-SELECT setval('equipment_historicalvehicle_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM equipment_historicalvehicle)+1);
-SELECT setval('equipment_passvehicle_id_seq', (SELECT COALESCE(MAX(id), 0) FROM equipment_passvehicle)+1);
-SELECT setval('equipment_historicalpassvehicle_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM equipment_historicalpassvehicle)+1);
 SELECT setval('equipment_certificationvehicle_id_seq', (SELECT COALESCE(MAX(id), 0) FROM equipment_certificationvehicle)+1);
 SELECT setval('equipment_historicalcertificationvehicle_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM equipment_historicalcertificationvehicle)+1);
+SELECT setval('equipment_historicalpassvehicle_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM equipment_historicalpassvehicle)+1);
+SELECT setval('equipment_historicalresourceitem_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM equipment_historicalresourceitem)+1);
+SELECT setval('equipment_historicalvehicle_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM equipment_historicalvehicle)+1);
+SELECT setval('equipment_passvehicle_id_seq', (SELECT COALESCE(MAX(id), 0) FROM equipment_passvehicle)+1);
+SELECT setval('equipment_resourceitem_id_seq', (SELECT COALESCE(MAX(id), 0) FROM equipment_resourceitem)+1);
+SELECT setval('equipment_vehicle_id_seq', (SELECT COALESCE(MAX(id), 0) FROM equipment_vehicle)+1);
 
--- === PROJECTS ===
-SELECT setval('projects_partner_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_partner)+1);
+-- === PROJECTS SEQUENCES ===
+SELECT setval('projects_chaincustodydetail_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_chaincustodydetail)+1);
+SELECT setval('projects_custodychain_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_custodychain)+1);
+SELECT setval('projects_finaldispositioncertificate_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_finaldispositioncertificate)+1);
+SELECT setval('projects_finaldispositioncertificatedetail_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_finaldispositioncertificatedetail)+1);
+SELECT setval('projects_historicalchaincustodydetail_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalchaincustodydetail)+1);
+SELECT setval('projects_historicalcustodychain_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalcustodychain)+1);
+SELECT setval('projects_historicalfinaldispositioncertificate_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalfinaldispositioncertificate)+1);
+SELECT setval('projects_historicalfinaldispositioncertificatedetail_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalfinaldispositioncertificatedetail)+1);
 SELECT setval('projects_historicalpartner_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalpartner)+1);
-SELECT setval('projects_project_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_project)+1);
 SELECT setval('projects_historicalproject_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalproject)+1);
-SELECT setval('projects_projectresourceitem_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_projectresourceitem)+1);
 SELECT setval('projects_historicalprojectresourceitem_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalprojectresourceitem)+1);
-SELECT setval('projects_workorder_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_workorder)+1);
-SELECT setval('projects_historicalworkorder_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalworkorder)+1);
-SELECT setval('projects_workorderdetail_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_workorderdetail)+1);
-SELECT setval('projects_historicalworkorderdetail_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalworkorderdetail)+1);
-SELECT setval('projects_workordermaintenance_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_workordermaintenance)+1);
-SELECT setval('projects_historicalworkordermaintenance_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalworkordermaintenance)+1);
+SELECT setval('projects_historicalsheetproject_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalsheetproject)+1);
+SELECT setval('projects_historicalsheetprojectdetail_history_id_seq', (SELECT COALESCE(MAX(history_id), 0) FROM projects_historicalsheetprojectdetail)+1);
+SELECT setval('projects_partner_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_partner)+1);
+SELECT setval('projects_project_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_project)+1);
+SELECT setval('projects_projectresourceitem_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_projectresourceitem)+1);
+SELECT setval('projects_sheetproject_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_sheetproject)+1);
+SELECT setval('projects_sheetprojectdetail_id_seq', (SELECT COALESCE(MAX(id), 0) FROM projects_sheetprojectdetail)+1);
 
+-- Verificar que las secuencias se ajustaron correctamente
+SELECT 
+    schemaname,
+    sequencename,
+    last_value
+FROM pg_sequences 
+WHERE schemaname = 'public'
+    AND (sequencename LIKE 'equipment_%' OR sequencename LIKE 'projects_%')
+ORDER BY sequencename;
 
 -- Verificar los valores actuales de las secuencias
 SELECT 
