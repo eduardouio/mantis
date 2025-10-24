@@ -2,278 +2,209 @@
 -- Datos de Tecnicos
 --
 
-INSERT INTO public.accounts_technical (
-    created_at, updated_at, id_user_created, id_user_updated, id, date_joined,
-    first_name, last_name, email, work_area, dni, nro_phone, birth_date,
-    license_issue_date, license_expiry_date,
-    defensive_driving_certificate_issue_date, defensive_driving_certificate_expiry_date,
-    mae_certificate_issue_date, mae_certificate_expiry_date,
-    medical_certificate_issue_date, medical_certificate_expiry_date,
-    is_iess_affiliated, has_life_insurance_policy,
-    quest_ncst_code, quest_instructor, quest_start_date, quest_end_date,
-    notes, is_active, is_deleted
-) VALUES
-('2025-09-14 19:04:08.696918+00','2025-09-15 19:45:40.638949+00',2,2,14,'2025-08-21','NIXON ARTURO','PONCE MACIAS','napm.barce.35@gmail.com','MAINTENANCE_LOGISTICS','1724255169','0939797174','1989-04-10','2023-01-13','2028-01-12','2025-09-10','2026-09-10',NULL,NULL,NULL,NULL,true,false,NULL,NULL,NULL,NULL,NULL,true,false),
-('2025-09-14 15:57:34.892194+00','2025-09-15 20:15:33.694921+00',2,2,5,'2024-11-27','MARYURI STEFANY','ALVAREZ CHONGO','maryiss0666@gmail.com','SUPERVISOR','2101074553','0999199865','1995-06-06','2023-01-06','2028-01-05','2025-02-03','2026-02-03',NULL,NULL,NULL,NULL,true,false,'20230601150022','DIEGO INGA',NULL,NULL,NULL,true,false),
-('2025-09-13 14:21:26.363671+00','2025-09-13 21:22:48.851212+00',2,2,2,'2018-07-13','XAVIER AGUSTIN','JUMBO MORENO','xavierjumbom1988@gamil.com','SANITARY_TECHNICIAN','2100417480','0939458478','1980-08-28','2025-01-15','2030-01-14','2024-06-13','2026-06-13','2025-04-04','2027-04-07','2025-07-02','2026-07-02',true,true,'20221204211147','Guillermo Acurio',NULL,NULL,NULL,true,false),
-('2025-09-14 17:01:04.709812+00','2025-09-15 20:23:42.626585+00',2,2,7,NULL,'FAUSTO EDIXON','PORTILLA LEITON','edixonportilla93@gmail.com','ASSISTANT','1757630882','0988548260','1993-10-30',NULL,NULL,NULL,NULL,NULL,NULL,'2025-06-19','2026-06-19',true,true,'20250327020451','Guillermo Acurio',NULL,NULL,NULL,true,false),
-('2025-09-14 19:06:04.732569+00','2025-09-15 20:29:06.363054+00',2,2,15,'2025-08-18','GEMA VALERIA','CARRANZA PEÑARRIETA','valeria.carranza98@gmail.com','SUPERVISOR','1313725218','0967815000','1998-10-23','2024-10-30','2029-10-29',NULL,NULL,NULL,NULL,NULL,NULL,true,false,NULL,NULL,NULL,NULL,NULL,true,false),
-('2025-08-14 20:39:23.080953+00','2025-09-14 13:33:31.459042+00',2,2,1,'2025-04-23','WASHINGTON EDUARDO','PATIÑO MACIAS','eduardopatino532@gmail.com','SANITARY_TECHNICIAN','1308603735','0999391141','1978-10-09','2023-01-11','2028-01-10','2025-04-22','2027-04-22',NULL,NULL,'2025-06-22','2026-06-22',true,true,'202503270202451','Guillermo Acurio','2025-03-25','2025-03-27',NULL,true,false),
-('2025-09-13 21:53:37.464785+00','2025-09-14 14:42:33.935743+00',2,2,3,NULL,'ADRIAN ARIEL','TINIZARAY OROZCO','adriantinizaray27@gmail.com','SANITARY_TECHNICIAN','2101052658','0998933379','2003-10-27','2023-11-10','2026-11-08','2025-07-22','2027-07-22',NULL,NULL,'2025-06-10','2026-06-10',true,true,'20250625185240','DIEGO INGA-EDUARDO SANGOQUIZA','2025-06-22','2025-06-24',NULL,true,false),
-('2025-09-14 17:13:04.319845+00','2025-09-14 17:13:11.737669+00',2,2,9,NULL,'JINSON ADRIAN','CEDEÑO GARCIA',NULL,'PLANT_PROJECTS','2101112353','0962353261',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,true,false,NULL,NULL,NULL,NULL,NULL,true,false),
-('2025-09-14 19:00:24.28949+00','2025-09-14 19:00:24.289544+00',2,2,13,'2024-10-01','BLANCA ROMI','RUEDA TORRES','romiblanca@gmail.com','SUPERVISOR','2100231964','099168552','1978-10-19',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,false,false,NULL,NULL,NULL,NULL,NULL,true,false),
-('2025-09-14 17:18:19.587869+00','2025-09-16 14:15:32.808263+00',2,2,10,NULL,'NEYSER FERNEY','PAPA MAMALLACTA',NULL,'ASSISTANT','2100833736','0969120336','2003-09-10','2025-03-21','2030-03-20',NULL,NULL,NULL,NULL,NULL,NULL,true,true,NULL,NULL,NULL,NULL,NULL,true,false),
-('2025-09-14 17:03:57.045825+00','2025-09-16 14:20:58.114269+00',2,2,8,NULL,'SAUL ALEJANDRO','LICUY YUMBO','saullicuy4@gmail.com','PLANT_PROJECTS','2200531131','0996358998','1994-05-10',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,true,true,'20250327020451','Guillermo Acurio',NULL,NULL,NULL,true,false),
-('2025-09-13 22:21:26.282755+00','2025-09-16 14:25:56.260058+00',2,2,4,NULL,'EDGAR ROBINSON','ORDOÑEZ BASTIDAS','edgar_leo85@hotmail.com','SANITARY_TECHNICIAN','2100354485','0991493676','1985-07-26','2022-05-30','2027-05-29','2025-06-16','2027-06-16',NULL,NULL,'2025-06-27','2026-06-27',true,true,'20250625185240','Guillermo Acurio',NULL,NULL,NULL,true,false),
-('2025-09-14 17:21:49.166042+00','2025-09-16 15:58:58.285314+00',2,2,11,NULL,'JUAN JOSE','UNUP YUMA','juanunup1986@gmail.com','PLANT_PROJECTS','2100403555','0989017942','1986-05-15',NULL,NULL,NULL,NULL,NULL,NULL,'2025-04-04','2026-04-04',true,true,'20250410145249','Guillermo Acurio',NULL,NULL,NULL,true,false),
-('2025-09-14 16:59:10.523699+00','2025-09-16 16:02:55.28384+00',2,2,6,NULL,'SERGIO ALONSO','VERDEZOTO ILLAPA','sergioverdesoto4@gmail.com','MAINTENANCE_LOGISTICS','0201302692','0999358825','1981-11-15','2024-12-19','2029-12-18',NULL,NULL,NULL,NULL,NULL,NULL,true,true,'20250327020451','Guillermo Acurio',NULL,NULL,NULL,true,false),
-('2025-09-14 17:32:31.962649+00','2025-09-16 23:14:11.715275+00',2,2,12,NULL,'JOSE LUIS','VERDEZOTO BARRAGAN','jverdezoto.soes@gmail.com','SANITARY_TECHNICIAN','0603783713','0961469132','1987-07-20','2021-01-14','2026-01-13','2025-06-01','2026-06-01',NULL,NULL,NULL,NULL,true,true,NULL,NULL,NULL,NULL,NULL,true,false),
-('2025-09-15 16:12:04.338422+00','2025-09-17 01:59:49.145715+00',2,8,16,'2017-06-01','JUAN GABRIEL','VERDEZOTO BARRAGAN','juan.verdezoto@peisol.com.ec','SUPERVISOR','0603783697','0991389141','1988-02-20','2021-03-11','2026-03-10',NULL,NULL,NULL,NULL,NULL,NULL,true,true,'20220605170129','Guillermo Acurio',NULL,NULL,NULL,true,false);
+INSERT INTO public.accounts_technical (created_at,updated_at,is_deleted,id_user_created,id_user_updated,date_joined,first_name,last_name,email,work_area,dni,nro_phone,birth_date,license_issue_date,license_expiry_date,defensive_driving_certificate_issue_date,defensive_driving_certificate_expiry_date,mae_certificate_issue_date,mae_certificate_expiry_date,medical_certificate_issue_date,medical_certificate_expiry_date,is_iess_affiliated,has_life_insurance_policy,quest_ncst_code,quest_instructor,quest_start_date,quest_end_date,notes,is_active) VALUES
+	 ('2025-09-14 10:57:34.892194-05','2025-09-15 15:15:33.694921-05',false,2,2,'2024-11-27','MARYURI STEFANY','ALVAREZ CHONGO','maryiss0666@gmail.com','SUPERVISOR','2101074553','0999199865','1995-06-06','2023-01-06','2028-01-05','2025-02-03','2026-02-03',NULL,NULL,NULL,NULL,true,false,'20230601150022','DIEGO INGA',NULL,NULL,NULL,true),
+	 ('2025-09-13 09:21:26.363671-05','2025-09-13 16:22:48.851212-05',false,2,2,'2018-07-13','XAVIER AGUSTIN','JUMBO MORENO','xavierjumbom1988@gamil.com','SANITARY_TECHNICIAN','2100417480','0939458478','1980-08-28','2025-01-15','2030-01-14','2024-06-13','2026-06-13','2025-04-04','2027-04-07','2025-07-02','2026-07-02',true,true,'20221204211147','Guillermo Acurio',NULL,NULL,NULL,true),
+	 ('2025-09-14 12:01:04.709812-05','2025-09-15 15:23:42.626585-05',false,2,2,NULL,'FAUSTO EDIXON','PORTILLA LEITON','edixonportilla93@gmail.com','ASSISTANT','1757630882','0988548260','1993-10-30',NULL,NULL,NULL,NULL,NULL,NULL,'2025-06-19','2026-06-19',true,true,'20250327020451','Guillermo Acurio',NULL,NULL,NULL,true),
+	 ('2025-09-14 14:06:04.732569-05','2025-09-15 15:29:06.363054-05',false,2,2,'2025-08-18','GEMA VALERIA','CARRANZA PEÑARRIETA','valeria.carranza98@gmail.com','SUPERVISOR','1313725218','0967815000','1998-10-23','2024-10-30','2029-10-29',NULL,NULL,NULL,NULL,NULL,NULL,true,false,NULL,NULL,NULL,NULL,NULL,true),
+	 ('2025-08-14 15:39:23.080953-05','2025-09-14 08:33:31.459042-05',false,2,2,'2025-04-23','WASHINGTON EDUARDO','PATIÑO MACIAS','eduardopatino532@gmail.com','SANITARY_TECHNICIAN','1308603735','0999391141','1978-10-09','2023-01-11','2028-01-10','2025-04-22','2027-04-22',NULL,NULL,'2025-06-22','2026-06-22',true,true,'202503270202451','Guillermo Acurio','2025-03-25','2025-03-27',NULL,true),
+	 ('2025-09-14 12:13:04.319845-05','2025-09-14 12:13:11.737669-05',false,2,2,NULL,'JINSON ADRIAN','CEDEÑO GARCIA',NULL,'PLANT_PROJECTS','2101112353','0962353261',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,true,false,NULL,NULL,NULL,NULL,NULL,true),
+	 ('2025-09-14 12:18:19.587869-05','2025-09-16 09:15:32.808263-05',false,2,2,NULL,'NEYSER FERNEY','PAPA MAMALLACTA',NULL,'ASSISTANT','2100833736','0969120336','2003-09-10','2025-03-21','2030-03-20',NULL,NULL,NULL,NULL,NULL,NULL,true,true,NULL,NULL,NULL,NULL,NULL,true),
+	 ('2025-09-14 12:03:57.045825-05','2025-09-16 09:20:58.114269-05',false,2,2,NULL,'SAUL ALEJANDRO','LICUY YUMBO','saullicuy4@gmail.com','PLANT_PROJECTS','2200531131','0996358998','1994-05-10',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,true,true,'20250327020451','Guillermo Acurio',NULL,NULL,NULL,true),
+	 ('2025-09-13 17:21:26.282755-05','2025-09-16 09:25:56.260058-05',false,2,2,NULL,'EDGAR ROBINSON','ORDOÑEZ BASTIDAS','edgar_leo85@hotmail.com','SANITARY_TECHNICIAN','2100354485','0991493676','1985-07-26','2022-05-30','2027-05-29','2025-06-16','2027-06-16',NULL,NULL,'2025-06-27','2026-06-27',true,true,'20250625185240','Guillermo Acurio',NULL,NULL,NULL,true),
+	 ('2025-09-14 12:21:49.166042-05','2025-09-16 10:58:58.285314-05',false,2,2,NULL,'JUAN JOSE','UNUP YUMA','juanunup1986@gmail.com','PLANT_PROJECTS','2100403555','0989017942','1986-05-15',NULL,NULL,NULL,NULL,NULL,NULL,'2025-04-04','2026-04-04',true,true,'20250410145249','Guillermo Acurio',NULL,NULL,NULL,true);
+INSERT INTO public.accounts_technical (created_at,updated_at,is_deleted,id_user_created,id_user_updated,date_joined,first_name,last_name,email,work_area,dni,nro_phone,birth_date,license_issue_date,license_expiry_date,defensive_driving_certificate_issue_date,defensive_driving_certificate_expiry_date,mae_certificate_issue_date,mae_certificate_expiry_date,medical_certificate_issue_date,medical_certificate_expiry_date,is_iess_affiliated,has_life_insurance_policy,quest_ncst_code,quest_instructor,quest_start_date,quest_end_date,notes,is_active) VALUES
+	 ('2025-09-14 11:59:10.523699-05','2025-09-16 11:02:55.28384-05',false,2,2,NULL,'SERGIO ALONSO','VERDEZOTO ILLAPA','sergioverdesoto4@gmail.com','MAINTENANCE_LOGISTICS','0201302692','0999358825','1981-11-15','2024-12-19','2029-12-18',NULL,NULL,NULL,NULL,NULL,NULL,true,true,'20250327020451','Guillermo Acurio',NULL,NULL,NULL,true),
+	 ('2025-09-14 12:32:31.962649-05','2025-09-16 18:14:11.715275-05',false,2,2,NULL,'JOSE LUIS','VERDEZOTO BARRAGAN','jverdezoto.soes@gmail.com','SANITARY_TECHNICIAN','0603783713','0961469132','1987-07-20','2021-01-14','2026-01-13','2025-06-01','2026-06-01',NULL,NULL,NULL,NULL,true,true,NULL,NULL,NULL,NULL,NULL,true),
+	 ('2025-09-15 11:12:04.338422-05','2025-09-21 17:58:21.44959-05',false,2,1,'2017-06-01','JUAN GABRIEL','VERDEZOTO BARRAGAN','juan.verdezoto@peisol.com.ec','SUPERVISOR','0603783697','0991389141','1988-02-20','2021-03-11','2026-03-10',NULL,NULL,NULL,NULL,NULL,NULL,true,true,'20220605170129','Guillermo Acurio',NULL,NULL,'',true),
+	 ('2025-09-13 16:53:37.464785-05','2025-10-03 04:41:14.551351-05',false,2,7,NULL,'ADRIAN ARIEL','TINIZARAY OROZCO','adriantinizaray27@gmail.com','SANITARY_TECHNICIAN','2101052658','0998933379','2003-10-27','2023-11-10','2026-11-08','2025-07-22','2027-07-22',NULL,NULL,'2025-06-10','2026-06-10',true,true,'20250625185240','DIEGO INGA-EDUARDO SANGOQUIZA','2025-06-22','2025-06-24','test',true),
+	 ('2025-09-14 14:00:24.28949-05','2025-10-10 18:30:27.278588-05',false,2,3,'2024-10-01','BLANCA ROMI','RUEDA TORRES','romiblanca@gmail.com','SUPERVISOR','2100231964','099168552','1978-10-19','2008-08-25','2026-11-23',NULL,NULL,NULL,NULL,NULL,NULL,false,false,'20250327020451','GUILLERMO ACURIO',NULL,NULL,'',true),
+	 ('2025-09-14 14:04:08.696918-05','2025-10-10 18:41:42.063231-05',false,2,2,'2025-08-21','NIXON ARTURO','PONCE MACIAS','napm.barce.35@gmail.com','MAINTENANCE_LOGISTICS','1724255169','0939797174','1989-04-10','2023-01-13','2028-01-12','2025-09-10','2026-09-10',NULL,NULL,'2025-10-02',NULL,true,false,NULL,NULL,NULL,NULL,'',true);
 
 
 --
 -- Registro de bvacunas
 --
-
-INSERT INTO public.accounts_vaccinationrecord (
-    created_at, updated_at, is_active,
-     id_user_created, id_user_updated, id, vaccine_type, batch_number, application_date, dose_number, next_dose_date, notes,
-      technical_id,is_deleted
-) VALUES
-    ('2025-08-14 20:58:46.843329+00', '2025-08-14 21:02:01.558276+00', false, 2, 2, 2, 'HEPATITIS_A_B', 'AHABB463AA', '2025-02-28', 3, '2025-02-28', NULL, 1,false),
-    ('2025-08-14 20:53:29.607312+00', '2025-08-14 21:02:04.859774+00', false, 2, 2, 1, 'HEPATITIS_A_B', 'AHABB463AA', '2024-09-27', 2, '2024-09-27', NULL, 1,false),
-    ('2025-08-14 21:01:24.484881+00', '2025-08-14 21:02:07.656176+00', false, 2, 2, 3, 'HEPATITIS_A_B', 'AHABB463AA', '2024-08-26', 1, '2024-08-28', NULL, 1,false),
-    ('2025-08-14 21:02:57.816533+00', '2025-08-14 21:02:57.816558+00', true, 2, 2, 4, 'HEPATITIS_A_B', 'AHABB463AA', '2024-08-26', 1, '2024-08-26', NULL, 1,false),
-    ('2025-08-14 21:03:33.932867+00', '2025-08-14 21:03:33.932891+00', true, 2, 2, 5, 'HEPATITIS_A_B', 'AHABB463AA', '2024-09-27', 2, '2024-09-27', NULL, 1,false),
-    ('2025-08-14 21:04:13.683125+00', '2025-08-14 21:04:13.683142+00', true, 2, 2, 6, 'HEPATITIS_A_B', 'AHABB463AA', '2025-02-28', 3, '2025-02-28', NULL, 1,false),
-    ('2025-08-14 21:07:05.548105+00', '2025-08-14 21:07:05.548131+00', true, 2, 2, 7, 'YELLOW_FEVER', 'X3A89IV', '2024-08-19', 1, '2024-08-19', NULL, 1,false),
-    ('2025-09-13 15:33:04.573855+00', '2025-09-13 15:33:04.573876+00', true, 2, 2, 8, 'YELLOW_FEVER', 'M5578', '2015-04-28', 1, NULL, 'UNICA DOSIS', 2,false),
-    ('2025-09-13 15:40:06.627943+00', '2025-09-13 15:43:15.343855+00', false, 2, 2, 9, 'INFLUENZA', 'X2A47', '2025-05-08', 1, NULL, NULL, 2,false),
-    ('2025-09-13 15:43:59.38914+00', '2025-09-13 15:43:59.389159+00', true, 2, 2, 10, 'TYPHOID', 'X2A47', '2025-05-08', 1, '2028-05-08', NULL, 2,false),
-    ('2025-09-13 15:46:06.554055+00', '2025-09-13 15:46:06.554081+00', true, 2, 2, 11, 'MEASLES', NULL, '2024-03-11', 1, NULL, 'unica dosis', 2,false),
-    ('2025-09-13 15:55:20.599063+00', '2025-09-13 15:55:20.599186+00', true, 2, 2, 12, 'COVID', 'NF0008', '2021-06-15', 1, NULL, NULL, 2,false),
-    ('2025-09-13 15:55:59.696058+00', '2025-09-13 15:55:59.696081+00', true, 2, 2, 13, 'COVID', '77786', '2021-08-27', 2, NULL, NULL, 2,false),
-    ('2025-09-13 16:19:13.373264+00', '2025-09-13 16:19:13.373289+00', true, 2, 2, 14, 'HEPATITIS_A_B', 'AHABB360AF', '2017-02-04', 1, NULL, NULL, 2,false),
-    ('2025-09-13 16:19:55.942794+00', '2025-09-13 16:19:55.942812+00', true, 2, 2, 15, 'HEPATITIS_A_B', 'AHABB360AF', '2017-06-15', 2, NULL, NULL, 2,false);
-
+INSERT INTO public.accounts_vaccinationrecord (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,vaccine_type,batch_number,application_date,dose_number,next_dose_date,notes,technical_id) VALUES
+	 ('2025-08-14 15:58:46.843329-05','2025-08-14 16:02:01.558276-05',false,false,2,2,'HEPATITIS_A_B','AHABB463AA','2025-02-28',3,'2025-02-28',NULL,1),
+	 ('2025-08-14 15:53:29.607312-05','2025-08-14 16:02:04.859774-05',false,false,2,2,'HEPATITIS_A_B','AHABB463AA','2024-09-27',2,'2024-09-27',NULL,1),
+	 ('2025-08-14 16:01:24.484881-05','2025-08-14 16:02:07.656176-05',false,false,2,2,'HEPATITIS_A_B','AHABB463AA','2024-08-26',1,'2024-08-28',NULL,1),
+	 ('2025-08-14 16:02:57.816533-05','2025-08-14 16:02:57.816558-05',true,false,2,2,'HEPATITIS_A_B','AHABB463AA','2024-08-26',1,'2024-08-26',NULL,1),
+	 ('2025-08-14 16:03:33.932867-05','2025-08-14 16:03:33.932891-05',true,false,2,2,'HEPATITIS_A_B','AHABB463AA','2024-09-27',2,'2024-09-27',NULL,1),
+	 ('2025-08-14 16:04:13.683125-05','2025-08-14 16:04:13.683142-05',true,false,2,2,'HEPATITIS_A_B','AHABB463AA','2025-02-28',3,'2025-02-28',NULL,1),
+	 ('2025-08-14 16:07:05.548105-05','2025-08-14 16:07:05.548131-05',true,false,2,2,'YELLOW_FEVER','X3A89IV','2024-08-19',1,'2024-08-19',NULL,1),
+	 ('2025-09-13 10:40:06.627943-05','2025-09-13 10:43:15.343855-05',false,false,2,2,'INFLUENZA','X2A47','2025-05-08',1,NULL,NULL,2),
+	 ('2025-09-13 10:46:06.554055-05','2025-09-13 10:46:06.554081-05',true,false,2,2,'MEASLES',NULL,'2024-03-11',1,NULL,'unica dosis',2),
+	 ('2025-09-13 10:55:20.599063-05','2025-09-13 10:55:20.599186-05',true,false,2,2,'COVID','NF0008','2021-06-15',1,NULL,NULL,2);
+INSERT INTO public.accounts_vaccinationrecord (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,vaccine_type,batch_number,application_date,dose_number,next_dose_date,notes,technical_id) VALUES
+	 ('2025-09-13 10:55:59.696058-05','2025-09-13 10:55:59.696081-05',true,false,2,2,'COVID','77786','2021-08-27',2,NULL,NULL,2),
+	 ('2025-09-13 11:19:13.373264-05','2025-09-13 11:19:13.373289-05',true,false,2,2,'HEPATITIS_A_B','AHABB360AF','2017-02-04',1,NULL,NULL,2),
+	 ('2025-09-13 10:43:59.38914-05','2025-10-11 16:33:46.287224-05',true,false,2,2,'TYPHOID','X2A47','2025-05-08',1,'2028-05-08',NULL,2),
+	 ('2025-09-13 11:19:55.942794-05','2025-10-11 16:39:56.151702-05',true,false,2,2,'HEPATITIS_A_B','AHABB360AF','2017-06-15',2,NULL,NULL,2),
+	 ('2025-10-11 16:40:53.661558-05','2025-10-11 16:40:53.661577-05',true,false,2,2,'HEPATITIS_A_B','AHABB360AF','2017-12-15',3,NULL,NULL,2),
+	 ('2025-10-11 16:42:32.018395-05','2025-10-11 16:43:14.752273-05',true,false,2,2,'HEPATITIS_A_B','0340L005C','2022-10-24',4,NULL,NULL,2),
+	 ('2025-10-11 16:44:59.894886-05','2025-10-11 16:44:59.894911-05',true,false,2,2,'HEPATITIS_A_B','044R8010FE','2023-11-30',5,'2028-11-30',NULL,2),
+	 ('2025-09-13 10:33:04.573855-05','2025-10-11 16:47:58.414096-05',true,false,2,2,'YELLOW_FEVER','M5578','2015-04-28',1,NULL,'UNICA DOSIS',2),
+	 ('2025-10-11 17:46:18.675983-05','2025-10-11 17:46:18.676-05',true,false,2,2,'TETANUS','DT3200415','2017-05-04',1,NULL,NULL,2),
+	 ('2025-10-11 17:46:54.779917-05','2025-10-11 17:46:54.779934-05',true,false,2,2,'TETANUS','DT3200415','2017-06-15',2,NULL,NULL,2);
+INSERT INTO public.accounts_vaccinationrecord (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,vaccine_type,batch_number,application_date,dose_number,next_dose_date,notes,technical_id) VALUES
+	 ('2025-10-11 17:49:05.773692-05','2025-10-11 17:49:05.77371-05',true,false,2,2,'TETANUS','221500818B','2017-12-15',3,NULL,NULL,2),
+	 ('2025-10-11 17:50:20.400515-05','2025-10-11 17:50:20.400533-05',true,false,2,2,'TETANUS','ADACEL:C5884BC','2022-10-12',4,NULL,NULL,2),
+	 ('2025-10-11 18:27:18.207822-05','2025-10-11 18:27:18.20784-05',true,false,2,2,'TETANUS','2218018220','2023-11-30',5,NULL,NULL,2);
 
 --
 -- Pases de tecnicos
 --
-INSERT INTO public.accounts_passtechnical (
-    notes, created_at, updated_at, is_active, id_user_created, id_user_updated, id, bloque, fecha_caducidad, technical_id, is_deleted
-) VALUES
-    (NULL, '2025-08-14 20:44:50.294726+00', '2025-08-14 20:45:10.44106+00', true, 2, 2, 1, 'shaya', '2027-04-25', 1,false),
-    (NULL, '2025-08-14 20:47:12.413263+00', '2025-08-14 20:47:12.413281+00', true, 2, 2, 2, 'andes_petroleum', '2026-06-30', 1,false),
-    (NULL, '2025-08-14 20:48:46.286943+00', '2025-08-14 20:48:46.286959+00', true, 2, 2, 3, 'frontera_energy', '2026-05-02', 1,false),
-    (NULL, '2025-08-14 20:50:55.96907+00', '2025-08-14 20:50:55.969093+00', true, 2, 2, 4, 'gran_tierra', '2026-04-23', 1,false),
-    (NULL, '2025-09-13 14:56:50.909472+00', '2025-09-13 14:56:50.90949+00', true, 2, 2, 5, 'petroecuador', '2026-03-06', 2,false),
-    (NULL, '2025-09-13 15:13:35.918991+00', '2025-09-13 15:13:35.91901+00', true, 2, 2, 6, 'shaya', '2026-10-01', 2,false),
-    (NULL, '2025-09-13 15:13:58.562625+00', '2025-09-13 15:13:58.562644+00', true, 2, 2, 7, 'andes_petroleum', '2026-06-01', 2,false),
-    (NULL, '2025-09-13 15:14:26.592255+00', '2025-09-13 15:14:26.59228+00', true, 2, 2, 8, 'consorcio_shushufindi', '2027-02-14', 2,false),
-    (NULL, '2025-09-13 15:14:45.099899+00', '2025-09-13 15:14:45.099944+00', true, 2, 2, 9, 'gran_tierra', '2026-04-23', 2,false),
-    (NULL, '2025-09-13 15:15:12.682877+00', '2025-09-13 15:15:12.682901+00', true, 2, 2, 10, 'orion', '2026-08-10', 2,false),
-    (NULL, '2025-09-13 21:54:51.000669+00', '2025-09-13 21:54:51.000691+00', true, 2, 2, 11, 'gran_tierra', '2026-06-05', 3,false),
-    (NULL, '2025-09-13 21:57:42.694952+00', '2025-09-13 21:57:56.706589+00', true, 2, 2, 12, 'consorcio_shushufindi', '2027-06-24', 3,false),
-    (NULL, '2025-09-13 22:17:09.337725+00', '2025-09-13 22:17:09.337741+00', true, 2, 2, 13, 'orion', '2026-06-18', 3,false),
-    (NULL, '2025-09-13 22:17:33.341251+00', '2025-09-13 22:17:33.341271+00', true, 2, 2, 14, 'pcr', '2026-07-31', 3,false),
-    (NULL, '2025-09-14 13:35:05.224498+00', '2025-09-14 13:35:05.224555+00', true, 2, 2, 15, 'pcr', '2026-08-30', 1,false),
-    (NULL, '2025-09-14 13:35:53.916133+00', '2025-09-14 13:35:53.91615+00', true, 2, 2, 16, 'gente_oil', '2026-08-19', 1,false),
-    (NULL, '2025-09-14 13:37:13.185343+00', '2025-09-14 13:37:13.185361+00', true, 2, 2, 17, 'pardalis_services', '2026-04-24', 1,false),
-    (NULL, '2025-09-14 14:29:47.218405+00', '2025-09-14 14:29:47.218429+00', true, 2, 2, 18, 'petroecuador', '2026-08-22', 4,false),
-    (NULL, '2025-09-14 14:33:09.569749+00', '2025-09-14 14:33:09.569773+00', true, 2, 2, 19, 'shaya', '2027-07-06', 4,false),
-    (NULL, '2025-09-14 14:38:06.440119+00', '2025-09-14 14:38:06.440139+00', true, 2, 2, 20, 'consorcio_shushufindi', '2027-06-24', 4,false),
-    (NULL, '2025-09-14 14:38:28.376569+00', '2025-09-14 14:38:28.376595+00', true, 2, 2, 21, 'gran_tierra', '2026-06-12', 4,false),
-    (NULL, '2025-09-14 14:41:37.267063+00', '2025-09-14 14:41:37.26708+00', true, 2, 2, 22, 'orion', '2026-06-11', 4,false),
-    (NULL, '2025-09-15 16:12:56.78298+00', '2025-09-15 16:12:56.782997+00', true, 2, 2, 23, 'consorcio_shushufindi', '2026-09-10', 16,false),
-    (NULL, '2025-09-15 16:13:18.670892+00', '2025-09-15 16:13:18.670911+00', true, 2, 2, 24, 'gran_tierra', '2026-06-05', 16,false),
-    (NULL, '2025-09-15 16:13:47.281029+00', '2025-09-15 16:13:47.281049+00', true, 2, 2, 25, 'pardalis_services', '2025-10-19', 16,false),
-    (NULL, '2025-09-15 16:15:20.318736+00', '2025-09-15 16:15:20.318765+00', true, 2, 2, 26, 'shaya', '2027-03-29', 16,false),
-    (NULL, '2025-09-15 16:18:50.497406+00', '2025-09-15 16:18:50.497425+00', true, 2, 2, 27, 'pcr', '2025-12-31', 16,false),
-    (NULL, '2025-09-15 17:27:32.36956+00', '2025-09-15 17:27:32.369578+00', true, 2, 2, 28, 'gente_oil', '2026-09-08', 14,false),
-    (NULL, '2025-09-15 17:28:05.21947+00', '2025-09-15 17:28:05.219499+00', true, 2, 2, 29, 'gran_tierra', '2026-09-03', 14,false),
-    (NULL, '2025-09-15 17:28:43.479506+00', '2025-09-15 17:28:43.479534+00', true, 2, 2, 30, 'pcr', '2026-09-30', 14,false),
-    (NULL, '2025-09-15 17:35:45.854364+00', '2025-09-15 17:35:45.854389+00', true, 2, 2, 31, 'shaya', '2027-04-25', 7,false),
-    (NULL, '2025-09-15 17:36:06.651585+00', '2025-09-15 17:36:06.651604+00', true, 2, 2, 32, 'consorcio_shushufindi', '2027-06-24', 7,false),
-    (NULL, '2025-09-15 20:15:56.775012+00', '2025-09-15 20:17:07.775603+00', true, 2, 2, 33, 'consorcio_shushufindi', '2027-06-24', 5,false),
-    (NULL, '2025-09-15 20:17:27.765293+00', '2025-09-15 20:17:27.765312+00', true, 2, 2, 34, 'shaya', '2027-03-29', 5,false),
-    (NULL, '2025-09-15 20:17:50.799336+00', '2025-09-15 20:17:50.79936+00', true, 2, 2, 35, 'gran_tierra', '2026-06-19', 5,false),
-    (NULL, '2025-09-15 20:18:07.47336+00', '2025-09-15 20:18:18.234045+00', true, 2, 2, 36, 'pardalis_services', '2026-04-24', 5,false),
-    (NULL, '2025-09-15 20:18:37.136619+00', '2025-09-15 20:18:37.136643+00', true, 2, 2, 37, 'pcr', '2025-12-31', 5,false),
-    (NULL, '2025-09-15 20:52:57.997627+00', '2025-09-15 20:52:57.99765+00', true, 2, 2, 38, 'petroecuador', '2025-10-30', 16,false),
-    (NULL, '2025-09-15 21:37:02.689521+00', '2025-09-15 21:37:16.751553+00', true, 2, 2, 39, 'consorcio_shushufindi', '2026-02-06', 11,false),
-    (NULL, '2025-09-15 21:38:10.372139+00', '2025-09-15 21:38:10.372164+00', true, 2, 2, 40, 'petroecuador', '2026-04-07', 11,false),
-    (NULL, '2025-09-15 21:38:37.335921+00', '2025-09-15 21:38:37.335945+00', true, 2, 2, 41, 'gran_tierra', '2026-04-25', 11,false),
-    (NULL, '2025-09-16 14:16:24.307766+00', '2025-09-16 14:16:24.307843+00', true, 2, 2, 42, 'pcr', '2025-09-30', 10,false),
-    (NULL, '2025-09-16 14:20:01.204468+00', '2025-09-16 14:20:01.204495+00', true, 2, 2, 43, 'gran_tierra', '2026-03-14', 8,false),
-    (NULL, '2025-09-16 14:20:25.444053+00', '2025-09-16 14:20:25.444076+00', true, 2, 2, 44, 'shaya', '2027-04-25', 8,false),
-    (NULL, '2025-09-16 14:21:14.018545+00', '2025-09-16 14:21:14.018569+00', true, 2, 2, 45, 'pcr', '2025-12-31', 8,false),
-    (NULL, '2025-09-16 14:21:38.786888+00', '2025-09-16 14:21:38.786911+00', true, 2, 2, 46, 'enap_sipec', '2025-09-30', 8,false),
-    (NULL, '2025-09-16 15:59:18.002606+00', '2025-09-16 15:59:18.00263+00', true, 2, 2, 47, 'shaya', '2027-04-12', 11,false),
-    (NULL, '2025-09-16 16:01:14.20995+00', '2025-09-16 16:01:14.209971+00', true, 2, 2, 48, 'gente_oil', '2026-08-19', 6,false),
-    (NULL, '2025-09-16 16:01:57.963621+00', '2025-09-16 16:01:57.963641+00', true, 2, 2, 49, 'pardalis_services', '2026-04-24', 6,false),
-    (NULL, '2025-09-16 16:02:18.445465+00', '2025-09-16 16:02:18.445488+00', true, 2, 2, 50, 'shaya', '2027-04-25', 6,false),
-    (NULL, '2025-09-16 23:12:08.554396+00', '2025-09-16 23:12:08.554421+00', true, 2, 2, 51, 'petroecuador', '2025-10-22', 12,false);
+INSERT INTO public.accounts_passtechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,bloque,fecha_caducidad,technical_id) VALUES
+	 (NULL,'2025-08-14 15:44:50.294726-05','2025-08-14 15:45:10.44106-05',true,false,2,2,'shaya','2027-04-25',1),
+	 (NULL,'2025-08-14 15:47:12.413263-05','2025-08-14 15:47:12.413281-05',true,false,2,2,'andes_petroleum','2026-06-30',1),
+	 (NULL,'2025-08-14 15:48:46.286943-05','2025-08-14 15:48:46.286959-05',true,false,2,2,'frontera_energy','2026-05-02',1),
+	 (NULL,'2025-08-14 15:50:55.96907-05','2025-08-14 15:50:55.969093-05',true,false,2,2,'gran_tierra','2026-04-23',1),
+	 (NULL,'2025-09-13 09:56:50.909472-05','2025-09-13 09:56:50.90949-05',true,false,2,2,'petroecuador','2026-03-06',2),
+	 (NULL,'2025-09-13 10:13:35.918991-05','2025-09-13 10:13:35.91901-05',true,false,2,2,'shaya','2026-10-01',2),
+	 (NULL,'2025-09-13 10:13:58.562625-05','2025-09-13 10:13:58.562644-05',true,false,2,2,'andes_petroleum','2026-06-01',2),
+	 (NULL,'2025-09-13 10:14:26.592255-05','2025-09-13 10:14:26.59228-05',true,false,2,2,'consorcio_shushufindi','2027-02-14',2),
+	 (NULL,'2025-09-13 10:14:45.099899-05','2025-09-13 10:14:45.099944-05',true,false,2,2,'gran_tierra','2026-04-23',2),
+	 (NULL,'2025-09-13 10:15:12.682877-05','2025-09-13 10:15:12.682901-05',true,false,2,2,'orion','2026-08-10',2);
+INSERT INTO public.accounts_passtechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,bloque,fecha_caducidad,technical_id) VALUES
+	 (NULL,'2025-09-13 16:54:51.000669-05','2025-09-13 16:54:51.000691-05',true,false,2,2,'gran_tierra','2026-06-05',3),
+	 (NULL,'2025-09-13 16:57:42.694952-05','2025-09-13 16:57:56.706589-05',true,false,2,2,'consorcio_shushufindi','2027-06-24',3),
+	 (NULL,'2025-09-13 17:17:09.337725-05','2025-09-13 17:17:09.337741-05',true,false,2,2,'orion','2026-06-18',3),
+	 (NULL,'2025-09-13 17:17:33.341251-05','2025-09-13 17:17:33.341271-05',true,false,2,2,'pcr','2026-07-31',3),
+	 (NULL,'2025-09-14 08:35:05.224498-05','2025-09-14 08:35:05.224555-05',true,false,2,2,'pcr','2026-08-30',1),
+	 (NULL,'2025-09-14 08:35:53.916133-05','2025-09-14 08:35:53.91615-05',true,false,2,2,'gente_oil','2026-08-19',1),
+	 (NULL,'2025-09-14 08:37:13.185343-05','2025-09-14 08:37:13.185361-05',true,false,2,2,'pardalis_services','2026-04-24',1),
+	 (NULL,'2025-09-14 09:29:47.218405-05','2025-09-14 09:29:47.218429-05',true,false,2,2,'petroecuador','2026-08-22',4),
+	 (NULL,'2025-09-14 09:33:09.569749-05','2025-09-14 09:33:09.569773-05',true,false,2,2,'shaya','2027-07-06',4),
+	 (NULL,'2025-09-14 09:38:06.440119-05','2025-09-14 09:38:06.440139-05',true,false,2,2,'consorcio_shushufindi','2027-06-24',4);
+INSERT INTO public.accounts_passtechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,bloque,fecha_caducidad,technical_id) VALUES
+	 (NULL,'2025-09-14 09:38:28.376569-05','2025-09-14 09:38:28.376595-05',true,false,2,2,'gran_tierra','2026-06-12',4),
+	 (NULL,'2025-09-14 09:41:37.267063-05','2025-09-14 09:41:37.26708-05',true,false,2,2,'orion','2026-06-11',4),
+	 (NULL,'2025-09-15 11:12:56.78298-05','2025-09-15 11:12:56.782997-05',true,false,2,2,'consorcio_shushufindi','2026-09-10',16),
+	 (NULL,'2025-09-15 11:13:18.670892-05','2025-09-15 11:13:18.670911-05',true,false,2,2,'gran_tierra','2026-06-05',16),
+	 (NULL,'2025-09-15 11:13:47.281029-05','2025-09-15 11:13:47.281049-05',true,false,2,2,'pardalis_services','2025-10-19',16),
+	 (NULL,'2025-09-15 11:15:20.318736-05','2025-09-15 11:15:20.318765-05',true,false,2,2,'shaya','2027-03-29',16),
+	 (NULL,'2025-09-15 11:18:50.497406-05','2025-09-15 11:18:50.497425-05',true,false,2,2,'pcr','2025-12-31',16),
+	 (NULL,'2025-09-15 12:27:32.36956-05','2025-09-15 12:27:32.369578-05',true,false,2,2,'gente_oil','2026-09-08',14),
+	 (NULL,'2025-09-15 12:28:05.21947-05','2025-09-15 12:28:05.219499-05',true,false,2,2,'gran_tierra','2026-09-03',14),
+	 (NULL,'2025-09-15 12:28:43.479506-05','2025-09-15 12:28:43.479534-05',true,false,2,2,'pcr','2026-09-30',14);
+INSERT INTO public.accounts_passtechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,bloque,fecha_caducidad,technical_id) VALUES
+	 (NULL,'2025-09-15 12:35:45.854364-05','2025-09-15 12:35:45.854389-05',true,false,2,2,'shaya','2027-04-25',7),
+	 (NULL,'2025-09-15 12:36:06.651585-05','2025-09-15 12:36:06.651604-05',true,false,2,2,'consorcio_shushufindi','2027-06-24',7),
+	 (NULL,'2025-09-15 15:15:56.775012-05','2025-09-15 15:17:07.775603-05',true,false,2,2,'consorcio_shushufindi','2027-06-24',5),
+	 (NULL,'2025-09-15 15:17:27.765293-05','2025-09-15 15:17:27.765312-05',true,false,2,2,'shaya','2027-03-29',5),
+	 (NULL,'2025-09-15 15:17:50.799336-05','2025-09-15 15:17:50.79936-05',true,false,2,2,'gran_tierra','2026-06-19',5),
+	 (NULL,'2025-09-15 15:18:07.47336-05','2025-09-15 15:18:18.234045-05',true,false,2,2,'pardalis_services','2026-04-24',5),
+	 (NULL,'2025-09-15 15:18:37.136619-05','2025-09-15 15:18:37.136643-05',true,false,2,2,'pcr','2025-12-31',5),
+	 (NULL,'2025-09-15 15:52:57.997627-05','2025-09-15 15:52:57.99765-05',true,false,2,2,'petroecuador','2025-10-30',16),
+	 (NULL,'2025-09-15 16:37:02.689521-05','2025-09-15 16:37:16.751553-05',true,false,2,2,'consorcio_shushufindi','2026-02-06',11),
+	 (NULL,'2025-09-15 16:38:10.372139-05','2025-09-15 16:38:10.372164-05',true,false,2,2,'petroecuador','2026-04-07',11);
+INSERT INTO public.accounts_passtechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,bloque,fecha_caducidad,technical_id) VALUES
+	 (NULL,'2025-09-15 16:38:37.335921-05','2025-09-15 16:38:37.335945-05',true,false,2,2,'gran_tierra','2026-04-25',11),
+	 (NULL,'2025-09-16 09:16:24.307766-05','2025-09-16 09:16:24.307843-05',true,false,2,2,'pcr','2025-09-30',10),
+	 (NULL,'2025-09-16 09:20:01.204468-05','2025-09-16 09:20:01.204495-05',true,false,2,2,'gran_tierra','2026-03-14',8),
+	 (NULL,'2025-09-16 09:20:25.444053-05','2025-09-16 09:20:25.444076-05',true,false,2,2,'shaya','2027-04-25',8),
+	 (NULL,'2025-09-16 09:21:14.018545-05','2025-09-16 09:21:14.018569-05',true,false,2,2,'pcr','2025-12-31',8),
+	 (NULL,'2025-09-16 09:21:38.786888-05','2025-09-16 09:21:38.786911-05',true,false,2,2,'enap_sipec','2025-09-30',8),
+	 (NULL,'2025-09-16 10:59:18.002606-05','2025-09-16 10:59:18.00263-05',true,false,2,2,'shaya','2027-04-12',11),
+	 (NULL,'2025-09-16 11:01:14.20995-05','2025-09-16 11:01:14.209971-05',true,false,2,2,'gente_oil','2026-08-19',6),
+	 (NULL,'2025-09-16 11:01:57.963621-05','2025-09-16 11:01:57.963641-05',true,false,2,2,'pardalis_services','2026-04-24',6),
+	 (NULL,'2025-09-16 11:02:18.445465-05','2025-09-16 11:02:18.445488-05',true,false,2,2,'shaya','2027-04-25',6);
+INSERT INTO public.accounts_passtechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,bloque,fecha_caducidad,technical_id) VALUES
+	 (NULL,'2025-09-16 18:12:08.554396-05','2025-09-16 18:12:08.554421-05',true,false,2,2,'petroecuador','2025-10-22',12),
+	 (NULL,'2025-10-10 18:25:52.023011-05','2025-10-10 18:25:52.023029-05',true,false,3,3,'shaya','2027-04-25',13);
 
 
-
--- 
--- historicos de trecnicos
 --
-INSERT INTO public.accounts_historicaltechnical (
-    created_at, updated_at, id_user_created, id_user_updated, id, date_joined, 
-    first_name, last_name, email, work_area, dni, nro_phone, birth_date, license_issue_date, license_expiry_date, defensive_driving_certificate_issue_date,
-     defensive_driving_certificate_expiry_date, mae_certificate_issue_date, mae_certificate_expiry_date, medical_certificate_issue_date, 
-     medical_certificate_expiry_date, is_iess_affiliated, has_life_insurance_policy, quest_ncst_code, quest_instructor, quest_start_date,
-      quest_end_date, notes, is_active, history_id, history_date, history_change_reason, history_type, history_user_id, is_deleted
-) VALUES
-    ('2025-08-14 20:39:23.080953+00', '2025-08-14 20:39:23.080975+00', 2, 2, 1, '2025-04-23', 'WASHINGTON EDUARDO', 'PATIÑO MACIAS', 'eduardopatino532@gmail.com', 'ASSISTANT', '1308603735', '0999391141', '1978-10-09', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 1, '2025-08-14 20:39:23.083726+00', NULL, '+', NULL,false),
-    ('2025-08-14 20:39:23.080953+00', '2025-08-14 20:44:11.603321+00', 2, 2, 1, '2025-04-23', 'WASHINGTON EDUARDO', 'PATIÑO MACIAS', 'eduardopatino532@gmail.com', 'ASSISTANT', '1308603735', '0999391141', '1978-10-09', '2023-01-11', '2028-01-10', '2025-04-22', '2027-04-22', NULL, NULL, '2025-06-22', '2026-06-22', true, true, '202503270202451', 'Guillermo Acurio', '2025-03-25', '2025-03-27', NULL, true, 2, '2025-08-14 20:44:11.605618+00', NULL, '~', NULL,false),
-    ('2025-08-14 20:39:23.080953+00', '2025-08-14 20:54:21.620112+00', 2, 2, 1, '2025-04-23', 'WASHINGTON EDUARDO', 'PATIÑO MACIAS', 'eduardopatino532@gmail.com', 'ASSISTANT', '1308603735', '0999391141', '1978-10-09', '2023-01-11', '2028-01-10', '2025-04-22', '2027-04-22', NULL, NULL, '2025-06-22', '2026-06-22', true, true, '202503270202451', 'Guillermo Acurio', '2025-03-25', '2025-03-27', NULL, true, 3, '2025-08-14 20:54:21.622076+00', NULL, '~', NULL,false),
-    ('2025-08-14 20:39:23.080953+00', '2025-08-15 13:27:14.736034+00', 2, 2, 1, '2025-04-23', 'WASHINGTON EDUARDO', 'PATIÑO MACIAS', 'eduardopatino532@gmail.com', 'SANITARY_TECHNICIAN', '1308603735', '0999391141', '1978-10-09', '2023-01-11', '2028-01-10', '2025-04-22', '2027-04-22', NULL, NULL, '2025-06-22', '2026-06-22', true, true, '202503270202451', 'Guillermo Acurio', '2025-03-25', '2025-03-27', NULL, true, 4, '2025-08-15 13:27:14.739739+00', NULL, '~', NULL,false),
-    ('2025-09-13 14:21:26.363671+00', '2025-09-13 14:21:26.363693+00', 2, 2, 2, '2018-07-13', 'XAVIER AGUSTIN', 'JUMBO MORENO', 'xavierjumbom1988@gamil.com', 'SANITARY_TECHNICIAN', '2100417480', '0939458478', '1980-08-28', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, false, NULL, NULL, NULL, NULL, NULL, true, 5, '2025-09-13 14:21:26.369329+00', NULL, '+', NULL,false),
-    ('2025-09-13 14:21:26.363671+00', '2025-09-13 14:38:01.784574+00', 2, 2, 2, '2018-07-13', 'XAVIER AGUSTIN', 'JUMBO MORENO', 'xavierjumbom1988@gamil.com', 'SANITARY_TECHNICIAN', '2100417480', '0939458478', '1980-08-28', '2025-01-15', '2030-01-14', '2024-06-13', '2026-06-13', NULL, NULL, NULL, NULL, true, false, NULL, NULL, NULL, NULL, NULL, true, 6, '2025-09-13 14:38:01.78772+00', NULL, '~', NULL,false),
-    ('2025-09-13 14:21:26.363671+00', '2025-09-13 14:50:59.541419+00', 2, 2, 2, '2018-07-13', 'XAVIER AGUSTIN', 'JUMBO MORENO', 'xavierjumbom1988@gamil.com', 'SANITARY_TECHNICIAN', '2100417480', '0939458478', '1980-08-28', '2025-01-15', '2030-01-14', '2024-06-13', '2026-06-13', '2025-04-04', '2027-04-07', '2025-07-02', '2026-07-02', true, false, NULL, NULL, NULL, NULL, NULL, true, 7, '2025-09-13 14:50:59.544201+00', NULL, '~', NULL,false),
-    ('2025-09-13 14:21:26.363671+00', '2025-09-13 16:29:00.558502+00', 2, 2, 2, '2018-07-13', 'XAVIER AGUSTIN', 'JUMBO MORENO', 'xavierjumbom1988@gamil.com', 'SANITARY_TECHNICIAN', '2100417480', '0939458478', '1980-08-28', '2025-01-15', '2030-01-14', '2024-06-13', '2026-06-13', '2025-04-04', '2027-04-07', '2025-07-02', '2026-07-02', true, true, NULL, NULL, NULL, NULL, NULL, true, 8, '2025-09-13 16:29:00.561175+00', NULL, '~', NULL,false),
-    ('2025-09-13 14:21:26.363671+00', '2025-09-13 21:22:48.851212+00', 2, 2, 2, '2018-07-13', 'XAVIER AGUSTIN', 'JUMBO MORENO', 'xavierjumbom1988@gamil.com', 'SANITARY_TECHNICIAN', '2100417480', '0939458478', '1980-08-28', '2025-01-15', '2030-01-14', '2024-06-13', '2026-06-13', '2025-04-04', '2027-04-07', '2025-07-02', '2026-07-02', true, true, '20221204211147', 'Guillermo Acurio', NULL, NULL, NULL, true, 9, '2025-09-13 21:22:48.854677+00', NULL, '~', NULL,false),
-    ('2025-09-13 21:53:37.464785+00', '2025-09-13 21:53:37.464811+00', 2, 2, 3, NULL, 'ADRIAN ARIEL', 'TINIZARAY OROZCO', NULL, 'SANITARY_TECHNICIAN', '2101052658', '0998933379', '2003-10-27', '2023-11-10', '2026-11-08', '2025-07-22', '2027-07-22', NULL, NULL, '2025-06-10', '2026-06-10', false, false, NULL, NULL, NULL, NULL, NULL, true, 10, '2025-09-13 21:53:37.468085+00', NULL, '+', NULL,false),
-    ('2025-09-13 21:53:37.464785+00', '2025-09-13 21:53:47.772369+00', 2, 2, 3, NULL, 'ADRIAN ARIEL', 'TINIZARAY OROZCO', NULL, 'SANITARY_TECHNICIAN', '2101052658', '0998933379', '2003-10-27', '2023-11-10', '2026-11-08', '2025-07-22', '2027-07-22', NULL, NULL, '2025-06-10', '2026-06-10', true, true, NULL, NULL, NULL, NULL, NULL, true, 11, '2025-09-13 21:53:47.774719+00', NULL, '~', NULL,false),
-    ('2025-09-13 21:53:37.464785+00', '2025-09-13 22:19:19.748498+00', 2, 2, 3, NULL, 'ADRIAN ARIEL', 'TINIZARAY OROZCO', NULL, 'SANITARY_TECHNICIAN', '2101052658', '0998933379', '2003-10-27', '2023-11-10', '2026-11-08', '2025-07-22', '2027-07-22', NULL, NULL, '2025-06-10', '2026-06-10', true, true, '20250625185240', 'DIEGO INGA-EDUARDO SANGOQUIZA', '2025-06-22', '2025-06-24', NULL, true, 12, '2025-09-13 22:19:19.751469+00', NULL, '~', NULL,false),
-    ('2025-09-13 22:21:26.282755+00', '2025-09-13 22:21:26.282772+00', 2, 2, 4, NULL, 'EDGAR ROBINSON', 'ORDOÑEZ BASTIDAS', NULL, 'SANITARY_TECHNICIAN', '2100354485', '0991493676', '1985-07-26', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 13, '2025-09-13 22:21:26.284976+00', NULL, '+', NULL,false),
-    ('2025-09-13 22:21:26.282755+00', '2025-09-13 22:23:14.369132+00', 2, 2, 4, NULL, 'EDGAR ROBINSON', 'ORDOÑEZ BASTIDAS', NULL, 'SANITARY_TECHNICIAN', '2100354485', '0991493676', '1985-07-26', '2022-05-30', '2027-05-29', NULL, NULL, NULL, NULL, '2025-06-27', '2026-06-27', true, true, NULL, NULL, NULL, NULL, NULL, true, 14, '2025-09-13 22:23:14.371242+00', NULL, '~', NULL,false),
-    ('2025-08-14 20:39:23.080953+00', '2025-09-14 13:33:31.459042+00', 2, 2, 1, '2025-04-23', 'WASHINGTON EDUARDO', 'PATIÑO MACIAS', 'eduardopatino532@gmail.com', 'SANITARY_TECHNICIAN', '1308603735', '0999391141', '1978-10-09', '2023-01-11', '2028-01-10', '2025-04-22', '2027-04-22', NULL, NULL, '2025-06-22', '2026-06-22', true, true, '202503270202451', 'Guillermo Acurio', '2025-03-25', '2025-03-27', NULL, true, 15, '2025-09-14 13:33:31.461403+00', NULL, '~', NULL,false),
-    ('2025-09-13 22:21:26.282755+00', '2025-09-14 14:26:25.279363+00', 2, 2, 4, NULL, 'EDGAR ROBINSON', 'ORDOÑEZ BASTIDAS', 'edgar_leo85@hotmail.com', 'SANITARY_TECHNICIAN', '2100354485', '0991493676', '1985-07-26', '2022-05-30', '2027-05-29', NULL, NULL, NULL, NULL, '2025-06-27', '2026-06-27', true, true, NULL, NULL, NULL, NULL, NULL, true, 16, '2025-09-14 14:26:25.282194+00', NULL, '~', NULL,false),
-    ('2025-09-13 22:21:26.282755+00', '2025-09-14 14:28:00.713005+00', 2, 2, 4, NULL, 'EDGAR ROBINSON', 'ORDOÑEZ BASTIDAS', 'edgar_leo85@hotmail.com', 'SANITARY_TECHNICIAN', '2100354485', '0991493676', '1985-07-26', '2022-05-30', '2027-05-29', NULL, NULL, NULL, NULL, '2025-06-27', '2026-06-27', true, true, NULL, NULL, NULL, NULL, NULL, true, 17, '2025-09-14 14:28:00.715656+00', NULL, '~', NULL,false),
-    ('2025-09-13 22:21:26.282755+00', '2025-09-14 14:29:04.35527+00', 2, 2, 4, NULL, 'EDGAR ROBINSON', 'ORDOÑEZ BASTIDAS', 'edgar_leo85@hotmail.com', 'SANITARY_TECHNICIAN', '2100354485', '0991493676', '1985-07-26', '2022-05-30', '2027-05-29', '2025-06-16', '2027-06-16', NULL, NULL, '2025-06-27', '2026-06-27', true, true, NULL, NULL, NULL, NULL, NULL, true, 18, '2025-09-14 14:29:04.358147+00', NULL, '~', NULL,false),
-    ('2025-09-13 21:53:37.464785+00', '2025-09-14 14:42:33.935743+00', 2, 2, 3, NULL, 'ADRIAN ARIEL', 'TINIZARAY OROZCO', 'adriantinizaray27@gmail.com', 'SANITARY_TECHNICIAN', '2101052658', '0998933379', '2003-10-27', '2023-11-10', '2026-11-08', '2025-07-22', '2027-07-22', NULL, NULL, '2025-06-10', '2026-06-10', true, true, '20250625185240', 'DIEGO INGA-EDUARDO SANGOQUIZA', '2025-06-22', '2025-06-24', NULL, true, 19, '2025-09-14 14:42:33.938081+00', NULL, '~', NULL,false),
-    ('2025-09-14 15:57:34.892194+00', '2025-09-14 15:57:34.892213+00', 2, 2, 5, '2024-11-27', 'MARYURI STEFANY', 'ALVAREZ CHONGO', 'maryiss0666@gmail.com', 'SUPERVISOR', '2101074553', '0999199865', '1995-06-06', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, false, NULL, NULL, NULL, NULL, NULL, true, 20, '2025-09-14 15:57:34.894026+00', NULL, '+', NULL,false),
-    ('2025-09-14 16:59:10.523699+00', '2025-09-14 16:59:10.52373+00', 2, 2, 6, NULL, 'SERGIO ALONSO', 'VERDEZOTO ILLAPA', NULL, 'MAINTENANCE_LOGISTICS', '0201302692', '0999358825', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 21, '2025-09-14 16:59:10.526328+00', NULL, '+', NULL,false),
-    ('2025-09-14 16:59:10.523699+00', '2025-09-14 16:59:20.466694+00', 2, 2, 6, NULL, 'SERGIO ALONSO', 'VERDEZOTO ILLAPA', NULL, 'MAINTENANCE_LOGISTICS', '0201302692', '0999358825', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 22, '2025-09-14 16:59:20.469881+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:01:04.709812+00', '2025-09-14 17:01:04.70984+00', 2, 2, 7, NULL, 'FAUSTO EDIXON', 'PORTILLA LEITON', NULL, 'ASSISTANT', '1757630882', '0988548260', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 23, '2025-09-14 17:01:04.712292+00', NULL, '+', NULL,false),
-    ('2025-09-14 17:03:57.045825+00', '2025-09-14 17:03:57.045853+00', 2, 2, 8, NULL, 'SAUL ALEJANDRO', 'LICUY YUMBO', NULL, 'PLANT_PROJECTS', '2200531131', '0996358998', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 24, '2025-09-14 17:03:57.048201+00', NULL, '+', NULL,false),
-    ('2025-09-14 17:03:57.045825+00', '2025-09-14 17:04:04.049833+00', 2, 2, 8, NULL, 'SAUL ALEJANDRO', 'LICUY YUMBO', NULL, 'PLANT_PROJECTS', '2200531131', '0996358998', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 25, '2025-09-14 17:04:04.051935+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:13:04.319845+00', '2025-09-14 17:13:04.319865+00', 2, 2, 9, NULL, 'JINSON ADRIAN', 'CEDEÑO GARCIA', NULL, 'PLANT_PROJECTS', '2101112353', '0962353261', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 26, '2025-09-14 17:13:04.321862+00', NULL, '+', NULL,false),
-    ('2025-09-14 17:13:04.319845+00', '2025-09-14 17:13:11.737669+00', 2, 2, 9, NULL, 'JINSON ADRIAN', 'CEDEÑO GARCIA', NULL, 'PLANT_PROJECTS', '2101112353', '0962353261', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, false, NULL, NULL, NULL, NULL, NULL, true, 27, '2025-09-14 17:13:11.739734+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:18:19.587869+00', '2025-09-14 17:18:19.587888+00', 2, 2, 10, NULL, 'NEYSER FERNEY', 'PAPA MAMALLACTA', NULL, 'ASSISTANT', '2100833736', '0969120336', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 28, '2025-09-14 17:18:19.589864+00', NULL, '+', NULL,false),
-    ('2025-09-14 17:21:49.166042+00', '2025-09-14 17:21:49.166062+00', 2, 2, 11, NULL, 'JUAN JOSE', 'UNUP YUMA', NULL, 'PLANT_PROJECTS', '2100403555', '0989017942', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 29, '2025-09-14 17:21:49.168086+00', NULL, '+', NULL,false),
-    ('2025-09-14 17:32:31.962649+00', '2025-09-14 17:32:31.962669+00', 2, 2, 12, NULL, 'JOSE LUIS', 'VERDEZOTO BARRAGAN', NULL, 'SANITARY_TECHNICIAN', '0603783713', '0961469132', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 30, '2025-09-14 17:32:31.964453+00', NULL, '+', NULL,false),
-    ('2025-09-14 19:00:24.28949+00', '2025-09-14 19:00:24.289544+00', 2, 2, 13, '2024-10-01', 'BLANCA ROMI', 'RUEDA TORRES', 'romiblanca@gmail.com', 'SUPERVISOR', '2100231964', '099168552', '1978-10-19', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 31, '2025-09-14 19:00:24.295584+00', NULL, '+', NULL,false),
-    ('2025-09-14 17:32:31.962649+00', '2025-09-14 19:01:05.061225+00', 2, 2, 12, NULL, 'JOSE LUIS', 'VERDEZOTO BARRAGAN', 'jverdezoto.soes@gmail.com', 'SANITARY_TECHNICIAN', '0603783713', '0961469132', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 32, '2025-09-14 19:01:05.063572+00', NULL, '~', NULL,false),
-    ('2025-09-14 19:04:08.696918+00', '2025-09-14 19:04:08.696935+00', 2, 2, 14, NULL, 'NIXON ARTURO', 'PONCE MACIAS', NULL, 'MAINTENANCE_LOGISTICS', '1724255169', '0939797174', '1989-04-10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 33, '2025-09-14 19:04:08.699213+00', NULL, '+', NULL,false),
-    ('2025-09-14 19:06:04.732569+00', '2025-09-14 19:06:04.732595+00', 2, 2, 15, NULL, 'GEMA VALERIA', 'CARRANZA PEÑARRIETA', 'valeria.carranza98@gmail.com', 'ASSISTANT', '1313725218', '0967815000', '1998-10-23', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 34, '2025-09-14 19:06:04.735313+00', NULL, '+', NULL,false),
-    ('2025-09-14 19:06:04.732569+00', '2025-09-14 19:07:29.704857+00', 2, 2, 15, '2025-08-18', 'GEMA VALERIA', 'CARRANZA PEÑARRIETA', 'valeria.carranza98@gmail.com', 'SUPERVISOR', '1313725218', '0967815000', '1998-10-23', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 35, '2025-09-14 19:07:29.706963+00', NULL, '~', NULL,false),
-    ('2025-09-14 19:06:04.732569+00', '2025-09-14 19:07:52.800075+00', 2, 2, 15, '2025-08-18', 'GEMA VALERIA', 'CARRANZA PEÑARRIETA', 'valeria.carranza98@gmail.com', 'SUPERVISOR', '1313725218', '0967815000', '1998-10-23', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, false, NULL, NULL, NULL, NULL, NULL, true, 36, '2025-09-14 19:07:52.80218+00', NULL, '~', NULL,false),
-    ('2025-09-15 16:12:04.338422+00', '2025-09-15 16:12:04.338451+00', 2, 2, 16, '2000-01-01', 'JUAN GABRIEL', 'VERDEZOTO BARRAGAN', 'juan.verdezoto@peisol.com.ec', 'SUPERVISOR', '0603783697', '0991389141', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 37, '2025-09-15 16:12:04.343021+00', NULL, '+', NULL,false),
-    ('2025-09-15 16:12:04.338422+00', '2025-09-15 16:12:26.542665+00', 2, 2, 16, '2000-01-01', 'JUAN GABRIEL', 'VERDEZOTO BARRAGAN', 'juan.verdezoto@peisol.com.ec', 'SUPERVISOR', '0603783697', '0991389141', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 38, '2025-09-15 16:12:26.545024+00', NULL, '~', NULL,false),
-    ('2025-09-15 16:12:04.338422+00', '2025-09-15 16:16:15.349373+00', 2, 2, 16, '2000-01-01', 'JUAN GABRIEL', 'VERDEZOTO BARRAGAN', 'juan.verdezoto@peisol.com.ec', 'SUPERVISOR', '0603783697', '0991389141', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, '20220605170129', 'Guillermo Acurio', NULL, NULL, NULL, true, 39, '2025-09-15 16:16:15.351946+00', NULL, '~', NULL,false),
-    ('2025-09-14 19:04:08.696918+00', '2025-09-15 16:22:08.235402+00', 2, 2, 14, NULL, 'NIXON ARTURO', 'PONCE MACIAS', 'napm.barce.35@gmail.com', 'MAINTENANCE_LOGISTICS', '1724255169', '0939797174', '1989-04-10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 40, '2025-09-15 16:22:08.238402+00', NULL, '~', NULL,false),
-    ('2025-09-14 19:04:08.696918+00', '2025-09-15 17:25:49.488072+00', 2, 2, 14, '2025-08-21', 'NIXON ARTURO', 'PONCE MACIAS', 'napm.barce.35@gmail.com', 'MAINTENANCE_LOGISTICS', '1724255169', '0939797174', '1989-04-10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, false, NULL, NULL, NULL, NULL, NULL, true, 41, '2025-09-15 17:25:49.490676+00', NULL, '~', NULL,false),
-    ('2025-09-14 19:04:08.696918+00', '2025-09-15 17:26:34.434836+00', 2, 2, 14, '2025-08-21', 'NIXON ARTURO', 'PONCE MACIAS', 'napm.barce.35@gmail.com', 'MAINTENANCE_LOGISTICS', '1724255169', '0939797174', '1989-04-10', '2023-01-13', '2028-01-12', NULL, NULL, NULL, NULL, NULL, NULL, true, false, NULL, NULL, NULL, NULL, NULL, true, 42, '2025-09-15 17:26:34.437209+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:01:04.709812+00', '2025-09-15 17:35:11.735856+00', 2, 2, 7, NULL, 'FAUSTO EDIXON', 'PORTILLA LEITON', 'edixonportilla93@gmail.com', 'ASSISTANT', '1757630882', '0988548260', '1993-10-30', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 43, '2025-09-15 17:35:11.738143+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:01:04.709812+00', '2025-09-15 17:37:23.797039+00', 2, 2, 7, NULL, 'FAUSTO EDIXON', 'PORTILLA LEITON', 'edixonportilla93@gmail.com', 'ASSISTANT', '1757630882', '0988548260', '1993-10-30', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, '20250327020451', 'Guillermo Acurio', NULL, NULL, NULL, true, 44, '2025-09-15 17:37:23.799059+00', NULL, '~', NULL,false),
-    ('2025-09-14 16:59:10.523699+00', '2025-09-15 19:21:18.47131+00', 2, 2, 6, NULL, 'SERGIO ALONSO', 'VERDEZOTO ILLAPA', 'sergioverdesoto4@gmail.com', 'MAINTENANCE_LOGISTICS', '0201302692', '0999358825', '1981-11-15', '2024-12-19', '2029-12-18', NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 45, '2025-09-15 19:21:18.474034+00', NULL, '~', NULL,false),
-    ('2025-09-14 19:04:08.696918+00', '2025-09-15 19:45:40.638949+00', 2, 2, 14, '2025-08-21', 'NIXON ARTURO', 'PONCE MACIAS', 'napm.barce.35@gmail.com', 'MAINTENANCE_LOGISTICS', '1724255169', '0939797174', '1989-04-10', '2023-01-13', '2028-01-12', '2025-09-10', '2026-09-10', NULL, NULL, NULL, NULL, true, false, NULL, NULL, NULL, NULL, NULL, true, 46, '2025-09-15 19:45:40.641883+00', NULL, '~', NULL,false),
-    ('2025-09-14 15:57:34.892194+00', '2025-09-15 20:12:28.186937+00', 2, 2, 5, '2024-11-27', 'MARYURI STEFANY', 'ALVAREZ CHONGO', 'maryiss0666@gmail.com', 'SUPERVISOR', '2101074553', '0999199865', '1995-06-06', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, false, '20230601150022', 'DIEGO INGA', NULL, NULL, NULL, true, 47, '2025-09-15 20:12:28.188968+00', NULL, '~', NULL,false),
-    ('2025-09-14 15:57:34.892194+00', '2025-09-15 20:15:33.694921+00', 2, 2, 5, '2024-11-27', 'MARYURI STEFANY', 'ALVAREZ CHONGO', 'maryiss0666@gmail.com', 'SUPERVISOR', '2101074553', '0999199865', '1995-06-06', '2023-01-06', '2028-01-05', '2025-02-03', '2026-02-03', NULL, NULL, NULL, NULL, true, false, '20230601150022', 'DIEGO INGA', NULL, NULL, NULL, true, 48, '2025-09-15 20:15:33.697265+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:01:04.709812+00', '2025-09-15 20:23:42.626585+00', 2, 2, 7, NULL, 'FAUSTO EDIXON', 'PORTILLA LEITON', 'edixonportilla93@gmail.com', 'ASSISTANT', '1757630882', '0988548260', '1993-10-30', NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-19', '2026-06-19', true, true, '20250327020451', 'Guillermo Acurio', NULL, NULL, NULL, true, 49, '2025-09-15 20:23:42.629591+00', NULL, '~', NULL,false),
-    ('2025-09-14 19:06:04.732569+00', '2025-09-15 20:29:06.363054+00', 2, 2, 15, '2025-08-18', 'GEMA VALERIA', 'CARRANZA PEÑARRIETA', 'valeria.carranza98@gmail.com', 'SUPERVISOR', '1313725218', '0967815000', '1998-10-23', '2024-10-30', '2029-10-29', NULL, NULL, NULL, NULL, NULL, NULL, true, false, NULL, NULL, NULL, NULL, NULL, true, 50, '2025-09-15 20:29:06.365455+00', NULL, '~', NULL,false),
-    ('2025-09-15 16:12:04.338422+00', '2025-09-15 20:52:27.479018+00', 2, 2, 16, '2000-01-01', 'JUAN GABRIEL', 'VERDEZOTO BARRAGAN', 'juan.verdezoto@peisol.com.ec', 'SUPERVISOR', '0603783697', '0991389141', NULL, '2021-03-11', '2026-03-10', NULL, NULL, NULL, NULL, NULL, NULL, true, true, '20220605170129', 'Guillermo Acurio', NULL, NULL, NULL, true, 51, '2025-09-15 20:52:27.480888+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:21:49.166042+00', '2025-09-15 21:36:44.567114+00', 2, 2, 11, NULL, 'JUAN JOSE', 'UNUP YUMA', 'juanunup1986@gmail.com', 'PLANT_PROJECTS', '2100403555', '0989017942', '1986-05-15', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, false, false, NULL, NULL, NULL, NULL, NULL, true, 52, '2025-09-15 21:36:44.569524+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:18:19.587869+00', '2025-09-16 14:14:33.062268+00', 2, 2, 10, NULL, 'NEYSER FERNEY', 'PAPA MAMALLACTA', NULL, 'ASSISTANT', '2100833736', '0969120336', '2003-09-10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 53, '2025-09-16 14:14:33.06463+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:18:19.587869+00', '2025-09-16 14:15:32.808263+00', 2, 2, 10, NULL, 'NEYSER FERNEY', 'PAPA MAMALLACTA', NULL, 'ASSISTANT', '2100833736', '0969120336', '2003-09-10', '2025-03-21', '2030-03-20', NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 54, '2025-09-16 14:15:32.810824+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:03:57.045825+00', '2025-09-16 14:18:16.417602+00', 2, 2, 8, NULL, 'SAUL ALEJANDRO', 'LICUY YUMBO', 'saullicuy4@gmail.com', 'PLANT_PROJECTS', '2200531131', '0996358998', '1994-05-10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 55, '2025-09-16 14:18:16.420444+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:03:57.045825+00', '2025-09-16 14:20:58.114269+00', 2, 2, 8, NULL, 'SAUL ALEJANDRO', 'LICUY YUMBO', 'saullicuy4@gmail.com', 'PLANT_PROJECTS', '2200531131', '0996358998', '1994-05-10', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, '20250327020451', 'Guillermo Acurio', NULL, NULL, NULL, true, 56, '2025-09-16 14:20:58.116018+00', NULL, '~', NULL,false),
-    ('2025-09-13 22:21:26.282755+00', '2025-09-16 14:25:56.260058+00', 2, 2, 4, NULL, 'EDGAR ROBINSON', 'ORDOÑEZ BASTIDAS', 'edgar_leo85@hotmail.com', 'SANITARY_TECHNICIAN', '2100354485', '0991493676', '1985-07-26', '2022-05-30', '2027-05-29', '2025-06-16', '2027-06-16', NULL, NULL, '2025-06-27', '2026-06-27', true, true, '20250625185240', 'Guillermo Acurio', NULL, NULL, NULL, true, 57, '2025-09-16 14:25:56.262811+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:21:49.166042+00', '2025-09-16 15:58:58.285314+00', 2, 2, 11, NULL, 'JUAN JOSE', 'UNUP YUMA', 'juanunup1986@gmail.com', 'PLANT_PROJECTS', '2100403555', '0989017942', '1986-05-15', NULL, NULL, NULL, NULL, NULL, NULL, '2025-04-04', '2026-04-04', true, true, '20250410145249', 'Guillermo Acurio', NULL, NULL, NULL, true, 58, '2025-09-16 15:58:58.288089+00', NULL, '~', NULL,false),
-    ('2025-09-14 16:59:10.523699+00', '2025-09-16 16:02:55.28384+00', 2, 2, 6, NULL, 'SERGIO ALONSO', 'VERDEZOTO ILLAPA', 'sergioverdesoto4@gmail.com', 'MAINTENANCE_LOGISTICS', '0201302692', '0999358825', '1981-11-15', '2024-12-19', '2029-12-18', NULL, NULL, NULL, NULL, NULL, NULL, true, true, '20250327020451', 'Guillermo Acurio', NULL, NULL, NULL, true, 59, '2025-09-16 16:02:55.286618+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:32:31.962649+00', '2025-09-16 23:11:31.642693+00', 2, 2, 12, NULL, 'JOSE LUIS', 'VERDEZOTO BARRAGAN', 'jverdezoto.soes@gmail.com', 'SANITARY_TECHNICIAN', '0603783713', '0961469132', '1987-07-20', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 60, '2025-09-16 23:11:31.645257+00', NULL, '~', NULL,false),
-    ('2025-09-14 17:32:31.962649+00', '2025-09-16 23:14:11.715275+00', 2, 2, 12, NULL, 'JOSE LUIS', 'VERDEZOTO BARRAGAN', 'jverdezoto.soes@gmail.com', 'SANITARY_TECHNICIAN', '0603783713', '0961469132', '1987-07-20', '2021-01-14', '2026-01-13', '2025-06-01', '2026-06-01', NULL, NULL, NULL, NULL, true, true, NULL, NULL, NULL, NULL, NULL, true, 61, '2025-09-16 23:14:11.717539+00', NULL, '~', NULL,false),
-    ('2025-09-15 16:12:04.338422+00', '2025-09-17 01:58:57.13772+00', 2, 8, 16, '2000-01-01', 'JUAN GABRIEL', 'VERDEZOTO BARRAGAN', 'juan.verdezoto@peisol.com.ec', 'SUPERVISOR', '0603783697', '0991389141', '1988-02-20', '2021-03-11', '2026-03-10', NULL, NULL, NULL, NULL, NULL, NULL, true, true, '20220605170129', 'Guillermo Acurio', NULL, NULL, NULL, true, 62, '2025-09-17 01:58:57.139948+00', NULL, '~', NULL,false),
-    ('2025-09-15 16:12:04.338422+00', '2025-09-17 01:59:49.145715+00', 2, 8, 16, '2017-06-01', 'JUAN GABRIEL', 'VERDEZOTO BARRAGAN', 'juan.verdezoto@peisol.com.ec', 'SUPERVISOR', '0603783697', '0991389141', '1988-02-20', '2021-03-11', '2026-03-10', NULL, NULL, NULL, NULL, NULL, NULL, true, true, '20220605170129', 'Guillermo Acurio', NULL, NULL, NULL, true, 63, '2025-09-17 01:59:49.147798+00', NULL, '~', NULL,false);
+-- Historico de tecnicos
+--
 
+INSERT INTO public.accounts_historicaltechnical (created_at,updated_at,is_deleted,id_user_created,id_user_updated,id,date_joined,first_name,last_name,email,work_area,dni,nro_phone,birth_date,license_issue_date,license_expiry_date,defensive_driving_certificate_issue_date,defensive_driving_certificate_expiry_date,mae_certificate_issue_date,mae_certificate_expiry_date,medical_certificate_issue_date,medical_certificate_expiry_date,is_iess_affiliated,has_life_insurance_policy,quest_ncst_code,quest_instructor,quest_start_date,quest_end_date,notes,is_active,history_date,history_change_reason,history_type,history_user_id) VALUES
+	 ('2025-10-03 04:36:43.037668-05','2025-10-03 04:36:43.037668-05',false,NULL,NULL,1,NULL,'Test','User',NULL,'AreaX','1234567890','0999999999',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,false,false,NULL,NULL,NULL,NULL,NULL,true,'2025-10-03 04:36:43.037668-05',NULL,'I',NULL),
+	 ('2025-09-13 16:53:37.464785-05','2025-10-03 04:41:14.551351-05',false,2,7,3,NULL,'ADRIAN ARIEL','TINIZARAY OROZCO','adriantinizaray27@gmail.com','SANITARY_TECHNICIAN','2101052658','0998933379','2003-10-27','2023-11-10','2026-11-08','2025-07-22','2027-07-22',NULL,NULL,'2025-06-10','2026-06-10',true,true,'20250625185240','DIEGO INGA-EDUARDO SANGOQUIZA','2025-06-22','2025-06-24','test',true,'2025-10-03 04:41:14.553318-05',NULL,'~',NULL),
+	 ('2025-09-14 14:00:24.28949-05','2025-10-10 18:28:45.360714-05',false,2,3,13,'2024-10-01','BLANCA ROMI','RUEDA TORRES','romiblanca@gmail.com','SUPERVISOR','2100231964','099168552','1978-10-19','2008-08-25','2026-11-23',NULL,NULL,NULL,NULL,NULL,NULL,false,false,'20250327020451',NULL,'2025-03-27','2025-03-30','',true,'2025-10-10 18:28:45.363016-05',NULL,'~',NULL),
+	 ('2025-09-14 14:00:24.28949-05','2025-10-10 18:30:27.278588-05',false,2,3,13,'2024-10-01','BLANCA ROMI','RUEDA TORRES','romiblanca@gmail.com','SUPERVISOR','2100231964','099168552','1978-10-19','2008-08-25','2026-11-23',NULL,NULL,NULL,NULL,NULL,NULL,false,false,'20250327020451','GUILLERMO ACURIO',NULL,NULL,'',true,'2025-10-10 18:30:27.281004-05',NULL,'~',NULL),
+	 ('2025-09-14 14:04:08.696918-05','2025-10-10 18:41:42.063231-05',false,2,2,14,'2025-08-21','NIXON ARTURO','PONCE MACIAS','napm.barce.35@gmail.com','MAINTENANCE_LOGISTICS','1724255169','0939797174','1989-04-10','2023-01-13','2028-01-12','2025-09-10','2026-09-10',NULL,NULL,'2025-10-02',NULL,true,false,NULL,NULL,NULL,NULL,'',true,'2025-10-10 18:41:42.065717-05',NULL,'~',NULL);
 
 --
 -- Historico de pass
 --
-INSERT INTO public.accounts_historicalpasstechnical (
-    notes, created_at, updated_at, is_active, id_user_created, id_user_updated, id, bloque, fecha_caducidad, history_id, 
-    history_date, history_change_reason, history_type, history_user_id, technical_id, is_deleted
-) VALUES
-    (NULL, '2025-08-14 20:44:50.294726+00', '2025-08-14 20:44:50.294742+00', true, 2, 2, 1, 'shaya', '2025-04-25', 1, '2025-08-14 20:44:50.297072+00', NULL, '+', NULL, 1,false),
-    (NULL, '2025-08-14 20:44:50.294726+00', '2025-08-14 20:45:10.44106+00', true, 2, 2, 1, 'shaya', '2027-04-25', 2, '2025-08-14 20:45:10.443041+00', NULL, '~', NULL, 1,false),
-    (NULL, '2025-08-14 20:47:12.413263+00', '2025-08-14 20:47:12.413281+00', true, 2, 2, 2, 'andes_petroleum', '2026-06-30', 3, '2025-08-14 20:47:12.4151+00', NULL, '+', NULL, 1,false),
-    (NULL, '2025-08-14 20:48:46.286943+00', '2025-08-14 20:48:46.286959+00', true, 2, 2, 3, 'frontera_energy', '2026-05-02', 4, '2025-08-14 20:48:46.288309+00', NULL, '+', NULL, 1,false),
-    (NULL, '2025-08-14 20:50:55.96907+00', '2025-08-14 20:50:55.969093+00', true, 2, 2, 4, 'gran_tierra', '2026-04-23', 5, '2025-08-14 20:50:55.971041+00', NULL, '+', NULL, 1,false),
-    (NULL, '2025-09-13 14:56:50.909472+00', '2025-09-13 14:56:50.90949+00', true, 2, 2, 5, 'petroecuador', '2026-03-06', 6, '2025-09-13 14:56:50.912535+00', NULL, '+', NULL, 2,false),
-    (NULL, '2025-09-13 15:13:35.918991+00', '2025-09-13 15:13:35.91901+00', true, 2, 2, 6, 'shaya', '2026-10-01', 7, '2025-09-13 15:13:35.920727+00', NULL, '+', NULL, 2,false),
-    (NULL, '2025-09-13 15:13:58.562625+00', '2025-09-13 15:13:58.562644+00', true, 2, 2, 7, 'andes_petroleum', '2026-06-01', 8, '2025-09-13 15:13:58.56495+00', NULL, '+', NULL, 2,false),
-    (NULL, '2025-09-13 15:14:26.592255+00', '2025-09-13 15:14:26.59228+00', true, 2, 2, 8, 'consorcio_shushufindi', '2027-02-14', 9, '2025-09-13 15:14:26.595266+00', NULL, '+', NULL, 2,false),
-    (NULL, '2025-09-13 15:14:45.099899+00', '2025-09-13 15:14:45.099944+00', true, 2, 2, 9, 'gran_tierra', '2026-04-23', 10, '2025-09-13 15:14:45.102751+00', NULL, '+', NULL, 2,false),
-    (NULL, '2025-09-13 15:15:12.682877+00', '2025-09-13 15:15:12.682901+00', true, 2, 2, 10, 'orion', '2026-08-10', 11, '2025-09-13 15:15:12.685085+00', NULL, '+', NULL, 2,false),
-    (NULL, '2025-09-13 21:54:51.000669+00', '2025-09-13 21:54:51.000691+00', true, 2, 2, 11, 'gran_tierra', '2026-06-05', 12, '2025-09-13 21:54:51.003759+00', NULL, '+', NULL, 3,false),
-    (NULL, '2025-09-13 21:57:42.694952+00', '2025-09-13 21:57:42.694971+00', true, 2, 2, 12, 'consorcio_shushufindi', '2025-06-24', 13, '2025-09-13 21:57:42.697144+00', NULL, '+', NULL, 3,false),
-    (NULL, '2025-09-13 21:57:42.694952+00', '2025-09-13 21:57:56.706589+00', true, 2, 2, 12, 'consorcio_shushufindi', '2027-06-24', 14, '2025-09-13 21:57:56.708394+00', NULL, '~', NULL, 3,false),
-    (NULL, '2025-09-13 22:17:09.337725+00', '2025-09-13 22:17:09.337741+00', true, 2, 2, 13, 'orion', '2026-06-18', 15, '2025-09-13 22:17:09.339958+00', NULL, '+', NULL, 3,false),
-    (NULL, '2025-09-13 22:17:33.341251+00', '2025-09-13 22:17:33.341271+00', true, 2, 2, 14, 'pcr', '2026-07-31', 16, '2025-09-13 22:17:33.342926+00', NULL, '+', NULL, 3,false),
-    (NULL, '2025-09-14 13:35:05.224498+00', '2025-09-14 13:35:05.224555+00', true, 2, 2, 15, 'pcr', '2026-08-30', 17, '2025-09-14 13:35:05.226925+00', NULL, '+', NULL, 1,false),
-    (NULL, '2025-09-14 13:35:53.916133+00', '2025-09-14 13:35:53.91615+00', true, 2, 2, 16, 'gente_oil', '2026-08-19', 18, '2025-09-14 13:35:53.918127+00', NULL, '+', NULL, 1,false),
-    (NULL, '2025-09-14 13:37:13.185343+00', '2025-09-14 13:37:13.185361+00', true, 2, 2, 17, 'pardalis_services', '2026-04-24', 19, '2025-09-14 13:37:13.187303+00', NULL, '+', NULL, 1,false),
-    (NULL, '2025-09-14 14:29:47.218405+00', '2025-09-14 14:29:47.218429+00', true, 2, 2, 18, 'petroecuador', '2026-08-22', 20, '2025-09-14 14:29:47.22099+00', NULL, '+', NULL, 4,false),
-    (NULL, '2025-09-14 14:33:09.569749+00', '2025-09-14 14:33:09.569773+00', true, 2, 2, 19, 'shaya', '2027-07-06', 21, '2025-09-14 14:33:09.572146+00', NULL, '+', NULL, 4,false),
-    (NULL, '2025-09-14 14:38:06.440119+00', '2025-09-14 14:38:06.440139+00', true, 2, 2, 20, 'consorcio_shushufindi', '2027-06-24', 22, '2025-09-14 14:38:06.44242+00', NULL, '+', NULL, 4,false),
-    (NULL, '2025-09-14 14:38:28.376569+00', '2025-09-14 14:38:28.376595+00', true, 2, 2, 21, 'gran_tierra', '2026-06-12', 23, '2025-09-14 14:38:28.378811+00', NULL, '+', NULL, 4,false),
-    (NULL, '2025-09-14 14:41:37.267063+00', '2025-09-14 14:41:37.26708+00', true, 2, 2, 22, 'orion', '2026-06-11', 24, '2025-09-14 14:41:37.269206+00', NULL, '+', NULL, 4,false),
-    (NULL, '2025-09-15 16:12:56.78298+00', '2025-09-15 16:12:56.782997+00', true, 2, 2, 23, 'consorcio_shushufindi', '2026-09-10', 25, '2025-09-15 16:12:56.786054+00', NULL, '+', NULL, 16,false),
-    (NULL, '2025-09-15 16:13:18.670892+00', '2025-09-15 16:13:18.670911+00', true, 2, 2, 24, 'gran_tierra', '2026-06-05', 26, '2025-09-15 16:13:18.672975+00', NULL, '+', NULL, 16,false),
-    (NULL, '2025-09-15 16:13:47.281029+00', '2025-09-15 16:13:47.281049+00', true, 2, 2, 25, 'pardalis_services', '2025-10-19', 27, '2025-09-15 16:13:47.283842+00', NULL, '+', NULL, 16,false),
-    (NULL, '2025-09-15 16:15:20.318736+00', '2025-09-15 16:15:20.318765+00', true, 2, 2, 26, 'shaya', '2027-03-29', 28, '2025-09-15 16:15:20.321154+00', NULL, '+', NULL, 16,false),
-    (NULL, '2025-09-15 16:18:50.497406+00', '2025-09-15 16:18:50.497425+00', true, 2, 2, 27, 'pcr', '2025-12-31', 29, '2025-09-15 16:18:50.499855+00', NULL, '+', NULL, 16,false),
-    (NULL, '2025-09-15 17:27:32.36956+00', '2025-09-15 17:27:32.369578+00', true, 2, 2, 28, 'gente_oil', '2026-09-08', 30, '2025-09-15 17:27:32.371825+00', NULL, '+', NULL, 14,false),
-    (NULL, '2025-09-15 17:28:05.21947+00', '2025-09-15 17:28:05.219499+00', true, 2, 2, 29, 'gran_tierra', '2026-09-03', 31, '2025-09-15 17:28:05.22223+00', NULL, '+', NULL, 14,false),
-    (NULL, '2025-09-15 17:28:43.479506+00', '2025-09-15 17:28:43.479534+00', true, 2, 2, 30, 'pcr', '2026-09-30', 32, '2025-09-15 17:28:43.483111+00', NULL, '+', NULL, 14,false),
-    (NULL, '2025-09-15 17:35:45.854364+00', '2025-09-15 17:35:45.854389+00', true, 2, 2, 31, 'shaya', '2027-04-25', 33, '2025-09-15 17:35:45.856705+00', NULL, '+', NULL, 7,false),
-    (NULL, '2025-09-15 17:36:06.651585+00', '2025-09-15 17:36:06.651604+00', true, 2, 2, 32, 'consorcio_shushufindi', '2027-06-24', 34, '2025-09-15 17:36:06.653945+00', NULL, '+', NULL, 7,false),
-    (NULL, '2025-09-15 20:15:56.775012+00', '2025-09-15 20:15:56.775031+00', true, 2, 2, 33, 'consorcio_shushufindi', '2025-06-24', 35, '2025-09-15 20:15:56.777491+00', NULL, '+', NULL, 5,false),
-    (NULL, '2025-09-15 20:15:56.775012+00', '2025-09-15 20:17:07.775603+00', true, 2, 2, 33, 'consorcio_shushufindi', '2027-06-24', 36, '2025-09-15 20:17:07.778024+00', NULL, '~', NULL, 5,false),
-    (NULL, '2025-09-15 20:17:27.765293+00', '2025-09-15 20:17:27.765312+00', true, 2, 2, 34, 'shaya', '2027-03-29', 37, '2025-09-15 20:17:27.767163+00', NULL, '+', NULL, 5,false),
-    (NULL, '2025-09-15 20:17:50.799336+00', '2025-09-15 20:17:50.79936+00', true, 2, 2, 35, 'gran_tierra', '2026-06-19', 38, '2025-09-15 20:17:50.801875+00', NULL, '+', NULL, 5,false),
-    (NULL, '2025-09-15 20:18:07.47336+00', '2025-09-15 20:18:07.47338+00', true, 2, 2, 36, 'pardalis_services', '2025-04-24', 39, '2025-09-15 20:18:07.475792+00', NULL, '+', NULL, 5,false),
-    (NULL, '2025-09-15 20:18:07.47336+00', '2025-09-15 20:18:18.234045+00', true, 2, 2, 36, 'pardalis_services', '2026-04-24', 40, '2025-09-15 20:18:18.235455+00', NULL, '~', NULL, 5,false),
-    (NULL, '2025-09-15 20:18:37.136619+00', '2025-09-15 20:18:37.136643+00', true, 2, 2, 37, 'pcr', '2025-12-31', 41, '2025-09-15 20:18:37.139125+00', NULL, '+', NULL, 5,false),
-    (NULL, '2025-09-15 20:52:57.997627+00', '2025-09-15 20:52:57.99765+00', true, 2, 2, 38, 'petroecuador', '2025-10-30', 42, '2025-09-15 20:52:58.000408+00', NULL, '+', NULL, 16,false),
-    (NULL, '2025-09-15 21:37:02.689521+00', '2025-09-15 21:37:02.689544+00', true, 2, 2, 39, 'consorcio_shushufindi', '2024-02-06', 43, '2025-09-15 21:37:02.691878+00', NULL, '+', NULL, 11,false),
-    (NULL, '2025-09-15 21:37:02.689521+00', '2025-09-15 21:37:16.751553+00', true, 2, 2, 39, 'consorcio_shushufindi', '2026-02-06', 44, '2025-09-15 21:37:16.753261+00', NULL, '~', NULL, 11,false),
-    (NULL, '2025-09-15 21:38:10.372139+00', '2025-09-15 21:38:10.372164+00', true, 2, 2, 40, 'petroecuador', '2026-04-07', 45, '2025-09-15 21:38:10.374203+00', NULL, '+', NULL, 11,false),
-    (NULL, '2025-09-15 21:38:37.335921+00', '2025-09-15 21:38:37.335945+00', true, 2, 2, 41, 'gran_tierra', '2026-04-25', 46, '2025-09-15 21:38:37.338074+00', NULL, '+', NULL, 11,false),
-    (NULL, '2025-09-16 14:16:24.307766+00', '2025-09-16 14:16:24.307843+00', true, 2, 2, 42, 'pcr', '2025-09-30', 47, '2025-09-16 14:16:24.31029+00', NULL, '+', NULL, 10,false),
-    (NULL, '2025-09-16 14:20:01.204468+00', '2025-09-16 14:20:01.204495+00', true, 2, 2, 43, 'gran_tierra', '2026-03-14', 48, '2025-09-16 14:20:01.208391+00', NULL, '+', NULL, 8,false),
-    (NULL, '2025-09-16 14:20:25.444053+00', '2025-09-16 14:20:25.444076+00', true, 2, 2, 44, 'shaya', '2027-04-25', 49, '2025-09-16 14:20:25.446138+00', NULL, '+', NULL, 8,false),
-    (NULL, '2025-09-16 14:21:14.018545+00', '2025-09-16 14:21:14.018569+00', true, 2, 2, 45, 'pcr', '2025-12-31', 50, '2025-09-16 14:21:14.020485+00', NULL, '+', NULL, 8,false),
-    (NULL, '2025-09-16 14:21:38.786888+00', '2025-09-16 14:21:38.786911+00', true, 2, 2, 46, 'enap_sipec', '2025-09-30', 51, '2025-09-16 14:21:38.78926+00', NULL, '+', NULL, 8,false),
-    (NULL, '2025-09-16 15:59:18.002606+00', '2025-09-16 15:59:18.00263+00', true, 2, 2, 47, 'shaya', '2027-04-12', 52, '2025-09-16 15:59:18.005385+00', NULL, '+', NULL, 11,false),
-    (NULL, '2025-09-16 16:01:14.20995+00', '2025-09-16 16:01:14.209971+00', true, 2, 2, 48, 'gente_oil', '2026-08-19', 53, '2025-09-16 16:01:14.212651+00', NULL, '+', NULL, 6,false),
-    (NULL, '2025-09-16 16:01:57.963621+00', '2025-09-16 16:01:57.963641+00', true, 2, 2, 49, 'pardalis_services', '2026-04-24', 54, '2025-09-16 16:01:57.966313+00', NULL, '+', NULL, 6,false),
-    (NULL, '2025-09-16 16:02:18.445465+00', '2025-09-16 16:02:18.445488+00', true, 2, 2, 50, 'shaya', '2027-04-25', 55, '2025-09-16 16:02:18.447723+00', NULL, '+', NULL, 6,false),
-    (NULL, '2025-09-16 23:12:08.554396+00', '2025-09-16 23:12:08.554421+00', true, 2, 2, 51, 'petroecuador', '2025-10-22', 56, '2025-09-16 23:12:08.556683+00', NULL, '+', NULL, 12,false);
+INSERT INTO public.accounts_historicalpasstechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,id,bloque,fecha_caducidad,history_date,history_change_reason,history_type,history_user_id,technical_id) VALUES
+	 (NULL,'2025-08-14 15:44:50.294726-05','2025-08-14 15:44:50.294742-05',true,false,2,2,1,'shaya','2025-04-25','2025-08-14 15:44:50.297072-05',NULL,'+',NULL,1),
+	 (NULL,'2025-08-14 15:44:50.294726-05','2025-08-14 15:45:10.44106-05',true,false,2,2,1,'shaya','2027-04-25','2025-08-14 15:45:10.443041-05',NULL,'~',NULL,1),
+	 (NULL,'2025-08-14 15:47:12.413263-05','2025-08-14 15:47:12.413281-05',true,false,2,2,2,'andes_petroleum','2026-06-30','2025-08-14 15:47:12.4151-05',NULL,'+',NULL,1),
+	 (NULL,'2025-08-14 15:48:46.286943-05','2025-08-14 15:48:46.286959-05',true,false,2,2,3,'frontera_energy','2026-05-02','2025-08-14 15:48:46.288309-05',NULL,'+',NULL,1),
+	 (NULL,'2025-08-14 15:50:55.96907-05','2025-08-14 15:50:55.969093-05',true,false,2,2,4,'gran_tierra','2026-04-23','2025-08-14 15:50:55.971041-05',NULL,'+',NULL,1),
+	 (NULL,'2025-09-13 09:56:50.909472-05','2025-09-13 09:56:50.90949-05',true,false,2,2,5,'petroecuador','2026-03-06','2025-09-13 09:56:50.912535-05',NULL,'+',NULL,2),
+	 (NULL,'2025-09-13 10:13:35.918991-05','2025-09-13 10:13:35.91901-05',true,false,2,2,6,'shaya','2026-10-01','2025-09-13 10:13:35.920727-05',NULL,'+',NULL,2),
+	 (NULL,'2025-09-13 10:13:58.562625-05','2025-09-13 10:13:58.562644-05',true,false,2,2,7,'andes_petroleum','2026-06-01','2025-09-13 10:13:58.56495-05',NULL,'+',NULL,2),
+	 (NULL,'2025-09-13 10:14:26.592255-05','2025-09-13 10:14:26.59228-05',true,false,2,2,8,'consorcio_shushufindi','2027-02-14','2025-09-13 10:14:26.595266-05',NULL,'+',NULL,2),
+	 (NULL,'2025-09-13 10:14:45.099899-05','2025-09-13 10:14:45.099944-05',true,false,2,2,9,'gran_tierra','2026-04-23','2025-09-13 10:14:45.102751-05',NULL,'+',NULL,2);
+INSERT INTO public.accounts_historicalpasstechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,id,bloque,fecha_caducidad,history_date,history_change_reason,history_type,history_user_id,technical_id) VALUES
+	 (NULL,'2025-09-13 10:15:12.682877-05','2025-09-13 10:15:12.682901-05',true,false,2,2,10,'orion','2026-08-10','2025-09-13 10:15:12.685085-05',NULL,'+',NULL,2),
+	 (NULL,'2025-09-13 16:54:51.000669-05','2025-09-13 16:54:51.000691-05',true,false,2,2,11,'gran_tierra','2026-06-05','2025-09-13 16:54:51.003759-05',NULL,'+',NULL,3),
+	 (NULL,'2025-09-13 16:57:42.694952-05','2025-09-13 16:57:42.694971-05',true,false,2,2,12,'consorcio_shushufindi','2025-06-24','2025-09-13 16:57:42.697144-05',NULL,'+',NULL,3),
+	 (NULL,'2025-09-13 16:57:42.694952-05','2025-09-13 16:57:56.706589-05',true,false,2,2,12,'consorcio_shushufindi','2027-06-24','2025-09-13 16:57:56.708394-05',NULL,'~',NULL,3),
+	 (NULL,'2025-09-13 17:17:09.337725-05','2025-09-13 17:17:09.337741-05',true,false,2,2,13,'orion','2026-06-18','2025-09-13 17:17:09.339958-05',NULL,'+',NULL,3),
+	 (NULL,'2025-09-13 17:17:33.341251-05','2025-09-13 17:17:33.341271-05',true,false,2,2,14,'pcr','2026-07-31','2025-09-13 17:17:33.342926-05',NULL,'+',NULL,3),
+	 (NULL,'2025-09-14 08:35:05.224498-05','2025-09-14 08:35:05.224555-05',true,false,2,2,15,'pcr','2026-08-30','2025-09-14 08:35:05.226925-05',NULL,'+',NULL,1),
+	 (NULL,'2025-09-14 08:35:53.916133-05','2025-09-14 08:35:53.91615-05',true,false,2,2,16,'gente_oil','2026-08-19','2025-09-14 08:35:53.918127-05',NULL,'+',NULL,1),
+	 (NULL,'2025-09-14 08:37:13.185343-05','2025-09-14 08:37:13.185361-05',true,false,2,2,17,'pardalis_services','2026-04-24','2025-09-14 08:37:13.187303-05',NULL,'+',NULL,1),
+	 (NULL,'2025-09-14 09:29:47.218405-05','2025-09-14 09:29:47.218429-05',true,false,2,2,18,'petroecuador','2026-08-22','2025-09-14 09:29:47.22099-05',NULL,'+',NULL,4);
+INSERT INTO public.accounts_historicalpasstechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,id,bloque,fecha_caducidad,history_date,history_change_reason,history_type,history_user_id,technical_id) VALUES
+	 (NULL,'2025-09-14 09:33:09.569749-05','2025-09-14 09:33:09.569773-05',true,false,2,2,19,'shaya','2027-07-06','2025-09-14 09:33:09.572146-05',NULL,'+',NULL,4),
+	 (NULL,'2025-09-14 09:38:06.440119-05','2025-09-14 09:38:06.440139-05',true,false,2,2,20,'consorcio_shushufindi','2027-06-24','2025-09-14 09:38:06.44242-05',NULL,'+',NULL,4),
+	 (NULL,'2025-09-14 09:38:28.376569-05','2025-09-14 09:38:28.376595-05',true,false,2,2,21,'gran_tierra','2026-06-12','2025-09-14 09:38:28.378811-05',NULL,'+',NULL,4),
+	 (NULL,'2025-09-14 09:41:37.267063-05','2025-09-14 09:41:37.26708-05',true,false,2,2,22,'orion','2026-06-11','2025-09-14 09:41:37.269206-05',NULL,'+',NULL,4),
+	 (NULL,'2025-09-15 11:12:56.78298-05','2025-09-15 11:12:56.782997-05',true,false,2,2,23,'consorcio_shushufindi','2026-09-10','2025-09-15 11:12:56.786054-05',NULL,'+',NULL,16),
+	 (NULL,'2025-09-15 11:13:18.670892-05','2025-09-15 11:13:18.670911-05',true,false,2,2,24,'gran_tierra','2026-06-05','2025-09-15 11:13:18.672975-05',NULL,'+',NULL,16),
+	 (NULL,'2025-09-15 11:13:47.281029-05','2025-09-15 11:13:47.281049-05',true,false,2,2,25,'pardalis_services','2025-10-19','2025-09-15 11:13:47.283842-05',NULL,'+',NULL,16),
+	 (NULL,'2025-09-15 11:15:20.318736-05','2025-09-15 11:15:20.318765-05',true,false,2,2,26,'shaya','2027-03-29','2025-09-15 11:15:20.321154-05',NULL,'+',NULL,16),
+	 (NULL,'2025-09-15 11:18:50.497406-05','2025-09-15 11:18:50.497425-05',true,false,2,2,27,'pcr','2025-12-31','2025-09-15 11:18:50.499855-05',NULL,'+',NULL,16),
+	 (NULL,'2025-09-15 12:27:32.36956-05','2025-09-15 12:27:32.369578-05',true,false,2,2,28,'gente_oil','2026-09-08','2025-09-15 12:27:32.371825-05',NULL,'+',NULL,14);
+INSERT INTO public.accounts_historicalpasstechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,id,bloque,fecha_caducidad,history_date,history_change_reason,history_type,history_user_id,technical_id) VALUES
+	 (NULL,'2025-09-15 12:28:05.21947-05','2025-09-15 12:28:05.219499-05',true,false,2,2,29,'gran_tierra','2026-09-03','2025-09-15 12:28:05.22223-05',NULL,'+',NULL,14),
+	 (NULL,'2025-09-15 12:28:43.479506-05','2025-09-15 12:28:43.479534-05',true,false,2,2,30,'pcr','2026-09-30','2025-09-15 12:28:43.483111-05',NULL,'+',NULL,14),
+	 (NULL,'2025-09-15 12:35:45.854364-05','2025-09-15 12:35:45.854389-05',true,false,2,2,31,'shaya','2027-04-25','2025-09-15 12:35:45.856705-05',NULL,'+',NULL,7),
+	 (NULL,'2025-09-15 12:36:06.651585-05','2025-09-15 12:36:06.651604-05',true,false,2,2,32,'consorcio_shushufindi','2027-06-24','2025-09-15 12:36:06.653945-05',NULL,'+',NULL,7),
+	 (NULL,'2025-09-15 15:15:56.775012-05','2025-09-15 15:15:56.775031-05',true,false,2,2,33,'consorcio_shushufindi','2025-06-24','2025-09-15 15:15:56.777491-05',NULL,'+',NULL,5),
+	 (NULL,'2025-09-15 15:15:56.775012-05','2025-09-15 15:17:07.775603-05',true,false,2,2,33,'consorcio_shushufindi','2027-06-24','2025-09-15 15:17:07.778024-05',NULL,'~',NULL,5),
+	 (NULL,'2025-09-15 15:17:27.765293-05','2025-09-15 15:17:27.765312-05',true,false,2,2,34,'shaya','2027-03-29','2025-09-15 15:17:27.767163-05',NULL,'+',NULL,5),
+	 (NULL,'2025-09-15 15:17:50.799336-05','2025-09-15 15:17:50.79936-05',true,false,2,2,35,'gran_tierra','2026-06-19','2025-09-15 15:17:50.801875-05',NULL,'+',NULL,5),
+	 (NULL,'2025-09-15 15:18:07.47336-05','2025-09-15 15:18:07.47338-05',true,false,2,2,36,'pardalis_services','2025-04-24','2025-09-15 15:18:07.475792-05',NULL,'+',NULL,5),
+	 (NULL,'2025-09-15 15:18:07.47336-05','2025-09-15 15:18:18.234045-05',true,false,2,2,36,'pardalis_services','2026-04-24','2025-09-15 15:18:18.235455-05',NULL,'~',NULL,5);
+INSERT INTO public.accounts_historicalpasstechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,id,bloque,fecha_caducidad,history_date,history_change_reason,history_type,history_user_id,technical_id) VALUES
+	 (NULL,'2025-09-15 15:18:37.136619-05','2025-09-15 15:18:37.136643-05',true,false,2,2,37,'pcr','2025-12-31','2025-09-15 15:18:37.139125-05',NULL,'+',NULL,5),
+	 (NULL,'2025-09-15 15:52:57.997627-05','2025-09-15 15:52:57.99765-05',true,false,2,2,38,'petroecuador','2025-10-30','2025-09-15 15:52:58.000408-05',NULL,'+',NULL,16),
+	 (NULL,'2025-09-15 16:37:02.689521-05','2025-09-15 16:37:02.689544-05',true,false,2,2,39,'consorcio_shushufindi','2024-02-06','2025-09-15 16:37:02.691878-05',NULL,'+',NULL,11),
+	 (NULL,'2025-09-15 16:37:02.689521-05','2025-09-15 16:37:16.751553-05',true,false,2,2,39,'consorcio_shushufindi','2026-02-06','2025-09-15 16:37:16.753261-05',NULL,'~',NULL,11),
+	 (NULL,'2025-09-15 16:38:10.372139-05','2025-09-15 16:38:10.372164-05',true,false,2,2,40,'petroecuador','2026-04-07','2025-09-15 16:38:10.374203-05',NULL,'+',NULL,11),
+	 (NULL,'2025-09-15 16:38:37.335921-05','2025-09-15 16:38:37.335945-05',true,false,2,2,41,'gran_tierra','2026-04-25','2025-09-15 16:38:37.338074-05',NULL,'+',NULL,11),
+	 (NULL,'2025-09-16 09:16:24.307766-05','2025-09-16 09:16:24.307843-05',true,false,2,2,42,'pcr','2025-09-30','2025-09-16 09:16:24.31029-05',NULL,'+',NULL,10),
+	 (NULL,'2025-09-16 09:20:01.204468-05','2025-09-16 09:20:01.204495-05',true,false,2,2,43,'gran_tierra','2026-03-14','2025-09-16 09:20:01.208391-05',NULL,'+',NULL,8),
+	 (NULL,'2025-09-16 09:20:25.444053-05','2025-09-16 09:20:25.444076-05',true,false,2,2,44,'shaya','2027-04-25','2025-09-16 09:20:25.446138-05',NULL,'+',NULL,8),
+	 (NULL,'2025-09-16 09:21:14.018545-05','2025-09-16 09:21:14.018569-05',true,false,2,2,45,'pcr','2025-12-31','2025-09-16 09:21:14.020485-05',NULL,'+',NULL,8);
+INSERT INTO public.accounts_historicalpasstechnical (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,id,bloque,fecha_caducidad,history_date,history_change_reason,history_type,history_user_id,technical_id) VALUES
+	 (NULL,'2025-09-16 09:21:38.786888-05','2025-09-16 09:21:38.786911-05',true,false,2,2,46,'enap_sipec','2025-09-30','2025-09-16 09:21:38.78926-05',NULL,'+',NULL,8),
+	 (NULL,'2025-09-16 10:59:18.002606-05','2025-09-16 10:59:18.00263-05',true,false,2,2,47,'shaya','2027-04-12','2025-09-16 10:59:18.005385-05',NULL,'+',NULL,11),
+	 (NULL,'2025-09-16 11:01:14.20995-05','2025-09-16 11:01:14.209971-05',true,false,2,2,48,'gente_oil','2026-08-19','2025-09-16 11:01:14.212651-05',NULL,'+',NULL,6),
+	 (NULL,'2025-09-16 11:01:57.963621-05','2025-09-16 11:01:57.963641-05',true,false,2,2,49,'pardalis_services','2026-04-24','2025-09-16 11:01:57.966313-05',NULL,'+',NULL,6),
+	 (NULL,'2025-09-16 11:02:18.445465-05','2025-09-16 11:02:18.445488-05',true,false,2,2,50,'shaya','2027-04-25','2025-09-16 11:02:18.447723-05',NULL,'+',NULL,6),
+	 (NULL,'2025-09-16 18:12:08.554396-05','2025-09-16 18:12:08.554421-05',true,false,2,2,51,'petroecuador','2025-10-22','2025-09-16 18:12:08.556683-05',NULL,'+',NULL,12),
+	 (NULL,'2025-10-10 18:25:52.023011-05','2025-10-10 18:25:52.023029-05',true,false,3,3,53,'shaya','2027-04-25','2025-10-10 18:25:52.026645-05',NULL,'+',NULL,13);
 
 
 -- 
 -- vehivulos
 --
-INSERT INTO public.equipment_vehicle (
-    notes, created_at, updated_at, is_active, id_user_created, id_user_updated, id, brand, model, type_vehicle, year, no_plate,
-     status_vehicle, chasis, color, owner_transport, due_date_matricula, due_date_cert_oper, date_matricula, date_mtop, 
-     date_technical_review, nro_poliza, insurance_company, insurance_expiration_date, insurance_issue_date, due_date_satellite, serial_number,
-      engine_number, chassis_number, is_deleted
-) VALUES
-    (NULL, '2025-09-14 21:51:21.339202+00', '2025-09-14 21:51:21.339223+00', true, 2, 2, 2, 'FOTON', 'AUMARCK S BJ1088 AC 3.8 2P 4X2 TM', 'VACUUM', 2024, 'PFH9402', 'DISPONIBLE', NULL, 'BLANCO', 'PEISOL', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ISF38S315477253473', 'LVBV4JBB3PY004430',false),
-    (NULL, '2025-09-15 13:42:38.388133+00', '2025-09-15 13:42:38.388156+00', true, 2, 2, 3, 'JAC', 'HFC1050KN AC 3.9 2P 4X2 TM DIESEL', 'VACUUM', 2024, 'PFG4661', 'DISPONIBLE', NULL, 'BLANCO', 'PEISOL', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '93156131', 'LJ11KEBD9R1900443',false),
-    (NULL, '2025-09-15 14:01:48.031126+00', '2025-09-15 14:01:48.031153+00', true, 2, 2, 4, 'FOTON', 'CN AUMARK S BJ1088 AC 3.8 2P 4X2 TM', 'VACUUM', 2025, 'PAE-2445', 'DISPONIBLE', NULL, 'BLANCO', 'PEISOL', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'ISF38s315477357932', 'LVBV4JBB6SY002471',false),
-    (NULL, '2025-09-15 14:10:13.580045+00', '2025-09-15 14:10:13.5801+00', true, 2, 2, 5, 'JAC', 'HFC1040KNAC 2.7 2P 4X2', 'PLATAFORMA', 2023, 'PDY2369', 'DISPONIBLE', NULL, 'BLANCO', 'PEISOL', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'N4401674', 'LJ11KDBD3P1102673',false),
-    (NULL, '2025-09-15 14:14:56.574135+00', '2025-09-15 14:14:56.574154+00', true, 2, 2, 6, 'JAC', 'HFC1037D5K2TST INTER AC 2.0 CD 4X4', 'CAMIONETA', 2025, 'PFK-8528', 'DISPONIBLE', NULL, 'PLOMO', 'PEISOL', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'R4126502', 'LJ11PABE5SC018232',false),
-    (NULL, '2025-08-15 13:39:09.044278+00', '2025-09-16 17:19:06.803969+00', true, 2, 2, 1, 'JAC', 'HFC1040KNAC 2.7 2P 4X2', 'VACUUM', 2023, 'PDY7429', 'DISPONIBLE', NULL, 'BLANCO', 'PEISOL', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'N4403454', 'LJ11KDBD8P1301511',false),
-    (NULL, '2025-09-16 00:29:41.413728+00', '2025-09-17 14:16:41.839656+00', true, 8, 7, 7, 'FOTON', 'TUNLAND V7 AC 2.0 CD 4X4 TM HYBRID', 'CAMIONETA', 2026, 'PFB-9409', 'DISPONIBLE', NULL, 'PLOMO', 'PEISOL', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '4F20TC22S002780', 'LVAV2MAB2TU308041',false);
-
+INSERT INTO public.equipment_vehicle (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,brand,model,type_vehicle,"year",no_plate,status_vehicle,status_cert_oper,chasis,color,owner_transport,due_date_matricula,due_date_cert_oper,date_matricula,date_mtop,date_technical_review,nro_poliza,insurance_company,insurance_expiration_date,insurance_issue_date,due_date_satellite,serial_number,engine_number,chassis_number) VALUES
+	 (NULL,'2025-09-14 16:51:21.339202-05','2025-09-14 16:51:21.339223-05',true,false,2,2,'FOTON','AUMARCK S BJ1088 AC 3.8 2P 4X2 TM','VACUUM',2024,'PFH9402','DISPONIBLE',NULL,NULL,'BLANCO','PEISOL',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'ISF38S315477253473','LVBV4JBB3PY004430'),
+	 (NULL,'2025-09-15 08:42:38.388133-05','2025-09-15 08:42:38.388156-05',true,false,2,2,'JAC','HFC1050KN AC 3.9 2P 4X2 TM DIESEL','VACUUM',2024,'PFG4661','DISPONIBLE',NULL,NULL,'BLANCO','PEISOL',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'93156131','LJ11KEBD9R1900443'),
+	 (NULL,'2025-09-15 09:01:48.031126-05','2025-09-15 09:01:48.031153-05',true,false,2,2,'FOTON','CN AUMARK S BJ1088 AC 3.8 2P 4X2 TM','VACUUM',2025,'PAE-2445','DISPONIBLE',NULL,NULL,'BLANCO','PEISOL',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'ISF38s315477357932','LVBV4JBB6SY002471'),
+	 (NULL,'2025-08-15 08:39:09.044278-05','2025-09-16 12:19:06.803969-05',true,false,2,2,'JAC','HFC1040KNAC 2.7 2P 4X2','VACUUM',2023,'PDY7429','DISPONIBLE',NULL,NULL,'BLANCO','PEISOL',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'N4403454','LJ11KDBD8P1301511'),
+	 ('','2025-09-15 19:29:41.413728-05','2025-09-24 20:30:42.899361-05',true,false,8,1,'FOTON','TUNLAND V7 AC 2.0 CD 4X4 TM HYBRID','CAMIONETA',2026,'PFB-9409','DISPONIBLE','VIGENTE',NULL,'PLOMO','PEISOL','2030-07-02','2025-07-03','2025-07-03','2025-07-03','2025-07-02',NULL,'LATINA','2026-07-03','2025-07-03','2025-07-03',NULL,'4F20TC22S002780','LVAV2MAB2TU308041'),
+	 ('','2025-09-15 09:10:13.580045-05','2025-09-25 09:36:32.527805-05',true,false,2,7,'JAC','HFC1040KNAC 2.7 2P 4X2','PLATAFORMA',2023,'PDY2369','DISPONIBLE',NULL,NULL,'BLANCO','sdsdsd','2027-08-24','2026-09-10','2022-08-25','2024-09-10','2024-10-15','0039994','LATINA SEGUROS','2026-03-13','2025-03-13','2025-01-02',NULL,'N4401674','LJ11KDBD3P1102673'),
+	 ('','2025-09-15 09:14:56.574135-05','2025-09-25 09:36:38.284508-05',true,false,2,1,'JAC','HFC1037D5K2TST INTER AC 2.0 CD 4X4','CAMIONETA',2025,'PFK-8528','DISPONIBLE',NULL,NULL,'PLOMO','SANAMBI',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'R4126502','LJ11PABE5SC018232');
 
 -- 
 -- resource item
@@ -569,4 +500,196 @@ INSERT INTO public.equipment_resourceitem (notes,created_at,updated_at,is_active
 	 (NULL,'2025-09-23 04:31:34.609865-05','2025-09-23 04:31:34.609884-05',true,false,0,0,'PSL-BT-302','PSL-BT-302','BTSNHM',NULL,'N/A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'FUNCIONANDO','DISPONIBLE',NULL,NULL,NULL,NULL),
 	 (NULL,'2025-09-23 04:31:34.615771-05','2025-09-23 04:31:34.615819-05',true,false,0,0,'PSL-BT-115','PSL-BT-115','BTSNHM',NULL,'N/A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'FUNCIONANDO','DISPONIBLE',NULL,NULL,NULL,NULL);
 
+
+--
+-- equipment_passvehicle
+--
+
+INSERT INTO public.equipment_passvehicle (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,bloque,fecha_caducidad,vehicle_id) VALUES
+	 (NULL,'2025-09-25 09:29:50.293904-05','2025-09-25 09:29:56.370017-05',false,false,7,7,'ANDES PETROLEUM','2025-11-28',5),
+	 (NULL,'2025-09-25 09:30:22.37635-05','2025-09-25 09:30:22.376375-05',true,false,1,1,'ORION','2025-05-20',5),
+	 (NULL,'2025-09-25 09:31:49.880527-05','2025-09-25 09:31:49.88056-05',true,false,1,1,'FRONTERA ENERGY','2024-08-05',5);
+
+
+--
+-- equipment_certificationvehicle
+--
+
+INSERT INTO public.equipment_certificationvehicle (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,name,date_start,date_end,description,vehicle_id) VALUES
+	 (NULL,'2025-09-25 09:34:36.954729-05','2025-09-25 09:34:36.95478-05',true,false,1,1,'INSPECCION DE SEGURIDAD','2025-01-01','2027-01-01','',5);
+
+
+--
+-- projects_partner
+--
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2290327183001','ABARCA QUEZADA CONSTRUCCIONES Y SERVICIOS AQSERVIC CIA. LTDA.','aabarca@hotmail.com','062860363','AMBATO 66 Y RÍO COCA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792039703001','ACCYEM PROYECTOS CIA. LTDA.','bnovillo69@hotmail.com','022311317','IGNACIO LECUMBERRY A16 Y NELA MARTÍNEZ',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790749509001','ANDES PETROLEUM ECUADOR LTD.','jorge.garzon@andespetro.com','022988500','PICHINCHA  QUITO  IÑAQUITO  AV. NACIONES UNIDAS E10-44 Y REPUBLICA DEL SALVADOR',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792367107001','ANDESUPPLY S. A.','compras1@andesupply.com','0994728811','AV. PURUHAES Y AV. EL INCA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1720344439001','ARMAS HERRERA ALEXIS EDUARDO','marxilazt1@gmail.com','0997351807','PICHINCHA  QUITO  SAN BARTOLO  S11 LINO CURIMA OE5-26 Y OE5 PIO DURE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791240154001','ASESORIA Y REPRESENTACIONES COMERCIALES ARCOLANDS CIA.LTDA.','mcorral@arcolands.com','022261226','AV. GENERAL RUMIÑAHUI  E ISLA ISABEL EDIFICIO SAN RAFAEL BUSINESS  CENTER',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2101075352001','ASPRILLA GONZALEZ KEVIN FRANCISCO','kevinasp@outlook.com','0989980916','BARRIO JARDINES DEL SUR 1',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2100460613001','ASTUDILLO CALVA WILSON ENRIQUE','enriqueastudillo08@gmail.com','0994638654','SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI  UNIDAD NACIONAL SN Y MEXICO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792458692001','AUMAPROC S. A.',NULL,'0983785337','HERNANDO DE LA CRUZ N32-152 Y AV. ATAHUALPA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1891781837001','AUTOELITE S. A.','scisneros@vehysa.com.ec','0993333314','LA MERCED ABDON CALDERON Y PRIMERA IMPRENTA',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790098354001','BANCO INTERNACIONAL SA',NULL,NULL,'AV PATRIA E421 Y 9 DE OCTUBRE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0400490231001','BENITEZ VILLACORTE GUSTAVO RAMIRO','marilazt1@gmail.com','022425281','CIUDADELA CARAPUNGO JULIO MORENO Oe 11-220 Y PEDRO CARBO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791856031001','BIOREMEDIACION BIOX CIA. LTDA.','labarragan10@outlook.es','0999999999','PICHINCHA  QUITO  IÑAQUITO  PASAJE CALIFORNIA E10-47 Y AV. 6 DE DICIEMBRE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1002978466001','CALDERON GUERRERO CARLOS PATRICIO','carlospcalderon@gmail.com','0993988762','EL COCA CALLE QUITO Y RIO HUATARACO JUNTO AL HOTEL PAYAMINO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2150003156001','CASTILLO MENDOZA JENNY ISABEL','isabeljenny24@gmail.com','098 573 1599','SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI  24 DE MAYO Y 11 DE JULIO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792175461001','CATSER FACILITIES MANAGEMENT CIA. LTDA.','dnaranjo@hanaska.com','023970900','LA CONCEPCIÓN  ISAAC ALBENIZ E3-78 Y MOZART',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191771063001','CEINC CONSTRUCCIONES ELECTRICAS INSTRUMENTACION S.A.','ceinc.construcciones@gmail.com','0984563025','SUCUMBIOS  CUYABENO  TARAPOA  SIONA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191773588001','CIP CONSTRUCCIONESYSERVICIOS S.A.S.','cipconstruccionesec@gmail.com','0000000000','LAGO AGRIO  CIRCUNVALACION Y 23 DE SEPTIEMBRE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791808045001','CNPC CHUANQING DRILLING ENGINEERING COMPANY LIMITED','factura@ccdc-ec.com','0323800990','AV. SHYRIS E9 38 Y BELGICA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2190001795001','COMITE DE EMPRESA DE TRABAJADORES DE PALMERAS DEL ECUADOR','joseolivero202045@gmail.com','0988888614','AV. UNIDAD NACIONAL SN Y VENEZUELA GONZALEZ',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2290316882001','COMPANY PCA MANTENIMIENTO INDUSTRIAL S. A.','contabilidad@pcacompany.com.ec','0982613915','KM 2 VIA COCA LAGO AGRIO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1591709425001','CONAGSOL CIA. LTDA.','facturación@conagsol.com','062583073','CARLOS JULIO AROSEMENA TOLA  JUMANDY SN Y PICHINCHA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791768825001','CONDUTO ECUADOR S. A.',NULL,'023827740','REPÚBLICA DEL SALVADOR N35-204 Y SUECIA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790870073001','CONEXPET CIA. LTDA.','compras.electronicas@conexpet.com','062366962','PEDRO PONCE CARRASCO E8-06 Y AV DIEGO DE ALMAGRO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791711238001','CONSERDE MILLENIUM S. A.','ventas@conserde.ec','062603147','FRANCISCO DE ORELLANA N13-370 Y JUAN DE DIOS MARTINEZ',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792335574001','CONSHORAMA CIA LTDA','sin.correo@correo.com','099 071 9306','ORELLANA  ORELLANA  NUEVO PARAÍSO CAB. EN UNIÓN CHIMBORAZO  PRINCIPAL SN Y SN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191774172001','CONSORCIO CASANOVA','consorcio1casanova@gmail.com','0993989806','SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI  11 DE JULIO SN Y ORIENTAL',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1793223327001','CONSORCIO CONSTRUYE EC','construyeecconsorcio@gmail.com','0993883375','PICHINCHA  QUITO  POMASQUI  AV MANUEL CORDOVA GALARZA 22 Y EL EDEN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191770113001','CONSORCIO CRECER MAS','consorciocrecermas@outlook.com','0981740392','SUCUMBIOS  LAGO AGRIO NUEVA LOJA 18 DE NOVIEMBRE Y PROGRESO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792983657001','CONSORCIO NATIONAL OIL TRACTOREPUESTOS CIA. LTDA.','contabilidad@consorciont.com','023520420','AV. DE LOS SHYRIS N35-174 Y SUECIA EDIF. RENAZZO PLAZA PISO 2 OFIC 205',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792010721001','CONSORCIO PETROLERO BLOQUE 17','gabriel.salgado@andespetro.com','0984012337','AV. NN UU E10 44 Y REP EL SALVADOR',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0891793634001','CONSORCIO REMEDIATECH','consorcioremediatech25@hotmail.com','0997215980','ESMERALDAS  ESMERALDAS  5 DE AGOSTO  AV. TERCERA M30 SN Y IMBABURAESMERALDAS  ESMERALDAS  5 DE AGOSTO  AV. TERCERA M30 SN Y IMBABURA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792352363001','CONSORCIO SHUSHUFINDI S.A.','facturacion@cssfd.ec','023940100','AV. GRANADOS VÍA NAYON TORRE 5 Y AV. SIMÓN BOLIVAR CENTRO CORPORATIVO EKOPARK',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1793100198001','CONSORCIO TECNOGAS','consorciotecnogas@hotmail.com','022598050','PICHINCHA  QUITO LA CONCEPCIÓN  FLORENCIO ESPINOZA N55-20 Y JUAN SAAMANO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791982045001','CONSPECCIME CIA. LTDA.','lenny.valladares@cpm.com.ec','393 2240 / 393 2241','PICHINCHA  QUITO  IÑAQUITO  PASAJE EL JARDIN E10-05 Y AV. 6 DE DICIEMBRE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791774345001','CONSTRUCCIONES CUEVA CIMENTACION Y PUENTES CONCUCIP CIA. LTDA.',NULL,'0994343713','TARAPOA  PRINCIPAL SN Y SECUNDARIA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792324750001','CONSTRUCCIONES PROYECTREDES CIA LTDA','facturacion@proyectredes.com.ec','062812279','CALLE CUARTA TRANSVERSAL SN Y RIO JUBONES KM 8 VIA A QUITO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792371694001','CONSTRUCCIONES Y PRESTACIONES PETROLERAS S.A. CPP','recfacturas@cpp.com.ec','022988700','AV. LA CORUÑA N28-14 Y MANUEL ITURREY EDF. SANTA FE 4TO PISO QUITO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2290337561001','CONSTRUCCIONES Y SERVICIOS INTRESBUILD CIA. LTDA.','ronalespejo@gmail.com','0981386793','CALLE 10 DE AGOSTO Y CRISTOBAL COLON',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191728184001','CONSTRUCTORA INGENIERIA CIVIL CAMNIETCONS CIA. LTDA.','nietoalfredo@hotmail.com','0980116937','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  GENERAL ITURRALDE SN Y AMBATO',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191711656001','CONSTRUCTORA REMIGIO REYES E HIJOS CIA. LTDA.','gerencia@constructorarreh.com','098 839 3604','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  VELASCO IBARRA 511 Y FRANCISCO DE ORELLANA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792226864001','CONSTRUCTORA VELASTEGUI CERON  ASOCIADOS CIA. LTDA.','contabilidad@constructoravelasteguiceron.ec','024509108','AV 6 DE DICIEMBRE N32-623 Y IGNACIO BOSSANO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791326768001','CONSTRUCTORA VILLACRECES ANDRADE CVA S. A.','glogrono@elitcorp.com','02229244','AV. 12 DE OCTUBRE Y CORDERO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191726238001','CONSTRUMEGZONAS CIA LTDA','construmegzonas@hotmail.com','062814522','BARRIO UNION Y PROGRESO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191724642001','CONSTRUWAYRA CIA. LTDA.','infoconstruwayra@gmail.com','099 991 9675','SUCUMBIOS  LAGO AGRIO  PACAYACU  VIA GUARUMO SN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'9999999999999','CONSUMIDOR FINAL','sin.correo@correo.com','0999999999','ELOY ALFARO Y SHIRYS',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1793193003001','COPOWER LTDA.','generacionecuador@copower.com.ec','02 2554437','PICHINCHA  QUITO  CUMBAYA  AV. PAMPITE 15 Y CHIMBORAZO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790590380001','CORPORACION PARA LOS RECURSOS NATURALES CORENA S.A.','acarvajal@corena.com.ec','022508854','PICHINCHA  QUITO  LA CONCEPCIÓN  ALPALLANA E6-178 Y WHYMPER',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2100557905001','CUEVA CANGO VERONICA MARLENE','servicontabls@hotmail.com','0985444491','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  FRANCISCO MONTESDEOCA SN Y ESMERALDAS',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791804619001','CYFOIL CIA. LTDA.',NULL,'0999148123','PUERTO FRANCISCO DE ORELLANA EL COCA  VIA LAGO AGRIO SN',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0601728553001','DAMIAN ESCUDERO ROSA DEL TRANCITO','sin.correo@correo.com','0999999999','CDLA. PRIMERA CONSTITUYENTE CHILE 14 Y JUAN FELIX PROAÑO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792284392001','DESPROMETALING CIA. LTDA.','ronal.arias@desprometaling.com','02251 5174','PICHINCHA  RUMIÑAHUI  SANGOLQUI  CONCEPCION SN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792837480001','DRILLCOTEC CIA.LTDA.','facturacion@dc-tec.energy','022894954','AV. SIENA 318 Y CALLE A EDIFICIO MDX PISO 3 OFICINA 315 CUMBAYA QUITO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2100020953001','ENCALADA CORONEL LEONARDO RAFAEL','rafaelencalada1708@hotmail.com','098 888 8614','SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI  VIA AGUARICO TRES SN Y SHUARAS',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792067111001','EQUITRAMCOR CIA. LTDA.','kfarinango@equitramcor.com','062861026','KM 5 12 VIA COCA - LAGO AGRIO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791768205001','ERAZO CONSTRUCTORES S.A.','administrador.02@erazoconstructores.com','022443490','PICHINCHA  QUITO  RUMIPAMBA  BERNABE PESANTESCO N36-176 Y AV. MAÑOSCA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2290312852001','ESSOIL ECUATORIANA DE SERVICIOS Y SUMINISTROS PETROLEROS S.A.','info.essoil@gruposixmotors.com','062366962','DE ORELLANA EL COCA  AV. ALEJANDRO LABAKA SN Y ANTONIO CABRERA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191717824001','FERRICASTH CIA. LTDA.',NULL,NULL,'VIA TARAPOA SN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791338243001','GEOPETSA SERVICIOS PETROLEROS S.A.','facturacionelectronica@geopetsa.com','023184880','AV. AMAZONAS N39-123 Y JOSE ARIZAGA ED. AMAZONAS PLAZA PISO 8 OFC  61',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1560000510001','GOBIERNO MUNICIPAL DE LAGO AGRIO','facturasgadmla@yahoo.com','062830144','12 DE FEBRERO Y COFANES',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792985293001','GRAN TIERRA ENERGY COLOMBIA GMBH','grantierrabilling@ec.ey.com','023810950','PICHINCHA  QUITO  SAN ISIDRO DEL INCA  AV. GRANADOS SN Y VIA A NAYON',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1719756700001','GUAMAN MULLO HUGO RAMIRO','hugocristiano@hotmail.com','0999197610','EDUARDO MORLAI SECTOR LA VILLAFLORA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792274966001','GYRODATA ECUADOR LLC','factura.ecuador@gyrodata.com','0222240289','NORUEGA N33C Y SUIZA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790528782001','HALLIBURTON LATIN AMERICA SRL','ecuadorinvoices@halliburton.com','023971700','AV.AMAZONAS  N37-29 Y UNION NACIONAL DE PERIODISTAS',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790069230001','HARBERT INTERNATIONAL ESTABLISHMENT S DE R.L.','administracion@harbert.com.ec','0999080482','PICHINCHA  QUITO  MARISCAL SUCRE  RIO AMAZONAS N23-71 Y JOAQUIN PINTO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1707457022001','HEREDIA SANDOVAL LUIS','luish.cel@gmail.com','0998330024','AV LAS PALMERAS N47-65 Y DE LOS CAPULJES',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791994426001','HIDROGEOCOL ECUADOR CIA. LTDA.','karina_villavicencio@hge.com.ec','023238830','PICHINCHA  QUITO  MARISCAL SUCRE  LA NIÑA E8-52 Y DIEGO DE ALMAGRO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792184010001','HILONG OIL SERVICE  ENGINEERING ECUADOR CIA. LTDA.','hse-coordinador@hilongecuador.com','0999227990','IÑAQUITO  REPUBLICA E7-197 Y DIEGO DE ALMAGRO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791913027001','HOERBIGER DEL ECUADOR S.A.','ana.panchi@hoerbiger.com','024503231','AV. 6 DE DICIEMBRE N33-382 Y ELOY ALFARO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1091782053001','I-HELP SOLUCIONES INTEGRALES C.A','dtulcanaza@ihelp-ec.com','097 975 4047','ORELLANA  ORELLANA  PUERTO FRANCISCO DE ORELLANA EL COCA  QUITO SN Y RIO HUATARACO',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1707269526001','IBARRA SALGUERO LENIN SILVERIO','lenin.ibarra@yahoo.com','062841145','SHUSHUFINDI  VIA AGUARICO 3 07-32 Y SHUARAS',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0993300160001','IBC STRUCTURES IBCSTRUCTURES S.A.','sin.correo@correo.com','999999999','GUAYAS - GUAYAQUIL CUMBRES BAJAS 21 MZ 803',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0992600292001','ILGUECORP S.A.','diana.acuamain@hotmail.com','026020309','AV. ELOY ALFARO 1038 INTERSECCIN LAS FUCSIAS',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792468671001','INDEPENDENCE DRILLING DEL ECUADOR INDRIDEC S.A.','rig126hseq@independence.com.co','0939008894','PICHINCHA  QUITO  SAN JUAN  AV. PATRIA E4-41 Y AV. AMAZONAS',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1793200340001','INDEPENDENCE ENERGY ECUADOR S.A.S.','ocobo.ecu@independence.com.co','0995429472','PICHINCHA  QUITO  IÑAQUITO  CORUÑA E25-58 Y AV. 12 DE OCTUBRE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790149838001','INDUSTRIA DE ACERO DE LOS ANDES SA','sin.correo@correo.com','0983806886','PICHINCHA  QUITO  TURUBAMBA  S60 E4-162 Y CALLE E6',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792605229001','INSPECCIONES TECNICAS PETROLERAS TECNIPETROLEOS S. A.','vcorrea@itps.com.ec','022262673','AV. REPUBLICA DEL SALVADOR N35-146 Y SUECIA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792270537001','INYCOFYI INGENIERIA Y CONSTRUCCIONES S.A.','kcedeño@fyi.com.ec','026008444','SUCUMBIOS  CUYABENO  TARAPOA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0601809627001','JARAMILLO GONZALES ALBERTO NICOLAS','anjg25@hotmail.es','0987459165','DIDONATO AYACUCHO 33 24 Y FRANCIA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2100767769001','JIMENEZ IMAICELA STALYN FERNANDO','stalyn_jimenez@hotmail.com','0999459680','MARTHA ROLDOS SN Y MANUELITA SAENZ',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191716704001','LAGOHANDLING CIA. LTDA.','lagohandling@gmail.com','999999999','24 DE MAYO Y 10 DE AGOSTO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0924646060001','LOZA GUERRERO CARLA KARINA','servika2021@gmail.com','0985401498','SUCUMBIOS LAGO AGRIO NUEVA LOJA COLOMBIA 112 Y 10 DE AGOSTO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0993236462001','LUMIARQ S.A.','sin.correo@correo.com','098 825 5952','GUAYAS  GUAYAQUIL  GUAYAQUIL  GUANO Y VIA A DAULE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191768534001','LUNA ARCILA LUZ MILA','milita042018@gmail.com','0960237687','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  PICHINCHA SN Y CAÑAR',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2100105424001','MASEIRA BERNAL JESSICA PAOLA','jekmaseira01@gmail.com','0989435255','LAGO AGRIO  NUEVA LOJA BELTRAN SN Y LA NIÑA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1205886557','MAYORGA GUILLEN DORIS INES','dmayorga@danielcom.com','099 608 4683','QUITO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792319293001','MEGACON CONSULTORA Y CONSTRUCTORA S.A.','gerencia@megacon.com.ec','022461590','IÑAQUITO  AV. 10 DE AGOSTO N35-19 Y PASAJE MAÑOSCA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0802334029','MERCADO MINA FRANKLIN EDUARDO','pantro.fm85@gmail.com',NULL,'SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI CENTRAL',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1705442778001','MIRANDA PADRON MARTHA LILIANA','martha.m22@hotmail.com','0999999999','ORELLANA  LA JOYA DE LOS SACHAS  LA JOYA DE LOS SACHAS  10 DE AGOSTO SN Y LA ACADEMIA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791774647001','MISSIONPETROLEUM S.A','contabilidad@mission-petroleum.com','(02) 394-9380','PICHINCHA  QUITO  IÑAQUITO  AV DE LOS SHYRIS N36-188 Y NACIONES UNIDAS',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2190003836001','NAVCONSER CIA. LTDA','navconsercialtda@hotmail.com','099 167 7702','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  MARISCAL SUCRE 112 Y 12 DE FEBRERO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1793189742001','NORWEGIAN DRILLING COMPANY SUCURSAL ECUADOR S.A.S.','purchase@engipetrol.com','0969030281','PICHINCHA  QUITO  PAUL RIVET 1002 Y WHYMPER',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191721333001','OBRAS CIVILES CUYABENO SERVCUYAB CIA. LTDA.','servcuyabcialtda@gmail.com',NULL,'VIA TARAPOA SN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191711761001','OCIPAG CIA. LTDA.','compras@ocipag.com','0959591930','SUCUMBIOS  LAGO AGRIO  SANTA CECILIA  AV. JORGE AGUILERA SN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2293525377001','ONKIE-CONSTRUCTORA S.A.S.','info@onkieconstructora.com','0993913446','ORELLANA  ORELLANA  PUERTO FRANCISCO DE ORELLANA EL COCA  AV. 09 DE OCTUBRE SN Y CUENCA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2100297189001','ORELLANA SALAZAR ROMARIO SEGUNDO','sin.correo@correo.com','0999999999','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  COFANES SN Y COLOMBIA PATRIA UNIDA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792737737001','ORIENDRILL S.A','contabilidad@oriendrill.com','0997966727','LA JOYA DE LOS SACHAS  VÍA AL COCA SN Y VÍA SACHA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792499038001','ORIENTSERVICES S.A.','orientservice2014@hotmail.com','0983238107','LA JOYA DE LOS SACHAS  VÍA COCA SN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1804059911001','ORTEGA POAQUIZA PABLO ALEJANDRO','ab_alejandro_ortega@hotmail.com','0995823779','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  JUAN LEON MERA SN Y PUERTO LOPEZ',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191774037001','OSS CONSTRUCCIONES Y SERVICIOS PETROLEROS S.A.S.','ossconstrucciones22@gmail.com','0985136877','SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI  JAIME ROLDOS SN Y VENEZUELA',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792198747001','PANAMERICAN ENGINEERING PANAMPENSA S.A.','c.macias@panamerican-eng.com','02','CALLE DEL ESTABLO LOTE 50 Y DEL CHARRO EDIFICIO SITE CENTER TORRE 3 PB OFICINA 004. CUMBAYA.',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792348005001','PARDALISERVICES S.A.','facturasproveedores.ecuador@tecpetrol.com','022978400','AV. 12 DE OCTUBRE N26-97 Y LINCOLN TORRE 1492 P2 QUITO ECUADOR',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790032337001','PATE C.A.','mtroya@iseyco.com','023809790','PICHINCHA  QUITO  IÑAQUITO  AV. DIEZ DE AGOSTO N37-288 Y VILLALENGUA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1793196495001','PATTERSON-UTI INTERNATIONAL ECUADOR S.A.S.','jortega@csv.ec','0992547625','PICHINCHA  QUITO  QUITO DISTRITO METROPOLITANO  DEL ESTABLO Y CALLE E',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791414594001','PCR-ECUADOR S.A.','gsoria@pcr.energy','0994519847','PICHINCHA  QUITO  IÑAQUITO  AV. REPUBLICA E7-61 Y CALLE E7A MARTIN CARRION',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791992571001','PEC PROJECT CIA LTDA','admi.ssfd@pecproject.com','022380660','Manuel María Hidalgo km26 y Vía Interoceánica lote 10. Pifo',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1707371736001','PEREZ MUNOZ CARLOS RAMIRO','crpm62@hotmail.com','0999999999','LA MORITA SN Y ABRAHAM PEREZ',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1709463051','PEREZ PASTOR MARTHA KATALINA','marthaperezpastor@yahoo.com',NULL,'QUITO - LA LUZ',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791738756001','PETROBELL S.A.','ana.bautista@petrobell.com.ec','0994326953','PICHINCHA  QUITO  JIPIJAPA  AV. AMAZONAS 44-105 Y RIO COCA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792014921001','PETROBELL S.A. - GRANTMINING S.A.','facturacion_electronica@pacifpetrol.com','023964600','AV. AMAZONAS N 44-105 Y RIO COCA EDIFICIO ETECO - PROMELSA',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0992527285001','PLANET EXPORT S.A. PLANETEXPORT','planet-export@hotmail.com','0','GUAYAQUIL',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792186277001','PLUSAMBIENTE S.A.','yuli.aguilar@plusambiente.com','023938256','PICHINCHA  QUITO  IÑAQUITO  AV. DE LOS SHYRIS N32-42 Y AV. 6 DE DICIEMBRE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791401492001','PLUSPETROL ECUADOR B.V','capagarec@pluspetrol.net','2501502','Av. Diego de Almagro N 32-48 y Whymper Edf. IBM piso 2 Quito Ecuador',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792322537001','PMEC S.A.','kleber.chungandro@pmecsa.com','0990590887','AV GENERAL RUMIÑAHUI SN Y CALLE LAS MAGNOLIAS',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791259505001','PROCOPET S.A.','facturacion@procopet-sa.com','022566185','TOLEDO N24-258 Y LUIS CORDERO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791847776001','PROYECTOS INTEGRALES DEL ECUADOR PIL S.A.','hector.viteri@pilautomation.com','593-2-394-4560','PICHINCHA  QUITO  IÑAQUITO  AV. 12 DE OCTUBRE N26-97 Y ABRAHAM LINCOLN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792477182001','REVO CONSTRUCCIONES CIA LTDA','ligia.lopez@revo.ec','099 675 7337','PICHINCHA  QUITO  JIPIJAPA  DE LOS VIÑEDOS N45-102 Y ISLA ISABELA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2190003852001','ROMAN HERMANOS S.A.','romanfacturacion@yahoo.es','2364-884','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  AV. QUITO SN Y CONDOR MIRADOR',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792228271001','SAURUSECUADOR SOLUCIONES INDUSTRIALES CIA. LTDA.','contabilidad2@saurusecuador.com.ec','0998445936','PICHINCHA  QUITO  CHILLOGALLO  PASAJE B 33207',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792011736001','SEDEMI CONSTRUCCIONES ELECTROMECANICAS SCC','darwin_valdiviezo@sedemi.com',NULL,'SANGOLQUI',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791734920001','SEDEMI SERVICIOS DE MECANICA INDUSTRIAL DISENO CONSTRUCCION Y MONTAJE S.C.C.',NULL,NULL,'Sangolquí Vía Amaguaña Km. 4 12 Lotización El Carmen',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791263308001','SERTECPET S.A.','facturacion.electronica@sertecpet.net','023954900','AV. ELOY ALFARO N37-25 Y JOSE CORREA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792317541001','SERVICIO DE TRANSPORTE COMERCIAL INDUSTRIAL Y PETROLERO TRANSCICOPET CIA. LTDA.','sin.correo@correo.com','0999999999','PICHINCHA  QUITO  KENNEDY  DE LAS ANONAS E10-43 Y AV. ELOY ALFARO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2290352080001','SERVICIOS PETROLEROS OIL FIELD-EQUIPMENT ECUADOR S.A.S','admin@oilfieldec.com','0996179807','ORELLANA  PUERTO FRANCISCO DE ORELLANA EL COCA  KM 11 Y VIA LAGO AGRIO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191723905001','SEVENARCONS CIA. LTDA.',NULL,NULL,'PASAJE CELICA Y GENERAL SUBIA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2190000543001','SINDICATO DE CHOFERES DE SHUSHUFINDI','estacionsindicato@gmail.com','062366962','RIO AGUARICO SN Y ORELLANA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792203902001','SINOHYDRO CORPORATION','blanquita_jj@163.com','0989055870','PICHINCHA  QUITO  IÑAQUITO  ABASCAL N38-49 Y PORTETE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791858727001','SINOPEC INTERNATIONAL PETROLEUM SERVICE ECUADOR S.A.','facturasproveedores@sinopecservice-ec.com','023934440','AV. 6 DE DICIEMBRE N33-29 Y IGNACIO BOSSANO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792112877001','SIPACONSE CIA. LTDA.','sin.correo@correo.com','0999999999','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  CIRCUNVALACIÓN SN Y MANCHENO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1793204134001','SMART ENERGY APPLICATIONS SENERGYAPP S.A.S.','daniel.chiriboga@smartenergy-app.com','0996032808','PICHINCHA  QUITO  QUITO DISTRITO METROPOLITANO  LA PRADERA N30-26 Y SAN SALVADOR',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191773404001','SOLUCIONES INTEGRALES SOES S.A.S.','jverdezoto.soes@gmail.com','0961469132','SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI  SIMÓN BOLÍVAR Y 12 DE OCTUBRE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1707979447001','SUAREZ MANTILLA FRANKLIN GONZALO','franklin.suarez@celec.gob.ec','0996601682','QUITO SAN JUAN  SELVA ALEGRE 962 Y SOBRINO MINAYO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791728882001','TCONTROL S.A','apaez@tcontrolsa.com','022802462','EUCALIPTOS Oe2-67 Y ELOY ALFARO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791265416001','TECNOLOGIA TOTAL TECTOTAL CIA. LTDA.','stalin.reyes@tectotal.com.ec','0984304142','PICHINCHA  QUITO  IÑAQUITO  AV. AMAZONAS N38-42 Y VILLALENGUA',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1803632098001','TENECELA GUZMAN DIEGO ANDRES','diegotenecelafacturas@gmail.com','0996391756','TUNGURAHUA  AMBATO  ATOCHA - FICOA  LAS ACEITUNAS 3 Y LOS CHAMBUROS',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1711370401001','TINITANA LUDEÑA DAYSI DORIS','restaurante.jireh@yahoo.es','0969795089','AV. PERIMETRAL Y 7 DE AGOSTO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1891716989001','TRACEOILFIELD SERVICES  EQUIPMENT LIMITED ECUADOR CIA. LTDA.','jefedebase@oilfieldec.com','(06) 237-8013','ORELLANA  ORELLANA  NUEVO PARAÍSO CAB. EN UNIÓN CHIMBORAZO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791237986001','TRANSPORTES NOROCCIDENTAL CIA. LTDA.','seguez@noroccidental.com','02 3520 420','ORELLANA  ORELLANA  PUERTO FRANCISCO DE ORELLANA EL COCA  VIA A LAGO AGRIO KM 6 Y SN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791330943001','TRIBOILGAS CIA. LTDA.','facturacion.electronica@triboilgas.com','023956540','PEDRO PONCE CARRASCO E8-06 YAV. DIEGO DE ALMAGRO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0104679485','TRUJILLO CADENA CARLOS EDUARDO','carlos_carlin24@hotmail.com','0999999999','EL COLIBRI',NULL,NULL);
+INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792064082001','TUSCANY PERFORACION PETROLERA TUSCANYPERF S. A.',NULL,'023816330','IÑAQUITO  AV. DOCE DE OCTUBRE N24-660 Y FRANCISCO SALAZAR',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2160071070001','UNIDAD ADSCRITA DE DESARROLLO PRODUCTIVO AGROPECUARIO DE INDUSTRIALIZACION COMERCIALIZACIÓN Y EMPRESARIAL CORPOSUCUMBI','barcalejo@hotmail.com','022999000','VIA QUITO KM 12 PB Y RIO CONEJO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0502169683001','VILCA TIPAN MARCO GUSTAVO','sin.correo@correo.com','0999999999','SUCUMBIOS LAGO AGRIO NUEVA LOJA VIA A QUITO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792522897001','WELDING  VAYACONS CIA LTDA','ealdaz@welding.ec','022307053','STO DE CARRETAS PASAJE A  8 SECTOR CARCELEN',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792273064001','WSO WORLDWIDE SECURITY OPTIONS SEGURIDAD INTEGRAL CIA. LTDA.','finanzas.ec@wso-security.com','098 350 4707','PICHINCHA  QUITO  IÑAQUITO  AV DE LOS SHYRIS N32-40 Y AV 6 DE DICIEMBRE',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792876745001','YANAOILTECHNOLOGIES CIA.LTDA.','karina.reyes@yanaoil.com','0984238924','KM 7 VIA COCA LAGO AGRIO',NULL,NULL),
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791911164001','ZHENFEI QI','qizhenfei@hilonggroup.com','0991183167','PICHINCHA  QUITO  CUMBAYA  PADRE CARLOS LOTE 83 Y PAMPITE',NULL,NULL);
+
+
+--
+-- projects_project
+--
+INSERT INTO public.projects_project (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,"location",contact_name,contact_phone,start_date,end_date,is_closed,partner_id) VALUES
+	 (NULL,'2025-10-10 13:15:17.273548-05','2025-10-10 18:05:35.854464-05',false,false,1,3,'Pambil','Edison Guano','0994027504','2025-08-01','2026-01-01',false,122),
+	 (NULL,'2025-10-10 18:03:43.75328-05','2025-10-10 18:05:47.045536-05',false,false,3,3,'INCHI C','ERIKA VITE','0980237624','2025-09-20','2025-12-31',false,122);
 
