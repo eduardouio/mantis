@@ -95,14 +95,14 @@
             {% for item in object_list %}
             <tr class="hover:bg-gray-50">
                 <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
-                <td class="text-center">
+                <td class="text-left">
                     <a href="{% url 'partner_detail' item.id %}" class="link link-hover text-primary md:hidden font-semibold">{{ item.business_tax_id }}</a>
                     <span class="hidden md:inline font-semibold">{{ item.business_tax_id }}</span>
                 </td>
-                <td class="text-center hidden md:table-cell">{{ item.name }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.name_contact|default_if_none:"-" }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.email|default_if_none:"-" }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.phone|default_if_none:"-" }}</td>
+                <td class="text-left hidden md:table-cell">{{ item.name }}</td>
+                <td class="text-left hidden md:table-cell">{{ item.name_contact|default_if_none:"-" }}</td>
+                <td class="text-left hidden md:table-cell">{{ item.email|default_if_none:"-" }}</td>
+                <td class="text-left hidden md:table-cell">{{ item.phone|default_if_none:"-" }}</td>
                 <td class="text-center">
                     <div class="flex flex-col gap-1">
                         {% if item.is_active %}
