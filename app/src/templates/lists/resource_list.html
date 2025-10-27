@@ -1,4 +1,5 @@
 {% extends 'base/base.html' %}
+{% load static %}
 {% block content %}
 <!-- Filtros de búsqueda -->
 <div class="w-[95%] mx-auto mb-3 p-2">
@@ -62,7 +63,13 @@
     </div>
 </div>
 
-<div class="w-[95%] mx-auto overflow-x-auto">
+<!-- Loading indicator -->
+<div id="table-loading" class="w-[95%] mx-auto text-center py-8">
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    <p class="mt-4 text-gray-600">Cargando datos...</p>
+</div>
+
+<div id="table-container" class="w-[95%] mx-auto overflow-x-auto" style="display: none;">
     <table id="datatable" class="table w-full border border-gray-300">
         <thead>
             <tr>
@@ -154,4 +161,88 @@
         </tbody>
     </table>
 </div>
+
+<!-- Paginación -->
+{% if is_paginated %}
+<div class="w-[95%] mx-auto mt-4 flex justify-center">
+    <div class="join">
+        {% if page_obj.has_previous %}
+            <a href="?page=1{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}" class="join-item btn btn-sm">«</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}" class="join-item btn btn-sm">‹</a>
+        {% endif %}
+        
+        <button class="join-item btn btn-sm">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</button>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}" class="join-item btn btn-sm">›</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if search %}&search={{ search }}{% endif %}{% if status %}&status={{ status }}{% endif %}{% if brand %}&brand={{ brand }}{% endif %}" class="join-item btn btn-sm">»</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block files_footer %}
+<script>
+    $(document).ready(function() {
+        // Ocultar loading y mostrar tabla
+        $('#table-loading').hide();
+        $('#table-container').show();
+        
+        // Verificar si la tabla tiene filas de datos antes de inicializar DataTables
+        var tableRows = $('#datatable tbody tr').length;
+        var hasData = tableRows > 0 && !$('#datatable tbody tr').first().find('td[colspan]').length;
+        
+        if (hasData) {
+            $('#datatable').DataTable({
+                language: {
+                    url: "{% static 'i18n/es-ES.json' %}"
+                },
+                dom: 'Blfrtip',
+                deferRender: true,  // Renderizar solo filas visibles
+                pageLength: 15,     // Menos filas por defecto
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: '<i class="las la-file-excel text-xl"></i>',
+                        className: 'btn btn-secondary border',
+                        title: document.title,
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="las la-file-pdf text-xl"></i>',
+                        className: 'btn btn-secondary border',
+                        title: document.title,
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="las la-file-csv text-xl"></i>',
+                        className: 'btn btn-secondary border',
+                        title: document.title,
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    }
+                ],
+                lengthMenu: [
+                    [15, 50, 100],
+                    ['15', '50', '100']
+                ],
+                order: [[2, 'asc']],  // Ordenar por código inicialmente
+                stateSave: false,      // No guardar estado para mejor rendimiento
+                processing: false      // Desactivar mensaje de procesamiento
+            });
+        } else {
+            // Si no hay datos, ocultar los botones de exportación
+            $('.dt-buttons').hide();
+        }
+    });
+</script>
 {% endblock %}
