@@ -4,12 +4,14 @@ const { createApp } = Vue;
 const ProjectApp = {
   delimiters: ['${', '}'],
   data() {
+    // Obtener datos del proyecto desde window.PROJECT_DATA
+    const projectData = window.PROJECT_DATA || {};
+    
     return {
-      // Variables globales
-      csrf_token: '{{ csrf_token }}',
-      project_id: {{ project.id }},
-      project_start_date: '{{ project.start_date|date:"Y-m-d" }}',
-      project_end_date: '{{ project.end_date|date:"Y-m-d" }}',
+      csrf_token: projectData.csrf_token || '',
+      project_id: projectData.project_id || 0,
+      project_start_date: projectData.project_start_date || '',
+      project_end_date: projectData.project_end_date || '',
       
       // Estado de equipos
       availableEquipment: [],
@@ -24,8 +26,8 @@ const ProjectApp = {
       assignmentForm: {
         rent_cost: '',
         maintenance_cost: '',
-        operation_start_date: '{{ project.start_date|date:"Y-m-d" }}',
-        operation_end_date: '{{ project.end_date|date:"Y-m-d" }}',
+        operation_start_date: projectData.project_start_date || '',
+        operation_end_date: projectData.project_end_date || '',
         maintenance_interval: 15
       },
       
