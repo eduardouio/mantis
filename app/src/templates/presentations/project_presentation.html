@@ -102,6 +102,7 @@
           <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <i class="las la-tools text-blue-600 text-xl"></i>
             Equipos Asignados
+            <span v-if="assignedEquipment.length > 0">(${ assignedEquipment.length })</span>
           </h2>
           <button class="btn btn-primary btn-sm" onclick="document.getElementById('modal_assign_equipment').showModal()">
             <i class="las la-plus text-lg"></i>
@@ -120,70 +121,61 @@
                 <th>Estado</th>
                 <th class="text-right">Costo Renta</th>
                 <th class="text-right">Costo Mant.</th>
-                <th>Frecuencia</th>
+                <th>Frecuencia (días)</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
                 <th class="text-center">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {% if assigned_equipment %}
-                {% for equipment in assigned_equipment %}
-                <tr class="hover:bg-base-50">
-                  <td>{{ forloop.counter }}</td>
-                  <td>
-                    <span class="badge {% if equipment.is_service %}badge-secondary{% else %}badge-primary{% endif %}">
-                      {% if equipment.is_service %}SERVICIO{% else %}EQUIPO{% endif %}
-                    </span>
-                  </td>
-                  <td class="font-mono">{{ equipment.resource_code }}</td>
-                  <td>{{ equipment.resource_name }}</td>
-                  <td>
-                    {% if equipment.is_retired %}
-                      <span class="badge badge-error">RETIRADO</span>
-                    {% elif equipment.status_disponibility %}
-                      <span class="badge badge-success">{{ equipment.status_disponibility }}</span>
-                    {% else %}
-                      <span class="badge badge-info">ASIGNADO</span>
-                    {% endif %}
-                  </td>
-                  <td class="text-right font-semibold">${{ equipment.rent_cost|floatformat:2 }}</td>
-                  <td class="text-right font-semibold">${{ equipment.maintenance_cost|floatformat:2 }}</td>
-                  <td>
-                    <span class="badge badge-outline">
-                      {% if equipment.maintenance_interval_days == 1 %}DIARIO
-                      {% elif equipment.maintenance_interval_days == 7 %}SEMANAL
-                      {% elif equipment.maintenance_interval_days == 15 %}QUINCENAL
-                      {% elif equipment.maintenance_interval_days == 30 %}MENSUAL
-                      {% else %}{{ equipment.maintenance_interval_days }} días
-                      {% endif %}
-                    </span>
-                  </td>
-                  <td>{{ equipment.operation_start_date|default:"N/A" }}</td>
-                  <td>{{ equipment.operation_end_date|default:"N/A" }}</td>
-                  <td class="text-center">
-                    <div class="dropdown dropdown-end">
-                      <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
-                        <i class="las la-ellipsis-v"></i>
-                      </div>
-                      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a>Ver Detalle</a></li>
-                        <li><a>Editar</a></li>
-                        <li><a>Programar Mantenimiento</a></li>
-                      </ul>
+              <tr v-if="assignedEquipment.length === 0">
+                <td colspan="11" class="text-center text-gray-500 py-8">
+                  <i class="las la-inbox text-4xl"></i>
+                  <p>No hay equipos asignados a este proyecto</p>
+                </td>
+              </tr>
+              <tr v-else v-for="(equipment, index) in assignedEquipment" :key="equipment.assignment_id" class="hover:bg-base-50">
+                <td>${ index + 1 }</td>
+                <td>${ equipment.is_service ? 'Servicio' : 'Equipo' }</td>
+                <td class="font-mono">${ equipment.resource_code }</td>
+                <td>${ equipment.resource_name }</td>
+                <td>
+                  <span v-if="equipment.is_retired">Retirado</span>
+                  <span v-else-if="equipment.status_disponibility">${ equipment.status_disponibility }</span>
+                  <span v-else>Asignado</span>
+                </td>
+                <td class="text-right font-semibold">$${ parseFloat(equipment.rent_cost).toFixed(2) }</td>
+                <td class="text-right font-semibold">$${ parseFloat(equipment.maintenance_cost).toFixed(2) }</td>
+                <td class="text-center">${ equipment.maintenance_interval_days }</td>
+                <td>${ equipment.operation_start_date || 'N/A' }</td>
+                <td>${ equipment.operation_end_date || 'N/A' }</td>
+                <td class="text-center">
+                  <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-xs">
+                      <i class="las la-ellipsis-v"></i>
                     </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              {% else %}
-                <tr>
-                  <td colspan="11" class="text-center text-gray-500 py-8">
-                    <i class="las la-inbox text-4xl"></i>
-                    <p>No hay equipos asignados a este proyecto</p>
-                  </td>
-                </tr>
-              {% endif %}
+                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                      <li><a href="#">Ver Detalle</a></li>
+                      <li><a href="#">Editar</a></li>
+                      <li><a href="#">Programar Mantenimiento</a></li>
+                      <li class="text-error">
+                        <a @click="removeAssignedEquipment(equipment.assignment_id, equipment.resource_name)">
+                          <i class="las la-trash"></i> Retirar del Proyecto
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
             </tbody>
+            <tfoot v-if="assignedEquipment.length > 0">
+              <tr class="font-semibold">
+                <td colspan="5" class="text-right">Totales Mensuales:</td>
+                <td class="text-right text-green-600">$${ totalMonthlyRent?.toFixed(2) || '0.00' }</td>
+                <td class="text-right text-blue-600">$${ totalMonthlyMaintenance?.toFixed(2) || '0.00' }</td>
+                <td colspan="4"></td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
@@ -477,8 +469,15 @@
         Asignar Equipo al Proyecto
       </h3>
 
+      <div v-if="!showEquipmentTable" class="mb-4 text-right">
+        <button type="button" class="btn btn-outline btn-sm" @click="displayEquipmentList">
+          <i class="las la-list"></i>
+          Mostrar listado de equipos
+        </button>
+      </div>
+
       {# Tabla de equipos disponibles #}
-      <div class="overflow-x-auto max-h-96 mb-4">
+      <div v-if="showEquipmentTable" class="overflow-x-auto max-h-96 mb-4">
         <table id="equipment-data-table" ref="equipmentTable" class="table table-zebra table-pin-rows table-xs w-full">
           <thead>
             <tr>
@@ -616,24 +615,13 @@
 
             <div class="grid grid-cols-[200px_1fr] items-center gap-2">
               <label class="label py-1 justify-start">
-                <span class="label-text font-medium">Fecha Inicio: <span class="text-error">*</span></span>
+                <span class="label-text font-medium">Fecha Inicio Operación: <span class="text-error">*</span></span>
               </label>
               <input 
                 v-model="assignmentForm.operation_start_date"
                 type="date" 
                 class="input input-bordered w-full" 
                 required
-              />
-            </div>
-
-            <div class="grid grid-cols-[200px_1fr] items-center gap-2">
-              <label class="label py-1 justify-start">
-                <span class="label-text font-medium">Fecha Fin:</span>
-              </label>
-              <input 
-                v-model="assignmentForm.operation_end_date"
-                type="date" 
-                class="input input-bordered w-full"
               />
             </div>
           </div>
@@ -865,8 +853,12 @@
     project_end_date: '{{ project.end_date|date:"Y-m-d"|default:"" }}'
   };
   
+  // Cargar equipos asignados existentes
+  window.ASSIGNED_EQUIPMENT = {{ assigned_equipment|safe|default:"[]" }};
+  
   // Verificar que los datos se cargaron correctamente
   console.log('PROJECT_DATA cargado:', window.PROJECT_DATA);
+  console.log('ASSIGNED_EQUIPMENT cargado:', window.ASSIGNED_EQUIPMENT);
 </script>
 <script src="{% static 'js/app/app-projects.js' %}"></script>
 {% endblock %}

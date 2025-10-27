@@ -11,18 +11,10 @@ from equipment.models import ResourceItem
 
 
 class AddResourceProjectAPI(View):
-    """Agregar recursos a un proyecto.
-
-    Al agregar un recurso:
-        - stst_status_disponibility -> 'RENTADO'
-        - stst_current_location -> location del proyecto
-        - stst_current_project_id -> id del proyecto
-        - stst_commitment_date -> operation_start_date o fecha actual
-        - stst_release_date -> operation_end_date (si existe)
-    """
+    """API para agregar recursos a un proyecto."""
 
     def post(self, request):
-        """Agregar recurso al proyecto."""
+        """Agregar un recurso al proyecto."""
         try:
             data = json.loads(request.body)
             return self._add_resource(request, data)
