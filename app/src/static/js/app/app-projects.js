@@ -15,12 +15,11 @@ const ProjectApp = {
       
       // Estado de equipos
       availableEquipment: [],
-      filteredEquipment: [],
       selectedEquipmentId: null,
       selectedEquipment: null,
-      searchEquipmentTerm: '',
       isLoadingEquipment: false,
       showAssignmentForm: false,
+      equipmentDataTable: null,
       
       // Formulario de asignación de equipos
       assignmentForm: {
@@ -50,13 +49,7 @@ const ProjectApp = {
   
   computed: {
     hasEquipment() {
-      return this.filteredEquipment.length > 0;
-    }
-  },
-  
-  watch: {
-    searchEquipmentTerm(newValue) {
-      this.filterEquipment();
+      return this.availableEquipment.length > 0;
     }
   },
   
@@ -73,28 +66,20 @@ const ProjectApp = {
         
         if (data.success) {
           this.availableEquipment = data.data;
-          this.filteredEquipment = data.data;
+          this.isLoadingEquipment = false;
+          this.refreshEquipmentDataTable();
         } else {
           this.showError('Error al cargar equipos: ' + data.error);
+          this.availableEquipment = [];
+          this.isLoadingEquipment = false;
+          this.destroyEquipmentDataTable();
         }
       } catch (error) {
         this.showError('Error de conexión: ' + error.message);
-      } finally {
+        this.availableEquipment = [];
         this.isLoadingEquipment = false;
+        this.destroyEquipmentDataTable();
       }
-    },
-    
-    /**
-     * Filtrar equipos por búsqueda
-     */
-    filterEquipment() {
-      const searchTerm = this.searchEquipmentTerm.toLowerCase();
-      
-      this.filteredEquipment = this.availableEquipment.filter(eq => {
-        return !searchTerm || 
-          eq.code.toLowerCase().includes(searchTerm) ||
-          eq.name.toLowerCase().includes(searchTerm);
-      });
     },
     
     /**
@@ -131,6 +116,69 @@ const ProjectApp = {
         operation_start_date: this.project_start_date,
         operation_end_date: this.project_end_date,
         maintenance_interval: 15
+      };
+    },
+
+    /**
+     * Inicializar o reiniciar DataTable del listado de equipos
+     */
+    refreshEquipmentDataTable() {
+      this.$nextTick(() => {
+        if (!window.jQuery) {
+          return;
+        }
+
+        const tableElement = this.$refs.equipmentTable;
+        if (!tableElement) {
+          return;
+        }
+
+        this.destroyEquipmentDataTable();
+
+        if (!this.availableEquipment.length) {
+          return;
+        }
+
+        this.equipmentDataTable = window.jQuery(tableElement).DataTable({
+          pageLength: 10,
+          lengthMenu: [5, 10, 25, 50],
+          language: this.getSpanishDataTableMessages()
+        });
+      });
+    },
+
+    /**
+     * Destruir DataTable activo para evitar reinicializaciones
+     */
+    destroyEquipmentDataTable() {
+      if (this.equipmentDataTable) {
+        this.equipmentDataTable.destroy();
+        this.equipmentDataTable = null;
+      }
+    },
+
+    /**
+     * Textos de DataTable en español
+     */
+    getSpanishDataTableMessages() {
+      return {
+        decimal: ',',
+        thousands: '.',
+        emptyTable: 'No hay equipos disponibles',
+        info: 'Mostrando _START_ a _END_ de _TOTAL_ equipos',
+        infoEmpty: 'Mostrando 0 a 0 de 0 equipos',
+        infoFiltered: '(filtrado de _MAX_ equipos en total)',
+        lengthMenu: 'Mostrar _MENU_',
+        loadingRecords: 'Cargando...',
+        processing: 'Procesando...',
+        search: 'Buscar:',
+        zeroRecords: 'No se encontraron resultados',
+        paginate: {
+          first: 'Primero',
+          last: 'Último',
+          next: 'Siguiente',
+          previous: 'Anterior'
+        }
       };
     },
     
@@ -327,6 +375,7 @@ const ProjectApp = {
      * Manejar apertura de modal de equipos
      */
     handleEquipmentModalOpen() {
+      this.destroyEquipmentDataTable();
       this.loadAvailableEquipment();
     },
     

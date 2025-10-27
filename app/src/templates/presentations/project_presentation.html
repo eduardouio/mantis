@@ -477,27 +477,9 @@
         Asignar Equipo al Proyecto
       </h3>
 
-      {# Búsqueda de equipos #}
-      <div class="mb-4">
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text font-semibold">
-              <i class="las la-search"></i>
-              Buscar Equipos Disponibles:
-            </span>
-          </label>
-          <input 
-            v-model="searchEquipmentTerm"
-            type="text" 
-            placeholder="Buscar por código o nombre del equipo..." 
-            class="input input-bordered w-full"
-          />
-        </div>
-      </div>
-
       {# Tabla de equipos disponibles #}
-      <div class="overflow-x-auto max-h-64 mb-4">
-        <table class="table table-zebra table-pin-rows table-xs">
+      <div class="overflow-x-auto max-h-96 mb-4">
+        <table id="equipment-data-table" ref="equipmentTable" class="table table-zebra table-pin-rows table-xs w-full">
           <thead>
             <tr>
               <th>Seleccionar</th>
@@ -523,7 +505,7 @@
                 <p>No hay equipos disponibles</p>
               </td>
             </tr>
-            <tr v-else v-for="eq in filteredEquipment" :key="eq.id" class="hover">
+            <tr v-else v-for="eq in availableEquipment" :key="eq.id" class="hover">
               <td>
                 <input 
                   type="radio" 
@@ -583,16 +565,16 @@
 
             <div class="grid grid-cols-[180px_1fr] items-center gap-2">
               <label class="label py-1 justify-start">
-                <span class="label-text font-medium">Intervalo Mantenimiento:</span>
+                <span class="label-text font-medium">Días Mantenimiento:</span>
               </label>
-              <select v-model="assignmentForm.maintenance_interval" class="select select-bordered w-full">
-                <option value="1">Diario (1 día)</option>
-                <option value="7">Semanal (7 días)</option>
-                <option value="15">Quincenal (15 días)</option>
-                <option value="30">Mensual (30 días)</option>
-                <option value="60">Bimestral (60 días)</option>
-                <option value="90">Trimestral (90 días)</option>
-              </select>
+              <input 
+                v-model="assignmentForm.maintenance_interval"
+                type="number" 
+                min="1" 
+                step="1"
+                class="input input-bordered w-full" 
+                placeholder="15"
+              />
             </div>
           </div>
 
