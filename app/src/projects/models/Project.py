@@ -56,7 +56,9 @@ class Project(BaseModel):
         'Fecha de Inicio'
     )
     end_date = models.DateField(
-        'Fecha de Fin'
+        'Fecha de Fin',
+        blank=True,
+        null=True
     )
     is_closed = models.BooleanField(
         'Cerrado',

@@ -69,7 +69,38 @@
             {% endif %}
           </div>
 
+   <div class="form-control">
+            <label class="label" for="{{ form.notes.id_for_label }}">
+              <span class="label-text">Notas Adicionales:</span>
+            </label>
+            {{ form.notes }}
+            {% if form.notes.errors %}
+              <div class="label">
+                <span class="label-text-alt text-error">{{ form.notes.errors.0 }}</span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Contacto -->
+        <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
+          <h3 class="text-lg font-medium text-blue-600 mb-4">
+            <i class="las la-users text-xl"></i>
+            Contacto
+          </h3>
+          
           <div class="form-control">
+            <label class="label" for="{{ form.start_date.id_for_label }}">
+              <span class="label-text">Fecha de Inicio:</span>
+            </label>
+            {{ form.start_date }}
+            {% if form.start_date.errors %}
+              <div class="label">
+                <span class="label-text-alt text-error">{{ form.start_date.errors.0 }}</span>
+              </div>
+            {% endif %}
+          </div>
+             <div class="form-control">
             <label class="label" for="{{ form.contact_name.id_for_label }}">
               <span class="label-text">Nombre de Contacto:</span>
             </label>
@@ -93,57 +124,8 @@
             {% endif %}
           </div>
         </div>
-
-        <!-- Fechas y Estado -->
-        <div class="space-y-4 border-l-blue-300 border-l-[1px] pl-5">
-          <h3 class="text-lg font-medium text-blue-600 mb-4">
-            <i class="las la-calendar text-xl"></i>
-            Fechas y Estado
-          </h3>
-          
-          <div class="form-control">
-            <label class="label" for="{{ form.start_date.id_for_label }}">
-              <span class="label-text">Fecha de Inicio:</span>
-            </label>
-            {{ form.start_date }}
-            {% if form.start_date.errors %}
-              <div class="label">
-                <span class="label-text-alt text-error">{{ form.start_date.errors.0 }}</span>
-              </div>
-            {% endif %}
-          </div>
-
-          <div class="form-control">
-            <label class="label" for="{{ form.end_date.id_for_label }}">
-              <span class="label-text">Fecha de Fin:</span>
-            </label>
-            {{ form.end_date }}
-            {% if form.end_date.errors %}
-              <div class="label">
-                <span class="label-text-alt text-error">{{ form.end_date.errors.0 }}</span>
-              </div>
-            {% endif %}
-          </div>
-
-          <!-- Estado del Proyecto -->
-          <div class="mt-4">
-            <div class="form-control">
-              <label class="label cursor-pointer">
-                <span class="label-text">Proyecto Cerrado:</span>
-                {{ form.is_closed }}
-              </label>
-              {% if form.is_closed.errors %}
-                <div class="label">
-                  <span class="label-text-alt text-error">{{ form.is_closed.errors.0 }}</span>
-                </div>
-              {% endif %}
-              <p class="text-xs text-gray-500 mt-1">Marca esta casilla cuando el proyecto ya no admita nuevos recursos.</p>
-            </div>
-          </div>
         </div>
       </div>
-
-  <!-- Sección de notas eliminada: el modelo ya no incluye 'notes'. -->
     </div>
 
     <!-- Botones de acción -->

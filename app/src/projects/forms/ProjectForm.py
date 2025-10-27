@@ -10,13 +10,14 @@ class ProjectForm(forms.ModelForm):
         - phone_contact -> contact_phone
         - is_active -> is_closed (antes check = activo, ahora check = cerrado)
         - Se elimina 'notes' (el modelo actual ya no lo expone)
+        - end_date e is_closed se gestionan desde otros procesos de control
     """
 
     class Meta:
         model = Project
         fields = [
             'partner', 'location', 'contact_name', 'contact_phone',
-            'start_date', 'end_date', 'is_closed'
+            'start_date', 'notes'
         ]
         widgets = {
             'partner': forms.Select(
@@ -47,25 +48,11 @@ class ProjectForm(forms.ModelForm):
                 },
                 format='%Y-%m-%d'
             ),
-            'end_date': forms.DateInput(
+            'notes': forms.Textarea(
                 attrs={
-                    'class': 'input input-bordered input-md w-full',
-                    'type': 'date'
-                },
-                format='%Y-%m-%d'
+                    'class': 'textarea textarea-bordered w-full',
+                    'placeholder': 'Notas adicionales sobre el proyecto',
+                    'rows': 4
+                }
             ),
-            'is_closed': forms.CheckboxInput(
-                attrs={'class': 'checkbox checkbox-md'}
-            )
         }
-
-    def clean(self):
-        data = super().clean()
-        start = data.get('start_date')
-        end = data.get('end_date')
-        if start and end and end < start:
-            self.add_error(
-                'end_date',
-                'La fecha de fin no puede ser anterior a la fecha de inicio.'
-            )
-        return data
