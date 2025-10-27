@@ -9,10 +9,23 @@ class ResourceItemListView(LoginRequiredMixin, ListView):
     template_name = 'lists/resource_list.html'
     context_object_name = 'equipments'
     ordering = ['name']
+    paginate_by = 100  # Limitar resultados iniciales
 
     def get_queryset(self):
         # Solo equipos activos (soft delete via is_active)
-        queryset = ResourceItem.get_all().order_by('name')
+        # Optimización: solo traer campos necesarios para la tabla
+        queryset = ResourceItem.get_all().only(
+            'id',
+            'code',
+            'type_equipment',
+            'serial_number',
+            'capacity_gallons',
+            'plant_capacity',
+            'stst_status_equipment',
+            'stst_current_project_id',
+            'stst_release_date',
+            'stst_status_disponibility'
+        ).order_by('code')  # Ordenar por código es más rápido que por nombre
 
         # Filtros de búsqueda
         search = self.request.GET.get('search')
@@ -34,7 +47,7 @@ class ResourceItemListView(LoginRequiredMixin, ListView):
         if brand:
             queryset = queryset.filter(brand__icontains=brand)
 
-        return queryset.distinct()
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
