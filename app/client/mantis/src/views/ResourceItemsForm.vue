@@ -4,7 +4,7 @@
 <template>
   <div class="container mx-auto p-4 max-w-4xl">
     <span class="font-bold text-lg bg-gray-100 rounded-md px-2 py-1 mb-4 inline-block w-full text-center">
-      Agregar Recurso al Proyecto
+      Recurso del Proyecto
     </span>
     <form class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg">
       <div class="card-body space-y-4">
