@@ -94,10 +94,11 @@ class ProjectResourceItem(BaseModel):
     cost = models.DecimalField(
         'Costo',
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        default=0.00
     )
     interval_days = models.PositiveIntegerField(
-        'Frecuencia de Mantenimiento (días)',
+        'Frecuencia (días)',
         default=1
     )
     operation_start_date = models.DateField(

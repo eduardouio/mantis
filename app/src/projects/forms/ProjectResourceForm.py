@@ -19,10 +19,9 @@ class ProjectResourceForm(forms.ModelForm):
     class Meta:
         model = ProjectResourceItem
         fields = [
-            'project', 'resource_item', 'rent_cost', 'maintenance_cost',
-            'maintenance_interval_days', 'operation_start_date',
-            'operation_end_date', 'is_retired', 'retirement_date',
-            'retirement_reason'
+            'project', 'resource_item', 'cost', 'interval_days',
+            'operation_start_date', 'operation_end_date', 'is_retired',
+            'retirement_date', 'retirement_reason'
         ]
         widgets = {
             'project': forms.Select(
@@ -31,19 +30,13 @@ class ProjectResourceForm(forms.ModelForm):
             'resource_item': forms.Select(
                 attrs={'class': 'select select-bordered select-md w-full'}
             ),
-            'rent_cost': forms.NumberInput(
+            'cost': forms.NumberInput(
                 attrs={
                     'class': 'input input-bordered input-md w-full',
                     'step': '0.01'
                 }
             ),
-            'maintenance_cost': forms.NumberInput(
-                attrs={
-                    'class': 'input input-bordered input-md w-full',
-                    'step': '0.01'
-                }
-            ),
-            'maintenance_interval_days': forms.NumberInput(
+            'interval_days': forms.NumberInput(
                 attrs={
                     'class': 'input input-bordered input-md w-full',
                     'min': '1'

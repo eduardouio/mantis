@@ -43,13 +43,6 @@ import TabCalendar from '@/components/projects/TabCalendar.vue'
             <span class="text-xs text-gray-500 w-32">Fecha Fin:</span>
             <span class="font-semibold text-sm">08/04/2025</span>
           </div>
-          <div class="flex items-center gap-2 py-1 border-b border-gray-200">
-            <i class="las la-info-circle text-blue-500"></i>
-            <span class="text-xs text-gray-500 w-32">Estado:</span>
-            <span class="badge badge-sm badge-success">
-              Abierto
-            </span>
-          </div>
         </div>
 
         <!-- Información del Cliente -->
