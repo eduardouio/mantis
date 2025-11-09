@@ -17,39 +17,22 @@ import TabCalendar from '@/components/projects/TabCalendar.vue'
       </div>
 
       <!-- Información del Proyecto -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Columna 1 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Información del Proyecto -->
         <div class="space-y-2">
+          <h2 class="text-sm font-semibold text-blue-600 mb-3 border-b border-blue-200 pb-1">
+            Datos del Proyecto
+          </h2>
           <div class="flex items-center gap-2 py-1 border-b border-gray-200">
             <i class="las la-hashtag text-blue-500"></i>
             <span class="text-xs text-gray-500 w-32">ID Proyecto:</span>
             <span class="font-semibold text-sm">#1</span>
           </div>
           <div class="flex items-center gap-2 py-1 border-b border-gray-200">
-            <i class="las la-building text-blue-500"></i>
-            <span class="text-xs text-gray-500 w-32">Cliente:</span>
-            <span class="font-semibold text-sm">
-              <a href="#" class="link link-hover">
-                Cliente Ejemplo
-              </a>
-            </span>
-          </div>
-          <div class="flex items-center gap-2 py-1 border-b border-gray-200">
             <i class="las la-map-marker text-blue-500"></i>
-            <span class="text-xs text-gray-500 w-32">Ubicación:</span>
+            <span class="text-xs text-gray-500 w-32">Campamento:</span>
             <span class="font-semibold text-sm">Ubicación del Proyecto</span>
           </div>
-          <div class="flex items-center gap-2 py-1 border-b border-gray-200">
-            <i class="las la-info-circle text-blue-500"></i>
-            <span class="text-xs text-gray-500 w-32">Estado:</span>
-            <span class="badge badge-sm badge-success">
-              Abierto
-            </span>
-          </div>
-        </div>
-
-        <!-- Columna 2 -->
-        <div class="space-y-2">
           <div class="flex items-center gap-2 py-1 border-b border-gray-200">
             <i class="las la-calendar-check text-blue-500"></i>
             <span class="text-xs text-gray-500 w-32">Fecha Inicio:</span>
@@ -61,19 +44,28 @@ import TabCalendar from '@/components/projects/TabCalendar.vue'
             <span class="font-semibold text-sm">08/04/2025</span>
           </div>
           <div class="flex items-center gap-2 py-1 border-b border-gray-200">
-            <i class="las la-hourglass-half text-blue-500"></i>
-            <span class="text-xs text-gray-500 w-32">Duración:</span>
-            <span class="font-semibold text-sm">97 días</span>
-          </div>
-          <div class="flex items-center gap-2 py-1 border-b border-gray-200">
-            <i class="las la-dollar-sign text-blue-500"></i>
-            <span class="text-xs text-gray-500 w-32">Valor Total:</span>
-            <span class="font-semibold text-sm text-green-600">$97,485.00</span>
+            <i class="las la-info-circle text-blue-500"></i>
+            <span class="text-xs text-gray-500 w-32">Estado:</span>
+            <span class="badge badge-sm badge-success">
+              Abierto
+            </span>
           </div>
         </div>
 
-        <!-- Columna 3 -->
+        <!-- Información del Cliente -->
         <div class="space-y-2">
+          <h2 class="text-sm font-semibold text-blue-600 mb-3 border-b border-blue-200 pb-1">
+            Datos del Cliente
+          </h2>
+          <div class="flex items-center gap-2 py-1 border-b border-gray-200">
+            <i class="las la-building text-blue-500"></i>
+            <span class="text-xs text-gray-500 w-32">Cliente:</span>
+            <span class="font-semibold text-sm">
+              <a href="#" class="link link-hover">
+                Cliente Ejemplo
+              </a>
+            </span>
+          </div>
           <div class="flex items-center gap-2 py-1 border-b border-gray-200">
             <i class="las la-user text-blue-500"></i>
             <span class="text-xs text-gray-500 w-32">Contacto:</span>
@@ -83,16 +75,6 @@ import TabCalendar from '@/components/projects/TabCalendar.vue'
             <i class="las la-phone text-blue-500"></i>
             <span class="text-xs text-gray-500 w-32">Teléfono:</span>
             <span class="font-semibold text-sm">+34 612 345 678</span>
-          </div>
-          <div class="flex items-center gap-2 py-1 border-b border-gray-200">
-            <i class="las la-envelope text-blue-500"></i>
-            <span class="text-xs text-gray-500 w-32">Email:</span>
-            <span class="font-semibold text-sm">juan@example.com</span>
-          </div>
-          <div class="flex items-center gap-2 py-1 border-b border-gray-200">
-            <i class="las la-sticky-note text-blue-500"></i>
-            <span class="text-xs text-gray-500 w-32">Notas:</span>
-            <span class="font-semibold text-sm">Notas del proyecto ejemplo</span>
           </div>
         </div>
       </div>
