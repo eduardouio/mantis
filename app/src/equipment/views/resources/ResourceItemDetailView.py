@@ -24,6 +24,17 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         # Obtener el parámetro de acción de la URL
         context['action'] = self.request.GET.get('action', None)
 
+        # Detectar si es un servicio
+        is_service = getattr(equipment, 'type_equipment', None) == 'SERVIC'
+        context['is_service'] = is_service
+        context['resource_type'] = 'servicio' if is_service else 'equipo'
+
+        if is_service:
+            # Para servicios: solo información básica y auditoría
+            context['equipment_status'] = getattr(equipment, 'stst_status_equipment', 'DESCONOCIDO')
+            return context
+
+        # Para equipos: información completa
         # Estadísticas de uso del equipo
         context.update(self._get_equipment_statistics(equipment))
 
@@ -475,4 +486,3 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
             classes['overall_badge'] = 'badge-warning'
         
         return classes
-       
