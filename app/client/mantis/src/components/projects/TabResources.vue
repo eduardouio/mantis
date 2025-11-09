@@ -1,3 +1,6 @@
+<script setup>
+import { RouterLink } from 'vue-router'
+</script>
 <template>
   <div class="space-y-3">
     <div class="flex justify-between items-center mb-4">
@@ -5,10 +8,10 @@
         <i class="las la-tools text-blue-600 text-xl"></i>
         Equipos Asignados
       </h2>
-      <button class="btn btn-primary btn-sm">
+      <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'resource-form', params: { projectId: 1 } }">
         <i class="las la-plus text-lg"></i>
         Asignar Equipo
-      </button>
+      </RouterLink>
     </div>
     
     <div class="overflow-x-auto">
