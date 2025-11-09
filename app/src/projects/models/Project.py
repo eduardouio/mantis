@@ -85,17 +85,18 @@ class ProjectResourceItem(BaseModel):
         ResourceItem,
         on_delete=models.PROTECT
     )
-    rent_cost = models.DecimalField(
-        'Costo Renta',
+    detailed_description = models.CharField(
+        'Descripción Detallada',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    cost = models.DecimalField(
+        'Costo',
         max_digits=10,
         decimal_places=2
     )
-    maintenance_cost = models.DecimalField(
-        'Costo de Mantenimiento',
-        max_digits=10,
-        decimal_places=2
-    )
-    maintenance_interval_days = models.PositiveIntegerField(
+    interval_days = models.PositiveIntegerField(
         'Frecuencia de Mantenimiento (días)',
         default=1
     )
