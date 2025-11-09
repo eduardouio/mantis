@@ -101,11 +101,6 @@ class BaseModel(models.Model):
         except ObjectDoesNotExist:
             return None
 
-    def delete(self, *args, **kwargs):
-        '''Marca el registro como inactivo en lugar de eliminarlo.'''
-        self.is_active = False
-        self.save(*args, **kwargs)
-
     def save(self, *args, **kwargs):
         user = get_current_user()
 
