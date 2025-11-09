@@ -122,6 +122,14 @@ class ProjectResourceItem(BaseModel):
         null=True
     )
 
+    @classmethod
+    def get_by_project(cls, project_id):
+        """Obtiene todos los recursos asociados a un proyecto específico."""
+        return cls.objects.filter(
+            project__id=project_id,
+            is_deleted=False
+        )
+
     class Meta:
         verbose_name = 'Recurso del Proyecto'
         verbose_name_plural = 'Recursos del Proyecto'
