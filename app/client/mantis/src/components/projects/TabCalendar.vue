@@ -1,13 +1,9 @@
 <template>
   <div class="space-y-3">
-    <div class="flex justify-between items-center">
-      <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-        <i class="las la-calendar text-red-600 text-xl"></i>
-        Calendario de Mantenimientos
-      </h2>
+    <div class="text-end">
       <div class="badge badge-info gap-2">
         <i class="las la-wrench"></i>
-        {{ scheduleSummary.total_maintenances }} mantenimientos programados
+        <span class="font-semibold">{{ scheduleSummary.total_maintenances }} Servicios Programados</span>
       </div>
     </div>
 
@@ -27,11 +23,12 @@
           <table class="table table-zebra w-full">
             <thead>
               <tr class="bg-gray-500 text-white">
-                <th class="p-2 border border-gray-100 text-center w-48">Detalle</th>
+                <th class="p-2 border border-gray-100 text-center" style="width: 25%">Detalle</th>
                 <th 
                   v-for="(date, index) in weekDates" 
                   :key="index"
-                  class="p-2 border border-gray-100 text-center min-w-[120px]"
+                  class="p-2 border border-gray-100 text-center"
+                  style="width: 10.71%"
                   :class="{
                     'bg-lime-400 text-gray-800': isToday(date)
                   }"
@@ -43,7 +40,7 @@
             </thead>
             <tbody>
               <tr v-for="resource in uniqueResources" :key="resource.id">
-                <td class="p-2 border border-gray-300 font-medium">
+                <td class="p-2 border border-gray-300 font-medium" style="width: 25%">
                   <div class="flex items-center gap-2">
                     <i class="las la-tools text-blue-500"></i>
                     <div>
@@ -55,13 +52,13 @@
                   v-for="(date, dayIndex) in weekDates" 
                   :key="dayIndex"
                   class="p-2 border border-gray-300 text-center"
+                  style="width: 10.71%"
                   :class="{ 'bg-lime-100': isToday(date) }"
                 >
                   <template v-for="maintenance in getMaintenanceForResourceAndDay(resource.id, date)" :key="maintenance.resource_id + '-' + maintenance.scheduled_date">
-                    <div class="bg-blue-50 p-1 rounded">
-                      <div class="badge badge-primary badge-xs">Mantenimiento</div>
-                      <div class="text-xs text-gray-600 mt-1">
-                        {{ maintenance.interval_days }} días
+                    <div class="bg-amber-200 p-1 rounded border-amber-400 border">
+                      <div class="text-gray-600 mt-1">
+                        SERVICIO
                       </div>
                     </div>
                   </template>
