@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.db import transaction
 import json
 from datetime import datetime, date
+from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 
 from projects.models import Project, ProjectResourceItem
 from equipment.models import ResourceItem
@@ -43,7 +44,8 @@ class AddResourceProjectAPI(View):
                     resource_item_id=resource_id, is_active=True, is_retired=False
                 ).select_related("project", "resource_item")
                 data = [self._serialize(r) for r in qs]
-                return JsonResponse({"success": True, "data": data})
+
+                return JsonResponse({"success": True, "data": data}, status=201)
 
             return JsonResponse(
                 {
@@ -72,13 +74,26 @@ class AddResourceProjectAPI(View):
                 )
 
         try:
-            project_id = data["project"]
+            project_raw = data["project"]
+            project_id = (
+                project_raw.get("id") if isinstance(project_raw, dict) else project_raw
+            )
             if not project_id:
                 return JsonResponse(
-                    {"success": False, "error": "project_id no puede ser null"}, status=400
+                    {"success": False, "error": "project.id es requerido"}, status=400
                 )
             project = get_object_or_404(Project, id=project_id, is_active=True)
-            resource_item_id = data["resource"]["id"]
+
+            resource_raw = data["resource"]
+            resource_item_id = (
+                resource_raw.get("id")
+                if isinstance(resource_raw, dict)
+                else resource_raw
+            )
+            if not resource_item_id:
+                return JsonResponse(
+                    {"success": False, "error": "resource.id es requerido"}, status=400
+                )
             resource = get_object_or_404(
                 ResourceItem, id=resource_item_id, is_active=True
             )
@@ -129,12 +144,38 @@ class AddResourceProjectAPI(View):
                         status=400,
                     )
 
+            try:
+                cost = Decimal(str(data["cost"])).quantize(
+                    Decimal("0.01"), rounding=ROUND_HALF_UP
+                )
+            except (InvalidOperation, TypeError, ValueError):
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "cost inválido. Debe ser numérico con hasta 2 decimales",
+                    },
+                    status=400,
+                )
+
+            try:
+                interval_days = int(data["interval_days"])
+                if interval_days <= 0:
+                    raise ValueError
+            except (TypeError, ValueError):
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "interval_days inválido. Debe ser un entero positivo",
+                    },
+                    status=400,
+                )
+
             project_resource = ProjectResourceItem(
                 project=project,
                 resource_item=resource,
                 detailed_description=data.get("detailed_description"),
-                cost=data["cost"],
-                interval_days=data["interval_days"],
+                cost=cost,
+                interval_days=interval_days,
                 operation_start_date=operation_start,
                 operation_end_date=(
                     operation_end if operation_end else project.end_date
@@ -146,16 +187,16 @@ class AddResourceProjectAPI(View):
 
             resource.stst_status_disponibility = "RENTADO"
             resource.stst_current_location = (
-                project.location or f"Proyecto {project.partner.name}"
+                project.location
+                or f"Proyecto {getattr(project.partner, 'name', '')}".strip()
+                or "Proyecto"
             )
             resource.stst_current_project_id = project.id
 
             today = date.today()
-            if operation_start > today:
-                resource.stst_commitment_date = operation_start
-            else:
-                resource.stst_commitment_date = today
-
+            resource.stst_commitment_date = (
+                operation_start if operation_start > today else today
+            )
             resource.stst_release_date = (
                 operation_end if operation_end else project.end_date
             )

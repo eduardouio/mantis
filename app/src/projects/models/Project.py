@@ -105,7 +105,9 @@ class ProjectResourceItem(BaseModel):
         'Fecha de Inicio Operaciones'
     )
     operation_end_date = models.DateField(
-        'Fecha de Fin Operaciones'
+        'Fecha de Fin Operaciones',
+        blank=True,
+        null=True
     )
     is_retired = models.BooleanField(
         'Retirado',
