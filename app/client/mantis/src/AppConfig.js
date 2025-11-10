@@ -14,4 +14,5 @@ export const appConfig = {
         "X-CSRFToken": csrfToken
     },
     "URLSourcesAvailable": apiBaseUrl + "/api/projects/resources/available/",
+    "URLSheetProjects": apiBaseUrl + "/api/workorders/sheet-projects/" + idProject + "/",
 }

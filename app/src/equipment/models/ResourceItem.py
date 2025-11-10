@@ -3,7 +3,7 @@ from django.core.exceptions import FieldDoesNotExist
 from common.BaseModel import BaseModel
  
 
-# opciones Para Campos
+
 FASES_COUNT = (
     ('1', '1 FASE'),
     ('2', '2 FASES'),
@@ -45,7 +45,7 @@ SERVICES_FIELDS = [
     'id_user_updated'
 ]
 
-# columnas por equipo
+
 LVMNOS_FIELDS = [
     'id',
     'name',
@@ -79,7 +79,7 @@ LVMNOS_FIELDS = [
     'id_user_updated'
 ]
 
-# check list Batería Sanitaria Hombre
+
 BTSNHM_FIELDS = [
     'id',
     'name',
@@ -119,7 +119,7 @@ BTSNHM_FIELDS = [
     'id_user_updated'
 ]
 
-# check list Batería Sanitaria Mujer
+
 BTSNMJ_FIELDS = [
     'id',
     'name',
@@ -158,7 +158,7 @@ BTSNMJ_FIELDS = [
     'id_user_updated'
 ]
 
-# check list Estación Cuádruple Urinario
+
 EST4UR_FIELDS = [
     'id',
     'name',
@@ -197,7 +197,7 @@ EST4UR_FIELDS = [
     'id_user_updated'
 ]
 
-# check list Camper Baño
+
 CMPRBN_FIELDS = [
     'id',
     'name',
@@ -238,7 +238,7 @@ CMPRBN_FIELDS = [
     'id_user_created',
     'id_user_updated'
 ]
-# check list Planta de Tratamiento de Agua Potable
+
 PTRTAP_FIELDS = [
     'id',
     'name',
@@ -362,7 +362,7 @@ PTRTAR_FIELDS = [
     'id_user_created', 'id_user_updated'
 ]
 
-# check list Tanques de Almacenamiento Agua Cruda
+
 TNQAAC_FIELDS = [
     'id',
     'name',
@@ -392,7 +392,7 @@ TNQAAC_FIELDS = [
     'id_user_updated'
 ]
 
-# check list Tanques de Almacenamiento Agua Residual
+
 TNQAAR_FIELDS = [
     'id',
     'name',
@@ -424,7 +424,7 @@ TNQAAR_FIELDS = [
 
 
 class ResourceItem(BaseModel):
-    # campos compartidos por Servicio y Equipo
+    
     id = models.AutoField(
         primary_key=True
     )
@@ -439,7 +439,7 @@ class ResourceItem(BaseModel):
         blank=True,
         null=True
     )
-    # campos base de equipos
+    
     type_equipment = models.CharField(
         'Subtipo de Equipo',
         max_length=255,
@@ -513,7 +513,7 @@ class ResourceItem(BaseModel):
         help_text='Capacidad específica para plantas de tratamiento'
     )
 
-    # checklists
+    
     have_foot_pumps = models.BooleanField(
         'Bombas de Pie',
         default=False,
@@ -654,7 +654,7 @@ class ResourceItem(BaseModel):
         default=False,
         help_text='Para plantas de agua potable'
     )
-    # Campos para equipos especiales (blower, motor, banda, etc.)
+    
     relay_engine = models.CharField(
         'Marca del Relay del Motor',
         max_length=255,
@@ -784,7 +784,7 @@ class ResourceItem(BaseModel):
         help_text='Solo para plantas y tanques'
     )
 
-    # para plantas de agua potable
+    
     pump_filter = models.CharField(
         'Bomba de filtracion',
         max_length=255,
@@ -893,7 +893,7 @@ class ResourceItem(BaseModel):
 
     @classmethod
     def _metadata_fields(cls):
-        # Campos de BaseModel considerados metadatos para la vista
+        
         return [
             'notes', 'created_at', 'updated_at',
             'id_user_created', 'id_user_updated', 'is_active'
@@ -913,13 +913,13 @@ class ResourceItem(BaseModel):
         if not lists:
             return []
         intersection = set.intersection(*lists)
-        # Excluir estado y metadatos
+        
         intersection = {
             f for f in intersection
             if not f.startswith(cls._state_fields_prefix())
             and f not in cls._metadata_fields()
         }
-        # Orden estable por nombre
+        
         return sorted(intersection)
 
     @property
@@ -931,7 +931,7 @@ class ResourceItem(BaseModel):
         fields = mapping.get(self.type_equipment)
         if fields:
             return fields
-        # Fallback: campos del modelo (solo nombres de field concretos)
+        
         model_field_names = [
             f.name for f in self._meta.get_fields() if hasattr(f, 'attname')
         ]
@@ -972,7 +972,7 @@ class ResourceItem(BaseModel):
         """Obtiene el valor del campo por nombre, seguro para plantillas.
         Si no existe el campo, retorna None.
         """
-        # Mapeos de alias que podrían existir en definiciones antiguas
+        
         aliases = {
             'status': 'stst_status_equipment',
             'availability': 'stst_status_disponibility',
@@ -981,7 +981,7 @@ class ResourceItem(BaseModel):
         }
         real_name = aliases.get(field_name, field_name)
         try:
-            # Si el campo tiene choices, usar su display
+            
             try:
                 field = self._meta.get_field(real_name)
                 if getattr(field, 'choices', None):
@@ -996,7 +996,7 @@ class ResourceItem(BaseModel):
 
     @classmethod
     def _humanize(cls, name: str) -> str:
-        # Generar etiqueta legible a partir del nombre del campo
+        
         return name.replace('_', ' ').replace('stst ', '').strip().title()
 
     def get_field_label(self, field_name: str) -> str:
@@ -1007,16 +1007,16 @@ class ResourceItem(BaseModel):
             field = self._meta.get_field(field_name)
             base_label = str(field.verbose_name)
         except FieldDoesNotExist:
-            # Remover prefijo de estado si aparece
+            
             prefix = self._state_fields_prefix()
             if field_name.startswith(prefix):
                 base_label = self._humanize(field_name[len(prefix):])
             else:
                 base_label = self._humanize(field_name)
 
-        # Mapa de etiquetas en español por nombre de campo
+        
         label_map = {
-            # básicos
+            
             'id': 'ID',
             'name': 'Nombre Equipo/Servicio',
             'code': 'Código Equipo/Servicio',
@@ -1032,7 +1032,7 @@ class ResourceItem(BaseModel):
             'capacity_gallons': 'Capacidad (galones)',
             'plant_capacity': 'Capacidad de Planta',
             'is_service': 'Es servicio',
-            # estado
+            
             'stst_status_equipment': 'Estado técnico',
             'stst_status_disponibility': 'Disponibilidad',
             'stst_current_location': 'Ubicación Actual',
@@ -1040,7 +1040,7 @@ class ResourceItem(BaseModel):
             'stst_commitment_date': 'Fecha de Ocupación',
             'stst_release_date': 'Fecha de Liberación',
             'stst_repair_reason': 'Motivo de Reparación',
-            # checklist comunes
+            
             'have_foot_pumps': 'Pedales de pie',
             'have_paper_dispenser': 'Dispensador de papel',
             'have_soap_dispenser': 'Dispensador de jabón',
@@ -1053,7 +1053,7 @@ class ResourceItem(BaseModel):
             'have_toilet_lid': 'Llave de baño',
             'have_bathroom_bases': 'Bases de baño',
             'have_ventilation_pipe': 'Tubo de ventilación',
-            # componentes especiales
+            
             'relay_engine': 'Marca del Relay del Motor',
             'relay_blower': 'Marca del Relay del Blower',
             'blower_brand': 'Marca del Blower',
@@ -1082,7 +1082,7 @@ class ResourceItem(BaseModel):
 
         return label_map.get(field_name, base_label)
 
-    # ---------- Presentación lista de items ----------
+    
     def as_field_items(self, field_names):
         """Devuelve [{'name','label','value'}] para nombres de campos.
         """
@@ -1097,14 +1097,14 @@ class ResourceItem(BaseModel):
 
     @property
     def present_common_fields(self):
-        # Excluir booleanos (checklist) de la columna de comunes
+        
         boolean_set = set(self.boolean_fields)
         fields = [f for f in self.common_fields if f not in boolean_set]
         return self.as_field_items(fields)
 
     @property
     def present_specific_fields(self):
-        # Excluir booleanos (checklist) de la columna de específicos
+        
         boolean_set = set(self.boolean_fields)
         fields = [f for f in self.specific_fields if f not in boolean_set]
         return self.as_field_items(fields)
@@ -1117,7 +1117,7 @@ class ResourceItem(BaseModel):
     def present_metadata_fields(self):
         return self.as_field_items(self.metadata_fields)
 
-    # ---------- Checklist (campos booleanos) ----------
+    
     @property
     def boolean_fields(self):
         """Devuelve los nombres de campos booleanos aplicables al tipo.
@@ -1125,18 +1125,18 @@ class ResourceItem(BaseModel):
         """
         names = []
         for name in self.all_fields_for_type:
-            # Filtrar estado y metadatos
+            
             if name.startswith(self._state_fields_prefix()):
                 continue
             if name in self._metadata_fields():
                 continue
             try:
                 field = self._meta.get_field(name)
-                # Usar tipo real del modelo cuando exista
+                
                 if isinstance(field, models.BooleanField):
                     names.append(name)
             except FieldDoesNotExist:
-                # Si no existe en el modelo pero sigue la convención have_*
+                
                 if name.startswith('have_'):
                     names.append(name)
         return names

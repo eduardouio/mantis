@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views import View
 from django.db.models import Q
 from equipment.models import ResourceItem
+from equipment.models.ResourceItem import TYPE_EQUIPMENT
 
 
 class ResourcesAvailableAPI(View):
@@ -22,23 +23,24 @@ class ResourcesAvailableAPI(View):
 
             data = [self._serialize(r) for r in resources]
 
-            return JsonResponse({"success": True, "count": len(data), "data": data})
+            return JsonResponse(
+                {"success": True, "data": data}, 
+                status=200
+            )
 
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
     def _serialize(self, resource):
         """Serializar ResourceItem a JSON."""
+        type_resource = 'SERVICIO' if resource.type_equipment == 'SERVIC' else 'ALQUILER'
         return {
             "id": resource.id,
             "code": resource.code,
             "name": resource.name,
-            "type_equipment": resource.type_equipment,
-            "type_equipment_display": (
-                resource.get_type_equipment_display()
-                if resource.type_equipment
-                else None
-            ),
+            "display_name": f" ({type_resource}) {resource.name} - {resource.get_type_equipment_display()}" ,
+            "type_equipment": resource.type_equipment ,
+            "type_equipment_display": resource.get_type_equipment_display(),
             "brand": resource.brand,
             "model": resource.model,
             "status_equipment": resource.stst_status_equipment,

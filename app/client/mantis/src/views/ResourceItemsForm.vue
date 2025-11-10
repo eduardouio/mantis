@@ -1,5 +1,14 @@
 <script setup>
   import { RouterLink } from 'vue-router';
+  import AutocompleteResource from '@/components/resoruces/AutocompleteResource.vue';
+  import { ref } from 'vue';
+
+  const selectedResource = ref(null);
+
+  const handleResourceSelected = (resource) => {
+    selectedResource.value = resource;
+    console.log('Recurso seleccionado:', resource);
+  };
 </script>
 <template>
   <div class="container mx-auto p-4 max-w-4xl">
@@ -9,6 +18,13 @@
     <form class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg">
       <div class="card-body space-y-4">
         
+        <!-- Autocomplete de Recursos -->
+        <AutocompleteResource 
+          label="Seleccionar Recurso *"
+          placeholder="Buscar recurso disponible..."
+          @resource-selected="handleResourceSelected"
+        />
+
         <!-- Descripción Detallada - Ancho completo -->
         <div class="form-control w-full">
           <label class="label">
