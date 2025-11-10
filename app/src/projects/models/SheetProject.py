@@ -180,6 +180,11 @@ class SheetProjectDetail(BaseModel):
         ResourceItem,
         on_delete=models.PROTECT
     )
+    issue_date = models.DateField(
+        "Fecha de Emisión",
+        blank=True,
+        null=True
+    )
     detail = models.TextField(
         "Detalle",
         blank=True,
@@ -225,6 +230,18 @@ class SheetProjectDetail(BaseModel):
         max_digits=10,
         decimal_places=2,
         default=0
+    )
+    id_technical = models.CharField(
+        "ID Técnico",
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    id_vehicle = models.CharField(
+        "ID Vehículo",
+        max_length=100,
+        blank=True,
+        null=True
     )
 
     class Meta:
