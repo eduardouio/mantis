@@ -57,6 +57,7 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 if (response.ok) {
                     this.resourcesProject.push(resource);
                 } else {
+                    alert("Error al agregar el recurso al proyecto");
                     throw new Error("Error al agregar el recurso al proyecto");
                 }
             } catch (error) {
