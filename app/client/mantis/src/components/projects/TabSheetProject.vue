@@ -88,7 +88,7 @@ const formatDate = (date) => {
         <i class="las la-file-invoice-dollar text-blue-600 text-xl"></i>
         Planillas del Proyecto
       </h2>
-      <RouterLink to="/sheet-project/form" class="btn btn-primary btn-sm">
+      <RouterLink to="/sheet/form" class="btn btn-primary btn-sm">
         <i class="las la-plus text-lg"></i>
         Crear Nueva Planilla
       </RouterLink>
