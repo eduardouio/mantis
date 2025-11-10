@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ProjectsView from '../views/ProjectsView.vue'
 import ResourceItemsForm from '@/views/ResourceItemsForm.vue'
 import SheetProjectForm from '@/views/SheetProjectForm.vue'
+import SheetProjectView from '@/views/SheetProjectView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,7 +25,12 @@ const router = createRouter({
       path: '/sheet/form',
       name: 'sheet-form',
       component: SheetProjectForm,
-    }
+    },
+    {
+      path: '/sheet/view/:id',
+      name: 'sheet-view',
+      component: SheetProjectView,
+    },
   ]
 })
 
