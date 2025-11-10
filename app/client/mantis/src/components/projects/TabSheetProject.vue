@@ -39,27 +39,27 @@ const formatDate = (date) => {
         <i class="las la-plus"></i>
         Crear Nueva Planilla
       </RouterLink>
-      <div v-else class="text-warning">
+      <div v-else class="text-amber-700 badge bg-yellow-100">
         <i class="las la-exclamation-triangle"></i>
-        Hay una planilla en ejecución
+        PLANILLA EN EJECUCIÓN
       </div>
     </div>
     
     <div class="overflow-x-auto">
       <table class="table table-zebra w-full">
         <thead>
-          <tr class="bg-base-200">
-            <th class="p-2">#</th>
-            <th class="p-2">Serie</th>
-            <th class="p-2">Estado</th>
-            <th class="p-2">Fecha Emisión</th>
-            <th class="p-2">Período Inicio</th>
-            <th class="p-2">Período Fin</th>
-            <th class="p-2">Tipo Servicio</th>
-            <th class="p-2 text-right">Galones</th>
-            <th class="p-2 text-right">Barriles</th>
-            <th class="p-2 text-right">M³</th>
-            <th class="p-2 text-center">Acciones</th>
+          <tr class="bg-gray-500 text-white">
+            <th class="p-2 border border-gray-100 text-center">#</th>
+            <th class="p-2 border border-gray-100 text-center">Serie</th>
+            <th class="p-2 border border-gray-100 text-center">Estado</th>
+            <th class="p-2 border border-gray-100 text-center">Fecha Emisión</th>
+            <th class="p-2 border border-gray-100 text-center">Período Inicio</th>
+            <th class="p-2 border border-gray-100 text-center">Período Fin</th>
+            <th class="p-2 border border-gray-100 text-center">Tipo Servicio</th>
+            <th class="p-2 border border-gray-100 text-center">Galones</th>
+            <th class="p-2 border border-gray-100 text-center">Barriles</th>
+            <th class="p-2 border border-gray-100 text-center">M³</th>
+            <th class="p-2 border border-gray-100 text-center text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -73,17 +73,17 @@ const formatDate = (date) => {
           </template>
           <template v-else>
             <tr v-for="sheet in sheetProjects" :key="sheet.id">
-              <td class="p-2">{{ sheet.id }}</td>
-              <td class="p-2 font-mono">{{ sheet.series_code }}</td>
-              <td class="p-2">{{ sheet.status }}</td>
-              <td class="p-2">{{ formatDate(sheet.issue_date) }}</td>
-              <td class="p-2">{{ formatDate(sheet.period_start) }}</td>
-              <td class="p-2">{{ formatDate(sheet.period_end) }}</td>
-              <td class="p-2">{{ sheet.service_type }}</td>
-              <td class="p-2 text-right">{{ sheet.total_gallons.toLocaleString() }}</td>
-              <td class="p-2 text-right">{{ sheet.total_barrels.toLocaleString() }}</td>
-              <td class="p-2 text-right">{{ sheet.total_cubic_meters.toFixed(1) }}</td>
-              <td class="p-2 text-center">
+              <td class="p-2 border border-gray-300">{{ sheet.id }}</td>
+              <td class="p-2 border border-gray-300 font-mono">{{ sheet.series_code }}</td>
+              <td class="p-2 border border-gray-300">{{ sheet.status }}</td>
+              <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.issue_date) }}</td>
+              <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.period_start) }}</td>
+              <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.period_end) }}</td>
+              <td class="p-2 border border-gray-300">{{ sheet.service_type }}</td>
+              <td class="p-2 border border-gray-300 text-right">{{ sheet.total_gallons.toLocaleString() }}</td>
+              <td class="p-2 border border-gray-300 text-right">{{ sheet.total_barrels.toLocaleString() }}</td>
+              <td class="p-2 border border-gray-300 text-right">{{ sheet.total_cubic_meters.toFixed(1) }}</td>
+              <td class="p-2 border border-gray-300 text-center">
                 <div class="flex gap-1 justify-center">
                   <button class="btn btn-ghost btn-xs" title="Ver detalles">
                     <i class="las la-eye"></i>
