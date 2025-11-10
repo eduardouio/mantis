@@ -83,11 +83,10 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 contact_phone_reference: project.contact_phone
             };
         },
-        selectedSheetProjectById(idSheetProject) {
-            console.log("Setting selected sheet project with ID:", idSheetProject);
-            this.selectedSheetProject = this.sheetProjects.find(
-                (sheetProject) => sheetProject.id === idSheetProject
-            );
+        getLastActiveSheetProjectID() {
+            return this.sheetProjects.find(
+                sheetProject => sheetProject.status === 'IN_PROGRESS'
+            )?.id;
         }
     }
 });

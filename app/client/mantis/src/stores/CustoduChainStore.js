@@ -9,11 +9,10 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
         newCustodyChain: {
             id: null,
             id_sheet_project: null,
-            consecutive: null,
+            issue_date: null,
+            consecutive: "00000",
             activity_date: null,
             location: null,
-            start_time: null,
-            end_time: null,
             total_gallons: 0.0,
             duration_hours: 0.0,
         }
