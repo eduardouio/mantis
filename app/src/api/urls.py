@@ -29,6 +29,7 @@ from api.workorders import (
 
 from api.projects.ProjectResources import ProjectResources
 from api.projects.ProjectData import ProjectData
+from api.workorders.GetAllSheerProjectItems import GetAllSheerProjectItemsAPI
 
 urlpatterns = [
     # vehicles
@@ -53,4 +54,5 @@ urlpatterns = [
     path('workorders/sheets/project/<int:project_id>/', GetAllSheetProjectAPI.as_view(), name='api_get_all_sheets'),
     path('workorders/sheets/create/', AddUpdateSheetProjectAPI.as_view(), name='api_create_sheet'),
     path('workorders/sheets/delete/', DeleteSheetOrderAPI.as_view(), name='api_delete_sheet'),
+    path('workorders/sheets/items/<int:sheet_project_id>/', GetAllSheerProjectItemsAPI.as_view(), name='api_get_all_sheet_project_items'),
 ]
