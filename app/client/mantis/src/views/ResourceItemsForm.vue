@@ -2,13 +2,19 @@
   import { RouterLink } from 'vue-router';
   import AutocompleteResource from '@/components/resoruces/AutocompleteResource.vue';
   import { ref } from 'vue';
+import { onMounted } from 'vue';
 
-  const selectedResource = ref(null);
+  const selectedResource = ref(Object);
 
   const handleResourceSelected = (resource) => {
     selectedResource.value = resource;
     console.log('Recurso seleccionado:', resource);
   };
+
+
+  onMounted(() => {
+    console.log('Mounted ResourceItemsForm.vue');
+  });
 </script>
 <template>
   <div class="container mx-auto p-4 max-w-4xl">
