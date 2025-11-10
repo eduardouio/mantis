@@ -47,7 +47,10 @@ const projectResources = computed(() => projectResourceStore.resourcesProject);
           <template v-else>
             <tr v-for="resource in projectResources" :key="resource.id">
               <td class="p-2 border border-gray-300">{{ resource.id }}</td>
-              <td class="p-2 border border-gray-300 font-mono">{{ resource.resource_item_code }}</td>
+              <td class="p-2 border border-gray-300 font-mono">
+                <span v-if="!resource.is_active" class="text-red-500 border rounded p-1 bg-red-100">INACTIVO</span>  
+                {{ resource.resource_item_code }}
+              </td>
               <td class="p-2 border border-gray-300">{{ resource.detailed_description }}</td>
               <td class="p-2 border border-gray-300 text-right">{{ formatNumber(resource.cost) }}</td>
               <td class="p-2 border border-gray-300 text-end">

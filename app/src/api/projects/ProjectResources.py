@@ -43,6 +43,7 @@ class ProjectResources(View):
             "cost": project_resource.cost,
             "interval_days": project_resource.interval_days,
             "operation_start_date": project_resource.operation_start_date.isoformat(),
+            "is_active": project_resource.is_active,
             "is_selected": False,
             "is_confirm_delete": False,
         }

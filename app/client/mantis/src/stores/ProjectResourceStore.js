@@ -17,6 +17,7 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
             is_retired: false,
             retirement_date: null,
             retirement_reason: null,
+            is_active: true,
             is_selected: false,
             is_confirm_delete: false
         }
