@@ -81,12 +81,10 @@ const projectResourceStore = UseProjectResourceStore();
 
 const projectResources = computed(() => projectResourceStore.resourcesProject);
 
-// Filtrar solo recursos de tipo SERVIC
 const serviceResources = computed(() => {
   return projectResources.value.filter(resource => resource.type === 'SERVIC');
 });
 
-// Generar calendario de mantenimientos para la semana actual
 const weeklySchedule = computed(() => {
   return generateWeeklyMaintenanceSchedule(serviceResources.value);
 });
@@ -122,7 +120,11 @@ const getDayName = (index) => {
 };
 
 const getMaintenanceForResourceAndDay = (resourceId, dayDate) => {
-  const dateStr = dayDate.toISOString().split('T')[0];
+  const year = dayDate.getFullYear();
+  const month = String(dayDate.getMonth() + 1).padStart(2, '0');
+  const day = String(dayDate.getDate()).padStart(2, '0');
+  const dateStr = `${year}-${month}-${day}`;
+  
   return weeklySchedule.value.filter(
     m => m.resource_id === resourceId && m.scheduled_date === dateStr
   );

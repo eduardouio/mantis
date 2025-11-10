@@ -35,7 +35,9 @@ function getEndOfCurrentWeek() {
  * @returns {Date[]} Array de fechas de mantenimiento
  */
 function generateMaintenanceDates(startDateStr, intervalDays) {
-  const startDate = new Date(startDateStr);
+  // Parsear la fecha sin problemas de zona horaria
+  const [year, month, day] = startDateStr.split('-').map(Number);
+  const startDate = new Date(year, month - 1, day);
   const endOfWeek = getEndOfCurrentWeek();
   const maintenanceDates = [];
   
