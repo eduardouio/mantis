@@ -36,6 +36,7 @@ class ProjectResources(View):
         return {
             "id": project_resource.id,
             "project_id": project_resource.project.id,
+            "type": project_resource.resource_item.type_equipment,
             "resource_item_id": project_resource.resource_item.id,
             "resource_item_code": project_resource.resource_item.code,
             "resource_item_name": project_resource.resource_item.name,

@@ -9,6 +9,7 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
             id: null,
             project: null,
             resource: Object,
+            type: null,
             detailed_description: null,
             cost: 0.0,
             interval_days: 3, 

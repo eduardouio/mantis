@@ -11,6 +11,7 @@ export const UseResourcesStore = defineStore("resourcesStore", {
             "id": null,
             "code": null,
             "name": null,
+            "type": null,
             "type_equipment": null,
             "type_equipment_display": null,
             "brand": null,

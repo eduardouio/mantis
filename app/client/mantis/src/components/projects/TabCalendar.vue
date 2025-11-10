@@ -5,10 +5,9 @@
         <i class="las la-calendar text-red-600 text-xl"></i>
         Calendario de Mantenimientos
       </h2>
-      <div class="join">
-        <button class="btn btn-xs join-item btn-outline">Mes</button>
-        <button class="btn btn-xs join-item btn-outline">Cronograma</button>
-        <button class="btn btn-xs join-item btn-active">Semana</button>
+      <div class="badge badge-info gap-2">
+        <i class="las la-wrench"></i>
+        {{ scheduleSummary.total_maintenances }} mantenimientos programados
       </div>
     </div>
 
@@ -16,228 +15,152 @@
     <div class="card bg-base-100 shadow border">
       <div class="card-body p-3">
         <div class="flex justify-between items-center mb-3">
-          <h3 class="font-semibold text-base">Semana del 5 al 11 de Agosto 2025</h3>
-          <div class="join">
-            <button class="btn btn-xs join-item">
-              <i class="las la-chevron-left"></i>
-            </button>
-            <button class="btn btn-xs join-item">Hoy</button>
-            <button class="btn btn-xs join-item">
-              <i class="las la-chevron-right"></i>
-            </button>
-          </div>
+          <h3 class="font-semibold text-base">Semana del {{ getWeekRange() }}</h3>
         </div>
 
-        <div class="overflow-x-auto">
+        <div v-if="uniqueResources.length === 0" class="text-center py-8 text-gray-500">
+          <i class="las la-calendar-times text-4xl"></i>
+          <p>No hay mantenimientos programados para esta semana</p>
+        </div>
+
+        <div v-else class="overflow-x-auto">
           <table class="table table-xs w-full border">
             <thead>
               <tr class="bg-base-200">
-                <th class="sticky left-0 bg-base-200 z-10 w-48">Equipo</th>
-                <th class="text-center min-w-[120px]">
-                  <div class="font-bold">LUN</div>
-                  <div class="text-xs font-normal">05 Ago</div>
-                </th>
-                <th class="text-center min-w-[120px]">
-                  <div class="font-bold">MAR</div>
-                  <div class="text-xs font-normal">06 Ago</div>
-                </th>
-                <th class="text-center min-w-[120px]">
-                  <div class="font-bold">MIÉ</div>
-                  <div class="text-xs font-normal">07 Ago</div>
-                </th>
-                <th class="text-center min-w-[120px]">
-                  <div class="font-bold">JUE</div>
-                  <div class="text-xs font-normal">08 Ago</div>
-                </th>
-                <th class="text-center min-w-[120px]">
-                  <div class="font-bold">VIE</div>
-                  <div class="text-xs font-normal">09 Ago</div>
-                </th>
-                <th class="text-center min-w-[120px]">
-                  <div class="font-bold text-blue-600">SÁB</div>
-                  <div class="text-xs font-normal text-blue-600">10 Ago</div>
-                </th>
-                <th class="text-center min-w-[120px]">
-                  <div class="font-bold text-error">DOM</div>
-                  <div class="text-xs font-normal text-error">11 Ago</div>
+                <th class="sticky left-0 bg-base-200 z-10 w-48 text-center">Detalle</th>
+                <th 
+                  v-for="(date, index) in weekDates" 
+                  :key="index"
+                  class="text-center min-w-[120px]"
+                  :class="{
+                    'text-blue-600': index === 5 && !isToday(date),
+                    'text-error': index === 6 && !isToday(date),
+                    'bg-lime-400': isToday(date)
+                  }"
+                >
+                  <div class="font-bold">{{ getDayName(index) }}</div>
+                  <div class="text-xs font-normal">{{ formatWeekDate(date) }}</div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              <!-- Lavamanos LAV-001 -->
-              <tr class="hover">
+              <tr v-for="resource in uniqueResources" :key="resource.id" class="hover">
                 <td class="sticky left-0 bg-base-100 z-10 font-medium">
                   <div class="flex items-center gap-2">
-                    <i class="las la-toilet text-blue-500"></i>
+                    <i class="las la-tools text-blue-500"></i>
                     <div>
-                      <div class="font-semibold text-xs">LAV-001</div>
-                      <div class="text-xs text-gray-500">Lavamanos</div>
+                      <div class="font-semibold text-xs">{{ resource.description }}</div>
                     </div>
                   </div>
                 </td>
-                <td class="text-center bg-blue-50">
-                  <div class="badge badge-primary badge-xs">Limpieza</div>
-                  <div class="text-xs text-gray-600">08:00</div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center bg-blue-50">
-                  <div class="badge badge-primary badge-xs">Limpieza</div>
-                  <div class="text-xs text-gray-600">08:00</div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center bg-blue-50">
-                  <div class="badge badge-primary badge-xs">Limpieza</div>
-                  <div class="text-xs text-gray-600">08:00</div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-              </tr>
-
-              <!-- Batería Sanitaria BSH-002 -->
-              <tr class="hover">
-                <td class="sticky left-0 bg-base-100 z-10 font-medium">
-                  <div class="flex items-center gap-2">
-                    <i class="las la-bath text-green-500"></i>
-                    <div>
-                      <div class="font-semibold text-xs">BSH-002</div>
-                      <div class="text-xs text-gray-500">Batería Sanitaria</div>
+                <td 
+                  v-for="(date, dayIndex) in weekDates" 
+                  :key="dayIndex"
+                  class="text-center"
+                  :class="{ 'bg-lime-100': isToday(date) }"
+                >
+                  <template v-for="maintenance in getMaintenanceForResourceAndDay(resource.id, date)" :key="maintenance.resource_id + '-' + maintenance.scheduled_date">
+                    <div class="bg-blue-50 p-1 rounded">
+                      <div class="badge badge-primary badge-xs">Mantenimiento</div>
+                      <div class="text-xs text-gray-600 mt-1">
+                        {{ maintenance.interval_days }} días
+                      </div>
                     </div>
-                  </div>
+                  </template>
                 </td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center bg-green-50">
-                  <div class="badge badge-secondary badge-xs">Mantenimiento</div>
-                  <div class="text-xs text-gray-600">10:00</div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-              </tr>
-
-              <!-- Planta Tratamiento PTA-003 -->
-              <tr class="hover">
-                <td class="sticky left-0 bg-base-100 z-10 font-medium">
-                  <div class="flex items-center gap-2">
-                    <i class="las la-industry text-yellow-600"></i>
-                    <div>
-                      <div class="font-semibold text-xs">PTA-003</div>
-                      <div class="text-xs text-gray-500">Planta Tratamiento</div>
-                    </div>
-                  </div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center bg-yellow-50">
-                  <div class="badge badge-warning badge-xs">Revisión</div>
-                  <div class="text-xs text-gray-600">14:00</div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-              </tr>
-
-              <!-- Tanque Almacenamiento TNK-004 -->
-              <tr class="hover">
-                <td class="sticky left-0 bg-base-100 z-10 font-medium">
-                  <div class="flex items-center gap-2">
-                    <i class="las la-database text-purple-500"></i>
-                    <div>
-                      <div class="font-semibold text-xs">TNK-004</div>
-                      <div class="text-xs text-gray-500">Tanque Almacenamiento</div>
-                    </div>
-                  </div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center bg-purple-50">
-                  <div class="badge badge-info badge-xs">Inspección</div>
-                  <div class="text-xs text-gray-600">09:00</div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-              </tr>
-
-              <!-- Bomba de Agua BOM-005 -->
-              <tr class="hover">
-                <td class="sticky left-0 bg-base-100 z-10 font-medium">
-                  <div class="flex items-center gap-2">
-                    <i class="las la-tint text-cyan-500"></i>
-                    <div>
-                      <div class="font-semibold text-xs">BOM-005</div>
-                      <div class="text-xs text-gray-500">Bomba de Agua</div>
-                    </div>
-                  </div>
-                </td>
-                <td class="text-center bg-cyan-50">
-                  <div class="badge badge-accent badge-xs">Lubricación</div>
-                  <div class="text-xs text-gray-600">07:00</div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center bg-cyan-50">
-                  <div class="badge badge-accent badge-xs">Lubricación</div>
-                  <div class="text-xs text-gray-600">07:00</div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-              </tr>
-
-              <!-- Generador GEN-006 -->
-              <tr class="hover">
-                <td class="sticky left-0 bg-base-100 z-10 font-medium">
-                  <div class="flex items-center gap-2">
-                    <i class="las la-bolt text-orange-500"></i>
-                    <div>
-                      <div class="font-semibold text-xs">GEN-006</div>
-                      <div class="text-xs text-gray-500">Generador Eléctrico</div>
-                    </div>
-                  </div>
-                </td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center bg-orange-50">
-                  <div class="badge badge-warning badge-xs">Prueba</div>
-                  <div class="text-xs text-gray-600">11:00</div>
-                </td>
-                <td class="text-center"></td>
               </tr>
             </tbody>
           </table>
-        </div>
-
-        <!-- Leyenda -->
-        <div class="mt-4 flex flex-wrap gap-3 text-xs">
-          <div class="flex items-center gap-1">
-            <div class="badge badge-primary badge-xs"></div>
-            <span>Limpieza</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <div class="badge badge-secondary badge-xs"></div>
-            <span>Mantenimiento</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <div class="badge badge-warning badge-xs"></div>
-            <span>Revisión</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <div class="badge badge-info badge-xs"></div>
-            <span>Inspección</span>
-          </div>
-          <div class="flex items-center gap-1">
-            <div class="badge badge-accent badge-xs"></div>
-            <span>Lubricación</span>
-          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script setup>
+import { computed, onMounted } from 'vue';
+import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
+import { generateWeeklyMaintenanceSchedule, getMaintenanceSummary } from '@/utils/scheduler';
+
+const projectResourceStore = UseProjectResourceStore();
+
+const projectResources = computed(() => projectResourceStore.resourcesProject);
+
+// Filtrar solo recursos de tipo SERVIC
+const serviceResources = computed(() => {
+  return projectResources.value.filter(resource => resource.type === 'SERVIC');
+});
+
+// Generar calendario de mantenimientos para la semana actual
+const weeklySchedule = computed(() => {
+  return generateWeeklyMaintenanceSchedule(serviceResources.value);
+});
+
+const scheduleSummary = computed(() => {
+  return getMaintenanceSummary(weeklySchedule.value);
+});
+
+const getCurrentWeekDates = () => {
+  const today = new Date();
+  const day = today.getDay();
+  const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+  const monday = new Date(today.setDate(diff));
+  
+  const weekDates = [];
+  for (let i = 0; i < 7; i++) {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + i);
+    weekDates.push(date);
+  }
+  return weekDates;
+};
+
+const weekDates = computed(() => getCurrentWeekDates());
+
+const formatWeekDate = (date) => {
+  return date.toLocaleDateString('es-GT', { day: '2-digit', month: 'short' });
+};
+
+const getDayName = (index) => {
+  const days = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
+  return days[index];
+};
+
+const getMaintenanceForResourceAndDay = (resourceId, dayDate) => {
+  const dateStr = dayDate.toISOString().split('T')[0];
+  return weeklySchedule.value.filter(
+    m => m.resource_id === resourceId && m.scheduled_date === dateStr
+  );
+};
+
+const uniqueResources = computed(() => {
+  const resourceMap = new Map();
+  weeklySchedule.value.forEach(m => {
+    if (!resourceMap.has(m.resource_id)) {
+      resourceMap.set(m.resource_id, {
+        id: m.resource_id,
+        code: m.resource_code,
+        name: m.resource_name,
+        description: m.description
+      });
+    }
+  });
+  return Array.from(resourceMap.values());
+});
+
+const getWeekRange = () => {
+  if (weekDates.value.length === 0) return '';
+  const start = weekDates.value[0];
+  const end = weekDates.value[6];
+  return `${start.getDate()} de ${start.toLocaleDateString('es-GT', { month: 'long' })} al ${end.getDate()} de ${end.toLocaleDateString('es-GT', { month: 'long' })} ${end.getFullYear()}`;
+};
+
+const isToday = (date) => {
+  const today = new Date();
+  return date.toDateString() === today.toDateString();
+};
+
+onMounted(() => {
+  projectResourceStore.fetchResourcesProject();
+});
+</script>
