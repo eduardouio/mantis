@@ -11,24 +11,6 @@ const hasInProgressSheet = computed(() => {
   return sheetProjects.value.some(sheet => sheet.status === 'IN_PROGRESS');
 });
 
-const getStatusBadgeClass = (status) => {
-  const classes = {
-    'IN_PROGRESS': 'badge-info',
-    'INVOICED': 'badge-success',
-    'CANCELLED': 'badge-error'
-  };
-  return classes[status] || 'badge-ghost';
-};
-
-const getStatusLabel = (status) => {
-  const labels = {
-    'IN_PROGRESS': 'EN EJECUCIÓN',
-    'INVOICED': 'FACTURADO',
-    'CANCELLED': 'CANCELADO'
-  };
-  return labels[status] || status;
-};
-
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('es-GT', {
     style: 'currency',
@@ -45,8 +27,8 @@ const formatDate = (date) => {
 <template>
   <div class="space-y-3">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-        <i class="las la-file-invoice-dollar text-blue-600 text-xl"></i>
+      <h2 class="font-semibold text-gray-800 flex items-center gap-2">
+        <i class="las la-file-invoice-dollar text-blue-600"></i>
         Planillas del Proyecto
       </h2>
       <RouterLink 
@@ -54,10 +36,10 @@ const formatDate = (date) => {
         to="/sheet/form" 
         class="btn btn-primary btn-sm"
       >
-        <i class="las la-plus text-lg"></i>
+        <i class="las la-plus"></i>
         Crear Nueva Planilla
       </RouterLink>
-      <div v-else class="badge badge-warning gap-2">
+      <div v-else class="text-warning">
         <i class="las la-exclamation-triangle"></i>
         Hay una planilla en ejecución
       </div>
@@ -67,17 +49,17 @@ const formatDate = (date) => {
       <table class="table table-zebra w-full">
         <thead>
           <tr class="bg-base-200">
-            <th>#</th>
-            <th>Serie</th>
-            <th>Estado</th>
-            <th>Fecha Emisión</th>
-            <th>Período Inicio</th>
-            <th>Período Fin</th>
-            <th>Tipo Servicio</th>
-            <th class="text-right">Galones</th>
-            <th class="text-right">Barriles</th>
-            <th class="text-right">M³</th>
-            <th class="text-center">Acciones</th>
+            <th class="p-2">#</th>
+            <th class="p-2">Serie</th>
+            <th class="p-2">Estado</th>
+            <th class="p-2">Fecha Emisión</th>
+            <th class="p-2">Período Inicio</th>
+            <th class="p-2">Período Fin</th>
+            <th class="p-2">Tipo Servicio</th>
+            <th class="p-2 text-right">Galones</th>
+            <th class="p-2 text-right">Barriles</th>
+            <th class="p-2 text-right">M³</th>
+            <th class="p-2 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -91,33 +73,26 @@ const formatDate = (date) => {
           </template>
           <template v-else>
             <tr v-for="sheet in sheetProjects" :key="sheet.id">
-              <td>{{ sheet.id }}</td>
-              <td class="font-mono text-sm">{{ sheet.series_code }}</td>
-              <td>
-                <span 
-                  class="badge badge-sm" 
-                  :class="getStatusBadgeClass(sheet.status)"
-                >
-                  {{ getStatusLabel(sheet.status) }}
-                </span>
-              </td>
-              <td>{{ formatDate(sheet.issue_date) }}</td>
-              <td>{{ formatDate(sheet.period_start) }}</td>
-              <td>{{ formatDate(sheet.period_end) }}</td>
-              <td>{{ sheet.service_type }}</td>
-              <td class="text-right">{{ sheet.total_gallons.toLocaleString() }}</td>
-              <td class="text-right">{{ sheet.total_barrels.toLocaleString() }}</td>
-              <td class="text-right">{{ sheet.total_cubic_meters.toFixed(1) }}</td>
-              <td class="text-center">
+              <td class="p-2">{{ sheet.id }}</td>
+              <td class="p-2 font-mono">{{ sheet.series_code }}</td>
+              <td class="p-2">{{ sheet.status }}</td>
+              <td class="p-2">{{ formatDate(sheet.issue_date) }}</td>
+              <td class="p-2">{{ formatDate(sheet.period_start) }}</td>
+              <td class="p-2">{{ formatDate(sheet.period_end) }}</td>
+              <td class="p-2">{{ sheet.service_type }}</td>
+              <td class="p-2 text-right">{{ sheet.total_gallons.toLocaleString() }}</td>
+              <td class="p-2 text-right">{{ sheet.total_barrels.toLocaleString() }}</td>
+              <td class="p-2 text-right">{{ sheet.total_cubic_meters.toFixed(1) }}</td>
+              <td class="p-2 text-center">
                 <div class="flex gap-1 justify-center">
                   <button class="btn btn-ghost btn-xs" title="Ver detalles">
-                    <i class="las la-eye text-lg"></i>
+                    <i class="las la-eye"></i>
                   </button>
                   <button class="btn btn-ghost btn-xs" title="Editar">
-                    <i class="las la-edit text-lg"></i>
+                    <i class="las la-edit"></i>
                   </button>
                   <button class="btn btn-ghost btn-xs text-error" title="Eliminar">
-                    <i class="las la-trash text-lg"></i>
+                    <i class="las la-trash"></i>
                   </button>
                 </div>
               </td>

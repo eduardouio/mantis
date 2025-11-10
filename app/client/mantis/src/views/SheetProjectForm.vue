@@ -33,7 +33,7 @@ const handleSubmit = async (e) => {
     
     const sheetId = await sheetProjectStore.addSheetProject(sheetProject);
     console.log('Sheet creado con ID:', sheetId);
-    router.push({ name: 'project' });
+    router.push({ name: 'projects-detail' });
   } catch (error) {
     console.error('Error al crear planilla:', error);
     errorMessage.value = error.message || 'Error al crear la planilla';

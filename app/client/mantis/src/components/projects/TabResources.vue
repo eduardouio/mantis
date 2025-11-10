@@ -1,72 +1,38 @@
 <script setup>
 import { computed } from 'vue';
-import { RouterLink, useRoute } from 'vue-router';
+import { RouterLink } from 'vue-router';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
-import { formatCurrency, formatDate } from '@/utils/formatters';
+import { formatCurrency, formatDate, formatNumber } from '@/utils/formatters';
 
-const route = useRoute();
 const projectResourceStore = UseProjectResourceStore();
 
 const projectResources = computed(() => projectResourceStore.resourcesProject);
-
-const getEquipmentTypeLabel = (type) => {
-  const labels = {
-    'LVMNOS': 'Lavamanos',
-    'BTSNHM': 'Batería Sanitaria Hombre',
-    'BTSNMJ': 'Batería Sanitaria Mujer',
-    'EST4UR': 'Estación Cuádruple Urinario',
-    'CMPRBN': 'Camper Baño',
-    'PTRTAP': 'Planta Trat. Agua Potable',
-    'PTRTAR': 'Planta Trat. Agua Residual',
-    'TNQAAC': 'Tanque Agua Cruda',
-    'TNQAAR': 'Tanque Agua Residual'
-  };
-  return labels[type] || type;
-};
-
-const getStatusBadgeClass = (status) => {
-  const classes = {
-    'FUNCIONANDO': 'badge-success',
-    'DAÑADO': 'badge-error',
-    'INCOMPLETO': 'badge-warning',
-    'EN REPARACION': 'badge-info'
-  };
-  return classes[status] || 'badge-ghost';
-};
-
-const getAvailabilityBadgeClass = (availability) => {
-  const classes = {
-    'DISPONIBLE': 'badge-success',
-    'RENTADO': 'badge-info'
-  };
-  return classes[availability] || 'badge-ghost';
-};
 </script>
 
 <template>
   <div class="space-y-3">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-2">
-        <i class="las la-tools text-blue-600 text-xl"></i>
+      <h2 class="font-semibold text-gray-800 flex items-center gap-2">
+        <i class="las la-tools text-blue-600"></i>
         Equipos Asignados
       </h2>
-      <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'resource-form', params: { projectId: route.params.id || 1 } }">
-        <i class="las la-plus text-lg"></i>
+      <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'resource-form' }">
+        <i class="las la-plus"></i>
         Asignar Equipo
       </RouterLink>
     </div>
     
     <div class="overflow-x-auto">
-      <table class="table table-zebra table-xs w-full">
+      <table class="table table-zebra w-full">
         <thead>
-          <tr class="bg-base-200">
-            <th class="p-1">#</th>
-            <th class="p-1">Código</th>
-            <th class="p-1">Nombre/Descripción</th>
-            <th class="p-1 text-right">Costo</th>
-            <th class="p-1">Frecuencia (días)</th>
-            <th class="p-1">Fecha Inicio</th>
-            <th class="p-1 text-center">Acciones</th>
+          <tr class="bg-gray-500 text-white">
+            <th class="p-2 border border-gray-100 text-center">#</th>
+            <th class="p-2 border border-gray-100 text-center">Código</th>
+            <th class="p-2 border border-gray-100 text-center">Nombre/Descripción</th>
+            <th class="p-2 border border-gray-100 text-center">Costo</th>
+            <th class="p-2 border border-gray-100 text-center">Frecuencia (días)</th>
+            <th class="p-2 border border-gray-100 text-center">Fecha Inicio</th>
+            <th class="p-2 border border-gray-100 text-center text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -80,28 +46,24 @@ const getAvailabilityBadgeClass = (availability) => {
           </template>
           <template v-else>
             <tr v-for="resource in projectResources" :key="resource.id">
-              <td class="p-1">{{ resource.id }}</td>
-              <td class="p-1 font-mono ">{{ resource.resource_item_code }}</td>
-              <td class="p-1">
-                <div class="flex flex-col">
-                  <span >{{ resource.detailed_description }}</span>
-                </div>
+              <td class="p-2 border border-gray-300">{{ resource.id }}</td>
+              <td class="p-2 border border-gray-300 font-mono">{{ resource.resource_item_code }}</td>
+              <td class="p-2 border border-gray-300">{{ resource.detailed_description }}</td>
+              <td class="p-2 border border-gray-300 text-right">{{ formatNumber(resource.cost) }}</td>
+              <td class="p-2 border border-gray-300 text-end">
+                {{ resource.interval_days }} días
               </td>
-              <td class="p-1 text-right font-semibold">{{ formatCurrency(resource.cost) }}</td>
-              <td class="p-1 text-center">
-                <span class="font-bold">{{ resource.interval_days }} días</span>
-              </td>
-              <td class="p-1">{{ formatDate(resource.operation_start_date) }}</td>
-              <td class="p-1 text-center">
+              <td class="p-2 border border-gray-300 text-end">{{ formatDate(resource.operation_start_date) }}</td>
+              <td class="p-2 border border-gray-300 text-center">
                 <div class="flex gap-1 justify-center">
                   <button class="btn btn-ghost btn-xs" title="Ver detalles">
-                    <i class="las la-eye text-lg"></i>
+                    <i class="las la-eye"></i>
                   </button>
                   <button class="btn btn-ghost btn-xs" title="Editar">
-                    <i class="las la-edit text-lg"></i>
+                    <i class="las la-edit"></i>
                   </button>
                   <button class="btn btn-ghost btn-xs text-error" title="Eliminar">
-                    <i class="las la-trash text-lg"></i>
+                    <i class="las la-trash"></i>
                   </button>
                 </div>
               </td>
