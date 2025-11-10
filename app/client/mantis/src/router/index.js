@@ -24,8 +24,8 @@ const router = createRouter({
       path: '/sheet/form',
       name: 'sheet-form',
       component: SheetProjectForm,
-    },
-  ],
+    }
+  ]
 })
-  
+
 export default router

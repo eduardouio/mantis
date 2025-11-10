@@ -82,42 +82,20 @@ onMounted(() => {
       </div>
 
       <!-- Tabs para organizar el contenido -->
-      <div role="tablist" class="tabs tabs-lifted bg-gray-100 border border-blue-100 p-1">
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-red-300" aria-label="Equipos Asignados" checked />
-        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-4">
+      <div role="tablist" class="tabs tabs-lifted bg-base-100 p-1">
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-amber-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Equipos Asignados" checked />
+        <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabResources />
         </div>
 
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-blue-300" aria-label="Órdenes de Trabajo" />
-        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-4">
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-cyan-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Planilla de Trabajo" />
+        <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabSheetProject />
         </div>
 
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-orange-300" aria-label="Calendario Mantenimientos" />
-        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-4">
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-lime-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Calendario Mantenimientos" />
+        <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabCalendar />
-        </div>
-      </div>
-
-      <!-- Botones de acción -->
-      <div class="mt-6 pt-4 border-t">
-        <div class="flex flex-wrap justify-center gap-3">
-          <button class="btn btn-primary btn-sm">
-            <i class="las la-plus text-xl"></i>
-            Nuevo Proyecto
-          </button>
-          <button class="btn btn-primary btn-sm">
-            <i class="las la-edit text-xl"></i>
-            Editar Proyecto
-          </button>
-          <button class="btn btn-primary btn-sm">
-            <i class="las la-trash text-xl"></i>
-            Eliminar Proyecto
-          </button>
-          <button class="btn btn-primary btn-sm">
-            <i class="las la-arrow-left text-xl"></i>
-            Volver al Listado
-          </button>
         </div>
       </div>
     </div>
