@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { UseResourcesStore } from '@/stores/resources';
+import { UseResourcesStore } from '@/stores/ResourcesStore';
 
 const props = defineProps({
   label: {

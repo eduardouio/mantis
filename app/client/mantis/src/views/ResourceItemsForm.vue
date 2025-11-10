@@ -2,7 +2,7 @@
   import { RouterLink } from 'vue-router';
   import AutocompleteResource from '@/components/resoruces/AutocompleteResource.vue';
   import { onMounted, ref, computed } from 'vue';
-  import { UseResourcesStore } from '@/stores/resources';
+  import { UseResourcesStore } from '@/stores/ResourcesStore';
   import { UseProjectResourceStore } from '@/stores/ProjectResource';
 
   const resourcesStore = UseResourcesStore();
@@ -31,9 +31,15 @@
 
   const submitForm = async () => {
     console.log('Submitting form in ResourceItemsForm.vue');
-    response = await projectResourceStore.addResourceToProject(
-      projectResource.value
-    );
+    try {
+      const response = await projectResourceStore.addResourceToProject(projectResource.value);
+      console.log('Response:', response);
+      // Aquí puedes agregar lógica para mostrar un mensaje de éxito o redirigir
+      // Por ejemplo: alert('Recurso agregado exitosamente'); o usar un router.push
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      // Manejar error, por ejemplo: alert('Error al agregar recurso');
+    }
   };
 </script>
 <template>
@@ -41,7 +47,7 @@
     <span class="font-bold text-lg bg-gray-100 rounded-md px-2 py-1 mb-4 inline-block w-full text-center">
       Recurso del Proyecto
     </span> 
-    <form class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg">
+    <form class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg" @submit.prevent="submitForm">
       <div class="card-body space-y-4">
         
         <!-- Autocomplete de Recursos -->
@@ -192,7 +198,7 @@
           <RouterLink to="/project" class="btn btn-ghost">
             Cancelar
           </RouterLink>
-          <button type="submit" class="btn btn-primary" @click="submitForm">
+          <button type="submit" class="btn btn-primary">
             Agregar Recurso
           </button>
         </div>
