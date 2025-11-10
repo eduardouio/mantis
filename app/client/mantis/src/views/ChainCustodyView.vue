@@ -49,7 +49,7 @@ onMounted(() => {
       <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
           <i class="las la-file-invoice text-blue-500"></i>
-          Planillas de Proyecto
+          Cadena de Custodia de Proyecto
         </h1>
         <button class="btn btn-primary btn-sm">
           <i class="las la-plus"></i>
@@ -58,7 +58,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Lista de Planillas -->
+    <!-- Lista de Cadena de Custodia -->
     <div class="grid grid-cols-1 gap-4">
       <!-- Planilla Card -->
       <div 
@@ -275,7 +275,7 @@ onMounted(() => {
     <div v-if="!isLoading && sheetProjects.length === 0" 
          class="bg-white rounded-lg shadow-md p-12 text-center">
       <i class="las la-folder-open text-6xl text-gray-300"></i>
-      <p class="text-gray-500 mt-4">No hay planillas de proyecto registradas</p>
+      <p class="text-gray-500 mt-4">No hay Cadena de Custodia de proyecto registradas</p>
       <button class="btn btn-primary btn-sm mt-4">
         <i class="las la-plus"></i>
         Crear Primera Planilla
@@ -283,17 +283,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.badge-warning {
-  @apply bg-yellow-400 text-yellow-900 border-yellow-500;
-}
-
-.badge-success {
-  @apply bg-green-400 text-green-900 border-green-500;
-}
-
-.badge-error {
-  @apply bg-red-400 text-red-900 border-red-500;
-}
-</style>
