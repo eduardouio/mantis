@@ -30,6 +30,7 @@ from api.workorders import (
 from api.projects.ProjectResources import ProjectResources
 from api.projects.ProjectData import ProjectData
 from api.workorders.GetAllSheerProjectItems import GetAllSheerProjectItemsAPI
+from api.workorders.CreateCustodyChain import CreateCustodyChainAPI
 
 urlpatterns = [
     # vehicles
@@ -55,4 +56,5 @@ urlpatterns = [
     path('workorders/sheets/create/', AddUpdateSheetProjectAPI.as_view(), name='api_create_sheet'),
     path('workorders/sheets/delete/', DeleteSheetOrderAPI.as_view(), name='api_delete_sheet'),
     path('workorders/sheets/items/<int:sheet_project_id>/', GetAllSheerProjectItemsAPI.as_view(), name='api_get_all_sheet_project_items'),
+    path('workorders/custody_chain/create/', CreateCustodyChainAPI.as_view(), name='api_create_custody_chain'),
 ]

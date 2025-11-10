@@ -18,5 +18,25 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
         }
     }),
     actions: {
+        async fetchCustodyChains() {
+            console.log("Fetching custody chains");
+        },
+        async addCustodyChain(custodyChain) {
+            console.log("Adding new custody chain", custodyChain);
+            try {
+                const response = await fetch(appConfig.URLCreateCustodyChain, {
+                    method: "POST",
+                    headers: appConfig.headers,
+                    body: JSON.stringify(custodyChain)
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to create custody chain");
+                }
+                const data = await response.json();
+                return data.data;
+            } catch (error) {
+                console.error("Error creating custody chain:", error);
+            }
+        }
     }
 });
