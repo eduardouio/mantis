@@ -24,18 +24,16 @@
         </div>
 
         <div v-else class="overflow-x-auto">
-          <table class="table table-xs w-full border">
+          <table class="table table-zebra w-full">
             <thead>
-              <tr class="bg-base-200">
-                <th class="sticky left-0 bg-base-200 z-10 w-48 text-center">Detalle</th>
+              <tr class="bg-gray-500 text-white">
+                <th class="p-2 border border-gray-100 text-center w-48">Detalle</th>
                 <th 
                   v-for="(date, index) in weekDates" 
                   :key="index"
-                  class="text-center min-w-[120px]"
+                  class="p-2 border border-gray-100 text-center min-w-[120px]"
                   :class="{
-                    'text-blue-600': index === 5 && !isToday(date),
-                    'text-error': index === 6 && !isToday(date),
-                    'bg-lime-400': isToday(date)
+                    'bg-lime-400 text-gray-800': isToday(date)
                   }"
                 >
                   <div class="font-bold">{{ getDayName(index) }}</div>
@@ -44,8 +42,8 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="resource in uniqueResources" :key="resource.id" class="hover">
-                <td class="sticky left-0 bg-base-100 z-10 font-medium">
+              <tr v-for="resource in uniqueResources" :key="resource.id">
+                <td class="p-2 border border-gray-300 font-medium">
                   <div class="flex items-center gap-2">
                     <i class="las la-tools text-blue-500"></i>
                     <div>
@@ -56,7 +54,7 @@
                 <td 
                   v-for="(date, dayIndex) in weekDates" 
                   :key="dayIndex"
-                  class="text-center"
+                  class="p-2 border border-gray-300 text-center"
                   :class="{ 'bg-lime-100': isToday(date) }"
                 >
                   <template v-for="maintenance in getMaintenanceForResourceAndDay(resource.id, date)" :key="maintenance.resource_id + '-' + maintenance.scheduled_date">
