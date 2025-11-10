@@ -3,7 +3,17 @@ import { appConfig } from "@/AppConfig";
 
 export const UseProjectStore = defineStore("projectStore", {
     state: () => ({
-        project : Object,
+        project: {
+            id: null,
+            partner_id: null,
+            partner_name: null,
+            location: null,
+            contact_name: null,
+            contact_phone: null,
+            start_date: null,
+            end_date: null,
+            is_closed: false
+        }
     }),
     actions: {
         async fetchProjectData() {
@@ -21,6 +31,6 @@ export const UseProjectStore = defineStore("projectStore", {
             } catch (error) {
                 console.error("Error fetching project data:", error);
             }
-        },
-    },
+        }
+    }
 });
