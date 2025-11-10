@@ -27,6 +27,8 @@ from api.workorders import (
     DeleteSheetOrderAPI,
 )
 
+from api.projects.ProjectResources import ProjectResources
+
 urlpatterns = [
     # vehicles
     path('vehicles/cert_vehicle/', CertVehicleCreateUpdateAPI.as_view(), name='api_cert_vehicle_create_update'),
@@ -44,6 +46,7 @@ urlpatterns = [
     path('projects/resources/available/', ResourcesAvailableAPI.as_view(), name='api_resources_available'),
     path('projects/resources/add/', AddResourceProjectAPI.as_view(), name='api_add_resource_project'),
     path('projects/resources/delete/', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
+    path('projects/<int:project_id>/resources/', ProjectResources.as_view(), name='api_project_resources'),    
     # workorders
     path('workorders/sheets/', GetAllSheetProjectAPI.as_view(), name='api_get_all_sheets'),
     path('workorders/sheets/create/', AddUpdateSheetProjectAPI.as_view(), name='api_create_sheet'),
