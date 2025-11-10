@@ -53,7 +53,7 @@ onMounted(() => {
         </h1>
         <button class="btn btn-primary btn-sm">
           <i class="las la-plus"></i>
-          Nueva Planilla
+          Nueva Cadena de Custodia
         </button>
       </div>
     </div>
@@ -278,7 +278,7 @@ onMounted(() => {
       <p class="text-gray-500 mt-4">No hay Cadena de Custodia de proyecto registradas</p>
       <button class="btn btn-primary btn-sm mt-4">
         <i class="las la-plus"></i>
-        Crear Primera Planilla
+        Crear Cadena de Custodia
       </button>
     </div>
   </div>

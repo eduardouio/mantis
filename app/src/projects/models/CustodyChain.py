@@ -121,6 +121,26 @@ class CustodyChain(BaseModel):
         default=0
     )
 
+    @classmethod
+    def get_next_consecutive(cls):
+        """Generar el siguiente consecutivo para una cadena de custodia."""
+        last_chain = cls.objects.filter(
+            is_active=True
+        ).exclude(
+            consecutive__isnull=True
+        ).order_by('-id').first()
+
+        if last_chain and last_chain.consecutive:
+            try:
+                last_number = int(last_chain.consecutive)
+                next_number = last_number + 1
+            except ValueError:
+                next_number = 1
+        else:
+            next_number = 1
+
+        return str(next_number).zfill(6)
+
     class Meta:
         verbose_name = 'Cadena de Custodia'
         verbose_name_plural = 'Cadenas de Custodia'

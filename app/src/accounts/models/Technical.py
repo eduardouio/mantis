@@ -135,6 +135,13 @@ class Technical(BaseModel):
         default=True
     )
 
+    @classmethod
+    def get_by_dni(cls, id):
+        try:
+            return cls.objects.get(dni=id, is_active=True)
+        except cls.DoesNotExist:
+            return None
+
     class Meta:
         verbose_name = 'Técnico'
         verbose_name_plural = 'Técnicos'
