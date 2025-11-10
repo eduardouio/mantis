@@ -18,9 +18,7 @@ class ProjectResources(View):
 
             data = [self._serialize(pr) for pr in project_resources]
 
-            return JsonResponse(
-                {"success": True, "count": len(data), "data": data}
-            )
+            return JsonResponse({"data": data})
 
         except Project.DoesNotExist:
             return JsonResponse(
@@ -42,7 +40,7 @@ class ProjectResources(View):
             "resource_item_code": project_resource.resource_item.code,
             "resource_item_name": project_resource.resource_item.name,
             "detailed_description": project_resource.detailed_description,
-            "cost": str(project_resource.cost),
+            "cost": project_resource.cost,
             "interval_days": project_resource.interval_days,
             "operation_start_date": project_resource.operation_start_date.isoformat(),
             "is_selected": False,

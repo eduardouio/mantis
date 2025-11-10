@@ -1,14 +1,17 @@
 <script setup>
-  import { RouterLink } from 'vue-router';
+  import { RouterLink, useRouter } from 'vue-router';
   import AutocompleteResource from '@/components/resoruces/AutocompleteResource.vue';
   import { onMounted, ref, computed } from 'vue';
   import { UseResourcesStore } from '@/stores/ResourcesStore';
-  import { UseProjectResourceStore } from '@/stores/ProjectResource';
+  import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
+  import { UseProjectStore } from '@/stores/ProjectStore';
 
   const resourcesStore = UseResourcesStore();
   const projectResourceStore = UseProjectResourceStore();
+  const projectStore = UseProjectStore();
   const projectResource = ref({});
   const selectedResource = ref(null);
+  const router = useRouter();
 
   const costLabel = computed(() => selectedResource.value?.type_equipment_display === 'SERVICIO' ? 'Costo Servicio *' : 'Costo Alquiler *');
   const frequencyLabel = computed(() => selectedResource.value?.type_equipment_display === 'SERVICIO' ? 'Frecuencia de Servicio (días) *' : 'Frecuencia de Mantenimiento (días) *');
@@ -31,14 +34,14 @@
 
   const submitForm = async () => {
     console.log('Submitting form in ResourceItemsForm.vue');
+    projectResource.value.project = projectStore.project;
     try {
-      const response = await projectResourceStore.addResourceToProject(projectResource.value);
-      console.log('Response:', response);
-      // Aquí puedes agregar lógica para mostrar un mensaje de éxito o redirigir
-      // Por ejemplo: alert('Recurso agregado exitosamente'); o usar un router.push
+      const response = await projectResourceStore.addResourceToProject(
+        projectResource.value
+      );
+      router.push('/project');
     } catch (error) {
       console.error('Error submitting form:', error);
-      // Manejar error, por ejemplo: alert('Error al agregar recurso');
     }
   };
 </script>
