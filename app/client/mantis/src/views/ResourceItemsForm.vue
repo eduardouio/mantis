@@ -149,7 +149,3 @@
     </form>
   </div>
 </template>
-
-<style scoped>
-/* Sin estilos personalizados - usando DaisyUI */
-</style>

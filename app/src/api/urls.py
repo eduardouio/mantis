@@ -41,12 +41,12 @@ urlpatterns = [
     # resources
     path('resources/update/', UpdateResourceAPI.as_view(), name='api_update_resource'),
     # projects
-    path('projects/resources/available', ResourcesAvailableAPI.as_view(), name='api_resources_available'),
-    path('projects/resources/add', AddResourceProjectAPI.as_view(), name='api_add_resource_project'),
-    path('projects/resources/delete', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
+    path('projects/resources/available/', ResourcesAvailableAPI.as_view(), name='api_resources_available'),
+    path('projects/resources/add/', AddResourceProjectAPI.as_view(), name='api_add_resource_project'),
+    path('projects/resources/delete/', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
     # workorders
     path('workorders/sheets/', GetAllSheetProjectAPI.as_view(), name='api_get_all_sheets'),
-    path('workorders/sheets/create', AddUpdateSheetProjectAPI.as_view(), name='api_create_sheet'),
-    path('workorders/sheets/update', AddUpdateSheetProjectAPI.as_view(), name='api_update_sheet'),
-    path('workorders/sheets/delete', DeleteSheetOrderAPI.as_view(), name='api_delete_sheet'),
+    path('workorders/sheets/create/', AddUpdateSheetProjectAPI.as_view(), name='api_create_sheet'),
+    path('workorders/sheets/update/', AddUpdateSheetProjectAPI.as_view(), name='api_update_sheet'),
+    path('workorders/sheets/delete/', DeleteSheetOrderAPI.as_view(), name='api_delete_sheet'),
 ]
