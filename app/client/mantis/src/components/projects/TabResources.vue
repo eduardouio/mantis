@@ -81,11 +81,10 @@ const getAvailabilityBadgeClass = (availability) => {
           <template v-else>
             <tr v-for="resource in projectResources" :key="resource.id">
               <td class="p-1">{{ resource.id }}</td>
-              <td class="p-1 font-mono text-sm">{{ resource.resource_item_code }}</td>
+              <td class="p-1 font-mono ">{{ resource.resource_item_code }}</td>
               <td class="p-1">
                 <div class="flex flex-col">
-                  <span class="font-medium">{{ resource.resource_item_name }}</span>
-                  <span class="text-xs text-gray-500">{{ resource.detailed_description }}</span>
+                  <span >{{ resource.detailed_description }}</span>
                 </div>
               </td>
               <td class="p-1 text-right font-semibold">{{ formatCurrency(resource.cost) }}</td>
