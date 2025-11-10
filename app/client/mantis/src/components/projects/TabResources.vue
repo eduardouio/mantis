@@ -2,6 +2,7 @@
 import { computed } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
+import { formatCurrency, formatDate } from '@/utils/formatters';
 
 const route = useRoute();
 const projectResourceStore = UseProjectResourceStore();
@@ -40,18 +41,6 @@ const getAvailabilityBadgeClass = (availability) => {
   };
   return classes[availability] || 'badge-ghost';
 };
-
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat('es-GT', {
-    style: 'currency',
-    currency: 'GTQ'
-  }).format(value);
-};
-
-const formatDate = (date) => {
-  if (!date) return 'N/A';
-  return new Intl.DateTimeFormat('es-GT').format(new Date(date));
-};
 </script>
 
 <template>
@@ -68,16 +57,16 @@ const formatDate = (date) => {
     </div>
     
     <div class="overflow-x-auto">
-      <table class="table table-zebra w-full">
+      <table class="table table-zebra table-xs w-full">
         <thead>
           <tr class="bg-base-200">
-            <th>#</th>
-            <th>Código</th>
-            <th>Nombre/Descripción</th>
-            <th class="text-right">Costo</th>
-            <th>Frecuencia (días)</th>
-            <th>Fecha Inicio</th>
-            <th class="text-center">Acciones</th>
+            <th class="p-1">#</th>
+            <th class="p-1">Código</th>
+            <th class="p-1">Nombre/Descripción</th>
+            <th class="p-1 text-right">Costo</th>
+            <th class="p-1">Frecuencia (días)</th>
+            <th class="p-1">Fecha Inicio</th>
+            <th class="p-1 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -91,20 +80,20 @@ const formatDate = (date) => {
           </template>
           <template v-else>
             <tr v-for="resource in projectResources" :key="resource.id">
-              <td>{{ resource.id }}</td>
-              <td class="font-mono text-sm">{{ resource.resource_item_code }}</td>
-              <td>
+              <td class="p-1">{{ resource.id }}</td>
+              <td class="p-1 font-mono text-sm">{{ resource.resource_item_code }}</td>
+              <td class="p-1">
                 <div class="flex flex-col">
                   <span class="font-medium">{{ resource.resource_item_name }}</span>
                   <span class="text-xs text-gray-500">{{ resource.detailed_description }}</span>
                 </div>
               </td>
-              <td class="text-right font-semibold">{{resource.cost }}</td>
-              <td class="text-center">
-                <span class="badge badge-neutral badge-sm">{{ resource.interval_days }} días</span>
+              <td class="p-1 text-right font-semibold">{{ formatCurrency(resource.cost) }}</td>
+              <td class="p-1 text-center">
+                <span class="font-bold">{{ resource.interval_days }} días</span>
               </td>
-              <td>{{ formatDate(resource.operation_start_date) }}</td>
-              <td class="text-center">
+              <td class="p-1">{{ formatDate(resource.operation_start_date) }}</td>
+              <td class="p-1 text-center">
                 <div class="flex gap-1 justify-center">
                   <button class="btn btn-ghost btn-xs" title="Ver detalles">
                     <i class="las la-eye text-lg"></i>
@@ -120,15 +109,6 @@ const formatDate = (date) => {
             </tr>
           </template>
         </tbody>
-        <tfoot v-if="projectResources.length > 0">
-          <tr class="bg-base-200 font-bold">
-            <td colspan="3" class="text-right">TOTAL:</td>
-            <td class="text-right text-primary">
-              {{ formatCurrency(projectResources.reduce((sum, r) => sum + parseFloat(r.cost), 0)) }}
-            </td>
-            <td colspan="3"></td>
-          </tr>
-        </tfoot>
       </table>
     </div>
 
@@ -140,9 +120,9 @@ const formatDate = (date) => {
         <div class="stat-desc">Asignados al proyecto</div>
       </div>
       
-      <div class="stat">
+      <div class="stat text-end">
         <div class="stat-title">Costo Total</div>
-        <div class="stat-value text-info">
+        <div class="stat-value text-info text-end">
           {{ formatCurrency(projectResources.reduce((sum, r) => sum + parseFloat(r.cost), 0)) }}
         </div>
         <div class="stat-desc">Suma de todos los recursos</div>
