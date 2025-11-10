@@ -85,6 +85,13 @@ const formatDate = (date) => {
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_cubic_meters.toFixed(1) }}</td>
               <td class="p-2 border border-gray-300 text-center">
                 <div class="flex gap-1 justify-center">
+                  <RouterLink 
+                    :to="{ name: 'sheet-view', params: { id: sheet.id } }"
+                    class="btn btn-ghost btn-xs" 
+                    title="Ver detalles completos"
+                  >
+                    <i class="las la-file-invoice"></i>
+                  </RouterLink>
                   <button class="btn btn-ghost btn-xs" title="Ver detalles">
                     <i class="las la-eye"></i>
                   </button>
