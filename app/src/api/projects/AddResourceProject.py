@@ -59,10 +59,10 @@ class AddResourceProjectAPI(View):
     def _add_resource(self, request, data):
         """Agregar recurso a un proyecto y actualizar campos de estado."""
         required = [
-            "project_id",
-            "resource_item_id",
-            "rent_cost",
-            "maintenance_cost",
+            "project",
+            "resource",
+            "cost",
+            "interval_days",
             "operation_start_date",
         ]
         for f in required:
@@ -72,10 +72,15 @@ class AddResourceProjectAPI(View):
                 )
 
         try:
-
-            project = get_object_or_404(Project, id=data["project_id"], is_active=True)
+            project_id = data["project"]
+            if not project_id:
+                return JsonResponse(
+                    {"success": False, "error": "project_id no puede ser null"}, status=400
+                )
+            project = get_object_or_404(Project, id=project_id, is_active=True)
+            resource_item_id = data["resource"]["id"]
             resource = get_object_or_404(
-                ResourceItem, id=data["resource_item_id"], is_active=True
+                ResourceItem, id=resource_item_id, is_active=True
             )
 
             if resource.stst_status_disponibility == "RENTADO":
@@ -127,9 +132,9 @@ class AddResourceProjectAPI(View):
             project_resource = ProjectResourceItem(
                 project=project,
                 resource_item=resource,
-                rent_cost=data["rent_cost"],
-                maintenance_cost=data["maintenance_cost"],
-                maintenance_interval_days=data.get("maintenance_interval_days", 1),
+                detailed_description=data.get("detailed_description"),
+                cost=data["cost"],
+                interval_days=data["interval_days"],
                 operation_start_date=operation_start,
                 operation_end_date=(
                     operation_end if operation_end else project.end_date
@@ -164,13 +169,7 @@ class AddResourceProjectAPI(View):
             project_resource.save()
             resource.save()
 
-            return JsonResponse(
-                {
-                    "success": True,
-                    "message": f"Recurso {resource.code} agregado al proyecto",
-                    "data": self._serialize(project_resource),
-                }
-            )
+            return JsonResponse({"id": project_resource.id})
 
         except ValidationError as e:
             return JsonResponse({"success": False, "error": str(e)}, status=400)
@@ -181,27 +180,4 @@ class AddResourceProjectAPI(View):
         """Serializar ProjectResourceItem a JSON."""
         return {
             "id": project_resource.id,
-            "project_id": project_resource.project.id,
-            "project_name": str(project_resource.project.partner.name),
-            "resource_id": project_resource.resource_item.id,
-            "resource_code": project_resource.resource_item.code,
-            "resource_name": project_resource.resource_item.name,
-            "rent_cost": str(project_resource.rent_cost),
-            "maintenance_cost": str(project_resource.maintenance_cost),
-            "maintenance_interval_days": (project_resource.maintenance_interval_days),
-            "operation_start_date": (
-                project_resource.operation_start_date.strftime("%Y-%m-%d")
-            ),
-            "operation_end_date": (
-                project_resource.operation_end_date.strftime("%Y-%m-%d")
-                if project_resource.operation_end_date
-                else None
-            ),
-            "is_retired": project_resource.is_retired,
-            "retirement_date": (
-                project_resource.retirement_date.strftime("%Y-%m-%d")
-                if project_resource.retirement_date
-                else None
-            ),
-            "retirement_reason": project_resource.retirement_reason,
         }
