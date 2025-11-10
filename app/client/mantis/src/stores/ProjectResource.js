@@ -5,9 +5,10 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
     state: () => ({
         selectedResource: Object,
         resourcesProject: [],
-        newResource: {
+        newResourceProject: {
+            id: null,
             project: null,
-            id_resource_item: null,
+            resource: Object,
             detailed_description: null,
             cost: 0.0,
             interval_days: 3, 
@@ -36,8 +37,32 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 console.error("Error fetching project resources:", error);
             }
         },
-    },
-    addResourceToProject(resource) {
-        this.resourcesProject.push(resource);
+        async addResourceToProject(resource) {
+            if (!resource.cost || resource.cost <= 0) {
+                throw new Error("El costo debe ser mayor a 0");
+            }
+            if (!resource.operation_start_date) {
+                throw new Error("La fecha de inicio de operaciones es requerida");
+            }
+            if (!resource.interval_days || resource.interval_days < 1) {
+                throw new Error("La frecuencia debe ser al menos 1 día");
+            }
+
+            try {
+                const response = await fetch(appConfig.URLAddResourceToProject, {
+                    method: "POST",
+                    headers: appConfig.headers,
+                    body: JSON.stringify(resource)
+                });
+                if (response.ok) {
+                    this.resourcesProject.push(resource);
+                } else {
+                    throw new Error("Error al agregar el recurso al proyecto");
+                }
+            } catch (error) {
+                console.error("Error adding resource to project:", error);
+                throw error; 
+            }
+        }
     }
 });

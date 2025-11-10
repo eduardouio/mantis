@@ -16,4 +16,5 @@ export const appConfig = {
     "URLSourcesAvailable": apiBaseUrl + "/api/projects/resources/available/",
     "URLResourcesProject": apiBaseUrl + "/api/projects/" + idProject + "/resources/",
     "URLSheetProjects": apiBaseUrl + "/api/workorders/sheet-projects/" + idProject + "/",
+    "URLAddResourceToProject": apiBaseUrl + "/api/projects/resources/add/",
 }

@@ -1,26 +1,46 @@
 <script setup>
   import { RouterLink } from 'vue-router';
   import AutocompleteResource from '@/components/resoruces/AutocompleteResource.vue';
-  import { ref } from 'vue';
-import { onMounted } from 'vue';
+  import { onMounted, ref, computed } from 'vue';
+  import { UseResourcesStore } from '@/stores/resources';
+  import { UseProjectResourceStore } from '@/stores/ProjectResource';
 
-  const selectedResource = ref(Object);
+  const resourcesStore = UseResourcesStore();
+  const projectResourceStore = UseProjectResourceStore();
+  const projectResource = ref({});
+  const selectedResource = ref(null);
 
-  const handleResourceSelected = (resource) => {
-    selectedResource.value = resource;
-    console.log('Recurso seleccionado:', resource);
+  const costLabel = computed(() => selectedResource.value?.type_equipment_display === 'SERVICIO' ? 'Costo Servicio *' : 'Costo Alquiler *');
+  const frequencyLabel = computed(() => selectedResource.value?.type_equipment_display === 'SERVICIO' ? 'Frecuencia de Servicio (días) *' : 'Frecuencia de Mantenimiento (días) *');
+
+  const handleResourceSelected = () => {
+    console.log('Recurso seleccionado en ResourceItemsForm.vue');
+    projectResourceStore.selectedResource = JSON.parse(JSON.stringify(projectResourceStore.newResourceProject));
+    projectResource.value = projectResourceStore.selectedResource;
+    selectedResource.value = resourcesStore.selectedResource;
+    projectResource.value.resource = resourcesStore.selectedResource;
+    projectResource.value.detailed_description = selectedResource.value.display_name;
+    projectResource.value.interval_days = selectedResource.value.type_equipment_display === 'SERVICIO' ? 3 : 30;
   };
 
 
   onMounted(() => {
     console.log('Mounted ResourceItemsForm.vue');
   });
+
+
+  const submitForm = async () => {
+    console.log('Submitting form in ResourceItemsForm.vue');
+    response = await projectResourceStore.addResourceToProject(
+      projectResource.value
+    );
+  };
 </script>
 <template>
   <div class="container mx-auto p-4 max-w-4xl">
     <span class="font-bold text-lg bg-gray-100 rounded-md px-2 py-1 mb-4 inline-block w-full text-center">
       Recurso del Proyecto
-    </span>
+    </span> 
     <form class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg">
       <div class="card-body space-y-4">
         
@@ -41,6 +61,7 @@ import { onMounted } from 'vue';
             id="detailed_description" 
             class="input input-bordered w-full" 
             placeholder="Descripción adicional del recurso en este proyecto" 
+            v-model="projectResource.detailed_description"
           />
         </div>
 
@@ -48,7 +69,7 @@ import { onMounted } from 'vue';
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="form-control w-full">
             <label class="label">
-              <span class="label-text">Costo *</span>
+              <span class="label-text">{{ costLabel }}</span>
             </label>
             <input
               id="cost"
@@ -57,12 +78,13 @@ import { onMounted } from 'vue';
               min="0"
               placeholder="0.00"
               class="input input-bordered w-full"
+              v-model="projectResource.cost"
             />
           </div>
 
           <div class="form-control w-full">
             <label class="label">
-              <span class="label-text">Frecuencia de Mantenimiento (días) *</span>
+              <span class="label-text">{{ frequencyLabel }}</span>
             </label>
             <input
               id="interval_days"
@@ -70,6 +92,7 @@ import { onMounted } from 'vue';
               min="1"
               placeholder="1"
               class="input input-bordered w-full"
+              v-model="projectResource.interval_days"
             />
           </div>
         </div>
@@ -84,6 +107,7 @@ import { onMounted } from 'vue';
               id="operation_start_date"
               type="date"
               class="input input-bordered w-full"
+              v-model="projectResource.operation_start_date"
             />
           </div>
 
@@ -95,6 +119,7 @@ import { onMounted } from 'vue';
               id="operation_end_date"
               type="date"
               class="input input-bordered w-full"
+              v-model="projectResource.operation_end_date"
             />
           </div>
         </div>
@@ -109,6 +134,7 @@ import { onMounted } from 'vue';
             rows="3"
             placeholder="Notas adicionales sobre este recurso en el proyecto"
             class="textarea textarea-bordered w-full"
+            v-model="projectResource.notes"
           />
         </div>
 
@@ -116,19 +142,20 @@ import { onMounted } from 'vue';
         <div class="divider"></div>
 
         <!-- Estado de Retiro -->
-        <div class="form-control">
+        <div v-if="projectResourceStore.newResourceProject.id" class="form-control">
           <label class="label cursor-pointer justify-start gap-2">
             <input
               id="is_retired"
               type="checkbox"
               class="checkbox checkbox-warning"
+              v-model="projectResource.is_retired"
             />
             <span class="label-text font-semibold">Recurso Retirado</span>
           </label>
         </div>
 
         <!-- Campos de Retiro (condicionales) -->
-        <div class="bg-yellow-100 bg-opacity-10 p-6 rounded-lg border-l-4 border-yellow-400 space-y-4">
+        <div v-if="projectResource.is_retired && projectResourceStore.newResourceProject.id" class="bg-yellow-100 bg-opacity-10 p-6 rounded-lg border-l-4 border-yellow-400 space-y-4">
           <h3 class="font-semibold text-lg mb-4">Información de Retiro</h3>
           
           <div class="form-control w-full md:w-1/2">
@@ -139,6 +166,7 @@ import { onMounted } from 'vue';
               id="retirement_date"
               type="date"
               class="input input-bordered w-full"
+              v-model="projectResource.retirement_date"
             />
           </div>
 
@@ -151,6 +179,7 @@ import { onMounted } from 'vue';
               rows="4"
               placeholder="Describa el motivo del retiro del recurso"
               class="textarea textarea-bordered w-full"
+              v-model="projectResource.retirement_reason"
             />
           </div>
         </div>
@@ -163,7 +192,7 @@ import { onMounted } from 'vue';
           <RouterLink to="/project" class="btn btn-ghost">
             Cancelar
           </RouterLink>
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" class="btn btn-primary" @click="submitForm">
             Agregar Recurso
           </button>
         </div>
