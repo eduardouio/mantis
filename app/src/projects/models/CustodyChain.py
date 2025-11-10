@@ -32,6 +32,11 @@ class CustodyChain(BaseModel):
         blank=True,
         null=True
     )
+    issue_date = models.DateField(
+        'Fecha de Emisión',
+        blank=True,
+        null=True
+    )
     start_time = models.TimeField(
         'Hora de inicio',
         blank=True,
