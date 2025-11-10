@@ -3,7 +3,7 @@ from django.views import View
 from projects.models.Project import Project, ProjectResourceItem
 
 
-class ProjectResources(View):
+class ProjectResources(View):	
     """Manejar recursos asociados a proyectos."""
 
     def get(self, request, project_id):

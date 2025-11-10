@@ -48,7 +48,7 @@ urlpatterns = [
     path('projects/resources/delete/', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
     path('projects/<int:project_id>/resources/', ProjectResources.as_view(), name='api_project_resources'),    
     # workorders
-    path('workorders/sheets/', GetAllSheetProjectAPI.as_view(), name='api_get_all_sheets'),
+    path('workorders/sheets/project/<int:project_id>/', GetAllSheetProjectAPI.as_view(), name='api_get_all_sheets'),
     path('workorders/sheets/create/', AddUpdateSheetProjectAPI.as_view(), name='api_create_sheet'),
     path('workorders/sheets/update/', AddUpdateSheetProjectAPI.as_view(), name='api_update_sheet'),
     path('workorders/sheets/delete/', DeleteSheetOrderAPI.as_view(), name='api_delete_sheet'),
