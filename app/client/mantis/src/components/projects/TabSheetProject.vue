@@ -1,55 +1,15 @@
 <script setup>
-import { ref } from 'vue';
+import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
+import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 
-// Datos ficticios basados en SheetProject
-const sheetProjects = ref([
-  {
-    id: 1,
-    series_code: 'PSL-PS-2024-1000',
-    status: 'IN_PROGRESS',
-    issue_date: '2024-01-15',
-    period_start: '2024-01-01',
-    period_end: '2024-01-31',
-    service_type: 'ALQUILER Y MANTENIMIENTO',
-    total_gallons: 1500,
-    total_barrels: 35,
-    total_cubic_meters: 5.7,
-    subtotal: 15000.00,
-    tax_amount: 1950.00,
-    total: 16950.00
-  },
-  {
-    id: 2,
-    series_code: 'PSL-PS-2024-1001',
-    status: 'INVOICED',
-    issue_date: '2024-02-15',
-    period_start: '2024-02-01',
-    period_end: '2024-02-29',
-    service_type: 'ALQUILER',
-    total_gallons: 1200,
-    total_barrels: 28,
-    total_cubic_meters: 4.5,
-    subtotal: 12000.00,
-    tax_amount: 1560.00,
-    total: 13560.00
-  },
-  {
-    id: 3,
-    series_code: 'PSL-PS-2024-1002',
-    status: 'IN_PROGRESS',
-    issue_date: '2024-03-15',
-    period_start: '2024-03-01',
-    period_end: '2024-03-31',
-    service_type: 'MANTENIMIENTO',
-    total_gallons: 2000,
-    total_barrels: 47,
-    total_cubic_meters: 7.6,
-    subtotal: 18500.00,
-    tax_amount: 2405.00,
-    total: 20905.00
-  }
-]);
+const sheetProjectsStore = UseSheetProjectsStore();
+
+const sheetProjects = computed(() => sheetProjectsStore.sheetProjects);
+
+const hasInProgressSheet = computed(() => {
+  return sheetProjects.value.some(sheet => sheet.status === 'IN_PROGRESS');
+});
 
 const getStatusBadgeClass = (status) => {
   const classes = {
@@ -77,6 +37,7 @@ const formatCurrency = (value) => {
 };
 
 const formatDate = (date) => {
+  if (!date) return 'N/A';
   return new Intl.DateTimeFormat('es-GT').format(new Date(date));
 };
 </script>
@@ -88,10 +49,18 @@ const formatDate = (date) => {
         <i class="las la-file-invoice-dollar text-blue-600 text-xl"></i>
         Planillas del Proyecto
       </h2>
-      <RouterLink to="/sheet/form" class="btn btn-primary btn-sm">
+      <RouterLink 
+        v-if="!hasInProgressSheet"
+        to="/sheet/form" 
+        class="btn btn-primary btn-sm"
+      >
         <i class="las la-plus text-lg"></i>
         Crear Nueva Planilla
       </RouterLink>
+      <div v-else class="badge badge-warning gap-2">
+        <i class="las la-exclamation-triangle"></i>
+        Hay una planilla en ejecución
+      </div>
     </div>
     
     <div class="overflow-x-auto">
@@ -108,16 +77,13 @@ const formatDate = (date) => {
             <th class="text-right">Galones</th>
             <th class="text-right">Barriles</th>
             <th class="text-right">M³</th>
-            <th class="text-right">Subtotal</th>
-            <th class="text-right">IVA</th>
-            <th class="text-right">Total</th>
             <th class="text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <template v-if="sheetProjects.length === 0">
             <tr>
-              <td colspan="14" class="text-center text-gray-500 py-8">
+              <td colspan="11" class="text-center text-gray-500 py-8">
                 <i class="las la-inbox text-4xl"></i>
                 <p>No hay planillas registradas para este proyecto</p>
               </td>
@@ -142,9 +108,6 @@ const formatDate = (date) => {
               <td class="text-right">{{ sheet.total_gallons.toLocaleString() }}</td>
               <td class="text-right">{{ sheet.total_barrels.toLocaleString() }}</td>
               <td class="text-right">{{ sheet.total_cubic_meters.toFixed(1) }}</td>
-              <td class="text-right font-semibold">{{ formatCurrency(sheet.subtotal) }}</td>
-              <td class="text-right">{{ formatCurrency(sheet.tax_amount) }}</td>
-              <td class="text-right font-bold text-primary">{{ formatCurrency(sheet.total) }}</td>
               <td class="text-center">
                 <div class="flex gap-1 justify-center">
                   <button class="btn btn-ghost btn-xs" title="Ver detalles">
@@ -161,21 +124,6 @@ const formatDate = (date) => {
             </tr>
           </template>
         </tbody>
-        <tfoot v-if="sheetProjects.length > 0">
-          <tr class="bg-base-200 font-bold">
-            <td colspan="10" class="text-right">TOTALES:</td>
-            <td class="text-right">
-              {{ formatCurrency(sheetProjects.reduce((sum, s) => sum + parseFloat(s.subtotal), 0)) }}
-            </td>
-            <td class="text-right">
-              {{ formatCurrency(sheetProjects.reduce((sum, s) => sum + parseFloat(s.tax_amount), 0)) }}
-            </td>
-            <td class="text-right text-primary">
-              {{ formatCurrency(sheetProjects.reduce((sum, s) => sum + parseFloat(s.total), 0)) }}
-            </td>
-            <td></td>
-          </tr>
-        </tfoot>
       </table>
     </div>
   </div>
