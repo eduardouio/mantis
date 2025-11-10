@@ -28,6 +28,7 @@ from api.workorders import (
 )
 
 from api.projects.ProjectResources import ProjectResources
+from api.projects.ProjectData import ProjectData
 
 urlpatterns = [
     # vehicles
@@ -43,6 +44,7 @@ urlpatterns = [
     # resources
     path('resources/update/', UpdateResourceAPI.as_view(), name='api_update_resource'),
     # projects
+	path('projects/data/<int:project_id>/', ProjectData.as_view(), name='api_project_data'),
     path('projects/resources/available/', ResourcesAvailableAPI.as_view(), name='api_resources_available'),
     path('projects/resources/add/', AddResourceProjectAPI.as_view(), name='api_add_resource_project'),
     path('projects/resources/delete/', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
