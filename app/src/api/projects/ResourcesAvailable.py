@@ -10,7 +10,6 @@ class ResourcesAvailableAPI(View):
     Retorna recursos que:
         - Estén activos (is_active=True)
         - Tengan estado de disponibilidad DISPONIBLE
-        - No sean servicios (type_equipment != 'SERVIC')
     """
 
     def get(self, request):
@@ -18,25 +17,6 @@ class ResourcesAvailableAPI(View):
         try:
 
             filters = Q(is_active=True, stst_status_disponibility="DISPONIBLE")
-
-            type_equipment = request.GET.get("type_equipment")
-            if type_equipment:
-                filters &= Q(type_equipment=type_equipment)
-
-            status_equipment = request.GET.get("status_equipment")
-            if status_equipment:
-                filters &= Q(stst_status_equipment=status_equipment)
-
-            search = request.GET.get("search")
-            if search:
-                filters &= Q(code__icontains=search) | Q(name__icontains=search)
-
-            exclude_services = (
-                request.GET.get("exclude_services", "true").lower() == "true"
-            )
-            if exclude_services:
-
-                filters &= ~Q(type_equipment="SERVIC")
 
             resources = ResourceItem.objects.filter(filters).order_by(
                 "type_equipment", "code"
