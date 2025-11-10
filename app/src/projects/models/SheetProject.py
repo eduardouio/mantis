@@ -41,7 +41,26 @@ class SheetProject(BaseModel):
     series_code = models.CharField(
         "Serie",
         max_length=50,
-        default="PSL-PS-00000-00"
+        default="PSL-PS-0000-0000"
+    )
+    secuence_prefix = models.CharField(
+        "Prefijo de Secuencia",
+        max_length=10,
+        blank=True,
+        null=True,
+        default="PSL-PS"
+    )
+    secuence_year = models.PositiveIntegerField(
+        "Año de Secuencia",
+        blank=True,
+        null=True,
+        default=datetime.now().year
+    )
+    secuence_number = models.PositiveIntegerField(
+        "Número de Secuencia",
+        blank=True,
+        null=True,
+        default=0
     )
     service_type = models.CharField(
         "Tipo de Servicio",
@@ -122,8 +141,8 @@ class SheetProject(BaseModel):
     def __str__(self):
         return f"Planilla {self.id} - Proyecto {self.project.partner.name}"
 
-    @staticmethod
-    def get_next_series_code():
+    @classmethod
+    def get_next_series_code(cls):
         """
         Formato: PSL-PS-YYYY-NNNN
         Donde:
@@ -131,25 +150,22 @@ class SheetProject(BaseModel):
             - YYYY: Año actual
             - NNNN: Consecutivo de 4 dígitos empezando en 1000
         """
-
         current_year = datetime.now().year
-        prefix = f"PSL-PS-{current_year}-"
 
         last_sheet = (
-            SheetProject.objects.filter(
-                series_code__startswith=prefix,
+            cls.objects.filter(
+                secuence_year=current_year,
             )
-            .order_by("-id")
+            .order_by("-secuence_number")
             .first()
         )
 
         if last_sheet:
-            last_number = int(last_sheet.series_code.split("-")[-1])
-            next_number = last_number + 1
+            next_number = last_sheet.secuence_number + 1
         else:
             next_number = 1000
 
-        return f"{prefix}{next_number:04d}"
+        return f"PSL-PS-{current_year}-{next_number:04d}"
 
 
 class SheetProjectDetail(BaseModel):

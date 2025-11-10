@@ -52,6 +52,5 @@ urlpatterns = [
     # workorders
     path('workorders/sheets/project/<int:project_id>/', GetAllSheetProjectAPI.as_view(), name='api_get_all_sheets'),
     path('workorders/sheets/create/', AddUpdateSheetProjectAPI.as_view(), name='api_create_sheet'),
-    path('workorders/sheets/update/', AddUpdateSheetProjectAPI.as_view(), name='api_update_sheet'),
     path('workorders/sheets/delete/', DeleteSheetOrderAPI.as_view(), name='api_delete_sheet'),
 ]
