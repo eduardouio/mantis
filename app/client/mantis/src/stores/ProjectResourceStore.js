@@ -24,6 +24,7 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
     actions: {
         async fetchResourcesProject() {
             console.log("Fetching project resources");
+
             try {
                 const response = await fetch(appConfig.URLResourcesProject, {
                     method: "GET",

@@ -63,11 +63,15 @@ class AddUpdateSheetProjectAPI(View):
                 {"success": False, "error": "Fecha de inicio de período inválida"},
                 status=400,
             )
+        
+        series_code = SheetProject.get_next_series_code()
         sheet = SheetProject(
             project=project,
             period_start=period_start,
             status="IN_PROGRESS",
-            series_code=SheetProject.get_next_series_code(),
+            series_code=series_code,
+            secuence_year=int(series_code.split("-")[2]),
+            secuence_number=int(series_code.split("-")[3]),
             service_type=data.get("service_type"),
             contact_reference=data.get("contact_reference"),
             contact_phone_reference=data.get("contact_phone_reference")
@@ -80,9 +84,14 @@ class AddUpdateSheetProjectAPI(View):
                 "success": True,
                 "message": "Hoja de trabajo creada exitosamente",
                 "data": {
-                    "id": sheet.id
+                    "id": sheet.id,
+                    "series_code": sheet.series_code,
+                    "project_id": project.id,
+                    "period_start": sheet.period_start.isoformat(),
+                    "status": sheet.status
                 },
-            }
+            },
+            status=201
         )
 
     def _parse_date(self, date_str):
