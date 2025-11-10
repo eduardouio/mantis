@@ -1,4 +1,4 @@
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse
 from django.views import View
 from projects.models import SheetProject, SheetProjectDetail
 
@@ -40,7 +40,6 @@ class GetAllSheetProjectAPI(View):
             return JsonResponse({"success": False, "error": str(e)}, status=500)
 
     def _serialize_sheet(self, sheet):
-        """Serializar hoja de trabajo."""
         return {
             "id": sheet.id,
             "project_id": sheet.project_id,
