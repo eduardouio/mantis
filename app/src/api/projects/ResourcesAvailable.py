@@ -47,4 +47,6 @@ class ResourcesAvailableAPI(View):
             "capacity_gallons": (
                 str(resource.capacity_gallons) if resource.capacity_gallons else None
             ),
+            "is_selected": False,
+            "is_confirm_delete": False
         }

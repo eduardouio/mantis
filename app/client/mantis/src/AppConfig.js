@@ -12,5 +12,6 @@ export const appConfig = {
         "Accept": "application/json",
         "Content-Type": "application/json",
         "X-CSRFToken": csrfToken
-    }
+    },
+    "URLSourcesAvailable": apiBaseUrl + "/api/projects/resources/available/",
 }
