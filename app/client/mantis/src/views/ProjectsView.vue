@@ -2,6 +2,14 @@
 import TabResources from '@/components/projects/TabResources.vue'
 import TabSheetProject from '@/components/projects/TabSheetProject.vue'
 import TabCalendar from '@/components/projects/TabCalendar.vue'
+import { UseProjectStore } from '@/stores/ProjectStore';
+import { onMounted } from 'vue';
+
+const projectStore = UseProjectStore();
+
+onMounted(() => {
+  projectStore.fetchProjectData();
+});
 </script>
 
 <template>
