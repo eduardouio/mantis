@@ -1,286 +1,130 @@
 <script setup>
-  import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
+import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
+import { UseProjectStore } from '@/stores/ProjectStore';
+import { onMounted, computed, ref } from 'vue';
+
+const router = useRouter();
+const sheetProjectStore = UseSheetProjectsStore();
+const projectStore = UseProjectStore();
+
+const project = computed(() => projectStore.project);
+const formData = ref({
+  period_start: '',
+  service_type: 'ALQUILER Y MANTENIMIENTO'
+});
+const errorMessage = ref('');
+
+onMounted(async () => {
+  await projectStore.fetchProjectData();
+  sheetProjectStore.initializeNewSheetProject(project.value);
+});
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  errorMessage.value = '';
+  
+  try {
+    const sheetProject = {
+      ...sheetProjectStore.newSheetProject,
+      period_start: formData.value.period_start,
+      service_type: formData.value.service_type
+    };
+    
+    const sheetId = await sheetProjectStore.addSheetProject(sheetProject);
+    console.log('Sheet creado con ID:', sheetId);
+    router.push({ name: 'project' });
+  } catch (error) {
+    console.error('Error al crear planilla:', error);
+    errorMessage.value = error.message || 'Error al crear la planilla';
+  }
+};
 </script>
+
 <template>
-  <div class="container mx-auto p-4 max-w-4xl">
+  <div class="container mx-auto p-4 max-w-2xl">
     <span class="font-bold text-lg bg-gray-100 rounded-md px-2 py-1 mb-4 inline-block w-full text-center">
-      Planilla del Proyecto
+      Nueva Planilla del Proyecto #{{ project?.id }}
     </span>
-    <form class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg">
+    
+    <form @submit="handleSubmit" class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg">
       <div class="card-body space-y-4">
         
-        <!-- Código de Serie (generado automáticamente) -->
+        <!-- Mensaje de Error -->
+        <div v-if="errorMessage" class="alert alert-error shadow-lg">
+          <div>
+            <i class="las la-exclamation-circle text-2xl"></i>
+            <span>{{ errorMessage }}</span>
+          </div>
+        </div>
+
+        <!-- Información del Proyecto (solo lectura) -->
+        <div class="bg-blue-50 p-4 rounded-lg space-y-2">
+          <h3 class="font-semibold text-blue-700 text-sm mb-2">Información del Proyecto</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+            <div>
+              <span class="text-gray-600">Cliente:</span>
+              <span class="font-semibold ml-2">{{ project?.partner_name }}</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Ubicación:</span>
+              <span class="font-semibold ml-2">{{ project?.location }}</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Contacto:</span>
+              <span class="font-semibold ml-2">{{ project?.contact_name }}</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Teléfono:</span>
+              <span class="font-semibold ml-2">{{ project?.contact_phone }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider">Datos de la Planilla</div>
+
+        <!-- Fecha Inicio Período -->
         <div class="form-control w-full">
           <label class="label">
-            <span class="label-text">Código de Serie</span>
+            <span class="label-text font-semibold">Fecha Inicio Período *</span>
           </label>
-          <input 
-            type="text" 
-            id="series_code" 
-            class="input input-bordered w-full bg-gray-100" 
-            placeholder="PSL-PS-2024-0000"
-            disabled
+          <input
+            v-model="formData.period_start"
+            type="date"
+            class="input input-bordered w-full"
+            required
           />
           <label class="label">
-            <span class="label-text-alt">Se genera automáticamente al guardar</span>
+            <span class="label-text-alt">Fecha de inicio del período a facturar</span>
           </label>
-        </div>
-
-        <!-- Fecha de Emisión y Estado - Grid 2 columnas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Fecha de Emisión</span>
-            </label>
-            <input
-              id="issue_date"
-              type="date"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Estado *</span>
-            </label>
-            <select id="status" class="select select-bordered w-full">
-              <option value="IN_PROGRESS">EN EJECUCIÓN</option>
-              <option value="INVOICED">FACTURADO</option>
-              <option value="CANCELLED">CANCELADO</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Período de Facturación - Grid 2 columnas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Fecha Inicio Período *</span>
-            </label>
-            <input
-              id="period_start"
-              type="date"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Fecha Fin Período *</span>
-            </label>
-            <input
-              id="period_end"
-              type="date"
-              class="input input-bordered w-full"
-            />
-          </div>
         </div>
 
         <!-- Tipo de Servicio -->
         <div class="form-control w-full">
           <label class="label">
-            <span class="label-text">Tipo de Servicio *</span>
+            <span class="label-text font-semibold">Tipo de Servicio *</span>
           </label>
-          <select id="service_type" class="select select-bordered w-full">
+          <select 
+            v-model="formData.service_type"
+            class="select select-bordered w-full"
+            required
+          >
             <option value="ALQUILER">ALQUILER</option>
             <option value="MANTENIMIENTO">MANTENIMIENTO</option>
-            <option value="ALQUILER Y MANTENIMIENTO">ALQUILER Y MANTENIMIENTO</option>
+            <option value="ALQUILER Y MANTENIMIENTO" selected>ALQUILER Y MANTENIMIENTO</option>
           </select>
         </div>
 
-        <!-- Divisor -->
-        <div class="divider">Cantidades</div>
-
-        <!-- Galones, Barriles y M³ - Grid 3 columnas -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Total Galones</span>
-            </label>
-            <input
-              id="total_gallons"
-              type="number"
-              min="0"
-              placeholder="0"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Total Barriles</span>
-            </label>
-            <input
-              id="total_barrels"
-              type="number"
-              min="0"
-              placeholder="0"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Total Metros Cúbicos</span>
-            </label>
-            <input
-              id="total_cubic_meters"
-              type="number"
-              min="0"
-              placeholder="0"
-              class="input input-bordered w-full"
-            />
-          </div>
-        </div>
-
-        <!-- Divisor -->
-        <div class="divider">Referencias</div>
-
-        <!-- Referencia PO Cliente y Contacto - Grid 2 columnas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Referencia PO Cliente</span>
-            </label>
-            <input
-              id="client_po_reference"
-              type="text"
-              placeholder="Número de orden de compra del cliente"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Referencia de Contacto</span>
-            </label>
-            <input
-              id="contact_reference"
-              type="text"
-              placeholder="Nombre del contacto"
-              class="input input-bordered w-full"
-            />
-          </div>
-        </div>
-
-        <!-- Teléfono y Disposición Final - Grid 2 columnas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Teléfono de Contacto</span>
-            </label>
-            <input
-              id="contact_phone_reference"
-              type="tel"
-              placeholder="0000-0000"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Disposición Final</span>
-            </label>
-            <input
-              id="final_disposition_reference"
-              type="text"
-              placeholder="Referencia de disposición final"
-              class="input input-bordered w-full"
-            />
-          </div>
-        </div>
-
-        <!-- Referencia de Factura -->
-        <div class="form-control w-full">
-          <label class="label">
-            <span class="label-text">Referencia de Factura</span>
-          </label>
-          <input
-            id="invoice_reference"
-            type="text"
-            placeholder="Número de factura relacionada"
-            class="input input-bordered w-full"
-          />
-        </div>
-
-        <!-- Divisor -->
-        <div class="divider">Montos</div>
-
-        <!-- Subtotal, IVA y Total - Grid 3 columnas -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Subtotal *</span>
-            </label>
-            <input
-              id="subtotal"
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">IVA (12%) *</span>
-            </label>
-            <input
-              id="tax_amount"
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              class="input input-bordered w-full bg-gray-50"
-              readonly
-            />
-            <label class="label">
-              <span class="label-text-alt">Se calcula automáticamente</span>
-            </label>
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-bold">Total *</span>
-            </label>
-            <input
-              id="total"
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              class="input input-bordered w-full font-bold bg-gray-50"
-              readonly
-            />
-            <label class="label">
-              <span class="label-text-alt">Se calcula automáticamente</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Notas - Ancho completo -->
-        <div class="form-control w-full">
-          <label class="label">
-            <span class="label-text">Notas</span>
-          </label>
-          <textarea
-            id="notes"
-            rows="3"
-            placeholder="Notas adicionales sobre esta planilla"
-            class="textarea textarea-bordered w-full"
-          />
-        </div>
-
-        <!-- Divisor final -->
         <div class="divider"></div>
 
         <!-- Botones de Acción -->
         <div class="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
           <RouterLink to="/project" class="btn btn-ghost">
+            <i class="las la-times text-lg"></i>
             Cancelar
           </RouterLink>
           <button type="submit" class="btn btn-primary">
+            <i class="las la-save text-lg"></i>
             Crear Planilla
           </button>
         </div>

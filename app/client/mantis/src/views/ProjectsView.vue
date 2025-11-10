@@ -4,17 +4,20 @@ import TabSheetProject from '@/components/projects/TabSheetProject.vue'
 import TabCalendar from '@/components/projects/TabCalendar.vue'
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
+import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { onMounted, computed } from 'vue';
 import { formatDate } from '@/utils/formatters';
 
 const projectStore = UseProjectStore();
 const projectResourceStore = UseProjectResourceStore();
+const sheetProjectsStore = UseSheetProjectsStore();
 
 const project = computed(() => projectStore.project);
 
 onMounted(() => {
   projectStore.fetchProjectData();
   projectResourceStore.fetchResourcesProject();
+  sheetProjectsStore.fetchSheetProjects();
 });
 </script>
 
