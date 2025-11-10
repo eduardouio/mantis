@@ -5,7 +5,6 @@ from projects.models import (
     Project,
     ProjectResourceItem,
     SheetProject,
-    SheetProjectDetail,
     CustodyChain,
     ChainCustodyDetail,
     FinalDispositionCertificate,
@@ -160,33 +159,6 @@ class SheetProjectAdmin(BaseModelAdmin):
         ('Notas', {
             'fields': ('notes',), 'classes': ('collapse',)
         }),
-        ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'), 'classes': ('collapse',)
-        })
-    )
-
-
-@admin.register(SheetProjectDetail)
-class SheetProjectDetailAdmin(BaseModelAdmin):
-    list_display = (
-        'sheet_project', 'resource_item', 'detail', 'quantity', 'unit_price',
-        'total_line', 'unit_measurement'
-    )
-    list_filter = (
-        'sheet_project', 'resource_item', 'unit_measurement', 'is_active'
-    )
-    search_fields = (
-        'sheet_project__project__partner__name', 'resource_item__name', 'detail'
-    )
-    # readonly heredado
-    fieldsets = (
-        ('Detalle', {
-            'fields': (
-                'sheet_project', 'resource_item', 'detail', 'item_unity',
-                'quantity', 'unit_price', 'total_line', 'unit_measurement', 'is_active'
-            )
-        }),
-        ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),
         ('Auditoría', {
             'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'), 'classes': ('collapse',)
         })

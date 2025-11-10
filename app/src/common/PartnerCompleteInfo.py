@@ -24,7 +24,7 @@ from typing import Dict, List, Any
 # Importaciones de modelos necesarios
 from projects.models.Partner import Partner
 from projects.models.Project import Project, ProjectResourceItem
-from projects.models.SheetProject import SheetProject, SheetProjectDetail
+from projects.models.SheetProject import SheetProject
 
 
 class PartnerCompleteInfo:
@@ -270,11 +270,6 @@ class PartnerCompleteInfo:
 
         sheets_summary = []
         for sheet in sheets:
-            # Detalles de la planilla
-            details = SheetProjectDetail.objects.filter(
-                sheet_project=sheet, is_deleted=False
-            )
-
             sheets_summary.append(
                 {
                     "sheet_id": sheet.id,
@@ -295,7 +290,7 @@ class PartnerCompleteInfo:
                     "subtotal": sheet.subtotal,
                     "tax_amount": sheet.tax_amount,
                     "total": sheet.total,
-                    "details_count": details.count(),
+                    "details_count": 0,  # No hay detalles disponibles
                     "created_at": sheet.created_at,
                 }
             )

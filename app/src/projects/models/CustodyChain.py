@@ -1,34 +1,3 @@
-"""Modelos para la gestión de cadenas de custodia de proyectos.
-
-CustodyChain:
-    Representa el documento físico que el técnico lleva a campo. Registra
-    datos operativos (recursos usados, tiempos, volúmenes) durante una
-    jornada o intervención. Sólo se persiste la información necesaria para
-    alimentar la planilla (``SheetProject``) y cálculos asociados.
-
-Objetivo:
-    Servir como punto de control (cut-off) y respaldo mínimo auditable de
-    lo ocurrido en sitio, sin incorporar ruido operativo irrelevante.
-
-Campos clave:
-    - technical: técnico responsable de la operación.
-    - sheet_project: vincula la jornada al período facturable.
-    - start_hour / end_hour y total_hours: resumen temporal (no se calcula
-      automáticamente aquí; puede validarse en signals futuros).
-    - volúmenes (total_gallons, total_bbl, total_m3): métricas de consumo /
-      producción asociadas.
-
-ChainCustodyDetail:
-    Relaciona ítems de recurso concretos usados en la cadena. Permite
-    granularidad para auditoría y posteriores reglas de valoración.
-
-Notas de diseño:
-    - Relaciones con ``PROTECT`` para evitar pérdida accidental de trazas.
-    - Posible mejora: derivar ``total_hours`` si se desea consistencia.
-    - Volúmenes pueden consolidarse luego a la planilla.
-"""
-
-
 from django.db import models
 from accounts.models.Technical import Technical
 from projects.models.SheetProject import SheetProject
@@ -102,6 +71,53 @@ class CustodyChain(BaseModel):
     )
     total_cubic_meters = models.PositiveSmallIntegerField(
         'Total de Metros Cúbicos',
+        default=0
+    )
+    detail = models.TextField(
+        "Detalle",
+        blank=True,
+        null=True
+    )
+    item_unity = models.CharField(
+        "Unidad del Item",
+        max_length=100,
+        choices=(
+            ("DIAS", "DÍAS"),
+            ("UNIDAD", "UNIDAD"),
+        ),
+        default="DIAS",
+    )
+    quantity = models.DecimalField(
+        "Cantidad",
+        max_digits=10,
+        decimal_places=2,
+        default=1
+    )
+    unit_price = models.DecimalField(
+        "Precio Unitario",
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+    total_line = models.DecimalField(
+        "Total Línea",
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+    unit_measurement = models.CharField(
+        "Unidad de Medida",
+        max_length=50,
+        choices=(
+            ("UNITY", "Unidad"),
+            ("DAIS", "Días")
+        ),
+        default="DAIS",
+    )
+    total_price = models.DecimalField(
+        "Precio Total",
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
 
