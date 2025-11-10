@@ -30,7 +30,7 @@ const projectResources = computed(() => projectResourceStore.resourcesProject);
             <th class="p-2 border border-gray-100 text-center">Código</th>
             <th class="p-2 border border-gray-100 text-center">Nombre/Descripción</th>
             <th class="p-2 border border-gray-100 text-center">Costo</th>
-            <th class="p-2 border border-gray-100 text-center">Frecuencia (días)</th>
+            <th class="p-2 border border-gray-100 text-center">Frec. (días)</th>
             <th class="p-2 border border-gray-100 text-center">Fecha Inicio</th>
             <th class="p-2 border border-gray-100 text-center text-center">Acciones</th>
           </tr>
@@ -47,16 +47,16 @@ const projectResources = computed(() => projectResourceStore.resourcesProject);
           <template v-else>
             <tr v-for="resource in projectResources" :key="resource.id">
               <td class="p-2 border border-gray-300">{{ resource.id }}</td>
-              <td class="p-2 border border-gray-300 font-mono">
+              <td class="p-2 border border-gray-300">
                 <span v-if="!resource.is_active" class="text-red-500 border rounded p-1 bg-red-100">INACTIVO</span>  
                 {{ resource.resource_item_code }}
               </td>
               <td class="p-2 border border-gray-300">{{ resource.detailed_description }}</td>
-              <td class="p-2 border border-gray-300 text-right">{{ formatNumber(resource.cost) }}</td>
+              <td class="p-2 border border-gray-300 text-right font-mono">{{ formatNumber(resource.cost) }}</td>
               <td class="p-2 border border-gray-300 text-end">
-                {{ resource.interval_days }} días
+                {{ resource.interval_days }}
               </td>
-              <td class="p-2 border border-gray-300 text-end">{{ formatDate(resource.operation_start_date) }}</td>
+              <td class="p-2 border border-gray-300 text-end font-mono">{{ formatDate(resource.operation_start_date) }}</td>
               <td class="p-2 border border-gray-300 text-center">
                 <div class="flex gap-1 justify-center">
                   <button class="btn btn-ghost btn-xs" title="Ver detalles">
