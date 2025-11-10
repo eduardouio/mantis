@@ -18,4 +18,5 @@ export const appConfig = {
     "URLSheetProjects": apiBaseUrl + "/api/workorders/sheets/project/" + idProject + "/",
     "URLAddSheetProject": apiBaseUrl + "/api/workorders/sheets/create/",
     "URLAddResourceToProject": apiBaseUrl + "/api/projects/resources/add/",
+    "URLCreateCustodyChain": apiBaseUrl + "/api/workorders/custody_chain/create/",
 }

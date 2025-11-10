@@ -1,6 +1,10 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { formatDate } from '@/utils/formatters';
+
+const router = useRouter();
+const route = useRoute();
 
 // Datos de ejemplo - aquí conectarías con tu store
 const sheetProjects = ref([]);
@@ -37,6 +41,10 @@ const getStatusLabel = (status) => {
   return statusLabels[status] || status;
 };
 
+const goBack = () => {
+  router.back();
+};
+
 onMounted(() => {
   fetchSheetProjects();
 });
@@ -51,11 +59,17 @@ onMounted(() => {
           <i class="las la-file-invoice text-blue-500"></i>
           Cadena de Custodia de Proyecto
         </h1>
-        <button class="btn btn-primary btn-sm">
-          <i class="las la-plus"></i>
-          Nueva Cadena de Custodia
-        </button>
-      </div>
+        <div class="flex gap-2">
+          <router-link :to="{ name: 'projects-detail' }" class="btn btn-secondary btn-sm">
+            <i class="las la-arrow-left"></i>
+            Cancelar
+          </router-link>
+          <router-link :to="{ name: 'custody-form' }" class="btn btn-primary btn-sm">
+            <i class="las la-plus"></i>
+            Nueva Cadena de Custodia
+          </router-link>
+        </div>
+      </div>  
     </div>
 
     <!-- Lista de Cadena de Custodia -->
@@ -249,19 +263,25 @@ onMounted(() => {
         </div>
 
         <!-- Footer de la Planilla -->
-        <div class="bg-gray-50 p-3 rounded-b-lg flex justify-end gap-2">
-          <button class="btn btn-sm btn-ghost">
-            <i class="las la-eye"></i>
-            Ver Detalles
+        <div class="bg-gray-50 p-3 rounded-b-lg flex justify-between gap-2">
+          <button class="btn btn-sm btn-ghost" @click="goBack">
+            <i class="las la-arrow-left"></i>
+            Cancelar
           </button>
-          <button class="btn btn-sm btn-ghost">
-            <i class="las la-print"></i>
-            Imprimir
-          </button>
-          <button class="btn btn-sm btn-ghost">
-            <i class="las la-download"></i>
-            Exportar
-          </button>
+          <div class="flex gap-2">
+            <button class="btn btn-sm btn-ghost">
+              <i class="las la-eye"></i>
+              Ver Detalles
+            </button>
+            <button class="btn btn-sm btn-ghost">
+              <i class="las la-print"></i>
+              Imprimir
+            </button>
+            <button class="btn btn-sm btn-ghost">
+              <i class="las la-download"></i>
+              Exportar
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -273,13 +293,20 @@ onMounted(() => {
 
     <!-- Sin resultados -->
     <div v-if="!isLoading && sheetProjects.length === 0" 
-         class="bg-white rounded-lg shadow-md p-12 text-center">
+         class="bg-white rounded-lg shadow-md p-12">
       <i class="las la-folder-open text-6xl text-gray-300"></i>
       <p class="text-gray-500 mt-4">No hay Cadena de Custodia de proyecto registradas</p>
-      <button class="btn btn-primary btn-sm mt-4">
-        <i class="las la-plus"></i>
-        Crear Cadena de Custodia
-      </button>
+      <div class="flex items-center gap-2 w-full justify-center mt-4">
+        <router-link :to="{ name: 'projects-detail' }" class="btn btn-secondary btn-sm">
+          <i class="las la-arrow-left"></i>
+          Cancelar
+        </router-link>
+        <router-link :to="{ name: 'custody-form' }" class="btn btn-primary btn-sm">
+          <i class="las la-plus"></i>
+          Crear Cadena de Custodia
+        </router-link>
+      </div>
+      
     </div>
   </div>
 </template>

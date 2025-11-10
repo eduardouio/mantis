@@ -83,23 +83,23 @@ const formatDate = (date) => {
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_gallons.toLocaleString() }}</td>
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_barrels.toLocaleString() }}</td>
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_cubic_meters.toFixed(1) }}</td>
-              <td class="p-2 border border-gray-300 text-center">
-                <div class="flex gap-1 justify-center">
+              <td class="p-2 border border-gray-300 text-end">
+                <div class="flex gap-1 justify-end">
                   <RouterLink 
                     :to="{ name: 'sheet-view', params: { id: sheet.id } }"
-                    class="btn btn-ghost btn-xs" 
+                    class="btn btn-xs bg-gray-100 border-lime-500" 
                     title="Ver detalles completos"
                   >
                     <i class="las la-file-invoice"></i>
+                    VER
                   </RouterLink>
-                  <button class="btn btn-ghost btn-xs" title="Ver detalles">
-                    <i class="las la-eye"></i>
-                  </button>
-                  <button class="btn btn-ghost btn-xs" title="Editar">
+                  <button class="btn btn-xs bg-gray-100 border-orange-500" title="Editar">
                     <i class="las la-edit"></i>
+                    EDITAR
                   </button>
-                  <button class="btn btn-ghost btn-xs text-error" title="Eliminar">
+                  <button class="btn btn-xs bg-gray-100 border-red-500 text-error" title="Eliminar">
                     <i class="las la-trash"></i>
+                    ELIMINAR
                   </button>
                 </div>
               </td>
