@@ -13,7 +13,7 @@ class CreateCustodyChainAPI(View):
         """Crear una cadena de custodia asociada a una planilla."""
         try:
             data = json.loads(request.body)
-            sheet_project_id = data.get("sheet_project_id")
+            sheet_project_id = data.get("id_sheet_project")
 
             try:
                 sheet_project = SheetProject.objects.get(
@@ -22,7 +22,7 @@ class CreateCustodyChainAPI(View):
             except SheetProject.DoesNotExist:
                 return JsonResponse(
                     {"success": False, "error": "Planilla de proyecto no encontrada"},
-                    status=404,
+                    status=500,
                 )
 
             try:
