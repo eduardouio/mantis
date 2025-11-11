@@ -15,7 +15,7 @@ class ResourcesAvailableAPI(View):
 
     def get(self, request):
         """Obtener lista de recursos disponibles."""
-        filters = Q(is_active=True, stst_status_disponibility="DISPONIBLE")
+        filters = Q(is_active=True, stst_status_disponibility="DISPONIBLE") & ~Q(type_equipment="SERVIC")
         resources = ResourceItem.objects.filter(filters).order_by(
             "type_equipment", "code"
         )
