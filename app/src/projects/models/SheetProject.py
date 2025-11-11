@@ -167,3 +167,67 @@ class SheetProject(BaseModel):
 
         return f"PSL-PS-{current_year}-{next_number:04d}"
 
+
+class SheetProjectDetail(BaseModel):
+    id = models.AutoField(
+        primary_key=True
+    )
+    sheet_project = models.ForeignKey(
+        SheetProject,
+        on_delete=models.PROTECT
+    )
+    resource_item = models.ForeignKey(
+        ResourceItem,
+        on_delete=models.PROTECT
+    )
+    detail = models.TextField(
+        "Detalle",
+        blank=True,
+        null=True
+    )
+    item_unity = models.CharField(
+        "Unidad del Item",
+        max_length=100,
+        choices=(
+            ("DIAS", "DÍAS"),
+            ("UNIDAD", "UNIDAD"),
+        ),
+    )
+    quantity = models.DecimalField(
+        "Cantidad",
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+    unit_price = models.DecimalField(
+        "Precio Unitario",
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+    total_line = models.DecimalField(
+        "Total Línea",
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+    unit_measurement = models.CharField(
+        "Unidad de Medida",
+        max_length=50,
+        choices=(
+            ("UNITY", "Unidad"),
+            ("DAIS", "Días")
+        ),
+        default="DAIS",
+    )
+    total_price = models.DecimalField(
+        "Precio Total",
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+
+    class Meta:
+        unique_together = ("sheet_project", "resource_item")
+        verbose_name = "Detalle de Planilla de Proyecto"
+        verbose_name_plural = "Detalles de Planilla de Proyecto"

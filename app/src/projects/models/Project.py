@@ -85,6 +85,15 @@ class ProjectResourceItem(BaseModel):
         ResourceItem,
         on_delete=models.PROTECT
     )
+    type_resource = models.CharField(
+        'Tipo de Recurso',
+        max_length=10,
+        choices=(
+            ('ALQUILER', 'Alquiler'),
+            ('SERVICIO', 'Servicio'),
+        ),
+        default='SERVICIO'
+    )
     detailed_description = models.CharField(
         'Descripción Detallada',
         max_length=255,
