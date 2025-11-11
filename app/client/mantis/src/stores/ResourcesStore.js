@@ -4,7 +4,7 @@ import { appConfig } from "@/AppConfig";
 
 export const UseResourcesStore = defineStore("resourcesStore", {
     state: () => ({
-        selectedResource: Object,
+        selectedResource: null,
         resourcesAvailable: [],
         resourcesProject: [],
         newResource: {
