@@ -1,12 +1,13 @@
 <script setup>
-import { computed } from 'vue';
-import { RouterLink } from 'vue-router';
-import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
-import { formatCurrency, formatDate, formatNumber } from '@/utils/formatters';
+import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
+import { formatCurrency, formatDate, formatNumber } from '@/utils/formatters'
 
-const projectResourceStore = UseProjectResourceStore();
+const projectResourceStore = UseProjectResourceStore()
+const projectResources = computed(() => projectResourceStore.resourcesProject)
+const selectedResources= []
 
-const projectResources = computed(() => projectResourceStore.resourcesProject);
 </script>
 
 <template>
@@ -18,7 +19,7 @@ const projectResources = computed(() => projectResourceStore.resourcesProject);
       </h2>
       <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'resource-form' }">
         <i class="las la-plus"></i>
-        Asignar Equipo
+        Asignar Recusros
       </RouterLink>
     </div>
     

@@ -91,7 +91,7 @@
                 <td class="text-left hidden md:table-cell px-2 py-1">{{ forloop.counter }}</td>
                 <td class="text-left hidden lg:table-cell px-2 py-1">
                     {% if item.type_equipment %}
-                        <span class=" text-gray-700">{{ item.get_type_equipment_display }}</span>
+                        <span class=" text-gray-700">{{ item.display_name }}</span>
                     {% else %}
                         <span class="text-gray-400 ">SERVICIO</span>
                     {% endif %}
