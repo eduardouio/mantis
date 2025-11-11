@@ -10,6 +10,10 @@ const props = defineProps({
   placeholder: {
     type: String,
     default: 'Buscar recurso...'
+  },
+  excludeIds: {
+    type: Array,
+    default: () => []
   }
 });
 
@@ -35,11 +39,19 @@ onMounted(async () => {
   await resourcesStore.fetchResourcesAvailable();
 });
 
-const filteredResources = computed(() => {  
-  if (!searchQuery.value) {
-    return availableResources.value;
+const filteredResources = computed(() => {
+  let resources = availableResources.value;
+  
+  // Filtrar recursos ya seleccionados
+  if (props.excludeIds.length > 0) {
+    resources = resources.filter(resource => !props.excludeIds.includes(resource.id));
   }
-  return availableResources.value.filter((resource) =>
+  
+  // Filtrar por búsqueda
+  if (!searchQuery.value) {
+    return resources;
+  }
+  return resources.filter((resource) =>
     (resource.display_name || resource.title || '')
       .toLowerCase()
       .includes(searchQuery.value.toLowerCase())
@@ -51,7 +63,7 @@ const handleInput = () => {
 };
 
 const selectResource = (resource) => {
-  searchQuery.value = resource.display_name || resource.title;
+  searchQuery.value = '';
   resourcesStore.setSelectedResource(resource.id);
   showDropdown.value = false;
   emit('resource-selected', resource);
