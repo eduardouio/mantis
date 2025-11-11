@@ -1,196 +1,225 @@
 <script setup>
-  import { RouterLink, useRouter } from 'vue-router';
-  import AutocompleteResource from '@/components/resoruces/AutocompleteResource.vue';
-  import { onMounted, ref, computed } from 'vue';
-  import { UseResourcesStore } from '@/stores/ResourcesStore';
-  import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
-  import { UseProjectStore } from '@/stores/ProjectStore';
+  import { RouterLink, useRouter } from 'vue-router'
+  import AutocompleteResource from '@/components/resoruces/AutocompleteResource.vue'
+  import { onMounted, ref, computed } from 'vue'
+  import { UseResourcesStore } from '@/stores/ResourcesStore'
+  import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
+  import { UseProjectStore } from '@/stores/ProjectStore'
 
-  const resourcesStore = UseResourcesStore();
-  const projectResourceStore = UseProjectResourceStore();
-  const projectStore = UseProjectStore();
-  const projectResource = ref({});
-  const selectedResource = ref(null);
-  const router = useRouter();
+  const resourcesStore = UseResourcesStore()
+  const projectResourceStore = UseProjectResourceStore()
+  const projectStore = UseProjectStore()
+  const router = useRouter()
+  const list_resources = ref([])
 
-  const costLabel = computed(() => selectedResource.value?.type_equipment_display === 'SERVICIO' ? 'Costo Servicio *' : 'Costo Alquiler *');
-  const frequencyLabel = computed(() => selectedResource.value?.type_equipment_display === 'SERVICIO' ? 'Frecuencia de Servicio (días) *' : 'Frecuencia de Mantenimiento (días) *');
+  const selectedResourceIds = computed(() => {
+    return list_resources.value
+      .filter(r => r.resource?.type_equipment_display !== 'SERVICIO')
+      .map(r => r.resource_id)
+  })
 
-  const handleResourceSelected = () => {
-    console.log('Recurso seleccionado en ResourceItemsForm.vue');
-    projectResourceStore.selectedResource = JSON.parse(JSON.stringify(projectResourceStore.newResourceProject));
-    projectResource.value = projectResourceStore.selectedResource;
-    selectedResource.value = resourcesStore.selectedResource;
-    projectResource.value.resource = resourcesStore.selectedResource;
-    projectResource.value.detailed_description = selectedResource.value.display_name;
-    projectResource.value.interval_days = selectedResource.value.type_equipment_display === 'SERVICIO' ? 3 : 30;
-  };
+  const handleResourceSelected = async () => {
+    const resource = resourcesStore.selectedResource
+    
+    const isService = resource.type_equipment === 'SERVIC'
 
+    if (!isService) {
+      if (resourcesStore.resources && Array.isArray(resourcesStore.resources)) {
+        const originalResource = resourcesStore.resources.find(r => r.id === resource.id)
+        if (originalResource) {
+          originalResource.is_selected = true
+        }
+      }
+    }
+    
+    const newProjectResource = {
+      resource: resource,
+      resource_id: resource.id,
+      resource_display_name: resource.display_name,
+      detailed_description: resource.display_name,
+      interval_days: isService ? 3 : 0,
+      cost: 0,
+      maintenance_cost: 0,
+      operation_start_date: projectStore.project?.start_date || null,
+      include_maintenance: isService
+    }
+    
+    list_resources.value.push(newProjectResource)
+    
+    resourcesStore.selectedResource = null
+  }
+
+  const removeResource = (index) => {
+    const resource = list_resources.value[index]
+    
+    if (resource.resource?.type_equipment_display !== 'SERVICIO') {
+      if (resourcesStore.resources && Array.isArray(resourcesStore.resources)) {
+        const originalResource = resourcesStore.resources.find(
+          r => r.id === resource.resource_id
+        )
+        if (originalResource) {
+          originalResource.is_selected = false
+        }
+      }
+    }
+    
+    list_resources.value.splice(index, 1)
+  }
 
   onMounted(() => {
-    console.log('Mounted ResourceItemsForm.vue');
-  });
+    console.log('Mounted ResourceItemsForm.vue')  
+  })
 
 
   const submitForm = async () => {
-    console.log('Submitting form in ResourceItemsForm.vue');
-    projectResource.value.project = projectStore.project;
+    console.log('Submitting form in ResourceItemsForm.vue')
     try {
-      const response = await projectResourceStore.addResourceToProject(
-        projectResource.value
-      );
-      router.push('/project');
+      for (const resource of list_resources.value) {
+        resource.project = projectStore.project
+        await projectResourceStore.addResourceToProject(resource)
+      }
+      router.push('/project')
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('Error submitting form:', error)
     }
-  };
+  }
+
+  const handleMaintenanceChange = (resource, event) => {
+    if (!resource.include_maintenance) {
+      resource.interval_days = 0
+      resource.maintenance_cost = 0
+    } else {
+      // Enfocar el input de frecuencia cuando se activa el mantenimiento
+      const checkbox = event.target
+      const row = checkbox.closest('tr')
+      const intervalInput = row.querySelector('input[data-input="interval"]')
+      if (intervalInput) {
+        setTimeout(() => {
+          intervalInput.focus()
+          intervalInput.select()
+        }, 50)
+      }
+    }
+  }
+
+  const handleCostFocus = (resource) => {
+    if (resource.cost === 0) {
+      resource.cost = null
+    }
+  }
+
+  const handleMaintenanceCostFocus = (resource) => {
+    if (resource.maintenance_cost === 0) {
+      resource.maintenance_cost = null
+    }
+  }
 </script>
 <template>
-  <div class="container mx-auto p-4 max-w-6xl">
+  <div class="container mx-auto p-4">
     <span class="font-bold text-lg bg-gray-100 rounded-md px-2 py-1 mb-4 inline-block w-full text-center">
       Recurso del Proyecto
     </span> 
     <form class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg" @submit.prevent="submitForm">
       <div class="card-body space-y-4">
-        
+        <div class="flex gap-4">
+
         <!-- Autocomplete de Recursos -->
         <AutocompleteResource 
           label="Seleccionar Recurso *"
           placeholder="Buscar recurso disponible..."
+          :excludeIds="selectedResourceIds"
           @resource-selected="handleResourceSelected"
         />
-
-        <!-- Descripción Detallada - Ancho completo -->
-        <div class="form-control w-full">
-          <label class="label">
-            <span class="label-text">Descripción</span>
-          </label>
-          <input 
-            type="text" 
-            id="detailed_description" 
-            class="input input-bordered w-full" 
-            placeholder="Descripción adicional del recurso en este proyecto" 
-            v-model="projectResource.detailed_description"
-          />
         </div>
 
-        <!-- Costo y Frecuencia - Grid 2 columnas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">{{ costLabel }}</span>
-            </label>
-            <input
-              id="cost"
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0.00"
-              class="input input-bordered w-full"
-              v-model="projectResource.cost"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">{{ frequencyLabel }}</span>
-            </label>
-            <input
-              id="interval_days"
-              type="number"
-              min="1"
-              placeholder="1"
-              class="input input-bordered w-full"
-              v-model="projectResource.interval_days"
-            />
-          </div>
-        </div>
-
-        <!-- Fechas de Operación - Grid 2 columnas -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Fecha de Inicio de Operaciones *</span>
-            </label>
-            <input
-              id="operation_start_date"
-              type="date"
-              class="input input-bordered w-full"
-              v-model="projectResource.operation_start_date"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Fecha de Fin de Operaciones *</span>
-            </label>
-            <input
-              id="operation_end_date"
-              type="date"
-              class="input input-bordered w-full"
-              v-model="projectResource.operation_end_date"
-            />
-          </div>
-        </div>
-
-        <!-- Notas - Ancho completo -->
-        <div class="form-control w-full">
-          <label class="label">
-            <span class="label-text">Notas</span>
-          </label>
-          <textarea
-            id="notes"
-            rows="3"
-            placeholder="Notas adicionales sobre este recurso en el proyecto"
-            class="textarea textarea-bordered w-full"
-            v-model="projectResource.notes"
-          />
-        </div>
-
-        <!-- Divisor visual -->
-        <div class="divider"></div>
-
-        <!-- Estado de Retiro -->
-        <div v-if="projectResourceStore.newResourceProject.id" class="form-control">
-          <label class="label cursor-pointer justify-start gap-2">
-            <input
-              id="is_retired"
-              type="checkbox"
-              class="checkbox checkbox-warning"
-              v-model="projectResource.is_retired"
-            />
-            <span class="label-text font-semibold">Recurso Retirado</span>
-          </label>
-        </div>
-
-        <!-- Campos de Retiro (condicionales) -->
-        <div v-if="projectResource.is_retired && projectResourceStore.newResourceProject.id" class="bg-yellow-100 bg-opacity-10 p-6 rounded-lg border-l-4 border-yellow-400 space-y-4">
-          <h3 class="font-semibold text-lg mb-4">Información de Retiro</h3>
-          
-          <div class="form-control w-full md:w-1/2">
-            <label class="label">
-              <span class="label-text">Fecha de Retiro *</span>
-            </label>
-            <input
-              id="retirement_date"
-              type="date"
-              class="input input-bordered w-full"
-              v-model="projectResource.retirement_date"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text">Motivo de Retiro *</span>
-            </label>
-            <textarea
-              id="retirement_reason"
-              rows="4"
-              placeholder="Describa el motivo del retiro del recurso"
-              class="textarea textarea-bordered w-full"
-              v-model="projectResource.retirement_reason"
-            />
-          </div>
+        <div class="mt-2 mb-2">
+            <table class="table table-zebra w-full">
+              <thead>
+                <tr class="bg-lime-800 text-white border border-green-500 text-center uppercase">
+                  <th class="border">#</th>
+                  <th class="border">Detalle</th>
+                  <th class="border">Tipo</th>
+                  <th class="border">Fecha Inicio</th>
+                  <th class="border">Costo Alq</th>
+                  <th class="border">Mantenimiento</th>
+                  <th class="border">Frec Dias</th>
+                  <th class="border">Costo Mnt</th>
+                  <th class="border">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(resource, index) in list_resources" :key="index">
+                  <td class="border border-gray-300">{{ index + 1 }}</td>
+                  <td class="border border-gray-300">
+                    {{ resource.resource_display_name || resource.detailed_description }}
+                  </td>
+                  <td class="border border-gray-300">{{ resource.resource?.type_equipment_display === 'SERVICIO' ? 'SERVICIO' : 'EQUIPO' }}</td>
+                  <td class="border border-gray-300">
+                    <input 
+                      type="date" 
+                      class="input input-sm input-bordered w-full" 
+                      v-model="resource.operation_start_date"
+                    />
+                  </td>
+                  <td class="border border-gray-300">
+                    <input 
+                      type="number" 
+                      step="0.01" 
+                      min="0"
+                      class="input input-sm input-bordered w-full text-end" 
+                      v-model="resource.cost"
+                      @focus="handleCostFocus(resource)"
+                      placeholder="0.00"
+                    />
+                  </td>
+                  <td class="border border-gray-300 text-center">
+                    <input 
+                      type="checkbox" 
+                      class="checkbox checkbox-sm" 
+                      v-model="resource.include_maintenance"
+                      :disabled="resource.resource?.type_equipment_display === 'SERVICIO'"
+                      @change="handleMaintenanceChange(resource, $event)"
+                    />
+                  </td>
+                  <td class="border border-gray-300">
+                    <input 
+                      type="number" 
+                      min="1"
+                      class="input input-sm input-bordered w-full" 
+                      v-model="resource.interval_days"
+                      :disabled="!resource.include_maintenance"
+                      data-input="interval"
+                    />
+                  </td>
+                  <td class="border border-gray-300">
+                    <input 
+                      type="number" 
+                      step="0.01" 
+                      min="0"
+                      class="input input-sm input-bordered w-full text-end" 
+                      v-model="resource.maintenance_cost"
+                      @focus="handleMaintenanceCostFocus(resource)"
+                      placeholder="0.00"
+                      :disabled="!resource.include_maintenance"
+                    />
+                  </td>
+                  <td class="border border-gray-300 text-center">
+                    <button 
+                      type="button" 
+                      class="btn btn-sm btn-error"
+                      @click="removeResource(index)"
+                    >
+                      <i class="las la-trash text-lg"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr v-if="list_resources.length === 0">
+                  <td colspan="9" class="text-center py-4 text-gray-500">
+                    No hay recursos agregados. Seleccione un recurso del autocomplete.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
         </div>
 
         <!-- Divisor final -->
@@ -201,8 +230,8 @@
           <RouterLink to="/project" class="btn btn-ghost">
             Cancelar
           </RouterLink>
-          <button type="submit" class="btn btn-primary">
-            Agregar Recurso
+          <button type="submit" class="btn btn-primary" :disabled="list_resources.length === 0">
+            Guardar Recursos ({{ list_resources.length }})
           </button>
         </div>
       </div>
