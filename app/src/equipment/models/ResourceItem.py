@@ -892,6 +892,14 @@ class ResourceItem(BaseModel):
         return mapping
 
     @classmethod
+    def get_by_code(cls, code: str):
+        """Obtiene instancia por código, o None si no existe."""
+        try:
+            return cls.objects.get(code=code)
+        except cls.DoesNotExist:
+            return None
+
+    @classmethod
     def _metadata_fields(cls):
         
         return [
