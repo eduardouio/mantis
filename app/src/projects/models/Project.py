@@ -89,8 +89,8 @@ class ProjectResourceItem(BaseModel):
         'Tipo de Recurso',
         max_length=10,
         choices=(
-            ('ALQUILER', 'Alquiler'),
-            ('SERVICIO', 'Servicio'),
+            ('EQUIPO', 'EQUIPO'),
+            ('SERVICIO', 'SERVICIO'),
         ),
         default='SERVICIO'
     )
