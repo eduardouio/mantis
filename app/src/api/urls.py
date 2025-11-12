@@ -51,7 +51,7 @@ urlpatterns = [
     path('projects/resources/available/', ResourcesAvailableAPI.as_view(), name='api_resources_available'),
     path('projects/resources/add/', AddResourceProjectAPI.as_view(), name='api_add_resource_project'),
 	path('projects/resources/update/', UpdateResourceItemAPI.as_view(), name='api_update_resource_item'),
-    path('projects/resources/delete/', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
+    path('projects/resources/delete/<int:id_project_resource>/', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
     path('projects/<int:project_id>/resources/', ProjectResources.as_view(), name='api_project_resources'),    
     
     # workorders
