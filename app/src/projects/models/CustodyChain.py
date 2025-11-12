@@ -1,8 +1,8 @@
 from django.db import models
 from accounts.models.Technical import Technical
 from projects.models.SheetProject import SheetProject
+from projects.models.Project import ProjectResourceItem
 from common.BaseModel import BaseModel
-from equipment.models.ResourceItem import ResourceItem
 
 
 class CustodyChain(BaseModel):
@@ -162,8 +162,8 @@ class ChainCustodyDetail(BaseModel):
         CustodyChain,
         on_delete=models.PROTECT
     )
-    resource_item = models.ForeignKey(
-        ResourceItem,
+    project_resource = models.ForeignKey(
+        ProjectResourceItem,
         on_delete=models.PROTECT
     )
 

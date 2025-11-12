@@ -48,4 +48,5 @@ class ProjectResources(View):
             "is_selected": False,
             "is_retired": project_resource.is_retired,
             "is_confirm_delete": False,
+            "is_deleteable": False,
         }

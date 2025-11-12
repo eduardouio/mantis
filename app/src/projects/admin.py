@@ -208,19 +208,19 @@ class CustodyChainAdmin(BaseModelAdmin):
 @admin.register(ChainCustodyDetail)
 class ChainCustodyDetailAdmin(BaseModelAdmin):
     list_display = (
-        'custody_chain', 'resource_item'
+        'custody_chain', 'project_resource',
     )
     list_filter = (
-        'custody_chain', 'resource_item', 'is_active'
+        'custody_chain', 'project_resource', 'is_active'
     )
     search_fields = (
-        'custody_chain__technical__first_name', 'resource_item__name'
+        'custody_chain__technical__first_name', 'project_resource__name'
     )
     # readonly heredado
     fieldsets = (
         ('Detalle', {
             'fields': (
-                'custody_chain', 'resource_item', 'is_active'
+                'custody_chain', 'project_resource','is_active'
             )
         }),
         ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),

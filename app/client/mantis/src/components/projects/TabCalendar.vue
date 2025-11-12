@@ -8,7 +8,9 @@ const projectResourceStore = UseProjectResourceStore();
 const projectResources = computed(() => projectResourceStore.resourcesProject);
 
 const serviceResources = computed(() => {
-  return projectResources.value.filter(resource => resource.type === 'SERVIC');
+  return projectResources.value.filter(resource => 
+    resource.type === 'SERVIC' && !resource.is_retired
+  );
 });
 
 const weeklySchedule = computed(() => {
