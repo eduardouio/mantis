@@ -31,6 +31,7 @@ from api.projects.ProjectResources import ProjectResources
 from api.projects.ProjectData import ProjectData
 from api.workorders.GetAllSheerProjectItems import GetAllSheerProjectItemsAPI
 from api.workorders.CreateCustodyChain import CreateCustodyChainAPI
+from api.projects.UpdateResourceItem import UpdateResourceItemAPI
 
 urlpatterns = [
     # vehicles
@@ -49,8 +50,10 @@ urlpatterns = [
 	path('projects/data/<int:project_id>/', ProjectData.as_view(), name='api_project_data'),
     path('projects/resources/available/', ResourcesAvailableAPI.as_view(), name='api_resources_available'),
     path('projects/resources/add/', AddResourceProjectAPI.as_view(), name='api_add_resource_project'),
+	path('projects/resources/update/<int:resource_item_id>/', UpdateResourceItemAPI.as_view(), name='api_update_resource_item'),
     path('projects/resources/delete/', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
     path('projects/<int:project_id>/resources/', ProjectResources.as_view(), name='api_project_resources'),    
+    
     # workorders
     path('workorders/sheets/project/<int:project_id>/', GetAllSheetProjectAPI.as_view(), name='api_get_all_sheets'),
     path('workorders/sheets/create/', AddUpdateSheetProjectAPI.as_view(), name='api_create_sheet'),
@@ -58,3 +61,4 @@ urlpatterns = [
     path('workorders/sheets/items/<int:sheet_project_id>/', GetAllSheerProjectItemsAPI.as_view(), name='api_get_all_sheet_project_items'),
     path('workorders/custody_chain/create/', CreateCustodyChainAPI.as_view(), name='api_create_custody_chain'),
 ]
+    
