@@ -4,6 +4,8 @@ import { RouterLink } from 'vue-router'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 import { formatCurrency, formatDate, formatNumber } from '@/utils/formatters'
 
+const emit = defineEmits(['edit-resource'])
+
 const projectResourceStore = UseProjectResourceStore()
 const projectResources = computed(() => projectResourceStore.resourcesProject)
 const selectedResources= []
@@ -12,6 +14,9 @@ const isZeroCost = (cost) => {
   return parseFloat(cost) === 0;
 };
 
+const handleEditResource = (resource) => {
+  emit('edit-resource', resource);
+};
 </script>
 
 <template>
@@ -72,7 +77,11 @@ const isZeroCost = (cost) => {
               <td class="p-2 border border-gray-300 text-end font-mono">{{ formatDate(resource.operation_start_date) }}</td>
               <td class="p-2 border border-gray-300 text-end">
                 <div class="flex gap-1 justify-end">
-                  <button class="btn btn-xs bg-gray-100 border-orange-500" title="Editar">
+                  <button 
+                    class="btn btn-xs bg-gray-100 border-orange-500" 
+                    title="Editar"
+                    @click="handleEditResource(resource)"
+                  >
                     <i class="las la-edit"></i>
                     EDITAR
                   </button>

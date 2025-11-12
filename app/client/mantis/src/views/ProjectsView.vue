@@ -2,10 +2,12 @@
 import TabResources from '@/components/projects/TabResources.vue'
 import TabSheetProject from '@/components/projects/TabSheetProject.vue'
 import TabCalendar from '@/components/projects/TabCalendar.vue'
+import Modal from '@/components/common/Modal.vue'
+import ResourceForm from '@/components/projects/ResourceForm.vue'
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import { formatDate } from '@/utils/formatters';
 
 const projectStore = UseProjectStore();
@@ -13,6 +15,34 @@ const projectResourceStore = UseProjectResourceStore();
 const sheetProjectsStore = UseSheetProjectsStore();
 
 const project = computed(() => projectStore.project);
+
+// Estados del modal
+const isModalOpen = ref(false);
+const modalTitle = ref('');
+const currentModalComponent = ref(null);
+const selectedResourceForEdit = ref(null);
+
+// Funciones del modal
+const openResourceFormModal = () => {
+  modalTitle.value = 'Agregar Recurso al Proyecto';
+  currentModalComponent.value = 'ResourceForm';
+  selectedResourceForEdit.value = null;
+  isModalOpen.value = true;
+};
+
+const openEditResourceModal = (resource) => {
+  modalTitle.value = 'Editar Recurso del Proyecto';
+  currentModalComponent.value = 'ResourceForm';
+  selectedResourceForEdit.value = resource;
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+  currentModalComponent.value = null;
+  modalTitle.value = '';
+  selectedResourceForEdit.value = null;
+};
 
 onMounted(() => {
   projectStore.fetchProjectData();
@@ -28,10 +58,20 @@ onMounted(() => {
         <h1 class="text-xl font-semibold text-blue-500">
           Ficha de Proyecto #{{ project?.id || 'N/A' }}
         </h1>
-        <div class="text-gray-500">
-          <span class="badge" :class="!project?.is_closed ? 'badge-success' : 'badge-error'">
-            {{ !project?.is_closed ? 'Abierto' : 'Cerrado' }}
-          </span>
+        <div class="flex items-center gap-3">
+          <!-- Botón para agregar recurso -->
+          <button 
+            class="btn btn-primary btn-sm"
+            @click="openResourceFormModal"
+          >
+            <i class="las la-plus"></i>
+            Agregar Recurso
+          </button>
+          <div class="text-gray-500">
+            <span class="badge" :class="!project?.is_closed ? 'badge-success' : 'badge-error'">
+              {{ !project?.is_closed ? 'Abierto' : 'Cerrado' }}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -85,7 +125,7 @@ onMounted(() => {
       <div role="tablist" class="tabs tabs-lifted bg-base-100 p-1">
         <input type="radio" name="project_tabs" role="tab" class="tab bg-amber-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Equipos Asignados" checked />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
-          <TabResources />
+          <TabResources @edit-resource="openEditResourceModal" />
         </div>
 
         <input type="radio" name="project_tabs" role="tab" class="tab bg-cyan-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Planilla de Trabajo" />
@@ -99,5 +139,20 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
+    <!-- Modal -->
+    <Modal 
+      :is-open="isModalOpen" 
+      :title="modalTitle" 
+      size="lg"
+      @close="closeModal"
+    >
+      <!-- Renderizar componente dinámicamente -->
+      <ResourceForm 
+        v-if="currentModalComponent === 'ResourceForm'" 
+        :resource="selectedResourceForEdit"
+        @close="closeModal"
+      />
+    </Modal>
   </div>
 </template>
