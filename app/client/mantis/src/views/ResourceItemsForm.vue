@@ -11,6 +11,9 @@
   const projectStore = UseProjectStore()
   const router = useRouter()
   const list_resources = ref([])
+  const isSubmitting = ref(false)
+  const errorMessage = ref('')
+  const successMessage = ref('')
 
   const selectedResourceIds = computed(() => {
     return list_resources.value
@@ -20,7 +23,6 @@
 
   const handleResourceSelected = async () => {
     const resource = resourcesStore.selectedResource
-    
     const isService = resource.type_equipment === 'SERVIC'
 
     if (!isService) {
@@ -45,12 +47,7 @@
     }
     
     list_resources.value.push(newProjectResource)
-    
     resourcesStore.selectedResource = null
-  }
-
-  const handleDateChange = (resource, displayDate) => {
-    resource.operation_start_date = formatDateToISO(displayDate)
   }
 
   const removeResource = (index) => {
@@ -70,32 +67,24 @@
     list_resources.value.splice(index, 1)
   }
 
-  onMounted(() => {
-    console.log('Mounted ResourceItemsForm.vue')  
-  })
-
-
   const submitForm = async () => {
-    console.log('Submitting form in ResourceItemsForm.vue')
+    errorMessage.value = ''
+    successMessage.value = ''
+    isSubmitting.value = true
+    
     try {
-      for (const resource of list_resources.value) {
-        // Limpiar el objeto antes de enviar
-        const cleanResource = {
-          project_id: projectStore.project.id,
-          resource_id: resource.resource_id,
-          resource_display_name: resource.resource_display_name,
-          detailed_description: resource.detailed_description,
-          interval_days: resource.interval_days,
-          cost: resource.cost || 0,
-          maintenance_cost: resource.maintenance_cost || 0,
-          operation_start_date: resource.operation_start_date,
-          include_maintenance: resource.include_maintenance
-        }
-        await projectResourceStore.addResourceToProject(cleanResource)
-      }
-      router.push('/project')
+      const result = await projectResourceStore.addResourcesToProject(
+        list_resources.value,
+      )
+      successMessage.value = `Se agregaron ${result.added} recurso(s) exitosamente`
+      setTimeout(() => {
+        router.push('/project')
+      }, 1500)
     } catch (error) {
       console.error('Error submitting form:', error)
+      errorMessage.value = error.message || 'Error al guardar los recursos. Por favor intente nuevamente.'
+    } finally {
+      isSubmitting.value = false
     }
   }
 
@@ -104,7 +93,6 @@
       resource.interval_days = 0
       resource.maintenance_cost = 0
     } else {
-      // Enfocar el input de frecuencia cuando se activa el mantenimiento
       const checkbox = event.target
       const row = checkbox.closest('tr')
       const intervalInput = row.querySelector('input[data-input="interval"]')
@@ -133,7 +121,27 @@
   <div class="container mx-auto p-4">
     <span class="font-bold text-lg bg-gray-100 rounded-md px-2 py-1 mb-4 inline-block w-full text-center">
       Recurso del Proyecto
-    </span> 
+    </span>
+    
+    <!-- Mensaje de Error -->
+    <div v-if="errorMessage" class="alert alert-error shadow-lg mb-4">
+      <div>
+        <i class="las la-exclamation-circle text-2xl"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+      <button @click="errorMessage = ''" class="btn btn-sm btn-ghost">
+        <i class="las la-times"></i>
+      </button>
+    </div>
+
+    <!-- Mensaje de Éxito -->
+    <div v-if="successMessage" class="alert alert-success shadow-lg mb-4">
+      <div>
+        <i class="las la-check-circle text-2xl"></i>
+        <span>{{ successMessage }}</span>
+      </div>
+    </div>
+    
     <form class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg" @submit.prevent="submitForm">
       <div class="card-body space-y-4">
         <div class="flex gap-4">
@@ -185,6 +193,7 @@
                       v-model="resource.cost"
                       @focus="handleCostFocus(resource)"
                       placeholder="0.00"
+                      :disabled="resource.resource?.type_equipment_display === 'SERVICIO'"
                     />
                   </td>
                   <td class="border border-gray-300 text-center">
@@ -223,6 +232,7 @@
                       type="button" 
                       class="btn btn-sm btn-error"
                       @click="removeResource(index)"
+                      :disabled="isSubmitting"
                     >
                       <i class="las la-trash text-lg"></i>
                     </button>
@@ -242,11 +252,16 @@
 
         <!-- Botones de Acción -->
         <div class="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
-          <RouterLink to="/project" class="btn btn-ghost">
+          <RouterLink to="/project" class="btn btn-ghost" :class="{ 'btn-disabled': isSubmitting }">
             Cancelar
           </RouterLink>
-          <button type="submit" class="btn btn-primary" :disabled="list_resources.length === 0">
-            Guardar Recursos ({{ list_resources.length }})
+          <button 
+            type="submit" 
+            class="btn btn-primary" 
+            :disabled="list_resources.length === 0 || isSubmitting"
+          >
+            <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
+            <span v-else>Guardar Recursos ({{ list_resources.length }})</span>
           </button>
         </div>
       </div>

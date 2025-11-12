@@ -41,32 +41,35 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 console.error("Error fetching project resources:", error);
             }
         },
-        async addResourceToProject(resource) {
-            if (!resource.cost || resource.cost <= 0) {
-                throw new Error("El costo debe ser mayor a 0");
-            }
-            if (!resource.operation_start_date) {
-                throw new Error("La fecha de inicio de operaciones es requerida");
-            }
-            if (!resource.interval_days || resource.interval_days < 1) {
-                throw new Error("La frecuencia debe ser al menos 1 día");
-            }
-
+        async addResourcesToProject(resources) {
             try {
+                const cleanResources = resources.map(resource => ({
+                    project_id: appConfig.idProject,
+                    resource_id: resource.resource_id,
+                    detailed_description: resource.detailed_description,
+                    interval_days: resource.interval_days,
+                    cost: resource.cost || 0,
+                    maintenance_cost: resource.maintenance_cost || 0,
+                    operation_start_date: resource.operation_start_date,
+                    include_maintenance: resource.include_maintenance
+                }))
+
                 const response = await fetch(appConfig.URLAddResourceToProject, {
                     method: "POST",
                     headers: appConfig.headers,
-                    body: JSON.stringify(resource)
+                    body: JSON.stringify(cleanResources)
                 });
-                if (response.ok) {
-                    this.resourcesProject.push(resource);
-                } else {
-                    alert("Error al agregar el recurso al proyecto");
-                    throw new Error("Error al agregar el recurso al proyecto");
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || `Error al agregar recursos. Se agregaron ${data.added || 0} de ${cleanResources.length}`);
                 }
+                
+                return data;
             } catch (error) {
-                console.error("Error adding resource to project:", error);
-                throw error; 
+                console.error("Error adding resources to project:", error);
+                throw error;
             }
         }
     }
