@@ -73,7 +73,6 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
             }
         },
         async updateResourceProject(resource) {
-
             try {
                 const response = await fetch(appConfig.URLUpdateResourceItem, {
                     method: "PUT",
@@ -96,6 +95,27 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 return responseData.data
             } catch (error) {
                 console.error("Error updating project resource:", error)
+                throw error
+            }
+        },
+        async deleteResourceProject(id_project_resource) {
+            try {
+                const url = appConfig.URLDeleteResourceProject.replace("${id_project_resource}", id_project_resource)
+                const response = await fetch(url, {
+                    method: "DELETE",
+                    headers: appConfig.headers
+                })
+                
+                if (!response.ok) {
+                    const data = await response.json()
+                    throw new Error(data.error || "Failed to delete project resource")
+                }
+                
+                // Eliminar el recurso del store
+                this.resourcesProject = this.resourcesProject.filter(r => r.id !== id_project_resource)
+                
+            } catch (error) {
+                console.error("Error deleting project resource:", error)
                 throw error
             }
         }
