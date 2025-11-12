@@ -46,5 +46,6 @@ class ProjectResources(View):
             "operation_start_date": project_resource.operation_start_date.isoformat(),
             "is_active": project_resource.is_active,
             "is_selected": False,
+            "is_retired": project_resource.is_retired,
             "is_confirm_delete": False,
         }
