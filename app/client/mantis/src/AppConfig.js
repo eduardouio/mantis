@@ -1,6 +1,6 @@
-const idProject = window.djangoConfig?.projectId ?? 7;
-const apiBaseUrl = window.djangoConfig?.baseUrl ?? "http://localhost:8000";
-const csrfToken = window.djangoConfig?.csrfToken ?? "falsocsrf";
+const idProject = window.djangoConfig?.projectId ?? 1
+const apiBaseUrl = window.djangoConfig?.baseUrl ?? "http://localhost:8000"
+const csrfToken = window.djangoConfig?.csrfToken ?? "falsocsrf"
 
 export const appConfig = {
     "apiBaseUrl": apiBaseUrl,

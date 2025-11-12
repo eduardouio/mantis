@@ -167,6 +167,16 @@ class ChainCustodyDetail(BaseModel):
         on_delete=models.PROTECT
     )
 
+    @classmethod
+    def get_by_resource_id(cls, resource_id):
+        asigns =  cls.objects.filter(
+            project_resource__id=resource_id,
+        )
+
+        if len(asigns) > 0:
+            return asigns
+        return None
+
     class Meta:
         verbose_name = 'Detalle de Cadena de Custodia'
         verbose_name_plural = 'Detalles de Cadenas de Custodia'
