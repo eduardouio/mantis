@@ -17,19 +17,19 @@ function getStartOfCurrentWeek() {
 }
 
 /**
- * Obtiene el fin de la semana actual (Domingo)
- * @returns {Date} Fecha del domingo de la semana actual
+ * Obtiene el fin del período de 4 semanas desde el lunes actual
+ * @returns {Date} Fecha del domingo de la 4ta semana
  */
-function getEndOfCurrentWeek() {
+function getEndOfFourWeeks() {
   const startOfWeek = getStartOfCurrentWeek();
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
-  endOfWeek.setHours(23, 59, 59, 999);
-  return endOfWeek;
+  const endOfFourWeeks = new Date(startOfWeek);
+  endOfFourWeeks.setDate(startOfWeek.getDate() + 27); // 4 semanas = 28 días - 1
+  endOfFourWeeks.setHours(23, 59, 59, 999);
+  return endOfFourWeeks;
 }
 
 /**
- * Genera todas las fechas de mantenimiento desde la fecha de inicio hasta el fin de la semana actual
+ * Genera todas las fechas de mantenimiento desde la fecha de inicio hasta el fin de las 4 semanas
  * @param {string} startDateStr - Fecha de inicio en formato YYYY-MM-DD
  * @param {number} intervalDays - Días entre cada mantenimiento
  * @returns {Date[]} Array de fechas de mantenimiento
@@ -38,12 +38,12 @@ function generateMaintenanceDates(startDateStr, intervalDays) {
   // Parsear la fecha sin problemas de zona horaria
   const [year, month, day] = startDateStr.split('-').map(Number);
   const startDate = new Date(year, month - 1, day);
-  const endOfWeek = getEndOfCurrentWeek();
+  const endOfFourWeeks = getEndOfFourWeeks();
   const maintenanceDates = [];
   
   let currentDate = new Date(startDate);
   
-  while (currentDate <= endOfWeek) {
+  while (currentDate <= endOfFourWeeks) {
     maintenanceDates.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + intervalDays);
   }
@@ -52,13 +52,13 @@ function generateMaintenanceDates(startDateStr, intervalDays) {
 }
 
 /**
- * Genera el calendario de mantenimientos para la semana actual
+ * Genera el calendario de mantenimientos para las próximas 4 semanas
  * @param {Array} resources - Array de recursos del proyecto
- * @returns {Array} Lista de mantenimientos programados para la semana actual
+ * @returns {Array} Lista de mantenimientos programados para las 4 semanas
  */
 export function generateWeeklyMaintenanceSchedule(resources) {
   const startOfWeek = getStartOfCurrentWeek();
-  const endOfWeek = getEndOfCurrentWeek();
+  const endOfFourWeeks = getEndOfFourWeeks();
   const maintenanceSchedule = [];
   
   resources.forEach(resource => {
@@ -74,12 +74,12 @@ export function generateWeeklyMaintenanceSchedule(resources) {
     );
     
     
-    const weeklyMaintenance = maintenanceDates.filter(date => {
-      return date >= startOfWeek && date <= endOfWeek;
+    const fourWeeksMaintenance = maintenanceDates.filter(date => {
+      return date >= startOfWeek && date <= endOfFourWeeks;
     });
     
     
-    weeklyMaintenance.forEach(maintenanceDate => {
+    fourWeeksMaintenance.forEach(maintenanceDate => {
       maintenanceSchedule.push({
         resource_id: resource.id,
         resource_item_id: resource.resource_item_id,

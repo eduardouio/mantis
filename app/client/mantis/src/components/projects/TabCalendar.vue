@@ -1,77 +1,3 @@
-<template>
-  <div class="space-y-3">
-    <div class="text-end">
-      <div class="badge badge-info gap-2">
-        <i class="las la-wrench"></i>
-        <span class="font-semibold">{{ scheduleSummary.total_maintenances }} Servicios Programados</span>
-      </div>
-    </div>
-
-    <!-- Vista de grilla semanal -->
-    <div class="card bg-base-100 shadow border">
-      <div class="card-body p-3">
-        <div class="flex justify-between items-center mb-3">
-          <h3 class="font-semibold text-base">Semana del {{ getWeekRange() }}</h3>
-        </div>
-
-        <div v-if="uniqueResources.length === 0" class="text-center py-8 text-gray-500">
-          <i class="las la-calendar-times text-4xl"></i>
-          <p>No hay mantenimientos programados para esta semana</p>
-        </div>
-
-        <div v-else class="overflow-x-auto">
-          <table class="table table-zebra w-full">
-            <thead>
-              <tr class="bg-gray-500 text-white">
-                <th class="p-2 border border-gray-100 text-center" style="width: 25%">Detalle</th>
-                <th 
-                  v-for="(date, index) in weekDates" 
-                  :key="index"
-                  class="p-2 border border-gray-100 text-center"
-                  style="width: 10.71%"
-                  :class="{
-                    'bg-lime-400 text-gray-800': isToday(date)
-                  }"
-                >
-                  <div class="font-bold">{{ getDayName(index) }}</div>
-                  <div class="text-xs font-normal">{{ formatWeekDate(date) }}</div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="resource in uniqueResources" :key="resource.id">
-                <td class="p-2 border border-gray-300 font-medium" style="width: 25%">
-                  <div class="flex items-center gap-2">
-                    <i class="las la-tools text-blue-500"></i>
-                    <div>
-                      <div class="font-semibold text-xs">{{ resource.description }}</div>
-                    </div>
-                  </div>
-                </td>
-                <td 
-                  v-for="(date, dayIndex) in weekDates" 
-                  :key="dayIndex"
-                  class="p-2 border border-gray-300 text-center"
-                  style="width: 10.71%"
-                  :class="{ 'bg-lime-100': isToday(date) }"
-                >
-                  <template v-for="maintenance in getMaintenanceForResourceAndDay(resource.id, date)" :key="maintenance.resource_id + '-' + maintenance.scheduled_date">
-                    <div class="bg-amber-200 p-1 rounded border-amber-400 border">
-                      <div class="text-gray-600 mt-1">
-                        SERVICIO
-                      </div>
-                    </div>
-                  </template>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup>
 import { computed, onMounted } from 'vue';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
@@ -99,24 +25,24 @@ const getCurrentWeekDates = () => {
   const diff = today.getDate() - day + (day === 0 ? -6 : 1);
   const monday = new Date(today.setDate(diff));
   
-  const weekDates = [];
-  for (let i = 0; i < 7; i++) {
+  const fourWeeksDates = [];
+  for (let i = 0; i < 28; i++) { // 4 semanas = 28 días
     const date = new Date(monday);
     date.setDate(monday.getDate() + i);
-    weekDates.push(date);
+    fourWeeksDates.push(date);
   }
-  return weekDates;
+  return fourWeeksDates;
 };
 
 const weekDates = computed(() => getCurrentWeekDates());
 
 const formatWeekDate = (date) => {
-  return date.toLocaleDateString('es-GT', { day: '2-digit', month: 'short' });
+  return date.getDate();
 };
 
 const getDayName = (index) => {
-  const days = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
-  return days[index];
+  const days = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+  return days[index % 7];
 };
 
 const getMaintenanceForResourceAndDay = (resourceId, dayDate) => {
@@ -148,7 +74,7 @@ const uniqueResources = computed(() => {
 const getWeekRange = () => {
   if (weekDates.value.length === 0) return '';
   const start = weekDates.value[0];
-  const end = weekDates.value[6];
+  const end = weekDates.value[27]; // Último día de las 4 semanas
   return `${start.getDate()} de ${start.toLocaleDateString('es-GT', { month: 'long' })} al ${end.getDate()} de ${end.toLocaleDateString('es-GT', { month: 'long' })} ${end.getFullYear()}`;
 };
 
@@ -161,3 +87,82 @@ onMounted(() => {
   projectResourceStore.fetchResourcesProject();
 });
 </script>
+
+<template>
+  <div class="space-y-3">
+    <div class="text-end">
+      <div class="badge badge-info gap-2">
+        <i class="las la-wrench"></i>
+        <span class="font-semibold">{{ scheduleSummary.total_maintenances }} Servicios Programados</span>
+      </div>
+    </div>
+
+    <!-- Vista de grilla de 4 semanas -->
+    <div class="card bg-base-100 shadow border">
+      <div class="card-body p-3">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="font-semibold text-base">Planificación de 4 semanas: {{ getWeekRange() }}</h3>
+        </div>
+
+        <div v-if="uniqueResources.length === 0" class="text-center py-8 text-gray-500">
+          <i class="las la-calendar-times text-4xl"></i>
+          <p>No hay mantenimientos programados para las próximas 4 semanas</p>
+        </div>
+
+        <div v-else class="overflow-x-auto">
+          <table class="table table-zebra w-full">
+            <thead>
+              <tr class="bg-gray-500 text-white">
+                <th class="p-2 border border-gray-100 text-center" style="width: 20%">Detalle</th>
+                <th 
+                  v-for="(date, index) in weekDates" 
+                  :key="index"
+                  class="p-2 border text-center text-xs"
+                  style="width: 2.86%"
+                  :class="{
+                    'bg-lime-400 text-gray-800': isToday(date),
+                    'border-r-4 border-r-sky-200': index % 7 === 6,
+                    'border-gray-100': index % 7 !== 6
+                  }"
+                >
+                  <div class="font-bold">{{ getDayName(index) }}-{{ formatWeekDate(date) }}</div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="resource in uniqueResources" :key="resource.id">
+                <td class="p-2 border border-gray-300 font-medium" style="width: 20%">
+                  <div class="flex items-center gap-2">
+                    <i class="las la-tools text-blue-500"></i>
+                    <div>
+                      <div class="font-semibold text-xs">{{ resource.description }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td 
+                  v-for="(date, dayIndex) in weekDates" 
+                  :key="dayIndex"
+                  class="p-1 border text-center"
+                  style="width: 2.86%"
+                  :class="{ 
+                    'bg-lime-100': isToday(date),
+                    ' border-r-4 border-r-sky-200 border-b-gray-300': dayIndex % 7 === 6,
+                    'border-gray-300': dayIndex % 7 !== 6
+                  }"
+                >
+                  <template v-for="maintenance in getMaintenanceForResourceAndDay(resource.id, date)" :key="maintenance.resource_id + '-' + maintenance.scheduled_date">
+                    <div class="bg-amber-200 p-1 rounded border-amber-400 border text-xs">
+                      <div class="text-gray-600">
+                        S
+                      </div>
+                    </div>
+                  </template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
