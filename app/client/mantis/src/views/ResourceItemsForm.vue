@@ -49,6 +49,10 @@
     resourcesStore.selectedResource = null
   }
 
+  const handleDateChange = (resource, displayDate) => {
+    resource.operation_start_date = formatDateToISO(displayDate)
+  }
+
   const removeResource = (index) => {
     const resource = list_resources.value[index]
     
@@ -75,8 +79,19 @@
     console.log('Submitting form in ResourceItemsForm.vue')
     try {
       for (const resource of list_resources.value) {
-        resource.project = projectStore.project
-        await projectResourceStore.addResourceToProject(resource)
+        // Limpiar el objeto antes de enviar
+        const cleanResource = {
+          project_id: projectStore.project.id,
+          resource_id: resource.resource_id,
+          resource_display_name: resource.resource_display_name,
+          detailed_description: resource.detailed_description,
+          interval_days: resource.interval_days,
+          cost: resource.cost || 0,
+          maintenance_cost: resource.maintenance_cost || 0,
+          operation_start_date: resource.operation_start_date,
+          include_maintenance: resource.include_maintenance
+        }
+        await projectResourceStore.addResourceToProject(cleanResource)
       }
       router.push('/project')
     } catch (error) {

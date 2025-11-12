@@ -60,42 +60,35 @@ class AddResourceProjectAPI(View):
     @transaction.atomic
     def _add_resource(self, request, data):
         """Agregar recurso a un proyecto y actualizar campos de estado."""
-        required = [
-            "project",
-            "resource",
-            "cost",
-            "interval_days",
-            "operation_start_date",
-        ]
-        for f in required:
-            if f not in data or data[f] in [None, ""]:
-                return JsonResponse(
-                    {"success": False, "error": f"Campo {f} requerido"}, status=400
-                )
+        # Extraer resource_id directamente si viene en el objeto
+        resource_id = data.get('resource_id')
+        
+        # Si no está, intentar extraerlo de la estructura de resource
+        if not resource_id:
+            resource_raw = data.get("resource")
+            if isinstance(resource_raw, dict):
+                # Manejar estructura de Vue con _custom
+                if '_custom' in resource_raw and 'value' in resource_raw['_custom']:
+                    resource_id = resource_raw['_custom']['value'].get('id')
+                else:
+                    resource_id = resource_raw.get("id")
+        
+        if not resource_id:
+            return JsonResponse(
+                {"success": False, "error": "resource_id es requerido"}, status=400
+            )
+
+        # Extraer project_id
+        project_id = data.get('project_id') or data.get('project', {}).get('id')
+        if not project_id:
+            return JsonResponse(
+                {"success": False, "error": "project_id es requerido"}, status=400
+            )
 
         try:
-            project_raw = data["project"]
-            project_id = (
-                project_raw.get("id") if isinstance(project_raw, dict) else project_raw
-            )
-            if not project_id:
-                return JsonResponse(
-                    {"success": False, "error": "project.id es requerido"}, status=400
-                )
             project = get_object_or_404(Project, id=project_id, is_active=True)
-
-            resource_raw = data["resource"]
-            resource_item_id = (
-                resource_raw.get("id")
-                if isinstance(resource_raw, dict)
-                else resource_raw
-            )
-            if not resource_item_id:
-                return JsonResponse(
-                    {"success": False, "error": "resource.id es requerido"}, status=400
-                )
             resource = get_object_or_404(
-                ResourceItem, id=resource_item_id, is_active=True
+                ResourceItem, id=resource_id, is_active=True
             )
 
             if resource.stst_status_disponibility == "RENTADO":
@@ -111,11 +104,11 @@ class AddResourceProjectAPI(View):
                 operation_start = datetime.strptime(
                     data["operation_start_date"], "%Y-%m-%d"
                 ).date()
-            except ValueError:
+            except (ValueError, KeyError):
                 return JsonResponse(
                     {
                         "success": False,
-                        "error": "operation_start_date inválido (YYYY-MM-DD)",
+                        "error": "operation_start_date inválido o faltante (YYYY-MM-DD)",
                     },
                     status=400,
                 )
@@ -145,7 +138,7 @@ class AddResourceProjectAPI(View):
                     )
 
             try:
-                cost = Decimal(str(data["cost"])).quantize(
+                cost = Decimal(str(data.get("cost", 0))).quantize(
                     Decimal("0.01"), rounding=ROUND_HALF_UP
                 )
             except (InvalidOperation, TypeError, ValueError):
@@ -158,22 +151,38 @@ class AddResourceProjectAPI(View):
                 )
 
             try:
-                interval_days = int(data["interval_days"])
-                if interval_days <= 0:
+                interval_days = int(data.get("interval_days", 0))
+                if interval_days < 0:
                     raise ValueError
             except (TypeError, ValueError):
                 return JsonResponse(
                     {
                         "success": False,
-                        "error": "interval_days inválido. Debe ser un entero positivo",
+                        "error": "interval_days inválido. Debe ser un entero no negativo",
                     },
                     status=400,
                 )
 
+            # Procesar maintenance_cost si existe
+            maintenance_cost = Decimal("0.00")
+            if data.get("maintenance_cost"):
+                try:
+                    maintenance_cost = Decimal(str(data["maintenance_cost"])).quantize(
+                        Decimal("0.01"), rounding=ROUND_HALF_UP
+                    )
+                except (InvalidOperation, TypeError, ValueError):
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "error": "maintenance_cost inválido. Debe ser numérico",
+                        },
+                        status=400,
+                    )
+
             project_resource = ProjectResourceItem(
                 project=project,
                 resource_item=resource,
-                detailed_description=data.get("detailed_description"),
+                detailed_description=data.get("detailed_description") or data.get("resource_display_name"),
                 cost=cost,
                 interval_days=interval_days,
                 operation_start_date=operation_start,
@@ -181,6 +190,10 @@ class AddResourceProjectAPI(View):
                     operation_end if operation_end else project.end_date
                 ),
             )
+
+            # Agregar maintenance_cost si el modelo lo soporta
+            if hasattr(project_resource, 'maintenance_cost'):
+                project_resource.maintenance_cost = maintenance_cost
 
             if getattr(request, "user", None) and request.user.is_authenticated:
                 project_resource.created_by = request.user
@@ -210,7 +223,7 @@ class AddResourceProjectAPI(View):
             project_resource.save()
             resource.save()
 
-            return JsonResponse({"id": project_resource.id})
+            return JsonResponse({"success": True, "id": project_resource.id}, status=201)
 
         except ValidationError as e:
             return JsonResponse({"success": False, "error": str(e)}, status=400)
