@@ -9,50 +9,6 @@ from equipment.models.ResourceItem import ResourceItem
 class AddResourceProjectAPI(View):
     """API para agregar recursos a un proyecto."""
 
-    def _serialize_project_resource(self, project_resource):
-        return {
-            "id": project_resource.id,
-            "project_id": project_resource.project.id,
-            "project_name": str(project_resource.project),
-            "resource_item_id": project_resource.resource_item.id,
-            "resource_item_name": project_resource.resource_item.name,
-            "type_resource": project_resource.type_resource,
-            "detailed_description": project_resource.detailed_description,
-            "cost": float(project_resource.cost),
-            "interval_days": project_resource.interval_days,
-            "operation_start_date": (
-                project_resource.operation_start_date.isoformat()
-                if project_resource.operation_start_date
-                else None
-            ),
-            "operation_end_date": (
-                project_resource.operation_end_date.isoformat()
-                if project_resource.operation_end_date
-                else None
-            ),
-            "is_retired": project_resource.is_retired,
-            "retirement_date": (
-                project_resource.retirement_date.isoformat()
-                if project_resource.retirement_date
-                else None
-            ),
-            "retirement_reason": project_resource.retirement_reason,
-            "is_active": project_resource.is_active,
-            "is_deleted": project_resource.is_deleted,
-            "created_at": (
-                project_resource.created_at.isoformat()
-                if hasattr(project_resource, "created_at")
-                and project_resource.created_at
-                else None
-            ),
-            "updated_at": (
-                project_resource.updated_at.isoformat()
-                if hasattr(project_resource, "updated_at")
-                and project_resource.updated_at
-                else None
-            ),
-        }
-
     def post(self, request):
         """Agregar uno o varios recursos al proyecto."""
         data = json.loads(request.body)
@@ -84,13 +40,21 @@ class AddResourceProjectAPI(View):
                 else resource_data.get("interval_days", 1)
             )
 
+            # Determinar el costo según el tipo de recurso
+            if type_resource == "SERVICIO":
+                # Para servicios, usar maintenance_cost
+                resource_cost = resource_data.get("maintenance_cost", 0.00)
+            else:
+                # Para equipos, usar cost
+                resource_cost = resource_data.get("cost", 0.00)
+
             primary_instances.append(
                 ProjectResourceItem(
                     project=project,
                     resource_item=resource_item,
                     type_resource=type_resource,
                     detailed_description=resource_data.get("detailed_description", ""),
-                    cost=resource_data.get("cost", 0.00),
+                    cost=resource_cost,
                     interval_days=interval_days,
                     operation_start_date=resource_data.get("operation_start_date"),
                 )
@@ -107,13 +71,16 @@ class AddResourceProjectAPI(View):
                             " PESIOL-SERV00 no encontrado. Contacte al administrador."
                         )
 
+                # Para el servicio de mantenimiento de un equipo, usar maintenance_cost
+                maintenance_cost = resource_data.get("maintenance_cost", 0.00)
+
                 maintenance_instances.append(
                     ProjectResourceItem(
                         project=project,
                         resource_item=serv_resource_item,
                         type_resource="SERVICIO",
                         detailed_description=f"MANTENIMIENTO {resource_item.name}",
-                        cost=resource_data.get("maintenance_cost", 0.00),
+                        cost=maintenance_cost,
                         interval_days=resource_data.get("interval_days", 1),
                         operation_start_date=resource_data.get("operation_start_date"),
                     )
@@ -194,3 +161,48 @@ class AddResourceProjectAPI(View):
             )
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+
+    def _serialize_project_resource(self, project_resource):
+        return {
+            "id": project_resource.id,
+            "project_id": project_resource.project.id,
+            "project_name": str(project_resource.project),
+            "resource_item_id": project_resource.resource_item.id,
+            "resource_item_name": project_resource.resource_item.name,
+            "type_resource": project_resource.type_resource,
+            "detailed_description": project_resource.detailed_description,
+            "cost": float(project_resource.cost),
+            "interval_days": project_resource.interval_days,
+            "operation_start_date": (
+                project_resource.operation_start_date.isoformat()
+                if project_resource.operation_start_date
+                else None
+            ),
+            "operation_end_date": (
+                project_resource.operation_end_date.isoformat()
+                if project_resource.operation_end_date
+                else None
+            ),
+            "is_retired": project_resource.is_retired,
+            "retirement_date": (
+                project_resource.retirement_date.isoformat()
+                if project_resource.retirement_date
+                else None
+            ),
+            "retirement_reason": project_resource.retirement_reason,
+            "is_active": project_resource.is_active,
+            "is_deleted": project_resource.is_deleted,
+            "created_at": (
+                project_resource.created_at.isoformat()
+                if hasattr(project_resource, "created_at")
+                and project_resource.created_at
+                else None
+            ),
+            "updated_at": (
+                project_resource.updated_at.isoformat()
+                if hasattr(project_resource, "updated_at")
+                and project_resource.updated_at
+                else None
+            ),
+        }

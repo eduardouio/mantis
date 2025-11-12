@@ -22,8 +22,6 @@ class UpdateResourceItemAPI(View):
 		project_resource.cost =  data['cost']
 		project_resource.interval_days =  data['interval_days']
 		project_resource.operation_start_date =  data['operation_start_date']
-		project_resource.is_retired =  data['is_retired']
-
 
 		if data.get('is_retired'):
 			project_resource.retirement_date =  data['retirement_date']

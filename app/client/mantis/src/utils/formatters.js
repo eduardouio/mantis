@@ -37,9 +37,14 @@ export const formatNumber = (value) => {
 
 export const formatDate = (date) => {
   if (!date) return '--';
+  
+  // Parsear la fecha como local en lugar de UTC
+  const [year, month, day] = date.split('-');
+  const localDate = new Date(year, month - 1, day);
+  
   return new Intl.DateTimeFormat('es-GT', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
-  }).format(new Date(date));
+  }).format(localDate);
 };

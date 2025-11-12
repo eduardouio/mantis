@@ -73,6 +73,7 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
             }
         },
         async updateResourceProject(resource) {
+
             try {
                 const response = await fetch(appConfig.URLUpdateResourceItem, {
                     method: "PUT",

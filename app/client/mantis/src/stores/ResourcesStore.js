@@ -21,7 +21,8 @@ export const UseResourcesStore = defineStore("resourcesStore", {
             "current_location": null,
             "capacity_gallons": null,
             "is_selected": false,
-            "is_confirm_delete": false
+            "is_confirm_delete": false,
+            "is_retired": false
         }
     }),
     actions: {

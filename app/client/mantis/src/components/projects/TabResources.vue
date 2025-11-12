@@ -58,7 +58,7 @@ const handleEditResource = (resource) => {
             <tr v-for="resource in projectResources" :key="resource.id" :class="{ 'text-red-500 font-bold bg-red-100': isZeroCost(resource.cost) }">
               <td class="p-2 border border-gray-300">{{ resource.id }}</td>
               <td class="p-2 border border-gray-300">
-                <span v-if="!resource.is_active" class="text-red-500 border rounded p-1 bg-red-100">INACTIVO</span>  
+                <span v-if="resource.is_retired" class="text-red-500 border rounded p-1 bg-red-100">RETIRADO</span>  
                 {{ resource.resource_item_code }}
               </td>
               <td 
