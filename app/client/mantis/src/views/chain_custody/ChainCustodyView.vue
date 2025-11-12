@@ -1,53 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { formatDate } from '@/utils/formatters';
-
-const router = useRouter();
-const route = useRoute();
-
-// Datos de ejemplo - aquí conectarías con tu store
-const sheetProjects = ref([]);
-const selectedSheet = ref(null);
-const isLoading = ref(false);
-
-const fetchSheetProjects = async () => {
-  isLoading.value = true;
-  // Aquí harías la llamada al API
-  // const response = await sheetProjectsStore.fetchAllSheetProjects();
-  // sheetProjects.value = response.data;
-  isLoading.value = false;
-};
-
-const selectSheet = (sheet) => {
-  selectedSheet.value = sheet;
-};
-
-const getStatusBadgeClass = (status) => {
-  const statusClasses = {
-    'IN_PROGRESS': 'badge-warning',
-    'INVOICED': 'badge-success',
-    'CANCELLED': 'badge-error'
-  };
-  return statusClasses[status] || 'badge-ghost';
-};
-
-const getStatusLabel = (status) => {
-  const statusLabels = {
-    'IN_PROGRESS': 'En Ejecución',
-    'INVOICED': 'Facturado',
-    'CANCELLED': 'Cancelado'
-  };
-  return statusLabels[status] || status;
-};
-
-const goBack = () => {
-  router.back();
-};
-
-onMounted(() => {
-  fetchSheetProjects();
-});
+// La lógica será manejada por el componente padre o un composable
 </script>
 
 <template>
@@ -60,218 +12,179 @@ onMounted(() => {
           Cadena de Custodia de Proyecto
         </h1>
         <div class="flex gap-2">
-          <router-link :to="{ name: 'projects-detail' }" class="btn btn-secondary btn-sm">
+          <button class="btn btn-secondary btn-sm">
             <i class="las la-arrow-left"></i>
             Cancelar
-          </router-link>
-          <router-link :to="{ name: 'custody-form' }" class="btn btn-primary btn-sm">
+          </button>
+          <button class="btn btn-primary btn-sm">
             <i class="las la-plus"></i>
             Nueva Cadena de Custodia
-          </router-link>
+          </button>
         </div>
       </div>  
     </div>
 
-    <!-- Lista de Cadena de Custodia -->
+    <!-- Lista de Cadenas de Custodia -->
     <div class="grid grid-cols-1 gap-4">
-      <!-- Planilla Card -->
-      <div 
-        v-for="sheet in sheetProjects" 
-        :key="sheet.sheet_id"
-        class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
-      >
-        <!-- Cabecera de la Planilla -->
+      <!-- Cadena de Custodia Card (Maestro) -->
+      <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow">
+        <!-- Cabecera de la Cadena -->
         <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-t-lg">
           <div class="flex justify-between items-start">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <h2 class="text-xl font-bold">{{ sheet.series_code }}</h2>
-                <span class="badge badge-sm" :class="getStatusBadgeClass(sheet.status)">
-                  {{ getStatusLabel(sheet.status) }}
-                </span>
+                <span class="badge badge-primary badge-sm">000001</span>
+                <h2 class="text-xl font-bold">Cadena de Custodia</h2>
               </div>
-              <div class="grid grid-cols-3 gap-4 text-sm">
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                 <div>
-                  <i class="las la-calendar-alt mr-1"></i>
-                  <span class="opacity-90">Emisión:</span>
-                  <span class="font-semibold ml-1">{{ formatDate(sheet.issue_date) }}</span>
+                  <i class="las la-calendar text-yellow-300 mr-1"></i>
+                  <span class="opacity-90">Fecha:</span>
+                  <span class="font-semibold ml-1">--/--/--</span>
                 </div>
                 <div>
-                  <i class="las la-calendar-check mr-1"></i>
-                  <span class="opacity-90">Inicio:</span>
-                  <span class="font-semibold ml-1">{{ formatDate(sheet.period_start) }}</span>
+                  <i class="las la-clock text-yellow-300 mr-1"></i>
+                  <span class="opacity-90">Inicio - Fin:</span>
+                  <span class="font-semibold ml-1">-- - --</span>
                 </div>
                 <div>
-                  <i class="las la-calendar-times mr-1"></i>
-                  <span class="opacity-90">Fin:</span>
-                  <span class="font-semibold ml-1">{{ formatDate(sheet.period_end) }}</span>
+                  <i class="las la-hourglass text-yellow-300 mr-1"></i>
+                  <span class="opacity-90">Horas:</span>
+                  <span class="font-semibold ml-1">0.00</span>
+                </div>
+                <div>
+                  <i class="las la-map-marker text-yellow-300 mr-1"></i>
+                  <span class="opacity-90">Ubicación:</span>
+                  <span class="font-semibold ml-1">--</span>
                 </div>
               </div>
             </div>
             <div class="text-right">
-              <div class="text-xs opacity-80">Total</div>
-              <div class="text-2xl font-bold">${{ sheet.total.toLocaleString('es-CO', { minimumFractionDigits: 2 }) }}</div>
-              <div class="text-xs opacity-80">
-                Subtotal: ${{ sheet.subtotal.toLocaleString('es-CO', { minimumFractionDigits: 2 }) }} + 
-                IVA: ${{ sheet.tax_amount.toLocaleString('es-CO', { minimumFractionDigits: 2 }) }}
-              </div>
+              <div class="text-xs opacity-80">Total Cadena</div>
+              <div class="text-2xl font-bold">$0.00</div>
             </div>
           </div>
         </div>
 
-        <!-- Información del Servicio -->
+        <!-- Información del Técnico -->
         <div class="p-4 border-b">
           <div class="flex items-center gap-2 text-sm text-gray-600">
-            <i class="las la-cog text-blue-500 text-lg"></i>
-            <span class="font-semibold">Tipo de Servicio:</span>
-            <span class="badge badge-outline">{{ sheet.service_type }}</span>
+            <i class="las la-user text-blue-500 text-lg"></i>
+            <span class="font-semibold">Técnico:</span>
+            <span class="badge badge-outline">Nombre Técnico</span>
+            <span class="text-gray-500 ml-4">Contacto:</span>
+            <span>Nombre de Contacto - Cargo</span>
           </div>
         </div>
 
-        <!-- Cadenas de Custodia -->
-        <div class="p-4">
+        <!-- Volúmenes -->
+        <div class="p-4 border-b">
+          <h3 class="font-semibold text-gray-700 mb-3">Volúmenes</h3>
+          <div class="grid grid-cols-3 gap-2">
+            <div class="bg-amber-50 rounded p-3 text-center">
+              <i class="las la-flask text-amber-600 text-2xl"></i>
+              <div class="text-xs text-gray-600 mt-1">Galones</div>
+              <div class="font-bold text-amber-700 text-lg">0</div>
+            </div>
+            <div class="bg-purple-50 rounded p-3 text-center">
+              <i class="las la-cube text-purple-600 text-2xl"></i>
+              <div class="text-xs text-gray-600 mt-1">Barriles</div>
+              <div class="font-bold text-purple-700 text-lg">0</div>
+            </div>
+            <div class="bg-cyan-50 rounded p-3 text-center">
+              <i class="las la-boxes text-cyan-600 text-2xl"></i>
+              <div class="text-xs text-gray-600 mt-1">M³</div>
+              <div class="font-bold text-cyan-700 text-lg">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Información de Facturación (Maestro) -->
+        <div class="p-4 border-b">
+          <h3 class="font-semibold text-gray-700 mb-3">Información de Facturación</h3>
+          <div class="bg-gray-50 rounded p-3">
+            <div class="grid grid-cols-4 gap-3 text-xs">
+              <div>
+                <span class="text-gray-500">Unidad:</span>
+                <span class="font-semibold block">DÍAS</span>
+              </div>
+              <div>
+                <span class="text-gray-500">Cantidad:</span>
+                <span class="font-semibold block">0.00</span>
+              </div>
+              <div>
+                <span class="text-gray-500">Precio Unitario:</span>
+                <span class="font-semibold block">$0.00</span>
+              </div>
+              <div>
+                <span class="text-gray-500">Total Línea:</span>
+                <span class="font-semibold block">$0.00</span>
+              </div>
+            </div>
+            <div class="mt-2 pt-2 border-t text-xs text-gray-600">
+              <i class="las la-comment-alt"></i>
+              <span>Detalle de la cadena de custodia</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detalles de Recursos (Detalle) -->
+        <div class="p-4 border-b">
           <div class="flex items-center justify-between mb-3">
             <h3 class="font-semibold text-gray-700 flex items-center gap-2">
-              <i class="las la-link text-green-500"></i>
-              Cadenas de Custodia
-              <span class="badge badge-sm badge-neutral">{{ sheet.custody_chains?.length || 0 }}</span>
+              <i class="las la-tools text-green-500"></i>
+              Recursos Utilizados
+              <span class="badge badge-sm badge-neutral">0</span>
             </h3>
           </div>
 
-          <!-- Sin Cadenas de Custodia -->
-          <div v-if="!sheet.custody_chains || sheet.custody_chains.length === 0" 
-               class="text-center py-8 text-gray-400">
-            <i class="las la-inbox text-4xl"></i>
-            <p class="mt-2">No hay cadenas de custodia registradas</p>
+          <!-- Sin Recursos -->
+          <div class="text-center py-6 text-gray-400">
+            <i class="las la-inbox text-2xl"></i>
+            <p class="mt-2 text-sm">No hay recursos asignados</p>
           </div>
 
-          <!-- Lista de Cadenas de Custodia -->
-          <div v-else class="space-y-3">
-            <div 
-              v-for="chain in sheet.custody_chains" 
-              :key="chain.custody_chain_id"
-              class="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-            >
-              <!-- Header de Cadena -->
-              <div class="flex justify-between items-start mb-3">
+          <!-- Lista de Recursos (ChainCustodyDetail) -->
+          <div class="space-y-2">
+            <div class="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+              <div class="flex items-center justify-between">
                 <div class="flex-1">
-                  <div class="flex items-center gap-2 mb-2">
-                    <span class="badge badge-primary badge-sm">{{ chain.consecutive }}</span>
-                    <span class="font-semibold text-gray-700">{{ chain.technical_name }}</span>
+                  <div class="font-semibold text-gray-700 text-sm">
+                    <i class="las la-wrench text-green-500 mr-1"></i>
+                    CODIGO-RECURSO - Nombre del Recurso
                   </div>
-                  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-gray-600">
-                    <div class="flex items-center gap-1">
-                      <i class="las la-calendar text-blue-500"></i>
-                      {{ formatDate(chain.activity_date) }}
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <i class="las la-clock text-green-500"></i>
-                      {{ chain.start_time }} - {{ chain.end_time }}
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <i class="las la-hourglass-half text-orange-500"></i>
-                      {{ chain.time_duration }}h
-                    </div>
-                    <div class="flex items-center gap-1">
-                      <i class="las la-map-marker text-red-500"></i>
-                      {{ chain.location }}
-                    </div>
+                  <div class="text-xs text-gray-500 mt-1">
+                    Código: CODIGO-RECURSO
                   </div>
                 </div>
                 <div class="text-right">
-                  <div class="text-xs text-gray-500">Total Línea</div>
-                  <div class="text-lg font-bold text-green-600">
-                    ${{ chain.total_price.toLocaleString('es-CO', { minimumFractionDigits: 2 }) }}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Información de Contacto -->
-              <div v-if="chain.contact_name" class="bg-blue-50 rounded p-2 mb-3 text-xs">
-                <div class="flex items-center gap-2">
-                  <i class="las la-user text-blue-600"></i>
-                  <span class="font-semibold">{{ chain.contact_name }}</span>
-                  <span class="text-gray-500">-</span>
-                  <span class="text-gray-600">{{ chain.contact_position }}</span>
-                </div>
-              </div>
-
-              <!-- Volúmenes -->
-              <div class="grid grid-cols-3 gap-2 mb-3">
-                <div class="bg-amber-50 rounded p-2 text-center">
-                  <i class="las la-flask text-amber-600 text-lg"></i>
-                  <div class="text-xs text-gray-600">Galones</div>
-                  <div class="font-bold text-amber-700">{{ chain.total_gallons }}</div>
-                </div>
-                <div class="bg-purple-50 rounded p-2 text-center">
-                  <i class="las la-drumstick-bite text-purple-600 text-lg"></i>
-                  <div class="text-xs text-gray-600">Barriles</div>
-                  <div class="font-bold text-purple-700">{{ chain.total_barrels }}</div>
-                </div>
-                <div class="bg-cyan-50 rounded p-2 text-center">
-                  <i class="las la-cube text-cyan-600 text-lg"></i>
-                  <div class="text-xs text-gray-600">M³</div>
-                  <div class="font-bold text-cyan-700">{{ chain.total_cubic_meters }}</div>
-                </div>
-              </div>
-
-              <!-- Detalles de Facturación -->
-              <div class="bg-gray-50 rounded p-3 mb-3">
-                <div class="grid grid-cols-4 gap-2 text-xs">
-                  <div>
-                    <span class="text-gray-500">Unidad:</span>
-                    <span class="font-semibold ml-1">{{ chain.item_unity }}</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-500">Cantidad:</span>
-                    <span class="font-semibold ml-1">{{ chain.quantity }}</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-500">Precio Unit:</span>
-                    <span class="font-semibold ml-1">${{ chain.unit_price.toLocaleString('es-CO') }}</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-500">Total:</span>
-                    <span class="font-semibold ml-1">${{ chain.total_line.toLocaleString('es-CO') }}</span>
-                  </div>
-                </div>
-                <div v-if="chain.detail" class="mt-2 pt-2 border-t text-xs text-gray-600">
-                  <i class="las la-comment-alt"></i>
-                  {{ chain.detail }}
-                </div>
-              </div>
-
-              <!-- Items/Recursos Utilizados -->
-              <div v-if="chain.items && chain.items.length > 0">
-                <div class="text-xs font-semibold text-gray-600 mb-2 flex items-center gap-1">
-                  <i class="las la-tools"></i>
-                  Recursos Utilizados:
-                </div>
-                <div class="flex flex-wrap gap-2">
-                  <div 
-                    v-for="item in chain.items" 
-                    :key="item.detail_id"
-                    class="badge badge-outline badge-sm gap-1"
-                  >
-                    <i class="las la-wrench text-xs"></i>
-                    {{ item.resource_code }} - {{ item.resource_name }}
-                  </div>
+                  <button class="btn btn-xs btn-ghost">
+                    <i class="las la-trash"></i>
+                  </button>
                 </div>
               </div>
             </div>
           </div>
+
+          <!-- Botón Agregar Recurso -->
+          <div class="mt-3">
+            <button class="btn btn-sm btn-outline btn-primary w-full">
+              <i class="las la-plus"></i>
+              Agregar Recurso
+            </button>
+          </div>
         </div>
 
-        <!-- Footer de la Planilla -->
-        <div class="bg-gray-50 p-3 rounded-b-lg flex justify-between gap-2">
-          <button class="btn btn-sm btn-ghost" @click="goBack">
+        <!-- Footer -->
+        <div class="bg-gray-50 p-4 rounded-b-lg flex justify-between gap-2">
+          <button class="btn btn-sm btn-ghost">
             <i class="las la-arrow-left"></i>
             Cancelar
           </button>
           <div class="flex gap-2">
             <button class="btn btn-sm btn-ghost">
-              <i class="las la-eye"></i>
-              Ver Detalles
+              <i class="las la-edit"></i>
+              Editar
             </button>
             <button class="btn btn-sm btn-ghost">
               <i class="las la-print"></i>
@@ -286,27 +199,20 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Estado de carga -->
-    <div v-if="isLoading" class="flex justify-center items-center py-12">
-      <span class="loading loading-spinner loading-lg text-primary"></span>
-    </div>
-
     <!-- Sin resultados -->
-    <div v-if="!isLoading && sheetProjects.length === 0" 
-         class="bg-white rounded-lg shadow-md p-12">
+    <div class="bg-white rounded-lg shadow-md p-12 text-center">
       <i class="las la-folder-open text-6xl text-gray-300"></i>
-      <p class="text-gray-500 mt-4">No hay Cadena de Custodia de proyecto registradas</p>
+      <p class="text-gray-500 mt-4">No hay Cadenas de Custodia registradas</p>
       <div class="flex items-center gap-2 w-full justify-center mt-4">
-        <router-link :to="{ name: 'projects-detail' }" class="btn btn-secondary btn-sm">
+        <button class="btn btn-secondary btn-sm">
           <i class="las la-arrow-left"></i>
           Cancelar
-        </router-link>
-        <router-link :to="{ name: 'custody-form' }" class="btn btn-primary btn-sm">
+        </button>
+        <button class="btn btn-primary btn-sm">
           <i class="las la-plus"></i>
           Crear Cadena de Custodia
-        </router-link>
+        </button>
       </div>
-      
     </div>
   </div>
 </template>
