@@ -134,6 +134,15 @@ class ProjectResourceItem(BaseModel):
     )
 
     @classmethod
+    def delete_forever(cls, id_project_resource):
+        """Elimina físicamente un recurso de proyecto por su ID."""
+        my_project_resource = cls.objects.filter(id=id_project_resource)
+        if my_project_resource.exists():
+            my_project_resource.delete()
+        
+        return True
+
+    @classmethod
     def get_by_project(cls, project_id):
         """Obtiene todos los recursos asociados a un proyecto específico."""
         return cls.objects.filter(

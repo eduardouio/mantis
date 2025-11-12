@@ -175,6 +175,7 @@ class ChainCustodyDetail(BaseModel):
 
         if len(asigns) > 0:
             return asigns
+        
         return None
 
     class Meta:
