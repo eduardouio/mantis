@@ -71,6 +71,32 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 console.error("Error adding resources to project:", error);
                 throw error;
             }
+        },
+        async updateResourceProject(resourceId, updatedData) {
+            try {
+                const response = await fetch(appConfig.URLUpdateResourceItem.replace('{id}', resourceId), {
+                    method: "PUT",
+                    headers: appConfig.headers,
+                    body: JSON.stringify(updatedData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error("Failed to update project resource");
+                }
+                
+                const responseData = await response.json();
+                
+                // Actualizar el recurso en el store local
+                const resourceIndex = this.resourcesProject.findIndex(r => r.id === resourceId);
+                if (resourceIndex !== -1) {
+                    this.resourcesProject[resourceIndex] = { ...this.resourcesProject[resourceIndex], ...responseData.data };
+                }
+                
+                return responseData;
+            } catch (error) {
+                console.error("Error updating project resource:", error);
+                throw error;
+            }
         }
     }
 });
