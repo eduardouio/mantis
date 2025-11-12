@@ -8,6 +8,10 @@ const projectResourceStore = UseProjectResourceStore()
 const projectResources = computed(() => projectResourceStore.resourcesProject)
 const selectedResources= []
 
+const isZeroCost = (cost) => {
+  return parseFloat(cost) === 0;
+};
+
 </script>
 
 <template>
@@ -46,24 +50,28 @@ const selectedResources= []
             </tr>
           </template>
           <template v-else>
-            <tr v-for="resource in projectResources" :key="resource.id">
+            <tr v-for="resource in projectResources" :key="resource.id" :class="{ 'text-red-500 font-bold bg-red-100': isZeroCost(resource.cost) }">
               <td class="p-2 border border-gray-300">{{ resource.id }}</td>
               <td class="p-2 border border-gray-300">
                 <span v-if="!resource.is_active" class="text-red-500 border rounded p-1 bg-red-100">INACTIVO</span>  
                 {{ resource.resource_item_code }}
               </td>
-              <td class="p-2 border border-gray-300">{{ resource.detailed_description }}</td>
-              <td class="p-2 border border-gray-300 text-right font-mono">{{ formatNumber(resource.cost) }}</td>
+              <td 
+                class="p-2 border border-gray-300"
+              >
+                {{ resource.detailed_description }}
+              </td>
+              <td 
+                class="p-2 border border-gray-300 text-right font-mono"
+              >
+                {{ formatNumber(resource.cost) }}
+              </td>
               <td class="p-2 border border-gray-300 text-end">
                 {{ resource.interval_days }}
               </td>
               <td class="p-2 border border-gray-300 text-end font-mono">{{ formatDate(resource.operation_start_date) }}</td>
               <td class="p-2 border border-gray-300 text-end">
                 <div class="flex gap-1 justify-end">
-                  <button class="btn btn-xs bg-gray-100 border-lime-500" title="Ver detalles">
-                    <i class="las la-eye"></i>
-                    VER
-                  </button>
                   <button class="btn btn-xs bg-gray-100 border-orange-500" title="Editar">
                     <i class="las la-edit"></i>
                     EDITAR
