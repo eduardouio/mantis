@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits, computed } from 'vue'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 
 const props = defineProps({
@@ -11,6 +11,11 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 const projectResourceStore = UseProjectResourceStore()
+
+// Detectar si el recurso ya venía retirado desde el origen
+const wasInitiallyRetired = computed(() => {
+  return props.resource?.is_retired === true && props.resource?.retirement_date !== null
+})
 
 const submitForm = async () => {
   try {
@@ -44,12 +49,91 @@ const cancelForm = () => {
 </script>
 
 <template>
-    <div class="max-w-2xl mx-auto p-6">
+    <div class="max-w-2xl mx-auto p-1">
         <h5 class="text-xl font-bold mb-6">
           {{ resource.detailed_description  }}
         </h5>
         
-        <form @submit.prevent="submitForm" class="space-y-4">
+        <!-- Detalles del Registro -->
+        <div class="bg-sky-50 rounded-lg p-4 mb-6 space-y-2 border-gray-200 border">
+            <h6 class="font-semibold text-lg mb-3">Detalles del Recurso</h6>
+            
+            <div class="grid grid-cols-2 gap-3 text-sm border p-2 rounded border-gray-300 bg-base-100">
+                <div class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">ID:</span>
+                    <span class="ml-2">{{ resource.id }}</span>
+                </div>
+                <div class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Proyecto ID:</span>
+                    <span class="ml-2">{{ resource.project_id }}</span>
+                </div>
+                <div class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Tipo:</span>
+                    <span class="ml-2">{{ resource.type }}</span>
+                </div>
+                <div class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Código:</span>
+                    <span class="ml-2">{{ resource.resource_item_code }}</span>
+                </div>
+                <div class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Costo Actual:</span>
+                    <span class="ml-2">${{ resource.cost }}</span>
+                </div>
+                <div class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Nombre:</span>
+                    <span class="ml-2">{{ resource.resource_item_name }}</span>
+                </div>
+                <div class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Descripción:</span>
+                    <span class="ml-2">{{ resource.detailed_description }}</span>
+                </div>
+                <div v-if="resource.interval_days" class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Frecuencia (días):</span>
+                    <span class="ml-2">{{ resource.interval_days }}</span>
+                </div>
+                <div class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Fecha Inicio Operación:</span>
+                    <span class="ml-2">{{ resource.operation_start_date }}</span>
+                </div>
+                <div class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Retirado:</span>
+                    <span class="ml-2 badge" :class="resource.is_retired ? 'badge-warning' : 'badge-ghost'">
+                        {{ resource.is_retired ? 'Sí' : 'No' }}
+                    </span>
+                </div>
+                <div v-if="resource.is_retired" class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Fecha Retiro:</span>
+                    <span class="ml-2">{{ resource.retirement_date }}</span>
+                </div>
+                <div v-if="resource.is_retired" class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Motivo Retiro:</span>
+                    <span class="ml-2">{{ resource.retirement_reason }}</span>
+                </div>
+                <div v-if="resource.notes" class="border-b-1 border-r-1 border-sky-200">
+                    <span class="font-medium">Notas:</span>
+                    <span class="ml-2">{{ resource.notes }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje informativo si ya estaba retirado -->
+        <div v-if="wasInitiallyRetired" class="space-y-4">
+            <div class="alert alert-warning">
+                <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>Este recurso ya fue retirado del proyecto y no puede ser modificado.</span>
+            </div>
+            
+            <div class="flex justify-end">
+                <button type="button" class="btn btn-outline" @click="cancelForm">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+
+        <!-- Formulario solo si NO está retirado -->
+        <form v-else @submit.prevent="submitForm" class="space-y-4">
             <!-- Costo -->
             <div class="form-control w-full">
                 <label class="label" for="cost">

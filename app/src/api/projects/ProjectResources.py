@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.views import View
 from projects.models.Project import Project, ProjectResourceItem
+from projects.models.CustodyChain import ChainCustodyDetail
 
 
 class ProjectResources(View):	
@@ -8,28 +9,22 @@ class ProjectResources(View):
 
     def get(self, request, project_id):
         """Obtener recursos asociados a un proyecto."""
-        try:
-            project = Project.objects.get(
-                id=project_id, is_deleted=False, is_active=True
-            )
-            project_resources = ProjectResourceItem.objects.filter(
-                project=project
-            )
+        project = Project.objects.get(
+            id=project_id, is_deleted=False, is_active=True
+        )
 
-            data = [self._serialize(pr) for pr in project_resources]
-
-            return JsonResponse({"data": data})
-
-        except Project.DoesNotExist:
+        if not project:
             return JsonResponse(
-                {"success": False, "error": "Proyecto no encontrado."},
+                {"error": "Proyecto no encontrado."},
                 status=404
             )
-        except Exception as e:
-            return JsonResponse(
-                {"success": False, "error": str(e)},
-                status=500
-            )
+
+        project_resources = ProjectResourceItem.objects.filter(
+            project=project
+        )
+        data = [self._serialize(pr) for pr in project_resources]
+
+        return JsonResponse({"data": data})
 
     def _serialize(self, project_resource):
         """Serializar ProjectResourceItem a JSON."""
@@ -47,6 +42,17 @@ class ProjectResources(View):
             "is_active": project_resource.is_active,
             "is_selected": False,
             "is_retired": project_resource.is_retired,
+            "retirement_date": project_resource.retirement_date.isoformat() if project_resource.retirement_date else None,
+            "retirement_reason": project_resource.retirement_reason,
             "is_confirm_delete": False,
-            "is_deleteable": False,
+            "is_deleteable": self._is_deletable(project_resource),
+            "notes": project_resource.notes
         }
+
+
+    def _is_deletable(self, project_resource):
+        """Determinar si un recurso de proyecto es eliminable."""
+        exist = ChainCustodyDetail.get_by_resource_id(project_resource.id)
+        if not exist:
+            return True
+        return False
