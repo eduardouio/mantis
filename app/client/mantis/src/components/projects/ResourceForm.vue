@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch, defineProps, defineEmits } from 'vue'
+import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 
 const props = defineProps({
   resource: {
@@ -9,12 +10,12 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
+const projectResourceStore = UseProjectResourceStore()
 
 const form = ref({
   cost: 0,
   interval_days: 1,
   operation_start_date: '',
-  operation_end_date: '',
   is_retired: false,
   retirement_date: '',
   retirement_reason: ''
@@ -27,7 +28,6 @@ watch(() => props.resource, (newResource) => {
       cost: newResource.cost || 0,
       interval_days: newResource.interval_days || 1,
       operation_start_date: newResource.operation_start_date || '',
-      operation_end_date: newResource.operation_end_date || '',
       is_retired: newResource.is_retired || false,
       retirement_date: newResource.retirement_date || '',
       retirement_reason: newResource.retirement_reason || ''
@@ -35,10 +35,20 @@ watch(() => props.resource, (newResource) => {
   }
 }, { immediate: true })
 
-const submitForm = () => {
-  // Lógica para guardar el formulario
-  console.log('Guardando formulario:', form.value)
-  emit('close')
+const submitForm = async () => {
+  try {
+    if (props.resource) {
+      // Modo edición
+      await projectResourceStore.updateResourceProject(props.resource.id, form.value)
+      console.log('Recurso actualizado exitosamente')
+    } else {
+      // Modo creación (si fuera necesario)
+      console.log('Crear nuevo recurso:', form.value)
+    }
+    emit('close')
+  } catch (error) {
+    console.error('Error al guardar el recurso:', error)
+  }
 }
 
 const cancelForm = () => {
@@ -100,19 +110,6 @@ const cancelForm = () => {
                 />
             </div>
 
-            <!-- Fecha de Fin de Operaciones -->
-            <div class="form-control w-full">
-                <label class="label" for="operation_end_date">
-                    <span class="label-text font-medium">Fecha de Fin Operaciones</span>
-                </label>
-                <input 
-                    type="date" 
-                    id="operation_end_date" 
-                    v-model="form.operation_end_date"
-                    class="input input-bordered w-full"
-                />
-            </div>
-
             <!-- Retirado -->
             <div class="form-control">
                 <label class="label cursor-pointer justify-start gap-3">
@@ -158,7 +155,7 @@ const cancelForm = () => {
                     Cancelar
                 </button>
                 <button type="submit" class="btn btn-primary">
-                    Guardar Recurso
+                    {{ resource ? 'Actualizar' : 'Guardar' }} Recurso
                 </button>
             </div>
         </form>
