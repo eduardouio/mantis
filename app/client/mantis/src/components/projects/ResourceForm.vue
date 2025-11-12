@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, defineProps, defineEmits } from 'vue'
+import { defineProps, defineEmits } from 'vue'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 
 const props = defineProps({
@@ -12,38 +12,25 @@ const props = defineProps({
 const emit = defineEmits(['close'])
 const projectResourceStore = UseProjectResourceStore()
 
-const form = ref({
-  cost: 0,
-  interval_days: 1,
-  operation_start_date: '',
-  is_retired: false,
-  retirement_date: '',
-  retirement_reason: ''
-})
-
-// Cargar datos del recurso si está en modo edición
-watch(() => props.resource, (newResource) => {
-  if (newResource) {
-    form.value = {
-      cost: newResource.cost || 0,
-      interval_days: newResource.interval_days || 1,
-      operation_start_date: newResource.operation_start_date || '',
-      is_retired: newResource.is_retired || false,
-      retirement_date: newResource.retirement_date || '',
-      retirement_reason: newResource.retirement_reason || ''
-    }
-  }
-}, { immediate: true })
-
 const submitForm = async () => {
   try {
+    // Validación adicional para campos de retiro
+    if (props.resource.is_retired) {
+      if (!props.resource.retirement_date) {
+        alert('La fecha de retiro es obligatoria cuando se marca para retiro');
+        return;
+      }
+      if (!props.resource.retirement_reason || props.resource.retirement_reason.trim() === '') {
+        alert('El motivo de retiro es obligatorio cuando se marca para retiro');
+        return;
+      }
+    }
+
     if (props.resource) {
-      // Modo edición
-      await projectResourceStore.updateResourceProject(props.resource.id, form.value)
+      await projectResourceStore.updateResourceProject(props.resource)
       console.log('Recurso actualizado exitosamente')
     } else {
-      // Modo creación (si fuera necesario)
-      console.log('Crear nuevo recurso:', form.value)
+      console.log('Crear nuevo recurso:', props.resource)
     }
     emit('close')
   } catch (error) {
@@ -58,9 +45,9 @@ const cancelForm = () => {
 
 <template>
     <div class="max-w-2xl mx-auto p-6">
-        <h2 class="text-2xl font-bold mb-6">
-          {{ resource ? 'Editar Recurso del Proyecto' : 'Formulario de Recurso del Proyecto' }}
-        </h2>
+        <h5 class="text-xl font-bold mb-6">
+          {{ resource.detailed_description  }}
+        </h5>
         
         <form @submit.prevent="submitForm" class="space-y-4">
             <!-- Costo -->
@@ -71,7 +58,7 @@ const cancelForm = () => {
                 <input 
                     type="number" 
                     id="cost" 
-                    v-model="form.cost"
+                    v-model="resource.cost"
                     step="0.01"
                     min="0"
                     required
@@ -88,7 +75,7 @@ const cancelForm = () => {
                 <input 
                     type="number" 
                     id="interval_days" 
-                    v-model="form.interval_days"
+                    v-model="resource.interval_days"
                     min="1"
                     required
                     placeholder="1"
@@ -104,7 +91,7 @@ const cancelForm = () => {
                 <input 
                     type="date" 
                     id="operation_start_date" 
-                    v-model="form.operation_start_date"
+                    v-model="resource.operation_start_date"
                     required
                     class="input input-bordered w-full"
                 />
@@ -115,7 +102,7 @@ const cancelForm = () => {
                 <label class="label cursor-pointer justify-start gap-3">
                     <input 
                         type="checkbox" 
-                        v-model="form.is_retired"
+                        v-model="resource.is_retired"
                         class="checkbox"
                     />
                     <span class="label-text font-medium">Retirar de Proyecto</span>
@@ -123,29 +110,31 @@ const cancelForm = () => {
             </div>
 
             <!-- Fecha de Retiro (solo si está retirado) -->
-            <div class="form-control w-full" v-if="form.is_retired">
+            <div class="form-control w-full" v-if="resource.is_retired">
                 <label class="label" for="retirement_date">
-                    <span class="label-text font-medium">Fecha de Retiro</span>
+                    <span class="label-text font-medium">Fecha de Retiro *</span>
                 </label>
                 <input 
                     type="date" 
                     id="retirement_date" 
-                    v-model="form.retirement_date"
-                    class="input input-bordered w-full"
+                    v-model="resource.retirement_date"
+                    :required="resource.is_retired"
+                    class="input input-bordered w-full border-red-500"
                 />
             </div>
 
             <!-- Motivo de Retiro (solo si está retirado) -->
-            <div class="form-control w-full" v-if="form.is_retired">
+            <div class="form-control w-full" v-if="resource.is_retired">
                 <label class="label" for="retirement_reason">
-                    <span class="label-text font-medium">Motivo de Retiro</span>
+                    <span class="label-text font-medium">Motivo de Retiro *</span>
                 </label>
                 <textarea 
                     id="retirement_reason" 
-                    v-model="form.retirement_reason"
+                    v-model="resource.retirement_reason"
                     rows="3"
                     placeholder="Describe el motivo del retiro..."
-                    class="textarea textarea-bordered w-full"
+                    :required="resource.is_retired"
+                    class="textarea textarea-bordered w-full border-red-500"
                 ></textarea>
             </div>
 

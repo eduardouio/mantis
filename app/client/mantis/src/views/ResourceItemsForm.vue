@@ -77,9 +77,8 @@
         list_resources.value,
       )
       successMessage.value = `Se agregaron ${result.added} recurso(s) exitosamente`
-      setTimeout(() => {
-        router.push('/project')
-      }, 1500)
+      router.push('/project')
+
     } catch (error) {
       console.error('Error submitting form:', error)
       errorMessage.value = error.message || 'Error al guardar los recursos. Por favor intente nuevamente.'
