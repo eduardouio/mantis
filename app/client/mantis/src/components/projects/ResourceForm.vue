@@ -68,7 +68,7 @@ const cancelForm = () => {
             </div>
 
             <!-- Frecuencia en días -->
-            <div class="form-control w-full">
+            <div class="form-control w-full" v-if="resource.type === 'SERVIC'">
                 <label class="label" for="interval_days">
                     <span class="label-text font-medium">Frecuencia (días) *</span>
                 </label>

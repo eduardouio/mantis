@@ -36,7 +36,7 @@ const sizeClasses = {
   <div class="modal" :class="{ 'modal-open': isOpen }">
     <div :class="sizeClasses[size]">
       <!-- Header del Modal -->
-      <div class="flex justify-between items-center mb-4 border-1 border-gray-200 p-1 rounded bg-yellow-100" v-if="title">
+      <div class="flex justify-between items-center mb-4 border-b-4 border-slate-300" v-if="title">
         <h3 class="text-gray-600">{{ title }}</h3>
         <button 
           class="btn btn-sm btn-circle btn-ghost" 

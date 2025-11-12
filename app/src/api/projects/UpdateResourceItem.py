@@ -25,11 +25,11 @@ class UpdateResourceItemAPI(View):
 		project_resource.is_retired =  data['is_retired']
 
 
-		if data['is_retired']:
+		if data.get('is_retired'):
 			project_resource.retirement_date =  data['retirement_date']
 			project_resource.retirement_reason =  data['retirement_reason']
 			project_resource.operation_end_date =  data['retirement_date']
-			project_resource.is_active = False
+			project_resource.is_retired = True
 			project_resource.save()
 			self.liberate_resource(project_resource.resource_item)
 			return JsonResponse(

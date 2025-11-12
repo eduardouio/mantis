@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
-import { appConfig } from "@/AppConfig";
+import { defineStore } from "pinia"
+import { appConfig } from "@/AppConfig"
 
 export const UseProjectResourceStore = defineStore("projectResourcesStore", {
     state: () => ({
@@ -25,20 +25,20 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
     }),
     actions: {
         async fetchResourcesProject() {
-            console.log("Fetching project resources");
+            console.log("Fetching project resources")
 
             try {
                 const response = await fetch(appConfig.URLResourcesProject, {
                     method: "GET",
                     headers: appConfig.headers
-                });
+                })
                 if (!response.ok) {
-                    throw new Error("Failed to fetch project resources");
+                    throw new Error("Failed to fetch project resources")
                 }
-                const responseData = await response.json();
-                this.resourcesProject = responseData.data;
+                const responseData = await response.json()
+                this.resourcesProject = responseData.data
             } catch (error) {
-                console.error("Error fetching project resources:", error);
+                console.error("Error fetching project resources:", error)
             }
         },
         async addResourcesToProject(resources) {
@@ -58,18 +58,18 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                     method: "POST",
                     headers: appConfig.headers,
                     body: JSON.stringify(cleanResources)
-                });
+                })
                 
-                const data = await response.json();
+                const data = await response.json()
                 
                 if (!response.ok) {
-                    throw new Error(data.error || `Error al agregar recursos. Se agregaron ${data.added || 0} de ${cleanResources.length}`);
+                    throw new Error(data.error || `Error al agregar recursos. Se agregaron ${data.added || 0} de ${cleanResources.length}`)
                 }
                 
-                return data;
+                return data
             } catch (error) {
-                console.error("Error adding resources to project:", error);
-                throw error;
+                console.error("Error adding resources to project:", error)
+                throw error
             }
         },
         async updateResourceProject(resource) {
@@ -78,25 +78,25 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                     method: "PUT",
                     headers: appConfig.headers,
                     body: JSON.stringify(resource)
-                });
+                })
                 
-                const responseData = await response.json();
+                const responseData = await response.json()
                 
                 if (!response.ok) {
-                    throw new Error(responseData.error || "Failed to update project resource");
+                    throw new Error(responseData.error || "Failed to update project resource")
                 }
                 
                 // Actualizar el recurso en el store
-                const index = this.resourcesProject.findIndex(r => r.id === resource.id);
+                const index = this.resourcesProject.findIndex(r => r.id === resource.id)
                 if (index !== -1) {
-                    this.resourcesProject[index] = { ...this.resourcesProject[index], ...responseData.data };
+                    this.resourcesProject[index] = { ...this.resourcesProject[index], ...responseData.data }
                 }
                 
-                return responseData.data;
+                return responseData.data
             } catch (error) {
-                console.error("Error updating project resource:", error);
-                throw error;
+                console.error("Error updating project resource:", error)
+                throw error
             }
         }
     }
-});
+})
