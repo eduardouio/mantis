@@ -22,6 +22,28 @@ const formatDate = (date) => {
   if (!date) return 'N/A';
   return new Intl.DateTimeFormat('es-GT').format(new Date(date));
 };
+
+const getStatusBadge = (status) => {
+  const statusConfig = {
+    'IN_PROGRESS': { 
+      text: 'EN EJECUCIÓN', 
+      class: 'bg-green-500 text-white' 
+    },
+    'INVOICED': { 
+      text: 'FACTURADO', 
+      class: 'bg-cyan-500 text-white' 
+    },
+    'CANCELLED': { 
+      text: 'CANCELADO', 
+      class: 'bg-orange-500 text-white' 
+    }
+  };
+  
+  return statusConfig[status] || { 
+    text: status, 
+    class: 'bg-gray-500 text-white' 
+  };
+};
 </script>
 
 <template>
@@ -55,6 +77,8 @@ const formatDate = (date) => {
             <th class="p-2 border border-gray-100 text-center">Fecha Emisión</th>
             <th class="p-2 border border-gray-100 text-center">Período Inicio</th>
             <th class="p-2 border border-gray-100 text-center">Período Fin</th>
+            <th class="p-2 border border-gray-100 text-center">Contacto Ref.</th>
+            <th class="p-2 border border-gray-100 text-center">Teléfono</th>
             <th class="p-2 border border-gray-100 text-center">Tipo Servicio</th>
             <th class="p-2 border border-gray-100 text-center">Galones</th>
             <th class="p-2 border border-gray-100 text-center">Barriles</th>
@@ -64,7 +88,7 @@ const formatDate = (date) => {
         <tbody>
           <template v-if="sheetProjects.length === 0">
             <tr>
-              <td colspan="11" class="text-center text-gray-500 py-8">
+              <td colspan="12" class="text-center text-gray-500 py-8">
                 <i class="las la-inbox text-4xl"></i>
                 <p>No hay planillas registradas para este proyecto</p>
               </td>
@@ -74,10 +98,19 @@ const formatDate = (date) => {
             <tr v-for="sheet in sheetProjects" :key="sheet.id">
               <td class="p-2 border border-gray-300">{{ sheet.id }}</td>
               <td class="p-2 border border-gray-300 font-mono">{{ sheet.series_code }}</td>
-              <td class="p-2 border border-gray-300">{{ sheet.status }}</td>
+              <td class="p-2 border border-gray-300">
+                <span 
+                  class="badge px-3 py-1 rounded text-xs font-medium"
+                  :class="getStatusBadge(sheet.status).class"
+                >
+                  {{ getStatusBadge(sheet.status).text }}
+                </span>
+              </td>
               <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.issue_date) }}</td>
               <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.period_start) }}</td>
-              <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.period_end) }}</td>
+              <td class="p-2 border border-gray-300 text-end">{{ sheet.period_end ? formatDate(sheet.period_end) : '--' }}</td>
+              <td class="p-2 border border-gray-300">{{ sheet.contact_reference || 'N/A' }}</td>
+              <td class="p-2 border border-gray-300">{{ sheet.contact_phone_reference || 'N/A' }}</td>
               <td class="p-2 border border-gray-300">{{ sheet.service_type }}</td>
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_gallons.toLocaleString() }}</td>
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_barrels.toLocaleString() }}</td>

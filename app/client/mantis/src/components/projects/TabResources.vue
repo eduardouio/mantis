@@ -93,6 +93,7 @@ const handleDeleteResource = async (resource) => {
               </td>
               <td class="p-2 border border-gray-300 text-end font-mono">{{ formatDate(resource.operation_start_date) }}</td>
               <td class="p-2 border border-gray-300 text-end">
+                <div class="flex gap-2 justify-end">
                 <button 
                   class="btn btn-xs border-blue-500 text-teal-500 bg-white" 
                   title="Editar"
@@ -114,6 +115,7 @@ const handleDeleteResource = async (resource) => {
                   <i class="las la-trash"></i>
                   {{ confirmDeleteId === resource.id ? 'CONFIRMAR' : 'ELIMINAR' }}
                 </button>
+                </div>
               </td>
             </tr>
           </template>
