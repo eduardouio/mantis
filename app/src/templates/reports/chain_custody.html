@@ -20,7 +20,6 @@
     width: 100%;
     max-width: 330mm;
     margin: 0 auto;
-    border: 1px solid #000;
     border-collapse: collapse;
     page-break-inside: avoid;
   }
@@ -53,18 +52,15 @@
     background-color: #f8fff2;
   }
   .checkbox {
-    width: 15px;
-    height: 15px;
+    width: 30px;
+    height: 17px;
     border: 1px solid #000;
     display: inline-block;
     vertical-align: middle;
   }
-  .observaciones {
-    height: 50px;
-  }
   .grid-cell {
     width: 20px;
-    height: 25px;
+    height: 24px;
     padding: 1px;
   }
   .header-cell {
@@ -90,8 +86,9 @@
   }
   .header-content {
     display: flex;
-    width: 100%;
     align-items: center;
+    border: 1px solid #0077b6;
+    border-bottom: none;
   }
   .header-text {
     width: 75%;
@@ -105,7 +102,7 @@
   }
   .header-logo img {
     max-width: 100%;
-    max-height: 60px;
+    max-height: 50px;
   }
   .checkbox-group {
     display: flex;
@@ -118,7 +115,7 @@
 
 <div class="container">
   <div class="header-content">
-    <div class="header-text" style="height: 40px;">
+    <div class="header-text" style="height: 35px;">
       <h3>MANTENIMIENTO DE EQUIPOS SANITARIOS, TRANSPORTE Y CADENA DE CUSTODIA DE AGUAS RESIDUALES</h3>
     </div>
     <div class="header-logo">
@@ -129,26 +126,28 @@
   <table>
     <tr>
       <td colspan="2" style="text-align: left;"><strong>FECHA:</strong></td>
-      <td style="text-align: left;"><strong>PLACAS:</strong></td>
-      <td style="text-align: left;"><strong>LOGÍSTICA:</strong></td>
-      <td>
-        <span>SI</span>
-        <div class="checkbox"></div>
-        <span style="margin-left: 60px;">NO</span>
-        <div class="checkbox"></div>
+      <td  colspan="2" style="text-align: left;"><strong>PLACAS:</strong></td>
+      <td style="text-align: right;">
+       <strong style="font-size:18px;color:red;font-family:monospace;">No. 0012289</strong>
       </td>
     </tr>
     <tr>
       <td colspan="2" style="text-align: left;"><strong>CLIENTE:</strong></td>
-      <td colspan="2" style="text-align: left;"><strong>PROYECTO:</strong></td>
+      <td colspan="2" style="text-align: left;"><strong>LOGISTICA:</strong>
+        <span style="margin-left: 30px;">SI</span>
+        <div class="checkbox"></div>
+        <span style="margin-left: 90px;">NO</span>
+        <div class="checkbox"></div>
+      </td>
       <td style="text-align:right">
-        <strong style="font-size:20px;color:red">No. 0007301</strong>
+        
     </td>
     </tr>
     <tr>
-      <td style="text-align: left;"><strong>HORA DE LLEGADA:</strong></td>
-      <td style="text-align: left;"><strong>HORA DE SALIDA:</strong></td>
-      <td colspan="3" style="text-align: left;"><strong>TOTAL DE HORAS:</strong></td>
+      <td style="text-align: left;width: 40%;"><strong>PROYECTO:</strong></td>
+      <td colspan="2" style="text-align: left;"><strong>HORA DE LLEGADA:</strong></td>
+      <td  style="text-align: left;"><strong>HORA DE SALIDA:</strong></td>
+      <td  style="text-align: left;"><strong>TOTAL DE HORAS:</strong></td>
     </tr>
   </table>
 
@@ -157,6 +156,14 @@
       <tr>
         <th rowspan="2" class="equipo-cell">EQUIPO</th>
         <th rowspan="2" class="codigo-cell">CÓDIGO</th>
+        <th colspan="2" class="header-cell">TRABAJO REALIZADO</th>
+        <th colspan="5" class="header-cell">INSUMOS Y QUÍMICOS</th>
+        <th colspan="8" class="header-cell">AGUA RESIDUAL SUCCIONADA</th>
+        <th rowspan="2" class="header-cell">DESCRIPCIÓN</th>
+        <th rowspan="2" class="header-cell">ABREVIATURA</th>
+        <th rowspan="2" class="header-cell">MATERIAL TRANSPORTADO</th>
+      </tr>
+      <tr>
         <th class="header-cell">SUC</th>
         <th class="header-cell">LIMP</th>
         <th class="header-cell">QUIM</th>
@@ -172,27 +179,19 @@
         <th class="header-cell">60</th>
         <th class="header-cell">70</th>
         <th class="header-cell">>71</th>
-        <th rowspan="2" class="header-cell">DESCRIPCIÓN</th>
-        <th rowspan="2" class="header-cell">ABREVIATURA</th>
-        <th rowspan="2" class="header-cell">MATERIAL TRANSPORTADO</th>
-      </tr>
-      <tr>
-        <th colspan="2">TRABAJO REALIZADO</th>
-        <th colspan="5">INSUMOS Y QUÍMICOS</th>
-        <th colspan="8">GALONES DE AGUA RESIDUAL SUCCIONADA</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -207,14 +206,14 @@
       </tr>
       <tr>
         <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -229,14 +228,14 @@
       </tr>
       <tr>
         <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
+        <td class="grid-cell"style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"style="background-color:#f7f7f7"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -251,14 +250,14 @@
       </tr>
       <tr>
         <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -273,14 +272,14 @@
       </tr>
       <tr>
         <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -295,14 +294,14 @@
       </tr>
       <tr>
         <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -317,14 +316,14 @@
       </tr>
       <tr>
         <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -339,14 +338,14 @@
       </tr>
       <tr>
         <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -357,18 +356,25 @@
         <td class="grid-cell"></td>
         <td><strong>PLANTA DE AGUA POTABLE</strong></td>
         <td><strong>PTAP</strong></td>
-        <td style="text-align: left;"><strong>Galón</strong></td>
+        <td style="text-align: left;">
+          <table border="0">
+            <tr>
+              <td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>GALON</strong></td>
+              <td style="border: 0px solid;"></td>
+            </tr>
+          </table>
+        </td>
       </tr>
       <tr>
         <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -379,18 +385,25 @@
         <td class="grid-cell"></td>
         <td><strong>OTROS</strong></td>
         <td><strong>OT</strong></td>
-        <td style="text-align: left;"><strong>M3</strong></td>
+         <td style="text-align: left;">
+          <table border="0">
+            <tr>
+              <td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>M3</strong></td>
+              <td style="border: 0px solid;"></td>
+            </tr>
+          </table>
+        </td>
       </tr>
       <tr>
         <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -401,7 +414,14 @@
         <td class="grid-cell"></td>
         <td>--</td>
         <td>--</td>
-        <td style="text-align: left;"><strong>Barril</strong></td>
+         <td style="text-align: left;">
+          <table border="0">
+            <tr>
+              <td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>BARRIL</strong></td>
+              <td style="border: 0px solid;"></td>
+            </tr>
+          </table>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -448,6 +468,10 @@
         <td></td>
       </tr>
 </table>
+<div style="display: flex; justify-content: space-between; gap: 3px;">
+<span>PSL-GO-BS-F-002 08 JULIO 2024</span>
+<span>VERSION: 01</span>
+</div>
 </div>
 
 </body>
