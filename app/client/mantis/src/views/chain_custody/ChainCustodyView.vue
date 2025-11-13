@@ -11,7 +11,7 @@ const cadenaCustodia = ref({
   ubicacion: 'Bloque 31',
   tecnico: {
     nombre: 'Juan Pérez García',
-    contacto: 'María López - Gerente de IT'
+    cargo: 'Conductor Técnico',
   },
   facturacion: {
     equipo: 'DÍAS',
@@ -23,43 +23,188 @@ const cadenaCustodia = ref({
 })
 
 const recursos = ref([
-  {
-    id: 1,
-    tipo: 'Material',
-    descripcion: 'Cable de red Cat6 (10m)',
-    cantidad: 5,
-    unidad: 'und',
-    precioUnitario: 25.00,
-    total: 125.00
-  },
-  {
-    id: 2,
-    tipo: 'Herramienta',
-    descripcion: 'Kit de destornilladores',
-    cantidad: 1,
-    unidad: 'und',
-    precioUnitario: 0.00,
-    total: 0.00
-  },
-  {
-    id: 3,
-    tipo: 'Material',
-    descripcion: 'Pasta térmica premium',
-    cantidad: 2,
-    unidad: 'tubo',
-    precioUnitario: 45.00,
-    total: 90.00
-  },
-  {
-    id: 4,
-    tipo: 'Repuesto',
-    descripcion: 'Memoria RAM DDR4 8GB',
-    cantidad: 3,
-    unidad: 'und',
-    precioUnitario: 180.00,
-    total: 540.00
-  }
-])
+    {
+        "id": 21,
+        "project_id": 2,
+        "type": "SERVIC",
+        "resource_item_id": 264,
+        "resource_item_code": "PEISOL-SERV00",
+        "resource_item_name": "Mantenimiento Y Limpieza General",
+        "detailed_description": "MANTENIMIENTO PSL-BT-103",
+        "cost": "35.00",
+        "interval_days": 2,
+        "operation_start_date": "2025-11-01",
+        "is_active": true,
+        "is_selected": false,
+        "is_retired": false,
+        "retirement_date": null,
+        "retirement_reason": null,
+        "is_confirm_delete": false,
+        "is_deleteable": true,
+        "notes": null
+    },
+    {
+        "id": 22,
+        "project_id": 2,
+        "type": "SERVIC",
+        "resource_item_id": 264,
+        "resource_item_code": "PEISOL-SERV00",
+        "resource_item_name": "Mantenimiento Y Limpieza General",
+        "detailed_description": "MANTENIMIENTO PSL-BT-108",
+        "cost": "34.00",
+        "interval_days": 3,
+        "operation_start_date": "2025-11-01",
+        "is_active": true,
+        "is_selected": false,
+        "is_retired": false,
+        "retirement_date": null,
+        "retirement_reason": null,
+        "is_confirm_delete": false,
+        "is_deleteable": true,
+        "notes": null
+    },
+    {
+        "id": 23,
+        "project_id": 2,
+        "type": "SERVIC",
+        "resource_item_id": 264,
+        "resource_item_code": "PEISOL-SERV00",
+        "resource_item_name": "Mantenimiento Y Limpieza General",
+        "detailed_description": "MANTENIMIENTO PSL-BT-111",
+        "cost": "35.00",
+        "interval_days": 4,
+        "operation_start_date": "2025-11-01",
+        "is_active": true,
+        "is_selected": false,
+        "is_retired": false,
+        "retirement_date": null,
+        "retirement_reason": null,
+        "is_confirm_delete": false,
+        "is_deleteable": true,
+        "notes": null
+    },
+    {
+        "id": 24,
+        "project_id": 2,
+        "type": "SERVIC",
+        "resource_item_id": 264,
+        "resource_item_code": "PEISOL-SERV00",
+        "resource_item_name": "Mantenimiento Y Limpieza General",
+        "detailed_description": "MANTENIMIENTO PSL-BT-114",
+        "cost": "32.00",
+        "interval_days": 3,
+        "operation_start_date": "2025-11-01",
+        "is_active": true,
+        "is_selected": false,
+        "is_retired": false,
+        "retirement_date": null,
+        "retirement_reason": null,
+        "is_confirm_delete": false,
+        "is_deleteable": true,
+        "notes": null
+    },
+    {
+        "id": 25,
+        "project_id": 2,
+        "type": "SERVIC",
+        "resource_item_id": 264,
+        "resource_item_code": "PEISOL-SERV00",
+        "resource_item_name": "Mantenimiento Y Limpieza General",
+        "detailed_description": "MANTENIMIENTO PSL-BT-112",
+        "cost": "31.00",
+        "interval_days": 2,
+        "operation_start_date": "2025-11-01",
+        "is_active": true,
+        "is_selected": false,
+        "is_retired": false,
+        "retirement_date": null,
+        "retirement_reason": null,
+        "is_confirm_delete": false,
+        "is_deleteable": true,
+        "notes": null
+    },
+    {
+        "id": 26,
+        "project_id": 2,
+        "type": "SERVIC",
+        "resource_item_id": 264,
+        "resource_item_code": "PEISOL-SERV00",
+        "resource_item_name": "Mantenimiento Y Limpieza General",
+        "detailed_description": "MANTENIMIENTO PSL-BT-115",
+        "cost": "42.00",
+        "interval_days": 3,
+        "operation_start_date": "2025-11-01",
+        "is_active": true,
+        "is_selected": false,
+        "is_retired": false,
+        "retirement_date": null,
+        "retirement_reason": null,
+        "is_confirm_delete": false,
+        "is_deleteable": true,
+        "notes": null
+    },
+    {
+        "id": 27,
+        "project_id": 2,
+        "type": "SERVIC",
+        "resource_item_id": 264,
+        "resource_item_code": "PEISOL-SERV00",
+        "resource_item_name": "Mantenimiento Y Limpieza General",
+        "detailed_description": "MANTENIMIENTO PSL-BT-101",
+        "cost": "41.00",
+        "interval_days": 1,
+        "operation_start_date": "2025-11-01",
+        "is_active": true,
+        "is_selected": false,
+        "is_retired": false,
+        "retirement_date": null,
+        "retirement_reason": null,
+        "is_confirm_delete": false,
+        "is_deleteable": true,
+        "notes": null
+    },
+    {
+        "id": 28,
+        "project_id": 2,
+        "type": "SERVIC",
+        "resource_item_id": 264,
+        "resource_item_code": "PEISOL-SERV00",
+        "resource_item_name": "Mantenimiento Y Limpieza General",
+        "detailed_description": "MANTENIMIENTO PSL-BT-116",
+        "cost": "37.00",
+        "interval_days": 5,
+        "operation_start_date": "2025-11-01",
+        "is_active": true,
+        "is_selected": false,
+        "is_retired": false,
+        "retirement_date": null,
+        "retirement_reason": null,
+        "is_confirm_delete": false,
+        "is_deleteable": true,
+        "notes": null
+    },
+    {
+        "id": 29,
+        "project_id": 2,
+        "type": "SERVIC",
+        "resource_item_id": 264,
+        "resource_item_code": "PEISOL-SERV00",
+        "resource_item_name": "Mantenimiento Y Limpieza General",
+        "detailed_description": "MANTENIMIENTO PSL-BT-113",
+        "cost": "36.00",
+        "interval_days": 3,
+        "operation_start_date": "2025-11-01",
+        "is_active": true,
+        "is_selected": false,
+        "is_retired": false,
+        "retirement_date": null,
+        "retirement_reason": null,
+        "is_confirm_delete": false,
+        "is_deleteable": true,
+        "notes": null
+    }
+]
+)
 </script>
 
 <template>
@@ -67,9 +212,9 @@ const recursos = ref([
     <!-- Header -->
     <div class="bg-white rounded-lg shadow-md p-2 mb-2 border border-gray-200">
       <div class="flex justify-between items-center">
-        <h1 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+        <h1 class="text-gray-800 flex items-center gap-2 font-semibold">
           <i class="las la-file-invoice text-blue-500"></i>
-          #12 TORRES ULLOA VIVIANA - ORELLANA IV
+          Cadena de Custodia
         </h1>
         <div class="flex gap-2">
           <button class="btn btn-secondary btn-sm">
@@ -93,29 +238,7 @@ const recursos = ref([
           <div class="flex justify-between items-start">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <h2 class="text-xl font-bold">Cadena de Custodia</h2>
-              </div>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                <div>
-                  <i class="las la-calendar text-yellow-300 mr-1"></i>
-                  <span class="font-bold">Fecha:</span>
-                  <span class="font-bold ml-1 text-gray-100">{{ cadenaCustodia.fecha }}</span>
-                </div>
-                <div>
-                  <i class="las la-clock text-yellow-300 mr-1"></i>
-                  <span class="font-bold">Inicio - Fin:</span>
-                  <span class="font-bold ml-1 text-gray-100">{{ cadenaCustodia.horaInicio }} - {{ cadenaCustodia.horaFin }}</span>
-                </div>
-                <div>
-                  <i class="las la-hourglass text-yellow-300 mr-1"></i>
-                  <span class="font-bold">Horas:</span>
-                  <span class="font-bold ml-1 text-gray-100">{{ cadenaCustodia.horas.toFixed(2) }}</span>
-                </div>
-                <div>
-                  <i class="las la-map-marker text-yellow-300 mr-1"></i>
-                  <span class="font-bold">Ubicación:</span>
-                  <span class="font-bold ml-1 text-gray-100">{{ cadenaCustodia.ubicacion }}</span>
-                </div>
+                <h2 class="text-xl font-bold"> #12 TORRES ULLOA VIVIANA - ORELLANA IV</h2>
               </div>
             </div>
             <div class="text-right">
@@ -129,48 +252,118 @@ const recursos = ref([
           </div>
         </div>
 
-        <!-- Información del Técnico -->
-        <div class="p-4 border-b">
-          <div class="flex items-center gap-2 text-sm text-gray-600">
-            <i class="las la-user text-blue-500 text-lg"></i>
-            <span class="font-semibold">Técnico:</span>
-            <span class="badge badge-outline">{{ cadenaCustodia.tecnico.nombre }}</span>
-            <span class="text-gray-500 ml-4">Contacto:</span>
-            <span>{{ cadenaCustodia.tecnico.contacto }}</span>
+        <!-- Información General -->
+        <div class="p-2">
+          <div class="grid grid-cols-4 gap-4">
+            <!-- Fecha -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Fecha:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">{{ cadenaCustodia.fecha }}</span>
+            </div>
+            <!-- Inicio - Fin -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Inicio - Fin:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                {{ cadenaCustodia.horaInicio }} - {{ cadenaCustodia.horaFin }} 
+                <span class="ml-2 me-2 text-gray-200">|</span>
+                {{ cadenaCustodia.horas.toFixed(2) }} HRS
+              </span>
+            </div>
+            <!-- Ubicación -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Ubicación:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">{{ cadenaCustodia.ubicacion }}</span>
+            </div>
+            <!-- Placa Vehículo -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Placa Vehiculo:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                PAE-2445
+                <span class="ml-2 me-2 text-gray-200">|</span>
+                Logística: 
+                <span class="text-green-700 ml-2 me-2">SI</span>
+              </span>
+            </div>
           </div>
         </div>
 
+        <!-- Información del Técnico -->
+        <div class="p-2 border-b bg-gray-50 border-b-gray-200">
+          <div class="grid grid-cols-4 gap-4">
+            <!-- Técnico -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Técnico:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                {{ cadenaCustodia.tecnico.nombre }} 
+                <span class="ml-2 me-2 text-gray-200">|</span>
+                <span class="">CI: 1722919725</span></span>
+            </div>
+            <!-- Cargo -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Cargo:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">{{ cadenaCustodia.tecnico.cargo }}</span>
+            </div>
+            <!-- Contacto -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Contacto:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                {{ cadenaCustodia.tecnico.nombre }}
+                 <span class="ml-2 me-2 text-gray-200">|</span> 
+                 <span>CI: 1722919725</span></span>
+            </div>
+            <!-- Cargo Contacto -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Cargo Contacto:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">Maquinista</span>
+            </div>
+          </div>
+        </div>
+        
+
         
 <!-- Información de Facturación (Maestro) -->
-<div class="p-4 border-b">
-  <h3 class="font-semibold text-gray-700 mb-3">Información de Facturación</h3>
+<div class="p-4 border-b border-b-gray-200">
+  <h3 class="font-semibold text-gray-700 mb-3">Detalle de Cadena de Custodia</h3>
   <div class="overflow-x-auto">
-    <table class="table table-sm w-full">
+    <table class="table table-sm w-full table-zebra">
       <thead>
-        <tr class="bg-gray-100">
-          <th class="text-left">Equipo</th>
-          <th class="text-left">Código</th>
-          <th class="text-right">Precio Unitario</th>
-          <th class="text-right">Total Línea</th>
+        <tr class="bg-gray-500 text-white text-center">
+          <th class="border border-gray-300 w-10">#</th>
+          <th class="border border-gray-300">Equipo</th>
+          <th class="border border-gray-300 w-30">Precio</th>
+          <th class="border border-gray-300 w-30">Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="hover:bg-gray-50">
-          <td class="font-semibold">{{ cadenaCustodia.facturacion.equipo }}</td>
-          <td>{{ cadenaCustodia.facturacion.codigo.toFixed(2) }}</td>
-          <td class="text-right">${{ cadenaCustodia.facturacion.precioUnitario.toFixed(2) }}</td>
-          <td class="text-right font-semibold">${{ cadenaCustodia.facturacion.totalLinea.toFixed(2) }}</td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr class="bg-gray-50">
-          <td colspan="4" class="text-sm text-gray-600">
-            <i class="las la-comment-alt"></i>
-            <span>{{ cadenaCustodia.detalle }}</span>
+        <tr class="hover:bg-yellow-100" v-for="(recurso, index) in recursos" :key="recurso.id">
+          <td class="border border-gray-300">{{ index + 1 }}</td>
+          <td class="border border-gray-300">{{ recurso.detailed_description }}</td>
+          <td class="border border-gray-300 text-end">{{ recurso.cost }}</td>
+          <td class="border border-gray-300 text-end">
+            quitar
           </td>
         </tr>
-      </tfoot>
+      </tbody>
     </table>
+  </div>
+  <div class="pt-2 pb-2">
+    <div class="flex gap-4">
+      <div class="p-3 border rounded border-gray-300">
+        Galones:
+        <span class="text-xl">20</span>
+      </div>
+      <div class="p-3 border rounded border-gray-300">
+        Metro Cubicos:
+        <span class="text-xl">5</span>
+      </div>
+      <div class="p-3 border rounded border-gray-300">
+        Barriles:
+        <span class="text-xl">2</span>
+      </div>
+        <div class="pt-4 border rounded p-3 border-gray-200 w-9/12">
+    <span class="font-semibold">Notas:</span>
+  </div>
+    </div>
   </div>
 </div>
 
