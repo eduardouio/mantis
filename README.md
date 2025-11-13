@@ -4,6 +4,8 @@ python manage.py makemigrations accounts
 python manage.py makemigrations equipment projects
 python manage.py migrate
 python manage.py sowseed
+
+manage.py populate_history --auto   
 ```
 
 
@@ -12,6 +14,7 @@ python manage.py sowseed
 ./manage.py makemigrations accounts equipment projects
 ./manage.py migrate
 ./manage.py sowseed
+./manage.py populate_history --auto   
 ```
 
 
