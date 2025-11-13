@@ -348,21 +348,24 @@ const recursos = ref([
   </div>
   <div class="pt-2 pb-2">
     <div class="flex gap-4">
-      <div class="p-3 border rounded border-gray-300">
-        Galones:
-        <span class="text-xl">20</span>
+      <div class="flex gap-4">
+        <div class="p-3 border rounded border-gray-200">
+          Galones:
+          <span class="text-xl text-primary ml-5">20</span>
+        </div>
+        <div class="p-3 border rounded border-gray-200">
+          Metro Cubicos:
+          <span class="text-xl text-primary ml-5">5</span>
+        </div>
+        <div class="p-3 border rounded border-gray-200">
+          Barriles:
+          <span class="text-xl text-primary ml-5">2</span>
+        </div>
       </div>
-      <div class="p-3 border rounded border-gray-300">
-        Metro Cubicos:
-        <span class="text-xl">5</span>
+      <div class="flex-1 border rounded p-3 border-gray-200">
+        <span class="font-semibold">Notas:</span>
+        <span class="text-primary ml-5">{{ cadenaCustodia.detalle  }}</span>
       </div>
-      <div class="p-3 border rounded border-gray-300">
-        Barriles:
-        <span class="text-xl">2</span>
-      </div>
-        <div class="pt-4 border rounded p-3 border-gray-200 w-9/12">
-    <span class="font-semibold">Notas:</span>
-  </div>
     </div>
   </div>
 </div>
