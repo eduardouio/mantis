@@ -336,11 +336,13 @@ const recursos = ref([
       </thead>
       <tbody>
         <tr class="hover:bg-yellow-100" v-for="(recurso, index) in recursos" :key="recurso.id">
-          <td class="border border-gray-300">{{ index + 1 }}</td>
-          <td class="border border-gray-300">{{ recurso.detailed_description }}</td>
-          <td class="border border-gray-300 text-end">{{ recurso.cost }}</td>
-          <td class="border border-gray-300 text-end">
-            quitar
+          <td class="border border-gray-300 p-2">{{ index + 1 }}</td>
+          <td class="border border-gray-300 p-2">{{ recurso.detailed_description }}</td>
+          <td class="border border-gray-300 p-2 text-end">{{ recurso.cost }}</td>
+          <td class="border border-gray-300 p-2 text-center">
+            <span class="border rounded p-1 cursor-pointer bg-red-400 text-white hover:bg-red-600 font-semibold">
+              Eliminar
+            </span>
           </td>
         </tr>
       </tbody>
