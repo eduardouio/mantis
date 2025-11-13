@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'rest_framework',
+    'simple_history',
     'api',
     'accounts',
     'equipment',
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -175,3 +177,15 @@ URL_LICENCE = 'https://licences.dev-7.com/peisol/'
 
 PATH_LOGS = os.path.join(os.path.dirname(BASE_DIR), 'logs')
 # Verifica si el directorio de logs existe, si no lo crea
+
+# Reconocineto entorno
+IS_IN_PRODUCTION = True
+if 'eduardo' in os.path.abspath(__file__):
+    IS_IN_PRODUCTION = False
+
+# URL base para generación de reportes PDF
+if IS_IN_PRODUCTION:
+    BASE_URL = 'https://mantis.peisol.com.ec'
+else:
+    BASE_URL = 'http://localhost:8000'
+
