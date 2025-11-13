@@ -19,7 +19,7 @@ class CustodyChain(BaseModel):
     )
     consecutive = models.CharField(
         'Consecutivo',
-        max_length=6,
+        max_length=7,
         blank=True,
         null=True
     )
@@ -60,11 +60,47 @@ class CustodyChain(BaseModel):
         blank=True,
         null=True
     )
+    dni_contact = models.CharField(
+        'Cédula de Contacto',
+        max_length=15,
+        blank=True,
+        null=True
+    )
     contact_position = models.CharField(
         'Cargo de Contacto',
         max_length=255,
         blank=True,
         null=True
+    )
+    date_contact = models.DateField(
+        'Fecha de Contacto',
+        blank=True,
+        null=True,
+        default=None
+    )    
+    driver_name = models.CharField(
+        'Nombre de Transportista',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    dni_driver = models.CharField(
+        'Cédula de Transportista',
+        max_length=15,
+        blank=True,
+        null=True
+    )
+    driver_position = models.CharField(
+        'Cargo de Transportista',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    driver_date = models.DateField(
+        'Fecha de Transportista',
+        blank=True,
+        null=True,
+        default=None
     )
     total_gallons = models.PositiveSmallIntegerField(
         'Total de Galones',
@@ -78,62 +114,15 @@ class CustodyChain(BaseModel):
         'Total de Metros Cúbicos',
         default=0
     )
-    detail = models.TextField(
-        "Detalle",
-        blank=True,
-        null=True
-    )
-    item_unity = models.CharField(
-        "Unidad del Item",
-        max_length=100,
-        choices=(
-            ("DIAS", "DÍAS"),
-            ("UNIDAD", "UNIDAD"),
-        ),
-        default="DIAS",
-    )
-    quantity = models.DecimalField(
-        "Cantidad",
-        max_digits=10,
-        decimal_places=2,
-        default=1
-    )
-    unit_price = models.DecimalField(
-        "Precio Unitario",
-        max_digits=10,
-        decimal_places=2,
-        default=0
-    )
-    total_line = models.DecimalField(
-        "Total Línea",
-        max_digits=10,
-        decimal_places=2,
-        default=0
-    )
-    unit_measurement = models.CharField(
-        "Unidad de Medida",
-        max_length=50,
-        choices=(
-            ("UNITY", "Unidad"),
-            ("DAIS", "Días")
-        ),
-        default="DAIS",
-    )
-    total_price = models.DecimalField(
-        "Precio Total",
-        max_digits=10,
-        decimal_places=2,
-        default=0
-    )
+
 
     @classmethod
     def get_next_consecutive(cls):
         """Generar el siguiente consecutivo para una cadena de custodia."""
-        last_chain = cls.objects.filter(
-            is_active=True
-        ).exclude(
-            consecutive__isnull=True
-        ).order_by('-id').first()
+        last_chain = cls.objects.all().order_by('-id').first()
+
+        if not last_chain:
+            return '0000001'
 
         if last_chain and last_chain.consecutive:
             try:
@@ -144,7 +133,7 @@ class CustodyChain(BaseModel):
         else:
             next_number = 1
 
-        return str(next_number).zfill(6)
+        return str(next_number).zfill(7)
 
     class Meta:
         verbose_name = 'Cadena de Custodia'
@@ -183,4 +172,4 @@ class ChainCustodyDetail(BaseModel):
         verbose_name_plural = 'Detalles de Cadenas de Custodia'
 
     def __str__(self):
-        return '{}-{}'.format(self.custody_chain.id, self.resource_item.id)
+        return '{}-{}'.format(self.custody_chain.id, self.project_resource.id)

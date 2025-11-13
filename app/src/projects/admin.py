@@ -168,29 +168,34 @@ class SheetProjectAdmin(BaseModelAdmin):
 @admin.register(CustodyChain)
 class CustodyChainAdmin(BaseModelAdmin):
     list_display = (
-    'id', 'consecutive', 'technical', 'sheet_project',
-    'activity_date', 'location', 'time_duration',
-    'total_gallons', 'total_barrels', 'total_cubic_meters'
+        'id', 'consecutive', 'technical', 'sheet_project',
+        'activity_date', 'location', 'issue_date', 'time_duration',
+        'total_gallons', 'total_barrels', 'total_cubic_meters'
     )
     list_filter = (
-        'technical', 'sheet_project', 'activity_date', 'is_active'
+        'technical', 'sheet_project', 'activity_date', 'issue_date', 'is_active'
     )
     search_fields = (
         'consecutive',
         'technical__first_name', 'technical__last_name',
-        'location'
+        'location', 'contact_name', 'driver_name'
     )
     # readonly heredado
     fieldsets = (
         ('Cadena', {
             'fields': (
                 'technical', 'sheet_project', 'consecutive', 'activity_date',
-                'location', 'start_time', 'end_time', 'time_duration'
+                'location', 'issue_date', 'start_time', 'end_time', 'time_duration'
             )
         }),
         ('Contacto', {
             'fields': (
-                'contact_name', 'contact_position'
+                'contact_name', 'dni_contact', 'contact_position', 'date_contact'
+            ), 'classes': ('collapse',)
+        }),
+        ('Transportista', {
+            'fields': (
+                'driver_name', 'dni_driver', 'driver_position', 'driver_date'
             ), 'classes': ('collapse',)
         }),
         ('Volúmenes', {
