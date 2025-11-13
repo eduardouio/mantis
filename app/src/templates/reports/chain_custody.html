@@ -1,3 +1,5 @@
+
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,7 +19,7 @@
   }
   .container {
     width: 100%;
-    max-width: 297mm;
+    max-width: 330mm;
     margin: 0 auto;
     border: 1px solid #000;
     border-collapse: collapse;
@@ -36,7 +38,7 @@
   .header {
     font-weight: bold;
     text-align: center;
-    background-color: #e9f4ff;
+    background-color: #0b1015;
     border: 1px solid #0077b6;
     padding: 4px;
     font-size: 11px;
@@ -49,11 +51,11 @@
     font-size: 9px;
   }
   .top-table th {
-    background-color: #f2f9ff;
+    background-color: #f8fff2;
   }
   .checkbox {
-    width: 12px;
-    height: 12px;
+    width: 15px;
+    height: 15px;
     border: 1px solid #000;
     display: inline-block;
     vertical-align: middle;
@@ -72,12 +74,12 @@
     font-size: 8px;
   }
   .equipo-cell {
-    width: 150px;
+    width: 200px;
     height: 25px;
     font-size: 8px;
   }
   .codigo-cell {
-    width: 150px;
+    width: 100px;
     height: 25px;
     font-size: 8px;
   }
@@ -87,13 +89,42 @@
   .signature-row td {
     border-bottom: 2px solid #fff;
   }
+  .header-content {
+    display: flex;
+    width: 100%;
+    align-items: center;
+  }
+  .header-text {
+    width: 75%;
+    text-align: left;
+    padding: 4px;
+  }
+  .header-logo {
+    width: 25%;
+    text-align: center;
+    padding: 4px;
+  }
+  .header-logo img {
+    max-width: 100%;
+    max-height: 60px;
+  }
+  .checkbox-group {
+    display: flex;
+    justify-content: gap 3  0px;
+    align-items: center;
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="header">
-    MANTENIMIENTO DE EQUIPOS SANITARIOS, TRANSPORTE Y CADENA DE CUSTODIA DE AGUAS RESIDUALES
+  <div class="header-content">
+    <div class="header-text" style="height: 40px;">
+      <h3>MANTENIMIENTO DE EQUIPOS SANITARIOS, TRANSPORTE Y CADENA DE CUSTODIA DE AGUAS RESIDUALES</h3>
+    </div>
+    <div class="header-logo">
+      <img src="{% static 'img/logo.png' %}" alt="">
+    </div>
   </div>
 
   <table>
@@ -101,12 +132,19 @@
       <td colspan="2" style="text-align: left;">FECHA:</td>
       <td style="text-align: left;">PLACAS:</td>
       <td style="text-align: left;">LOGÍSTICA:</td>
-      <td style="text-align: left;">SI <div class="checkbox"></div> NO <div class="checkbox"></div></td>
+      <td>
+        <span>SI</span>
+        <div class="checkbox"></div>
+        <span style="margin-left: 60px;">NO</span>
+        <div class="checkbox"></div>
+      </td>
     </tr>
     <tr>
       <td colspan="2" style="text-align: left;">CLIENTE:</td>
       <td colspan="2" style="text-align: left;">PROYECTO:</td>
-      <td class="center"><strong>No. 0007301</strong></td>
+      <td style="text-align:right">
+        <strong style="font-size:20px;color:red">No. 0007301</strong>
+    </td>
     </tr>
     <tr>
       <td style="text-align: left;">HORA DE LLEGADA:</td>
@@ -125,7 +163,6 @@
         <th class="header-cell">QUIM</th>
         <th class="header-cell">P.H.</th>
         <th class="header-cell">T.Z.</th>
-        <th class="header-cell">ABT</th>
         <th class="header-cell">FUN</th>
         <th class="header-cell">ABT</th>
         <th class="header-cell">10</th>
@@ -142,13 +179,12 @@
       </tr>
       <tr>
         <th colspan="2">TRABAJO REALIZADO</th>
-        <th colspan="6">INSUMOS Y QUÍMICOS</th>
+        <th colspan="5">INSUMOS Y QUÍMICOS</th>
         <th colspan="8">GALONES DE AGUA RESIDUAL SUCCIONADA</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -188,13 +224,11 @@
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
         <td><strong>LAVAMANOS</strong></td>
         <td><strong>LV</strong></td>
         <td><strong>AGUAS GRISES</strong></td>
       </tr>
       <tr>
-        <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -234,13 +268,11 @@
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
         <td><strong>BIODIGESTOR</strong></td>
         <td><strong>BG</strong></td>
         <td><strong>LODOS ACTIVADOS</strong></td>
       </tr>
       <tr>
-        <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -280,13 +312,11 @@
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
         <td><strong>ESTACIÓN DE BOMBEO</strong></td>
         <td><strong>EB</strong></td>
         <td><strong>GRASA ORGÁNICA</strong></td>
       </tr>
       <tr>
-        <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -326,13 +356,11 @@
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
         <td><strong>PLANTA DE AGUA POTABLE</strong></td>
         <td><strong>PTAP</strong></td>
         <td style="display: flex; gap: 3px;"><strong>Galón</strong> | <strong>m3</strong> | <strong>Barril</strong></td>
       </tr>
       <tr>
-        <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -372,13 +400,11 @@
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td class="grid-cell"></td>
         <td>--</td>
         <td>--</td>
         <td>--</td>
       </tr>
       <tr>
-        <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
@@ -425,16 +451,16 @@
     <tr>
       <td style="text-align: left; width: 33%;"><strong>CARGO:</strong></td>
       <td style="text-align: left; width: 33%;"><strong>CARGO:</strong></td>
-      <td style="text-align: center; width: 33%;"></td>
+      <td style="text-align: center; width: 33%; border-bottom: 2px solid #fff"></td>
     </tr>
     <tr>
       <td style="text-align: left; width: 33%;"><strong>FECHA:</strong></td>
       <td style="text-align: left; width: 33%;"><strong>FECHA:</strong></td>
-      <td style="text-align: center; width: 33%;"></td>
+      <td style="text-align: center; width: 33%;border-bottom: 2px solid #fff"></td>
     </tr>
     <tr class="signature-row">
       <td style="text-align: left; width: 33%; height: 40px;"><strong>FIRMA:</strong></td>
-      <td style="text-align: left; width: 33%; height: 40px;"><strong>FIRMA:</strong></td>
+      <td style="text-align: left; width: 33%; height: 40px;border-bottom: 2px solid #fff"><strong>FIRMA:</strong></td>
       <td style="text-align: center; width: 33%; height: 40px;"><strong>RECIBI CONFORME</strong></td>
     </tr>
   </table>
