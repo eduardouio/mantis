@@ -21,7 +21,6 @@ from simple_history.models import HistoricalRecords
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 
-# django-crum
 from crum import get_current_user
 
 
@@ -70,7 +69,10 @@ class BaseModel(models.Model):
         help_text='Identificador del usuario actualizador del registro.'
     )
 
-    history = HistoricalRecords(inherit=True)
+    history = HistoricalRecords(
+        inherit=True,
+        history_change_reason_field=models.TextField(null=True)
+    )
 
     @classmethod
     def get_all(cls):

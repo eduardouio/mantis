@@ -20,10 +20,10 @@ class PDFCustodyChain(View):
             pdf_bytes = page.pdf(
                 format="A4",
                 margin={
-                    "top": "1cm",
+                    "top": "0.5cm",
                     "right": "0.5cm",
                     "bottom": "0.5cm",
-                    "left": "1cm",
+                    "left": "0.5cm",
                 },
                 print_background=True,
             )
