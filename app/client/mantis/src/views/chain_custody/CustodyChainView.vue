@@ -5,14 +5,17 @@ import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
 import { UseVehicleStore } from '@/stores/VehicleStore'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
-import { appConfig } from '@/AppConfig.js'  
+import { appConfig } from '@/AppConfig.js'
+import Modal from '@/components/common/Modal.vue'
+import TechnicalPresentation from '@/components/resources/TechnicalPresentation.vue'
+import VehiclePresentation from '@/components/resources/VehiclePresentation.vue'
 
 const projectStore = UseProjectStore()
 const technicalStore = UseTechnicalStore()
 const vehicleStore = UseVehicleStore()
 const projectResourceStore = UseProjectResourceStore()
 
-  onMounted(async () => {
+onMounted(async () => {
   await projectStore.fetchProjectData()
   await technicalStore.fetchTechnicalsAvailable()
   await vehicleStore.fetchVehicles()
@@ -22,6 +25,8 @@ const projectResourceStore = UseProjectResourceStore()
 const router = useRouter()
 const selectedVehicle = ref(null)
 const selectedTechnical = ref(null)
+const showTechnicalModal = ref(false)
+const showVehicleModal = ref(false)
 
 const cadenaCustodia = ref({
   numero: '0000123',
@@ -70,6 +75,14 @@ const initializeData = () => {
     cadenaCustodia.value.tecnico.cargo = selectedTechnical.value.work_area_display || selectedTechnical.value.work_area
     cadenaCustodia.value.tecnico.dni = selectedTechnical.value.dni
   }
+}
+
+const openTechnicalModal = () => {
+  showTechnicalModal.value = true
+}
+
+const openVehicleModal = () => {
+  showVehicleModal.value = true
 }
 
 initializeData()
@@ -150,11 +163,21 @@ initializeData()
             <!-- Placa Vehículo -->
             <div class="flex items-center gap-2">
               <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Placa Vehiculo:</span>
-              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
-                {{ cadenaCustodia.vehiculo.placa }}
-                <span class="ml-2 me-2 text-gray-200">|</span>
-                {{ cadenaCustodia.vehiculo.marca }} {{ cadenaCustodia.vehiculo.modelo }}
-              </span>
+              <div class="flex gap-1 flex-1">
+                <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                  {{ cadenaCustodia.vehiculo.placa }}
+                  <span class="ml-2 me-2 text-gray-200">|</span>
+                  {{ cadenaCustodia.vehiculo.marca }} {{ cadenaCustodia.vehiculo.modelo }}
+                </span>
+                <button 
+                  type="button"
+                  class="btn btn-sm btn-outline"
+                  @click="openVehicleModal"
+                  title="Ver detalles del vehículo"
+                >
+                  <i class="las la-eye"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -165,10 +188,21 @@ initializeData()
             <!-- Técnico -->
             <div class="flex items-center gap-2">
               <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Técnico:</span>
-              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
-                {{ cadenaCustodia.tecnico.nombre }} 
-                <span class="ml-2 me-2 text-gray-200">|</span>
-                <span class="">CI: {{ cadenaCustodia.tecnico.dni }}</span></span>
+              <div class="flex gap-1 flex-1">
+                <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                  {{ cadenaCustodia.tecnico.nombre }} 
+                  <span class="ml-2 me-2 text-gray-200">|</span>
+                  <span class="">CI: {{ cadenaCustodia.tecnico.dni }}</span>
+                </span>
+                <button 
+                  type="button"
+                  class="btn btn-sm btn-outline"
+                  @click="openTechnicalModal"
+                  title="Ver detalles del técnico"
+                >
+                  <i class="las la-eye"></i>
+                </button>
+              </div>
             </div>
             <!-- Cargo -->
             <div class="flex items-center gap-2">
@@ -270,5 +304,25 @@ initializeData()
         </div>
       </div>
     </div>
+
+    <!-- Modal de Técnico -->
+    <Modal 
+      :is-open="showTechnicalModal" 
+      :title="`Detalles del Técnico - ${selectedTechnical?.first_name} ${selectedTechnical?.last_name}`"
+      size="xl"
+      @close="showTechnicalModal = false"
+    >
+      <TechnicalPresentation v-if="selectedTechnical" :technical="selectedTechnical" />
+    </Modal>
+
+    <!-- Modal de Vehículo -->
+    <Modal 
+      :is-open="showVehicleModal" 
+      :title="`Detalles del Vehículo - ${selectedVehicle?.no_plate}`"
+      size="xl"
+      @close="showVehicleModal = false"
+    >
+      <VehiclePresentation v-if="selectedVehicle" :vehicle="selectedVehicle" />
+    </Modal>
   </div>
 </template>

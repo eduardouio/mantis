@@ -9,13 +9,10 @@ import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { onMounted, computed, ref } from 'vue';
 import { formatDate } from '@/utils/formatters';
-import { useRouter } from 'vue-router'
 
 const projectStore = UseProjectStore();
 const projectResourceStore = UseProjectResourceStore();
 const sheetProjectsStore = UseSheetProjectsStore();
-const router = useRouter()
-
 const project = computed(() => projectStore.project);
 
 const isModalOpen = ref(false);

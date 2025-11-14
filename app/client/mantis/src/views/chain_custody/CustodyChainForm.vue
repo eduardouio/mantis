@@ -1,91 +1,95 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { appConfig } from '@/AppConfig.js'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
 import { UseVehicleStore } from '@/stores/VehicleStore'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
+import { UseCustodyChainStore } from '@/stores/CustoduChainStore'
+import Modal from '@/components/common/Modal.vue'
+import TechnicalPresentation from '@/components/resources/TechnicalPresentation.vue'
+import VehiclePresentation from '@/components/resources/VehiclePresentation.vue'
 
 const projectStore = UseProjectStore()
 const technicalStore = UseTechnicalStore()
 const vehicleStore = UseVehicleStore()
 const projectResourceStore = UseProjectResourceStore()
-
-onMounted(async () => {
-  await projectStore.fetchProjects()
-  await technicalStore.fetchTechnicals()
-  await vehicleStore.fetchVehicles()
-  await projectResourceStore.fetchProjectResources()
-})
-
+const custodyChainStore = UseCustodyChainStore()
 
 const router = useRouter()
+const isLoading = ref(false)
+const showTechnicalModal = ref(false)
+const showVehicleModal = ref(false)
+
+onMounted(async () => {
+  await projectStore.fetchProjectData()
+  await technicalStore.fetchTechnicalsAvailable()
+  await vehicleStore.fetchVehicles()
+  await projectResourceStore.fetchResourcesProject()
+})
 
 const custodyChain = ref({
   technical: null,
+  vehicle: null,
   sheet_project: null,
   consecutive: '',
-  activity_date: '',
-  location: '',
-  issue_date: '',
+  activity_date: new Date().toISOString().split('T')[0],
+  location: projectStore.project?.location || '',
+  issue_date: new Date().toISOString().split('T')[0],
   start_time: '',
   end_time: '',
   time_duration: 0,
-  contact_name: '',
+  contact_name: projectStore.project?.contact_name || '',
   dni_contact: '',
   contact_position: '',
-  date_contact: '',
+  date_contact: new Date().toISOString().split('T')[0],
   driver_name: '',
   dni_driver: '',
   driver_position: '',
-  driver_date: '',
+  driver_date: new Date().toISOString().split('T')[0],
   total_gallons: 0,
   total_barrels: 0,
   total_cubic_meters: 0,
   notes: ''
 })
 
-const technicals = ref([
-  { id: 1, name: 'Juan Pérez García' },
-  { id: 2, name: 'María López' }
-])
+const selectedResourceIds = ref([])
 
-const sheetProjects = ref([
-  { id: 1, code: 'SP-001', description: 'TORRES ULLOA VIVIANA - ORELLANA IV' },
-  { id: 2, code: 'SP-002', description: 'Proyecto Demo' }
-])
-
-const availableResources = ref([
-  {
-    id: 21,
-    detailed_description: "MANTENIMIENTO PSL-BT-103",
-    cost: "35.00",
-    resource_item_code: "PEISOL-SERV00",
-    selected: false
-  },
-  {
-    id: 22,
-    detailed_description: "MANTENIMIENTO PSL-BT-108",
-    cost: "34.00",
-    resource_item_code: "PEISOL-SERV00",
-    selected: false
-  },
-  {
-    id: 23,
-    detailed_description: "MANTENIMIENTO PSL-BT-111",
-    cost: "35.00",
-    resource_item_code: "PEISOL-SERV00",
-    selected: false
-  }
-])
+const availableResources = computed(() => {
+  return projectResourceStore.resourcesProject.map(resource => ({
+    ...resource,
+    selected: selectedResourceIds.value.includes(resource.id)
+  }))
+})
 
 const selectedResources = computed(() => {
   return availableResources.value.filter(r => r.selected)
 })
 
-const toggleResourceSelection = (resource) => {
-  resource.selected = !resource.selected
+const technicals = computed(() => {
+  return technicalStore.technicals.map(tech => ({
+    id: tech.id,
+    display: `${tech.first_name} ${tech.last_name}`,
+    fullData: tech
+  }))
+})
+
+const vehicles = computed(() => {
+  return vehicleStore.vehicles.map(vehicle => ({
+    id: vehicle.id,
+    display: `${vehicle.no_plate} - ${vehicle.brand} ${vehicle.model}`,
+    fullData: vehicle
+  }))
+})
+
+const toggleResourceSelection = (resourceId) => {
+  const index = selectedResourceIds.value.indexOf(resourceId)
+  if (index > -1) {
+    selectedResourceIds.value.splice(index, 1)
+  } else {
+    selectedResourceIds.value.push(resourceId)
+  }
 }
 
 const calculateDuration = () => {
@@ -97,17 +101,96 @@ const calculateDuration = () => {
     const endMinutes = parseInt(end[0]) * 60 + parseInt(end[1])
     
     const duration = (endMinutes - startMinutes) / 60
-    custodyChain.value.time_duration = duration > 0 ? duration.toFixed(2) : 0
+    custodyChain.value.time_duration = duration > 0 ? parseFloat(duration.toFixed(2)) : 0
   }
 }
 
-const submitForm = () => {
-  console.log('Datos de Cadena de Custodia:', custodyChain.value)
-  console.log('Recursos Seleccionados:', selectedResources.value)
+const submitForm = async () => {
+  try {
+    isLoading.value = true
+    
+    // Validar campos requeridos
+    if (!custodyChain.value.technical || !custodyChain.value.vehicle || selectedResources.value.length === 0) {
+      alert('Por favor complete los campos requeridos y seleccione al menos un recurso')
+      return
+    }
+
+    const payload = {
+      technical_id: custodyChain.value.technical,
+      vehicle_id: custodyChain.value.vehicle,
+      project_id: appConfig.idProject,
+      activity_date: custodyChain.value.activity_date,
+      issue_date: custodyChain.value.issue_date,
+      consecutive: custodyChain.value.consecutive,
+      location: custodyChain.value.location,
+      start_time: custodyChain.value.start_time,
+      end_time: custodyChain.value.end_time,
+      duration_hours: custodyChain.value.time_duration,
+      contact_name: custodyChain.value.contact_name,
+      dni_contact: custodyChain.value.dni_contact,
+      contact_position: custodyChain.value.contact_position,
+      date_contact: custodyChain.value.date_contact,
+      driver_name: custodyChain.value.driver_name,
+      dni_driver: custodyChain.value.dni_driver,
+      driver_position: custodyChain.value.driver_position,
+      driver_date: custodyChain.value.driver_date,
+      total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
+      total_barrels: parseFloat(custodyChain.value.total_barrels) || 0,
+      total_cubic_meters: parseFloat(custodyChain.value.total_cubic_meters) || 0,
+      notes: custodyChain.value.notes,
+      resources: selectedResourceIds.value
+    }
+
+    await custodyChainStore.addCustodyChain(payload)
+    
+    alert('Cadena de custodia guardada exitosamente')
+    router.push({ name: 'custody-chain' })
+  } catch (error) {
+    console.error('Error al guardar:', error)
+    alert('Error al guardar la cadena de custodia: ' + error.message)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 const cancelForm = () => {
-  router.push({ name: 'chain-custody' })
+  router.push({ name: 'custody-chain' })
+}
+
+// Actualizar ubicación cuando cambia el proyecto
+watch(() => projectStore.project?.location, (newLocation) => {
+  if (newLocation && !custodyChain.value.location) {
+    custodyChain.value.location = newLocation
+  }
+})
+
+// Actualizar contacto cuando cambia el proyecto
+watch(() => projectStore.project?.contact_name, (newContact) => {
+  if (newContact && !custodyChain.value.contact_name) {
+    custodyChain.value.contact_name = newContact
+  }
+})
+
+const selectedTechnicalData = computed(() => {
+  if (!custodyChain.value.technical) return null
+  return technicalStore.technicals.find(t => t.id === custodyChain.value.technical)
+})
+
+const selectedVehicleData = computed(() => {
+  if (!custodyChain.value.vehicle) return null
+  return vehicleStore.vehicles.find(v => v.id === custodyChain.value.vehicle)
+})
+
+const openTechnicalModal = () => {
+  if (selectedTechnicalData.value) {
+    showTechnicalModal.value = true
+  }
+}
+
+const openVehicleModal = () => {
+  if (selectedVehicleData.value) {
+    showVehicleModal.value = true
+  }
 }
 </script>
 
@@ -124,35 +207,57 @@ const cancelForm = () => {
             <label class="label" for="technical">
               <span class="label-text font-medium">Técnico *</span>
             </label>
-            <select 
-              id="technical"
-              v-model="custodyChain.technical"
-              required
-              class="select select-bordered w-full"
-            >
-              <option :value="null">Seleccione un técnico</option>
-              <option v-for="tech in technicals" :key="tech.id" :value="tech.id">
-                {{ tech.name }}
-              </option>
-            </select>
+            <div class="flex gap-2">
+              <select 
+                id="technical"
+                v-model.number="custodyChain.technical"
+                required
+                class="select select-bordered w-full flex-1"
+              >
+                <option :value="null" disabled>Seleccione un técnico</option>
+                <option v-for="tech in technicals" :key="tech.id" :value="tech.id">
+                  {{ tech.display }}
+                </option>
+              </select>
+              <button
+                v-if="selectedTechnicalData"
+                type="button"
+                class="btn btn-outline btn-square"
+                @click="openTechnicalModal"
+                title="Ver detalles del técnico"
+              >
+                <i class="las la-eye text-lg"></i>
+              </button>
+            </div>
           </div>
 
-          <!-- Hoja de Proyecto -->
+          <!-- Vehículo -->
           <div class="form-control w-full">
-            <label class="label" for="sheet_project">
-              <span class="label-text font-medium">Hoja de Proyecto *</span>
+            <label class="label" for="vehicle">
+              <span class="label-text font-medium">Vehículo *</span>
             </label>
-            <select 
-              id="sheet_project"
-              v-model="custodyChain.sheet_project"
-              required
-              class="select select-bordered w-full"
-            >
-              <option :value="null">Seleccione un proyecto</option>
-              <option v-for="sheet in sheetProjects" :key="sheet.id" :value="sheet.id">
-                {{ sheet.code }} - {{ sheet.description }}
-              </option>
-            </select>
+            <div class="flex gap-2">
+              <select 
+                id="vehicle"
+                v-model.number="custodyChain.vehicle"
+                required
+                class="select select-bordered w-full flex-1"
+              >
+                <option :value="null" disabled>Seleccione un vehículo</option>
+                <option v-for="vehicle in vehicles" :key="vehicle.id" :value="vehicle.id">
+                  {{ vehicle.display }}
+                </option>
+              </select>
+              <button
+                v-if="selectedVehicleData"
+                type="button"
+                class="btn btn-outline btn-square"
+                @click="openVehicleModal"
+                title="Ver detalles del vehículo"
+              >
+                <i class="las la-eye text-lg"></i>
+              </button>
+            </div>
           </div>
 
           <!-- Consecutivo -->
@@ -408,14 +513,14 @@ const cancelForm = () => {
                 :key="resource.id"
                 class="cursor-pointer hover:bg-blue-50"
                 :class="{ 'bg-blue-100': resource.selected }"
-                @click="toggleResourceSelection(resource)"
+                @click="toggleResourceSelection(resource.id)"
               >
                 <td class="border border-gray-300 text-center">
                   <input 
                     type="checkbox" 
                     class="checkbox checkbox-sm checkbox-primary"
                     :checked="resource.selected"
-                    @click.stop="toggleResourceSelection(resource)"
+                    @click.stop="toggleResourceSelection(resource.id)"
                   />
                 </td>
                 <td class="border border-gray-300">{{ index + 1 }}</td>
@@ -500,15 +605,36 @@ const cancelForm = () => {
 
       <!-- Botones -->
       <div class="flex gap-3 justify-end mt-6">
-        <button type="button" class="btn btn-outline" @click="cancelForm">
+        <button type="button" class="btn btn-outline" @click="cancelForm" :disabled="isLoading">
           <i class="las la-times"></i>
           Cancelar
         </button>
-        <button type="submit" class="btn btn-primary">
-          <i class="las la-save"></i>
-          Guardar Cadena de Custodia
+        <button type="submit" class="btn btn-primary" :disabled="isLoading">
+          <i v-if="!isLoading" class="las la-save"></i>
+          <i v-else class="las la-spinner animate-spin"></i>
+          {{ isLoading ? 'Guardando...' : 'Guardar Cadena de Custodia' }}
         </button>
       </div>
     </form>
+
+    <!-- Modal de Técnico -->
+    <Modal 
+      :is-open="showTechnicalModal" 
+      :title="`Detalles del Técnico - ${selectedTechnicalData?.first_name} ${selectedTechnicalData?.last_name}`"
+      size="xl"
+      @close="showTechnicalModal = false"
+    >
+      <TechnicalPresentation v-if="selectedTechnicalData" :technical="selectedTechnicalData" />
+    </Modal>
+
+    <!-- Modal de Vehículo -->
+    <Modal 
+      :is-open="showVehicleModal" 
+      :title="`Detalles del Vehículo - ${selectedVehicleData?.no_plate}`"
+      size="xl"
+      @close="showVehicleModal = false"
+    >
+      <VehiclePresentation v-if="selectedVehicleData" :vehicle="selectedVehicleData" />
+    </Modal>
   </div>
 </template>

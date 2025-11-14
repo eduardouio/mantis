@@ -1,6 +1,6 @@
 <script setup>
   import { RouterLink, useRouter } from 'vue-router'
-  import AutocompleteResource from '@/components/resoruces/AutocompleteResource.vue'
+  import AutocompleteResource from '@/components/resources/AutocompleteResource.vue'
   import { onMounted, ref, computed } from 'vue'
   import { UseResourcesStore } from '@/stores/ResourcesStore'
   import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
