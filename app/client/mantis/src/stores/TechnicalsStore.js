@@ -3,6 +3,9 @@ import { appConfig } from "@/AppConfig";
 
 export const UseTechnicalsStore = defineStore("technicalsStore", {
     state: () => ({
+        technical: {
+
+        },
         technicals: []
     }),
     actions: {

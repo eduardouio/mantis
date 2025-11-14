@@ -1,5 +1,24 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { appConfig } from '@/AppConfig.js'
+import { useProjectStore } from '@/stores/ProjectStore'
+import { useTechnicalStore } from '@/stores/TechnicalStore'
+import { useVehicleStore } from '@/stores/VehicleStore'
+import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
+
+const projectStore = useProjectStore()
+const technicalStore = useTechnicalStore()
+const vehicleStore = useVehicleStore()
+const projectResourceStore = UseProjectResourceStore()
+
+onMounted(async () => {
+  await projectStore.fetchProjects()
+  await technicalStore.fetchTechnicals()
+  await vehicleStore.fetchVehicles()
+  await projectResourceStore.fetchProjectResources()
+})
+
 
 const cadenaCustodia = ref({
   numero: '0000123',
