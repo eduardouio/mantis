@@ -98,4 +98,4 @@ class GetTechnicalsAvaliablesAPI(View):
 				"meta": serialize_meta(t),
 			})
 
-		return JsonResponse({"technicals": data})
+		return JsonResponse({"data": data})

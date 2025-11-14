@@ -106,4 +106,4 @@ class GetVehiclesAvaliablesAPI(View):
                 }
             )
 
-        return JsonResponse({"vehicles": result})
+        return JsonResponse({"data": result})
