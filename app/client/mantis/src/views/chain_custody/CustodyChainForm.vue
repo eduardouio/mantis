@@ -51,7 +51,15 @@ const custodyChain = ref({
   total_gallons: 0,
   total_barrels: 0,
   total_cubic_meters: 0,
-  notes: ''
+  notes: '',
+  // Campos copiados del técnico
+  technical_name: '',
+  technical_dni: '',
+  technical_position: '',
+  // Campos copiados del vehículo
+  vehicle_plate: '',
+  vehicle_brand: '',
+  vehicle_model: ''
 })
 
 const selectedResourceIds = ref([])
@@ -134,6 +142,12 @@ const submitForm = async () => {
       dni_driver: custodyChain.value.dni_driver,
       driver_position: custodyChain.value.driver_position,
       driver_date: custodyChain.value.driver_date,
+      technical_name: custodyChain.value.technical_name,
+      technical_dni: custodyChain.value.technical_dni,
+      technical_position: custodyChain.value.technical_position,
+      vehicle_plate: custodyChain.value.vehicle_plate,
+      vehicle_brand: custodyChain.value.vehicle_brand,
+      vehicle_model: custodyChain.value.vehicle_model,
       total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
       total_barrels: parseFloat(custodyChain.value.total_barrels) || 0,
       total_cubic_meters: parseFloat(custodyChain.value.total_cubic_meters) || 0,
@@ -192,6 +206,30 @@ const openVehicleModal = () => {
     showVehicleModal.value = true
   }
 }
+
+// Copiar datos del técnico seleccionado
+watch(() => custodyChain.value.technical, (newTechnicalId) => {
+  if (newTechnicalId) {
+    const selectedTech = technicalStore.technicals.find(t => t.id === newTechnicalId)
+    if (selectedTech) {
+      custodyChain.value.technical_name = `${selectedTech.first_name} ${selectedTech.last_name}`
+      custodyChain.value.technical_dni = selectedTech.dni
+      custodyChain.value.technical_position = selectedTech.work_area_display || selectedTech.work_area
+    }
+  }
+})
+
+// Copiar datos del vehículo seleccionado
+watch(() => custodyChain.value.vehicle, (newVehicleId) => {
+  if (newVehicleId) {
+    const selectedVehicle = vehicleStore.vehicles.find(v => v.id === newVehicleId)
+    if (selectedVehicle) {
+      custodyChain.value.vehicle_plate = selectedVehicle.no_plate
+      custodyChain.value.vehicle_brand = selectedVehicle.brand
+      custodyChain.value.vehicle_model = selectedVehicle.model
+    }
+  }
+})
 </script>
 
 <template>
@@ -361,12 +399,90 @@ const openVehicleModal = () => {
         </div>
       </div>
 
+      <!-- Datos del Técnico y Vehículo (editables) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded border border-gray-200">
+        <!-- Datos del Técnico -->
+        <div class="space-y-3">
+          <h5 class="font-semibold text-sm text-gray-700">Datos del Técnico</h5>
+          <div class="form-control w-full">
+            <label class="label" for="technical_name">
+              <span class="label-text text-xs">Nombre Técnico</span>
+            </label>
+            <input 
+              type="text"
+              id="technical_name"
+              v-model="custodyChain.technical_name"
+              class="input input-bordered input-sm w-full"
+            />
+          </div>
+          <div class="form-control w-full">
+            <label class="label" for="technical_dni">
+              <span class="label-text text-xs">DNI Técnico</span>
+            </label>
+            <input 
+              type="text"
+              id="technical_dni"
+              v-model="custodyChain.technical_dni"
+              class="input input-bordered input-sm w-full"
+            />
+          </div>
+          <div class="form-control w-full">
+            <label class="label" for="technical_position">
+              <span class="label-text text-xs">Cargo Técnico</span>
+            </label>
+            <input 
+              type="text"
+              id="technical_position"
+              v-model="custodyChain.technical_position"
+              class="input input-bordered input-sm w-full"
+            />
+          </div>
+        </div>
+
+        <!-- Datos del Vehículo -->
+        <div class="space-y-3">
+          <h5 class="font-semibold text-sm text-gray-700">Datos del Vehículo</h5>
+          <div class="form-control w-full">
+            <label class="label" for="vehicle_plate">
+              <span class="label-text text-xs">Placa</span>
+            </label>
+            <input 
+              type="text"
+              id="vehicle_plate"
+              v-model="custodyChain.vehicle_plate"
+              class="input input-bordered input-sm w-full"
+            />
+          </div>
+          <div class="form-control w-full">
+            <label class="label" for="vehicle_brand">
+              <span class="label-text text-xs">Marca</span>
+            </label>
+            <input 
+              type="text"
+              id="vehicle_brand"
+              v-model="custodyChain.vehicle_brand"
+              class="input input-bordered input-sm w-full"
+            />
+          </div>
+          <div class="form-control w-full">
+            <label class="label" for="vehicle_model">
+              <span class="label-text text-xs">Modelo</span>
+            </label>
+            <input 
+              type="text"
+              id="vehicle_model"
+              v-model="custodyChain.vehicle_model"
+              class="input input-bordered input-sm w-full"
+            />
+          </div>
+        </div>
+      </div>
+
       <!-- Información de Contacto -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información de Contacto</h6>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Nombre de Contacto -->
           <div class="form-control w-full">
             <label class="label" for="contact_name">
               <span class="label-text font-medium">Nombre de Contacto</span>
@@ -380,7 +496,6 @@ const openVehicleModal = () => {
             />
           </div>
 
-          <!-- Cédula de Contacto -->
           <div class="form-control w-full">
             <label class="label" for="dni_contact">
               <span class="label-text font-medium">Cédula de Contacto</span>
@@ -395,7 +510,6 @@ const openVehicleModal = () => {
             />
           </div>
 
-          <!-- Cargo de Contacto -->
           <div class="form-control w-full">
             <label class="label" for="contact_position">
               <span class="label-text font-medium">Cargo de Contacto</span>
@@ -409,7 +523,6 @@ const openVehicleModal = () => {
             />
           </div>
 
-          <!-- Fecha de Contacto -->
           <div class="form-control w-full">
             <label class="label" for="date_contact">
               <span class="label-text font-medium">Fecha de Contacto</span>
@@ -429,7 +542,6 @@ const openVehicleModal = () => {
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información del Transportista</h6>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Nombre de Transportista -->
           <div class="form-control w-full">
             <label class="label" for="driver_name">
               <span class="label-text font-medium">Nombre de Transportista</span>
@@ -443,7 +555,6 @@ const openVehicleModal = () => {
             />
           </div>
 
-          <!-- Cédula de Transportista -->
           <div class="form-control w-full">
             <label class="label" for="dni_driver">
               <span class="label-text font-medium">Cédula de Transportista</span>
@@ -458,7 +569,6 @@ const openVehicleModal = () => {
             />
           </div>
 
-          <!-- Cargo de Transportista -->
           <div class="form-control w-full">
             <label class="label" for="driver_position">
               <span class="label-text font-medium">Cargo de Transportista</span>
@@ -472,7 +582,6 @@ const openVehicleModal = () => {
             />
           </div>
 
-          <!-- Fecha de Transportista -->
           <div class="form-control w-full">
             <label class="label" for="driver_date">
               <span class="label-text font-medium">Fecha de Transportista</span>
@@ -487,7 +596,7 @@ const openVehicleModal = () => {
         </div>
       </div>
 
-      <!-- Recursos del Proyecto (Detalle) -->
+      <!-- Recursos del Proyecto -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">
           Recursos del Proyecto
@@ -544,7 +653,6 @@ const openVehicleModal = () => {
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Totales</h6>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Total Galones -->
           <div class="form-control w-full">
             <label class="label" for="total_gallons">
               <span class="label-text font-medium">Total Galones</span>
@@ -558,7 +666,6 @@ const openVehicleModal = () => {
             />
           </div>
 
-          <!-- Total Barriles -->
           <div class="form-control w-full">
             <label class="label" for="total_barrels">
               <span class="label-text font-medium">Total Barriles</span>
@@ -572,7 +679,6 @@ const openVehicleModal = () => {
             />
           </div>
 
-          <!-- Total Metros Cúbicos -->
           <div class="form-control w-full">
             <label class="label" for="total_cubic_meters">
               <span class="label-text font-medium">Total Metros Cúbicos</span>
