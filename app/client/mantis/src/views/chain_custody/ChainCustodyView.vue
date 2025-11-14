@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 
-// Datos de prueba
 const cadenaCustodia = ref({
   numero: '0000123',
   fecha: '15/01/2024',
