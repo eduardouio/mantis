@@ -31,7 +31,7 @@ const getStatusBadgeClass = (status) => {
 }
 
 // Verificar si una fecha está próxima a vencer (dentro de 30 días)
-const isExpiringsoon = (dueDate) => {
+const isExpiringSoon = (dueDate) => {
   if (!dueDate) return false
   const today = new Date()
   const due = new Date(dueDate)
@@ -105,7 +105,7 @@ const isExpiringsoon = (dueDate) => {
         </div>
         <div class="border-b-1 border-r-1 border-sky-200">
           <span class="font-medium">Matrícula (Vence):</span>
-          <span class="ml-2" :class="isExpiringoon(vehicle.due_date_matricula) ? 'text-warning font-semibold' : ''">
+          <span class="ml-2" :class="isExpiringSoon(vehicle.due_date_matricula) ? 'text-warning font-semibold' : ''">
             {{ formatDate(vehicle.due_date_matricula) }}
           </span>
         </div>
@@ -119,7 +119,7 @@ const isExpiringsoon = (dueDate) => {
         </div>
         <div class="border-b-1 border-r-1 border-sky-200">
           <span class="font-medium">Cert. Oper. (Vence):</span>
-          <span class="ml-2" :class="isExpiringoon(vehicle.due_date_cert_oper) ? 'text-warning font-semibold' : ''">
+          <span class="ml-2" :class="isExpiringSoon(vehicle.due_date_cert_oper) ? 'text-warning font-semibold' : ''">
             {{ formatDate(vehicle.due_date_cert_oper) }}
           </span>
         </div>
@@ -151,7 +151,7 @@ const isExpiringsoon = (dueDate) => {
         </div>
         <div class="border-b-1 border-r-1 border-sky-200">
           <span class="font-medium">Satélite (Vence):</span>
-          <span class="ml-2" :class="isExpiringoon(vehicle.due_date_satellite) ? 'text-warning font-semibold' : ''">
+          <span class="ml-2" :class="isExpiringSoon(vehicle.due_date_satellite) ? 'text-warning font-semibold' : ''">
             {{ formatDate(vehicle.due_date_satellite) }}
           </span>
         </div>
@@ -177,7 +177,7 @@ const isExpiringsoon = (dueDate) => {
         </div>
         <div class="border-b-1 border-r-1 border-sky-200">
           <span class="font-medium">Vencimiento:</span>
-          <span class="ml-2" :class="isExpiringoon(vehicle.insurance_expiration_date) ? 'text-warning font-semibold' : ''">
+          <span class="ml-2" :class="isExpiringSoon(vehicle.insurance_expiration_date) ? 'text-warning font-semibold' : ''">
             {{ formatDate(vehicle.insurance_expiration_date) }}
           </span>
         </div>

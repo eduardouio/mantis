@@ -181,8 +181,6 @@ initializeData()
             </div>
           </div>
         </div>
-
-        <!-- Información del Técnico -->
         <div class="p-2 border-b bg-gray-50 border-b-gray-200">
           <div class="grid grid-cols-4 gap-4">
             <!-- Técnico -->
@@ -224,8 +222,6 @@ initializeData()
             </div>
           </div>
         </div>
-
-        <!-- Información de Facturación (Maestro) -->
         <div class="p-4 border-b border-b-gray-200">
           <h3 class="font-semibold text-gray-700 mb-3">Detalle de Cadena de Custodia</h3>
           <div class="overflow-x-auto">
@@ -283,7 +279,7 @@ initializeData()
 
         <!-- Footer -->
         <div class="bg-gray-50 p-4 rounded-b-lg flex justify-between gap-2">
-          <button class="btn btn-sm btn-primary" @click="router.push({ name: 'chain-custody' })">
+          <button class="btn btn-sm btn-primary" @click="router.push({ name: 'custody-chain' })">
             <i class="las la-arrow-left"></i>
             Cancelar
           </button>
