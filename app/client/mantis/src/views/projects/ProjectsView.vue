@@ -9,20 +9,20 @@ import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { onMounted, computed, ref } from 'vue';
 import { formatDate } from '@/utils/formatters';
+import { useRouter } from 'vue-router'
 
 const projectStore = UseProjectStore();
 const projectResourceStore = UseProjectResourceStore();
 const sheetProjectsStore = UseSheetProjectsStore();
+const router = useRouter()
 
 const project = computed(() => projectStore.project);
 
-// Estados del modal
 const isModalOpen = ref(false);
 const modalTitle = ref('');
 const currentModalComponent = ref(null);
 const selectedResourceForEdit = ref(null);
 
-// Funciones del modal
 const openResourceFormModal = () => {
   modalTitle.value = 'Agregar Recurso al Proyecto';
   currentModalComponent.value = 'ResourceForm';
@@ -43,6 +43,15 @@ const closeModal = () => {
   modalTitle.value = '';
   selectedResourceForEdit.value = null;
 };
+
+const cancelProjectFooter = () => {
+  console.log('Acción cancelar proyecto')
+  // Opcional: router.push('/') u otra ruta
+}
+const saveProjectFooter = () => {
+  console.log('Acción guardar proyecto (stub)')
+  // Opcional: lógica de guardado
+}
 
 onMounted(() => {
   projectStore.fetchProjectData();
@@ -87,7 +96,12 @@ onMounted(() => {
           <div class="flex items-center gap-2 py-0.5">
             <i class="las la-map-marker text-blue-500 text-sm"></i>
             <span class="text-xs text-gray-500">Campamento:</span>
-            <span class="font-semibold text-xs">{{ project?.location || 'N/A' }}</span>
+            <span class="font-semibold text-xs">
+              {{ project?.location || 'N/A' }}
+              <span class="badge badge-info ml-1" v-if="project?.location && project?.cardinal_point">
+                {{ project?.cardinal_point ? ` ${project.cardinal_point}` : '' }}
+              </span>
+            </span>
           </div>  
         </div>
 
@@ -138,6 +152,13 @@ onMounted(() => {
           <TabCalendar />
         </div>
       </div>
+      <!-- Botones con sombra (estilo cadena de custodia) -->
+      <div class="mt-8 bg-white border-t border-gray-200 shadow-md rounded-b-xl flex justify-end gap-3 px-4 py-3">
+        <a href="/proyectos/" class="btn btn-primary btn-sm" @click="cancelProjectFooter">
+          <i class="las la-times"></i>
+          Volver A Proyectos
+        </a>
+    </div>
     </div>
 
     <!-- Modal -->
