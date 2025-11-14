@@ -18,6 +18,7 @@ export const appConfig = {
     "URLTechnicalsAvailable": apiBaseUrl + "/api/technicals/avaliables/",
     "URLVehiclesAvailable": apiBaseUrl + "/api/vehicles/avaliables/",
     "URLResourcesProject": apiBaseUrl + "/api/projects/" + idProject + "/resources/",
+    "URLServicesProject": apiBaseUrl + "/api/projects/" + idProject + "/services/",
     "URLUpdateResourceItem": apiBaseUrl + "/api/projects/resources/update/",
     "URLDeleteResourceProject": apiBaseUrl + "/api/projects/resources/delete/${id_project_resource}/",
     "URLSheetProjects": apiBaseUrl + "/api/workorders/sheets/project/" + idProject + "/",
