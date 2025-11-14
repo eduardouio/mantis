@@ -44,6 +44,23 @@ class Project(BaseModel):
         null=True,
         default=None
     )
+    cardinal_point = models.CharField(
+        'Punto Cardinal',
+        max_length=20,
+        blank=True,
+        null=True,
+        choices=(
+            ('NORTE', 'NORTE'),
+            ('SUR', 'SUR'),
+            ('ESTE', 'ESTE'),
+            ('OESTE', 'OESTE'),
+            ('NORESTE', 'NORESTE'),
+            ('NOROESTE', 'NOROESTE'),
+            ('SURESTE', 'SURESTE'),
+            ('SUROESTE', 'SUROESTE'),
+        ),
+        default=None
+    )
     contact_name = models.CharField(
         'Nombre de Contacto',
         max_length=255
