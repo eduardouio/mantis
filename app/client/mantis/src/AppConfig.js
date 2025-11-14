@@ -13,6 +13,7 @@ export const appConfig = {
         "X-CSRFToken": csrfToken
     },
     "URLProjectData": apiBaseUrl + "/api/projects/data/" + idProject + "/",
+    "URLAllProjectData": apiBaseUrl + "/api/projects/data/0/",
     "URLSourcesAvailable": apiBaseUrl + "/api/projects/resources/available/",
     "URLTechnicalsAvailable": apiBaseUrl + "/api/technicals/available/",
     "URLVehiclesAvailable": apiBaseUrl + "/api/vehicles/available/",

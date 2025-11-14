@@ -5,40 +5,73 @@ from projects.models.Partner import Partner
 
 
 class ProjectData(View):
-	"""Manejar datos básicos del proyecto."""
+    """Manejar datos básicos del proyecto."""
 
-	def get(self, request, project_id):
-		"""Obtener datos básicos del proyecto."""
-		try:
-			project = Project.objects.get(
-				id=project_id, is_deleted=False, is_active=True
-			)
-			partner = Partner.objects.get(
-				id=project.partner.id, is_deleted=False, is_active=True
-			)
+    def get(self, request, project_id):
+        """Obtener datos básicos del proyecto."""
+        try:
 
-			data = {
-				"id": project.id,
-				"partner_id": partner.id,
-				"partner_name": partner.name,
-				"location": project.location,
-				"cardinal_point": project.cardinal_point,
-				"contact_name": project.contact_name,
-				"contact_phone": project.contact_phone,
-				"start_date": project.start_date.isoformat(),
-				"end_date": project.end_date.isoformat() if project.end_date else None,
-				"is_closed": project.is_closed,
-			}
+            if int(project_id) == 0:
+                projects = Project.objects.filter(
+                    is_deleted=False,
+                    is_active=True,
+                    partner__is_deleted=False,
+                    partner__is_active=True,
+                ).select_related("partner")
 
-			return JsonResponse({"success": True, "data": data})
+                data = []
+                for project in projects:
+                    partner = project.partner
+                    data.append(
+                        {
+                            "id": project.id,
+                            "partner_id": partner.id,
+                            "partner_name": partner.name,
+                            "location": project.location,
+                            "cardinal_point": project.cardinal_point,
+                            "contact_name": project.contact_name,
+                            "contact_phone": project.contact_phone,
+                            "start_date": project.start_date.isoformat(),
+                            "end_date": (
+                                project.end_date.isoformat()
+                                if project.end_date
+                                else None
+                            ),
+                            "is_closed": project.is_closed,
+                        }
+                    )
 
-		except Project.DoesNotExist:
-			return JsonResponse(
-				{"success": False, "error": "Proyecto no encontrado."},
-				status=404
-			)
-		except Exception as e:
-			return JsonResponse(
-				{"success": False, "error": str(e)},
-				status=500
-			)
+                return JsonResponse({"success": True, "data": data})
+
+            project = Project.objects.get(
+                id=project_id, is_deleted=False, is_active=True
+            )
+            partner = Partner.objects.get(
+                id=project.partner.id, is_deleted=False, is_active=True
+            )
+
+            data = {
+                "id": project.id,
+                "partner_id": partner.id,
+                "partner_name": partner.name,
+                "location": project.location,
+                "cardinal_point": project.cardinal_point,
+                "contact_name": project.contact_name,
+                "contact_phone": project.contact_phone,
+                "start_date": project.start_date.isoformat(),
+                "end_date": project.end_date.isoformat() if project.end_date else None,
+                "is_closed": project.is_closed,
+            }
+
+            return JsonResponse({"success": True, "data": data})
+
+        except ValueError:
+            return JsonResponse(
+                {"success": False, "error": "ID de proyecto inválido."}, status=400
+            )
+        except Project.DoesNotExist:
+            return JsonResponse(
+                {"success": False, "error": "Proyecto no encontrado."}, status=404
+            )
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
