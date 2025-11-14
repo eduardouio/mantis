@@ -69,6 +69,18 @@
             {% endif %}
           </div>
 
+          <div class="form-control">
+            <label class="label" for="{{ form.cardinal_point.id_for_label }}">
+              <span class="label-text">Punto Cardinal:</span>
+            </label>
+            {{ form.cardinal_point }}
+            {% if form.cardinal_point.errors %}
+              <div class="label">
+                <span class="label-text-alt text-error">{{ form.cardinal_point.errors.0 }}</span>
+              </div>
+            {% endif %}
+          </div>
+
    <div class="form-control">
             <label class="label" for="{{ form.notes.id_for_label }}">
               <span class="label-text">Notas Adicionales:</span>

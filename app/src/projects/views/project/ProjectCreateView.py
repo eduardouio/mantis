@@ -2,6 +2,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
+from django import forms
 from projects.models import Project, Partner
 from projects.forms import ProjectForm
 
@@ -46,3 +47,14 @@ class ProjectCreateView(LoginRequiredMixin, CreateView):
             context['title_page'] = 'Crear Nuevo Proyecto'
             
         return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        if 'cardinal_point' not in form.fields:
+            model_field = Project._meta.get_field('cardinal_point')
+            form.fields['cardinal_point'] = forms.ChoiceField(
+                label=model_field.verbose_name,
+                required=False,
+                choices=[('', '---------')] + list(model_field.choices)
+            )
+        return form

@@ -22,6 +22,7 @@ class ProjectData(View):
 				"partner_id": partner.id,
 				"partner_name": partner.name,
 				"location": project.location,
+				"cardinal_point": project.cardinal_point,
 				"contact_name": project.contact_name,
 				"contact_phone": project.contact_phone,
 				"start_date": project.start_date.isoformat(),

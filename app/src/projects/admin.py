@@ -61,20 +61,20 @@ class PartnerAdmin(BaseModelAdmin):
 @admin.register(Project)
 class ProjectAdmin(BaseModelAdmin):
     list_display = (
-        'id', 'partner', 'location', 'contact_name', 'contact_phone',
+        'id', 'partner', 'location', 'cardinal_point', 'contact_name', 'contact_phone',
         'start_date', 'end_date', 'is_closed'
     )
     list_filter = (
         'partner', 'is_closed', 'is_active', 'start_date', 'end_date', 'created_at'
     )
     search_fields = (
-        'location', 'contact_name', 'contact_phone', 'partner__name'
+        'location', 'cardinal_point', 'contact_name', 'contact_phone', 'partner__name'
     )
     # readonly_fields heredado
     fieldsets = (
         ('Proyecto', {
             'fields': (
-                'partner', 'location', 'contact_name', 'contact_phone',
+                'partner', 'location', 'cardinal_point', 'contact_name', 'contact_phone',
                 'start_date', 'end_date', 'is_closed', 'is_active'
             )
         }),

@@ -16,7 +16,7 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = [
-            'partner', 'location', 'contact_name', 'contact_phone',
+            'partner', 'location', 'cardinal_point', 'contact_name', 'contact_phone',
             'start_date', 'notes'
         ]
         widgets = {
@@ -28,6 +28,9 @@ class ProjectForm(forms.ModelForm):
                     'class': 'input input-bordered input-md w-full',
                     'placeholder': 'Campamento / Ubicación'
                 }
+            ),
+            'cardinal_point': forms.Select(
+                attrs={'class': 'select select-bordered select-md w-full'}
             ),
             'contact_name': forms.TextInput(
                 attrs={
