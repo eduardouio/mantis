@@ -3,14 +3,14 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { appConfig } from '@/AppConfig.js'
 import { useProjectStore } from '@/stores/ProjectStore'
-import { useTechnicalStore } from '@/stores/TechnicalStore'
-import { useVehicleStore } from '@/stores/VehicleStore'
-import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
+import { useTechnicalStore } from '@/stores/TechnicalsStore'
+import { useVehicleStore } from '@/stores/VehiclesStore'
+import { useProjectResourceStore } from '@/stores/ProjectResourceStore'
 
 const projectStore = useProjectStore()
 const technicalStore = useTechnicalStore()
 const vehicleStore = useVehicleStore()
-const projectResourceStore = UseProjectResourceStore()
+const projectResourceStore = useProjectResourceStore()
 
 onMounted(async () => {
   await projectStore.fetchProjects()

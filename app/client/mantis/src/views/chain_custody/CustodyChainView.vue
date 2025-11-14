@@ -3,33 +3,42 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { appConfig } from '@/AppConfig.js'
 import { useProjectStore } from '@/stores/ProjectStore'
-import { useTechnicalStore } from '@/stores/TechnicalStore'
-import { useVehicleStore } from '@/stores/VehicleStore'
-import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
+import { useTechnicalStore } from '@/stores/TechnicalsStore'
+import { useVehicleStore } from '@/stores/VehiclesStore'
+import { useProjectResourceStore } from '@/stores/ProjectResourceStore'
 
 const projectStore = useProjectStore()
 const technicalStore = useTechnicalStore()
 const vehicleStore = useVehicleStore()
-const projectResourceStore = UseProjectResourceStore()
+const projectResourceStore = useProjectResourceStore()
 
 onMounted(async () => {
-  await projectStore.fetchProjects()
-  await technicalStore.fetchTechnicals()
+  await projectStore.fetchProjectData()
+  await technicalStore.fetchTechnicalsAvailable()
   await vehicleStore.fetchVehicles()
-  await projectResourceStore.fetchProjectResources()
+  await projectResourceStore.fetchResourcesProject()
 })
 
+const router = useRouter()
+const selectedVehicle = ref(null)
+const selectedTechnical = ref(null)
 
 const cadenaCustodia = ref({
   numero: '0000123',
-  fecha: '15/01/2024',
+  fecha: new Date().toLocaleDateString('es-ES'),
   horaInicio: '08:00',
   horaFin: '17:00',
   horas: 9.00,
-  ubicacion: 'Bloque 31',
+  ubicacion: '',
   tecnico: {
-    nombre: 'Juan Pérez García',
-    cargo: 'Conductor Técnico',
+    nombre: '',
+    cargo: '',
+    dni: '',
+  },
+  vehiculo: {
+    placa: '',
+    marca: '',
+    modelo: ''
   },
   facturacion: {
     equipo: 'DÍAS',
@@ -37,192 +46,33 @@ const cadenaCustodia = ref({
     precioUnitario: 950.00,
     totalLinea: 2850.00
   },
-  detalle: 'Mantenimiento preventivo y correctivo de equipos de cómputo en área administrativa'
+  detalle: ''
 })
 
-const recursos = ref([
-    {
-        "id": 21,
-        "project_id": 2,
-        "type": "SERVIC",
-        "resource_item_id": 264,
-        "resource_item_code": "PEISOL-SERV00",
-        "resource_item_name": "Mantenimiento Y Limpieza General",
-        "detailed_description": "MANTENIMIENTO PSL-BT-103",
-        "cost": "35.00",
-        "interval_days": 2,
-        "operation_start_date": "2025-11-01",
-        "is_active": true,
-        "is_selected": false,
-        "is_retired": false,
-        "retirement_date": null,
-        "retirement_reason": null,
-        "is_confirm_delete": false,
-        "is_deleteable": true,
-        "notes": null
-    },
-    {
-        "id": 22,
-        "project_id": 2,
-        "type": "SERVIC",
-        "resource_item_id": 264,
-        "resource_item_code": "PEISOL-SERV00",
-        "resource_item_name": "Mantenimiento Y Limpieza General",
-        "detailed_description": "MANTENIMIENTO PSL-BT-108",
-        "cost": "34.00",
-        "interval_days": 3,
-        "operation_start_date": "2025-11-01",
-        "is_active": true,
-        "is_selected": false,
-        "is_retired": false,
-        "retirement_date": null,
-        "retirement_reason": null,
-        "is_confirm_delete": false,
-        "is_deleteable": true,
-        "notes": null
-    },
-    {
-        "id": 23,
-        "project_id": 2,
-        "type": "SERVIC",
-        "resource_item_id": 264,
-        "resource_item_code": "PEISOL-SERV00",
-        "resource_item_name": "Mantenimiento Y Limpieza General",
-        "detailed_description": "MANTENIMIENTO PSL-BT-111",
-        "cost": "35.00",
-        "interval_days": 4,
-        "operation_start_date": "2025-11-01",
-        "is_active": true,
-        "is_selected": false,
-        "is_retired": false,
-        "retirement_date": null,
-        "retirement_reason": null,
-        "is_confirm_delete": false,
-        "is_deleteable": true,
-        "notes": null
-    },
-    {
-        "id": 24,
-        "project_id": 2,
-        "type": "SERVIC",
-        "resource_item_id": 264,
-        "resource_item_code": "PEISOL-SERV00",
-        "resource_item_name": "Mantenimiento Y Limpieza General",
-        "detailed_description": "MANTENIMIENTO PSL-BT-114",
-        "cost": "32.00",
-        "interval_days": 3,
-        "operation_start_date": "2025-11-01",
-        "is_active": true,
-        "is_selected": false,
-        "is_retired": false,
-        "retirement_date": null,
-        "retirement_reason": null,
-        "is_confirm_delete": false,
-        "is_deleteable": true,
-        "notes": null
-    },
-    {
-        "id": 25,
-        "project_id": 2,
-        "type": "SERVIC",
-        "resource_item_id": 264,
-        "resource_item_code": "PEISOL-SERV00",
-        "resource_item_name": "Mantenimiento Y Limpieza General",
-        "detailed_description": "MANTENIMIENTO PSL-BT-112",
-        "cost": "31.00",
-        "interval_days": 2,
-        "operation_start_date": "2025-11-01",
-        "is_active": true,
-        "is_selected": false,
-        "is_retired": false,
-        "retirement_date": null,
-        "retirement_reason": null,
-        "is_confirm_delete": false,
-        "is_deleteable": true,
-        "notes": null
-    },
-    {
-        "id": 26,
-        "project_id": 2,
-        "type": "SERVIC",
-        "resource_item_id": 264,
-        "resource_item_code": "PEISOL-SERV00",
-        "resource_item_name": "Mantenimiento Y Limpieza General",
-        "detailed_description": "MANTENIMIENTO PSL-BT-115",
-        "cost": "42.00",
-        "interval_days": 3,
-        "operation_start_date": "2025-11-01",
-        "is_active": true,
-        "is_selected": false,
-        "is_retired": false,
-        "retirement_date": null,
-        "retirement_reason": null,
-        "is_confirm_delete": false,
-        "is_deleteable": true,
-        "notes": null
-    },
-    {
-        "id": 27,
-        "project_id": 2,
-        "type": "SERVIC",
-        "resource_item_id": 264,
-        "resource_item_code": "PEISOL-SERV00",
-        "resource_item_name": "Mantenimiento Y Limpieza General",
-        "detailed_description": "MANTENIMIENTO PSL-BT-101",
-        "cost": "41.00",
-        "interval_days": 1,
-        "operation_start_date": "2025-11-01",
-        "is_active": true,
-        "is_selected": false,
-        "is_retired": false,
-        "retirement_date": null,
-        "retirement_reason": null,
-        "is_confirm_delete": false,
-        "is_deleteable": true,
-        "notes": null
-    },
-    {
-        "id": 28,
-        "project_id": 2,
-        "type": "SERVIC",
-        "resource_item_id": 264,
-        "resource_item_code": "PEISOL-SERV00",
-        "resource_item_name": "Mantenimiento Y Limpieza General",
-        "detailed_description": "MANTENIMIENTO PSL-BT-116",
-        "cost": "37.00",
-        "interval_days": 5,
-        "operation_start_date": "2025-11-01",
-        "is_active": true,
-        "is_selected": false,
-        "is_retired": false,
-        "retirement_date": null,
-        "retirement_reason": null,
-        "is_confirm_delete": false,
-        "is_deleteable": true,
-        "notes": null
-    },
-    {
-        "id": 29,
-        "project_id": 2,
-        "type": "SERVIC",
-        "resource_item_id": 264,
-        "resource_item_code": "PEISOL-SERV00",
-        "resource_item_name": "Mantenimiento Y Limpieza General",
-        "detailed_description": "MANTENIMIENTO PSL-BT-113",
-        "cost": "36.00",
-        "interval_days": 3,
-        "operation_start_date": "2025-11-01",
-        "is_active": true,
-        "is_selected": false,
-        "is_retired": false,
-        "retirement_date": null,
-        "retirement_reason": null,
-        "is_confirm_delete": false,
-        "is_deleteable": true,
-        "notes": null
-    }
-]
-)
+const initializeData = () => {
+  // Asignar datos del proyecto
+  if (projectStore.project?.location) {
+    cadenaCustodia.value.ubicacion = projectStore.project.location
+  }
+  
+  // Asignar primer vehículo disponible
+  if (vehicleStore.vehicles?.length > 0) {
+    selectedVehicle.value = vehicleStore.vehicles[0]
+    cadenaCustodia.value.vehiculo.placa = selectedVehicle.value.no_plate
+    cadenaCustodia.value.vehiculo.marca = selectedVehicle.value.brand
+    cadenaCustodia.value.vehiculo.modelo = selectedVehicle.value.model
+  }
+  
+  // Asignar primer técnico disponible
+  if (technicalStore.technicals?.length > 0) {
+    selectedTechnical.value = technicalStore.technicals[0]
+    cadenaCustodia.value.tecnico.nombre = `${selectedTechnical.value.first_name} ${selectedTechnical.value.last_name}`
+    cadenaCustodia.value.tecnico.cargo = selectedTechnical.value.work_area_display || selectedTechnical.value.work_area
+    cadenaCustodia.value.tecnico.dni = selectedTechnical.value.dni
+  }
+}
+
+initializeData()
 </script>
 
 <template>
@@ -239,7 +89,7 @@ const recursos = ref([
             <i class="las la-arrow-left"></i>
             Cancelar
           </button>
-          <button class="btn btn-primary btn-sm">
+          <button class="btn btn-primary btn-sm" @click="router.push({ name: 'custody-chain-form' })">
             <i class="las la-plus"></i>
             Nueva Cadena de Custodia
           </button>
@@ -257,15 +107,15 @@ const recursos = ref([
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
                 <h2 class="text-xl font-bold"> 
-                  #12 TORRES ULLOA VIVIANA - ORELLANA IV 
+                  #{{ projectStore.project?.id }} {{ projectStore.project?.partner_name }} - {{ projectStore.project?.location }}
                 </h2>
                 <span class="badge text-blue-500 font-semibold bg-white px-3 py-1">
-                  NORTE
+                  {{ projectStore.project?.cardinal_point || 'N/A' }}
                 </span>
               </div>
             </div>
             <div class="text-right">
-              <div class=" text-2xl p1 rounded text-error bg-gray-100 w-100% font-mono border border-sky-600 border-2">
+              <div class="text-2xl p1 rounded text-error bg-gray-100 w-100% font-mono border border-sky-600 border-2">
                 <span class="text-gray-700 ms-5">Nro.</span>
                 <span class="me-2">
                   {{ cadenaCustodia.numero }}
@@ -301,10 +151,9 @@ const recursos = ref([
             <div class="flex items-center gap-2">
               <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Placa Vehiculo:</span>
               <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
-                PAE-2445
+                {{ cadenaCustodia.vehiculo.placa }}
                 <span class="ml-2 me-2 text-gray-200">|</span>
-                Logística: 
-                <span class="text-green-700 ml-2 me-2">SI</span>
+                {{ cadenaCustodia.vehiculo.marca }} {{ cadenaCustodia.vehiculo.modelo }}
               </span>
             </div>
           </div>
@@ -319,7 +168,7 @@ const recursos = ref([
               <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
                 {{ cadenaCustodia.tecnico.nombre }} 
                 <span class="ml-2 me-2 text-gray-200">|</span>
-                <span class="">CI: 1722919725</span></span>
+                <span class="">CI: {{ cadenaCustodia.tecnico.dni }}</span></span>
             </div>
             <!-- Cargo -->
             <div class="flex items-center gap-2">
@@ -330,75 +179,77 @@ const recursos = ref([
             <div class="flex items-center gap-2">
               <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Contacto:</span>
               <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
-                {{ cadenaCustodia.tecnico.nombre }}
+                {{ projectStore.project?.contact_name }}
                  <span class="ml-2 me-2 text-gray-200">|</span> 
-                 <span>CI: 1722919725</span></span>
+                 <span>{{ projectStore.project?.contact_phone }}</span></span>
             </div>
             <!-- Cargo Contacto -->
             <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Cargo Contacto:</span>
-              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">Maquinista</span>
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Empresa:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">{{ projectStore.project?.partner_name }}</span>
             </div>
           </div>
         </div>
-        
 
-        
-<!-- Información de Facturación (Maestro) -->
-<div class="p-4 border-b border-b-gray-200">
-  <h3 class="font-semibold text-gray-700 mb-3">Detalle de Cadena de Custodia</h3>
-  <div class="overflow-x-auto">
-    <table class="table table-sm w-full table-zebra">
-      <thead>
-        <tr class="bg-gray-500 text-white text-center">
-          <th class="border border-gray-300 w-10">#</th>
-          <th class="border border-gray-300">Equipo</th>
-          <th class="border border-gray-300 w-30">Precio</th>
-          <th class="border border-gray-300 w-30">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="hover:bg-yellow-100" v-for="(recurso, index) in recursos" :key="recurso.id">
-          <td class="border border-gray-300 p-2">{{ index + 1 }}</td>
-          <td class="border border-gray-300 p-2">{{ recurso.detailed_description }}</td>
-          <td class="border border-gray-300 p-2 text-end">{{ recurso.cost }}</td>
-          <td class="border border-gray-300 p-2 text-center">
-            <span class="border rounded p-1 cursor-pointer bg-red-400 text-white hover:bg-red-600 font-semibold">
-              Eliminar
-            </span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="pt-2 pb-2">
-    <div class="flex gap-4">
-      <div class="flex gap-4">
-        <div class="p-3 border rounded border-gray-200">
-          Galones:
-          <span class="text-xl text-primary ml-5">20</span>
+        <!-- Información de Facturación (Maestro) -->
+        <div class="p-4 border-b border-b-gray-200">
+          <h3 class="font-semibold text-gray-700 mb-3">Detalle de Cadena de Custodia</h3>
+          <div class="overflow-x-auto">
+            <table class="table table-sm w-full table-zebra">
+              <thead>
+                <tr class="bg-gray-500 text-white text-center">
+                  <th class="border border-gray-300 w-10">#</th>
+                  <th class="border border-gray-300">Equipo</th>
+                  <th class="border border-gray-300 w-30">Precio</th>
+                  <th class="border border-gray-300 w-30">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="hover:bg-yellow-100" v-for="(recurso, index) in projectResourceStore.resourcesProject" :key="recurso.id">
+                  <td class="border border-gray-300 p-2">{{ index + 1 }}</td>
+                  <td class="border border-gray-300 p-2">{{ recurso.detailed_description }}</td>
+                  <td class="border border-gray-300 p-2 text-end">${{ recurso.cost }}</td>
+                  <td class="border border-gray-300 p-2 text-center">
+                    <span class="border rounded p-1 cursor-pointer bg-red-400 text-white hover:bg-red-600 font-semibold">
+                      Eliminar
+                    </span>
+                  </td>
+                </tr>
+                <tr v-if="projectResourceStore.resourcesProject.length === 0">
+                  <td colspan="4" class="text-center py-4 text-gray-500">
+                    No hay recursos cargados
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pt-2 pb-2">
+            <div class="flex gap-4">
+              <div class="flex gap-4">
+                <div class="p-3 border rounded border-gray-200">
+                  Galones:
+                  <span class="text-xl text-primary ml-5">20</span>
+                </div>
+                <div class="p-3 border rounded border-gray-200">
+                  Metro Cubicos:
+                  <span class="text-xl text-primary ml-5">5</span>
+                </div>
+                <div class="p-3 border rounded border-gray-200">
+                  Barriles:
+                  <span class="text-xl text-primary ml-5">2</span>
+                </div>
+              </div>
+              <div class="flex-1 border rounded p-3 border-gray-200">
+                <span class="font-semibold">Notas:</span>
+                <span class="text-primary ml-5">{{ cadenaCustodia.detalle  }}</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="p-3 border rounded border-gray-200">
-          Metro Cubicos:
-          <span class="text-xl text-primary ml-5">5</span>
-        </div>
-        <div class="p-3 border rounded border-gray-200">
-          Barriles:
-          <span class="text-xl text-primary ml-5">2</span>
-        </div>
-      </div>
-      <div class="flex-1 border rounded p-3 border-gray-200">
-        <span class="font-semibold">Notas:</span>
-        <span class="text-primary ml-5">{{ cadenaCustodia.detalle  }}</span>
-      </div>
-    </div>
-  </div>
-</div>
-
 
         <!-- Footer -->
         <div class="bg-gray-50 p-4 rounded-b-lg flex justify-between gap-2">
-          <button class="btn btn-sm btn-primary">
+          <button class="btn btn-sm btn-primary" @click="router.push({ name: 'chain-custody' })">
             <i class="las la-arrow-left"></i>
             Cancelar
           </button>
