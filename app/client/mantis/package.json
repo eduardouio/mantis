@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node -e \"const fs=require('fs');const path=require('path');const outJS='../../src/static/js/app';const outCSS='../../src/static/css/app';const dir='dist/assets';fs.mkdirSync(outJS,{recursive:true});fs.mkdirSync(outCSS,{recursive:true});const files=fs.readdirSync(dir);const js=files.filter(f=>f.endsWith('.js')).sort((a,b)=>fs.statSync(path.join(dir,b)).size - fs.statSync(path.join(dir,a)).size)[0];if(js){fs.copyFileSync(path.join(dir,js),path.join(outJS,'app-projects.js'));}const css=files.filter(f=>f.endsWith('.css'))[0];if(css){fs.copyFileSync(path.join(dir,css),path.join(outCSS,'app-projects.css'));}console.log('Archivos copiados: js='+js+' css='+css);\"",
     "preview": "vite preview",
     "test:unit": "vitest"
   },
