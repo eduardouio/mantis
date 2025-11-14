@@ -32,6 +32,8 @@ from api.projects.ProjectData import ProjectData
 from api.workorders.GetAllSheerProjectItems import GetAllSheerProjectItemsAPI
 from api.workorders.CreateCustodyChain import CreateCustodyChainAPI
 from api.projects.UpdateResourceItem import UpdateResourceItemAPI
+from api.vehicles.GetVehiclesAvaliablesAPI import GetVehiclesAvaliablesAPI
+from api.technicals.GetTechnicalsAvaliablesAPI import GetTechnicalsAvaliablesAPI
 
 urlpatterns = [
     # vehicles
@@ -39,11 +41,13 @@ urlpatterns = [
     path('vehicles/cert_vehicle/<int:pk>/', CertVehicleDeleteAPI.as_view(), name='api_cert_vehicle_delete'),
     path('vehicles/pass_vehicle/', PassVehicleCreateUpdateAPI.as_view(), name='api_pass_vehicle_create_update'),
     path('vehicles/pass_vehicle/<int:pk>/', PassVehicleDeleteAPI.as_view(), name='api_pass_vehicle_delete'),
+	path('vehicles/avaliables/', GetVehiclesAvaliablesAPI.as_view(), name='api_get_vehicles_avaliables'),
     # technicals
     path('technicals/create_update_pass_technical/', CreateUpdatePassTechnicalAPI.as_view(), name='api_create_update_pass_technical'),
     path('technicals/create_update_vaccine/', CreateUpdateVaccineAPI.as_view(), name='api_create_update_vaccine'),
     path('technicals/delete_pass_technical/', DeletePassTechnicalAPI.as_view(), name='api_delete_pass_technical'),
     path('technicals/delete_vaccine/', DeleteVaccineAPI.as_view(), name='api_delete_vaccine'),
+    path('technicals/avaliables/', GetTechnicalsAvaliablesAPI.as_view(), name='api_get_technicals_avaliables'),
     # resources
     path('resources/update/', UpdateResourceAPI.as_view(), name='api_update_resource'),
     # projects
@@ -61,3 +65,4 @@ urlpatterns = [
     path('workorders/sheets/items/<int:sheet_project_id>/', GetAllSheerProjectItemsAPI.as_view(), name='api_get_all_sheet_project_items'),
     path('workorders/custody_chain/create/', CreateCustodyChainAPI.as_view(), name='api_create_custody_chain'),
 ]
+
