@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { appConfig } from "@/AppConfig";
 
-export const useVehicleStore = defineStore("vehicleStore", {  
+export const UseVehicleStore = defineStore("vehicleStore", {  
     state: () => ({
         vehicle: {
 

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { appConfig } from "@/AppConfig";
 
-export const useTechnicalStore = defineStore("technicalStore", {
+export const UseTechnicalStore = defineStore("technicalStore", {
     state: () => ({
         technical: {
 
