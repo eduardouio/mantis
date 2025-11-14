@@ -12,7 +12,7 @@ class GetVehiclesAvaliablesAPI(View):
 
     def get(self, request):
         """Obtener la lista de vehículos activos con sus pases y permisos."""
-        vehicles_qs = Vehicle.objects.filter(is_active=True).prefetch_related(
+        vehicles_qs = Vehicle.get_all().prefetch_related(
             Prefetch(
                 "passvehicle_set",
                 queryset=PassVehicle.objects.filter(is_active=True),
