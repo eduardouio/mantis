@@ -28,8 +28,8 @@ const router = createRouter({
       component: SheetProjectForm,
     },
     {
-      path: '/chain-custody',
-      name: 'chain-custody',
+      path: '/custody-chain',
+      name: 'custody-chain',
       component: CustodyChainView,
     },
     {

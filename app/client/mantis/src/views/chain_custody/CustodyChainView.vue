@@ -1,10 +1,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
 import { UseVehicleStore } from '@/stores/VehicleStore'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
-import { appConfig } from '@/AppConfig.js'
+import { appConfig } from '@/AppConfig.js'  
 
 const projectStore = UseProjectStore()
 const technicalStore = UseTechnicalStore()
