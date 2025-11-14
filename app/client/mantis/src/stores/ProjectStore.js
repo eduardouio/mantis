@@ -13,7 +13,8 @@ export const UseProjectStore = defineStore("projectStore", {
             start_date: null,
             end_date: null,
             is_closed: false
-        }
+        },
+        allProjects: []
     }),
     actions: {
         async fetchProjectData() {
@@ -30,6 +31,22 @@ export const UseProjectStore = defineStore("projectStore", {
                 this.project = responseData.data;
             } catch (error) {
                 console.error("Error fetching project data:", error);
+            }
+        },
+        async fetchAllProjects() {
+            console.log("Fetching all projects...");
+            try {
+                const response = await fetch(appConfig.URLAllProjectData, {
+                    method: "GET",
+                    headers: appConfig.headers
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch all projects");
+                }
+                const responseData = await response.json();
+                this.allProjects = responseData.data;
+            } catch (error) {
+                console.error("Error fetching all projects:", error);
             }
         }
     }

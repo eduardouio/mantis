@@ -37,6 +37,23 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
             } catch (error) {
                 console.error("Error creating custody chain:", error);
             }
+        },
+        async fetchCustodyChainDetail(id) {
+            console.log("Fetching custody chain detail for ID:", id);
+            try {
+                const url = appConfig.URLCustodyChainDetail.replace("${id}", id);
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: appConfig.headers,
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch custody chain detail");
+                }
+                const data = await response.json();
+                this.selectedCustodyChain = data.data;
+            } catch (error) {
+                console.error("Error fetching custody chain detail:", error);
+            }   
         }
     }
 });
