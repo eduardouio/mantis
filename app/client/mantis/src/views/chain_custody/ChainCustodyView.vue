@@ -238,7 +238,12 @@ const recursos = ref([
           <div class="flex justify-between items-start">
             <div class="flex-1">
               <div class="flex items-center gap-3 mb-2">
-                <h2 class="text-xl font-bold"> #12 TORRES ULLOA VIVIANA - ORELLANA IV</h2>
+                <h2 class="text-xl font-bold"> 
+                  #12 TORRES ULLOA VIVIANA - ORELLANA IV 
+                </h2>
+                <span class="badge text-blue-500 font-semibold bg-white px-3 py-1">
+                  NORTE
+                </span>
               </div>
             </div>
             <div class="text-right">
