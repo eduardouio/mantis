@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models.Technical import Technical
+from equipment.models.Vehicle import Vehicle
 from projects.models.SheetProject import SheetProject
 from projects.models.Project import ProjectResourceItem
 from common.BaseModel import BaseModel
@@ -12,6 +13,16 @@ class CustodyChain(BaseModel):
     technical = models.ForeignKey(
         Technical,
         on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        default=None
+    )
+    vehicle = models.ForeignKey(
+        Vehicle,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        default=None
     )
     sheet_project = models.ForeignKey(
         SheetProject,
