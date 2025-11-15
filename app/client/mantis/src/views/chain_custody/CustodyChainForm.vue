@@ -93,10 +93,12 @@ const custodyChain = ref({
 const selectedResourceIds = ref([])
 
 const availableResources = computed(() => {
-  return projectResourceStore.resourcesProject.map(resource => ({
-    ...resource,
-    selected: selectedResourceIds.value.includes(resource.id)
-  }))
+  return projectResourceStore.resourcesProject
+    .filter(resource => resource.type_resource === 'SERVICIO')
+    .map(resource => ({
+      ...resource,
+      selected: selectedResourceIds.value.includes(resource.id)
+    }))
 })
 
 const selectedResources = computed(() => {
@@ -256,6 +258,12 @@ watch(() => custodyChain.value.technical, (newTechnicalId) => {
       custodyChain.value.technical_name = `${selectedTech.first_name} ${selectedTech.last_name}`
       custodyChain.value.technical_dni = selectedTech.dni
       custodyChain.value.technical_position = selectedTech.work_area_display || selectedTech.work_area
+      
+      // Copiar información al transportista
+      custodyChain.value.driver_name = `${selectedTech.first_name} ${selectedTech.last_name}`
+      custodyChain.value.dni_driver = selectedTech.dni
+      custodyChain.value.driver_position = selectedTech.work_area_display || selectedTech.work_area
+      custodyChain.value.driver_date = new Date().toISOString().split('T')[0]
     }
   }
 })
@@ -439,145 +447,6 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
           </div>
         </div>
       </div>
-
-      <!-- Datos del Técnico y Vehículo (editables) -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded border border-gray-200">
-        <!-- Datos del Técnico -->
-        <div class="space-y-3">
-          <h5 class="font-semibold text-sm text-gray-700">Datos del Técnico</h5>
-          <div class="form-control w-full">
-            <label class="label" for="technical_name">
-              <span class="label-text text-xs">Nombre Técnico</span>
-            </label>
-            <input 
-              type="text"
-              id="technical_name"
-              v-model="custodyChain.technical_name"
-              class="input input-bordered input-sm w-full"
-            />
-          </div>
-          <div class="form-control w-full">
-            <label class="label" for="technical_dni">
-              <span class="label-text text-xs">DNI Técnico</span>
-            </label>
-            <input 
-              type="text"
-              id="technical_dni"
-              v-model="custodyChain.technical_dni"
-              class="input input-bordered input-sm w-full"
-            />
-          </div>
-          <div class="form-control w-full">
-            <label class="label" for="technical_position">
-              <span class="label-text text-xs">Cargo Técnico</span>
-            </label>
-            <input 
-              type="text"
-              id="technical_position"
-              v-model="custodyChain.technical_position"
-              class="input input-bordered input-sm w-full"
-            />
-          </div>
-        </div>
-
-        <!-- Datos del Vehículo -->
-        <div class="space-y-3">
-          <h5 class="font-semibold text-sm text-gray-700">Datos del Vehículo</h5>
-          <div class="form-control w-full">
-            <label class="label" for="vehicle_plate">
-              <span class="label-text text-xs">Placa</span>
-            </label>
-            <input 
-              type="text"
-              id="vehicle_plate"
-              v-model="custodyChain.vehicle_plate"
-              class="input input-bordered input-sm w-full"
-            />
-          </div>
-          <div class="form-control w-full">
-            <label class="label" for="vehicle_brand">
-              <span class="label-text text-xs">Marca</span>
-            </label>
-            <input 
-              type="text"
-              id="vehicle_brand"
-              v-model="custodyChain.vehicle_brand"
-              class="input input-bordered input-sm w-full"
-            />
-          </div>
-          <div class="form-control w-full">
-            <label class="label" for="vehicle_model">
-              <span class="label-text text-xs">Modelo</span>
-            </label>
-            <input 
-              type="text"
-              id="vehicle_model"
-              v-model="custodyChain.vehicle_model"
-              class="input input-bordered input-sm w-full"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Información de Contacto -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información de Contacto</h6>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label" for="contact_name">
-              <span class="label-text font-medium">Nombre de Contacto</span>
-            </label>
-            <input 
-              type="text"
-              id="contact_name"
-              v-model="custodyChain.contact_name"
-              placeholder="Nombre completo"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="dni_contact">
-              <span class="label-text font-medium">Cédula de Contacto</span>
-            </label>
-            <input 
-              type="text"
-              id="dni_contact"
-              v-model="custodyChain.dni_contact"
-              placeholder="Número de identificación"
-              maxlength="15"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="contact_position">
-              <span class="label-text font-medium">Cargo de Contacto</span>
-            </label>
-            <input 
-              type="text"
-              id="contact_position"
-              v-model="custodyChain.contact_position"
-              placeholder="Ej: Maquinista"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="date_contact">
-              <span class="label-text font-medium">Fecha de Contacto</span>
-            </label>
-            <input 
-              type="date"
-              id="date_contact"
-              v-model="custodyChain.date_contact"
-              class="input input-bordered w-full"
-            />
-          </div>
-        </div>
-      </div>
-
       <!-- Información del Transportista -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información del Transportista</h6>
@@ -637,6 +506,65 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
         </div>
       </div>
 
+
+      <!-- Información de Contacto -->
+      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información de Contacto</h6>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-control w-full">
+            <label class="label" for="contact_name">
+              <span class="label-text font-medium">Nombre de Contacto</span>
+            </label>
+            <input 
+              type="text"
+              id="contact_name"
+              v-model="custodyChain.contact_name"
+              placeholder="Nombre completo"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <div class="form-control w-full">
+            <label class="label" for="dni_contact">
+              <span class="label-text font-medium">Cédula de Contacto</span>
+            </label>
+            <input 
+              type="text"
+              id="dni_contact"
+              v-model="custodyChain.dni_contact"
+              placeholder="Número de identificación"
+              maxlength="15"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <div class="form-control w-full">
+            <label class="label" for="contact_position">
+              <span class="label-text font-medium">Cargo de Contacto</span>
+            </label>
+            <input 
+              type="text"
+              id="contact_position"
+              v-model="custodyChain.contact_position"
+              placeholder="Ej: Maquinista"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <div class="form-control w-full">
+            <label class="label" for="date_contact">
+              <span class="label-text font-medium">Fecha de Contacto</span>
+            </label>
+            <input 
+              type="date"
+              id="date_contact"
+              v-model="custodyChain.date_contact"
+              class="input input-bordered w-full"
+            />
+          </div>
+        </div>
+      </div>
       <!-- Recursos del Proyecto -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">
