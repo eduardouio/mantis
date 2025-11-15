@@ -56,6 +56,7 @@ const handleDeleteResource = async (resource) => {
             <th class="p-2 border border-gray-100 text-center">#</th>
             <th class="p-2 border border-gray-100 text-center">Código</th>
             <th class="p-2 border border-gray-100 text-center">Nombre/Descripción</th>
+            <th class="p-2 border border-gray-100 text-center">Tipo Recurso</th>
             <th class="p-2 border border-gray-100 text-center">Costo</th>
             <th class="p-2 border border-gray-100 text-center">Frec. (días)</th>
             <th class="p-2 border border-gray-100 text-center">Fecha Inicio</th>
@@ -82,6 +83,11 @@ const handleDeleteResource = async (resource) => {
                 class="p-2 border border-gray-300"
               >
                 {{ resource.detailed_description }}
+              </td>
+              <td 
+                class="p-2 border border-gray-300 text-center"
+              >
+                {{ resource.type_resource }}
               </td>
               <td 
                 class="p-2 border border-gray-300 text-right font-mono"
