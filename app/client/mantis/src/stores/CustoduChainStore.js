@@ -18,8 +18,22 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
         }
     }),
     actions: {
-        async fetchCustodyChains() {
-            console.log("Fetching custody chains");
+        async fetchCustodyChains(id_sheet_project) {
+            console.log("Fetching custody chains for sheet project ID:", id_sheet_project);
+            try {
+                const url = appConfig.URLAllCustodyChains.replace("${id_sheet_project}", id_sheet_project);
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: appConfig.headers,
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch custody chains");
+                }
+                const data = await response.json();
+                this.custodyChains = data.data;
+            } catch (error) {
+                console.error("Error fetching custody chains:", error);
+            }
         },
         async addCustodyChain(custodyChain) {
             console.log("Adding new custody chain", custodyChain);
