@@ -167,7 +167,6 @@ const getStatusBadge = (status) => {
         <span>{{ errorMessage }}</span>
       </div>
     </div>
-
     <!-- Formulario -->
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <!-- Fecha Inicio Período -->
