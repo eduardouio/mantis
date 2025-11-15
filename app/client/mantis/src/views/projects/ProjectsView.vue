@@ -151,12 +151,12 @@ onMounted(() => {
 
       <!-- Tabs para organizar el contenido -->
       <div role="tablist" class="tabs tabs-lifted bg-base-100 p-1">
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-amber-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Equipos Asignados" checked />
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-amber-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Recursos Asignados" checked />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabResources @edit-resource="openEditResourceModal" />
         </div>
 
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-cyan-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Planilla de Trabajo" />
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-cyan-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Planillas de Trabajo" />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabSheetProject 
             @open-sheet-form="openSheetFormModal"
