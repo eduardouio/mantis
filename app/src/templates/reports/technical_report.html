@@ -202,25 +202,21 @@
             background-color: #9ca3af;
             color: white;
         }
-        
-        .footer {
-            margin-top: 15px;
-            padding-top: 8px;
-            border-top: 2px solid #9cb536;
-            text-align: center;
-            font-size: 7pt;
-            color: #6b7280;
+
+        .status-expired {
+            background-color: #ef4444;
+            color: white;
         }
-        
-        .footer-content {
+
+        .status-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .value-with-badge {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-        
-        .footer-logo {
-            color: #3e5f6f;
-            font-weight: bold;
+            gap: 4px;
         }
         
         @media print {
@@ -270,7 +266,7 @@
                     <img src="{% static 'img/logo.png' %}" alt="PEISOL Ingeniería">
                 </div>
                 <div class="header-info">
-                    <h>{{ technical.first_name }} {{ technical.last_name }}</h>
+                    <h1>{{ technical.first_name }} {{ technical.last_name }}</h1>
                     <h5>REPORTE DE INFORMACIÓN TÉCNICA TECNICO</h5>
                     <div class="company-name">PEISOL</div>
                 </div>
@@ -365,7 +361,17 @@
                     </div>
                     <div class="info-item">
                         <span class="info-label">Licencia - Caducidad:</span>
-                        <span class="info-value">{{ technical.license_expiry_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                        <span class="info-value">
+                            <span class="value-with-badge">
+                                {{ technical.license_expiry_date|date:"d/m/Y"|default:"No especificado" }}
+                                {% if technical.license_expiry_date %}
+                                    {% now "Y-m-d" as today %}
+                                    {% if technical.license_expiry_date|date:"Y-m-d" < today %}
+                                        <span class="status-badge status-expired">VENCIDO</span>
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+                        </span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Manejo Defensivo - Emisión:</span>
@@ -373,7 +379,17 @@
                     </div>
                     <div class="info-item">
                         <span class="info-label">Manejo Defensivo - Caducidad:</span>
-                        <span class="info-value">{{ technical.defensive_driving_certificate_expiry_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                        <span class="info-value">
+                            <span class="value-with-badge">
+                                {{ technical.defensive_driving_certificate_expiry_date|date:"d/m/Y"|default:"No especificado" }}
+                                {% if technical.defensive_driving_certificate_expiry_date %}
+                                    {% now "Y-m-d" as today %}
+                                    {% if technical.defensive_driving_certificate_expiry_date|date:"Y-m-d" < today %}
+                                        <span class="status-badge status-expired">VENCIDO</span>
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+                        </span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Certificado MAE - Emisión:</span>
@@ -381,7 +397,17 @@
                     </div>
                     <div class="info-item">
                         <span class="info-label">Certificado MAE - Caducidad:</span>
-                        <span class="info-value">{{ technical.mae_certificate_expiry_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                        <span class="info-value">
+                            <span class="value-with-badge">
+                                {{ technical.mae_certificate_expiry_date|date:"d/m/Y"|default:"No especificado" }}
+                                {% if technical.mae_certificate_expiry_date %}
+                                    {% now "Y-m-d" as today %}
+                                    {% if technical.mae_certificate_expiry_date|date:"Y-m-d" < today %}
+                                        <span class="status-badge status-expired">VENCIDO</span>
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+                        </span>
                     </div>
                     <div class="info-item">
                         <span class="info-label">Certificado Médico - Emisión:</span>
@@ -389,7 +415,17 @@
                     </div>
                     <div class="info-item">
                         <span class="info-label">Certificado Médico - Caducidad:</span>
-                        <span class="info-value">{{ technical.medical_certificate_expiry_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                        <span class="info-value">
+                            <span class="value-with-badge">
+                                {{ technical.medical_certificate_expiry_date|date:"d/m/Y"|default:"No especificado" }}
+                                {% if technical.medical_certificate_expiry_date %}
+                                    {% now "Y-m-d" as today %}
+                                    {% if technical.medical_certificate_expiry_date|date:"Y-m-d" < today %}
+                                        <span class="status-badge status-expired">VENCIDO</span>
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -428,7 +464,15 @@
                     </div>
                     <div class="info-item">
                         <span class="info-label">Fecha de Caducidad:</span>
-                        <span class="info-value">{{ pass_technical.fecha_caducidad|date:"d/m/Y" }}</span>
+                        <span class="info-value">
+                            <span class="value-with-badge">
+                                {{ pass_technical.fecha_caducidad|date:"d/m/Y" }}
+                                {% now "Y-m-d" as today %}
+                                {% if pass_technical.fecha_caducidad|date:"Y-m-d" < today %}
+                                    <span class="status-badge status-expired">VENCIDO</span>
+                                {% endif %}
+                            </span>
+                        </span>
                     </div>
                 </div>
                 {% else %}
