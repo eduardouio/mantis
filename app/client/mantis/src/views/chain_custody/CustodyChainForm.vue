@@ -10,6 +10,7 @@ import { UseCustodyChainStore } from '@/stores/CustoduChainStore'
 import Modal from '@/components/common/Modal.vue'
 import TechnicalPresentation from '@/components/resources/TechnicalPresentation.vue'
 import VehiclePresentation from '@/components/resources/VehiclePresentation.vue'
+import { validateTechnical, validateVehicle } from '@/utils/validates.js'
 
 const projectStore = UseProjectStore()
 const technicalStore = UseTechnicalStore()
@@ -210,6 +211,18 @@ const submitForm = async () => {
   }
 }
 
+const openTechnicalModal = () => {
+  if (selectedTechnicalData.value) {
+    showTechnicalModal.value = true
+  }
+}
+
+const openVehicleModal = () => {
+  if (selectedVehicleData.value) {
+    showVehicleModal.value = true
+  }
+}
+
 const cancelForm = () => {
   router.push({ name: 'custody-chain' })
 }
@@ -238,18 +251,21 @@ const selectedVehicleData = computed(() => {
   return vehicleStore.vehicles.find(v => v.id === custodyChain.value.vehicle)
 })
 
-const openTechnicalModal = () => {
-  if (selectedTechnicalData.value) {
-    showTechnicalModal.value = true
-  }
-}
+// Validaciones de técnico y vehículo
+const technicalValidation = computed(() => {
+  return validateTechnical(selectedTechnicalData.value)
+})
 
-const openVehicleModal = () => {
-  if (selectedVehicleData.value) {
-    showVehicleModal.value = true
-  }
-}
+const vehicleValidation = computed(() => {
+  return validateVehicle(selectedVehicleData.value)
+})
 
+const hasValidationIssues = computed(() => {
+  return technicalValidation.value.hasErrors || 
+         technicalValidation.value.hasWarnings ||
+         vehicleValidation.value.hasErrors || 
+         vehicleValidation.value.hasWarnings
+})
 
 watch(() => custodyChain.value.technical, (newTechnicalId) => {
   if (newTechnicalId) {
@@ -283,6 +299,67 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
 
 <template>
   <div class="max-w-7xl mx-auto p-4">
+    <!-- Alertas de Validación -->
+    <div v-if="hasValidationIssues" class="mb-6 space-y-3">
+      <!-- Alertas del Técnico -->
+      <div v-if="technicalValidation.hasErrors" class="alert alert-error shadow-lg">
+        <div class="flex items-start w-full">
+          <i class="las la-exclamation-circle text-2xl"></i>
+          <div class="flex-1">
+            <h3 class="font-bold">Problemas críticos con el técnico seleccionado</h3>
+            <ul class="text-sm mt-2 space-y-1">
+              <li v-for="(issue, idx) in technicalValidation.issues.filter(i => i.type === 'error')" :key="idx">
+                <strong>{{ issue.field }}:</strong> {{ issue.message }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="technicalValidation.hasWarnings && !technicalValidation.hasErrors" class="alert alert-warning shadow-lg">
+        <div class="flex items-start w-full">
+          <i class="las la-exclamation-triangle text-2xl"></i>
+          <div class="flex-1">
+            <h3 class="font-bold">Advertencias del técnico seleccionado</h3>
+            <ul class="text-sm mt-2 space-y-1">
+              <li v-for="(issue, idx) in technicalValidation.issues.filter(i => i.type === 'warning')" :key="idx">
+                <strong>{{ issue.field }}:</strong> {{ issue.message }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alertas del Vehículo -->
+      <div v-if="vehicleValidation.hasErrors" class="alert alert-error shadow-lg">
+        <div class="flex items-start w-full">
+          <i class="las la-exclamation-circle text-2xl"></i>
+          <div class="flex-1">
+            <h3 class="font-bold">Problemas críticos con el vehículo seleccionado</h3>
+            <ul class="text-sm mt-2 space-y-1">
+              <li v-for="(issue, idx) in vehicleValidation.issues.filter(i => i.type === 'error')" :key="idx">
+                <strong>{{ issue.field }}:</strong> {{ issue.message }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="vehicleValidation.hasWarnings && !vehicleValidation.hasErrors" class="alert alert-warning shadow-lg">
+        <div class="flex items-start w-full">
+          <i class="las la-exclamation-triangle text-2xl"></i>
+          <div class="flex-1">
+            <h3 class="font-bold">Advertencias del vehículo seleccionado</h3>
+            <ul class="text-sm mt-2 space-y-1">
+              <li v-for="(issue, idx) in vehicleValidation.issues.filter(i => i.type === 'warning')" :key="idx">
+                <strong>{{ issue.field }}:</strong> {{ issue.message }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <form @submit.prevent="submitForm" class="space-y-6">
       <!-- Información General -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
@@ -292,7 +369,15 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
           <!-- Técnico -->
           <div class="form-control w-full">
             <label class="label" for="technical">
-              <span class="label-text font-medium">Técnico *</span>
+              <span class="label-text font-medium">
+                Técnico *
+                <span v-if="technicalValidation.hasErrors" class="badge badge-error badge-sm ml-1">
+                  <i class="las la-exclamation-circle"></i>
+                </span>
+                <span v-else-if="technicalValidation.hasWarnings" class="badge badge-warning badge-sm ml-1">
+                  <i class="las la-exclamation-triangle"></i>
+                </span>
+              </span>
             </label>
             <div class="flex gap-2">
               <select 
@@ -300,6 +385,7 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
                 v-model.number="custodyChain.technical"
                 required
                 class="select select-bordered w-full flex-1"
+                :class="{ 'select-error': technicalValidation.hasErrors, 'select-warning': technicalValidation.hasWarnings && !technicalValidation.hasErrors }"
               >
                 <option :value="null" disabled>Seleccione un técnico</option>
                 <option v-for="tech in technicals" :key="tech.id" :value="tech.id">
@@ -321,7 +407,15 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
           <!-- Vehículo -->
           <div class="form-control w-full">
             <label class="label" for="vehicle">
-              <span class="label-text font-medium">Vehículo *</span>
+              <span class="label-text font-medium">
+                Vehículo *
+                <span v-if="vehicleValidation.hasErrors" class="badge badge-error badge-sm ml-1">
+                  <i class="las la-exclamation-circle"></i>
+                </span>
+                <span v-else-if="vehicleValidation.hasWarnings" class="badge badge-warning badge-sm ml-1">
+                  <i class="las la-exclamation-triangle"></i>
+                </span>
+              </span>
             </label>
             <div class="flex gap-2">
               <select 
@@ -329,6 +423,7 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
                 v-model.number="custodyChain.vehicle"
                 required
                 class="select select-bordered w-full flex-1"
+                :class="{ 'select-error': vehicleValidation.hasErrors, 'select-warning': vehicleValidation.hasWarnings && !vehicleValidation.hasErrors }"
               >
                 <option :value="null" disabled>Seleccione un vehículo</option>
                 <option v-for="vehicle in vehicles" :key="vehicle.id" :value="vehicle.id">
