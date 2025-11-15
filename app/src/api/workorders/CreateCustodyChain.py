@@ -12,164 +12,137 @@ class CreateCustodyChainAPI(View):
 
     def post(self, request):
         """Crear una cadena de custodia con todos sus detalles."""
-        try:
-            data = json.loads(request.body)
+        data = json.loads(request.body)
 
-            technical_id = data.get("technical_id")
-            vehicle_id = data.get("vehicle_id")
-            project_id = data.get("project_id")
-            resource_ids = data.get("resources", [])
+        technical_id = data.get("technical_id")
+        vehicle_id = data.get("vehicle_id")
+        project_id = data.get("project_id")
+        resource_ids = data.get("resources", [])
 
-            if not technical_id or not vehicle_id or not project_id:
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": "Faltan datos requeridos: technical_id, vehicle_id, project_id",
-                    },
-                    status=400,
-                )
-
-            if not resource_ids or len(resource_ids) == 0:
-                return JsonResponse(
-                    {"success": False, "error": "Debe seleccionar al menos un recurso"},
-                    status=400,
-                )
-
-            try:
-                technical = Technical.objects.get(id=technical_id, is_active=True)
-            except Technical.DoesNotExist:
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": f"Técnico con ID {technical_id} no encontrado",
-                    },
-                    status=404,
-                )
-
-            try:
-                vehicle = Vehicle.objects.get(id=vehicle_id)
-            except Vehicle.DoesNotExist:
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": f"Vehículo con ID {vehicle_id} no encontrado",
-                    },
-                    status=404,
-                )
-
-            try:
-                project = Project.objects.get(id=project_id, is_active=True)
-            except Project.DoesNotExist:
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": f"Proyecto con ID {project_id} no encontrado",
-                    },
-                    status=404,
-                )
-
-            sheet_project = (
-                SheetProject.objects.filter(project=project, is_active=True)
-                .order_by("-id")
-                .first()
-            )
-
-            if not sheet_project:
-                return JsonResponse(
-                    {
-                        "success": False,
-                        "error": "No hay una planilla activa para este proyecto",
-                    },
-                    status=400,
-                )
-
-            valid_resources = []
-            for resource_id in resource_ids:
-                try:
-                    resource = ProjectResourceItem.objects.get(
-                        id=resource_id, project=project, is_active=True
-                    )
-                    valid_resources.append(resource)
-                except ProjectResourceItem.DoesNotExist:
-                    return JsonResponse(
-                        {
-                            "success": False,
-                            "error": f"Recurso con ID {resource_id} no encontrado o no pertenece al proyecto",
-                        },
-                        status=404,
-                    )
-
-            custody_chain = CustodyChain(
-                technical=technical,
-                vehicle=vehicle,
-                sheet_project=sheet_project,
-                consecutive=CustodyChain.get_next_consecutive(),
-                activity_date=data.get("activity_date"),
-                issue_date=data.get("issue_date"),
-                start_time=data.get("start_time") if data.get("start_time") else None,
-                end_time=data.get("end_time") if data.get("end_time") else None,
-                time_duration=float(data.get("duration_hours", 0)),
-                location=data.get("location", ""),
-                contact_name=data.get("contact_name", ""),
-                dni_contact=data.get("dni_contact", ""),
-                contact_position=data.get("contact_position", ""),
-                date_contact=data.get("date_contact") if data.get("date_contact") else None,
-                driver_name=data.get("driver_name", ""),
-                dni_driver=data.get("dni_driver", ""),
-                driver_position=data.get("driver_position", ""),
-                driver_date=data.get("driver_date") if data.get("driver_date") else None,
-                total_gallons=int(float(data.get("total_gallons", 0))),
-                total_barrels=int(float(data.get("total_barrels", 0))),
-                total_cubic_meters=int(float(data.get("total_cubic_meters", 0))),
-                notes=data.get("notes", "")
-            )
-            custody_chain.save()
-
-            detail_ids = []
-            for resource in valid_resources:
-                detail = ChainCustodyDetail(
-                    custody_chain=custody_chain,
-                    project_resource=resource
-                )
-                detail.save()
-                detail_ids.append(detail.id)
-
-            response_data = {
-                "custody_chain_id": custody_chain.id,
-                "consecutive": custody_chain.consecutive,
-                "sheet_project_id": sheet_project.id,
-                "project_id": project.id,
-                "technical_id": technical.id,
-                "technical_name": f"{technical.first_name} {technical.last_name}",
-                "vehicle_id": vehicle.id,
-                "vehicle_plate": vehicle.no_plate,
-                "activity_date": custody_chain.activity_date.strftime("%Y-%m-%d"),
-                "total_resources": len(valid_resources),
-                "resource_details": detail_ids,
-                "total_gallons": custody_chain.total_gallons,
-                "total_barrels": custody_chain.total_barrels,
-                "total_cubic_meters": custody_chain.total_cubic_meters,
-            }
-
-            return JsonResponse(
-                {
-                    "success": True,
-                    "message": "Cadena de custodia creada exitosamente",
-                    "data": response_data,
-                },
-                status=201,
-            )
-
-        except json.JSONDecodeError:
+        if not technical_id or not vehicle_id or not project_id:
             return JsonResponse(
                 {
                     "success": False,
-                    "error": "JSON inválido en el cuerpo de la solicitud",
+                    "error": "Faltan datos requeridos: technical_id, vehicle_id, project_id",
                 },
                 status=400,
             )
-        except Exception as e:
+
+        if not resource_ids or len(resource_ids) == 0:
             return JsonResponse(
-                {"success": False, "error": f"Error inesperado: {str(e)}"},
-                status=500,
+                {"success": False, "error": "Debe seleccionar al menos un recurso"},
+                status=400,
             )
+
+        try:
+            technical = Technical.objects.get(id=technical_id, is_active=True)
+        except Technical.DoesNotExist:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": f"Técnico con ID {technical_id} no encontrado",
+                },
+                status=404,
+            )
+
+        try:
+            vehicle = Vehicle.objects.get(id=vehicle_id)
+        except Vehicle.DoesNotExist:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": f"Vehículo con ID {vehicle_id} no encontrado",
+                },
+                status=404,
+            )
+
+        try:
+            project = Project.objects.get(id=project_id, is_active=True)
+        except Project.DoesNotExist:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": f"Proyecto con ID {project_id} no encontrado",
+                },
+                status=404,
+            )
+
+        sheet_project = (
+            SheetProject.objects.filter(project=project, is_active=True)
+            .order_by("-id")
+            .first()
+        )
+
+        if not sheet_project:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "No hay una planilla activa para este proyecto",
+                },
+                status=400,
+            )
+
+        valid_resources = []
+        for resource_id in resource_ids:
+            try:
+                resource = ProjectResourceItem.objects.get(
+                    id=resource_id, project=project, is_active=True
+                )
+                valid_resources.append(resource)
+            except ProjectResourceItem.DoesNotExist:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": f"Recurso con ID {resource_id} no encontrado o no pertenece al proyecto",
+                    },
+                    status=404,
+                )
+
+        custody_chain = CustodyChain(
+            technical=technical,
+            vehicle=vehicle,
+            sheet_project=sheet_project,
+            consecutive=CustodyChain.get_next_consecutive(),
+            activity_date=data.get("activity_date"),
+            issue_date=data.get("issue_date"),
+            start_time=data.get("start_time") if data.get("start_time") else None,
+            end_time=data.get("end_time") if data.get("end_time") else None,
+            time_duration=float(data.get("duration_hours", 0)),
+            location=data.get("location", ""),
+            contact_name=data.get("contact_name", ""),
+            dni_contact=data.get("dni_contact", ""),
+            contact_position=data.get("contact_position", ""),
+            date_contact=data.get("date_contact") if data.get("date_contact") else None,
+            driver_name=data.get("driver_name", ""),
+            dni_driver=data.get("dni_driver", ""),
+            driver_position=data.get("driver_position", ""),
+            driver_date=data.get("driver_date") if data.get("driver_date") else None,
+            total_gallons=int(float(data.get("total_gallons", 0))),
+            total_barrels=int(float(data.get("total_barrels", 0))),
+            total_cubic_meters=int(float(data.get("total_cubic_meters", 0))),
+            notes=data.get("notes", "")
+        )
+        custody_chain.save()
+
+        detail_ids = []
+        for resource in valid_resources:
+            detail = ChainCustodyDetail(
+                custody_chain=custody_chain,
+                project_resource=resource
+            )
+            detail.save()
+            detail_ids.append(detail.id)
+
+        response_data = {
+            "custody_chain_id": custody_chain.id,
+            "consecutive": custody_chain.consecutive,
+        }
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Cadena de custodia creada exitosamente",
+                "data": response_data,
+            },
+            status=201,
+        )

@@ -36,6 +36,7 @@ from api.vehicles.GetVehiclesAvaliablesAPI import GetVehiclesAvaliablesAPI
 from api.technicals.GetTechnicalsAvaliablesAPI import GetTechnicalsAvaliablesAPI
 from api.workorders.CustodyChainDetaikAPI import CustodyChainDetaikAPI
 from api.workorders.AllCustodyChainProject import AllCustodyChainProjectAPI
+from api.workorders.CustodyChainBySheet import CustodyChainBySheetAPI
 
 urlpatterns = [
     # vehicles
@@ -68,5 +69,6 @@ urlpatterns = [
     path('workorders/custody_chain/create/', CreateCustodyChainAPI.as_view(), name='api_create_custody_chain'),
 	path('workorders/custody_chain/detail/<int:id>/', CustodyChainDetaikAPI.as_view(), name='api_custody_chain_detail'),
     path('workorders/custody_chain/project/<int:project_id>/', AllCustodyChainProjectAPI.as_view(), name='api_all_custody_chain_project'),
+    path('workorders/custody_chain/sheet/<int:sheet_project_id>/', CustodyChainBySheetAPI.as_view(), name='api_custody_chain_by_sheet'),
 ]
 
