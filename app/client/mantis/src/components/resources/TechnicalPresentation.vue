@@ -220,7 +220,7 @@ const groupedVaccinations = computed(() => {
       
       <div class="space-y-4">
         <div v-for="(vaccines, type) in groupedVaccinations" :key="type" class="border border-gray-300 rounded p-3 bg-base-100">
-          <h7 class="font-semibold text-sm mb-2 text-blue-700">{{ type }}</h7>
+          <h6 class="font-semibold text-sm mb-2 text-blue-700">{{ type }}</h6>
           
           <div class="overflow-x-auto">
             <table class="table table-xs w-full">
