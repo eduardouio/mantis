@@ -11,6 +11,7 @@ import Modal from '@/components/common/Modal.vue'
 import TechnicalPresentation from '@/components/resources/TechnicalPresentation.vue'
 import VehiclePresentation from '@/components/resources/VehiclePresentation.vue'
 import { validateTechnical, validateVehicle } from '@/utils/validates.js'
+import { fromGallons, fromBarrels, fromCubicMeters } from '@/utils/volumenConverter.js'
 
 const projectStore = UseProjectStore()
 const technicalStore = UseTechnicalStore()
@@ -295,6 +296,55 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
     }
   }
 })
+
+// Bandera para evitar loops infinitos en las conversiones
+const isUpdatingVolumes = ref(false)
+
+// Rastrear qué campo de volumen fue editado por última vez
+const lastEditedVolumeField = ref(null)
+
+// Watcher para convertir desde galones
+watch(() => custodyChain.value.total_gallons, (newValue, oldValue) => {
+  if (lastEditedVolumeField.value === 'gallons' && newValue !== oldValue) {
+    const converted = fromGallons(newValue)
+    lastEditedVolumeField.value = null
+    custodyChain.value.total_barrels = converted.barrels
+    custodyChain.value.total_cubic_meters = converted.cubicMeters
+  }
+})
+
+// Watcher para convertir desde barriles
+watch(() => custodyChain.value.total_barrels, (newValue, oldValue) => {
+  if (lastEditedVolumeField.value === 'barrels' && newValue !== oldValue) {
+    const converted = fromBarrels(newValue)
+    lastEditedVolumeField.value = null
+    custodyChain.value.total_gallons = converted.gallons
+    custodyChain.value.total_cubic_meters = converted.cubicMeters
+  }
+})
+
+// Watcher para convertir desde metros cúbicos
+watch(() => custodyChain.value.total_cubic_meters, (newValue, oldValue) => {
+  if (lastEditedVolumeField.value === 'cubicMeters' && newValue !== oldValue) {
+    const converted = fromCubicMeters(newValue)
+    lastEditedVolumeField.value = null
+    custodyChain.value.total_gallons = converted.gallons
+    custodyChain.value.total_barrels = converted.barrels
+  }
+})
+
+// Funciones para manejar el input de los campos de volumen
+const handleGallonsInput = () => {
+  lastEditedVolumeField.value = 'gallons'
+}
+
+const handleBarrelsInput = () => {
+  lastEditedVolumeField.value = 'barrels'
+}
+
+const handleCubicMetersInput = () => {
+  lastEditedVolumeField.value = 'cubicMeters'
+}
 </script>
 
 <template>
@@ -714,7 +764,10 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
 
       <!-- Totales -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Totales</h6>
+        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">
+          Totales
+          <span class="text-xs text-gray-500 ml-2">(Los valores se convierten automáticamente)</span>
+        </h6>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="form-control w-full">
@@ -724,9 +777,12 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
             <input 
               type="number"
               id="total_gallons"
-              v-model="custodyChain.total_gallons"
+              v-model.number="custodyChain.total_gallons"
+              @input="handleGallonsInput"
               min="0"
+              step="0.0001"
               class="input input-bordered w-full"
+              placeholder="0.0000"
             />
           </div>
 
@@ -737,9 +793,12 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
             <input 
               type="number"
               id="total_barrels"
-              v-model="custodyChain.total_barrels"
+              v-model.number="custodyChain.total_barrels"
+              @input="handleBarrelsInput"
               min="0"
+              step="0.0001"
               class="input input-bordered w-full"
+              placeholder="0.0000"
             />
           </div>
 
@@ -750,9 +809,12 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
             <input 
               type="number"
               id="total_cubic_meters"
-              v-model="custodyChain.total_cubic_meters"
+              v-model.number="custodyChain.total_cubic_meters"
+              @input="handleCubicMetersInput"
               min="0"
+              step="0.0001"
               class="input input-bordered w-full"
+              placeholder="0.0000"
             />
           </div>
         </div>
