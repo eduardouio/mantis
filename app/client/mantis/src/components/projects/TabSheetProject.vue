@@ -87,8 +87,8 @@ const closeSheet = async (sheetId) => {
 
 const viewCustodyChains = (sheetId) => {
   router.push({
-    name: 'custody-chain',
-    query: { sheet_id: sheetId }
+    name: 'custody-chain-sheet',
+    params: { id: sheetId }
   });
 };
 </script>
