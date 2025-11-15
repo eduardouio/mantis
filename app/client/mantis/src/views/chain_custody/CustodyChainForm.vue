@@ -27,6 +27,34 @@ onMounted(async () => {
   await technicalStore.fetchTechnicalsAvailable()
   await vehicleStore.fetchVehicles()
   await projectResourceStore.fetchResourcesProject()
+  
+  // Inicializar con datos del store
+  custodyChain.value = {
+    ...custodyChainStore.newCustodyChain,
+    location: projectStore.project?.location || '',
+    contact_name: projectStore.project?.contact_name || '',
+    technical: null,
+    vehicle: null,
+    technical_name: '',
+    technical_dni: '',
+    technical_position: '',
+    vehicle_plate: '',
+    vehicle_brand: '',
+    vehicle_model: '',
+    start_time: '',
+    end_time: '',
+    time_duration: 0,
+    dni_contact: '',
+    contact_position: '',
+    date_contact: new Date().toISOString().split('T')[0],
+    driver_name: '',
+    dni_driver: '',
+    driver_position: '',
+    driver_date: new Date().toISOString().split('T')[0],
+    total_barrels: 0,
+    total_cubic_meters: 0,
+    notes: ''
+  }
 })
 
 const custodyChain = ref({
@@ -123,6 +151,17 @@ const submitForm = async () => {
       return
     }
 
+    // Actualizar el store antes de enviar
+    custodyChainStore.newCustodyChain = {
+      ...custodyChainStore.newCustodyChain,
+      issue_date: custodyChain.value.issue_date,
+      consecutive: custodyChain.value.consecutive,
+      activity_date: custodyChain.value.activity_date,
+      location: custodyChain.value.location,
+      total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
+      duration_hours: custodyChain.value.time_duration,
+    }
+
     const payload = {
       technical_id: custodyChain.value.technical,
       vehicle_id: custodyChain.value.vehicle,
@@ -155,10 +194,12 @@ const submitForm = async () => {
       resources: selectedResourceIds.value
     }
 
-    await custodyChainStore.addCustodyChain(payload)
+    const result = await custodyChainStore.addCustodyChain(payload)
     
-    alert('Cadena de custodia guardada exitosamente')
-    router.push({ name: 'custody-chain' })
+    if (result) {
+      alert('Cadena de custodia guardada exitosamente')
+      router.push({ name: 'custody-chain' })
+    }
   } catch (error) {
     console.error('Error al guardar:', error)
     alert('Error al guardar la cadena de custodia: ' + error.message)
@@ -207,7 +248,7 @@ const openVehicleModal = () => {
   }
 }
 
-// Copiar datos del técnico seleccionado
+
 watch(() => custodyChain.value.technical, (newTechnicalId) => {
   if (newTechnicalId) {
     const selectedTech = technicalStore.technicals.find(t => t.id === newTechnicalId)
@@ -219,7 +260,7 @@ watch(() => custodyChain.value.technical, (newTechnicalId) => {
   }
 })
 
-// Copiar datos del vehículo seleccionado
+
 watch(() => custodyChain.value.vehicle, (newVehicleId) => {
   if (newVehicleId) {
     const selectedVehicle = vehicleStore.vehicles.find(v => v.id === newVehicleId)

@@ -30,13 +30,34 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
                     body: JSON.stringify(custodyChain)
                 });
                 if (!response.ok) {
-                    throw new Error("Failed to create custody chain");
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || "Failed to create custody chain");
                 }
                 const data = await response.json();
+                
+                // Agregar a la lista local
+                this.custodyChains.push(data.data);
+                
+                // Resetear newCustodyChain
+                this.resetNewCustodyChain();
+                
                 return data.data;
             } catch (error) {
                 console.error("Error creating custody chain:", error);
+                throw error;
             }
+        },
+        resetNewCustodyChain() {
+            this.newCustodyChain = {
+                id: null,
+                id_sheet_project: null,
+                issue_date: new Date().toISOString().split('T')[0],
+                consecutive: "00000",
+                activity_date: new Date().toISOString().split('T')[0],
+                location: null,
+                total_gallons: 0.0,
+                duration_hours: 0.0,
+            };
         },
         async fetchCustodyChainDetail(id) {
             console.log("Fetching custody chain detail for ID:", id);
