@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, defineEmits } from 'vue';
 import { RouterLink } from 'vue-router';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 
@@ -44,6 +44,16 @@ const getStatusBadge = (status) => {
     class: 'bg-gray-500 text-white' 
   };
 };
+
+const emit = defineEmits(['open-sheet-form', 'edit-sheet']);
+
+const openSheetFormModal = () => {
+  emit('open-sheet-form');
+};
+
+const editSheet = (sheet) => {
+  emit('edit-sheet', sheet);
+};
 </script>
 
 <template>
@@ -53,14 +63,14 @@ const getStatusBadge = (status) => {
         <i class="las la-file-invoice-dollar text-blue-600"></i>
         Planillas del Proyecto
       </h2>
-      <RouterLink 
+      <button
         v-if="!hasInProgressSheet"
-        to="/sheet/form" 
+        @click="openSheetFormModal"
         class="btn btn-primary btn-sm"
       >
         <i class="las la-plus"></i>
         Crear Nueva Planilla
-      </RouterLink>
+      </button>
       <div v-else class="text-amber-700 badge bg-yellow-100">
         <i class="las la-exclamation-triangle"></i>
         PLANILLA EN EJECUCIÓN
@@ -83,12 +93,13 @@ const getStatusBadge = (status) => {
             <th class="p-2 border border-gray-100 text-center">Galones</th>
             <th class="p-2 border border-gray-100 text-center">Barriles</th>
             <th class="p-2 border border-gray-100 text-center">M³</th>
+            <th class="p-2 border border-gray-100 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <template v-if="sheetProjects.length === 0">
             <tr>
-              <td colspan="12" class="text-center text-gray-500 py-8">
+              <td colspan="13" class="text-center text-gray-500 py-8">
                 <i class="las la-inbox text-4xl"></i>
                 <p>No hay planillas registradas para este proyecto</p>
               </td>
@@ -115,6 +126,15 @@ const getStatusBadge = (status) => {
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_gallons.toLocaleString() }}</td>
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_barrels.toLocaleString() }}</td>
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_cubic_meters.toFixed(1) }}</td>
+              <td class="p-2 border border-gray-300 text-center">
+                <button 
+                  @click="editSheet(sheet)"
+                  class="btn btn-ghost btn-xs text-blue-600"
+                  title="Editar planilla"
+                >
+                  <i class="las la-edit text-lg"></i>
+                </button>
+              </td>
             </tr>
           </template>
         </tbody>
