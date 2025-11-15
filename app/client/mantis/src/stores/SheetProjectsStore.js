@@ -69,6 +69,9 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 throw error;
             }
         },
+        async closeSheetProject(sheetProjectID) {
+            console.log("Closing sheet project with ID:", sheetProjectID);
+        },
         initializeNewSheetProject(project) {
             this.newSheetProject = {
                 id: null,

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, defineEmits } from 'vue';
+import { computed, defineEmits, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 
@@ -53,6 +53,35 @@ const openSheetFormModal = () => {
 
 const editSheet = (sheet) => {
   emit('edit-sheet', sheet);
+};
+
+const confirmingCloseId = ref(null);
+
+const handleCloseClick = (sheetId) => {
+  if (confirmingCloseId.value === sheetId) {
+    // Segunda vez: ejecutar el cierre
+    closeSheet(sheetId);
+    confirmingCloseId.value = null;
+  } else {
+    // Primera vez: mostrar confirmación
+    confirmingCloseId.value = sheetId;
+    // Resetear después de 3 segundos si no confirma
+    setTimeout(() => {
+      if (confirmingCloseId.value === sheetId) {
+        confirmingCloseId.value = null;
+      }
+    }, 3000);
+  }
+};
+
+const closeSheet = async (sheetId) => {
+  try {
+    console.log('Cerrando planilla:', sheetId);
+    // Aquí irá la llamada al store para cerrar la planilla
+    // await sheetProjectsStore.closeSheetProject(sheetId);
+  } catch (error) {
+    console.error('Error al cerrar planilla:', error);
+  }
 };
 </script>
 
@@ -126,14 +155,26 @@ const editSheet = (sheet) => {
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_gallons.toLocaleString() }}</td>
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_barrels.toLocaleString() }}</td>
               <td class="p-2 border border-gray-300 text-right">{{ sheet.total_cubic_meters.toFixed(1) }}</td>
-              <td class="p-2 border border-gray-300 text-center">
-                <button 
-                  @click="editSheet(sheet)"
-                  class="btn btn-ghost btn-xs text-blue-600"
-                  title="Editar planilla"
-                >
-                  <i class="las la-edit text-lg"></i>
-                </button>
+              <td class="p-2 border border-gray-300 text-end">
+                <div class="flex gap-2 justify-end">
+                  <button 
+                    @click="editSheet(sheet)"
+                    class="btn btn-xs border-blue-500 text-teal-500 bg-white" 
+                    title="Editar planilla"
+                  >
+                    <i class="las la-edit"></i>
+                    EDITAR
+                  </button>
+                  <button
+                    @click="handleCloseClick(sheet.id)"  
+                    class="btn btn-xs bg-white"
+                    :class="confirmingCloseId === sheet.id ? 'border-orange-500 text-orange-500' : 'border-red-500 text-red-500'"
+                    :title="confirmingCloseId === sheet.id ? 'Haz clic nuevamente para confirmar' : 'Cerrar planilla'"
+                  >
+                    <i class="las la-times"></i>
+                    {{ confirmingCloseId === sheet.id ? 'CONFIRMAR' : 'CERRAR' }}
+                  </button>
+                </div>
               </td>
             </tr>
           </template>
