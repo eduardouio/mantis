@@ -9,9 +9,7 @@ class ProjectResources(View):
 
     def get(self, request, project_id):
         """Obtener recursos asociados a un proyecto."""
-        project = Project.objects.get(
-            id=project_id, is_deleted=False, is_active=True
-        )
+        project = Project.get_by_id(project_id)
 
         if not project:
             return JsonResponse(
@@ -41,6 +39,7 @@ class ProjectResources(View):
             "operation_start_date": project_resource.operation_start_date.isoformat(),
             "is_active": project_resource.is_active,
             "is_selected": False,
+            "type_resource": project_resource.type_resource,
             "is_retired": project_resource.is_retired,
             "retirement_date": project_resource.retirement_date.isoformat() if project_resource.retirement_date else None,
             "retirement_reason": project_resource.retirement_reason,
