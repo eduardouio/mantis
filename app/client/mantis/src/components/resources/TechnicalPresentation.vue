@@ -215,36 +215,41 @@ const groupedVaccinations = computed(() => {
     </div>
 
     <!-- Vacunas -->
-    <div v-if="technical.vaccination_records && technical.vaccination_records.length > 0" class="bg-sky-50 rounded-lg p-4 mb-6 space-y-2 border-gray-200 border">
-      <h6 class="font-semibold text-lg mb-3">Registro de Vacunaciones ({{ technical.vaccination_records.length }})</h6>
+    <div v-if="technical.vaccination_records && technical.vaccination_records.length > 0" class="bg-sky-50 rounded-lg p-4 mb-6 border-gray-200 border">
+      <h6 class="font-semibold text-lg mb-3">Registro de Vacunaciones</h6>
       
-      <div class="space-y-4">
-        <div v-for="(vaccines, type) in groupedVaccinations" :key="type" class="border border-gray-300 rounded p-3 bg-base-100">
-          <h6 class="font-semibold text-sm mb-2 text-blue-700">{{ type }}</h6>
-          
-          <div class="overflow-x-auto">
-            <table class="table table-xs w-full">
-              <thead class="bg-sky-50">
-                <tr>
-                  <th class="border-r border-gray-300">Dosis</th>
-                  <th class="border-r border-gray-300">Fecha Aplicación</th>
-                  <th class="border-r border-gray-300">Lote</th>
-                  <th class="border-r border-gray-300">Próx. Dosis</th>
-                  <th>Notas</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="vaccine in vaccines" :key="vaccine.id" class="hover:bg-sky-50">
-                  <td class="border-r border-gray-300">{{ vaccine.dose_number }}</td>
-                  <td class="border-r border-gray-300 font-mono text-xs">{{ formatDate(vaccine.application_date) }}</td>
-                  <td class="border-r border-gray-300 font-mono text-xs">{{ vaccine.batch_number || 'N/A' }}</td>
-                  <td class="border-r border-gray-300 font-mono text-xs">{{ formatDate(vaccine.next_dose_date) }}</td>
-                  <td class="text-xs">{{ vaccine.notes || '—' }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div class="overflow-x-auto bg-base-100 border border-gray-300 rounded">
+        <table class="table table-xs w-full border-collapse">
+          <thead>
+            <tr class="bg-sky-100">
+              <th class="border border-gray-300 text-center font-semibold text-blue-700">VACUNA</th>
+              <th class="border border-gray-300 text-center font-semibold text-blue-700">DOSIS</th>
+              <th class="border border-gray-300 text-center font-semibold text-blue-700">FECHA</th>
+              <th class="border border-gray-300 text-center font-semibold text-blue-700">LOTE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(vaccines, type) in groupedVaccinations" :key="type">
+              <tr v-for="(vaccine, index) in vaccines.slice(0, 5)" :key="vaccine.id" class="hover:bg-sky-50">
+                <td v-if="index === 0" :rowspan="5" class="border border-gray-300 text-center font-semibold align-middle">
+                  {{ type }}
+                </td>
+                <td class="border border-gray-300 text-center">{{ vaccine.dose_number }}</td>
+                <td class="border border-gray-300 text-center font-mono text-xs">{{ formatDate(vaccine.application_date) }}</td>
+                <td class="border border-gray-300 text-center font-mono text-xs">{{ vaccine.batch_number || '' }}</td>
+              </tr>
+              <!-- Filas vacías para completar 5 filas -->
+              <tr v-for="n in Math.max(0, 5 - vaccines.length)" :key="`${type}-empty-${n}`" class="hover:bg-sky-50">
+                <td v-if="vaccines.length === 0 && n === 1" :rowspan="5" class="border border-gray-300 text-center font-semibold align-middle">
+                  {{ type }}
+                </td>
+                <td class="border border-gray-300 text-center text-gray-400">{{ vaccines.length + n }}</td>
+                <td class="border border-gray-300 text-center"></td>
+                <td class="border border-gray-300 text-center"></td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
       </div>
     </div>
 
