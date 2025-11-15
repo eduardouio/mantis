@@ -1,8 +1,9 @@
 <script setup>
 import { computed, defineEmits, ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 
+const router = useRouter();
 const sheetProjectsStore = UseSheetProjectsStore();
 
 const sheetProjects = computed(() => sheetProjectsStore.sheetProjects);
@@ -82,6 +83,13 @@ const closeSheet = async (sheetId) => {
   } catch (error) {
     console.error('Error al cerrar planilla:', error);
   }
+};
+
+const viewCustodyChains = (sheetId) => {
+  router.push({
+    name: 'custody-chain',
+    query: { sheet_id: sheetId }
+  });
 };
 </script>
 
@@ -164,6 +172,14 @@ const closeSheet = async (sheetId) => {
                   >
                     <i class="las la-edit"></i>
                     EDITAR
+                  </button>
+                  <button
+                    @click="viewCustodyChains(sheet.id)"
+                    class="btn btn-xs border-purple-500 text-purple-500 bg-white"
+                    title="Ver cadenas de custodia"
+                  >
+                    <i class="las la-link"></i>
+                    C. CUSTODIA
                   </button>
                   <button
                     @click="handleCloseClick(sheet.id)"  
