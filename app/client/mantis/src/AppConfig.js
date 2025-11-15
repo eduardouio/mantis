@@ -1,4 +1,4 @@
-const idProject = window.djangoConfig?.projectId ?? 3
+const idProject = window.djangoConfig?.projectId ?? 4
 const apiBaseUrl = window.djangoConfig?.baseUrl ?? "http://localhost:8000"
 const csrfToken = window.djangoConfig?.csrfToken ?? "falsocsrf"
 
@@ -22,6 +22,7 @@ export const appConfig = {
     "URLDeleteResourceProject": apiBaseUrl + "/api/projects/resources/delete/${id_project_resource}/",
     "URLSheetProjects": apiBaseUrl + "/api/workorders/sheets/project/" + idProject + "/",
     "URLAddSheetProject": apiBaseUrl + "/api/workorders/sheets/create/",
+    "URLUpdateSheetProject": apiBaseUrl + "/api/workorders/sheets/update/",
     "URLAddResourceToProject": apiBaseUrl + "/api/projects/resources/add/",
     "URLCreateCustodyChain": apiBaseUrl + "/api/workorders/custody_chain/create/",
     "URLCustodyChainDetail": apiBaseUrl + "/api/workorders/custody_chain/detail/${id}/",

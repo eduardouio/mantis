@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import ProjectsView from '../views/projects/ProjectsView.vue'
 import ResourceItemsForm from '@/views/projects/ResourceItemsForm.vue'
-import SheetProjectForm from '@/views/projects/SheetProjectForm.vue'
 import CustodyChainView from '@/views/chain_custody/CustodyChainView.vue'
 import CustodyChainForm from '@/views/chain_custody/CustodyChainForm.vue'
 
@@ -21,11 +20,6 @@ const router = createRouter({
       path: '/resource/form',
       name: 'resource-form',
       component: ResourceItemsForm,
-    },
-    {
-      path: '/sheet/form',
-      name: 'sheet-form',
-      component: SheetProjectForm,
     },
     {
       path: '/custody-chain',
