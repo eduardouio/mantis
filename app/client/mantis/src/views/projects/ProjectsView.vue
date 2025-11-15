@@ -4,6 +4,7 @@ import TabSheetProject from '@/components/projects/TabSheetProject.vue'
 import TabCalendar from '@/components/projects/TabCalendar.vue'
 import Modal from '@/components/common/Modal.vue'
 import ResourceForm from '@/components/projects/ResourceForm.vue'
+import SheetProjectForm from '@/components/projects/SheetPorjectForm.vue'
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
@@ -19,6 +20,7 @@ const isModalOpen = ref(false);
 const modalTitle = ref('');
 const currentModalComponent = ref(null);
 const selectedResourceForEdit = ref(null);
+const selectedSheetForEdit = ref(null);
 
 const openResourceFormModal = () => {
   modalTitle.value = 'Agregar Recurso al Proyecto';
@@ -34,11 +36,26 @@ const openEditResourceModal = (resource) => {
   isModalOpen.value = true;
 };
 
+const openSheetFormModal = () => {
+  modalTitle.value = 'Nueva Planilla del Proyecto #' + project.value?.id;
+  currentModalComponent.value = 'SheetProjectForm';
+  selectedSheetForEdit.value = null;
+  isModalOpen.value = true;
+};
+
+const openEditSheetModal = (sheet) => {
+  modalTitle.value = 'Editar Planilla #' + sheet.id + ' - Proyecto #' + project.value?.id;
+  currentModalComponent.value = 'SheetProjectForm';
+  selectedSheetForEdit.value = sheet;
+  isModalOpen.value = true;
+};
+
 const closeModal = () => {
   isModalOpen.value = false;
   currentModalComponent.value = null;
   modalTitle.value = '';
   selectedResourceForEdit.value = null;
+  selectedSheetForEdit.value = null;
 };
 
 const cancelProjectFooter = () => {
@@ -141,7 +158,10 @@ onMounted(() => {
 
         <input type="radio" name="project_tabs" role="tab" class="tab bg-cyan-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Planilla de Trabajo" />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
-          <TabSheetProject />
+          <TabSheetProject 
+            @open-sheet-form="openSheetFormModal"
+            @edit-sheet="openEditSheetModal"
+          />
         </div>
 
         <input type="radio" name="project_tabs" role="tab" class="tab bg-lime-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Calendario Mantenimientos" />
@@ -169,6 +189,11 @@ onMounted(() => {
       <ResourceForm 
         v-if="currentModalComponent === 'ResourceForm'" 
         :resource="selectedResourceForEdit"
+        @close="closeModal"
+      />
+      <SheetProjectForm
+        v-if="currentModalComponent === 'SheetProjectForm'"
+        :sheet="selectedSheetForEdit"
         @close="closeModal"
       />
     </Modal>
