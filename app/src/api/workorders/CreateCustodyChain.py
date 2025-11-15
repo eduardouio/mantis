@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.views import View
-from django.db import transaction
 from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
 from projects.models.SheetProject import SheetProject
 from projects.models.Project import Project, ProjectResourceItem
@@ -100,83 +99,66 @@ class CreateCustodyChainAPI(View):
                         status=404,
                     )
 
-            with transaction.atomic():
+            custody_chain = CustodyChain(
+                technical=technical,
+                vehicle=vehicle,
+                sheet_project=sheet_project,
+                consecutive=CustodyChain.get_next_consecutive(),
+                activity_date=data.get("activity_date"),
+                issue_date=data.get("issue_date"),
+                start_time=data.get("start_time") if data.get("start_time") else None,
+                end_time=data.get("end_time") if data.get("end_time") else None,
+                time_duration=float(data.get("duration_hours", 0)),
+                location=data.get("location", ""),
+                contact_name=data.get("contact_name", ""),
+                dni_contact=data.get("dni_contact", ""),
+                contact_position=data.get("contact_position", ""),
+                date_contact=data.get("date_contact") if data.get("date_contact") else None,
+                driver_name=data.get("driver_name", ""),
+                dni_driver=data.get("dni_driver", ""),
+                driver_position=data.get("driver_position", ""),
+                driver_date=data.get("driver_date") if data.get("driver_date") else None,
+                total_gallons=int(float(data.get("total_gallons", 0))),
+                total_barrels=int(float(data.get("total_barrels", 0))),
+                total_cubic_meters=int(float(data.get("total_cubic_meters", 0))),
+                notes=data.get("notes", "")
+            )
+            custody_chain.save()
 
-                custody_chain = CustodyChain()
-                custody_chain.technical = technical
-                custody_chain.vehicle = vehicle
-                custody_chain.sheet_project = sheet_project
-                custody_chain.consecutive = CustodyChain.get_next_consecutive()
-
-                custody_chain.activity_date = data.get("activity_date")
-                custody_chain.issue_date = data.get("issue_date")
-                custody_chain.start_time = (
-                    data.get("start_time") if data.get("start_time") else None
+            detail_ids = []
+            for resource in valid_resources:
+                detail = ChainCustodyDetail(
+                    custody_chain=custody_chain,
+                    project_resource=resource
                 )
-                custody_chain.end_time = (
-                    data.get("end_time") if data.get("end_time") else None
-                )
-                custody_chain.time_duration = float(data.get("duration_hours", 0))
+                detail.save()
+                detail_ids.append(detail.id)
 
-                custody_chain.location = data.get("location", "")
+            response_data = {
+                "custody_chain_id": custody_chain.id,
+                "consecutive": custody_chain.consecutive,
+                "sheet_project_id": sheet_project.id,
+                "project_id": project.id,
+                "technical_id": technical.id,
+                "technical_name": f"{technical.first_name} {technical.last_name}",
+                "vehicle_id": vehicle.id,
+                "vehicle_plate": vehicle.no_plate,
+                "activity_date": custody_chain.activity_date.strftime("%Y-%m-%d"),
+                "total_resources": len(valid_resources),
+                "resource_details": detail_ids,
+                "total_gallons": custody_chain.total_gallons,
+                "total_barrels": custody_chain.total_barrels,
+                "total_cubic_meters": custody_chain.total_cubic_meters,
+            }
 
-                custody_chain.contact_name = data.get("contact_name", "")
-                custody_chain.dni_contact = data.get("dni_contact", "")
-                custody_chain.contact_position = data.get("contact_position", "")
-                custody_chain.date_contact = (
-                    data.get("date_contact") if data.get("date_contact") else None
-                )
-
-                custody_chain.driver_name = data.get("driver_name", "")
-                custody_chain.dni_driver = data.get("dni_driver", "")
-                custody_chain.driver_position = data.get("driver_position", "")
-                custody_chain.driver_date = (
-                    data.get("driver_date") if data.get("driver_date") else None
-                )
-
-                custody_chain.total_gallons = int(float(data.get("total_gallons", 0)))
-                custody_chain.total_barrels = int(float(data.get("total_barrels", 0)))
-                custody_chain.total_cubic_meters = int(
-                    float(data.get("total_cubic_meters", 0))
-                )
-
-                custody_chain.notes = data.get("notes", "")
-
-                custody_chain.save()
-
-                detail_ids = []
-                for resource in valid_resources:
-                    detail = ChainCustodyDetail()
-                    detail.custody_chain = custody_chain
-                    detail.project_resource = resource
-                    detail.save()
-                    detail_ids.append(detail.id)
-
-                response_data = {
-                    "custody_chain_id": custody_chain.id,
-                    "consecutive": custody_chain.consecutive,
-                    "sheet_project_id": sheet_project.id,
-                    "project_id": project.id,
-                    "technical_id": technical.id,
-                    "technical_name": f"{technical.first_name} {technical.last_name}",
-                    "vehicle_id": vehicle.id,
-                    "vehicle_plate": vehicle.no_plate,
-                    "activity_date": custody_chain.activity_date.strftime("%Y-%m-%d"),
-                    "total_resources": len(valid_resources),
-                    "resource_details": detail_ids,
-                    "total_gallons": custody_chain.total_gallons,
-                    "total_barrels": custody_chain.total_barrels,
-                    "total_cubic_meters": custody_chain.total_cubic_meters,
-                }
-
-                return JsonResponse(
-                    {
-                        "success": True,
-                        "message": "Cadena de custodia creada exitosamente",
-                        "data": response_data,
-                    },
-                    status=201,
-                )
+            return JsonResponse(
+                {
+                    "success": True,
+                    "message": "Cadena de custodia creada exitosamente",
+                    "data": response_data,
+                },
+                status=201,
+            )
 
         except json.JSONDecodeError:
             return JsonResponse(
