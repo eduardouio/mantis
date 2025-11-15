@@ -1,0 +1,427 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Técnico - {{ technical.first_name }} {{ technical.last_name }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.3;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 0.5cm;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        
+        .header h1 {
+            font-size: 18pt;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .header h2 {
+            font-size: 14pt;
+            color: #555;
+            font-weight: normal;
+        }
+        
+        .section {
+            margin-bottom: 12px;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            background-color: #f3f4f6;
+            color: #333;
+            padding: 6px 10px;
+            font-size: 11pt;
+            font-weight: bold;
+            margin-bottom: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #555;
+            font-size: 9pt;
+            margin-bottom: 2px;
+        }
+        
+        .info-value {
+            color: #000;
+            padding: 4px;
+            background-color: #fafafa;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+            border: 1px solid #d1d5db;
+        }
+        
+        table th {
+            background-color: #f9fafb;
+            color: #374151;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #d1d5db;
+        }
+        
+        table td {
+            padding: 6px 8px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            color: #374151;
+        }
+        
+        table tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .vaccine-table {
+            margin-top: 10px;
+        }
+
+        .vaccine-table th {
+            font-size: 10pt;
+        }
+
+        .vaccine-name {
+            font-weight: 600;
+            text-align: left !important;
+            padding-left: 12px !important;
+            background-color: #fafafa;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 8pt;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .status-inactive {
+            background-color: #6b7280;
+            color: white;
+        }
+        
+        .status-yes {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .status-no {
+            background-color: #9ca3af;
+            color: white;
+        }
+        
+        .footer {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #d1d5db;
+            text-align: center;
+            font-size: 8pt;
+            color: #6b7280;
+        }
+        
+        @media print {
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            
+            .no-print {
+                display: none;
+            }
+        }
+        
+        .print-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11pt;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        
+        .print-button:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button no-print" onclick="window.print()">🖨️ Imprimir</button>
+    
+    <div class="container">
+        <div class="header">
+            <h1>REPORTE DE INFORMACIÓN TÉCNICA</h1>
+            <h2>{{ technical.first_name }} {{ technical.last_name }}</h2>
+        </div>
+        
+        <!-- Información Personal -->
+        <div class="section">
+            <div class="section-title">INFORMACIÓN PERSONAL</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Nombres:</span>
+                    <span class="info-value">{{ technical.first_name }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Apellidos:</span>
+                    <span class="info-value">{{ technical.last_name }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Cédula:</span>
+                    <span class="info-value">{{ technical.dni }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Fecha de Nacimiento:</span>
+                    <span class="info-value">{{ technical.birth_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Correo Electrónico:</span>
+                    <span class="info-value">{{ technical.email|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Teléfono:</span>
+                    <span class="info-value">{{ technical.nro_phone }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Área de Trabajo:</span>
+                    <span class="info-value">{{ technical.get_work_area_display }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Fecha de Ingreso:</span>
+                    <span class="info-value">{{ technical.date_joined|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información Laboral -->
+        <div class="section">
+            <div class="section-title">INFORMACIÓN LABORAL Y AFILIACIONES</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Afiliado IESS:</span>
+                    <span class="info-value">
+                        {% if technical.is_iess_affiliated %}
+                            <span class="status-badge status-yes">SÍ</span>
+                        {% else %}
+                            <span class="status-badge status-no">NO</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Póliza de Vida:</span>
+                    <span class="info-value">
+                        {% if technical.has_life_insurance_policy %}
+                            <span class="status-badge status-yes">SÍ</span>
+                        {% else %}
+                            <span class="status-badge status-no">NO</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Estado:</span>
+                    <span class="info-value">
+                        {% if technical.is_active %}
+                            <span class="status-badge status-active">ACTIVO</span>
+                        {% else %}
+                            <span class="status-badge status-inactive">INACTIVO</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Certificados y Licencias -->
+        <div class="section">
+            <div class="section-title">CERTIFICADOS Y LICENCIAS</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Licencia - Emisión:</span>
+                    <span class="info-value">{{ technical.license_issue_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Licencia - Caducidad:</span>
+                    <span class="info-value">{{ technical.license_expiry_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Manejo Defensivo - Emisión:</span>
+                    <span class="info-value">{{ technical.defensive_driving_certificate_issue_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Manejo Defensivo - Caducidad:</span>
+                    <span class="info-value">{{ technical.defensive_driving_certificate_expiry_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Certificado MAE - Emisión:</span>
+                    <span class="info-value">{{ technical.mae_certificate_issue_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Certificado MAE - Caducidad:</span>
+                    <span class="info-value">{{ technical.mae_certificate_expiry_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Certificado Médico - Emisión:</span>
+                    <span class="info-value">{{ technical.medical_certificate_issue_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Certificado Médico - Caducidad:</span>
+                    <span class="info-value">{{ technical.medical_certificate_expiry_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Información Quest -->
+        <div class="section">
+            <div class="section-title">INFORMACIÓN QUEST</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Código Quest NCST:</span>
+                    <span class="info-value">{{ technical.quest_ncst_code|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Instructor Quest:</span>
+                    <span class="info-value">{{ technical.quest_instructor|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Fecha Inicio Quest:</span>
+                    <span class="info-value">{{ technical.quest_start_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Fecha Fin Quest:</span>
+                    <span class="info-value">{{ technical.quest_end_date|date:"d/m/Y"|default:"No especificado" }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pases Técnicos -->
+        <div class="section">
+            <div class="section-title">PASE TÉCNICO</div>
+            {% if pass_technical %}
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Bloque:</span>
+                    <span class="info-value">{{ pass_technical.get_bloque_display }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Fecha de Caducidad:</span>
+                    <span class="info-value">{{ pass_technical.fecha_caducidad|date:"d/m/Y" }}</span>
+                </div>
+            </div>
+            {% else %}
+            <p style="padding: 10px; background-color: #f8f9fa; color: #666;">No tiene pase técnico registrado.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Registros de Vacunación -->
+        <div class="section">
+            <div class="section-title">REGISTROS DE VACUNACIÓN</div>
+            {% if vaccination_records %}
+            <div class="table-container vaccine-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 30%;">VACUNA</th>
+                            <th style="width: 15%;">DOSIS</th>
+                            <th style="width: 25%;">FECHA</th>
+                            <th style="width: 30%;">LOTE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% regroup vaccination_records by vaccine_type as vaccine_groups %}
+                        {% for vaccine_group in vaccine_groups %}
+                            {% for record in vaccine_group.list %}
+                                <tr>
+                                    {% if forloop.first %}
+                                        <td class="vaccine-name" rowspan="{{ vaccine_group.list|length }}">
+                                            {{ record.get_vaccine_type_display }}
+                                        </td>
+                                    {% endif %}
+                                    <td>{{ record.dose_number|default:"Única" }}</td>
+                                    <td>{{ record.application_date|date:"d/m/Y" }}</td>
+                                    <td>{{ record.batch_number|default:"-" }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p style="padding: 10px; background-color: #f9fafb; color: #6b7280;">No tiene registros de vacunación.</p>
+            {% endif %}
+        </div>
+        
+        <!-- Notas Adicionales -->
+        {% if technical.notes %}
+        <div class="section">
+            <div class="section-title">NOTAS ADICIONALES</div>
+            <div style="padding: 10px; background-color: #f8f9fa; border-left: 3px solid #3b82f6;">
+                {{ technical.notes }}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="footer">
+            <p><strong>Fecha de Generación:</strong> {% now "d/m/Y H:i" %}</p>
+            <p>Este documento contiene información confidencial del técnico.</p>
+        </div>
+    </div>
+</body>
+</html>
