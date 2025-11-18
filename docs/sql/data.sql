@@ -541,8 +541,7 @@ INSERT INTO public.equipment_certificationvehicle (notes,created_at,updated_at,i
 
 --
 -- projects_partner
---
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+--INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2290327183001','ABARCA QUEZADA CONSTRUCCIONES Y SERVICIOS AQSERVIC CIA. LTDA.','aabarca@hotmail.com','062860363','AMBATO 66 Y RÍO COCA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792039703001','ACCYEM PROYECTOS CIA. LTDA.','bnovillo69@hotmail.com','022311317','IGNACIO LECUMBERRY A16 Y NELA MARTÍNEZ',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790749509001','ANDES PETROLEUM ECUADOR LTD.','jorge.garzon@andespetro.com','022988500','PICHINCHA  QUITO  IÑAQUITO  AV. NACIONES UNIDAS E10-44 Y REPUBLICA DEL SALVADOR',NULL,NULL),
@@ -553,7 +552,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2100460613001','ASTUDILLO CALVA WILSON ENRIQUE','enriqueastudillo08@gmail.com','0994638654','SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI  UNIDAD NACIONAL SN Y MEXICO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792458692001','AUMAPROC S. A.',NULL,'0983785337','HERNANDO DE LA CRUZ N32-152 Y AV. ATAHUALPA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1891781837001','AUTOELITE S. A.','scisneros@vehysa.com.ec','0993333314','LA MERCED ABDON CALDERON Y PRIMERA IMPRENTA',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790098354001','BANCO INTERNACIONAL SA',NULL,NULL,'AV PATRIA E421 Y 9 DE OCTUBRE',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0400490231001','BENITEZ VILLACORTE GUSTAVO RAMIRO','marilazt1@gmail.com','022425281','CIUDADELA CARAPUNGO JULIO MORENO Oe 11-220 Y PEDRO CARBO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791856031001','BIOREMEDIACION BIOX CIA. LTDA.','labarragan10@outlook.es','0999999999','PICHINCHA  QUITO  IÑAQUITO  PASAJE CALIFORNIA E10-47 Y AV. 6 DE DICIEMBRE',NULL,NULL),
@@ -564,7 +563,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191773588001','CIP CONSTRUCCIONESYSERVICIOS S.A.S.','cipconstruccionesec@gmail.com','0000000000','LAGO AGRIO  CIRCUNVALACION Y 23 DE SEPTIEMBRE',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791808045001','CNPC CHUANQING DRILLING ENGINEERING COMPANY LIMITED','factura@ccdc-ec.com','0323800990','AV. SHYRIS E9 38 Y BELGICA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2190001795001','COMITE DE EMPRESA DE TRABAJADORES DE PALMERAS DEL ECUADOR','joseolivero202045@gmail.com','0988888614','AV. UNIDAD NACIONAL SN Y VENEZUELA GONZALEZ',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2290316882001','COMPANY PCA MANTENIMIENTO INDUSTRIAL S. A.','contabilidad@pcacompany.com.ec','0982613915','KM 2 VIA COCA LAGO AGRIO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1591709425001','CONAGSOL CIA. LTDA.','facturación@conagsol.com','062583073','CARLOS JULIO AROSEMENA TOLA  JUMANDY SN Y PICHINCHA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791768825001','CONDUTO ECUADOR S. A.',NULL,'023827740','REPÚBLICA DEL SALVADOR N35-204 Y SUECIA',NULL,NULL),
@@ -575,7 +574,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1793223327001','CONSORCIO CONSTRUYE EC','construyeecconsorcio@gmail.com','0993883375','PICHINCHA  QUITO  POMASQUI  AV MANUEL CORDOVA GALARZA 22 Y EL EDEN',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191770113001','CONSORCIO CRECER MAS','consorciocrecermas@outlook.com','0981740392','SUCUMBIOS  LAGO AGRIO NUEVA LOJA 18 DE NOVIEMBRE Y PROGRESO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792983657001','CONSORCIO NATIONAL OIL TRACTOREPUESTOS CIA. LTDA.','contabilidad@consorciont.com','023520420','AV. DE LOS SHYRIS N35-174 Y SUECIA EDIF. RENAZZO PLAZA PISO 2 OFIC 205',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792010721001','CONSORCIO PETROLERO BLOQUE 17','gabriel.salgado@andespetro.com','0984012337','AV. NN UU E10 44 Y REP EL SALVADOR',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0891793634001','CONSORCIO REMEDIATECH','consorcioremediatech25@hotmail.com','0997215980','ESMERALDAS  ESMERALDAS  5 DE AGOSTO  AV. TERCERA M30 SN Y IMBABURAESMERALDAS  ESMERALDAS  5 DE AGOSTO  AV. TERCERA M30 SN Y IMBABURA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792352363001','CONSORCIO SHUSHUFINDI S.A.','facturacion@cssfd.ec','023940100','AV. GRANADOS VÍA NAYON TORRE 5 Y AV. SIMÓN BOLIVAR CENTRO CORPORATIVO EKOPARK',NULL,NULL),
@@ -586,7 +585,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792371694001','CONSTRUCCIONES Y PRESTACIONES PETROLERAS S.A. CPP','recfacturas@cpp.com.ec','022988700','AV. LA CORUÑA N28-14 Y MANUEL ITURREY EDF. SANTA FE 4TO PISO QUITO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2290337561001','CONSTRUCCIONES Y SERVICIOS INTRESBUILD CIA. LTDA.','ronalespejo@gmail.com','0981386793','CALLE 10 DE AGOSTO Y CRISTOBAL COLON',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191728184001','CONSTRUCTORA INGENIERIA CIVIL CAMNIETCONS CIA. LTDA.','nietoalfredo@hotmail.com','0980116937','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  GENERAL ITURRALDE SN Y AMBATO',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191711656001','CONSTRUCTORA REMIGIO REYES E HIJOS CIA. LTDA.','gerencia@constructorarreh.com','098 839 3604','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  VELASCO IBARRA 511 Y FRANCISCO DE ORELLANA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792226864001','CONSTRUCTORA VELASTEGUI CERON  ASOCIADOS CIA. LTDA.','contabilidad@constructoravelasteguiceron.ec','024509108','AV 6 DE DICIEMBRE N32-623 Y IGNACIO BOSSANO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791326768001','CONSTRUCTORA VILLACRECES ANDRADE CVA S. A.','glogrono@elitcorp.com','02229244','AV. 12 DE OCTUBRE Y CORDERO',NULL,NULL),
@@ -597,7 +596,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790590380001','CORPORACION PARA LOS RECURSOS NATURALES CORENA S.A.','acarvajal@corena.com.ec','022508854','PICHINCHA  QUITO  LA CONCEPCIÓN  ALPALLANA E6-178 Y WHYMPER',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2100557905001','CUEVA CANGO VERONICA MARLENE','servicontabls@hotmail.com','0985444491','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  FRANCISCO MONTESDEOCA SN Y ESMERALDAS',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791804619001','CYFOIL CIA. LTDA.',NULL,'0999148123','PUERTO FRANCISCO DE ORELLANA EL COCA  VIA LAGO AGRIO SN',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0601728553001','DAMIAN ESCUDERO ROSA DEL TRANCITO','sin.correo@correo.com','0999999999','CDLA. PRIMERA CONSTITUYENTE CHILE 14 Y JUAN FELIX PROAÑO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792284392001','DESPROMETALING CIA. LTDA.','ronal.arias@desprometaling.com','02251 5174','PICHINCHA  RUMIÑAHUI  SANGOLQUI  CONCEPCION SN',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792837480001','DRILLCOTEC CIA.LTDA.','facturacion@dc-tec.energy','022894954','AV. SIENA 318 Y CALLE A EDIFICIO MDX PISO 3 OFICINA 315 CUMBAYA QUITO',NULL,NULL),
@@ -608,7 +607,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191717824001','FERRICASTH CIA. LTDA.',NULL,NULL,'VIA TARAPOA SN',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791338243001','GEOPETSA SERVICIOS PETROLEROS S.A.','facturacionelectronica@geopetsa.com','023184880','AV. AMAZONAS N39-123 Y JOSE ARIZAGA ED. AMAZONAS PLAZA PISO 8 OFC  61',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1560000510001','GOBIERNO MUNICIPAL DE LAGO AGRIO','facturasgadmla@yahoo.com','062830144','12 DE FEBRERO Y COFANES',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792985293001','GRAN TIERRA ENERGY COLOMBIA GMBH','grantierrabilling@ec.ey.com','023810950','PICHINCHA  QUITO  SAN ISIDRO DEL INCA  AV. GRANADOS SN Y VIA A NAYON',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1719756700001','GUAMAN MULLO HUGO RAMIRO','hugocristiano@hotmail.com','0999197610','EDUARDO MORLAI SECTOR LA VILLAFLORA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792274966001','GYRODATA ECUADOR LLC','factura.ecuador@gyrodata.com','0222240289','NORUEGA N33C Y SUIZA',NULL,NULL),
@@ -619,7 +618,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792184010001','HILONG OIL SERVICE  ENGINEERING ECUADOR CIA. LTDA.','hse-coordinador@hilongecuador.com','0999227990','IÑAQUITO  REPUBLICA E7-197 Y DIEGO DE ALMAGRO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791913027001','HOERBIGER DEL ECUADOR S.A.','ana.panchi@hoerbiger.com','024503231','AV. 6 DE DICIEMBRE N33-382 Y ELOY ALFARO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1091782053001','I-HELP SOLUCIONES INTEGRALES C.A','dtulcanaza@ihelp-ec.com','097 975 4047','ORELLANA  ORELLANA  PUERTO FRANCISCO DE ORELLANA EL COCA  QUITO SN Y RIO HUATARACO',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1707269526001','IBARRA SALGUERO LENIN SILVERIO','lenin.ibarra@yahoo.com','062841145','SHUSHUFINDI  VIA AGUARICO 3 07-32 Y SHUARAS',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0993300160001','IBC STRUCTURES IBCSTRUCTURES S.A.','sin.correo@correo.com','999999999','GUAYAS - GUAYAQUIL CUMBRES BAJAS 21 MZ 803',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0992600292001','ILGUECORP S.A.','diana.acuamain@hotmail.com','026020309','AV. ELOY ALFARO 1038 INTERSECCIN LAS FUCSIAS',NULL,NULL),
@@ -630,7 +629,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792270537001','INYCOFYI INGENIERIA Y CONSTRUCCIONES S.A.','kcedeño@fyi.com.ec','026008444','SUCUMBIOS  CUYABENO  TARAPOA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0601809627001','JARAMILLO GONZALES ALBERTO NICOLAS','anjg25@hotmail.es','0987459165','DIDONATO AYACUCHO 33 24 Y FRANCIA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2100767769001','JIMENEZ IMAICELA STALYN FERNANDO','stalyn_jimenez@hotmail.com','0999459680','MARTHA ROLDOS SN Y MANUELITA SAENZ',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191716704001','LAGOHANDLING CIA. LTDA.','lagohandling@gmail.com','999999999','24 DE MAYO Y 10 DE AGOSTO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0924646060001','LOZA GUERRERO CARLA KARINA','servika2021@gmail.com','0985401498','SUCUMBIOS LAGO AGRIO NUEVA LOJA COLOMBIA 112 Y 10 DE AGOSTO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0993236462001','LUMIARQ S.A.','sin.correo@correo.com','098 825 5952','GUAYAS  GUAYAQUIL  GUAYAQUIL  GUANO Y VIA A DAULE',NULL,NULL),
@@ -641,7 +640,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0802334029','MERCADO MINA FRANKLIN EDUARDO','pantro.fm85@gmail.com',NULL,'SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI CENTRAL',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1705442778001','MIRANDA PADRON MARTHA LILIANA','martha.m22@hotmail.com','0999999999','ORELLANA  LA JOYA DE LOS SACHAS  LA JOYA DE LOS SACHAS  10 DE AGOSTO SN Y LA ACADEMIA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791774647001','MISSIONPETROLEUM S.A','contabilidad@mission-petroleum.com','(02) 394-9380','PICHINCHA  QUITO  IÑAQUITO  AV DE LOS SHYRIS N36-188 Y NACIONES UNIDAS',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2190003836001','NAVCONSER CIA. LTDA','navconsercialtda@hotmail.com','099 167 7702','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  MARISCAL SUCRE 112 Y 12 DE FEBRERO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1793189742001','NORWEGIAN DRILLING COMPANY SUCURSAL ECUADOR S.A.S.','purchase@engipetrol.com','0969030281','PICHINCHA  QUITO  PAUL RIVET 1002 Y WHYMPER',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191721333001','OBRAS CIVILES CUYABENO SERVCUYAB CIA. LTDA.','servcuyabcialtda@gmail.com',NULL,'VIA TARAPOA SN',NULL,NULL),
@@ -652,7 +651,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792499038001','ORIENTSERVICES S.A.','orientservice2014@hotmail.com','0983238107','LA JOYA DE LOS SACHAS  VÍA COCA SN',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1804059911001','ORTEGA POAQUIZA PABLO ALEJANDRO','ab_alejandro_ortega@hotmail.com','0995823779','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  JUAN LEON MERA SN Y PUERTO LOPEZ',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191774037001','OSS CONSTRUCCIONES Y SERVICIOS PETROLEROS S.A.S.','ossconstrucciones22@gmail.com','0985136877','SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI  JAIME ROLDOS SN Y VENEZUELA',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792198747001','PANAMERICAN ENGINEERING PANAMPENSA S.A.','c.macias@panamerican-eng.com','02','CALLE DEL ESTABLO LOTE 50 Y DEL CHARRO EDIFICIO SITE CENTER TORRE 3 PB OFICINA 004. CUMBAYA.',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792348005001','PARDALISERVICES S.A.','facturasproveedores.ecuador@tecpetrol.com','022978400','AV. 12 DE OCTUBRE N26-97 Y LINCOLN TORRE 1492 P2 QUITO ECUADOR',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1790032337001','PATE C.A.','mtroya@iseyco.com','023809790','PICHINCHA  QUITO  IÑAQUITO  AV. DIEZ DE AGOSTO N37-288 Y VILLALENGUA',NULL,NULL),
@@ -663,7 +662,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1709463051','PEREZ PASTOR MARTHA KATALINA','marthaperezpastor@yahoo.com',NULL,'QUITO - LA LUZ',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791738756001','PETROBELL S.A.','ana.bautista@petrobell.com.ec','0994326953','PICHINCHA  QUITO  JIPIJAPA  AV. AMAZONAS 44-105 Y RIO COCA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792014921001','PETROBELL S.A. - GRANTMINING S.A.','facturacion_electronica@pacifpetrol.com','023964600','AV. AMAZONAS N 44-105 Y RIO COCA EDIFICIO ETECO - PROMELSA',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0992527285001','PLANET EXPORT S.A. PLANETEXPORT','planet-export@hotmail.com','0','GUAYAQUIL',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792186277001','PLUSAMBIENTE S.A.','yuli.aguilar@plusambiente.com','023938256','PICHINCHA  QUITO  IÑAQUITO  AV. DE LOS SHYRIS N32-42 Y AV. 6 DE DICIEMBRE',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791401492001','PLUSPETROL ECUADOR B.V','capagarec@pluspetrol.net','2501502','Av. Diego de Almagro N 32-48 y Whymper Edf. IBM piso 2 Quito Ecuador',NULL,NULL),
@@ -674,7 +673,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2190003852001','ROMAN HERMANOS S.A.','romanfacturacion@yahoo.es','2364-884','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  AV. QUITO SN Y CONDOR MIRADOR',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792228271001','SAURUSECUADOR SOLUCIONES INDUSTRIALES CIA. LTDA.','contabilidad2@saurusecuador.com.ec','0998445936','PICHINCHA  QUITO  CHILLOGALLO  PASAJE B 33207',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792011736001','SEDEMI CONSTRUCCIONES ELECTROMECANICAS SCC','darwin_valdiviezo@sedemi.com',NULL,'SANGOLQUI',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791734920001','SEDEMI SERVICIOS DE MECANICA INDUSTRIAL DISENO CONSTRUCCION Y MONTAJE S.C.C.',NULL,NULL,'Sangolquí Vía Amaguaña Km. 4 12 Lotización El Carmen',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791263308001','SERTECPET S.A.','facturacion.electronica@sertecpet.net','023954900','AV. ELOY ALFARO N37-25 Y JOSE CORREA',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792317541001','SERVICIO DE TRANSPORTE COMERCIAL INDUSTRIAL Y PETROLERO TRANSCICOPET CIA. LTDA.','sin.correo@correo.com','0999999999','PICHINCHA  QUITO  KENNEDY  DE LAS ANONAS E10-43 Y AV. ELOY ALFARO',NULL,NULL),
@@ -685,7 +684,7 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791858727001','SINOPEC INTERNATIONAL PETROLEUM SERVICE ECUADOR S.A.','facturasproveedores@sinopecservice-ec.com','023934440','AV. 6 DE DICIEMBRE N33-29 Y IGNACIO BOSSANO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792112877001','SIPACONSE CIA. LTDA.','sin.correo@correo.com','0999999999','SUCUMBIOS  LAGO AGRIO  NUEVA LOJA  CIRCUNVALACIÓN SN Y MANCHENO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1793204134001','SMART ENERGY APPLICATIONS SENERGYAPP S.A.S.','daniel.chiriboga@smartenergy-app.com','0996032808','PICHINCHA  QUITO  QUITO DISTRITO METROPOLITANO  LA PRADERA N30-26 Y SAN SALVADOR',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2191773404001','SOLUCIONES INTEGRALES SOES S.A.S.','jverdezoto.soes@gmail.com','0961469132','SUCUMBIOS  SHUSHUFINDI  SHUSHUFINDI  SIMÓN BOLÍVAR Y 12 DE OCTUBRE',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1707979447001','SUAREZ MANTILLA FRANKLIN GONZALO','franklin.suarez@celec.gob.ec','0996601682','QUITO SAN JUAN  SELVA ALEGRE 962 Y SOBRINO MINAYO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791728882001','TCONTROL S.A','apaez@tcontrolsa.com','022802462','EUCALIPTOS Oe2-67 Y ELOY ALFARO',NULL,NULL),
@@ -696,20 +695,64 @@ INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791237986001','TRANSPORTES NOROCCIDENTAL CIA. LTDA.','seguez@noroccidental.com','02 3520 420','ORELLANA  ORELLANA  PUERTO FRANCISCO DE ORELLANA EL COCA  VIA A LAGO AGRIO KM 6 Y SN',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791330943001','TRIBOILGAS CIA. LTDA.','facturacion.electronica@triboilgas.com','023956540','PEDRO PONCE CARRASCO E8-06 YAV. DIEGO DE ALMAGRO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0104679485','TRUJILLO CADENA CARLOS EDUARDO','carlos_carlin24@hotmail.com','0999999999','EL COLIBRI',NULL,NULL);
-INSERT INTO public.projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,name,email,phone,address,name_contact,notes) VALUES
+INSERT INTO projects_partner (created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,business_tax_id,"name",email,phone,address,name_contact,notes) VALUES
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792064082001','TUSCANY PERFORACION PETROLERA TUSCANYPERF S. A.',NULL,'023816330','IÑAQUITO  AV. DOCE DE OCTUBRE N24-660 Y FRANCISCO SALAZAR',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'2160071070001','UNIDAD ADSCRITA DE DESARROLLO PRODUCTIVO AGROPECUARIO DE INDUSTRIALIZACION COMERCIALIZACIÓN Y EMPRESARIAL CORPOSUCUMBI','barcalejo@hotmail.com','022999000','VIA QUITO KM 12 PB Y RIO CONEJO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'0502169683001','VILCA TIPAN MARCO GUSTAVO','sin.correo@correo.com','0999999999','SUCUMBIOS LAGO AGRIO NUEVA LOJA VIA A QUITO',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792522897001','WELDING  VAYACONS CIA LTDA','ealdaz@welding.ec','022307053','STO DE CARRETAS PASAJE A  8 SECTOR CARCELEN',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792273064001','WSO WORLDWIDE SECURITY OPTIONS SEGURIDAD INTEGRAL CIA. LTDA.','finanzas.ec@wso-security.com','098 350 4707','PICHINCHA  QUITO  IÑAQUITO  AV DE LOS SHYRIS N32-40 Y AV 6 DE DICIEMBRE',NULL,NULL),
 	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1792876745001','YANAOILTECHNOLOGIES CIA.LTDA.','karina.reyes@yanaoil.com','0984238924','KM 7 VIA COCA LAGO AGRIO',NULL,NULL),
-	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791911164001','ZHENFEI QI','qizhenfei@hilonggroup.com','0991183167','PICHINCHA  QUITO  CUMBAYA  PADRE CARLOS LOTE 83 Y PAMPITE',NULL,NULL);
+	 ('2025-10-06 23:16:43-05','2025-10-06 23:16:43-05',true,false,1,1,'1791911164001','ZHENFEI QI','qizhenfei@hilonggroup.com','0991183167','PICHINCHA  QUITO  CUMBAYA  PADRE CARLOS LOTE 83 Y PAMPITE',NULL,NULL),
+	 ('2025-10-28 14:39:50.958962-05','2025-10-28 14:39:50.958983-05',true,false,3,3,'2101105407001','TORRES ULLOA VIVIANA BRISVANNY','NA@NA.COM','+593 99 163 1310','CHIRU ISLA','Ing. Rocío Torres',''),
+	 ('2025-10-28 15:27:17.193327-05','2025-10-28 15:27:17.193348-05',true,false,3,3,'1791403916001','Energypetrol S. A.','karina_silva@energypetrol.net','+593 96 329 5519','José Puerta N39-155 y Av. Eloy Alfaro Quito 2923064','Ing. Diego Cevallos','');
 
 
 --
 -- projects_project
 --
-INSERT INTO public.projects_project (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,"location",contact_name,contact_phone,start_date,end_date,is_closed,partner_id) VALUES
-	 (NULL,'2025-10-10 13:15:17.273548-05','2025-10-10 18:05:35.854464-05',false,false,1,3,'Pambil','Edison Guano','0994027504','2025-08-01','2026-01-01',false,122),
-	 (NULL,'2025-10-10 18:03:43.75328-05','2025-10-10 18:05:47.045536-05',false,false,3,3,'INCHI C','ERIKA VITE','0980237624','2025-09-20','2025-12-31',false,122);
-
+INSERT INTO projects_project (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,"location",contact_name,contact_phone,start_date,end_date,is_closed,partner_id) VALUES
+	 ('CADA 2 DÍAS','2025-10-28 09:57:42.651911-05','2025-10-28 09:57:42.651937-05',true,false,3,3,'CHANANGUE J','Juan Diego Cuestas','+57 301 7565564','2025-01-01',NULL,false,61),
+	 ('CADA 2 DÍAS','2025-10-28 09:59:51.78237-05','2025-10-28 09:59:51.782396-05',true,false,3,3,'CHANANGUE K','Juan Diego Cuestas','+57 301 7565564','2025-01-01',NULL,false,61),
+	 ('CADA 2 DÍAS','2025-10-28 10:00:47.839689-05','2025-10-28 10:00:47.839713-05',true,false,3,3,'IGUANA','Juan Diego Cuestas','+57 301 7565564','2025-01-01',NULL,false,61),
+	 ('Frecuencia: Cada 7 días, aprobación mediante correo electrónico.','2025-10-28 09:30:06.421547-05','2025-10-28 10:57:34.740906-05',true,false,3,3,'MDC 40 / Sacha','Ing. Catalina Velandia','+593984066240','2025-01-01',NULL,false,6),
+	 ('LUNES Y JUEVES','2025-10-28 09:51:37.362813-05','2025-10-28 11:14:13.383656-05',true,false,3,3,'MDC CPF','Paul P','+593999444974','2025-01-01',NULL,false,50),
+	 ('Lunes y jueves','2025-10-28 09:53:09.719327-05','2025-10-28 11:14:46.191944-05',true,false,3,3,'INCHI CPF','Paul P','+593999444974','2025-01-01',NULL,false,50),
+	 ('8 Y 24 DE CADA MES','2025-10-28 10:02:23.30147-05','2025-10-28 11:20:10.990909-05',true,false,3,3,'GUARUMO / SECOYA','YESSENIA YANES','+593995854870','2025-01-01',NULL,false,102),
+	 ('CADA 4 DÍAS','2025-10-28 10:05:13.858486-05','2025-10-28 11:22:03.230649-05',true,false,3,3,'ESTACIÓN SANSAHUARI','CARLA MACIAS','+593982577338','2025-08-03',NULL,false,106),
+	 ('CADA 4 DÍAS','2025-10-28 10:06:55.108503-05','2025-10-28 11:25:32.213293-05',true,false,3,3,'VHR','CARLA MACIAS','+593982577338','2025-05-03',NULL,false,106),
+	 ('CADA 4 DÍAS','2025-10-28 10:07:49.96262-05','2025-10-28 11:26:13.339198-05',true,false,3,3,'FANNY 20','CARLA MACIAS','+593982577338','2025-09-07',NULL,false,106);
+INSERT INTO projects_project (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,"location",contact_name,contact_phone,start_date,end_date,is_closed,partner_id) VALUES
+	 ('CADA 4 DÍAS','2025-10-28 10:13:02.135626-05','2025-10-28 11:26:36.381756-05',true,false,3,3,'DORINE 5','CARLA MACIAS','+593982577338','2025-10-07',NULL,false,106),
+	 ('PASANDO UN DÍA','2025-10-28 10:15:03.491856-05','2025-10-28 11:27:13.586424-05',true,false,3,3,'PERICO 1','Juan Pablo Vaca','+593997008242','2025-01-01',NULL,false,122),
+	 ('PASANDO 1 DÍA','2025-10-28 10:15:42.708807-05','2025-10-28 11:27:36.333626-05',true,false,3,3,'PERICO 3','Juan Pablo Vaca','+593997008242','2025-01-01',NULL,false,122),
+	 ('PASANDO 2 DÍAS','2025-10-28 10:18:01.248213-05','2025-10-28 11:28:18.98314-05',true,false,3,3,'EL PAMBIL - DORADO','Erika -','+593980237624','2025-01-01',NULL,false,122),
+	 ('PASANDO 2 DÍAS','2025-10-28 10:21:41.325195-05','2025-10-28 11:28:50.183267-05',true,false,3,3,'ESTACIÓN GUANTA','MIGUEL ARCOS','+593984368529','2025-01-01',NULL,false,122),
+	 ('BAJO PEDIDO','2025-10-28 10:25:40.883267-05','2025-10-28 11:29:24.791491-05',true,false,3,3,'BLOQUE 12','STEFAN','+593961158672','2025-01-01',NULL,false,122),
+	 ('PASANDO 2 DÍAS','2025-10-28 10:34:19.489916-05','2025-10-28 11:29:54.099834-05',true,false,3,3,'SACHA SUR','VICTOR BONIFAZ','+593939053471','2025-01-01',NULL,false,122),
+	 ('MARTES Y VIERNES','2025-10-28 10:44:37.77863-05','2025-10-28 11:30:27.730272-05',true,false,3,3,'GENTEOIL / SANSAHURI','OSCAR CHERREZ','+593968467083','2025-08-19',NULL,false,122),
+	 ('CADA 3 DÍAS','2025-10-28 10:55:34.690585-05','2025-10-28 11:30:52.765637-05',true,false,3,3,'CHANANGUE 1','MARCELO MIÑO','+593987846380','2025-09-25',NULL,false,122),
+	 ('LUNES, MIÉRCOLES Y VIERNES','2025-10-28 11:38:19.219478-05','2025-10-28 11:38:19.219494-05',true,false,3,3,'PLATAFORMA ANDES / LAGO','Ninibeth Placencia','+593999174653','2025-10-21',NULL,false,122);
+INSERT INTO projects_project (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,"location",contact_name,contact_phone,start_date,end_date,is_closed,partner_id) VALUES
+	 ('CADA 15 DÍAS ( DOS VECES AL MES
+traceoilfield@gmail.com','2025-10-28 11:49:46.302523-05','2025-10-28 11:49:46.302541-05',true,false,3,3,'AUCA 28','traceoilfield@gmail.com','na','2025-01-01',NULL,false,137),
+	 ('CADA 15 DÍAS (2 VECES AL MES)','2025-10-28 11:53:19.148391-05','2025-10-28 11:53:19.148409-05',true,false,3,3,'AUCA 53','traceoilfield@gmail.com','NA','2025-01-01',NULL,false,137),
+	 ('CADA 15 DÍAS (2 VECES AL MES)','2025-10-28 11:54:17.65815-05','2025-10-28 11:54:17.658169-05',true,false,3,3,'TORTURA 1','traceoilfield@gmail.com','NA','2025-01-01',NULL,false,137),
+	 ('12 DE CADA MES','2025-10-28 11:57:41.615033-05','2025-10-28 11:57:41.615051-05',true,false,3,3,'VHR TOMA DE MUESTRAS','ING. EDWIN SERRANO','+593993099719','2025-01-01',NULL,false,105),
+	 ('SABADO CADA 15 DÍAS','2025-10-28 12:01:00.322615-05','2025-10-28 12:01:00.32264-05',true,false,3,3,'YUCA SUR 13','BOLIVAR CEDEÑO','+593993472761','2025-04-19',NULL,false,105),
+	 ('SOLICITAN POR CORREO','2025-10-28 12:11:36.98085-05','2025-10-28 12:11:36.980873-05',true,false,3,3,'PAMBIL','Juan Villacis','+593998005824','2025-05-24',NULL,false,55),
+	 ('PROGRAMACION ESTABLECIDA POR CORREO','2025-10-28 12:19:35.17404-05','2025-10-28 12:19:35.174061-05',true,false,3,3,'PUCONA 8','Rodrigo Llumiugsi','+593989250178','2025-01-01',NULL,false,115),
+	 ('PASANDO 1 DÍA','2025-10-28 12:24:42.771617-05','2025-10-28 12:24:42.771634-05',true,false,3,3,'ANTES DEL SOCAVON','Nathaly Rea','+593989691581','2025-01-01',NULL,false,13),
+	 ('PASANDO 3 DÍA','2025-10-28 12:21:32.815411-05','2025-10-28 12:25:19.350897-05',true,false,3,3,'PASANDO EL SOCAVON (LORETO)','Nathaly Rea','+593989691581','2025-01-01',NULL,false,13),
+	 ('1 VEZ POR SEMANA','2025-10-28 12:28:33.872366-05','2025-10-28 12:28:33.872384-05',true,false,3,3,'POZO TETETES NRO. 2','DANI VER','+593959482539','2025-08-02',NULL,false,134);
+INSERT INTO projects_project (notes,created_at,updated_at,is_active,is_deleted,id_user_created,id_user_updated,"location",contact_name,contact_phone,start_date,end_date,is_closed,partner_id) VALUES
+	 ('PEDIDO DEL CLIENTE
+EVACUACION DE AGUAS RESIDUALES','2025-10-28 14:43:42.235148-05','2025-10-28 14:43:42.235168-05',true,false,3,3,'CHIRO ISLA','Rocio Torres','+593991631310','2025-01-01',NULL,false,148),
+	 ('MARTES Y VIERNES','2025-10-28 14:45:40.781641-05','2025-10-28 14:45:40.781661-05',true,false,3,3,'GACELA H','Jendry Guano','+593996118905','2025-08-23',NULL,false,56),
+	 ('SOLICITUD DEL CLIENTE','2025-10-28 15:04:22.897117-05','2025-10-28 15:04:22.897135-05',true,false,3,3,'MDC CPF','Bladimir TC Aimara','+593987769177','2025-10-13',NULL,false,133),
+	 ('SOLICITUD DEL CLIENTE','2025-10-28 15:06:24.503045-05','2025-10-28 15:06:24.503063-05',true,false,3,3,'MDC 40','Mony','+593989682075','2025-10-18',NULL,false,56),
+	 ('SOLICITUD DEL CLIENTE','2025-10-28 15:08:31.137165-05','2025-10-28 15:08:31.137183-05',true,false,3,3,'ESTACIÓN CENTRAL SHUSHUFINDI','Remigio Reyes','+593988393604','2025-10-19',NULL,false,41),
+	 ('LUNES Y JUEVES','2025-10-28 15:40:37.613797-05','2025-10-28 15:40:37.613815-05',true,false,3,3,'MDC 200','Diego Cevallos','+593963295519','2025-10-01',NULL,false,149),
+	 ('MARTES','2025-10-28 15:41:39.951853-05','2025-10-28 15:41:39.951877-05',true,false,3,3,'MDC 46','Diego Cevallos','+593963295519','2025-10-24',NULL,false,149),
+	 ('El cliente solicita','2025-10-28 09:45:49.259255-05','2025-11-01 12:30:45.335145-05',true,false,3,2,'BARRIO MERCEDES  MOLINA','Pilar','+593993879806','2025-01-01',NULL,false,27),
+	 ('CADA 2 DÍAS','2025-10-28 09:55:07.071223-05','2025-11-11 15:31:58.093268-05',true,false,3,1,'CHARAPA B','Juan Diego Cuestas','+57 301 7565564','2025-01-01',NULL,false,61),
+	 ('','2025-11-16 11:00:29.930568-05','2025-11-16 11:00:29.930589-05',true,false,3,3,'CHARAPA B BBSS','Juan Diego Cuestas','+57 301 7565564','2025-01-01',NULL,false,61);
