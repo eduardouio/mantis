@@ -14,12 +14,10 @@
 <div class="w-[95%] mx-auto overflow-x-auto">
     <table id="datatable" class="table table-bordered table-striped">
         <thead>
-            <tr>
+            <tr class="text-center">
                 <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">#</th>
-                <th class="bg-pink-400 bg-opacity-75 text-gray-600">ID Proyecto</th>
                 <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Cliente</th>
                 <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Lugar</th>
-                <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Punto Cardinal</th>
                 <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Fecha Inicio</th>
                 <th class="bg-pink-400 bg-opacity-75 text-gray-600 hidden md:table-cell">Fecha Fin</th>
                 <th class="bg-pink-400 bg-opacity-75 text-gray-600">Estado</th>
@@ -28,19 +26,41 @@
         </thead>
         <tbody>
             {% for item in object_list %}
-            <tr>
-                <td class="text-center hidden md:table-cell">{{ forloop.counter }}</td>
-                <td class="text-center">
-                    <a href="{% url 'project_detail' item.id %}" class="link link-hover text-primary md:hidden">{{ item.id }}</a>
-                    <span class="hidden md:inline">{{ item.id }}</span>
+            <tr class="p-0">
+                <td class="text-center hidden md:table-cell p-1">{{ forloop.counter }}</td>
+                <td class="p-1 hidden md:table-cell">{{ item.partner }}</td>
+                <td class="p-1 hidden md:table-cell ">
+                    <div class="flex justify-between">
+                        <span>{{ item.location }}</span>
+                        <span class="font-mono">
+                             {% if item.cardinal_point and item.cardinal_point != 'NONE' %}
+                        {% if item.cardinal_point == 'NORTE' %}
+                            <span class="badge bg-blue-500 text-white border-0">{{ item.cardinal_point }}</span>
+                        {% elif item.cardinal_point == 'SUR' %}
+                            <span class="badge bg-gray-500 text-white border-0">{{ item.cardinal_point }}</span>
+                        {% elif item.cardinal_point == 'ESTE' %}
+                            <span class="badge bg-orange-500 text-white border-0">{{ item.cardinal_point }}</span>
+                        {% elif item.cardinal_point == 'OESTE' %}
+                            <span class="badge bg-green-500 text-white border-0">{{ item.cardinal_point }}</span>
+                        {% elif item.cardinal_point == 'NORESTE' %}
+                            <span class="badge bg-cyan-500 text-white border-0">{{ item.cardinal_point }}</span>
+                        {% elif item.cardinal_point == 'NOROESTE' %}
+                            <span class="badge bg-teal-500 text-white border-0">{{ item.cardinal_point }}</span>
+                        {% elif item.cardinal_point == 'SURESTE' %}
+                            <span class="badge bg-amber-500 text-white border-0">{{ item.cardinal_point }}</span>
+                        {% elif item.cardinal_point == 'SUROESTE' %}
+                            <span class="badge bg-lime-500 text-white border-0">{{ item.cardinal_point }}</span>
+                        {% endif %}
+                    {% endif %}
+                        </span>
+                    </div>
+                    
+                   
                 </td>
-                <td class="text-center hidden md:table-cell">{{ item.partner }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.location }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.cardinal_point }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.start_date }}</td>
-                <td class="text-center hidden md:table-cell">{{ item.end_date }}</td>
-                <td class="text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
-                <td class="text-center hidden md:table-cell">
+                <td class="p-1 hidden md:table-cell">{{ item.start_date }}</td>
+                <td class="p-1 text-center hidden md:table-cell">{{ item.end_date }}</td>
+                <td class="p-1 text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
+                <td class="p-1 text-center hidden md:table-cell">
                     <a href="{% url 'project_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
                     <a href="{% url 'project_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
                 </td>
