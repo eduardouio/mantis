@@ -16,7 +16,6 @@
 	// ---- Utilidades ----
 	const fetchJSON = async (url, options={}) => {
 		const headers = options.headers || {}; headers['Content-Type'] = 'application/json';
-		// CSRF token (Django) si existe cookie csrftoken
 		const csrftoken = document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('csrftoken='));
 		if(csrftoken) headers['X-CSRFToken'] = csrftoken.split('=')[1];
 		const resp = await fetch(url, {credentials:'same-origin', ...options, headers});
@@ -27,7 +26,6 @@
 
 	const fmt = d => {
 		if (!d) return '';
-		// Crear fecha local para evitar problemas de zona horaria
 		const parts = d.split('-');
 		if (parts.length === 3) {
 			const date = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
@@ -268,151 +266,9 @@
 		const d = new Date(dateStr); 
 		if(isNaN(d)) return null; 
 		d.setHours(0,0,0,0); 
-		// Usar la misma lógica que Django: diferencia en días
 		return Math.floor((d - today) / (24 * 60 * 60 * 1000)); 
 	}
 	function badgeFromRemaining(days){ if(days===null) return ''; if(days<0) return '<span class="badge badge-error badge-xs">Vencido</span>'; if(days===0) return '<span class="badge badge-error badge-xs">HOY</span>'; if(days<15) return `<span class=\"badge badge-error badge-xs\">${days}d</span>`; if(days<60) return `<span class=\"badge badge-warning badge-xs\">${days}d</span>`; if(days<90) return `<span class=\"badge badge-info badge-xs\">${days}d</span>`; return `<span class=\"badge badge-success badge-xs\">${days}d</span>`; }
-
-	// ---- MODAL CARNET DE VACUNAS ----
-	const openVaccineCardBtn = el('openVaccineCardBtn');
-	const vaccineCardModal = el('vaccineCardModal');
-	const vaccineCardTableBody = el('vaccineCardTableBody');
-	const modalEmissionDate = el('modalEmissionDate');
-	const printVaccineCardBtn = el('printVaccineCard');
-
-	function openVaccineCardModal(){
-		// Establecer fecha de emisión (hoy)
-		if(modalEmissionDate){
-			modalEmissionDate.textContent = new Date().toLocaleDateString('es-EC');
-		}
-		
-		// Limpiar tabla
-		vaccineCardTableBody.innerHTML = '';
-		
-		// Definir estructura predefinida de vacunas como en la imagen
-		const vaccineStructure = [
-			{ type: 'HEPATITIS_A', name: 'HEPAT. A', doses: 5 },
-			{ type: 'HEPATITIS_B', name: 'HEPAT. B', doses: 5 },
-			{ type: 'YELLOW_FEVER', name: 'F. AMARILLA', doses: 1, isUnique: true },
-			{ type: 'TETANUS', name: 'TETANOS', doses: 5 },
-			{ type: 'TYPHOID', name: 'TIFOIDEA', doses: 3 }
-		];
-		
-		// Crear un mapa de vacunas registradas por tipo
-		const registeredVaccines = {};
-		state.vaccines.forEach(v => {
-			// Mapear HEPATITIS_A_B a ambos tipos
-			if (v.vaccine_type === 'HEPATITIS_A_B') {
-				// Si es Hepatitis A y B combinada, agregarla a ambos tipos
-				if (!registeredVaccines['HEPATITIS_A']) {
-					registeredVaccines['HEPATITIS_A'] = [];
-				}
-				if (!registeredVaccines['HEPATITIS_B']) {
-					registeredVaccines['HEPATITIS_B'] = [];
-				}
-				registeredVaccines['HEPATITIS_A'].push(v);
-				registeredVaccines['HEPATITIS_B'].push(v);
-			} else {
-				if (!registeredVaccines[v.vaccine_type]) {
-					registeredVaccines[v.vaccine_type] = [];
-				}
-				registeredVaccines[v.vaccine_type].push(v);
-			}
-		});
-		
-		// Ordenar vacunas registradas por fecha
-		Object.keys(registeredVaccines).forEach(type => {
-			registeredVaccines[type].sort((a, b) => a.application_date.localeCompare(b.application_date));
-		});
-		
-		// Crear tabla exactamente como en la imagen
-		vaccineStructure.forEach(vaccineGroup => {
-			const vaccines = registeredVaccines[vaccineGroup.type] || [];
-			
-			for (let i = 0; i < vaccineGroup.doses; i++) {
-				const tr = document.createElement('tr');
-				const vaccine = vaccines[i]; // puede ser undefined si no existe
-				
-				// Determinar el número de dosis
-				let doseNumber;
-				if (vaccineGroup.isUnique) {
-					doseNumber = 'UNICA';
-				} else {
-					doseNumber = i + 1;
-				}
-				
-				// Fecha y lote (vacío si no hay vacuna registrada)
-				const date = vaccine ? fmt(vaccine.application_date) : '';
-				const batch = vaccine ? (vaccine.batch_number || '') : '';
-				
-				if (i === 0) {
-					// Primera fila del grupo - incluir nombre de vacuna con rowspan
-					tr.innerHTML = `
-						<td class="border border-gray-300 text-center font-semibold bg-gray-50" rowspan="${vaccineGroup.doses}" style="vertical-align: middle;">${vaccineGroup.name}</td>
-						<td class="border border-gray-300 text-center">${doseNumber}</td>
-						<td class="border border-gray-300 text-center">${date}</td>
-						<td class="border border-gray-300 text-center">${batch}</td>
-					`;
-				} else {
-					// Filas subsecuentes - sin columna de nombre de vacuna
-					tr.innerHTML = `
-						<td class="border border-gray-300 text-center">${doseNumber}</td>
-						<td class="border border-gray-300 text-center">${date}</td>
-						<td class="border border-gray-300 text-center">${batch}</td>
-					`;
-				}
-				
-				vaccineCardTableBody.appendChild(tr);
-			}
-		});
-		
-		// Abrir modal
-		vaccineCardModal.showModal();
-	}
-
-	function printVaccineCard(){
-		// Crear ventana de impresión
-		const printWindow = window.open('', '_blank');
-		const vaccineCardContent = document.querySelector('#vaccineCardModal .modal-box').innerHTML;
-		
-		printWindow.document.write(`
-			<!DOCTYPE html>
-			<html>
-			<head>
-				<title>Carnet de Vacunas - {{ technical.first_name }} {{ technical.last_name }}</title>
-				<style>
-					body { font-family: Arial, sans-serif; margin: 20px; }
-					table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-					th, td { border: 1px solid #333; padding: 8px; text-align: center; }
-					th { background-color: #f0f0f0; font-weight: bold; }
-					.header { background-color: #e3f2fd; padding: 15px; border: 1px solid #1976d2; margin-bottom: 20px; }
-					.header h3 { margin: 0 0 10px 0; color: #1976d2; }
-					.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-					.info-item { font-size: 14px; }
-					.info-label { font-weight: bold; color: #1976d2; }
-					@media print { 
-						body { margin: 0; } 
-						.modal-action { display: none; }
-					}
-				</style>
-			</head>
-			<body>
-				${vaccineCardContent.replace(/<button[^>]*>.*?<\/button>/g, '')}
-			</body>
-			</html>
-		`);
-		
-		printWindow.document.close();
-		printWindow.focus();
-		setTimeout(() => {
-			printWindow.print();
-			printWindow.close();
-		}, 250);
-	}
-
-	// Event listeners para modal
-	openVaccineCardBtn && openVaccineCardBtn.addEventListener('click', openVaccineCardModal);
-	printVaccineCardBtn && printVaccineCardBtn.addEventListener('click', printVaccineCard);
 
 	// Inicializar
 	state.passes = state.passes || []; state.vaccines = state.vaccines || [];

@@ -7,192 +7,133 @@
     <title>Reporte de Vacunas - {{ technical.first_name }} {{ technical.last_name }}</title>
     <style>
         * {
-            margin: 0;
-            padding: 0;
+            margin: 100;
+            padding: 100;
             box-sizing: border-box;
         }
         
         body {
             font-family: Arial, sans-serif;
-            font-size: 8pt;
+            font-size: 7pt;
             line-height: 1.2;
             color: #333;
             background-color: #f5f5f5;
         }
         
         .page-wrapper {
-            width: 100%;
-            max-width: 21cm;
+            width: 90%;
+            max-width: 29.7cm;
             margin: 0 auto;
             background-color: white;
-            border: 1px solid #9cb536;
+            padding: 0.5cm;
         }
         
-        .container {
-            padding: 0.8cm;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 3px solid #9cb536;
-        }
-        
-        .logo-section {
-            flex: 0 0 auto;
-        }
-        
-        .logo-section img {
-            height: 60px;
-            width: auto;
-        }
-        
-        .header-info {
-            flex: 1;
-            text-align: center;
-            padding: 0 15px;
-        }
-        
-        .header h1 {
-            font-size: 14pt;
-            color: #3e5f6f;
-            margin-bottom: 3px;
-            font-weight: bold;
-        }
-        
-        .header h2 {
-            font-size: 11pt;
-            color: #9cb536;
-            font-weight: 600;
-        }
-        
-        .company-name {
-            font-size: 9pt;
-            color: #3e5f6f;
-            font-weight: bold;
-            margin-top: 2px;
-        }
-        
-        .section {
-            margin-bottom: 10px;
-            page-break-inside: avoid;
-        }
-        
-        .section-title {
-            background-color: #f8f8f8;
-            color: #3e5f6f;
-            padding: 5px 8px;
-            font-size: 9pt;
-            font-weight: bold;
-            margin-bottom: 6px;
-            border-left: 4px solid #9cb536;
-            border-top: 1px solid #e0e0e0;
-            border-bottom: 1px solid #e0e0e0;
-            border-right: 1px solid #e0e0e0;
-        }
-        
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px 12px;
-            border: 1px solid #e0e0e0;
-            padding: 8px;
-            background-color: #ffffff;
-        }
-        
-        .info-item {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .info-label {
-            font-weight: bold;
-            color: #3e5f6f;
-            font-size: 7pt;
-            margin-bottom: 2px;
-        }
-        
-        .info-value {
+        .section-header {
+            background-color: #c9daf8;
             color: #000;
-            padding: 3px;
-            background-color: white;
-            border-left: 2px solid #9cb536;
-            font-size: 7.5pt;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 4px 8px;
+            font-size: 8pt;
+            font-weight: bold;
+            border: 1px solid #000;
+            margin-bottom: 0;
         }
         
-        .table-container {
-            overflow-x: auto;
-            border: 1px solid #3e5f6f;
-        }
-        
-        table {
+        .establishment-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 7.5pt;
+            margin-bottom: 8px;
         }
         
-        table th {
-            background: linear-gradient(to bottom, #3e5f6f 0%, #2d4a57 100%);
-            color: white;
-            padding: 6px;
-            text-align: center;
-            font-weight: bold;
-            border: 1px solid #9cb536;
-        }
-        
-        table td {
-            padding: 5px 6px;
-            border: 1px solid #9cb536;
-            text-align: center;
-            color: #333;
-        }
-        
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        
-        table tr:hover {
-            background-color: #f0f5e8;
-        }
-
-        .vaccine-table {
-            margin-top: 8px;
-        }
-
-        .vaccine-table th {
-            font-size: 8pt;
-        }
-
-        .vaccine-name {
-            font-weight: 600;
-            text-align: left !important;
-            padding-left: 10px !important;
-            background-color: #f0f5e8d3;
-            color: #3e5f6f;
-        }
-        
-        .footer {
-            margin-top: 15px;
-            padding-top: 8px;
-            border-top: 2px solid #9cb536;
-            text-align: center;
+        .establishment-table th,
+        .establishment-table td {
+            border: 1px solid #000;
+            padding: 3px 5px;
             font-size: 7pt;
-            color: #6b7280;
+            text-align: center;
         }
         
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .footer-logo {
-            color: #3e5f6f;
+        .establishment-table th {
+            background-color: #d9ead3;
             font-weight: bold;
+        }
+        
+        .establishment-table td {
+            background-color: #fff;
+        }
+        
+        .user-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        
+        .user-info-table th,
+        .user-info-table td {
+            border: 1px solid #000;
+            padding: 3px 5px;
+            font-size: 7pt;
+            text-align: center;
+        }
+        
+        .user-info-table th {
+            background-color: #d9ead3;
+            font-weight: bold;
+        }
+        
+        .section-b-header {
+            background-color: #a4c2f4;
+            color: #000;
+            padding: 4px 8px;
+            font-size: 8pt;
+            font-weight: bold;
+            border: 1px solid #000;
+            border-bottom: none;
+        }
+        
+        .vaccine-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        
+        .vaccine-table th {
+            background-color: #d9ead3;
+            border: 1px solid #000;
+            padding: 3px 4px;
+            font-size: 6.5pt;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+        }
+        
+        .vaccine-table td {
+            border: 1px solid #000;
+            padding: 2px 3px;
+            font-size: 6.5pt;
+            text-align: center;
+            vertical-align: middle;
+            height: 18px;
+        }
+        
+        .vaccine-name-cell {
+            background-color: #fff2cc;
+            font-weight: bold;
+            text-align: left !important;
+            padding-left: 5px !important;
+        }
+        
+        .dose-number-cell {
+            width: 25px;
+            font-size: 6pt;
+        }
+        
+        .footer-note {
+            font-size: 6pt;
+            color: #666;
+            margin-top: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
         }
         
         @media print {
@@ -202,117 +143,94 @@
                 background-color: white;
             }
             
-            .no-print {
-                display: none;
-            }
-            
             .page-wrapper {
-                border: none;
+                padding: 0;
             }
         }
     </style>
 </head>
 <body>
     <div class="page-wrapper">
-        <div class="container">
-            <div class="header">
-                <div class="logo-section">
-                    <img src="{% static 'img/logo.png' %}" alt="PEISOL Ingeniería">
-                </div>
-                <div class="header-info">
-                    <h1>{{ technical.first_name }} {{ technical.last_name }}</h1>
-                    <h2>REPORTE DE VACUNAS DEL TÉCNICO</h2>
-                    <div class="company-name">PEISOL</div>
-                </div>
-                <div class="logo-section">
-                    <!-- Espacio simétrico para balance visual -->
-                </div>
-            </div>
-            
-            <!-- Información Personal -->
-            <div class="section">
-                <div class="section-title">INFORMACIÓN PERSONAL</div>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="info-label">Nombres:</span>
-                        <span class="info-value">{{ technical.first_name }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Apellidos:</span>
-                        <span class="info-value">{{ technical.last_name }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Cédula:</span>
-                        <span class="info-value">{{ technical.dni }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Fecha de Nacimiento:</span>
-                        <span class="info-value">{{ technical.birth_date|date:"d/m/Y"|default:"No especificado" }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Correo Electrónico:</span>
-                        <span class="info-value">{{ technical.email|default:"No especificado" }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Teléfono:</span>
-                        <span class="info-value">{{ technical.nro_phone }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Área de Trabajo:</span>
-                        <span class="info-value">{{ technical.get_work_area_display }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Fecha de Ingreso:</span>
-                        <span class="info-value">{{ technical.date_joined|date:"d/m/Y"|default:"No especificado" }}</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Registros de Vacunación -->
-            <div class="section">
-                <div class="section-title">REGISTROS DE VACUNACIÓN</div>
-                {% if vaccination_records %}
-                <div class="table-container vaccine-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 30%;">VACUNA</th>
-                                <th style="width: 15%;">DOSIS</th>
-                                <th style="width: 25%;">FECHA</th>
-                                <th style="width: 30%;">LOTE</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% regroup vaccination_records by vaccine_type as vaccine_groups %}
-                            {% for vaccine_group in vaccine_groups %}
-                                {% for record in vaccine_group.list %}
-                                    <tr>
-                                        {% if forloop.first %}
-                                            <td class="vaccine-name" rowspan="{{ vaccine_group.list|length }}">
-                                                {{ record.get_vaccine_type_display }}
-                                            </td>
-                                        {% endif %}
-                                        <td>{{ record.dose_number|default:"Única" }}</td>
-                                        <td>{{ record.application_date|date:"d/m/Y" }}</td>
-                                        <td>{{ record.batch_number|default:"-" }}</td>
-                                    </tr>
-                                {% endfor %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% else %}
-                <p style="padding: 8px; background-color: #f9fafb; color: #6b7280; border: 1px solid #e0e0e0;">No tiene registros de vacunación.</p>
-                {% endif %}
-            </div>
-            
-            <div class="footer">
-                <div class="footer-content">
-                    <span class="footer-logo">PEISOL INGENIERÍA</span>
-                    <span><strong>Fecha de Generación:</strong> {% now "d/m/Y H:i" %}</span>
-                    <span>Documento Confidencial</span>
-                </div>
-            </div>
+        <!-- Sección A - Datos del Establecimiento - Empresa y Usuario -->
+        <div class="section-header">A. DATOS DEL ESTABLECIMIENTO - EMPRESA Y USUARIO</div>
+        
+        <table class="establishment-table">
+            <thead>
+                <tr>
+                    <th>INSTITUCIÓN DEL SISTEMA O NOMBRE DE LA EMPRESA</th>
+                    <th>RUC</th>
+                    <th>CIU</th>
+                    <th>ESTABLECIMIENTO DE SALUD</th>
+                    <th>NÚMERO DE HISTORIA CLÍNICA</th>
+                    <th>NÚMERO DE ARCHIVO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ company_info.name }}</td>
+                    <td>{{ company_info.ruc }}</td>
+                    <td></td>
+                    <td>{{ company_info.name }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <table class="user-info-table">
+            <thead>
+                <tr>
+                    <th>APELLIDOS</th>
+                    <th>NOMBRES</th>
+                    <th>CÉDULA</th>
+                    <th>CARGO / OCUPACIÓN</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ technical.last_name|upper }}</td>
+                    <td>{{ technical.first_name|upper }}</td>
+                    <td>{{ technical.dni }}</td>
+                    <td>{{ technical.get_work_area_display }}</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- Sección B - Inmunizaciones -->
+        <div class="section-b-header">B. INMUNIZACIONES</div>
+        
+        <table class="vaccine-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 15%;">VACUNAS</th>
+                    <th rowspan="2" style="width: 5%;">DOSIS</th>
+                    <th rowspan="2" style="width: 10%;">FECHA<br>(dd/mm/aa)</th>
+                    <th rowspan="2" style="width: 10%;">LOTE</th>
+                    <th rowspan="2" style="width: 8%;">ESQUEMA<br>COMPLETO</th>
+                    <th rowspan="2" style="width: 20%;">OBSERVACIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vaccine in vaccines %}
+                    {% for dose in vaccine.doses %}
+                        <tr>
+                            {% if forloop.first %}
+                                <td class="vaccine-name-cell" rowspan="{{ vaccine.max_doses }}">{{ vaccine.name }}</td>
+                            {% endif %}
+                            <td class="dose-number-cell">{{ dose.number }}ª</td>
+                            <td>{% if dose.record %}{{ dose.record.application_date|date:"d/m/Y" }}{% endif %}</td>
+                            <td>{% if dose.record %}{{ dose.record.batch_number|default:"" }}{% endif %}</td>
+                            <td>{% if dose.record and forloop.last and dose.record %}X{% endif %}</td>
+                            <td>{% if dose.record %}{{ dose.record.notes|default:"" }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="footer-note">
+            <strong>Fecha de Generación:</strong> {% now "d/m/Y H:i" %} | 
+            La vacuna contra la Fiebre Amarilla es obligatoria para quien viva o se desplace en la Región Amazónica, su aplicación es hasta los 59 años de edad.
         </div>
     </div>
 </body>

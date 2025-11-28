@@ -5,10 +5,6 @@
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
     <h1 class="text-2xl font-semibold text-blue-500">Ficha de Técnico</h1>
     <div class="flex items-center gap-3">
-      <button id="openVaccineCardBtn" class="btn btn-primary btn-sm">
-        <i class="las la-file-medical text-lg"></i>
-        Ver Tarjeta de Vacunas
-      </button>
       <span class="badge {% if technical.is_active %}badge-success{% else %}badge-error{% endif %}">
         {% if technical.is_active %}Activo{% else %}Inactivo{% endif %}
       </span>
@@ -454,16 +450,10 @@
         <div>
           <div class="flex justify-between items-center mb-3">
             <h3 class="text-md font-semibold text-blue-500">Vacunas Registradas</h3>
-            <button id="openVaccineCardBtn" class="btn btn-primary btn-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" class="inline-block mr-1" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                <polyline points="14,2 14,8 20,8"></polyline>
-                <line x1="16" y1="13" x2="8" y2="13"></line>
-                <line x1="16" y1="17" x2="8" y2="17"></line>
-                <polyline points="10,9 9,9 8,9"></polyline>
-              </svg>
-              Ver Carnet
-            </button>
+            <a href="{% url 'reports:technical-vaccine-pdf' technical.id %}" target="_blank" class="btn btn-primary btn-sm">
+              <i class="las la-file-download text-lg"></i>
+              Descargar Reporte
+            </a>
           </div>
           <div class="overflow-y-auto max-h-80">
             <table class="table table-xs" id="vaccineTable">
@@ -636,63 +626,6 @@
   {% endif %}
 </div>
 
-<!-- Modal para Carnet de Vacunas -->
-<dialog id="vaccineCardModal" class="modal">
-  <div class="modal-box w-11/12 max-w-4xl">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="font-bold text-lg text-blue-600">Carnet de Vacunas</h3>
-      <form method="dialog">
-        <button class="btn btn-sm btn-circle btn-ghost">✕</button>
-      </form>
-    </div>
-    
-    <!-- Información del Técnico en el carnet -->
-    <div class="bg-blue-50 p-4 rounded-lg mb-4 border border-blue-200">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-        <div>
-          <p class="font-semibold text-blue-700">Técnico:</p>
-          <p class="text-gray-800">{{ technical.first_name }} {{ technical.last_name }}</p>
-        </div>
-        <div>
-          <p class="font-semibold text-blue-700">Cédula:</p>
-          <p class="text-gray-800">{{ technical.dni }}</p>
-        </div>
-        <div>
-          <p class="font-semibold text-blue-700">Fecha de Emisión:</p>
-          <p class="text-gray-800" id="modalEmissionDate"></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabla del carnet -->
-    <div class="overflow-x-auto">
-      <table class="table table-sm border border-gray-300" id="vaccineCardTable">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="border border-gray-300 text-center font-bold text-blue-700">VACUNA</th>
-            <th class="border border-gray-300 text-center font-bold text-blue-700">DOSIS</th>
-            <th class="border border-gray-300 text-center font-bold text-blue-700">FECHA</th>
-            <th class="border border-gray-300 text-center font-bold text-blue-700">LOTE</th>
-          </tr>
-        </thead>
-        <tbody id="vaccineCardTableBody">
-          <!-- El contenido se llenará dinámicamente -->
-        </tbody>
-      </table>
-    </div>
-
-    <div class="modal-action">
-      <button id="printVaccineCard" class="btn btn-primary btn-sm">
-        <i class="las la-print text-lg"></i>
-        Imprimir
-      </button>
-      <form method="dialog">
-        <button class="btn btn-primary btn-sm">Cerrar</button>
-      </form>
-    </div>
-  </div>
-</dialog>
-
 {% block script %}
 <script id="technical-data" type="application/json">{
   "technical_id": {{ technical.id }},
@@ -700,7 +633,7 @@
   {% if pass_technical %}{% for p in pass_technical %}{% if p.is_active %}{"id": {{ p.id }}, "bloque": "{{ p.bloque }}", "fecha_caducidad": "{{ p.fecha_caducidad|date:'Y-m-d' }}", "created_at": "{{ p.created_at|date:'Y-m-d H:i' }}", "updated_at": "{{ p.updated_at|date:'Y-m-d H:i' }}", "is_active": true, "notes": "{{ p.notes|default:''|escapejs }}"}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}{% endif %}
   ],
   "vaccines": [
-  {% if vaccination_records %}{% for r in vaccination_records %}{% if r.is_active %}{"id": {{ r.id }}, "vaccine_type": "{{ r.vaccine_type }}", "application_date": "{{ r.application_date|date:'Y-m-d' }}", "next_dose_date": "{{ r.next_dose_date|date:'Y-m-d'|default:'' }}", "batch_number": "{{ r.batch_number|default:''|escapejs }}", "dose_number": {% if r.dose_number %}{{ r.dose_number }}{% else %}null{% endif %}, "notes": "{{ r.notes|default:''|escapejs }}", "created_at": "{{ r.created_at|date:'Y-m-d H:i' }}", "updated_at": "{{ r.updated_at|date:'Y-m-d H:i' }}", "is_active": {{ r.is_active|yesno:"true,false" }}, "is_complete": {% if r.is_complete %}true{% else %}false{% endif %} }{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}{% endif %}
+  {% if vaccination_records %}{% for r in vaccination_records %}{% if r.is_active %}{"id": {{ r.id }}, "vaccine_type": "{{ r.vaccine_type }}", "application_date": "{{ r.application_date|date:'Y-m-d' }}", "next_dose_date": "{{ r.next_dose_date|date:'Y-m-d'|default:'' }}", "batch_number": "{{ r.batch_number|default:''|escapejs }}", "dose_number": {% if r.dose_number %}{{ r.dose_number }}{% else %}null{% endif %}, "notes": "{{ r.notes|default:''|escapejs }}", "created_at": "{{ r.created_at|date:'Y-m-d H:i' }}", "updated_at": "{{ r.updated_at|date:'Y-m-d H:i' }}", "is_active": {{ r.is_active|yesno:"true,false" }}}{% if not forloop.last %},{% endif %}{% endif %}{% endfor %}{% endif %}
   ]
 }</script>
 <script src="{% static 'js/app/app-technical-presentation.js' %}"></script>
