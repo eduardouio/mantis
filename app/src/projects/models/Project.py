@@ -123,9 +123,34 @@ class ProjectResourceItem(BaseModel):
         decimal_places=2,
         default=0.00
     )
+    frequency_type = models.CharField(
+        'Tipo de Frecuencia',
+        max_length=20,
+        choices=(
+            ('INTERVALO', 'Por intervalo de días'),
+            ('SEMANAL', 'Días de la semana'),
+            ('MENSUAL', 'Días del mes'),
+        ),
+        default='INTERVALO'
+    )
     interval_days = models.PositiveIntegerField(
         'Frecuencia (días)',
-        default=1
+        default=2,
+        help_text='Usado cuando frequency_type es INTERVALO'
+    )
+    weekdays = models.JSONField(
+        'Días de la Semana',
+        blank=True,
+        null=True,
+        default=None,
+        help_text='Lista de días: 0=Lunes, 1=Martes, ..., 6=Domingo. Ej: [0, 2, 4]'
+    )
+    monthdays = models.JSONField(
+        'Días del Mes',
+        blank=True,
+        null=True,
+        default=None,
+        help_text='Lista de días del mes. Ej: [1, 15, 28]'
     )
     operation_start_date = models.DateField(
         'Fecha de Inicio Operaciones'
