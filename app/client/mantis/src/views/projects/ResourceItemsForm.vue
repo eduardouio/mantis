@@ -21,6 +21,38 @@
       .map(r => r.resource_id)
   })
 
+  const frequencyTypes = [
+    { value: 'DAY', label: 'Por intervalo de días' },
+    { value: 'WEEK', label: 'Días de la semana' },
+    { value: 'MONTH', label: 'Días del mes' }
+  ]
+
+  const weekdayOptions = [
+    { value: 0, label: 'Lunes' },
+    { value: 1, label: 'Martes' },
+    { value: 2, label: 'Miércoles' },
+    { value: 3, label: 'Jueves' },
+    { value: 4, label: 'Viernes' },
+    { value: 5, label: 'Sábado' },
+    { value: 6, label: 'Domingo' }
+  ]
+
+  const getFrequencyDisplay = (resource) => {
+    if (!resource.include_maintenance) return '-'
+    
+    if (resource.frequency_type === 'DAY') {
+      return `Cada ${resource.interval_days} día(s)`
+    } else if (resource.frequency_type === 'WEEK') {
+      if (!resource.weekdays || resource.weekdays.length === 0) return 'No configurado'
+      const days = resource.weekdays.map(d => weekdayOptions[d].label).join(', ')
+      return days
+    } else if (resource.frequency_type === 'MONTH') {
+      if (!resource.monthdays || resource.monthdays.length === 0) return 'No configurado'
+      return `Día(s): ${resource.monthdays.sort((a, b) => a - b).join(', ')}`
+    }
+    return '-'
+  }
+
   const handleResourceSelected = async () => {
     const resource = resourcesStore.selectedResource
     const isService = resource.type_equipment === 'SERVIC'
@@ -39,7 +71,10 @@
       resource_id: resource.id,
       resource_display_name: resource.display_name,
       detailed_description: resource.display_name,
+      frequency_type: 'DAY',
       interval_days: isService ? 3 : 0,
+      weekdays: [],
+      monthdays: [],
       cost: 0,
       maintenance_cost: 0,
       operation_start_date: projectStore.project?.start_date || null,
@@ -89,7 +124,10 @@
 
   const handleMaintenanceChange = (resource, event) => {
     if (!resource.include_maintenance) {
+      resource.frequency_type = 'DAY'
       resource.interval_days = 0
+      resource.weekdays = []
+      resource.monthdays = []
       resource.maintenance_cost = 0
     } else {
       const checkbox = event.target
@@ -101,6 +139,46 @@
           intervalInput.select()
         }, 50)
       }
+    }
+  }
+
+  const handleFrequencyTypeChange = (resource) => {
+    if (resource.frequency_type === 'DAY') {
+      resource.interval_days = resource.interval_days || 2
+      resource.weekdays = []
+      resource.monthdays = []
+    } else if (resource.frequency_type === 'WEEK') {
+      resource.interval_days = 0
+      resource.weekdays = resource.weekdays || []
+      resource.monthdays = []
+    } else if (resource.frequency_type === 'MONTH') {
+      resource.interval_days = 0
+      resource.weekdays = []
+      resource.monthdays = resource.monthdays || []
+    }
+  }
+
+  const toggleWeekday = (resource, dayValue) => {
+    if (!resource.weekdays) {
+      resource.weekdays = []
+    }
+    const index = resource.weekdays.indexOf(dayValue)
+    if (index === -1) {
+      resource.weekdays.push(dayValue)
+    } else {
+      resource.weekdays.splice(index, 1)
+    }
+  }
+
+  const toggleMonthday = (resource, day) => {
+    if (!resource.monthdays) {
+      resource.monthdays = []
+    }
+    const index = resource.monthdays.indexOf(day)
+    if (index === -1) {
+      resource.monthdays.push(day)
+    } else {
+      resource.monthdays.splice(index, 1)
     }
   }
 
@@ -163,8 +241,8 @@
                   <th class="border">Tipo</th>
                   <th class="border">Fecha Inicio</th>
                   <th class="border">Costo Alq</th>
-                  <th class="border">Mantenimiento</th>
-                  <th class="border">Frec Dias</th>
+                  <th class="border">Mant</th>
+                  <th class="border">Frecuencia</th>
                   <th class="border">Costo Mnt</th>
                   <th class="border">Acciones</th>
                 </tr>
@@ -205,14 +283,58 @@
                     />
                   </td>
                   <td class="border border-gray-300">
-                    <input 
-                      type="number" 
-                      min="1"
-                      class="input input-sm input-bordered w-full" 
-                      v-model="resource.interval_days"
-                      :disabled="!resource.include_maintenance"
-                      data-input="interval"
-                    />
+                    <div v-if="resource.include_maintenance" class="space-y-2">
+                      <select 
+                        class="select select-sm select-bordered w-full"
+                        v-model="resource.frequency_type"
+                        @change="handleFrequencyTypeChange(resource)"
+                      >
+                        <option v-for="ft in frequencyTypes" :key="ft.value" :value="ft.value">
+                          {{ ft.label }}
+                        </option>
+                      </select>
+                      
+                      <!-- Intervalo de días -->
+                      <div v-if="resource.frequency_type === 'DAY'">
+                        <input 
+                          type="number" 
+                          min="1"
+                          class="input input-sm input-bordered w-full" 
+                          v-model="resource.interval_days"
+                          data-input="interval"
+                          placeholder="Días"
+                        />
+                      </div>
+                      
+                      <!-- Días de la semana -->
+                      <div v-else-if="resource.frequency_type === 'WEEK'" class="flex flex-wrap gap-1">
+                        <button
+                          v-for="day in weekdayOptions"
+                          :key="day.value"
+                          type="button"
+                          class="btn btn-xs"
+                          :class="resource.weekdays?.includes(day.value) ? 'btn-primary' : 'btn-outline'"
+                          @click="toggleWeekday(resource, day.value)"
+                        >
+                          {{ day.label.substring(0, 3) }}
+                        </button>
+                      </div>
+                      
+                      <!-- Días del mes -->
+                      <div v-else-if="resource.frequency_type === 'MONTH'" class="grid grid-cols-7 gap-1">
+                        <button
+                          v-for="day in 31"
+                          :key="day"
+                          type="button"
+                          class="btn btn-xs"
+                          :class="resource.monthdays?.includes(day) ? 'btn-primary' : 'btn-outline'"
+                          @click="toggleMonthday(resource, day)"
+                        >
+                          {{ day }}
+                        </button>
+                      </div>
+                    </div>
+                    <span v-else class="text-gray-400 text-sm">-</span>
                   </td>
                   <td class="border border-gray-300">
                     <input 
