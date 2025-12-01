@@ -124,14 +124,14 @@ class ProjectResourceItem(BaseModel):
         default=0.00
     )
     frequency_type = models.CharField(
-        'Tipo de Frecuencia',
+       'Tipo de Frecuencia',
         max_length=20,
         choices=(
-            ('INTERVALO', 'Por intervalo de días'),
-            ('SEMANAL', 'Días de la semana'),
-            ('MENSUAL', 'Días del mes'),
+            ('DAY', 'Por intervalo de días'),
+            ('WEEK', 'Días de la semana'),
+            ('MONTH', 'Días del mes'),
         ),
-        default='INTERVALO'
+        default='DAY'
     )
     interval_days = models.PositiveIntegerField(
         'Frecuencia (días)',

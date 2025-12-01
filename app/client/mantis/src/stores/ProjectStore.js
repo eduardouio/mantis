@@ -12,7 +12,7 @@ export const UseProjectStore = defineStore("projectStore", {
             contact_phone: null,
             start_date: null,
             end_date: null,
-            is_closed: false
+            is_closed: false,
         },
         allProjects: []
     }),
