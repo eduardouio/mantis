@@ -196,10 +196,6 @@
 </script>
 <template>
   <div class="container mx-auto p-4">
-    <span class="font-bold text-lg bg-gray-100 rounded-md px-2 py-1 mb-4 inline-block w-full text-center">
-      Recurso del Proyecto
-    </span>
-    
     <!-- Mensaje de Error -->
     <div v-if="errorMessage" class="alert alert-error shadow-lg mb-4">
       <div>
@@ -222,14 +218,17 @@
     <form class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg" @submit.prevent="submitForm">
       <div class="card-body space-y-4">
         <div class="flex gap-4">
-
-        <!-- Autocomplete de Recursos -->
-        <AutocompleteResource 
-          label="Seleccionar Recurso *"
-          placeholder="Buscar recurso disponible..."
-          :excludeIds="selectedResourceIds"
-          @resource-selected="handleResourceSelected"
-        />
+          <!-- Autocomplete de Recursos -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-semibold">Seleccionar Recurso *</span>
+            </label>
+            <AutocompleteResource 
+              placeholder="Buscar recurso disponible..."
+              :excludeIds="selectedResourceIds"
+              @resource-selected="handleResourceSelected"
+            />
+          </div>
         </div>
 
         <div class="mt-2 mb-2">
