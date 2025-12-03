@@ -5,8 +5,7 @@ import { appConfig } from "@/AppConfig";
 export const UseResourcesStore = defineStore("resourcesStore", {
     state: () => ({
         selectedResource: null,
-        resourcesAvailable: [],
-        resourcesProject: [],
+        resources: [],
         newResource: {
             "id": null,
             "code": null,
@@ -37,16 +36,17 @@ export const UseResourcesStore = defineStore("resourcesStore", {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                this.resourcesAvailable = data.data
+                this.resources = data.data || []
             } catch (error) {
                 console.error("Error fetching available resources:", error);
+                this.resources = []
             }
         },
         setSelectedResource(idResource) {
             console.log("Setting selected resource with ID:", idResource);
-            this.selectedResource = this.resourcesAvailable.find(
+            this.selectedResource = this.resources.find(
                 (resource) => resource.id === idResource
-            );
+            ) || null
         }
     },
 });
