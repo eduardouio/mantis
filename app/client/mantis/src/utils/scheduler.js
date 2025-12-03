@@ -35,17 +35,37 @@ function getEndOfFourWeeks() {
  * @returns {Date[]} Array de fechas de mantenimiento
  */
 function generateMaintenanceDates(startDateStr, intervalDays) {
+  // Validar intervalDays
+  if (!intervalDays || intervalDays < 1) {
+    console.warn('Intervalo de días inválido:', intervalDays);
+    return [];
+  }
+
   // Parsear la fecha sin problemas de zona horaria
   const [year, month, day] = startDateStr.split('-').map(Number);
   const startDate = new Date(year, month - 1, day);
+  
+  // Validar que la fecha sea válida
+  if (isNaN(startDate.getTime())) {
+    console.error('Fecha de inicio inválida:', startDateStr);
+    return [];
+  }
+
   const endOfFourWeeks = getEndOfFourWeeks();
   const maintenanceDates = [];
   
   let currentDate = new Date(startDate);
+  const maxIterations = 1000; // Límite de seguridad
+  let iterations = 0;
   
-  while (currentDate <= endOfFourWeeks) {
+  while (currentDate <= endOfFourWeeks && iterations < maxIterations) {
     maintenanceDates.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + intervalDays);
+    iterations++;
+  }
+
+  if (iterations >= maxIterations) {
+    console.error('Se alcanzó el límite de iteraciones en generateMaintenanceDates');
   }
   
   return maintenanceDates;
@@ -66,7 +86,18 @@ export function generateWeeklyMaintenanceSchedule(resources) {
     if (!resource.is_active) {
       return;
     }
-    
+
+    // Validar que tenga intervalo de días válido
+    if (!resource.interval_days || resource.interval_days < 1) {
+      console.warn('Recurso sin intervalo de días válido:', resource);
+      return;
+    }
+
+    // Validar que tenga fecha de inicio de operación
+    if (!resource.operation_start_date) {
+      console.warn('Recurso sin fecha de inicio de operación:', resource);
+      return;
+    }
     
     const maintenanceDates = generateMaintenanceDates(
       resource.operation_start_date,
@@ -119,6 +150,18 @@ export function generateFutureMaintenanceSchedule(resources, weeksAhead = 4) {
   
   resources.forEach(resource => {
     if (!resource.is_active) {
+      return;
+    }
+
+    // Validar que tenga intervalo de días válido
+    if (!resource.interval_days || resource.interval_days < 1) {
+      console.warn('Recurso sin intervalo de días válido:', resource);
+      return;
+    }
+
+    // Validar que tenga fecha de inicio de operación
+    if (!resource.operation_start_date) {
+      console.warn('Recurso sin fecha de inicio de operación:', resource);
       return;
     }
     
