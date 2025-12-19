@@ -46,16 +46,35 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
         },
         async addResourcesToProject(resources) {
             try {
-                const cleanResources = resources.map(resource => ({
-                    project_id: appConfig.idProject,
-                    resource_id: resource.resource_id,
-                    detailed_description: resource.detailed_description,
-                    interval_days: resource.interval_days,
-                    cost: resource.cost || 0,
-                    maintenance_cost: resource.maintenance_cost || 0,
-                    operation_start_date: resource.operation_start_date,
-                    include_maintenance: resource.include_maintenance
-                }))
+                const cleanResources = resources.map(resource => {
+                    const baseData = {
+                        project_id: appConfig.idProject,
+                        resource_id: resource.resource_id,
+                        detailed_description: resource.detailed_description,
+                        cost: resource.cost || 0,
+                        maintenance_cost: resource.maintenance_cost || 0,
+                        operation_start_date: resource.operation_start_date,
+                        include_maintenance: resource.include_maintenance,
+                        frequency_type: resource.include_maintenance ? (resource.frequency_type || 'DAY') : null
+                    }
+                    
+                    // Solo enviar los datos del intervalo correspondiente al tipo seleccionado
+                    if (resource.include_maintenance) {
+                        switch (resource.frequency_type) {
+                            case 'DAY':
+                                baseData.interval_days = resource.interval_days || 1
+                                break
+                            case 'WEEK':
+                                baseData.weekdays = resource.weekdays || []
+                                break
+                            case 'MONTH':
+                                baseData.monthdays = resource.monthdays || []
+                                break
+                        }
+                    }
+                    
+                    return baseData
+                })
 
                 const response = await fetch(appConfig.URLAddResourceToProject, {
                     method: "POST",
