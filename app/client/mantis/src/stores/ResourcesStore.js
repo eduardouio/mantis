@@ -24,6 +24,9 @@ export const UseResourcesStore = defineStore("resourcesStore", {
             "is_retired": false
         }
     }),
+    getters: {
+        resourcesAvailable: (state) => state.resources
+    },
     actions: {
         async fetchResourcesAvailable() {
             console.log("Fetching available resources...");

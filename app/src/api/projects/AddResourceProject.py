@@ -12,6 +12,7 @@ class AddResourceProjectAPI(View):
     def post(self, request):
         """Agregar uno o varios recursos al proyecto."""
         data = json.loads(request.body)
+        import ipdb; ipdb.set_trace()
         project = Project.get_by_id(data[0]["project_id"])
         if not project:
             raise Exception("Proyecto no encontrado.")
