@@ -24,13 +24,9 @@ const searchQuery = ref('');
 const showDropdown = ref(false);
 
 const availableResources = computed(() => {
-  const list = resourcesStore.resourcesAvailable;
-  if (Array.isArray(list)) {
-    return list;
-  }
-  if (list && typeof list === 'object') {
-    return Object.values(list);
-  }
+  const list = resourcesStore.resourcesAvailable || resourcesStore.resources;
+  if (Array.isArray(list)) return list;
+  if (list && typeof list === 'object') return Object.values(list);
   return [];
 });
 
