@@ -11,7 +11,7 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
             resource: Object,
             type: null,
             detailed_description: null,
-            cost: 0.0,
+            cost: 0.0,  
             frecuency_type: "DAY",
             interval_days: 2, 
             week_days: null,

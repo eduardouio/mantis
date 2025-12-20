@@ -11,6 +11,27 @@ const projectResources = computed(() => projectResourceStore.resourcesProject)
 const selectedResources= []
 const confirmDeleteId = ref(null)
 
+const weekdayOptions = {
+  0: 'Lun', 1: 'Mar', 2: 'Mié', 3: 'Jue', 4: 'Vie', 5: 'Sáb', 6: 'Dom'
+}
+
+const getFrequencyDisplay = (resource) => {
+  if (resource.frequency_type === 'WEEK') {
+    if (Array.isArray(resource.weekdays) && resource.weekdays.length > 0) {
+       const sortedDays = [...resource.weekdays].sort((a, b) => a - b)
+       return sortedDays.map(d => weekdayOptions[d]).join(', ')
+    }
+    return 'Semanal'
+  }
+  if (resource.frequency_type === 'MONTH') {
+    if (Array.isArray(resource.monthdays) && resource.monthdays.length > 0) {
+       return 'Días: ' + resource.monthdays.sort((a, b) => a - b).join(', ')
+    }
+    return 'Mensual'
+  }
+  return `${resource.interval_days} día(s)`
+}
+
 const isZeroCost = (cost) => {
   return parseFloat(cost) === 0;
 };
@@ -58,7 +79,7 @@ const handleDeleteResource = async (resource) => {
             <th class="p-2 border border-gray-100 text-center">Nombre/Descripción</th>
             <th class="p-2 border border-gray-100 text-center">Tipo Recurso</th>
             <th class="p-2 border border-gray-100 text-center">Costo</th>
-            <th class="p-2 border border-gray-100 text-center">Frec. (días)</th>
+            <th class="p-2 border border-gray-100 text-center">Frecuencia</th>
             <th class="p-2 border border-gray-100 text-center">Fecha Inicio</th>
             <th class="p-2 border border-gray-100 text-center text-center">Acciones</th>
           </tr>
@@ -66,7 +87,7 @@ const handleDeleteResource = async (resource) => {
         <tbody>
           <template v-if="projectResources.length === 0">
             <tr>
-              <td colspan="7" class="text-center text-gray-500 py-8">
+              <td colspan="8" class="text-center text-gray-500 py-8">
                 <i class="las la-inbox text-4xl"></i>
                 <p>No hay equipos asignados a este proyecto</p>
               </td>
@@ -94,8 +115,8 @@ const handleDeleteResource = async (resource) => {
               >
                 {{ formatNumber(resource.cost) }}
               </td>
-              <td class="p-2 border border-gray-300 text-end">
-                {{ resource.interval_days }}
+              <td class="p-2 border border-gray-300 text-center text-xs">
+                {{ getFrequencyDisplay(resource) }}
               </td>
               <td class="p-2 border border-gray-300 text-end font-mono">{{ formatDate(resource.operation_start_date) }}</td>
               <td class="p-2 border border-gray-300 text-end">
