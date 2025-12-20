@@ -94,12 +94,12 @@ class ProjectAdmin(BaseModelAdmin):
 @admin.register(ProjectResourceItem)
 class ProjectResourceItemAdmin(BaseModelAdmin):
     list_display = (
-        'project', 'resource_item', 'cost',
+        'project', 'resource_item', 'cost', 'frequency_type',
         'interval_days', 'operation_start_date',
         'operation_end_date', 'is_retired'
     )
     list_filter = (
-        'project', 'resource_item', 'is_retired', 'is_active', 'operation_start_date', 'operation_end_date'
+        'project', 'resource_item', 'frequency_type', 'is_retired', 'is_active', 'operation_start_date', 'operation_end_date'
     )
     search_fields = (
         'project__partner__name', 'resource_item__name', 'resource_item__code'
@@ -109,7 +109,7 @@ class ProjectResourceItemAdmin(BaseModelAdmin):
         ('Asignación', {
             'fields': (
                 'project', 'resource_item', 'detailed_description', 'cost',
-                'interval_days'
+                'frequency_type', 'interval_days', 'weekdays', 'monthdays'
             )
         }),
         ('Operación', {
