@@ -52,6 +52,27 @@ class UpdateResourceItemAPI(View):
 		project_resource.detailed_description = data.get('detailed_description', project_resource.detailed_description)
 		project_resource.operation_start_date =  data.get('operation_start_date')
 
+		# Actualizar servicio relacionado si existe (Vinculación por descripción)
+		if project_resource.type_resource == 'EQUIPO':
+			maintenance_cost = data.get('maintenance_cost')
+			if maintenance_cost is not None:
+				related_service = ProjectResourceItem.objects.filter(
+					project=project_resource.project,
+					type_resource='SERVICIO',
+					detailed_description=f"MANTENIMIENTO {project_resource.resource_item.name}",
+					is_active=True
+				).first()
+				
+				if related_service:
+					related_service.cost = maintenance_cost
+					# Sincronizar frecuencia y fechas con el servicio
+					related_service.frequency_type = project_resource.frequency_type
+					related_service.interval_days = project_resource.interval_days
+					related_service.weekdays = project_resource.weekdays
+					related_service.monthdays = project_resource.monthdays
+					related_service.operation_start_date = project_resource.operation_start_date
+					related_service.save()
+
 		if data.get('is_retired'):
 			project_resource.retirement_date =  data['retirement_date']
 			project_resource.retirement_reason =  data['retirement_reason']
