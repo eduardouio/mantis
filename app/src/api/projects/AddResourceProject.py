@@ -36,7 +36,6 @@ class AddResourceProjectAPI(View):
                 "SERVICIO" if resource_item.type_equipment == "SERVIC" else "EQUIPO"
             )
             interval_days = (
-                1
                 if type_resource == "EQUIPO"
                 else resource_data.get("interval_days", 1)
             )
