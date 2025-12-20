@@ -210,7 +210,7 @@ const submitForm = async () => {
     }
 
     if (isEditMode.value) {
-      await projectResourceStore.updateResource(payload)
+      await projectResourceStore.updateResourceProject(payload)
       successMessage.value = 'Recurso actualizado exitosamente'
     } else {
       await projectResourceStore.addResourcesToProject([payload])
