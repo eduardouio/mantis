@@ -12,7 +12,8 @@ class AddResourceProjectAPI(View):
     def post(self, request):
         """Agregar uno o varios recursos al proyecto."""
         data = json.loads(request.body)
-        import ipdb; ipdb.set_trace()
+
+        # ipdb.set_trace()
         project = Project.get_by_id(data[0]["project_id"])
         if not project:
             raise Exception("Proyecto no encontrado.")
@@ -35,18 +36,27 @@ class AddResourceProjectAPI(View):
             type_resource = (
                 "SERVICIO" if resource_item.type_equipment == "SERVIC" else "EQUIPO"
             )
-            interval_days = (
-                if type_resource == "EQUIPO"
-                else resource_data.get("interval_days", 1)
-            )
+            
+            # Extraer configuración de frecuencia del payload
+            p_freq_type = resource_data.get("frequency_type", "DAY")
+            p_interval = resource_data.get("interval_days", 1)
+            p_weekdays = resource_data.get("weekdays")
+            p_monthdays = resource_data.get("monthdays")
 
-            # Determinar el costo según el tipo de recurso
             if type_resource == "SERVICIO":
-                # Para servicios, usar maintenance_cost
                 resource_cost = resource_data.get("maintenance_cost", 0.00)
+                # Si es servicio, usa la configuración de frecuencia del payload
+                prim_freq_type = p_freq_type
+                prim_interval = p_interval
+                prim_weekdays = p_weekdays
+                prim_monthdays = p_monthdays
             else:
-                # Para equipos, usar cost
                 resource_cost = resource_data.get("cost", 0.00)
+                # Si es equipo (renta), configuración por defecto (diaria)
+                prim_freq_type = "DAY"
+                prim_interval = 1
+                prim_weekdays = None
+                prim_monthdays = None
 
             primary_instances.append(
                 ProjectResourceItem(
@@ -55,7 +65,10 @@ class AddResourceProjectAPI(View):
                     type_resource=type_resource,
                     detailed_description=resource_data.get("detailed_description", ""),
                     cost=resource_cost,
-                    interval_days=interval_days,
+                    frequency_type=prim_freq_type,
+                    interval_days=prim_interval,
+                    weekdays=prim_weekdays,
+                    monthdays=prim_monthdays,
                     operation_start_date=resource_data.get("operation_start_date"),
                 )
             )
@@ -71,7 +84,6 @@ class AddResourceProjectAPI(View):
                             " PESIOL-SERV00 no encontrado. Contacte al administrador."
                         )
 
-                # Para el servicio de mantenimiento de un equipo, usar maintenance_cost
                 maintenance_cost = resource_data.get("maintenance_cost", 0.00)
 
                 maintenance_instances.append(
@@ -81,14 +93,19 @@ class AddResourceProjectAPI(View):
                         type_resource="SERVICIO",
                         detailed_description=f"MANTENIMIENTO {resource_item.name}",
                         cost=maintenance_cost,
-                        interval_days=resource_data.get("interval_days", 1),
+                        frequency_type=p_freq_type,
+                        interval_days=p_interval,
+                        weekdays=p_weekdays,
+                        monthdays=p_monthdays,
                         operation_start_date=resource_data.get("operation_start_date"),
                     )
                 )
 
             if type_resource == "EQUIPO":
                 resource_item.stst_current_project_id = project.id
-                resource_item.stst_commitment_date = resource_data.get("commitment_date")
+                resource_item.stst_commitment_date = resource_data.get(
+                    "commitment_date"
+                )
                 resource_item.stst_status_disponibility = "RENTADO"
                 resource_item.stst_current_location = project.location
                 equipment_to_update.append(resource_item)
@@ -125,8 +142,7 @@ class AddResourceProjectAPI(View):
             )
 
         serialized_data = [
-            self._serialize_project_resource(resource) 
-                for resource in created_resources
+            self._serialize_project_resource(resource) for resource in created_resources
         ]
 
         return JsonResponse({"data": serialized_data}, status=201)
@@ -161,7 +177,6 @@ class AddResourceProjectAPI(View):
             )
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
-
 
     def _serialize_project_resource(self, project_resource):
         return {
