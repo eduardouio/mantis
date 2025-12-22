@@ -95,6 +95,18 @@ class Technical(BaseModel):
         blank=True,
         null=True
     )
+    file_number = models.CharField(
+        'Número de Expediente',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    medical_record_number = models.CharField(
+        'Número de Historia Clínica',
+        max_length=255,
+        blank=True,
+        null=True
+    )
     is_iess_affiliated = models.BooleanField(
         'Afiliado IESS?',
         default=False
