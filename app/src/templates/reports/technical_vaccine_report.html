@@ -127,6 +127,13 @@
             font-size: 6pt;
         }
         
+        .merged-note-row {
+            background-color: #f0f8ff;
+            font-weight: bold;
+            text-align: center;
+            padding: 4px 6px;
+        }
+        
         .footer-note {
             font-size: 6pt;
             color: #666;
@@ -205,12 +212,14 @@
         <table class="vaccine-table">
             <thead>
                 <tr>
-                    <th rowspan="2" style="width: 15%;">VACUNAS</th>
-                    <th rowspan="2" style="width: 5%;">DOSIS</th>
-                    <th rowspan="2" style="width: 10%;">FECHA<br>(dd/mm/aa)</th>
-                    <th rowspan="2" style="width: 10%;">LOTE</th>
-                    <th rowspan="2" style="width: 8%;">ESQUEMA<br>COMPLETO</th>
-                    <th rowspan="2" style="width: 20%;">OBSERVACIONES</th>
+                    <th style="width: 15%;">VACUNAS</th>
+                    <th style="width: 5%;">DOSIS</th>
+                    <th style="width: 10%;">FECHA<br>(dd/mm/aa)</th>
+                    <th style="width: 10%;">LOTE</th>
+                    <th style="width: 8%;">ESQUEMA<br>COMPLETO<br>(Marcar X)</th>
+                    <th style="width: 16%;">NOMBRES COMPLETOS DEL<br>RESPONSABLE DE LA APLICACIÓN</th>
+                    <th style="width: 16%;">ESTABLECIMIENTO DE SALUD<br>DONDE SE COLOCÓ LA VACUNA</th>
+                    <th style="width: 20%;">OBSERVACIONES</th>
                 </tr>
             </thead>
             <tbody>
@@ -223,10 +232,19 @@
                             <td class="dose-number-cell">{{ dose.number }}ª</td>
                             <td>{% if dose.record %}{{ dose.record.application_date|date:"d/m/Y" }}{% endif %}</td>
                             <td>{% if dose.record %}{{ dose.record.batch_number|default:"" }}{% endif %}</td>
-                            <td>{% if dose.record and forloop.last and dose.record %}X{% endif %}</td>
+                            <td>{% if dose.record and forloop.last %}X{% endif %}</td>
+                            <td>{% if dose.record %}{% endif %}</td>
+                            <td>{% if dose.record %}{% endif %}</td>
                             <td>{% if dose.record %}{{ dose.record.notes|default:"" }}{% endif %}</td>
                         </tr>
                     {% endfor %}
+                    {% if vaccine.type == 'MEASLES' %}
+                        <tr>
+                            <td class="merged-note-row" colspan="8" style="text-align: start;">
+                                INMUNIZACIONES DE ACUERDO AL TIPO DE EMPRESA Y RIESGO
+                            </td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>

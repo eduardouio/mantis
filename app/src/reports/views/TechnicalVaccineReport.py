@@ -12,13 +12,15 @@ COMPANY_INFO = {
 # Definición de vacunas con sus dosis máximas
 VACCINE_DEFINITIONS = [
     {'type': 'TETANUS', 'name': 'Tétanos - Difteria', 'max_doses': 5},
-    {'type': 'HEPATITIS_A_B', 'name': 'Hepatitis A y B', 'max_doses': 3},
+    {'type': 'HEPATITIS_A', 'name': 'Hepatitis A', 'max_doses': 3},
+    {'type': 'HEPATITIS_B', 'name': 'Hepatitis B', 'max_doses': 3},
     {'type': 'INFLUENZA', 'name': 'Influenza estacional', 'max_doses': 2},
     {'type': 'YELLOW_FEVER', 'name': 'Fiebre Amarilla', 'max_doses': 2},
     {'type': 'MEASLES', 'name': 'Sarampión/Rubéola', 'max_doses': 1},
-    {'type': 'TYPHOID', 'name': 'Tifoidea', 'max_doses': 1},
+    {'type': 'TYPHOID', 'name': 'Tifoidea', 'max_doses': 5},
     {'type': 'COVID', 'name': 'COVID 19', 'max_doses': 5},
-    {'type': 'OTHER', 'name': 'Otra', 'max_doses': 3},
+    {'type': 'OTHER1', 'name': ' ', 'max_doses': 5},
+	{'type': 'OTHER2', 'name': ' ', 'max_doses': 5},
 ]
 
 
