@@ -179,17 +179,21 @@
         <table class="user-info-table">
             <thead>
                 <tr>
-                    <th>APELLIDOS</th>
-                    <th>NOMBRES</th>
-                    <th>CÉDULA</th>
+                    <th>PRIMER APELLIDO</th>
+                    <th>SEGUNDO APELLIDO</th>
+                    <th>PRIMER NOMBRE</th>
+                    <th>SEGUNDO NOMBRE</th>
+                    <th>SEXO</th>
                     <th>CARGO / OCUPACIÓN</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ technical.last_name|upper }}</td>
-                    <td>{{ technical.first_name|upper }}</td>
-                    <td>{{ technical.dni }}</td>
+                    <td>{{ technical.last_name|default_if_none:""|upper }}</td>
+                    <td></td>
+                    <td>{{ technical.first_name|default_if_none:""|upper }}</td>
+                    <td></td>
+                    <td>{{ technical.sex|default_if_none:""|upper }}</td>
                     <td>{{ technical.get_work_area_display }}</td>
                 </tr>
             </tbody>
