@@ -51,33 +51,52 @@ class TechnicalVaccineReport(TemplateView):
 		Organiza los registros de vacunación según las definiciones de vacunas.
 		"""
 		organized = []
-		
+		hep_ab_records = [r for r in records if r.vaccine_type == 'HEPATITIS_A_B']
+		other_records = [r for r in records if r.vaccine_type == 'OTHER']
+
 		for vaccine_def in VACCINE_DEFINITIONS:
-			vaccine_records = [r for r in records if r.vaccine_type == vaccine_def['type']]
+			vtype = vaccine_def['type']
+
+			# Selección de registros según el tipo
+			if vtype == 'HEPATITIS_A':
+				vaccine_records = [r for r in records if r.vaccine_type == 'HEPATITIS_A']
+				if not vaccine_records:
+					vaccine_records = self._consume_records(hep_ab_records, vaccine_def['max_doses'])
+			elif vtype == 'HEPATITIS_B':
+				vaccine_records = [r for r in records if r.vaccine_type == 'HEPATITIS_B']
+				if not vaccine_records:
+					vaccine_records = self._consume_records(hep_ab_records, vaccine_def['max_doses'])
+			elif vtype in ('OTHER1', 'OTHER2'):
+				vaccine_records = self._consume_records(other_records, vaccine_def['max_doses'])
+			else:
+				vaccine_records = [r for r in records if r.vaccine_type == vtype]
+
 			doses = []
-			
 			for dose_num in range(1, vaccine_def['max_doses'] + 1):
 				dose_record = next(
-					(r for r in vaccine_records if r.dose_number == dose_num), 
-					None
+					(r for r in vaccine_records if r.dose_number == dose_num),
+					vaccine_records[dose_num - 1] if dose_num - 1 < len(vaccine_records) else None
 				)
-				doses.append({
-					'number': dose_num,
-					'record': dose_record
-				})
-			
-			# Solo agregar si tiene al menos un registro
+				doses.append({'number': dose_num, 'record': dose_record})
+
 			has_records = any(d['record'] for d in doses)
-			
 			organized.append({
 				'name': vaccine_def['name'],
-				'type': vaccine_def['type'],
+				'type': vtype,
 				'max_doses': vaccine_def['max_doses'],
 				'doses': doses,
 				'has_records': has_records
 			})
-		
+
 		return organized
+
+	def _consume_records(self, record_list, max_items):
+		"""
+		Extrae hasta max_items registros de la lista dada y los remueve de ella.
+		"""
+		consumed = record_list[:max_items]
+		del record_list[:max_items]
+		return consumed
 
 	def _split_name_parts(self, full_name):
 		"""
