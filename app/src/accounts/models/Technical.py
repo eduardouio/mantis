@@ -107,6 +107,15 @@ class Technical(BaseModel):
         blank=True,
         null=True
     )
+    sex = models.CharField(
+        'Sexo',
+        max_length=10,
+        blank=True,
+        null=True,
+        choices=(
+            ('Masculino', 'Masculino'), 
+            ('Femenino', 'Femenino'))
+    )
     is_iess_affiliated = models.BooleanField(
         'Afiliado IESS?',
         default=False

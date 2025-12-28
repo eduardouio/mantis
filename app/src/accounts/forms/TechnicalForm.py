@@ -11,7 +11,7 @@ class TechnicalForm(forms.ModelForm):
     class Meta:
         model = Technical
         fields = [
-            'first_name', 'last_name', 'email', 'dni', 'birth_date',
+            'first_name', 'last_name', 'email', 'dni', 'birth_date', 'sex',
             'nro_phone', 'work_area', 'date_joined',
             'file_number', 'medical_record_number',
             'license_issue_date', 'license_expiry_date',
@@ -40,6 +40,9 @@ class TechnicalForm(forms.ModelForm):
             'dni': forms.TextInput(attrs={
                 'class': 'input input-bordered',
                 'placeholder': '0123456789'
+            }),
+            'sex': forms.Select(attrs={
+                'class': 'select select-bordered'
             }),
             'birth_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
@@ -151,6 +154,7 @@ class TechnicalForm(forms.ModelForm):
             'quest_instructor': 'Instructor Quest',
             'quest_start_date': 'Fecha de Inicio Quest',
             'quest_end_date': 'Fecha de Fin Quest',
+            'sex': 'Sexo',
             'notes': 'Notas',
             'is_iess_affiliated': 'Afiliado al IESS',
             'has_life_insurance_policy': 'Tiene Póliza de Vida',
@@ -168,6 +172,7 @@ class TechnicalForm(forms.ModelForm):
         
         # Configuración adicional para campos específicos
         self.fields['work_area'].empty_label = "Seleccione un área"
+        self.fields['sex'].empty_label = "Seleccione el sexo"
         
     def clean_dni(self):
         dni = self.cleaned_data.get('dni')

@@ -136,7 +136,7 @@ class TechnicalAdmin(SimpleHistoryAdmin):
     fieldsets = (
         ('Información Personal', {
             'fields': (
-                'first_name', 'last_name', 'email', 'dni', 'birth_date', 'medical_record_number'
+                'first_name', 'last_name', 'email', 'dni', 'sex', 'birth_date', 'medical_record_number'
             )
         }),
         ('Contacto y Trabajo', {

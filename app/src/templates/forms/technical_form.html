@@ -108,6 +108,19 @@
             {% endif %}
           </div>
 
+          <!-- Sexo -->
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">{{ form.sex.label }} &nbsp;&nbsp;&nbsp;</span>
+            </label>
+            {{ form.sex }}
+            {% if form.sex.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">{{ form.sex.errors.0 }}</span>
+              </label>
+            {% endif %}
+          </div>
+
           <!-- Fecha de Nacimiento -->
           <div class="form-control">
             <label class="label">

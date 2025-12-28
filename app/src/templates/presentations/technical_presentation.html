@@ -59,6 +59,14 @@
 
             <div class="bg-white p-3 rounded-lg border border-blue-100">
               <div class="flex items-center gap-2">
+                <i class="las la-venus-mars text-sm text-blue-500"></i>
+                <p class="text-gray-500 text-sm">Sexo</p>
+              </div>
+              <p class="font-semibold text-gray-900 pl-6">{{ technical.sex|default:"<span class='text-gray-400 text-sm italic'>No registrado</span>"|safe }}</p>
+            </div>
+
+            <div class="bg-white p-3 rounded-lg border border-blue-100">
+              <div class="flex items-center gap-2">
                 <i class="las la-notes-medical text-sm text-blue-500"></i>
                 <p class="text-gray-500 text-sm">Historia Clínica</p>
               </div>
