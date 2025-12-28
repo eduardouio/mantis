@@ -136,12 +136,12 @@ class TechnicalAdmin(SimpleHistoryAdmin):
     fieldsets = (
         ('Información Personal', {
             'fields': (
-                'first_name', 'last_name', 'email', 'dni', 'birth_date'
+                'first_name', 'last_name', 'email', 'dni', 'birth_date', 'medical_record_number'
             )
         }),
         ('Contacto y Trabajo', {
             'fields': (
-                'nro_phone', 'work_area', 'date_joined'
+                'nro_phone', 'work_area', 'date_joined', 'file_number'
             )
         }),
         ('Licencias y Certificados', {
@@ -193,7 +193,7 @@ class TechnicalAdmin(SimpleHistoryAdmin):
     )
 
     search_fields = (
-        'first_name', 'last_name', 'email', 'dni', 'quest_ncst_code'
+        'first_name', 'last_name', 'email', 'dni', 'quest_ncst_code', 'file_number', 'medical_record_number'
     )
     readonly_fields = (
         'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
