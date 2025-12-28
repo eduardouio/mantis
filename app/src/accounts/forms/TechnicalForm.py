@@ -26,97 +26,97 @@ class TechnicalForm(forms.ModelForm):
         
         widgets = {
             'first_name': forms.TextInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'placeholder': 'Ingrese los nombres'
             }),
             'last_name': forms.TextInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'placeholder': 'Ingrese los apellidos'
             }),
             'email': forms.EmailInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'placeholder': 'correo@ejemplo.com'
             }),
             'dni': forms.TextInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'placeholder': '0123456789'
             }),
             'sex': forms.Select(attrs={
-                'class': 'select select-bordered'
+                'class': 'select select-bordered w-full'
             }),
             'birth_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'nro_phone': forms.TextInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'placeholder': '0987654321'
             }),
             'work_area': forms.Select(attrs={
-                'class': 'select select-bordered'
+                'class': 'select select-bordered w-full'
             }),
             'date_joined': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'file_number': forms.TextInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'placeholder': 'N° de Archivo'
             }),
             'medical_record_number': forms.TextInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'placeholder': 'N° de Historia Clínica'
             }),
             'license_issue_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'license_expiry_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'defensive_driving_certificate_issue_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'defensive_driving_certificate_expiry_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'mae_certificate_issue_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'mae_certificate_expiry_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'medical_certificate_issue_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'medical_certificate_expiry_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'quest_ncst_code': forms.TextInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'placeholder': 'Código Quest'
             }),
             'quest_instructor': forms.TextInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'placeholder': 'Nombre del instructor'
             }),
             'quest_start_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'quest_end_date': forms.DateInput(attrs={
-                'class': 'input input-bordered',
+                'class': 'input input-bordered w-full',
                 'type': 'date'
             }, format='%Y-%m-%d'),
             'notes': forms.Textarea(attrs={
-                'class': 'textarea textarea-bordered',
+                'class': 'textarea textarea-bordered w-full',
                 'rows': 8,
                 'placeholder': 'Observaciones adicionales...'
             }),
