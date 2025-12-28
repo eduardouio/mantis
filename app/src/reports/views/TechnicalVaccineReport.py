@@ -38,6 +38,9 @@ class TechnicalVaccineReport(TemplateView):
 		context['technical'] = technical
 		context['company_info'] = COMPANY_INFO
 		context['vaccines'] = vaccines_data
+		# Partes de nombres y apellidos
+		context['first_name_split'] = self._split_name_parts(technical.first_name)
+		context['last_name_split'] = self._split_name_parts(technical.last_name)
 		
 		return context
 
@@ -73,3 +76,14 @@ class TechnicalVaccineReport(TemplateView):
 			})
 		
 		return organized
+
+	def _split_name_parts(self, full_name):
+		"""
+		Retorna una tupla (primero, segundo) a partir de un nombre completo.
+		"""
+		if not full_name:
+			return ("", "")
+		parts = full_name.strip().split()
+		first = parts[0] if parts else ""
+		second = " ".join(parts[1:]) if len(parts) > 1 else ""
+		return (first, second)

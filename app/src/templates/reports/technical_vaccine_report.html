@@ -189,10 +189,10 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ technical.last_name|default_if_none:""|upper }}</td>
-                    <td></td>
-                    <td>{{ technical.first_name|default_if_none:""|upper }}</td>
-                    <td></td>
+                    <td>{{ last_name_split.0|default_if_none:""|upper }}</td>
+                    <td>{{ last_name_split.1|default_if_none:""|upper }}</td>
+                    <td>{{ first_name_split.0|default_if_none:""|upper }}</td>
+                    <td>{{ first_name_split.1|default_if_none:""|upper }}</td>
                     <td>{{ technical.sex|default_if_none:""|upper }}</td>
                     <td>{{ technical.get_work_area_display }}</td>
                 </tr>
