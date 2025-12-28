@@ -13,6 +13,7 @@ class TechnicalForm(forms.ModelForm):
         fields = [
             'first_name', 'last_name', 'email', 'dni', 'birth_date',
             'nro_phone', 'work_area', 'date_joined',
+            'file_number', 'medical_record_number',
             'license_issue_date', 'license_expiry_date',
             'defensive_driving_certificate_issue_date', 
             'defensive_driving_certificate_expiry_date',
@@ -55,6 +56,14 @@ class TechnicalForm(forms.ModelForm):
                 'class': 'input input-bordered',
                 'type': 'date'
             }, format='%Y-%m-%d'),
+            'file_number': forms.TextInput(attrs={
+                'class': 'input input-bordered',
+                'placeholder': 'N° de Archivo'
+            }),
+            'medical_record_number': forms.TextInput(attrs={
+                'class': 'input input-bordered',
+                'placeholder': 'N° de Historia Clínica'
+            }),
             'license_issue_date': forms.DateInput(attrs={
                 'class': 'input input-bordered',
                 'type': 'date'
@@ -128,6 +137,8 @@ class TechnicalForm(forms.ModelForm):
             'nro_phone': 'Número de Celular *',
             'work_area': 'Área de Trabajo',
             'date_joined': 'Fecha de Ingreso',
+            'file_number': 'Número de Archivo',
+            'medical_record_number': 'Número de Historia Clínica',
             'license_issue_date': 'Fecha de Emisión',
             'license_expiry_date': 'Fecha de Caducidad',
             'defensive_driving_certificate_issue_date': 'Fecha de Emisión',

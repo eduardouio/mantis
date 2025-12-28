@@ -56,6 +56,14 @@
               </div>
               <p class="font-semibold text-gray-900 pl-6">{{ technical.birth_date|date:"d-m-Y"|default:"<span class='text-gray-400 text-sm italic'>No registrada</span>"|safe }}</p>
             </div>
+
+            <div class="bg-white p-3 rounded-lg border border-blue-100">
+              <div class="flex items-center gap-2">
+                <i class="las la-notes-medical text-sm text-blue-500"></i>
+                <p class="text-gray-500 text-sm">Historia Clínica</p>
+              </div>
+              <p class="font-semibold text-gray-900 pl-6">{{ technical.medical_record_number|default:"<span class='text-gray-400 text-sm italic'>No registrada</span>"|safe }}</p>
+            </div>
           </div>
         </div>
         
@@ -108,6 +116,14 @@
                 <p class="text-gray-500 text-sm">Usuario Sistema</p>
               </div>
               <p class="font-semibold text-gray-900 pl-6">{{ technical.user.email|default:"<span class='text-gray-400 text-sm italic'>No vinculado</span>"|safe }}</p>
+            </div>
+
+            <div class="bg-white p-3 rounded-lg border border-blue-100">
+              <div class="flex items-center gap-2">
+                <i class="las la-folder-open text-sm text-blue-500"></i>
+                <p class="text-gray-500 text-sm">N° Archivo</p>
+              </div>
+              <p class="font-semibold text-gray-900 pl-6">{{ technical.file_number|default:"<span class='text-gray-400 text-sm italic'>No registrado</span>"|safe }}</p>
             </div>
           </div>
         </div>

@@ -172,6 +172,32 @@
               </label>
             {% endif %}
           </div>
+
+          <!-- Número de Expediente -->
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">{{ form.file_number.label }}</span>
+            </label>
+            {{ form.file_number }}
+            {% if form.file_number.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">{{ form.file_number.errors.0 }}</span>
+              </label>
+            {% endif %}
+          </div>
+
+          <!-- Número de Historia Clínica -->
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">{{ form.medical_record_number.label }}</span>
+            </label>
+            {{ form.medical_record_number }}
+            {% if form.medical_record_number.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">{{ form.medical_record_number.errors.0 }}</span>
+              </label>
+            {% endif %}
+          </div>
         </div>
       </div>
 
