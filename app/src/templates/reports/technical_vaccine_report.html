@@ -171,8 +171,8 @@
                     <td>{{ company_info.ruc }}</td>
                     <td></td>
                     <td>{{ company_info.name }}</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ technical.medical_record_number|default:"" }}</td>
+                    <td>{{ technical.file_number|default:"" }}</td>
                 </tr>
             </tbody>
         </table>
