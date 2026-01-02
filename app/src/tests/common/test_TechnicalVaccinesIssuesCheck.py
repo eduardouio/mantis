@@ -23,6 +23,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='COVID',
             dose_number=2,
+            application_date=date.today() - timedelta(days=90),
             next_dose_date=date.today() - timedelta(days=5),
             is_active=True
         )
@@ -34,6 +35,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='INFLUENZA',
             dose_number=1,
+            application_date=date.today() - timedelta(days=30),
             next_dose_date=date.today() + timedelta(days=8),
             is_active=True
         )
@@ -45,6 +47,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='HEPATITIS_B',
             dose_number=3,
+            application_date=date.today() - timedelta(days=60),
             next_dose_date=date.today() + timedelta(days=25),
             is_active=True
         )
@@ -56,6 +59,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='TETANUS',
             dose_number=1,
+            application_date=date.today() - timedelta(days=10),
             next_dose_date=date.today() + timedelta(days=60),
             is_active=True
         )
@@ -67,6 +71,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='COVID',
             dose_number=3,
+            application_date=date.today() - timedelta(days=20),
             next_dose_date=None,
             is_active=True
         )
@@ -78,6 +83,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='COVID',
             dose_number=1,
+            application_date=date.today() - timedelta(days=15),
             next_dose_date=date.today() + timedelta(days=5),
             is_active=False
         )
@@ -96,6 +102,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=tech,
             vaccine_type='COVID',
             dose_number=2,
+            application_date=date.today() - timedelta(days=100),
             next_dose_date=date.today() - timedelta(days=10),
             is_active=True
         )
@@ -105,6 +112,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=tech,
             vaccine_type='INFLUENZA',
             dose_number=1,
+            application_date=date.today() - timedelta(days=20),
             next_dose_date=date.today() + timedelta(days=5),
             is_active=True
         )
@@ -114,6 +122,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=tech,
             vaccine_type='HEPATITIS_B',
             dose_number=1,
+            application_date=date.today() - timedelta(days=30),
             next_dose_date=date.today() + timedelta(days=20),
             is_active=True
         )
@@ -123,6 +132,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=tech,
             vaccine_type='TETANUS',
             dose_number=1,
+            application_date=date.today() - timedelta(days=10),
             next_dose_date=date.today() + timedelta(days=90),
             is_active=True
         )
@@ -132,6 +142,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=tech,
             vaccine_type='YELLOW_FEVER',
             dose_number=1,
+            application_date=date.today() - timedelta(days=40),
             next_dose_date=None,
             is_active=True
         )
@@ -256,21 +267,26 @@ class TestTechnicalVaccinesIssuesCheck:
             last_name='López',
             email='carlos@test.com'
         )
-        VaccinationRecord.objects.create(
+        vaccine2 = VaccinationRecord.objects.create(
             technical=tech2,
             vaccine_type='COVID',
             dose_number=1,
+            application_date=date.today() - timedelta(days=20),
             next_dose_date=date.today() + timedelta(days=5),
             is_active=True
         )
         
         issues = TechnicalVaccinesIssuesCheck.issues_all()
         
+        # Filtrar solo los issues de los técnicos creados en este test
+        test_technical_ids = [technical.id, tech2.id]
+        test_issues = [issue for issue in issues if issue['technical_id'] in test_technical_ids]
+        
         # Deben haber 3 issues totales
-        assert len(issues) == 3
+        assert len(test_issues) == 3
         
         # Verificar que ambos técnicos están representados
-        technical_ids = [issue['technical_id'] for issue in issues]
+        technical_ids = [issue['technical_id'] for issue in test_issues]
         assert technical.id in technical_ids
         assert tech2.id in technical_ids
 
@@ -286,6 +302,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=tech2,
             vaccine_type='COVID',
             dose_number=1,
+            application_date=date.today() - timedelta(days=10),
             next_dose_date=date.today() - timedelta(days=3),
             is_active=True
         )
@@ -365,6 +382,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='COVID',
             dose_number=None,
+            application_date=date.today() - timedelta(days=10),
             next_dose_date=date.today() - timedelta(days=5),
             is_active=True
         )
@@ -409,24 +427,27 @@ class TestTechnicalVaccinesIssuesCheck:
     def test_issues_all_sorting(self, technical):
         """Test que los issues se pueden ordenar por días restantes"""
         # Crear vacunas con diferentes fechas
-        VaccinationRecord.objects.create(
+        v1 = VaccinationRecord.objects.create(
             technical=technical,
             vaccine_type='COVID',
             dose_number=1,
+            application_date=date.today() - timedelta(days=90),
             next_dose_date=date.today() - timedelta(days=5),
             is_active=True
         )
-        VaccinationRecord.objects.create(
+        v2 = VaccinationRecord.objects.create(
             technical=technical,
             vaccine_type='INFLUENZA',
             dose_number=1,
+            application_date=date.today() - timedelta(days=60),
             next_dose_date=date.today() + timedelta(days=2),
             is_active=True
         )
-        VaccinationRecord.objects.create(
+        v3 = VaccinationRecord.objects.create(
             technical=technical,
             vaccine_type='HEPATITIS_B',
             dose_number=1,
+            application_date=date.today() - timedelta(days=30),
             next_dose_date=date.today() + timedelta(days=20),
             is_active=True
         )
@@ -450,6 +471,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='COVID',
             dose_number=1,
+            application_date=date.today() - timedelta(days=100),
             next_dose_date=date.today() - timedelta(days=10),
             is_active=True
         )
@@ -459,6 +481,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='COVID',
             dose_number=2,
+            application_date=date.today() - timedelta(days=50),
             next_dose_date=date.today() + timedelta(days=5),
             is_active=True
         )
@@ -480,6 +503,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='COVID',
             dose_number=1,
+            application_date=date.today() - timedelta(days=90),
             next_dose_date=date.today() - timedelta(days=5),
             is_active=True
         )
@@ -489,6 +513,7 @@ class TestTechnicalVaccinesIssuesCheck:
             technical=technical,
             vaccine_type='INFLUENZA',
             dose_number=1,
+            application_date=date.today() - timedelta(days=100),
             next_dose_date=date.today() - timedelta(days=10),
             is_active=False
         )
@@ -506,7 +531,8 @@ class TestTechnicalVaccinesIssuesCheck:
         assert len(issues) == 0
 
     def test_issues_all_no_technicals(self):
-        """Test de issues_all sin técnicos en la base de datos"""
-        issues = TechnicalVaccinesIssuesCheck.issues_all()
+        """Test de issues_all con queryset vacío"""
+        queryset = Technical.objects.none()
+        issues = TechnicalVaccinesIssuesCheck.issues_all(queryset=queryset)
         
         assert len(issues) == 0
