@@ -62,28 +62,32 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         return context
 
     def _get_equipment_statistics(self, equipment):
-        """Obtener estadísticas del equipo"""
+        """Calcula estadísticas del equipo basadas en sus asignaciones."""
         project_assignments = ProjectResourceItem.objects.filter(
-            resource_item=equipment)
-        active_assignments = project_assignments.filter(is_active=True)
-
-        # Calcular estadísticas
-        total_projects = project_assignments.count()
-        active_projects = active_assignments.count()
+            resource_item=equipment,
+            is_deleted=False
+        ).select_related('project')
+        
+        # Calcular totales usando el campo 'cost' en lugar de 'rent_cost'
         total_cost = sum(
-            assignment.rent_cost for assignment in project_assignments
-            if assignment.rent_cost)
-        total_maintenance_cost = sum(
-            assignment.maintenance_cost for assignment in project_assignments
-            if assignment.maintenance_cost)
-
+            assignment.cost for assignment in project_assignments
+            if assignment.cost)
+        
+        # Si hay campo de mantenimiento, usarlo, sino asumir 0
+        total_maintenance = 0
+        if hasattr(ProjectResourceItem, 'cost_manteinance'):
+            total_maintenance = sum(
+                getattr(assignment, 'cost_manteinance', 0) or 0 
+                for assignment in project_assignments
+            )
+        
         return {
-            'total_projects': total_projects,
-            'active_projects': active_projects,
-            'historical_projects': total_projects - active_projects,
-            'total_revenue': total_cost + total_maintenance_cost,
+            'total_projects': project_assignments.count(),
+            'active_projects': project_assignments.filter(is_retired=False).count(),
+            'historical_projects': project_assignments.filter(is_retired=True).count(),
             'total_cost': total_cost,
-            'total_maintenance_cost': total_maintenance_cost,
+            'total_maintenance_cost': total_maintenance,
+            'total_revenue': total_cost + total_maintenance,
         }
 
     def _get_project_information(self, equipment):
@@ -463,7 +467,7 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
     def _get_status_analysis_classes(self, status_report):
         """Obtener clases CSS para los diferentes estados"""
         completeness = status_report['completeness']
-        inconsistencies = status_report['inconsistencies']
+        inconsistencies = status_report['inconsistencias']
         availability = status_report['availability']['status']
         
         classes = {
