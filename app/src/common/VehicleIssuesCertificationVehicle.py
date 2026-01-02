@@ -1,20 +1,11 @@
 from datetime import date
 from django.utils import timezone
-from equipment.models import Vehicle
+from equipment.models import CertificationVehicle, Vehicle
 
 
-class VehicleIssuesCheck:
+class VehicleIssuesCertificationVehicle:
     WARNING_30 = 30
     WARNING_10 = 10
-
-    FIELD_LABELS = {
-        'due_date_cert_oper': 'Certificado de Operación',
-        'due_date_matricula': 'Matrícula',
-        'due_date_mtop': 'MTOP',
-        'due_date_technical_review': 'Revisión Técnica',
-        'insurance_expiration_date': 'Seguro',
-        'due_date_satellite': 'Sistema Satelital',
-    }
 
     @classmethod
     def _evaluate(cls, expires_on: date):
@@ -33,25 +24,33 @@ class VehicleIssuesCheck:
 
     @classmethod
     def issues_for(cls, vehicle: Vehicle):
-        """Lista de alertas para un vehículo."""
+        """Lista de alertas de certificaciones para un vehículo."""
         issues = []
-        for field, label in cls.FIELD_LABELS.items():
-            status, days = cls._evaluate(getattr(vehicle, field, None))
+        certifications = CertificationVehicle.objects.filter(
+            vehicle=vehicle,
+            is_active=True,
+            date_end__isnull=False
+        )
+        
+        for cert in certifications:
+            status, days = cls._evaluate(cert.date_end)
             if status:
                 issues.append({
-                    'field': field,
-                    'label': label,
-                    'status': status,      # expired | due_10 | due_30
+                    'field': 'date_end',
+                    'label': f"Certificación {cert.get_name_display()}",
+                    'status': status,          # expired | due_10 | due_30
                     'days_left': days,
-                    'expires_on': getattr(vehicle, field),
+                    'expires_on': cert.date_end,
+                    'certification_id': cert.id,
                     'vehicle_id': vehicle.id,
                     'vehicle_plate': vehicle.no_plate,
+                    'certification_type': cert.name,
                 })
         return issues
 
     @classmethod
     def issues_all(cls, queryset=None):
-        """Alertas para todos los vehículos (o queryset provisto)."""
+        """Alertas de certificaciones para todos los vehículos (o queryset provisto)."""
         qs = queryset if queryset is not None else Vehicle.objects.all()
         all_issues = []
         for vehicle in qs:
