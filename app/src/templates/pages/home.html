@@ -62,8 +62,9 @@
       <!-- Alertas vencidas -->
       {% if alerts.expired %}
       <div class="alert alert-error shadow-lg">
-        <div class="flex-1">
-          <h3 class="font-semibold">⚠️ Elementos Vencidos ({{ alerts.total_expired }})</h3>
+        <div class="flex gap-3">
+          <i class="las la-exclamation-triangle text-2xl"></i>
+          <h3 class="font-semibold">Elementos Vencidos ({{ alerts.total_expired }})</h3>
         </div>
       </div>
       <div class="overflow-x-auto">
@@ -71,7 +72,7 @@
           <thead>
             <tr>
               <th>Tipo</th>
-              <th>Descripción</th>
+              <th>Descripción</th>in
               <th>Identificación</th>
               <th>Días vencido</th>
               <th>Fecha vencimiento</th>
@@ -90,12 +91,16 @@
               <td>{{ issue.label }}</td>
               <td>
                 {% if issue.technical_name %}
-                  {{ issue.technical_name }}
+                  <a href="{% url 'technical_detail' issue.technical_id %}" class="link link-hover text-primary">
+                    {{ issue.technical_name }}
+                  </a>
                 {% elif issue.vehicle_plate %}
-                  {{ issue.vehicle_plate }}
+                  <a href="{% url 'vehicle_detail' issue.vehicle_id %}" class="link link-hover text-secondary">
+                    {{ issue.vehicle_plate }}
+                  </a>
                 {% endif %}
               </td>
-              <td><span class="badge badge-error">{{ issue.days_expired_abs }} días</span></td>
+              <td><span class="badge badge-error w-24">{{ issue.days_expired_abs }} días</span></td>
               <td>{{ issue.expires_on|date:"d/m/Y" }}</td>
             </tr>
             {% endfor %}
@@ -108,7 +113,8 @@
       {% if alerts.due_10 %}
       <div class="alert alert-warning shadow-lg">
         <div class="flex-1">
-          <h3 class="font-semibold">⚠️ Por vencer en 10 días o menos ({{ alerts.total_due_10 }})</h3>
+          <i class="las la-exclamation-circle text-2xl"></i>
+          <h3 class="font-semibold">Por vencer en 10 días o menos ({{ alerts.total_due_10 }})</h3>
         </div>
       </div>
       <div class="overflow-x-auto">
@@ -135,12 +141,16 @@
               <td>{{ issue.label }}</td>
               <td>
                 {% if issue.technical_name %}
-                  {{ issue.technical_name }}
+                  <a href="{% url 'technical_detail' issue.technical_id %}" class="link link-hover text-primary">
+                    {{ issue.technical_name }}
+                  </a>
                 {% elif issue.vehicle_plate %}
-                  {{ issue.vehicle_plate }}
+                  <a href="{% url 'vehicle_detail' issue.vehicle_id %}" class="link link-hover text-secondary">
+                    {{ issue.vehicle_plate }}
+                  </a>
                 {% endif %}
               </td>
-              <td><span class="badge badge-warning">{{ issue.days_left }} días</span></td>
+              <td><span class="badge badge-warning w-24">{{ issue.days_left }} días</span></td>
               <td>{{ issue.expires_on|date:"d/m/Y" }}</td>
             </tr>
             {% endfor %}
@@ -153,7 +163,8 @@
       {% if alerts.due_30 %}
       <div class="alert alert-info shadow-lg">
         <div class="flex-1">
-          <h3 class="font-semibold">ℹ️ Por vencer en 30 días o menos ({{ alerts.total_due_30 }})</h3>
+          <i class="las la-info-circle text-2xl"></i>
+          <h3 class="font-semibold">Por vencer en 30 días o menos ({{ alerts.total_due_30 }})</h3>
         </div>
       </div>
       <div class="overflow-x-auto">
@@ -180,12 +191,16 @@
               <td>{{ issue.label }}</td>
               <td>
                 {% if issue.technical_name %}
-                  {{ issue.technical_name }}
+                  <a href="{% url 'technical_detail' issue.technical_id %}" class="link link-hover text-primary">
+                    {{ issue.technical_name }}
+                  </a>
                 {% elif issue.vehicle_plate %}
-                  {{ issue.vehicle_plate }}
+                  <a href="{% url 'vehicle_detail' issue.vehicle_id %}" class="link link-hover text-secondary">
+                    {{ issue.vehicle_plate }}
+                  </a>
                 {% endif %}
               </td>
-              <td><span class="badge badge-info">{{ issue.days_left }} días</span></td>
+              <td><span class="badge badge-info w-24">{{ issue.days_left }} días</span></td>
               <td>{{ issue.expires_on|date:"d/m/Y" }}</td>
             </tr>
             {% endfor %}
@@ -198,7 +213,8 @@
       {% if alerts.total == 0 %}
       <div class="alert alert-success shadow-lg">
         <div class="flex-1">
-          <h3 class="font-semibold">✅ No hay alertas activas</h3>
+          <i class="las la-check-circle text-2xl"></i>
+          <h3 class="font-semibold">No hay alertas activas</h3>
           <p class="text-sm">Todos los certificados, licencias y documentos están al día.</p>
         </div>
       </div>
