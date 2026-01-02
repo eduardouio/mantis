@@ -32,7 +32,9 @@ class PassTechnical(BaseModel):
         verbose_name='Nombre de Bloque'
     )
     fecha_caducidad = models.DateField(
-        verbose_name='Fecha de caducidad'
+        verbose_name='Fecha de caducidad',
+        blank=True,
+        null=True
     )
 
     @classmethod
