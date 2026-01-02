@@ -26,7 +26,9 @@ class CertificationVehicle(BaseModel):
         'Fecha de Inicio'
     )
     date_end = models.DateField(
-        'Fecha de Fin'
+        'Fecha de Fin',
+        blank=True,
+        null=True
     )
     description = models.TextField(
         'Descripción',
