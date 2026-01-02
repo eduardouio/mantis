@@ -14,6 +14,7 @@ class TestPassVehichleIssuesCheck:
             no_plate='ABC-1234',
             brand='Toyota',
             model='Hilux',
+            type_vehicle='CAMIONETA',
             year=2020
         )
 
@@ -22,10 +23,8 @@ class TestPassVehichleIssuesCheck:
         """Pase vencido"""
         return PassVehicle.objects.create(
             vehicle=vehicle,
-            bloque='A',
-            fecha_caducidad=date.today() - timedelta(days=5),
-            empresa='Empresa Test',
-            is_active=True
+            bloque='PETROECUADOR',
+            fecha_caducidad=date.today() - timedelta(days=5)
         )
 
     @pytest.fixture
@@ -33,10 +32,8 @@ class TestPassVehichleIssuesCheck:
         """Pase próximo a vencer en 10 días"""
         return PassVehicle.objects.create(
             vehicle=vehicle,
-            bloque='B',
-            fecha_caducidad=date.today() + timedelta(days=8),
-            empresa='Empresa Test',
-            is_active=True
+            bloque='SHAYA',
+            fecha_caducidad=date.today() + timedelta(days=8)
         )
 
     @pytest.fixture
@@ -44,10 +41,8 @@ class TestPassVehichleIssuesCheck:
         """Pase próximo a vencer en 30 días"""
         return PassVehicle.objects.create(
             vehicle=vehicle,
-            bloque='C',
-            fecha_caducidad=date.today() + timedelta(days=25),
-            empresa='Empresa Test',
-            is_active=True
+            bloque='CONSORCIO SHUSHUFINDI',
+            fecha_caducidad=date.today() + timedelta(days=25)
         )
 
     @pytest.fixture
@@ -55,10 +50,8 @@ class TestPassVehichleIssuesCheck:
         """Pase válido sin alertas"""
         return PassVehicle.objects.create(
             vehicle=vehicle,
-            bloque='D',
-            fecha_caducidad=date.today() + timedelta(days=60),
-            empresa='Empresa Test',
-            is_active=True
+            bloque='ENAP SIPEC',
+            fecha_caducidad=date.today() + timedelta(days=60)
         )
 
     @pytest.fixture
@@ -66,10 +59,8 @@ class TestPassVehichleIssuesCheck:
         """Pase sin fecha de caducidad"""
         return PassVehicle.objects.create(
             vehicle=vehicle,
-            bloque='E',
-            fecha_caducidad=None,
-            empresa='Empresa Test',
-            is_active=True
+            bloque='ORION',
+            fecha_caducidad=None
         )
 
     def test_evaluate_expired_date(self):
@@ -123,7 +114,7 @@ class TestPassVehichleIssuesCheck:
         assert issues[0]['pass_id'] == pass_expired.id
         assert issues[0]['vehicle_id'] == pass_expired.vehicle_id
         assert issues[0]['vehicle_plate'] == 'ABC-1234'
-        assert issues[0]['bloque'] == 'A'
+        assert issues[0]['bloque'] == 'PETROECUADOR'
 
     def test_issues_for_due_10_pass(self, pass_due_10):
         """Test de issues_for con pase próximo a vencer (10 días)"""
@@ -133,7 +124,7 @@ class TestPassVehichleIssuesCheck:
         assert issues[0]['field'] == 'fecha_caducidad'
         assert issues[0]['status'] == 'due_10'
         assert issues[0]['days_left'] == 8
-        assert issues[0]['bloque'] == 'B'
+        assert issues[0]['bloque'] == 'SHAYA'
 
     def test_issues_for_due_30_pass(self, pass_due_30):
         """Test de issues_for con pase próximo a vencer (30 días)"""
@@ -143,7 +134,7 @@ class TestPassVehichleIssuesCheck:
         assert issues[0]['field'] == 'fecha_caducidad'
         assert issues[0]['status'] == 'due_30'
         assert issues[0]['days_left'] == 25
-        assert issues[0]['bloque'] == 'C'
+        assert issues[0]['bloque'] == 'CONSORCIO SHUSHUFINDI'
 
     def test_issues_for_valid_pass(self, pass_valid):
         """Test de issues_for con pase válido sin alertas"""
@@ -161,11 +152,15 @@ class TestPassVehichleIssuesCheck:
         """Test de issues_all con múltiples pases"""
         issues = PassVehichleIssuesCheck.issues_all()
         
+        # Filtrar solo los issues de los pases creados en este test
+        test_pass_ids = [pass_expired.id, pass_due_10.id, pass_valid.id]
+        test_issues = [issue for issue in issues if issue['pass_id'] in test_pass_ids]
+        
         # Deben haber 2 issues
-        assert len(issues) == 2
+        assert len(test_issues) == 2
         
         # Verificar que los pases correctos están en los issues
-        pass_ids = [issue['pass_id'] for issue in issues]
+        pass_ids = [issue['pass_id'] for issue in test_issues]
         assert pass_expired.id in pass_ids
         assert pass_due_10.id in pass_ids
         assert pass_valid.id not in pass_ids
@@ -255,36 +250,38 @@ class TestPassVehichleIssuesCheck:
             no_plate='VEH-001',
             brand='Toyota',
             model='Hilux',
+            type_vehicle='CAMIONETA',
             year=2020
         )
         vehicle2 = Vehicle.objects.create(
             no_plate='VEH-002',
             brand='Chevrolet',
             model='D-Max',
+            type_vehicle='CAMIONETA',
             year=2021
         )
         
-        PassVehicle.objects.create(
+        pass1 = PassVehicle.objects.create(
             vehicle=vehicle1,
-            bloque='A',
-            fecha_caducidad=date.today() - timedelta(days=5),
-            empresa='Empresa A',
-            is_active=True
+            bloque='PETROECUADOR',
+            fecha_caducidad=date.today() - timedelta(days=5)
         )
         
-        PassVehicle.objects.create(
+        pass2 = PassVehicle.objects.create(
             vehicle=vehicle2,
-            bloque='B',
-            fecha_caducidad=date.today() + timedelta(days=8),
-            empresa='Empresa B',
-            is_active=True
+            bloque='SHAYA',
+            fecha_caducidad=date.today() + timedelta(days=8)
         )
         
         issues = PassVehichleIssuesCheck.issues_all()
         
-        # Deben haber 2 issues, uno por cada vehículo
-        assert len(issues) == 2
+        # Filtrar solo los issues de este test
+        test_pass_ids = [pass1.id, pass2.id]
+        test_issues = [issue for issue in issues if issue['pass_id'] in test_pass_ids]
         
-        vehicle_ids = [issue['vehicle_id'] for issue in issues]
+        # Deben haber 2 issues, uno por cada vehículo
+        assert len(test_issues) == 2
+        
+        vehicle_ids = [issue['vehicle_id'] for issue in test_issues]
         assert vehicle1.id in vehicle_ids
         assert vehicle2.id in vehicle_ids

@@ -14,6 +14,7 @@ class TestVehicleIssuesCertificationVehicle:
             no_plate='ABC-1234',
             brand='Toyota',
             model='Hilux',
+            type_vehicle='CAMIONETA',
             year=2020
         )
 
@@ -22,7 +23,7 @@ class TestVehicleIssuesCertificationVehicle:
         """Certificación vencida"""
         return CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='GPS',
+            name='INSPECCION VOLUMETRICA',
             date_start=date.today() - timedelta(days=365),
             date_end=date.today() - timedelta(days=5),
             is_active=True
@@ -33,7 +34,7 @@ class TestVehicleIssuesCertificationVehicle:
         """Certificación próxima a vencer en 10 días"""
         return CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='EXTINTOR',
+            name='MEDICION DE ESPESORES',
             date_start=date.today() - timedelta(days=350),
             date_end=date.today() + timedelta(days=8),
             is_active=True
@@ -44,7 +45,7 @@ class TestVehicleIssuesCertificationVehicle:
         """Certificación próxima a vencer en 30 días"""
         return CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='BOTIQUIN',
+            name='INSPECCION DE SEGURIDAD',
             date_start=date.today() - timedelta(days=300),
             date_end=date.today() + timedelta(days=25),
             is_active=True
@@ -55,7 +56,7 @@ class TestVehicleIssuesCertificationVehicle:
         """Certificación válida sin alertas"""
         return CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='TRIANGULOS',
+            name='PRUEBA HIDROSTATICA',
             date_start=date.today() - timedelta(days=30),
             date_end=date.today() + timedelta(days=60),
             is_active=True
@@ -66,7 +67,7 @@ class TestVehicleIssuesCertificationVehicle:
         """Certificación sin fecha de fin"""
         return CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='GPS',
+            name='INSPECCION VOLUMETRICA',
             date_start=date.today(),
             date_end=None,
             is_active=True
@@ -77,7 +78,7 @@ class TestVehicleIssuesCertificationVehicle:
         """Certificación inactiva"""
         return CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='GPS',
+            name='INSPECCION VOLUMETRICA',
             date_start=date.today() - timedelta(days=365),
             date_end=date.today() + timedelta(days=5),
             is_active=False
@@ -90,13 +91,14 @@ class TestVehicleIssuesCertificationVehicle:
             no_plate='XYZ-5678',
             brand='Chevrolet',
             model='D-Max',
+            type_vehicle='CAMIONETA',
             year=2021
         )
         
         # Certificación vencida
         CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='GPS',
+            name='INSPECCION VOLUMETRICA',
             date_start=date.today() - timedelta(days=365),
             date_end=date.today() - timedelta(days=10),
             is_active=True
@@ -105,7 +107,7 @@ class TestVehicleIssuesCertificationVehicle:
         # Certificación próxima a vencer (10 días)
         CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='EXTINTOR',
+            name='MEDICION DE ESPESORES',
             date_start=date.today() - timedelta(days=350),
             date_end=date.today() + timedelta(days=5),
             is_active=True
@@ -114,7 +116,7 @@ class TestVehicleIssuesCertificationVehicle:
         # Certificación próxima a vencer (30 días)
         CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='BOTIQUIN',
+            name='INSPECCION DE SEGURIDAD',
             date_start=date.today() - timedelta(days=300),
             date_end=date.today() + timedelta(days=20),
             is_active=True
@@ -123,7 +125,7 @@ class TestVehicleIssuesCertificationVehicle:
         # Certificación válida
         CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='TRIANGULOS',
+            name='PRUEBA HIDROSTATICA',
             date_start=date.today() - timedelta(days=30),
             date_end=date.today() + timedelta(days=90),
             is_active=True
@@ -182,7 +184,7 @@ class TestVehicleIssuesCertificationVehicle:
         assert issues[0]['certification_id'] == cert_expired.id
         assert issues[0]['vehicle_id'] == vehicle.id
         assert issues[0]['vehicle_plate'] == 'ABC-1234'
-        assert issues[0]['certification_type'] == 'GPS'
+        assert issues[0]['certification_type'] == 'INSPECCION VOLUMETRICA'
 
     def test_issues_for_due_10_cert(self, vehicle, cert_due_10):
         """Test de issues_for con certificación próxima a vencer (10 días)"""
@@ -192,7 +194,7 @@ class TestVehicleIssuesCertificationVehicle:
         assert issues[0]['field'] == 'date_end'
         assert issues[0]['status'] == 'due_10'
         assert issues[0]['days_left'] == 8
-        assert issues[0]['certification_type'] == 'EXTINTOR'
+        assert issues[0]['certification_type'] == 'MEDICION DE ESPESORES'
 
     def test_issues_for_due_30_cert(self, vehicle, cert_due_30):
         """Test de issues_for con certificación próxima a vencer (30 días)"""
@@ -202,7 +204,7 @@ class TestVehicleIssuesCertificationVehicle:
         assert issues[0]['field'] == 'date_end'
         assert issues[0]['status'] == 'due_30'
         assert issues[0]['days_left'] == 25
-        assert issues[0]['certification_type'] == 'BOTIQUIN'
+        assert issues[0]['certification_type'] == 'INSPECCION DE SEGURIDAD'
 
     def test_issues_for_valid_cert(self, vehicle, cert_valid):
         """Test de issues_for con certificación válida sin alertas"""
@@ -242,11 +244,12 @@ class TestVehicleIssuesCertificationVehicle:
             no_plate='DEF-9012',
             brand='Ford',
             model='Ranger',
+            type_vehicle='CAMIONETA',
             year=2019
         )
-        CertificationVehicle.objects.create(
+        cert3 = CertificationVehicle.objects.create(
             vehicle=vehicle2,
-            name='GPS',
+            name='INSPECCION VOLUMETRICA',
             date_start=date.today() - timedelta(days=350),
             date_end=date.today() + timedelta(days=5),
             is_active=True
@@ -254,11 +257,15 @@ class TestVehicleIssuesCertificationVehicle:
         
         issues = VehicleIssuesCertificationVehicle.issues_all()
         
+        # Filtrar solo los issues de los vehículos creados en este test
+        test_vehicle_ids = [vehicle.id, vehicle2.id]
+        test_issues = [issue for issue in issues if issue['vehicle_id'] in test_vehicle_ids]
+        
         # Deben haber 3 issues totales
-        assert len(issues) == 3
+        assert len(test_issues) == 3
         
         # Verificar que ambos vehículos están representados
-        vehicle_ids = [issue['vehicle_id'] for issue in issues]
+        vehicle_ids = [issue['vehicle_id'] for issue in test_issues]
         assert vehicle.id in vehicle_ids
         assert vehicle2.id in vehicle_ids
 
@@ -269,11 +276,12 @@ class TestVehicleIssuesCertificationVehicle:
             no_plate='GHI-3456',
             brand='Nissan',
             model='Frontier',
+            type_vehicle='CAMIONETA',
             year=2022
         )
         CertificationVehicle.objects.create(
             vehicle=vehicle2,
-            name='GPS',
+            name='INSPECCION VOLUMETRICA',
             date_start=date.today() - timedelta(days=365),
             date_end=date.today() - timedelta(days=3),
             is_active=True
@@ -369,7 +377,7 @@ class TestVehicleIssuesCertificationVehicle:
         # Certificación activa vencida
         CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='GPS',
+            name='INSPECCION VOLUMETRICA',
             date_start=date.today() - timedelta(days=365),
             date_end=date.today() - timedelta(days=5),
             is_active=True
@@ -378,7 +386,7 @@ class TestVehicleIssuesCertificationVehicle:
         # Certificación inactiva vencida (no debe aparecer)
         CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='EXTINTOR',
+            name='MEDICION DE ESPESORES',
             date_start=date.today() - timedelta(days=365),
             date_end=date.today() - timedelta(days=10),
             is_active=False
@@ -388,7 +396,7 @@ class TestVehicleIssuesCertificationVehicle:
         
         # Solo debe haber 1 issue (la activa)
         assert len(issues) == 1
-        assert issues[0]['certification_type'] == 'GPS'
+        assert issues[0]['certification_type'] == 'INSPECCION VOLUMETRICA'
 
     def test_vehicle_without_certifications(self, vehicle):
         """Test con vehículo sin certificaciones"""

@@ -177,11 +177,19 @@ class TestVehicleIssuesCheck:
         """Test de issues_all con múltiples vehículos"""
         issues = VehicleIssuesCheck.issues_all()
         
+        # Filtrar solo los issues de los vehículos creados en este test
+        test_vehicle_ids = [
+            vehicle_with_expired_cert.id,
+            vehicle_with_due_10_matricula.id,
+            vehicle_with_valid_dates.id
+        ]
+        test_issues = [issue for issue in issues if issue['vehicle_id'] in test_vehicle_ids]
+        
         # Deben haber 2 issues
-        assert len(issues) == 2
+        assert len(test_issues) == 2
         
         # Verificar que los vehículos correctos están en los issues
-        vehicle_ids = [issue['vehicle_id'] for issue in issues]
+        vehicle_ids = [issue['vehicle_id'] for issue in test_issues]
         assert vehicle_with_expired_cert.id in vehicle_ids
         assert vehicle_with_due_10_matricula.id in vehicle_ids
         assert vehicle_with_valid_dates.id not in vehicle_ids
