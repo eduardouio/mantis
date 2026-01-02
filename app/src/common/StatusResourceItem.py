@@ -35,7 +35,7 @@ class StatusResourceItem:
 
     def _analyze_equipment(self) -> None:
         """Analiza completamente el estado del equipo."""
-        # Información básica del equipo
+
         self.status_data["equipment_info"] = {
             "id": self.resource_item.id,
             "code": self.resource_item.code,
@@ -45,7 +45,6 @@ class StatusResourceItem:
             "is_active": self.resource_item.is_active,
         }
 
-        # Verificar si es un servicio
         if getattr(self.resource_item, "is_service", False):
             self._analyze_service()
         else:
@@ -55,10 +54,9 @@ class StatusResourceItem:
         """Analiza el estado de un servicio."""
         self.status_data.update(
             {
-                "is_complete": True,  # Los servicios siempre están completos
+                "is_complete": True,
                 "completion_percentage": 100.0,
                 "missing_items": [],
-                # Los servicios no se "rentan" físicamente
                 "availability_status": "DISPONIBLE",
                 "rental_info": None,
                 "project_info": None,
@@ -70,16 +68,13 @@ class StatusResourceItem:
 
     def _analyze_physical_equipment(self) -> None:
         """Analiza el estado de un equipo físico."""
-        # Verificar completitud del checklist
+
         self._check_equipment_completeness()
 
-        # Verificar estado de disponibilidad y proyectos
         self._check_availability_and_projects()
 
-        # Verificar inconsistencias y limpiar datos
         self._check_and_clean_inconsistencies()
 
-        # Generar recomendaciones
         self._generate_recommendations()
 
     def _check_equipment_completeness(self) -> None:
@@ -87,7 +82,7 @@ class StatusResourceItem:
         boolean_fields = self.resource_item.boolean_fields
 
         if not boolean_fields:
-            # Si no hay checklist definido, se considera completo
+
             checklist_msg = "No hay checklist definido para este tipo " "de equipo"
             self.status_data.update(
                 {
@@ -144,7 +139,6 @@ class StatusResourceItem:
 
         self.status_data["availability_status"] = current_status
 
-        # Verificar si está asociado a un proyecto
         project_info = None
         rental_info = None
 
@@ -172,7 +166,6 @@ class StatusResourceItem:
                 id=project_id, is_active=True, is_deleted=False
             )
 
-            # Buscar la relación ProjectResourceItem
             project_resource = ProjectResourceItem.objects.filter(
                 project=project,
                 resource_item=self.resource_item,
@@ -229,7 +222,6 @@ class StatusResourceItem:
             "project_contact": f"{project.contact_name} - {project.contact_phone}",
         }
 
-        # Calcular días de renta
         if commitment_date and release_date:
             rental_days = (release_date - commitment_date).days
             rental_info["total_rental_days"] = rental_days
@@ -242,7 +234,6 @@ class StatusResourceItem:
                 rental_info["remaining_days"] = 0
                 rental_info["rental_status"] = "VENCIDO"
 
-        # Verificar si el proyecto está cerrado
         if project.is_closed:
             rental_info["rental_status"] = "PROYECTO_CERRADO"
             rental_info["needs_return"] = True
@@ -257,7 +248,6 @@ class StatusResourceItem:
         current_status = self.status_data["availability_status"]
         project_info = self.status_data["project_info"]
 
-        # Inconsistencia 1: Marcado como RENTADO pero sin proyecto válido
         if current_status == "RENTADO" and not project_info:
             inconsistencies.append(
                 {
@@ -268,7 +258,6 @@ class StatusResourceItem:
             )
             needs_update = True
 
-        # Inconsistencia 2: Proyecto cerrado pero equipo aún marcado como RENTADO
         if (
             current_status == "RENTADO"
             and project_info
@@ -283,7 +272,6 @@ class StatusResourceItem:
             )
             needs_update = True
 
-        # Inconsistencia 3: Fecha de liberación vencida
         release_date = self.status_data.get("release_date")
         if current_status == "RENTADO" and release_date and release_date < date.today():
             inconsistencies.append(
@@ -294,7 +282,6 @@ class StatusResourceItem:
                 }
             )
 
-        # Inconsistencia 4: Proyecto activo pero equipo marcado como DISPONIBLE
         if (
             current_status == "DISPONIBLE"
             and project_info
@@ -318,25 +305,21 @@ class StatusResourceItem:
         """Genera recomendaciones basadas en el análisis."""
         recommendations = []
 
-        # Recomendaciones por completitud
         if not self.status_data["is_complete"]:
             missing_count = len(self.status_data["missing_items"])
             recommendations.append(
                 f"Completar checklist: faltan {missing_count} elementos"
             )
 
-        # Recomendaciones por disponibilidad
         if self.status_data["availability_status"] == "DISPONIBLE":
             if self.status_data["is_complete"]:
                 recommendations.append("Equipo listo para rentar")
             else:
                 recommendations.append("Completar checklist antes de rentar")
 
-        # Recomendaciones por inconsistencias
         if self.status_data["inconsistencies_found"]:
             recommendations.append("Resolver inconsistencias encontradas")
 
-        # Recomendaciones por estado de renta
         rental_info = self.status_data.get("rental_info")
         if rental_info:
             if rental_info.get("rental_status") == "VENCIDO":
@@ -358,7 +341,7 @@ class StatusResourceItem:
 
         for inconsistency in self.status_data["inconsistencies_found"]:
             if inconsistency["type"] in ["NO_VALID_PROJECT", "CLOSED_PROJECT"]:
-                # Limpiar datos de proyecto y marcar como disponible
+
                 self.resource_item.stst_status_disponibility = "DISPONIBLE"
                 self.resource_item.stst_current_project_id = None
                 self.resource_item.stst_current_location = None
@@ -371,7 +354,7 @@ class StatusResourceItem:
 
         if updates_made:
             self.resource_item.save()
-            # Re-analizar después de la actualización
+
             self._analyze_equipment()
 
         return {
@@ -407,9 +390,7 @@ class StatusResourceItem:
         }
 
     @classmethod
-    def analyze_equipment(
-        cls, equipment_id: int, auto_update: bool = False
-    ):
+    def analyze_equipment(cls, equipment_id: int, auto_update: bool = False):
         """
         Método de clase para analizar un equipo por ID.
 
@@ -432,7 +413,6 @@ class StatusResourceItem:
                 update_result = analyzer.update_equipment_status()
                 report["auto_update_result"] = update_result
 
-                # Si se hicieron actualizaciones, obtener reporte actualizado
                 if update_result["updated"]:
                     report = analyzer.get_status_report()
                     report["auto_update_result"] = update_result
@@ -461,9 +441,7 @@ class StatusResourceItem:
                 id__in=equipment_ids, is_active=True, is_deleted=False
             )
         else:
-            equipments = ResourceItem.objects.filter(
-                is_active=True, is_deleted=False
-            )
+            equipments = ResourceItem.objects.filter(is_active=True, is_deleted=False)
 
         results = {
             "total_analyzed": 0,
@@ -486,7 +464,6 @@ class StatusResourceItem:
                     report["inconsistencies"]["found"]
                 )
 
-                # Intentar actualizar automáticamente
                 update_result = analyzer.update_equipment_status()
                 if update_result["updated"]:
                     results["equipments_updated"] += 1
@@ -512,10 +489,7 @@ class StatusResourceItem:
         return results
 
 
-# Función de utilidad para uso directo
-def check_equipment_status(
-    equipment_id: int, auto_update: bool = False
-):
+def check_equipment_status(equipment_id: int, auto_update: bool = False):
     """
     Función de utilidad para verificar el estado de un equipo.
 
