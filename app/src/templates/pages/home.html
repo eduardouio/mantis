@@ -35,32 +35,174 @@
 
     <input type="radio" name="tab-home" role="tab" class="tab" aria-label="Alertas del sistema" />
     <div role="tabpanel" class="tab-content bg-base-100 border border-base-300 rounded-xl shadow-sm p-4 space-y-4">
-      <div class="alert alert-warning">
+      <!-- Resumen de alertas -->
+      <div class="stats stats-vertical lg:stats-horizontal shadow w-full">
+        <div class="stat">
+          <div class="stat-title">Total Alertas</div>
+          <div class="stat-value">{{ alerts.total }}</div>
+          <div class="stat-desc">Sistema completo</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Vencidos</div>
+          <div class="stat-value text-error">{{ alerts.total_expired }}</div>
+          <div class="stat-desc">Requiere atención inmediata</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Por vencer (10 días)</div>
+          <div class="stat-value text-warning">{{ alerts.total_due_10 }}</div>
+          <div class="stat-desc">Alta prioridad</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Por vencer (30 días)</div>
+          <div class="stat-value text-info">{{ alerts.total_due_30 }}</div>
+          <div class="stat-desc">Prioridad normal</div>
+        </div>
+      </div>
+
+      <!-- Alertas vencidas -->
+      {% if alerts.expired %}
+      <div class="alert alert-error shadow-lg">
         <div class="flex-1">
-          <h3 class="font-semibold">Alertas activas</h3>
-          <p class="text-sm">Aquí mostraremos vencimientos, estados críticos y notificaciones.</p>
+          <h3 class="font-semibold">⚠️ Elementos Vencidos ({{ alerts.total_expired }})</h3>
         </div>
       </div>
-      <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <div class="card bg-base-200 border border-base-300">
-          <div class="card-body">
-            <h2 class="card-title text-base-content/80">Equipos</h2>
-            <p class="text-sm text-base-content/70">Próximamente: equipos con mantenimientos o disponibilidad crítica.</p>
-          </div>
-        </div>
-        <div class="card bg-base-200 border border-base-300">
-          <div class="card-body">
-            <h2 class="card-title text-base-content/80">Técnicos</h2>
-            <p class="text-sm text-base-content/70">Próximamente: certificaciones, licencias y estados de servicio.</p>
-          </div>
-        </div>
-        <div class="card bg-base-200 border border-base-300">
-          <div class="card-body">
-            <h2 class="card-title text-base-content/80">Vehículos</h2>
-            <p class="text-sm text-base-content/70">Próximamente: seguros, revisiones y disponibilidad de flota.</p>
-          </div>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Descripción</th>
+              <th>Identificación</th>
+              <th>Días vencido</th>
+              <th>Fecha vencimiento</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for issue in alerts.expired %}
+            <tr>
+              <td>
+                {% if issue.technical_id %}
+                <span class="badge badge-primary">Técnico</span>
+                {% elif issue.vehicle_id %}
+                <span class="badge badge-secondary">Vehículo</span>
+                {% endif %}
+              </td>
+              <td>{{ issue.label }}</td>
+              <td>
+                {% if issue.technical_name %}
+                  {{ issue.technical_name }}
+                {% elif issue.vehicle_plate %}
+                  {{ issue.vehicle_plate }}
+                {% endif %}
+              </td>
+              <td><span class="badge badge-error">{{ issue.days_expired_abs }} días</span></td>
+              <td>{{ issue.expires_on|date:"d/m/Y" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      <!-- Alertas por vencer en 10 días -->
+      {% if alerts.due_10 %}
+      <div class="alert alert-warning shadow-lg">
+        <div class="flex-1">
+          <h3 class="font-semibold">⚠️ Por vencer en 10 días o menos ({{ alerts.total_due_10 }})</h3>
         </div>
       </div>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Descripción</th>
+              <th>Identificación</th>
+              <th>Días restantes</th>
+              <th>Fecha vencimiento</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for issue in alerts.due_10 %}
+            <tr>
+              <td>
+                {% if issue.technical_id %}
+                <span class="badge badge-primary">Técnico</span>
+                {% elif issue.vehicle_id %}
+                <span class="badge badge-secondary">Vehículo</span>
+                {% endif %}
+              </td>
+              <td>{{ issue.label }}</td>
+              <td>
+                {% if issue.technical_name %}
+                  {{ issue.technical_name }}
+                {% elif issue.vehicle_plate %}
+                  {{ issue.vehicle_plate }}
+                {% endif %}
+              </td>
+              <td><span class="badge badge-warning">{{ issue.days_left }} días</span></td>
+              <td>{{ issue.expires_on|date:"d/m/Y" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      <!-- Alertas por vencer en 30 días -->
+      {% if alerts.due_30 %}
+      <div class="alert alert-info shadow-lg">
+        <div class="flex-1">
+          <h3 class="font-semibold">ℹ️ Por vencer en 30 días o menos ({{ alerts.total_due_30 }})</h3>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Descripción</th>
+              <th>Identificación</th>
+              <th>Días restantes</th>
+              <th>Fecha vencimiento</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for issue in alerts.due_30 %}
+            <tr>
+              <td>
+                {% if issue.technical_id %}
+                <span class="badge badge-primary">Técnico</span>
+                {% elif issue.vehicle_id %}
+                <span class="badge badge-secondary">Vehículo</span>
+                {% endif %}
+              </td>
+              <td>{{ issue.label }}</td>
+              <td>
+                {% if issue.technical_name %}
+                  {{ issue.technical_name }}
+                {% elif issue.vehicle_plate %}
+                  {{ issue.vehicle_plate }}
+                {% endif %}
+              </td>
+              <td><span class="badge badge-info">{{ issue.days_left }} días</span></td>
+              <td>{{ issue.expires_on|date:"d/m/Y" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      <!-- Sin alertas -->
+      {% if alerts.total == 0 %}
+      <div class="alert alert-success shadow-lg">
+        <div class="flex-1">
+          <h3 class="font-semibold">✅ No hay alertas activas</h3>
+          <p class="text-sm">Todos los certificados, licencias y documentos están al día.</p>
+        </div>
+      </div>
+      {% endif %}
     </div>
   </div>
 </div>
