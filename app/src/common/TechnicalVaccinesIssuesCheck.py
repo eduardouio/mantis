@@ -1,5 +1,4 @@
 from datetime import date
-from django.utils import timezone
 from accounts.models import VaccinationRecord, Technical
 
 
@@ -12,7 +11,7 @@ class TechnicalVaccinesIssuesCheck:
         """Devuelve (status, days_left) o (None, None) si no aplica."""
         if not next_dose_date:
             return None, None
-        today = timezone.localdate()
+        today = date.today()
         days_left = (next_dose_date - today).days
         if days_left < 0:
             return 'expired', days_left

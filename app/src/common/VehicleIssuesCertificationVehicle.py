@@ -12,7 +12,7 @@ class VehicleIssuesCertificationVehicle:
         """Devuelve (status, days_left) o (None, None) si no aplica."""
         if not expires_on:
             return None, None
-        today = timezone.localdate()
+        today = date.today()
         days_left = (expires_on - today).days
         if days_left < 0:
             return 'expired', days_left

@@ -1,5 +1,4 @@
 from datetime import date
-from django.utils import timezone
 from accounts.models import PassTechnical
 
 
@@ -11,7 +10,7 @@ class TechnicalPassIssuesCheck:
     def _evaluate(cls, expires_on: date):
         if not expires_on:
             return None, None
-        today = timezone.localdate()
+        today = date.today()
         days_left = (expires_on - today).days
         if days_left < 0:
             return 'expired', days_left
