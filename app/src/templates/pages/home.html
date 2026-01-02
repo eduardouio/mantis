@@ -220,6 +220,231 @@
       </div>
       {% endif %}
     </div>
+
+    <input type="radio" name="tab-home" role="tab" class="tab" aria-label="Estado de Recursos" />
+    <div role="tabpanel" class="tab-content bg-base-100 border border-base-300 rounded-xl shadow-sm p-4 space-y-4">
+      <!-- Resumen de recursos -->
+      <div class="stats stats-vertical lg:stats-horizontal shadow w-full">
+        <div class="stat">
+          <div class="stat-title">Total Equipos</div>
+          <div class="stat-value">{{ equipment_status.total }}</div>
+          <div class="stat-desc">Equipos registrados</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Disponibles</div>
+          <div class="stat-value text-success">{{ equipment_status.total_available }}</div>
+          <div class="stat-desc">Listos para rentar</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Rentados</div>
+          <div class="stat-value text-info">{{ equipment_status.total_rented }}</div>
+          <div class="stat-desc">En proyectos activos</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Incompletos</div>
+          <div class="stat-value text-warning">{{ equipment_status.total_incomplete }}</div>
+          <div class="stat-desc">Falta checklist</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Con Problemas</div>
+          <div class="stat-value text-error">{{ equipment_status.total_with_issues }}</div>
+          <div class="stat-desc">Inconsistencias detectadas</div>
+        </div>
+      </div>
+
+      <!-- Equipos con inconsistencias -->
+      {% if equipment_status.with_issues %}
+      <div class="alert alert-error shadow-lg">
+        <div class="flex gap-3">
+          <i class="las la-exclamation-triangle text-2xl"></i>
+          <h3 class="font-semibold">Equipos con Inconsistencias ({{ equipment_status.total_with_issues }})</h3>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th>Problemas</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in equipment_status.with_issues %}
+            <tr>
+              <td>
+                <a href="{% url 'resource_detail' item.equipment.id %}" class="link link-hover text-primary font-mono">
+                  {{ item.equipment.code }}
+                </a>
+              </td>
+              <td>{{ item.equipment.name }}</td>
+              <td><span class="badge">{{ item.equipment.get_type_equipment_display }}</span></td>
+              <td>
+                {% if item.availability_status == 'DISPONIBLE' %}
+                <span class="badge badge-success">Disponible</span>
+                {% elif item.availability_status == 'RENTADO' %}
+                <span class="badge badge-info">Rentado</span>
+                {% endif %}
+              </td>
+              <td>
+                <ul class="text-sm">
+                  {% for issue in item.report.inconsistencies.found %}
+                  <li class="text-error">• {{ issue.description }}</li>
+                  {% endfor %}
+                </ul>
+              </td>
+              <td>
+                <a href="{% url 'resource_detail' item.equipment.id %}" class="btn btn-sm btn-ghost">
+                  <i class="las la-eye"></i> Ver
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      <!-- Equipos incompletos -->
+      {% if equipment_status.incomplete %}
+      <div class="alert alert-warning shadow-lg">
+        <div class="flex gap-3">
+          <i class="las la-clipboard-list text-2xl"></i>
+          <h3 class="font-semibold">Equipos Incompletos ({{ equipment_status.total_incomplete }})</h3>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Completitud</th>
+              <th>Faltantes</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in equipment_status.incomplete %}
+            <tr>
+              <td>
+                <a href="{% url 'resource_detail' item.equipment.id %}" class="link link-hover text-primary font-mono">
+                  {{ item.equipment.code }}
+                </a>
+              </td>
+              <td>{{ item.equipment.name }}</td>
+              <td><span class="badge">{{ item.equipment.get_type_equipment_display }}</span></td>
+              <td>
+                <div class="flex items-center gap-2">
+                  <progress class="progress progress-warning w-20" value="{{ item.completion_percentage }}" max="100"></progress>
+                  <span class="text-sm">{{ item.completion_percentage|floatformat:0 }}%</span>
+                </div>
+              </td>
+              <td>
+                <span class="badge badge-warning">{{ item.missing_count }} elementos</span>
+              </td>
+              <td>
+                <a href="{% url 'resource_detail' item.equipment.id %}" class="btn btn-sm btn-ghost">
+                  <i class="las la-edit"></i> Completar
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      <!-- Equipos rentados -->
+      {% if equipment_status.rented %}
+      <div class="alert alert-info shadow-lg">
+        <div class="flex gap-3">
+          <i class="las la-handshake text-2xl"></i>
+          <h3 class="font-semibold">Equipos Rentados ({{ equipment_status.total_rented }})</h3>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table table-zebra w-full">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Cliente</th>
+              <th>Ubicación</th>
+              <th>Liberación</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in equipment_status.rented %}
+            <tr>
+              <td>
+                <a href="{% url 'resource_detail' item.equipment.id %}" class="link link-hover text-primary font-mono">
+                  {{ item.equipment.code }}
+                </a>
+              </td>
+              <td>{{ item.equipment.name }}</td>
+              <td><span class="badge">{{ item.equipment.get_type_equipment_display }}</span></td>
+              <td>
+                {% if item.report.rental_info %}
+                  {{ item.report.rental_info.project_partner }}
+                {% else %}
+                  N/A
+                {% endif %}
+              </td>
+              <td>
+                {% if item.report.availability.current_location %}
+                  {{ item.report.availability.current_location }}
+                {% else %}
+                  N/A
+                {% endif %}
+              </td>
+              <td>
+                {% if item.report.availability.release_date %}
+                  {{ item.report.availability.release_date|date:"d/m/Y" }}
+                  {% if item.report.rental_info.remaining_days %}
+                    <br><span class="text-sm text-info">({{ item.report.rental_info.remaining_days }} días)</span>
+                  {% endif %}
+                {% else %}
+                  N/A
+                {% endif %}
+              </td>
+              <td>
+                <a href="{% url 'resource_detail' item.equipment.id %}" class="btn btn-sm btn-ghost">
+                  <i class="las la-eye"></i> Ver
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+
+      <!-- Todo OK -->
+      {% if equipment_status.total == 0 %}
+      <div class="alert alert-info shadow-lg">
+        <div class="flex-1">
+          <i class="las la-info-circle text-2xl"></i>
+          <h3 class="font-semibold">No hay equipos registrados</h3>
+          <p class="text-sm">Comienza registrando equipos en el sistema.</p>
+        </div>
+      </div>
+      {% elif equipment_status.total_with_issues == 0 and equipment_status.total_incomplete == 0 %}
+      <div class="alert alert-success shadow-lg">
+        <div class="flex-1">
+          <i class="las la-check-circle text-2xl"></i>
+          <h3 class="font-semibold">Todos los equipos están en orden</h3>
+          <p class="text-sm">No hay inconsistencias ni equipos incompletos.</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
   </div>
 </div>
 {% endblock %}

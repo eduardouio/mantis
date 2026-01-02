@@ -190,15 +190,17 @@ class StatusResourceItem:
             }
 
             if project_resource:
-                project_info.update(
-                    {
-                        "rent_cost": project_resource.rent_cost,
-                        "maintenance_cost": project_resource.maintenance_cost,
-                        "maintenance_interval_days": project_resource.maintenance_interval_days,
-                        "operation_start_date": project_resource.operation_start_date,
-                        "operation_end_date": project_resource.operation_end_date,
-                    }
-                )
+                # Solo incluir atributos que existen en el modelo
+                if hasattr(project_resource, 'rent_cost'):
+                    project_info['rent_cost'] = project_resource.rent_cost
+                if hasattr(project_resource, 'maintenance_cost'):
+                    project_info['maintenance_cost'] = project_resource.maintenance_cost
+                if hasattr(project_resource, 'maintenance_interval_days'):
+                    project_info['maintenance_interval_days'] = project_resource.maintenance_interval_days
+                if hasattr(project_resource, 'operation_start_date'):
+                    project_info['operation_start_date'] = project_resource.operation_start_date
+                if hasattr(project_resource, 'operation_end_date'):
+                    project_info['operation_end_date'] = project_resource.operation_end_date
 
             return project_info
 
