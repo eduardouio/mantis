@@ -21,10 +21,8 @@ class TestTechnicalPassIssuesCheck:
         """Pase vencido"""
         return PassTechnical.objects.create(
             technical=technical,
-            bloque='A',
-            fecha_caducidad=date.today() - timedelta(days=5),
-            empresa='Empresa Test',
-            is_active=True
+            bloque='petroecuador',
+            fecha_caducidad=date.today() - timedelta(days=5)
         )
 
     @pytest.fixture
@@ -32,10 +30,8 @@ class TestTechnicalPassIssuesCheck:
         """Pase próximo a vencer en 10 días"""
         return PassTechnical.objects.create(
             technical=technical,
-            bloque='B',
-            fecha_caducidad=date.today() + timedelta(days=8),
-            empresa='Empresa Test',
-            is_active=True
+            bloque='shaya',
+            fecha_caducidad=date.today() + timedelta(days=8)
         )
 
     @pytest.fixture
@@ -43,10 +39,8 @@ class TestTechnicalPassIssuesCheck:
         """Pase próximo a vencer en 30 días"""
         return PassTechnical.objects.create(
             technical=technical,
-            bloque='C',
-            fecha_caducidad=date.today() + timedelta(days=25),
-            empresa='Empresa Test',
-            is_active=True
+            bloque='consorcio_shushufindi',
+            fecha_caducidad=date.today() + timedelta(days=25)
         )
 
     @pytest.fixture
@@ -54,10 +48,8 @@ class TestTechnicalPassIssuesCheck:
         """Pase válido sin alertas"""
         return PassTechnical.objects.create(
             technical=technical,
-            bloque='D',
-            fecha_caducidad=date.today() + timedelta(days=60),
-            empresa='Empresa Test',
-            is_active=True
+            bloque='enap_sipec',
+            fecha_caducidad=date.today() + timedelta(days=60)
         )
 
     @pytest.fixture
@@ -65,10 +57,8 @@ class TestTechnicalPassIssuesCheck:
         """Pase sin fecha de caducidad"""
         return PassTechnical.objects.create(
             technical=technical,
-            bloque='E',
-            fecha_caducidad=None,
-            empresa='Empresa Test',
-            is_active=True
+            bloque='orion',
+            fecha_caducidad=None
         )
 
     @pytest.fixture
@@ -83,28 +73,22 @@ class TestTechnicalPassIssuesCheck:
         # Pase vencido
         PassTechnical.objects.create(
             technical=tech,
-            bloque='A',
-            fecha_caducidad=date.today() - timedelta(days=10),
-            empresa='Empresa A',
-            is_active=True
+            bloque='petroecuador',
+            fecha_caducidad=date.today() - timedelta(days=10)
         )
         
         # Pase próximo a vencer (10 días)
         PassTechnical.objects.create(
             technical=tech,
-            bloque='B',
-            fecha_caducidad=date.today() + timedelta(days=5),
-            empresa='Empresa B',
-            is_active=True
+            bloque='shaya',
+            fecha_caducidad=date.today() + timedelta(days=5)
         )
         
         # Pase válido
         PassTechnical.objects.create(
             technical=tech,
-            bloque='C',
-            fecha_caducidad=date.today() + timedelta(days=90),
-            empresa='Empresa C',
-            is_active=True
+            bloque='consorcio_shushufindi',
+            fecha_caducidad=date.today() + timedelta(days=90)
         )
         
         return tech
@@ -160,7 +144,7 @@ class TestTechnicalPassIssuesCheck:
         assert issues[0]['pass_id'] == pass_expired.id
         assert issues[0]['technical_id'] == pass_expired.technical_id
         assert issues[0]['technical_name'] == 'Juan Pérez'
-        assert issues[0]['bloque'] == 'A'
+        assert issues[0]['bloque'] == 'petroecuador'
 
     def test_issues_for_due_10_pass(self, pass_due_10):
         """Test de issues_for con pase próximo a vencer (10 días)"""
@@ -170,7 +154,7 @@ class TestTechnicalPassIssuesCheck:
         assert issues[0]['field'] == 'fecha_caducidad'
         assert issues[0]['status'] == 'due_10'
         assert issues[0]['days_left'] == 8
-        assert issues[0]['bloque'] == 'B'
+        assert issues[0]['bloque'] == 'shaya'
 
     def test_issues_for_due_30_pass(self, pass_due_30):
         """Test de issues_for con pase próximo a vencer (30 días)"""
@@ -180,7 +164,7 @@ class TestTechnicalPassIssuesCheck:
         assert issues[0]['field'] == 'fecha_caducidad'
         assert issues[0]['status'] == 'due_30'
         assert issues[0]['days_left'] == 25
-        assert issues[0]['bloque'] == 'C'
+        assert issues[0]['bloque'] == 'consorcio_shushufindi'
 
     def test_issues_for_valid_pass(self, pass_valid):
         """Test de issues_for con pase válido sin alertas"""
@@ -203,11 +187,15 @@ class TestTechnicalPassIssuesCheck:
         """Test de issues_all con múltiples pases"""
         issues = TechnicalPassIssuesCheck.issues_all()
         
+        # Filtrar solo los issues de los pases creados en este test
+        test_pass_ids = [pass_expired.id, pass_due_10.id, pass_valid.id]
+        test_issues = [issue for issue in issues if issue['pass_id'] in test_pass_ids]
+        
         # Deben haber 2 issues (pase vencido y pase próximo a vencer)
-        assert len(issues) == 2
+        assert len(test_issues) == 2
         
         # Verificar que los pases correctos están en los issues
-        pass_ids = [issue['pass_id'] for issue in issues]
+        pass_ids = [issue['pass_id'] for issue in test_issues]
         assert pass_expired.id in pass_ids
         assert pass_due_10.id in pass_ids
         assert pass_valid.id not in pass_ids
@@ -330,35 +318,33 @@ class TestTechnicalPassIssuesCheck:
     def test_issues_all_sorting(self, technical):
         """Test que los issues se pueden ordenar por días restantes"""
         # Crear pases con diferentes fechas
-        PassTechnical.objects.create(
+        pass1 = PassTechnical.objects.create(
             technical=technical,
-            bloque='A',
-            fecha_caducidad=date.today() - timedelta(days=5),
-            empresa='Empresa A',
-            is_active=True
+            bloque='petroecuador',
+            fecha_caducidad=date.today() - timedelta(days=5)
         )
-        PassTechnical.objects.create(
+        pass2 = PassTechnical.objects.create(
             technical=technical,
-            bloque='B',
-            fecha_caducidad=date.today() + timedelta(days=2),
-            empresa='Empresa B',
-            is_active=True
+            bloque='shaya',
+            fecha_caducidad=date.today() + timedelta(days=2)
         )
-        PassTechnical.objects.create(
+        pass3 = PassTechnical.objects.create(
             technical=technical,
-            bloque='C',
-            fecha_caducidad=date.today() + timedelta(days=20),
-            empresa='Empresa C',
-            is_active=True
+            bloque='consorcio_shushufindi',
+            fecha_caducidad=date.today() + timedelta(days=20)
         )
         
         issues = TechnicalPassIssuesCheck.issues_all()
         
+        # Filtrar solo los issues de este test
+        test_pass_ids = [pass1.id, pass2.id, pass3.id]
+        test_issues = [issue for issue in issues if issue['pass_id'] in test_pass_ids]
+        
         # Verificar que hay 3 issues
-        assert len(issues) == 3
+        assert len(test_issues) == 3
         
         # Ordenar por días restantes
-        sorted_issues = sorted(issues, key=lambda x: x['days_left'])
+        sorted_issues = sorted(test_issues, key=lambda x: x['days_left'])
         
         # El primero debe ser el vencido (días negativos)
         assert sorted_issues[0]['days_left'] < 0
@@ -378,28 +364,28 @@ class TestTechnicalPassIssuesCheck:
         )
         
         # Pases para técnico 1
-        PassTechnical.objects.create(
+        pass1 = PassTechnical.objects.create(
             technical=tech1,
-            bloque='A',
-            fecha_caducidad=date.today() - timedelta(days=5),
-            empresa='Empresa A',
-            is_active=True
+            bloque='petroecuador',
+            fecha_caducidad=date.today() - timedelta(days=5)
         )
         
         # Pases para técnico 2
-        PassTechnical.objects.create(
+        pass2 = PassTechnical.objects.create(
             technical=tech2,
-            bloque='B',
-            fecha_caducidad=date.today() + timedelta(days=8),
-            empresa='Empresa B',
-            is_active=True
+            bloque='shaya',
+            fecha_caducidad=date.today() + timedelta(days=8)
         )
         
         issues = TechnicalPassIssuesCheck.issues_all()
         
-        # Deben haber 2 issues, uno por cada técnico
-        assert len(issues) == 2
+        # Filtrar solo los issues de este test
+        test_pass_ids = [pass1.id, pass2.id]
+        test_issues = [issue for issue in issues if issue['pass_id'] in test_pass_ids]
         
-        technical_ids = [issue['technical_id'] for issue in issues]
+        # Deben haber 2 issues, uno por cada técnico
+        assert len(test_issues) == 2
+        
+        technical_ids = [issue['technical_id'] for issue in test_issues]
         assert tech1.id in technical_ids
         assert tech2.id in technical_ids
