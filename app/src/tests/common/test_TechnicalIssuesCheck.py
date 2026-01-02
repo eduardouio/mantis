@@ -174,12 +174,20 @@ class TestTechnicalIssuesCheck:
         """Test de issues_all con múltiples técnicos"""
         issues = TechnicalIssuesCheck.issues_all()
         
+        # Filtrar solo los issues de los técnicos creados en este test
+        test_technical_ids = [
+            technical_with_expired_license.id,
+            technical_with_due_10_certificate.id,
+            technical_with_valid_certificates.id
+        ]
+        test_issues = [issue for issue in issues if issue['technical_id'] in test_technical_ids]
+        
         # Deben haber 2 issues en total (uno del técnico con licencia vencida
         # y uno del técnico con certificado próximo a vencer)
-        assert len(issues) == 2
+        assert len(test_issues) == 2
         
         # Verificar que los técnicos están representados
-        technical_ids = [issue['technical_id'] for issue in issues]
+        technical_ids = [issue['technical_id'] for issue in test_issues]
         assert technical_with_expired_license.id in technical_ids
         assert technical_with_due_10_certificate.id in technical_ids
         assert technical_with_valid_certificates.id not in technical_ids
