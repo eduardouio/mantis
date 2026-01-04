@@ -11,6 +11,13 @@ from reports.views.EquipmentUrinalStationCheck import EquipmentUrinalStationChec
 from reports.views.EquipmentBathroomCamperChecker import EquipmentBathroomCamperChecker
 from reports.views.EquipmentRawWaterStorageTanks import EquipmentRawWaterStorageTanks
 from reports.views.EquipmentWastewaterStorageTanks import EquipmentWastewaterStorageTanks
+from reports.views.EquipmentInfoReport import EquipmentInfoReport
+from reports.views.PDFBateriesCheckList import PDFBateriesCheckList
+from reports.views.PDFWasherHandsCheck import PDFWasherHandsCheck
+from reports.views.PDFUrinalStationCheck import PDFUrinalStationCheck
+from reports.views.PDFBathroomCamperChecker import PDFBathroomCamperChecker
+from reports.views.PDFRawWaterStorageTanks import PDFRawWaterStorageTanks
+from reports.views.PDFWastewaterStorageTanks import PDFWastewaterStorageTanks
 
 app_name = 'reports'
 
@@ -20,6 +27,7 @@ urlpatterns = [
     path('reports/template-custody-chain/<int:id_custody_chain>/', CustodyChainReportView.as_view(), name='custody-chain-report'),
     path('reports/template-technical/<int:id>/', TechnicalInformationReport.as_view(), name='technical-information-report'),
     path('reports/template-technical-vaccine/<int:id>/', TechnicalVaccineReport.as_view(), name='technical-vaccine-report'),
+    path('reports/template-equipment-info/<int:equipment_id>/', EquipmentInfoReport.as_view(), name='equipment-info-report'),
     
     # Equipment Checklists Templates
     path('reports/template-equipment-bateries/<int:equipment_id>/', EquipmentBateriesCheckList.as_view(), name='equipment-bateries-checklist'),
@@ -33,4 +41,12 @@ urlpatterns = [
     path('reports/custody-chain/<int:id_custody_chain>/', PDFCustodyChain.as_view(), name='custody-chain-pdf'),
     path('reports/technical/<int:id>/', PDFTechnicalInformation.as_view(), name='technical-information-pdf'),
     path('reports/technical-vaccine/<int:id>/', PDFTechnicalVaccineReport.as_view(), name='technical-vaccine-pdf'),
+    
+    # Equipment Checklists PDF
+    path('reports/equipment-bateries/<int:equipment_id>/', PDFBateriesCheckList.as_view(), name='equipment-bateries-pdf'),
+    path('reports/equipment-washer-hands/<int:equipment_id>/', PDFWasherHandsCheck.as_view(), name='equipment-washer-hands-pdf'),
+    path('reports/equipment-urinal-station/<int:equipment_id>/', PDFUrinalStationCheck.as_view(), name='equipment-urinal-station-pdf'),
+    path('reports/equipment-bathroom-camper/<int:equipment_id>/', PDFBathroomCamperChecker.as_view(), name='equipment-bathroom-camper-pdf'),
+    path('reports/equipment-raw-water-tanks/<int:equipment_id>/', PDFRawWaterStorageTanks.as_view(), name='equipment-raw-water-tanks-pdf'),
+    path('reports/equipment-wastewater-tanks/<int:equipment_id>/', PDFWastewaterStorageTanks.as_view(), name='equipment-wastewater-tanks-pdf'),
 ]
