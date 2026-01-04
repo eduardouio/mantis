@@ -52,67 +52,43 @@
 
   <!-- Botones de Reportes y Checklists - ANTES DE LOS TABS -->
   {% if not is_service %}
-  <div class="flex flex-wrap justify-end gap-2 ">
-    <!-- Botón Reporte General (para todos los equipos) -->
-    <a href="{% url 'reports:equipment-info-report' equipment.id %}" target="_blank" class="btn btn-primary btn-sm">
-      <i class="las la-file-alt text-lg"></i>
-      Ver Reporte General
+  <div class="flex flex-wrap justify-end gap-2 mb-4">
+    <!-- Botón Reporte General (ahora descarga PDF directamente) -->
+    <a href="{% url 'reports:equipment-info-pdf' equipment.id %}" class="btn btn-primary btn-sm">
+      <i class="las la-file-pdf text-lg"></i>
+      Descargar Reporte General
     </a>
     
-    <!-- Botón Checklist según tipo de equipo -->
+    <!-- Botones de Checklist según tipo de equipo - SOLO PDF -->
     {% if equipment.type_equipment == 'BTSNHM' or equipment.type_equipment == 'BTSNMJ' %}
-    <a href="{% url 'reports:equipment-bateries-checklist' equipment.id %}" target="_blank" class="btn btn-info btn-sm">
-      <i class="las la-clipboard-list text-lg"></i>
-      Checklist Batería
-    </a>
     <a href="{% url 'reports:equipment-bateries-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
-      PDF Checklist
+      Descargar Checklist Batería
     </a>
     {% elif equipment.type_equipment == 'LVMNOS' %}
-    <a href="{% url 'reports:equipment-washer-hands-checklist' equipment.id %}" target="_blank" class="btn btn-info btn-sm">
-      <i class="las la-clipboard-list text-lg"></i>
-      Checklist Lavamanos
-    </a>
     <a href="{% url 'reports:equipment-washer-hands-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
-      PDF Checklist
+      Descargar Checklist Lavamanos
     </a>
     {% elif equipment.type_equipment == 'EST4UR' %}
-    <a href="{% url 'reports:equipment-urinal-station-checklist' equipment.id %}" target="_blank" class="btn btn-info btn-sm">
-      <i class="las la-clipboard-list text-lg"></i>
-      Checklist Urinarios
-    </a>
     <a href="{% url 'reports:equipment-urinal-station-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
-      PDF Checklist
+      Descargar Checklist Urinarios
     </a>
     {% elif equipment.type_equipment == 'CMPRBN' %}
-    <a href="{% url 'reports:equipment-bathroom-camper-checklist' equipment.id %}" target="_blank" class="btn btn-info btn-sm">
-      <i class="las la-clipboard-list text-lg"></i>
-      Checklist Camper
-    </a>
     <a href="{% url 'reports:equipment-bathroom-camper-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
-      PDF Checklist
+      Descargar Checklist Camper
     </a>
     {% elif equipment.type_equipment == 'TNQAAC' %}
-    <a href="{% url 'reports:equipment-raw-water-tanks-checklist' equipment.id %}" target="_blank" class="btn btn-info btn-sm">
-      <i class="las la-clipboard-list text-lg"></i>
-      Checklist Tanque AC
-    </a>
     <a href="{% url 'reports:equipment-raw-water-tanks-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
-      PDF Checklist
+      Descargar Checklist Tanque AC
     </a>
     {% elif equipment.type_equipment == 'TNQAAR' %}
-    <a href="{% url 'reports:equipment-wastewater-tanks-checklist' equipment.id %}" target="_blank" class="btn btn-info btn-sm">
-      <i class="las la-clipboard-list text-lg"></i>
-      Checklist Tanque AR
-    </a>
     <a href="{% url 'reports:equipment-wastewater-tanks-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
-      PDF Checklist
+      Descargar Checklist Tanque AR
     </a>
     {% endif %}
   </div>

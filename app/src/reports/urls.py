@@ -18,6 +18,7 @@ from reports.views.PDFUrinalStationCheck import PDFUrinalStationCheck
 from reports.views.PDFBathroomCamperChecker import PDFBathroomCamperChecker
 from reports.views.PDFRawWaterStorageTanks import PDFRawWaterStorageTanks
 from reports.views.PDFWastewaterStorageTanks import PDFWastewaterStorageTanks
+from reports.views.PDFEquipmentInfoReport import PDFEquipmentInfoReport
 
 app_name = 'reports'
 
@@ -41,6 +42,7 @@ urlpatterns = [
     path('reports/custody-chain/<int:id_custody_chain>/', PDFCustodyChain.as_view(), name='custody-chain-pdf'),
     path('reports/technical/<int:id>/', PDFTechnicalInformation.as_view(), name='technical-information-pdf'),
     path('reports/technical-vaccine/<int:id>/', PDFTechnicalVaccineReport.as_view(), name='technical-vaccine-pdf'),
+    path('reports/equipment-info/<int:equipment_id>/', PDFEquipmentInfoReport.as_view(), name='equipment-info-pdf'),
     
     # Equipment Checklists PDF
     path('reports/equipment-bateries/<int:equipment_id>/', PDFBateriesCheckList.as_view(), name='equipment-bateries-pdf'),

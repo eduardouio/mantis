@@ -43,6 +43,12 @@ class TechnicalVaccineReport(TemplateView):
 		# Partes de nombres y apellidos
 		context['first_name_split'] = self._split_name_parts(technical.first_name)
 		context['last_name_split'] = self._split_name_parts(technical.last_name)
+		# Agregar información del usuario de forma segura
+		context['report_generated_by'] = (
+			self.request.user.get_full_name() 
+			if self.request.user.is_authenticated 
+			else 'Sistema'
+		)
 		
 		return context
 

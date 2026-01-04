@@ -6,13 +6,14 @@ from equipment.models.ResourceItem import ResourceItem
 from datetime import datetime
 
 
-class PDFRawWaterStorageTanks(View):
+class PDFEquipmentInfoReport(View):
     def render_pdf_to_bytes(self, url, cookies=None):
         """Renderiza la página con Playwright y devuelve el PDF como bytes."""
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             context = browser.new_context(ignore_https_errors=True)
 
+            # Agregar cookies si existen
             if cookies:
                 context.add_cookies(cookies)
 
@@ -34,13 +35,14 @@ class PDFRawWaterStorageTanks(View):
             return pdf_bytes
 
     def get(self, request, equipment_id, *args, **kwargs):
-        """Genera un PDF del checklist de tanque de agua cruda."""
+        """Genera un PDF del reporte general del equipo."""
         template_path = reverse(
-            "reports:equipment-raw-water-tanks-checklist",
+            "reports:equipment-info-report",
             kwargs={"equipment_id": equipment_id},
         )
         target_url = request.build_absolute_uri(template_path)
 
+        # Preparar cookies de sesión para Playwright
         cookies = []
         for name, value in request.COOKIES.items():
             cookies.append(
@@ -57,11 +59,11 @@ class PDFRawWaterStorageTanks(View):
         try:
             equipment = ResourceItem.objects.get(id=equipment_id)
             filename = (
-                f"Checklist-TanqueAguaCruda-{equipment.code}-"
+                f"Reporte-Equipo-{equipment.code}-"
                 f'{datetime.now().strftime("%Y%m%d")}.pdf'
             )
         except ResourceItem.DoesNotExist:
-            filename = f"Checklist-TanqueAguaCruda-{equipment_id}-{datetime.now().strftime('%Y%m%d')}.pdf"
+            filename = f"Reporte-Equipo-{equipment_id}-{datetime.now().strftime('%Y%m%d')}.pdf"
 
         response = HttpResponse(pdf_bytes, content_type="application/pdf")
         response["Content-Disposition"] = f'attachment; filename="{filename}"'

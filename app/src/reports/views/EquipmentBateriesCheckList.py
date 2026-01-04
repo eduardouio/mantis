@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from equipment.models.ResourceItem import ResourceItem
+from datetime import datetime
 
 
 class EquipmentBateriesCheckList(TemplateView):
@@ -22,13 +23,13 @@ class EquipmentBateriesCheckList(TemplateView):
         context['equipment'] = equipment
         
         # Fecha de inspección (hoy)
-        from datetime import datetime
         context['inspection_date'] = datetime.now().date()
         
         # Inspector (usuario actual)
         context['inspector_name'] = (
-            self.request.user.get_full_name() or 
-            self.request.user.username
+            self.request.user.get_full_name() 
+            if self.request.user.is_authenticated 
+            else 'Sistema'
         )
         
         # Observaciones (vacío por defecto)

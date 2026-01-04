@@ -7,11 +7,16 @@ from datetime import datetime
 
 
 class PDFWastewaterStorageTanks(View):
-    def render_pdf_to_bytes(self, url):
+    def render_pdf_to_bytes(self, url, cookies=None):
         """Renderiza la página con Playwright y devuelve el PDF como bytes."""
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
-            page = browser.new_page(ignore_https_errors=True)
+            context = browser.new_context(ignore_https_errors=True)
+
+            if cookies:
+                context.add_cookies(cookies)
+
+            page = context.new_page()
             page.goto(url)
             page.wait_for_load_state("networkidle")
 
@@ -36,7 +41,18 @@ class PDFWastewaterStorageTanks(View):
         )
         target_url = request.build_absolute_uri(template_path)
 
-        pdf_bytes = self.render_pdf_to_bytes(target_url)
+        cookies = []
+        for name, value in request.COOKIES.items():
+            cookies.append(
+                {
+                    "name": name,
+                    "value": value,
+                    "domain": request.get_host().split(":")[0],
+                    "path": "/",
+                }
+            )
+
+        pdf_bytes = self.render_pdf_to_bytes(target_url, cookies)
 
         try:
             equipment = ResourceItem.objects.get(id=equipment_id)

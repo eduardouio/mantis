@@ -45,9 +45,17 @@
         .status-active { background-color: #9cb536; color: white; }
         .status-inactive { background-color: #6b7280; color: white; }
         @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; background-color: white; } .no-print { display: none; } .page-wrapper { border: none; } }
+        .print-button { position: fixed; top: 20px; right: 20px; padding: 10px 20px; background: linear-gradient(135deg, #3e5f6f 0%, #9cb536 100%); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 10pt; box-shadow: 0 3px 8px rgba(0,0,0,0.3); z-index: 1000; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .print-button:hover { background: linear-gradient(135deg, #2d4a57 0%, #89a02f 100%); transform: translateY(-2px); box-shadow: 0 5px 12px rgba(0,0,0,0.4); }
+        .print-button i { font-size: 14pt; }
     </style>
 </head>
 <body>
+    <button class="print-button no-print" onclick="window.print()">
+        <i class="las la-print"></i>
+        Imprimir
+    </button>
+    
     <div class="page-wrapper">
         <div class="container">
             <div class="header">

@@ -13,16 +13,13 @@ class EquipmentBathroomCamperChecker(TemplateView):
         
         equipment = get_object_or_404(ResourceItem, id=equipment_id)
         
-        if equipment.type_equipment != 'CMPRBN':
-            context['error'] = 'Este checklist es solo para Camper Baño'
-            return context
-        
         context['equipment'] = equipment
-        context['inspection_date'] = datetime.now().date()
+        context['inspection_date'] = datetime.now()
+        # Manejar usuario anónimo de forma segura
         context['inspector_name'] = (
-            self.request.user.get_full_name() or 
-            self.request.user.username
+            self.request.user.get_full_name() 
+            if self.request.user.is_authenticated 
+            else 'Sistema'
         )
-        context['observations'] = ''
         
         return context

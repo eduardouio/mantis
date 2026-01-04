@@ -19,5 +19,11 @@ class TechnicalInformationReport(TemplateView):
 		context['technical'] = technical
 		context['pass_technical'] = pass_technical
 		context['vaccination_records'] = vaccination_records
+		# Agregar información del usuario de forma segura
+		context['report_generated_by'] = (
+			self.request.user.get_full_name() 
+			if self.request.user.is_authenticated 
+			else 'Sistema'
+		)
 		
 		return context
