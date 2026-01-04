@@ -11,6 +11,18 @@
     </div>
   </div>
 
+  <!-- Botones de Reporte -->
+  <div class="flex flex-wrap justify-end gap-2 mb-4 pb-3 border-b">
+    <a href="{% url 'reports:technical-information-pdf' technical.id %}" class="btn btn-success btn-sm" target="_blank">
+      <i class="las la-file-pdf text-lg"></i>
+      Reporte General
+    </a>
+    <a href="{% url 'reports:technical-vaccine-pdf' technical.id %}" class="btn btn-info btn-sm" target="_blank">
+      <i class="las la-syringe text-lg"></i>
+      Reporte Vacunas
+    </a>
+  </div>
+
   <!-- Tabs para organizar la información -->
   <div class="tabs tabs-box w-full mb-4 bg-gray-50">
     <div class="tabs tabs-boxed p-1 rounded-xl mb-4">
