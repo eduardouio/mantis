@@ -19,6 +19,8 @@ from reports.views.PDFBathroomCamperChecker import PDFBathroomCamperChecker
 from reports.views.PDFRawWaterStorageTanks import PDFRawWaterStorageTanks
 from reports.views.PDFWastewaterStorageTanks import PDFWastewaterStorageTanks
 from reports.views.PDFEquipmentInfoReport import PDFEquipmentInfoReport
+from reports.views.VehicleStatusReport import VehicleStatusReport
+from reports.views.PDFVehicleStatusReport import PDFVehicleStatusReport
 
 app_name = 'reports'
 
@@ -29,6 +31,7 @@ urlpatterns = [
     path('reports/template-technical/<int:id>/', TechnicalInformationReport.as_view(), name='technical-information-report'),
     path('reports/template-technical-vaccine/<int:id>/', TechnicalVaccineReport.as_view(), name='technical-vaccine-report'),
     path('reports/template-equipment-info/<int:equipment_id>/', EquipmentInfoReport.as_view(), name='equipment-info-report'),
+    path('reports/template-vehicle-status/<int:pk>/', VehicleStatusReport.as_view(), name='vehicle-status-report'),
     
     # Equipment Checklists Templates
     path('reports/template-equipment-bateries/<int:equipment_id>/', EquipmentBateriesCheckList.as_view(), name='equipment-bateries-checklist'),
@@ -43,6 +46,7 @@ urlpatterns = [
     path('reports/technical/<int:id>/', PDFTechnicalInformation.as_view(), name='technical-information-pdf'),
     path('reports/technical-vaccine/<int:id>/', PDFTechnicalVaccineReport.as_view(), name='technical-vaccine-pdf'),
     path('reports/equipment-info/<int:equipment_id>/', PDFEquipmentInfoReport.as_view(), name='equipment-info-pdf'),
+    path('reports/vehicle-status/<int:pk>/', PDFVehicleStatusReport.as_view(), name='vehicle-status-pdf'),
     
     # Equipment Checklists PDF
     path('reports/equipment-bateries/<int:equipment_id>/', PDFBateriesCheckList.as_view(), name='equipment-bateries-pdf'),
