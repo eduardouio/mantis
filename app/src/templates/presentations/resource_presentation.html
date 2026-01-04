@@ -472,6 +472,15 @@
       <i class="las la-edit text-xl"></i>
       Editar
     </a>
+    
+    <!-- Botón de Checklist solo para Baterías Sanitarias -->
+    {% if equipment.type_equipment == 'BTSNHM' or equipment.type_equipment == 'BTSNMJ' %}
+    <a href="{% url 'reports:equipment-bateries-checklist' equipment.id %}" target="_blank" class="btn btn-primary btn-sm">
+      <i class="las la-clipboard-list text-xl"></i>
+      Ver Checklist
+    </a>
+    {% endif %}
+    
     <a href="{% url 'resource_detail' equipment.id %}?action=delete" class="btn btn-primary btn-sm">
       <i class="las la-trash text-xl"></i>
       Eliminar
@@ -525,4 +534,4 @@ function updateEquipmentStatus(equipmentId) {
 }
 </script>
 {% endblock %}
-{% endblock %}
+{% endblock %
