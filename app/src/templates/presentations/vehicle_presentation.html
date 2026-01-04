@@ -11,6 +11,14 @@
     </div>
   </div>
 
+  <!-- Botones de Reporte -->
+  <div class="flex flex-wrap justify-end gap-2 mb-4 pb-3 border-b">
+    <a href="{% url 'reports:vehicle-status-pdf' vehicle.id %}" class="btn btn-success btn-sm" target="_blank">
+      <i class="las la-file-pdf text-lg"></i>
+      Descargar PDF
+    </a>
+  </div>
+
   <!-- Tabs para organizar la información -->
   <div class="tabs tabs-box w-full mb-4 bg-gray-50">
     <div class="tabs tabs-boxed p-1 rounded-xl mb-4">
