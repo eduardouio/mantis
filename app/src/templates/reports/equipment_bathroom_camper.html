@@ -139,14 +139,14 @@
         table th {
             background: linear-gradient(to bottom, #3e5f6f 0%, #2d4a57 100%);
             color: white;
-            padding: 6px;
+            padding: 4px;
             text-align: center;
             font-weight: bold;
             border: 1px solid #9cb536;
         }
         
         table td {
-            padding: 5px 6px;
+            padding: 3px 4px;
             border: 1px solid #9cb536;
             text-align: center;
             color: #333;
@@ -161,8 +161,8 @@
         }
         
         .checkbox-cell {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border: 2px solid #3e5f6f;
             display: inline-block;
             border-radius: 3px;
@@ -176,11 +176,13 @@
         }
         
         .observations-box {
-            min-height: 80px;
-            padding: 8px;
-            border: 1px solid #e0e0e0;
-            background-color: #f9fafb;
+            min-height: 40px;
+            padding: 6px 8px;
+            border: 2px solid #9cb536;
+            border-radius: 4px;
+            background-color: #ffffff;
             color: #666;
+            box-shadow: inset 0 0 0 1px rgba(156,181,54,0.25);
         }
         
         .signature-section {
@@ -197,7 +199,7 @@
         
         .signature-line {
             border-top: 2px solid #3e5f6f;
-            margin: 40px 20px 5px 20px;
+            margin: 20px 20px 5px 20px;
         }
         
         .signature-label {
@@ -467,7 +469,7 @@
             <div class="section">
                 <div class="section-title">OBSERVACIONES Y ACCIONES CORRECTIVAS</div>
                 <div class="observations-box">
-                    {{ observations|default:"______________________________________________________________________" }}
+                    {{ observations|default:"" }}
                 </div>
             </div>
             
@@ -475,12 +477,10 @@
                 <div class="signature-box">
                     <div class="signature-line"></div>
                     <div class="signature-label">INSPECTOR</div>
-                    <div style="font-size: 7pt; color: #666;">{{ inspector_name|default:"Nombre y Firma" }}</div>
                 </div>
                 <div class="signature-box">
                     <div class="signature-line"></div>
                     <div class="signature-label">SUPERVISOR</div>
-                    <div style="font-size: 7pt; color: #666;">Nombre y Firma</div>
                 </div>
             </div>
             
