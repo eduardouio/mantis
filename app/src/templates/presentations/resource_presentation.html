@@ -473,9 +473,57 @@
       Editar
     </a>
     
+    <!-- Botón de Reporte General (para todos los equipos excepto servicios) -->
+    {% if not is_service %}
+    <a href="{% url 'reports:equipment-info-report' equipment.id %}" target="_blank" class="btn btn-primary btn-sm">
+      <i class="las la-file-alt text-xl"></i>
+      Ver Reporte
+    </a>
+    {% endif %}
+    
     <!-- Botón de Checklist solo para Baterías Sanitarias -->
     {% if equipment.type_equipment == 'BTSNHM' or equipment.type_equipment == 'BTSNMJ' %}
     <a href="{% url 'reports:equipment-bateries-checklist' equipment.id %}" target="_blank" class="btn btn-primary btn-sm">
+      <i class="las la-clipboard-list text-xl"></i>
+      Ver Checklist
+    </a>
+    {% endif %}
+    
+    <!-- Botón de Checklist para Lavamanos -->
+    {% if equipment.type_equipment == 'LVMNOS' %}
+    <a href="{% url 'reports:equipment-washer-hands-checklist' equipment.id %}" target="_blank" class="btn btn-primary btn-sm">
+      <i class="las la-clipboard-list text-xl"></i>
+      Ver Checklist
+    </a>
+    {% endif %}
+    
+    <!-- Botón de Checklist para Estación Urinarios -->
+    {% if equipment.type_equipment == 'EST4UR' %}
+    <a href="{% url 'reports:equipment-urinal-station-checklist' equipment.id %}" target="_blank" class="btn btn-primary btn-sm">
+      <i class="las la-clipboard-list text-xl"></i>
+      Ver Checklist
+    </a>
+    {% endif %}
+    
+    <!-- Botón de Checklist para Camper Baño -->
+    {% if equipment.type_equipment == 'CMPRBN' %}
+    <a href="{% url 'reports:equipment-bathroom-camper-checklist' equipment.id %}" target="_blank" class="btn btn-primary btn-sm">
+      <i class="las la-clipboard-list text-xl"></i>
+      Ver Checklist
+    </a>
+    {% endif %}
+    
+    <!-- Botón de Checklist para Tanques Agua Cruda -->
+    {% if equipment.type_equipment == 'TNQAAC' %}
+    <a href="{% url 'reports:equipment-raw-water-tanks-checklist' equipment.id %}" target="_blank" class="btn btn-primary btn-sm">
+      <i class="las la-clipboard-list text-xl"></i>
+      Ver Checklist
+    </a>
+    {% endif %}
+    
+    <!-- Botón de Checklist para Tanques Agua Residual -->
+    {% if equipment.type_equipment == 'TNQAAR' %}
+    <a href="{% url 'reports:equipment-wastewater-tanks-checklist' equipment.id %}" target="_blank" class="btn btn-primary btn-sm">
       <i class="las la-clipboard-list text-xl"></i>
       Ver Checklist
     </a>
