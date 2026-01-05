@@ -83,13 +83,6 @@ onMounted(() => {
         </h1>
         <div class="flex items-center gap-3">
           <!-- Botón para agregar recurso -->
-          <button 
-            class="btn btn-primary btn-sm"
-            @click="openResourceFormModal"
-          >
-            <i class="las la-plus"></i>
-            Agregar Recurso
-          </button>
           <div class="text-gray-500">
             <span class="badge" :class="!project?.is_closed ? 'badge-success' : 'badge-error'">
               {{ !project?.is_closed ? 'Abierto' : 'Cerrado' }}
