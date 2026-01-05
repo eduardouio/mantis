@@ -13,7 +13,7 @@ class AddResourceProjectAPI(View):
         """Agregar uno o varios recursos al proyecto."""
         data = json.loads(request.body)
 
-        # ipdb.set_trace()
+        
         project = Project.get_by_id(data[0]["project_id"])
         if not project:
             raise Exception("Proyecto no encontrado.")
@@ -37,7 +37,7 @@ class AddResourceProjectAPI(View):
                 "SERVICIO" if resource_item.type_equipment == "SERVIC" else "EQUIPO"
             )
             
-            # Extraer configuración de frecuencia del payload
+            
             p_freq_type = resource_data.get("frequency_type", "DAY")
             p_interval = resource_data.get("interval_days", 1)
             p_weekdays = resource_data.get("weekdays")
@@ -45,14 +45,14 @@ class AddResourceProjectAPI(View):
 
             if type_resource == "SERVICIO":
                 resource_cost = resource_data.get("maintenance_cost", 0.00)
-                # Si es servicio, usa la configuración de frecuencia del payload
+                
                 prim_freq_type = p_freq_type
                 prim_interval = p_interval
                 prim_weekdays = p_weekdays
                 prim_monthdays = p_monthdays
             else:
                 resource_cost = resource_data.get("cost", 0.00)
-                # Si es equipo (renta), configuración por defecto (diaria)
+                
                 prim_freq_type = "DAY"
                 prim_interval = 1
                 prim_weekdays = None
@@ -177,6 +177,28 @@ class AddResourceProjectAPI(View):
             )
         except Exception as e:
             return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+    def _serialize(self, project_resource):
+        """Serializa un recurso de proyecto para el método GET."""
+        return {
+            "id": project_resource.id,
+            "project_id": project_resource.project.id,
+            "project_name": str(project_resource.project),
+            "resource_code": project_resource.resource_item.code,
+            "resource_name": project_resource.resource_item.name,
+            "type_resource": project_resource.type_resource,
+            "cost": str(project_resource.cost),
+            "operation_start_date": (
+                project_resource.operation_start_date.isoformat()
+                if project_resource.operation_start_date
+                else None
+            ),
+            "operation_end_date": (
+                project_resource.operation_end_date.isoformat()
+                if project_resource.operation_end_date
+                else None
+            ),
+        }
 
     def _serialize_project_resource(self, project_resource):
         return {
