@@ -3,7 +3,8 @@ import { appConfig } from "@/AppConfig"
 
 export const UseProjectResourceStore = defineStore("projectResourcesStore", {
     state: () => ({
-        selectedResource: Object,
+        resources: [], // Inicializar como array vacío
+        selectedResource: null,
         resourcesProject: [],
         newResourceProject: {
             id: null,
@@ -42,6 +43,7 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 this.resourcesProject = responseData.data
             } catch (error) {
                 console.error("Error fetching project resources:", error)
+                this.resourcesProject = []; // Asegurar que siempre sea array
             }
         },
         async addResourcesToProject(resources) {
