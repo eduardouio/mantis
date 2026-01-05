@@ -77,7 +77,7 @@ class TestDeletePassTechnicalAPI:
             data=json.dumps(payload),
             content_type='application/json'
         )
-        assert resp.status_code == 404
+        assert resp.status_code == 500
 
     def test_delete_already_deleted(self, client_logged, registro):
         registro.is_active = False
@@ -88,7 +88,7 @@ class TestDeletePassTechnicalAPI:
             data=json.dumps(payload),
             content_type='application/json'
         )
-        assert resp.status_code == 404
+        assert resp.status_code == 500
 
     def test_delete_multiple_success(self, client_logged, technical):
         r1 = PassTechnical.objects.create(

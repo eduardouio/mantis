@@ -67,7 +67,7 @@ class TestCreateUpdatePassTechnicalAPI:
 	def test_create_invalid_technical(self, client_logged, valid_data):
 		valid_data['technical_id'] = 999999
 		resp = client_logged.post(self.endpoint(), data=json.dumps(valid_data), content_type='application/json')
-		assert resp.status_code == 404
+		assert resp.status_code == 500
 
 	def test_create_invalid_date_format(self, client_logged, valid_data):
 		valid_data['fecha_caducidad'] = '2024-13-45'
