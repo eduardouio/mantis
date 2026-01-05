@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -27,6 +27,11 @@ class PassVehicleCreateUpdateAPI(View):
                 'success': False,
                 'error': 'JSON inválido'
             }, status=400)
+        except Http404:
+            return JsonResponse({
+                'success': False,
+                'error': 'Vehículo no encontrado'
+            }, status=404)
         except Exception as e:
             return JsonResponse({
                 'success': False,
@@ -51,6 +56,11 @@ class PassVehicleCreateUpdateAPI(View):
                 'success': False,
                 'error': 'JSON inválido'
             }, status=400)
+        except Http404:
+            return JsonResponse({
+                'success': False,
+                'error': 'Vehículo o pase no encontrado'
+            }, status=404)
         except Exception as e:
             return JsonResponse({
                 'success': False,
@@ -59,7 +69,7 @@ class PassVehicleCreateUpdateAPI(View):
     
     def _create_or_update_pass(self, data, pass_id=None, request=None):
         """Método privado para crear o actualizar un pase"""
-        # Validar datos requeridos
+        
         required_fields = ['vehicle_id', 'bloque', 'fecha_caducidad']
         for field in required_fields:
             if field not in data or not data[field]:
@@ -69,10 +79,10 @@ class PassVehicleCreateUpdateAPI(View):
                 }, status=400)
         
         try:
-            # Validar que el vehículo existe
+            
             vehicle = get_object_or_404(Vehicle, id=data['vehicle_id'])
             
-            # Validar formato de fecha
+            
             try:
                 fecha_caducidad = datetime.strptime(data['fecha_caducidad'], '%Y-%m-%d').date()
             except ValueError:
@@ -81,7 +91,7 @@ class PassVehicleCreateUpdateAPI(View):
                     'error': 'Formato de fecha inválido. Use YYYY-MM-DD'
                 }, status=400)
             
-            # Validar que el bloque sea válido
+            
             valid_bloques = [choice[0] for choice in PassVehicle.BLOQUE_CHOICES]
             if data['bloque'] not in valid_bloques:
                 return JsonResponse({
@@ -89,9 +99,9 @@ class PassVehicleCreateUpdateAPI(View):
                     'error': f'Bloque inválido. Opciones válidas: {", ".join(valid_bloques)}'
                 }, status=400)
             
-            # Crear o actualizar el pase
+            
             if pass_id:
-                # Actualizar pase existente
+                
                 pass_vehicle = get_object_or_404(PassVehicle, id=pass_id)
                 pass_vehicle.vehicle = vehicle
                 pass_vehicle.bloque = data['bloque']
@@ -99,7 +109,7 @@ class PassVehicleCreateUpdateAPI(View):
 
                 action = 'actualizado'
             else:
-                # Crear nuevo pase
+                
                 pass_vehicle = PassVehicle(
                     vehicle=vehicle,
                     bloque=data['bloque'],
@@ -107,8 +117,8 @@ class PassVehicleCreateUpdateAPI(View):
                 )
                 action = 'creado'
             
-            # Guardar en base de datos
-            pass_vehicle.full_clean()  # Validación del modelo
+            
+            pass_vehicle.full_clean()  
             pass_vehicle.save()
             
             return JsonResponse({
@@ -143,7 +153,7 @@ class PassVehicleCreateUpdateAPI(View):
             pass_id = request.GET.get('id')
             
             if pass_id:
-                # Obtener un pase específico
+                
                 pass_vehicle = get_object_or_404(PassVehicle, id=pass_id, is_active=True)
                 data = {
                     'id': pass_vehicle.id,
@@ -157,7 +167,7 @@ class PassVehicleCreateUpdateAPI(View):
                 return JsonResponse({'success': True, 'data': data})
             
             elif vehicle_id:
-                # Obtener pases de un vehículo específico
+                
                 passes = PassVehicle.get_by_vehicle(vehicle_id)
                 data = []
                 for pass_vehicle in passes:
@@ -173,7 +183,7 @@ class PassVehicleCreateUpdateAPI(View):
                 return JsonResponse({'success': True, 'data': data})
             
             else:
-                # Obtener todos los pases activos
+                
                 passes = PassVehicle.objects.filter(is_active=True).select_related('vehicle')
                 data = []
                 for pass_vehicle in passes:
