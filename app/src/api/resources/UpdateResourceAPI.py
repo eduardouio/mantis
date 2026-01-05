@@ -33,6 +33,7 @@ class UpdateResourceAPI(View):
         ignored_fields = []
         errors = {}
         checklist_touched = False
+        status_explicitly_set = "stst_status_equipment" in data
         for field_name, value in data.items():
             if field_name == "id":
                 continue
@@ -92,7 +93,7 @@ class UpdateResourceAPI(View):
 
         try:
 
-            if checklist_touched:
+            if checklist_touched and not status_explicitly_set:
                 try:
                     boolean_fields = resource.boolean_fields
 
