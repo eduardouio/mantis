@@ -36,7 +36,7 @@ class TestCertificationVehicle:
         )
         certification = CertificationVehicle.objects.create(
             vehicle=vehicle,
-            name='MEDICION_DE_ESPESORES',
+            name='MEDICION DE ESPESORES',
             date_start=date(2024, 6, 1),
             date_end=date(2025, 6, 1)
         )

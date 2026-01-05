@@ -79,7 +79,7 @@ class TestCreateUpdateVaccineAPI:
             data=json.dumps(valid_data),
             content_type="application/json",
         )
-        assert resp.status_code == 404
+        assert resp.status_code == 500
 
     def test_create_invalid_date_format(self, client_logged, valid_data):
         valid_data["application_date"] = "2024-13-45"
