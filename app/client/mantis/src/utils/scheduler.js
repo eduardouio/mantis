@@ -1,150 +1,77 @@
 /**
  * Genera un calendario de mantenimientos para recursos del proyecto
- * basado en la frecuencia de intervalos y fecha de inicio de operación
+ * basado en frequency_type: DAY (intervalo), WEEK (días semana), MONTH (días mes)
  */
 
 /**
- * Obtiene el inicio de la semana actual (Lunes)
- * @returns {Date} Fecha del lunes de la semana actual
- */
-function getStartOfCurrentWeek() {
-  const today = new Date();
-  const day = today.getDay();
-  const diff = today.getDate() - day + (day === 0 ? -6 : 1); 
-  const monday = new Date(today.setDate(diff));
-  monday.setHours(0, 0, 0, 0);
-  return monday;
-}
-
-/**
- * Obtiene el fin del período de 4 semanas desde el lunes actual
- * @returns {Date} Fecha del domingo de la 4ta semana
- */
-function getEndOfFourWeeks() {
-  const startOfWeek = getStartOfCurrentWeek();
-  const endOfFourWeeks = new Date(startOfWeek);
-  endOfFourWeeks.setDate(startOfWeek.getDate() + 27); // 4 semanas = 28 días - 1
-  endOfFourWeeks.setHours(23, 59, 59, 999);
-  return endOfFourWeeks;
-}
-
-/**
- * Genera todas las fechas de mantenimiento desde la fecha de inicio hasta el fin de las 4 semanas
- * @param {string} startDateStr - Fecha de inicio en formato YYYY-MM-DD
- * @param {number} intervalDays - Días entre cada mantenimiento
+ * Genera fechas de mantenimiento según frequency_type
+ * @param {Object} resource - Recurso con configuración de frecuencia
+ * @param {Date} startDate - Fecha de inicio
+ * @param {Date} endDate - Fecha de fin
  * @returns {Date[]} Array de fechas de mantenimiento
  */
-function generateMaintenanceDates(startDateStr, intervalDays) {
-  // Validar intervalDays
-  if (!intervalDays || intervalDays < 1) {
-    console.warn('Intervalo de días inválido:', intervalDays);
-    return [];
-  }
-
-  // Parsear la fecha sin problemas de zona horaria
-  const [year, month, day] = startDateStr.split('-').map(Number);
-  const startDate = new Date(year, month - 1, day);
+function generateMaintenanceDates(resource, startDate, endDate) {
+  const dates = [];
+  const { frequency_type, interval_days, weekdays, monthdays } = resource;
   
-  // Validar que la fecha sea válida
-  if (isNaN(startDate.getTime())) {
-    console.error('Fecha de inicio inválida:', startDateStr);
-    return [];
+  if (frequency_type === 'DAY') {
+    // Intervalo de días (interval_days = 0 significa diario)
+    const interval = interval_days === 0 ? 1 : interval_days;
+    let currentDate = new Date(startDate);
+    
+    while (currentDate <= endDate) {
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + interval);
+    }
+  } 
+  else if (frequency_type === 'WEEK') {
+    // Días específicos de la semana
+    if (!weekdays || weekdays.length === 0) {
+      console.warn('Recurso WEEK sin weekdays definidos:', resource);
+      return dates;
+    }
+    
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      const dayOfWeek = (currentDate.getDay() + 6) % 7; // 0=Lunes, 1=Martes, ..., 6=Domingo
+      if (weekdays.includes(dayOfWeek)) {
+        dates.push(new Date(currentDate));
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  } 
+  else if (frequency_type === 'MONTH') {
+    // Días específicos del mes
+    if (!monthdays || monthdays.length === 0) {
+      console.warn('Recurso MONTH sin monthdays definidos:', resource);
+      return dates;
+    }
+    
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      const dayOfMonth = currentDate.getDate();
+      if (monthdays.includes(dayOfMonth)) {
+        dates.push(new Date(currentDate));
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
   }
-
-  const endOfFourWeeks = getEndOfFourWeeks();
-  const maintenanceDates = [];
   
-  let currentDate = new Date(startDate);
-  const maxIterations = 1000; // Límite de seguridad
-  let iterations = 0;
-  
-  while (currentDate <= endOfFourWeeks && iterations < maxIterations) {
-    maintenanceDates.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + intervalDays);
-    iterations++;
-  }
-
-  if (iterations >= maxIterations) {
-    console.error('Se alcanzó el límite de iteraciones en generateMaintenanceDates');
-  }
-  
-  return maintenanceDates;
+  return dates;
 }
 
 /**
- * Genera el calendario de mantenimientos para las próximas 4 semanas
+ * Genera el calendario de mantenimientos para los próximos N días
  * @param {Array} resources - Array de recursos del proyecto
- * @returns {Array} Lista de mantenimientos programados para las 4 semanas
- */
-export function generateWeeklyMaintenanceSchedule(resources) {
-  const startOfWeek = getStartOfCurrentWeek();
-  const endOfFourWeeks = getEndOfFourWeeks();
-  const maintenanceSchedule = [];
-  
-  resources.forEach(resource => {
-    
-    if (!resource.is_active) {
-      return;
-    }
-
-    // Validar que tenga intervalo de días válido
-    if (!resource.interval_days || resource.interval_days < 1) {
-      console.warn('Recurso sin intervalo de días válido:', resource);
-      return;
-    }
-
-    // Validar que tenga fecha de inicio de operación
-    if (!resource.operation_start_date) {
-      console.warn('Recurso sin fecha de inicio de operación:', resource);
-      return;
-    }
-    
-    const maintenanceDates = generateMaintenanceDates(
-      resource.operation_start_date,
-      resource.interval_days
-    );
-    
-    
-    const fourWeeksMaintenance = maintenanceDates.filter(date => {
-      return date >= startOfWeek && date <= endOfFourWeeks;
-    });
-    
-    
-    fourWeeksMaintenance.forEach(maintenanceDate => {
-      maintenanceSchedule.push({
-        resource_id: resource.id,
-        resource_item_id: resource.resource_item_id,
-        resource_code: resource.resource_item_code,
-        resource_name: resource.resource_item_name,
-        description: resource.detailed_description,
-        cost: parseFloat(resource.cost),
-        interval_days: resource.interval_days,
-        operation_start_date: resource.operation_start_date,
-        scheduled_date: maintenanceDate.toISOString().split('T')[0],
-        day_of_week: maintenanceDate.toLocaleDateString('es-GT', { weekday: 'long' }),
-        week_number: getWeekNumber(maintenanceDate)
-      });
-    });
-  });
-  
-  
-  return maintenanceSchedule.sort((a, b) => 
-    new Date(a.scheduled_date) - new Date(b.scheduled_date)
-  );
-}
-
-/**
- * Genera calendario de mantenimientos futuros (próximas N semanas)
- * @param {Array} resources - Array de recursos del proyecto
- * @param {number} weeksAhead - Número de semanas a futuro (por defecto 4)
+ * @param {number} daysAhead - Número de días a futuro (por defecto 90)
  * @returns {Array} Lista de mantenimientos programados
  */
-export function generateFutureMaintenanceSchedule(resources, weeksAhead = 4) {
+export function generateMaintenanceSchedule(resources, daysAhead = 90) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   
   const futureDate = new Date(today);
-  futureDate.setDate(today.getDate() + (weeksAhead * 7));
+  futureDate.setDate(today.getDate() + daysAhead);
   
   const maintenanceSchedule = [];
   
@@ -153,29 +80,21 @@ export function generateFutureMaintenanceSchedule(resources, weeksAhead = 4) {
       return;
     }
 
-    // Validar que tenga intervalo de días válido
-    if (!resource.interval_days || resource.interval_days < 1) {
-      console.warn('Recurso sin intervalo de días válido:', resource);
-      return;
-    }
-
-    // Validar que tenga fecha de inicio de operación
     if (!resource.operation_start_date) {
       console.warn('Recurso sin fecha de inicio de operación:', resource);
       return;
     }
+
+    // Parsear fecha de inicio
+    const [year, month, day] = resource.operation_start_date.split('-').map(Number);
+    const operationStart = new Date(year, month - 1, day);
     
-    const maintenanceDates = generateMaintenanceDates(
-      resource.operation_start_date,
-      resource.interval_days
-    );
+    // Usar la fecha más reciente entre operation_start_date y today
+    const startDate = operationStart > today ? operationStart : today;
     
+    const maintenanceDates = generateMaintenanceDates(resource, startDate, futureDate);
     
-    const futureMaintenance = maintenanceDates.filter(date => {
-      return date >= today && date <= futureDate;
-    });
-    
-    futureMaintenance.forEach(maintenanceDate => {
+    maintenanceDates.forEach(maintenanceDate => {
       maintenanceSchedule.push({
         resource_id: resource.id,
         resource_item_id: resource.resource_item_id,
@@ -183,7 +102,10 @@ export function generateFutureMaintenanceSchedule(resources, weeksAhead = 4) {
         resource_name: resource.resource_item_name,
         description: resource.detailed_description,
         cost: parseFloat(resource.cost),
+        frequency_type: resource.frequency_type,
         interval_days: resource.interval_days,
+        weekdays: resource.weekdays,
+        monthdays: resource.monthdays,
         operation_start_date: resource.operation_start_date,
         scheduled_date: maintenanceDate.toISOString().split('T')[0],
         day_of_week: maintenanceDate.toLocaleDateString('es-GT', { weekday: 'long' }),
@@ -199,9 +121,21 @@ export function generateFutureMaintenanceSchedule(resources, weeksAhead = 4) {
 }
 
 /**
+ * Genera calendario para las próximas 4 semanas (compatibilidad)
+ */
+export function generateWeeklyMaintenanceSchedule(resources) {
+  return generateMaintenanceSchedule(resources, 28);
+}
+
+/**
+ * Genera calendario futuro (compatibilidad)
+ */
+export function generateFutureMaintenanceSchedule(resources, weeksAhead = 4) {
+  return generateMaintenanceSchedule(resources, weeksAhead * 7);
+}
+
+/**
  * Obtiene el número de semana del año
- * @param {Date} date - Fecha
- * @returns {number} Número de semana
  */
 function getWeekNumber(date) {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -213,8 +147,6 @@ function getWeekNumber(date) {
 
 /**
  * Agrupa mantenimientos por semana
- * @param {Array} maintenanceSchedule - Lista de mantenimientos
- * @returns {Object} Mantenimientos agrupados por semana
  */
 export function groupMaintenanceByWeek(maintenanceSchedule) {
   return maintenanceSchedule.reduce((groups, maintenance) => {
@@ -228,15 +160,29 @@ export function groupMaintenanceByWeek(maintenanceSchedule) {
 }
 
 /**
+ * Agrupa mantenimientos por mes
+ */
+export function groupMaintenanceByMonth(maintenanceSchedule) {
+  return maintenanceSchedule.reduce((groups, maintenance) => {
+    const date = new Date(maintenance.scheduled_date);
+    const monthKey = date.toLocaleDateString('es-GT', { year: 'numeric', month: 'long' });
+    if (!groups[monthKey]) {
+      groups[monthKey] = [];
+    }
+    groups[monthKey].push(maintenance);
+    return groups;
+  }, {});
+}
+
+/**
  * Obtiene resumen de mantenimientos
- * @param {Array} maintenanceSchedule - Lista de mantenimientos
- * @returns {Object} Resumen con totales
  */
 export function getMaintenanceSummary(maintenanceSchedule) {
   return {
     total_maintenances: maintenanceSchedule.length,
     total_cost: maintenanceSchedule.reduce((sum, m) => sum + m.cost, 0),
     resources_count: new Set(maintenanceSchedule.map(m => m.resource_id)).size,
-    by_week: groupMaintenanceByWeek(maintenanceSchedule)
+    by_week: groupMaintenanceByWeek(maintenanceSchedule),
+    by_month: groupMaintenanceByMonth(maintenanceSchedule)
   };
 }
