@@ -27,7 +27,7 @@ class TechnicalIssuesCheck:
             return 'due_10', days_left
         if days_left <= cls.WARNING_30:
             return 'due_30', days_left
-        return 'valid', days_left
+        return None, None
 
     @classmethod
     def issues_for(cls, technical: Technical):
