@@ -44,7 +44,7 @@ urlpatterns = [
     path('vehicles/cert_vehicle/<int:pk>/', CertVehicleDeleteAPI.as_view(), name='api_cert_vehicle_delete'),
     path('vehicles/pass_vehicle/', PassVehicleCreateUpdateAPI.as_view(), name='api_pass_vehicle_create_update'),
     path('vehicles/pass_vehicle/<int:pk>/', PassVehicleDeleteAPI.as_view(), name='api_pass_vehicle_delete'),
-	path('vehicles/avaliables/', GetVehiclesAvaliablesAPI.as_view(), name='api_get_vehicles_avaliables'),
+    path('vehicles/avaliables/', GetVehiclesAvaliablesAPI.as_view(), name='api_get_vehicles_avaliables'),
     # technicals
     path('technicals/create_update_pass_technical/', CreateUpdatePassTechnicalAPI.as_view(), name='api_create_update_pass_technical'),
     path('technicals/create_update_vaccine/', CreateUpdateVaccineAPI.as_view(), name='api_create_update_vaccine'),
@@ -54,10 +54,10 @@ urlpatterns = [
     # resources
     path('resources/update/', UpdateResourceAPI.as_view(), name='api_update_resource'),
     # projects
-	path('projects/data/<int:project_id>/', ProjectData.as_view(), name='api_project_data'),
+    path('projects/data/<int:project_id>/', ProjectData.as_view(), name='api_project_data'),
     path('projects/resources/available/', ResourcesAvailableAPI.as_view(), name='api_resources_available'),
     path('projects/resources/add/', AddResourceProjectAPI.as_view(), name='api_add_resource_project'),
-	path('projects/resources/update/', UpdateResourceItemAPI.as_view(), name='api_update_resource_item'),
+    path('projects/resources/update/', UpdateResourceItemAPI.as_view(), name='api_update_resource_item'),
     path('projects/resources/delete/<int:id_project_resource>/', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
     path('projects/<int:project_id>/resources/', ProjectResources.as_view(), name='api_project_resources'),    
     
@@ -67,7 +67,7 @@ urlpatterns = [
     path('workorders/sheets/delete/', DeleteSheetOrderAPI.as_view(), name='api_delete_sheet'),
     path('workorders/sheets/items/<int:sheet_project_id>/', GetAllSheerProjectItemsAPI.as_view(), name='api_get_all_sheet_project_items'),
     path('workorders/custody_chain/create/', CreateCustodyChainAPI.as_view(), name='api_create_custody_chain'),
-	path('workorders/custody_chain/detail/<int:id>/', CustodyChainDetaikAPI.as_view(), name='api_custody_chain_detail'),
+    path('workorders/custody_chain/detail/<int:id>/', CustodyChainDetaikAPI.as_view(), name='api_custody_chain_detail'),
     path('workorders/custody_chain/project/<int:project_id>/', AllCustodyChainProjectAPI.as_view(), name='api_all_custody_chain_project'),
     path('workorders/custody_chain/sheet/<int:sheet_project_id>/', CustodyChainBySheetAPI.as_view(), name='api_custody_chain_by_sheet'),
 ]
