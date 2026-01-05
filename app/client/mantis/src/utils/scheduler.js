@@ -64,10 +64,11 @@ function generateMaintenanceDates(resource, startDate, endDate) {
  * Genera el calendario de mantenimientos para los próximos N días
  * @param {Array} resources - Array de recursos del proyecto
  * @param {number} daysAhead - Número de días a futuro (por defecto 90)
+ * @param {Date} fromDate - Fecha de inicio opcional (por defecto hoy)
  * @returns {Array} Lista de mantenimientos programados
  */
-export function generateMaintenanceSchedule(resources, daysAhead = 90) {
-  const today = new Date();
+export function generateMaintenanceSchedule(resources, daysAhead = 90, fromDate = null) {
+  const today = fromDate ? new Date(fromDate) : new Date();
   today.setHours(0, 0, 0, 0);
   
   const futureDate = new Date(today);
