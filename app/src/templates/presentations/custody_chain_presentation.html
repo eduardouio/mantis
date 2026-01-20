@@ -4,368 +4,235 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <!-- Botones de acción superiores -->
-    <div class="row mb-3">
-        <div class="col-12">
-            <a href="{% url 'custody_chain_list' %}" class="btn btn-outline-secondary btn-sm">
-                <i class="fas fa-arrow-left me-1"></i>Volver al Listado
-            </a>
-            <button onclick="window.print()" class="btn btn-primary btn-sm">
-                <i class="fas fa-print me-1"></i>Imprimir
-            </button>
-            <button onclick="exportToPDF()" class="btn btn-success btn-sm">
-                <i class="fas fa-file-pdf me-1"></i>Exportar PDF
-            </button>
-        </div>
+<div class="container mx-auto px-4 py-8">
+    <!-- Botones de acción superiores (no se imprimen) -->
+    <div class="flex gap-2 mb-6 print:hidden">
+        <a href="{% url 'custody_chain_list' %}" class="btn btn-outline gap-2">
+            <i class="fas fa-arrow-left"></i>
+            Volver al Listado
+        </a>
+        <button onclick="window.print()" class="btn btn-primary gap-2">
+            <i class="fas fa-print"></i>
+            Imprimir
+        </button>
+        <button onclick="exportToPDF()" class="btn btn-success gap-2">
+            <i class="fas fa-file-pdf"></i>
+            Exportar PDF
+        </button>
     </div>
 
     <!-- Documento de Cadena de Custodia -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card" id="custody-chain-document">
-                <!-- Encabezado del Documento -->
-                <div class="card-header text-center py-4" style="background: white;">
-                    <div class="row align-items-center">
-                        <div class="col-3">
-                            <!-- Logo de la empresa (si existe) -->
-                            <img src="{% static 'images/logo.png' %}" 
-                                 alt="Logo" 
-                                 style="max-height: 80px;"
-                                 onerror="this.style.display='none'">
-                        </div>
-                        <div class="col-6">
-                            <h3 class="text-dark mb-1">CADENA DE CUSTODIA</h3>
-                            <h5 class="text-secondary mb-0">{{ partner.name|upper }}</h5>
-                        </div>
-                        <div class="col-3 text-end">
-                            <div class="badge bg-gradient-dark p-3">
-                                <div class="text-white">
-                                    <small class="d-block">Consecutivo</small>
-                                    <h5 class="mb-0">{{ custody_chain.consecutive }}</h5>
-                                </div>
-                            </div>
-                        </div>
+    <div class="card bg-base-100 shadow-xl print:shadow-none border-2 border-gray-300" id="custody-chain-document">
+        <div class="card-body p-0">
+            <!-- Encabezado del Documento - Estilo formulario físico -->
+            <div class="border-b-2 border-gray-300">
+                <!-- Título y Logo -->
+                <div class="grid grid-cols-12 items-start p-3 border-b border-gray-300">
+                    <div class="col-span-10">
+                        <h1 class="text-sm font-bold leading-tight">
+                            MANTENIMIENTO DE EQUIPOS SANITARIOS, TRANSPORTE Y CADENA DE CUSTODIA DE AGUAS RESIDUALES
+                        </h1>
+                    </div>
+                    <div class="col-span-2 flex justify-end">
+                        <img src="{% static 'img/logo.png' %}" 
+                             alt="PEISOL Ingeniería" 
+                             class="h-12"
+                             onerror="this.style.display='none'">
                     </div>
                 </div>
-
-                <div class="card-body">
-                    <!-- Información General -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h6 class="text-uppercase text-primary font-weight-bolder border-bottom pb-2">
-                                <i class="fas fa-info-circle me-2"></i>Información General
-                            </h6>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <table class="table table-sm">
-                                <tr>
-                                    <td class="text-sm font-weight-bold" width="40%">Planilla:</td>
-                                    <td class="text-sm">{{ custody_chain.sheet_project.series_code }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold">Proyecto:</td>
-                                    <td class="text-sm">{{ project.partner.name }} - {{ project.location|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold">Fecha de Actividad:</td>
-                                    <td class="text-sm">{{ custody_chain.activity_date|date:"d/m/Y" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold">Fecha de Emisión:</td>
-                                    <td class="text-sm">{{ custody_chain.issue_date|date:"d/m/Y"|default:"N/A" }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <table class="table table-sm">
-                                <tr>
-                                    <td class="text-sm font-weight-bold" width="40%">Ubicación:</td>
-                                    <td class="text-sm">{{ custody_chain.location|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold">Hora Inicio:</td>
-                                    <td class="text-sm">{{ custody_chain.start_time|time:"H:i"|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold">Hora Salida:</td>
-                                    <td class="text-sm">{{ custody_chain.end_time|time:"H:i"|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold">Horas Totales:</td>
-                                    <td class="text-sm">{{ custody_chain.time_duration|default:"0.00" }} horas</td>
-                                </tr>
-                            </table>
-                        </div>
+                
+                <!-- Fila de información básica -->
+                <div class="grid grid-cols-12 border-b border-gray-300 text-xs">
+                    <div class="col-span-3 border-r border-gray-300 p-1">
+                        <span class="font-bold">FECHA:</span>
+                        <span class="ml-2">{{ custody_chain.activity_date|date:"d/m/Y" }}</span>
                     </div>
-
-                    <!-- Recursos Asignados -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h6 class="text-uppercase text-primary font-weight-bolder border-bottom pb-2">
-                                <i class="fas fa-users me-2"></i>Recursos Asignados
-                            </h6>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="card bg-light">
-                                <div class="card-body p-3">
-                                    <h6 class="text-sm mb-2"><i class="fas fa-user-tie me-2"></i>Técnico</h6>
-                                    {% if custody_chain.technical %}
-                                        <p class="text-sm mb-1">
-                                            <strong>Nombre:</strong> {{ custody_chain.technical.first_name }} {{ custody_chain.technical.last_name }}
-                                        </p>
-                                        <p class="text-sm mb-1">
-                                            <strong>Cédula:</strong> {{ custody_chain.technical.dni }}
-                                        </p>
-                                        <p class="text-sm mb-0">
-                                            <strong>Área:</strong> {{ custody_chain.technical.get_work_area_display }}
-                                        </p>
-                                    {% else %}
-                                        <p class="text-sm text-muted mb-0">No asignado</p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <div class="card bg-light">
-                                <div class="card-body p-3">
-                                    <h6 class="text-sm mb-2"><i class="fas fa-truck me-2"></i>Vehículo</h6>
-                                    {% if custody_chain.vehicle %}
-                                        <p class="text-sm mb-1">
-                                            <strong>Placa:</strong> {{ custody_chain.vehicle.no_plate }}
-                                        </p>
-                                        <p class="text-sm mb-1">
-                                            <strong>Tipo:</strong> {{ custody_chain.vehicle.type_vehicle }}
-                                        </p>
-                                        <p class="text-sm mb-0">
-                                            <strong>Marca:</strong> {{ custody_chain.vehicle.brand }} {{ custody_chain.vehicle.model|default:"" }}
-                                        </p>
-                                    {% else %}
-                                        <p class="text-sm text-muted mb-0">No asignado</p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-span-3 border-r border-gray-300 p-1">
+                        <span class="font-bold">PLACAS:</span>
+                        <span class="ml-2">{{ custody_chain.vehicle.no_plate|default:"N/A" }}</span>
                     </div>
-
-                    <!-- Información de Contacto -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h6 class="text-uppercase text-primary font-weight-bolder border-bottom pb-2">
-                                <i class="fas fa-address-card me-2"></i>Información de Contacto en Sitio
-                            </h6>
-                        </div>
-                        <div class="col-md-6">
-                            <table class="table table-sm table-bordered">
-                                <tr>
-                                    <td class="text-sm font-weight-bold bg-light" width="40%">Nombre:</td>
-                                    <td class="text-sm">{{ custody_chain.contact_name|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold bg-light">Cédula:</td>
-                                    <td class="text-sm">{{ custody_chain.dni_contact|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold bg-light">Cargo:</td>
-                                    <td class="text-sm">{{ custody_chain.contact_position|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold bg-light">Fecha:</td>
-                                    <td class="text-sm">{{ custody_chain.date_contact|date:"d/m/Y"|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold bg-light">Firma:</td>
-                                    <td style="height: 60px;"></td>
-                                </tr>
-                            </table>
-                        </div>
+                    <div class="col-span-4 border-r border-gray-300 p-1">
+                        <span class="font-bold">LOGÍSTICA:</span>
+                        <label class="ml-2"><input type="checkbox" class="checkbox checkbox-xs mr-1" disabled> SI</label>
+                        <label class="ml-2"><input type="checkbox" class="checkbox checkbox-xs mr-1" disabled> NO</label>
                     </div>
-
-                    <!-- Información de Transportista -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h6 class="text-uppercase text-primary font-weight-bolder border-bottom pb-2">
-                                <i class="fas fa-truck-loading me-2"></i>Información del Transportista
-                            </h6>
-                        </div>
-                        <div class="col-md-6">
-                            <table class="table table-sm table-bordered">
-                                <tr>
-                                    <td class="text-sm font-weight-bold bg-light" width="40%">Nombre:</td>
-                                    <td class="text-sm">{{ custody_chain.driver_name|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold bg-light">Cédula:</td>
-                                    <td class="text-sm">{{ custody_chain.dni_driver|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold bg-light">Cargo:</td>
-                                    <td class="text-sm">{{ custody_chain.driver_position|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold bg-light">Fecha:</td>
-                                    <td class="text-sm">{{ custody_chain.driver_date|date:"d/m/Y"|default:"N/A" }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-sm font-weight-bold bg-light">Firma:</td>
-                                    <td style="height: 60px;"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Detalle de Recursos -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h6 class="text-uppercase text-primary font-weight-bolder border-bottom pb-2">
-                                <i class="fas fa-list me-2"></i>Recursos del Proyecto
-                            </h6>
-                        </div>
-                        <div class="col-12">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-sm">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th class="text-center text-xs font-weight-bold" width="5%">#</th>
-                                            <th class="text-xs font-weight-bold" width="15%">Código</th>
-                                            <th class="text-xs font-weight-bold" width="35%">Descripción</th>
-                                            <th class="text-xs font-weight-bold" width="15%">Tipo</th>
-                                            <th class="text-center text-xs font-weight-bold" width="15%">Fecha Inicio</th>
-                                            <th class="text-center text-xs font-weight-bold" width="15%">Fecha Fin</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% if chain_details %}
-                                            {% for detail in chain_details %}
-                                            <tr>
-                                                <td class="text-center text-xs">{{ forloop.counter }}</td>
-                                                <td class="text-xs">{{ detail.project_resource.resource_item.code }}</td>
-                                                <td class="text-xs">
-                                                    {{ detail.project_resource.resource_item.name }}
-                                                    {% if detail.project_resource.detailed_description %}
-                                                        <br><small class="text-muted">{{ detail.project_resource.detailed_description }}</small>
-                                                    {% endif %}
-                                                </td>
-                                                <td class="text-xs">{{ detail.project_resource.type_resource }}</td>
-                                                <td class="text-center text-xs">
-                                                    {{ detail.project_resource.operation_start_date|date:"d/m/Y" }}
-                                                </td>
-                                                <td class="text-center text-xs">
-                                                    {{ detail.project_resource.operation_end_date|date:"d/m/Y"|default:"En operación" }}
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                        {% else %}
-                                            <tr>
-                                                <td colspan="6" class="text-center text-muted text-xs py-3">
-                                                    No hay recursos asociados a esta cadena de custodia
-                                                </td>
-                                            </tr>
-                                        {% endif %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Totales -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h6 class="text-uppercase text-primary font-weight-bolder border-bottom pb-2">
-                                <i class="fas fa-calculator me-2"></i>Totales
-                            </h6>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card text-center bg-gradient-info">
-                                <div class="card-body p-3">
-                                    <h6 class="text-white mb-0">Galones</h6>
-                                    <h3 class="text-white mb-0">{{ custody_chain.total_gallons }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card text-center bg-gradient-success">
-                                <div class="card-body p-3">
-                                    <h6 class="text-white mb-0">Barriles</h6>
-                                    <h3 class="text-white mb-0">{{ custody_chain.total_barrels }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card text-center bg-gradient-warning">
-                                <div class="card-body p-3">
-                                    <h6 class="text-white mb-0">Metros Cúbicos</h6>
-                                    <h3 class="text-white mb-0">{{ custody_chain.total_cubic_meters }}</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Notas -->
-                    {% if custody_chain.notes %}
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h6 class="text-uppercase text-primary font-weight-bolder border-bottom pb-2">
-                                <i class="fas fa-sticky-note me-2"></i>Notas
-                            </h6>
-                            <div class="card bg-light">
-                                <div class="card-body p-3">
-                                    <p class="text-sm mb-0">{{ custody_chain.notes }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    <!-- Pie de página del documento -->
-                    <div class="row mt-5">
-                        <div class="col-12">
-                            <hr>
-                            <p class="text-xs text-center text-muted">
-                                Documento generado el {{ custody_chain.created_at|date:"d/m/Y H:i" }} | 
-                                Última actualización: {{ custody_chain.updated_at|date:"d/m/Y H:i" }}
-                            </p>
-                        </div>
+                    <div class="col-span-2 p-1 text-right">
+                        <span class="font-bold text-red-600 text-base">No. {{ custody_chain.consecutive }}</span>
                     </div>
                 </div>
+                
+                <!-- Segunda fila -->
+                <div class="grid grid-cols-12 border-b border-gray-300 text-xs">
+                    <div class="col-span-4 border-r border-gray-300 p-1">
+                        <span class="font-bold">CLIENTE:</span>
+                        <span class="ml-2">{{ partner.name }}</span>
+                    </div>
+                    <div class="col-span-8 p-1">
+                        <span class="font-bold">PROYECTO:</span>
+                        <span class="ml-2">{{ project.location|default:"" }}</span>
+                    </div>
+                </div>
+                
+                <!-- Tercera fila - Horarios -->
+                <div class="grid grid-cols-12 text-xs">
+                    <div class="col-span-4 border-r border-gray-300 p-1">
+                        <span class="font-bold">HORA DE LLEGADA:</span>
+                        <span class="ml-2">{{ custody_chain.start_time|time:"H:i"|default:"" }}</span>
+                    </div>
+                    <div class="col-span-4 border-r border-gray-300 p-1">
+                        <span class="font-bold">HORA DE SALIDA:</span>
+                        <span class="ml-2">{{ custody_chain.end_time|time:"H:i"|default:"" }}</span>
+                    </div>
+                    <div class="col-span-4 p-1">
+                        <span class="font-bold">TOTAL DE HORAS:</span>
+                        <span class="ml-2">{{ custody_chain.time_duration|default:"0.00" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla principal estilo formulario físico -->
+            <div class="overflow-x-auto">
+                <table class="table table-bordered table-sm text-xs">
+                    <thead>
+                        <tr class="bg-base-200 text-center">
+                            <th class="align-middle" rowspan="2">EQUIPO</th>
+                            <th class="align-middle" rowspan="2">CÓDIGO</th>
+                            <th class="align-middle" colspan="3">TRABAJO REALIZADO</th>
+                            <th class="align-middle" colspan="4">INSUMOS Y QUÍMICOS</th>
+                            <th class="align-middle" colspan="8">GALONES DE AGUA RESIDUAL SUCCIONADA</th>
+                            <th class="align-middle" rowspan="2">DESCRIPCIÓN</th>
+                            <th class="align-middle" rowspan="2">ABREVIATURA</th>
+                            <th class="align-middle" rowspan="2">MATERIAL TRANSPORTADO</th>
+                        </tr>
+                        <tr class="bg-base-200 text-center">
+                            <th>SUC</th>
+                            <th>LIMP</th>
+                            <th>QUIM</th>
+                            <th>PH</th>
+                            <th>TZ</th>
+                            <th>FUN</th>
+                            <th>ABT</th>
+                            <th>10</th>
+                            <th>20</th>
+                            <th>30</th>
+                            <th>40</th>
+                            <th>50</th>
+                            <th>60</th>
+                            <th>70</th>
+                            <th>&gt;71</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td><td></td>
+                            <td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td>BAÑOS</td><td>BT</td><td>AGUAS NEGRAS</td>
+                        </tr>
+                        <tr>
+                            <td></td><td></td>
+                            <td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td>LAVAMANOS</td><td>LV</td><td>AGUAS GRISES</td>
+                        </tr>
+                        <tr>
+                            <td></td><td></td>
+                            <td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td>URINARIO</td><td>UR</td><td>AGUA LIMPIA</td>
+                        </tr>
+                        <tr>
+                            <td></td><td></td>
+                            <td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td>BIODIGESTOR</td><td>BG</td><td>LODOS ACTIVADOS</td>
+                        </tr>
+                        <tr>
+                            <td></td><td></td>
+                            <td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td>TRAMPA DE GRASA</td><td>TG</td><td>AGUA RESIDUAL TRATADA</td>
+                        </tr>
+                        <tr>
+                            <td></td><td></td>
+                            <td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td>ESTACIÓN DE BOMBEO</td><td>EB</td><td>GRASA ORGÁNICA</td>
+                        </tr>
+                        <tr>
+                            <td></td><td></td>
+                            <td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td>PLANTA DE AGUA RESIDUAL</td><td>PTAR</td><td>PESO Y/O VOLUMEN</td>
+                        </tr>
+                        <tr>
+                            <td></td><td></td>
+                            <td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td>PLANTA DE AGUA POTABLE</td><td>PTAP</td><td>GALÓN</td>
+                        </tr>
+                        <tr>
+                            <td></td><td></td>
+                            <td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td>OTROS</td><td>OT</td><td>M3</td>
+                        </tr>
+                        <tr>
+                            <td></td><td></td>
+                            <td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                            <td>--</td><td>--</td><td>BARRIL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Sección inferior: Origen, Transportista, Disposición Final -->
+            <div class="grid grid-cols-12 text-xs mt-4 border border-gray-300">
+                <div class="col-span-4 border-r border-gray-300">
+                    <div class="text-center font-bold bg-base-200 border-b border-gray-300 py-1">LUGAR DE ORIGEN</div>
+                    <div class="p-1 border-b border-gray-300">NOMBRE: {{ custody_chain.contact_name|default:"" }}</div>
+                    <div class="p-1 border-b border-gray-300">C.I.: {{ custody_chain.dni_contact|default:"" }}</div>
+                    <div class="p-1 border-b border-gray-300">CARGO: {{ custody_chain.contact_position|default:"" }}</div>
+                    <div class="p-1 border-b border-gray-300">FECHA: {{ custody_chain.date_contact|date:"d/m/Y"|default:"" }}</div>
+                    <div class="p-1">FIRMA:</div>
+                </div>
+                <div class="col-span-4 border-r border-gray-300">
+                    <div class="text-center font-bold bg-base-200 border-b border-gray-300 py-1">TRANSPORTISTA</div>
+                    <div class="p-1 border-b border-gray-300">NOMBRE: {{ custody_chain.driver_name|default:"" }}</div>
+                    <div class="p-1 border-b border-gray-300">C.I.: {{ custody_chain.dni_driver|default:"" }}</div>
+                    <div class="p-1 border-b border-gray-300">CARGO: {{ custody_chain.driver_position|default:"" }}</div>
+                    <div class="p-1 border-b border-gray-300">FECHA: {{ custody_chain.driver_date|date:"d/m/Y"|default:"" }}</div>
+                    <div class="p-1">FIRMA:</div>
+                </div>
+                <div class="col-span-4">
+                    <div class="text-center font-bold bg-base-200 border-b border-gray-300 py-1">LUGAR DE DISPOSICIÓN FINAL</div>
+                    <div class="p-1 border-b border-gray-300">PEISOL S.A.</div>
+                    <div class="p-1 border-b border-gray-300">2191744791001</div>
+                    <div class="p-1 border-b border-gray-300 h-8"></div>
+                    <div class="p-1 border-b border-gray-300 h-8"></div>
+                    <div class="p-1 text-center mt-6">RECIBÍ CONFORME</div>
+                </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="text-xs mt-2 border border-gray-300">
+                <div class="text-center font-bold bg-base-200 border-b border-gray-300 py-1">OBSERVACIONES</div>
+                <div class="p-2 min-h-[80px]">{{ custody_chain.notes|default:"" }}</div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-@media print {
-    .btn, .navbar, .sidenav {
-        display: none !important;
-    }
-    
-    .card {
-        box-shadow: none !important;
-        border: 1px solid #dee2e6 !important;
-    }
-    
-    body {
-        background: white !important;
-    }
-}
-
-.text-primary {
-    color: #cb0c9f !important;
-}
-
-.border-bottom {
-    border-color: #cb0c9f !important;
-}
-
-.table-bordered {
-    border: 1px solid #dee2e6;
-}
-
-.table-bordered td,
-.table-bordered th {
-    border: 1px solid #dee2e6;
-}
-</style>
 
 <script>
 function exportToPDF() {
