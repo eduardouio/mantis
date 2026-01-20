@@ -4,8 +4,8 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <div class="card bg-base-100 shadow-xl">
+<div class="w-full max-w-none px-2 py-4">
+    <div class="card bg-base-100 shadow-xl w-full">
         <div class="card-body">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="card-title text-2xl">{{ title }}</h2>
@@ -16,43 +16,64 @@
             <form method="post" id="custodyChainForm">
                 {% csrf_token %}
 
-                <!-- Sección: Información General -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                        <i class="fas fa-info-circle text-primary"></i>
-                        <span>Información General</span>
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-
-                        <div class="form-control">
-                            <label class="label" for="consecutive">
-                                <span class="label-text font-semibold">Consecutivo</span>
-                            </label>
-                            <input type="text" id="consecutive" name="consecutive" value="{{ consecutive }}" 
-                                   class="input input-bordered" readonly>
+                <!-- Formulario estilo físico -->
+                <div class="border border-gray-300 text-xs">
+                    <div class="grid grid-cols-12 items-start p-3 border-b border-gray-300">
+                        <div class="col-span-10">
+                            <h1 class="text-sm font-bold leading-tight">
+                                MANTENIMIENTO DE EQUIPOS SANITARIOS, TRANSPORTE Y CADENA DE CUSTODIA DE AGUAS RESIDUALES
+                            </h1>
                         </div>
-
-                        <div class="form-control">
-                            <label class="label" for="activity_date">
-                                <span class="label-text font-semibold">Fecha de Actividad *</span>
-                            </label>
-                            <input type="date" id="activity_date" name="activity_date" 
-                                   class="input input-bordered" required>
+                        <div class="col-span-2 flex justify-end">
+                            <img src="{% static 'img/logo.png' %}" alt="PEISOL Ingeniería" class="h-12" onerror="this.style.display='none'">
                         </div>
+                    </div>
 
-                        <div class="form-control">
-                            <label class="label" for="issue_date">
-                                <span class="label-text font-semibold">Fecha de Emisión</span>
-                            </label>
-                            <input type="date" id="issue_date" name="issue_date" 
-                                   class="input input-bordered">
+                    <div class="grid grid-cols-12 border-b border-gray-300">
+                        <div class="col-span-3 border-r border-gray-300 p-1">
+                            <span class="font-bold">FECHA:</span>
+                            <input type="date" id="activity_date" name="activity_date" class="input input-bordered input-xs w-full mt-1" required>
                         </div>
+                        <div class="col-span-3 border-r border-gray-300 p-1">
+                            <span class="font-bold">PLACAS:</span>
+                            <select id="vehicle" name="vehicle" class="select select-bordered select-xs w-full mt-1">
+                                <option value="">Seleccione un vehículo...</option>
+                                {% for veh in vehicles %}
+                                <option value="{{ veh.id }}">
+                                    {{ veh.no_plate }} - {{ veh.type_vehicle }} - {{ veh.brand }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-span-4 border-r border-gray-300 p-1">
+                            <span class="font-bold">LOGÍSTICA:</span>
+                            <div class="flex gap-4 mt-1">
+                                <label class="flex items-center gap-1">
+                                    <input type="checkbox" class="checkbox checkbox-xs" name="logistics" value="SI"> SI
+                                </label>
+                                <label class="flex items-center gap-1">
+                                    <input type="checkbox" class="checkbox checkbox-xs" name="logistics" value="NO"> NO
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-span-2 p-1 text-right">
+                            <span class="font-bold text-red-600">No.</span>
+                            <input type="text" id="consecutive" name="consecutive" value="{{ consecutive }}" class="input input-bordered input-xs w-full mt-1 text-red-600" readonly>
+                        </div>
+                    </div>
 
-                        <div class="form-control">
-                            <label class="label" for="sheet_project">
-                                <span class="label-text font-semibold">Planilla de Proyecto *</span>
-                            </label>
-                            <select id="sheet_project" name="sheet_project" class="select select-bordered" required>
+                    <div class="grid grid-cols-12 border-b border-gray-300">
+                        <div class="col-span-4 border-r border-gray-300 p-1">
+                            <span class="font-bold">CLIENTE:</span>
+                            <input type="text" name="client_display" placeholder="Cliente" class="input input-bordered input-xs w-full mt-1">
+                        </div>
+                        <div class="col-span-4 border-r border-gray-300 p-1">
+                            <span class="font-bold">PROYECTO:</span>
+                            <input type="text" id="location" name="location" placeholder="Proyecto / Ubicación" class="input input-bordered input-xs w-full mt-1">
+                        </div>
+                        <div class="col-span-4 p-1">
+                            <span class="font-bold">PLANILLA:</span>
+                            <select id="sheet_project" name="sheet_project" class="select select-bordered select-xs w-full mt-1" required>
                                 <option value="">Seleccione una planilla...</option>
                                 {% for sheet in sheet_projects %}
                                 <option value="{{ sheet.id }}">
@@ -63,29 +84,25 @@
                         </div>
                     </div>
 
-                    <div class="form-control mt-4">
-                        <label class="label" for="location">
-                            <span class="label-text font-semibold">Ubicación</span>
-                        </label>
-                        <input type="text" id="location" name="location" 
-                               placeholder="Ingrese la ubicación" class="input input-bordered">
+                    <div class="grid grid-cols-12 border-b border-gray-300">
+                        <div class="col-span-4 border-r border-gray-300 p-1">
+                            <span class="font-bold">HORA DE LLEGADA:</span>
+                            <input type="time" id="start_time" name="start_time" class="input input-bordered input-xs w-full mt-1">
+                        </div>
+                        <div class="col-span-4 border-r border-gray-300 p-1">
+                            <span class="font-bold">HORA DE SALIDA:</span>
+                            <input type="time" id="end_time" name="end_time" class="input input-bordered input-xs w-full mt-1">
+                        </div>
+                        <div class="col-span-4 p-1">
+                            <span class="font-bold">TOTAL DE HORAS:</span>
+                            <input type="number" id="time_duration" name="time_duration" step="0.01" placeholder="0.00" class="input input-bordered input-xs w-full mt-1" readonly>
+                        </div>
                     </div>
-                </div>
 
-                <div class="divider"></div>
-
-                <!-- Sección: Recursos Asignados -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                        <i class="fas fa-users text-primary"></i>
-                        <span>Recursos Asignados</span>
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-control">
-                            <label class="label" for="technical">
-                                <span class="label-text font-semibold">Técnico</span>
-                            </label>
-                            <select id="technical" name="technical" class="select select-bordered">
+                    <div class="grid grid-cols-12 border-b border-gray-300">
+                        <div class="col-span-6 border-r border-gray-300 p-1">
+                            <span class="font-bold">TÉCNICO:</span>
+                            <select id="technical" name="technical" class="select select-bordered select-xs w-full mt-1">
                                 <option value="">Seleccione un técnico...</option>
                                 {% for tech in technicals %}
                                 <option value="{{ tech.id }}">
@@ -94,268 +111,334 @@
                                 {% endfor %}
                             </select>
                         </div>
-
-                        <div class="form-control">
-                            <label class="label" for="vehicle">
-                                <span class="label-text font-semibold">Vehículo</span>
-                            </label>
-                            <select id="vehicle" name="vehicle" class="select select-bordered">
-                                <option value="">Seleccione un vehículo...</option>
-                                {% for veh in vehicles %}
-                                <option value="{{ veh.id }}">
-                                    {{ veh.no_plate }} - {{ veh.type_vehicle }} - {{ veh.brand }}
-                                </option>
-                                {% endfor %}
-                            </select>
+                        <div class="col-span-6 p-1">
+                            <span class="font-bold">FECHA DE EMISIÓN:</span>
+                            <input type="date" id="issue_date" name="issue_date" class="input input-bordered input-xs w-full mt-1">
                         </div>
                     </div>
                 </div>
 
-                <div class="divider"></div>
+                <div class="overflow-x-auto mt-4">
+                    <table class="table table-bordered table-sm text-xs" id="resourcesTable">
+                        <thead>
+                            <tr class="bg-base-200 text-center">
+                                <th rowspan="2">EQUIPO</th>
+                                <th rowspan="2">CÓDIGO</th>
+                                <th colspan="3">TRABAJO REALIZADO</th>
+                                <th colspan="4">INSUMOS Y QUÍMICOS</th>
+                                <th colspan="8">GALONES DE AGUA RESIDUAL SUCCIONADA</th>
+                                <th rowspan="2">DESCRIPCIÓN</th>
+                                <th rowspan="2">ABREVIATURA</th>
+                                <th rowspan="2">MATERIAL TRANSPORTADO</th>
+                            </tr>
+                            <tr class="bg-base-200 text-center">
+                                <th>SUC</th>
+                                <th>LIMP</th>
+                                <th>QUIM</th>
+                                <th>PH</th>
+                                <th>TZ</th>
+                                <th>FUN</th>
+                                <th>ABT</th>
+                                <th>10</th>
+                                <th>20</th>
+                                <th>30</th>
+                                <th>40</th>
+                                <th>50</th>
+                                <th>60</th>
+                                <th>70</th>
+                                <th>&gt;71</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resourcesTableBody">
+                            <tr>
+                                <td><input type="text" name="equipment[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="code[]" class="input input-bordered input-xs w-full"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_suc[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_limp[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_quim[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_ph[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_tz[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_fun[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_abt[]"></td>
+                                <td><input type="text" name="gal_10[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_20[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_30[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_40[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_50[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_60[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_70[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_71[]" class="input input-bordered input-xs w-full"></td>
+                                <td>BAÑOS</td><td>BT</td><td>AGUAS NEGRAS</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="equipment[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="code[]" class="input input-bordered input-xs w-full"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_suc[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_limp[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_quim[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_ph[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_tz[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_fun[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_abt[]"></td>
+                                <td><input type="text" name="gal_10[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_20[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_30[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_40[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_50[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_60[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_70[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_71[]" class="input input-bordered input-xs w-full"></td>
+                                <td>LAVAMANOS</td><td>LV</td><td>AGUAS GRISES</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="equipment[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="code[]" class="input input-bordered input-xs w-full"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_suc[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_limp[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_quim[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_ph[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_tz[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_fun[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_abt[]"></td>
+                                <td><input type="text" name="gal_10[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_20[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_30[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_40[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_50[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_60[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_70[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_71[]" class="input input-bordered input-xs w-full"></td>
+                                <td>URINARIO</td><td>UR</td><td>AGUA LIMPIA</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="equipment[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="code[]" class="input input-bordered input-xs w-full"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_suc[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_limp[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_quim[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_ph[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_tz[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_fun[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_abt[]"></td>
+                                <td><input type="text" name="gal_10[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_20[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_30[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_40[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_50[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_60[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_70[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_71[]" class="input input-bordered input-xs w-full"></td>
+                                <td>BIODIGESTOR</td><td>BG</td><td>LODOS ACTIVADOS</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="equipment[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="code[]" class="input input-bordered input-xs w-full"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_suc[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_limp[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_quim[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_ph[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_tz[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_fun[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_abt[]"></td>
+                                <td><input type="text" name="gal_10[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_20[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_30[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_40[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_50[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_60[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_70[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_71[]" class="input input-bordered input-xs w-full"></td>
+                                <td>TRAMPA DE GRASA</td><td>TG</td><td>AGUA RESIDUAL TRATADA</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="equipment[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="code[]" class="input input-bordered input-xs w-full"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_suc[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_limp[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_quim[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_ph[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_tz[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_fun[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_abt[]"></td>
+                                <td><input type="text" name="gal_10[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_20[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_30[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_40[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_50[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_60[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_70[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_71[]" class="input input-bordered input-xs w-full"></td>
+                                <td>ESTACIÓN DE BOMBEO</td><td>EB</td><td>GRASA ORGÁNICA</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="equipment[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="code[]" class="input input-bordered input-xs w-full"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_suc[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_limp[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_quim[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_ph[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_tz[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_fun[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_abt[]"></td>
+                                <td><input type="text" name="gal_10[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_20[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_30[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_40[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_50[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_60[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_70[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_71[]" class="input input-bordered input-xs w-full"></td>
+                                <td>PLANTA DE AGUA RESIDUAL</td><td>PTAR</td><td>PESO Y/O VOLUMEN</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="equipment[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="code[]" class="input input-bordered input-xs w-full"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_suc[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_limp[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_quim[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_ph[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_tz[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_fun[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_abt[]"></td>
+                                <td><input type="text" name="gal_10[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_20[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_30[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_40[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_50[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_60[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_70[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_71[]" class="input input-bordered input-xs w-full"></td>
+                                <td>PLANTA DE AGUA POTABLE</td><td>PTAP</td><td>GALÓN</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="equipment[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="code[]" class="input input-bordered input-xs w-full"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_suc[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_limp[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_quim[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_ph[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_tz[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_fun[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_abt[]"></td>
+                                <td><input type="text" name="gal_10[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_20[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_30[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_40[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_50[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_60[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_70[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_71[]" class="input input-bordered input-xs w-full"></td>
+                                <td>OTROS</td><td>OT</td><td>M3</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" name="equipment[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="code[]" class="input input-bordered input-xs w-full"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_suc[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_limp[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="work_quim[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_ph[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_tz[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_fun[]"></td>
+                                <td class="text-center"><input type="checkbox" class="checkbox checkbox-xs" name="ins_abt[]"></td>
+                                <td><input type="text" name="gal_10[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_20[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_30[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_40[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_50[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_60[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_70[]" class="input input-bordered input-xs w-full"></td>
+                                <td><input type="text" name="gal_71[]" class="input input-bordered input-xs w-full"></td>
+                                <td>--</td><td>--</td><td>BARRIL</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-                <!-- Sección: Horarios -->
-                <div class="mb-8">
-                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
-                        <i class="fas fa-clock text-primary"></i>
-                        <span>Horarios</span>
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="form-control">
-                            <label class="label" for="start_time">
-                                <span class="label-text font-semibold">Hora de Inicio</span>
-                            </label>
-                            <input type="time" id="start_time" name="start_time" 
-                                   class="input input-bordered">
-                        </div>
-
-                        <div class="form-control">
-                            <label class="label" for="end_time">
-                                <span class="label-text font-semibold">Hora de Salida</span>
-                            </label>
-                            <input type="time" id="end_time" name="end_time" 
-                                   class="input input-bordered">
-                        </div>
-
-                        <div class="form-control">
-                            <label class="label" for="time_duration">
-                                <span class="label-text font-semibold">Horas Totales</span>
-                            </label>
-                            <input type="number" id="time_duration" name="time_duration" 
-                                   step="0.01" placeholder="0.00" class="input input-bordered" readonly>
-                        </div>
+                <div class="grid grid-cols-3 gap-3 mt-4 text-xs">
+                    <div class="form-control">
+                        <label class="label"><span class="label-text font-semibold">Total de Galones</span></label>
+                        <input type="number" id="total_gallons" name="total_gallons" value="0" min="0" class="input input-bordered input-xs">
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text font-semibold">Total de Metros Cúbicos</span></label>
+                        <input type="number" id="total_cubic_meters" name="total_cubic_meters" value="0" min="0" class="input input-bordered input-xs">
+                    </div>
+                    <div class="form-control">
+                        <label class="label"><span class="label-text font-semibold">Total de Barriles</span></label>
+                        <input type="number" id="total_barrels" name="total_barrels" value="0" min="0" class="input input-bordered input-xs">
                     </div>
                 </div>
 
-                        <hr class="horizontal dark">
-
-                        <!-- Sección: Información de Contacto -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h6 class="text-uppercase text-primary font-weight-bolder mb-3">
-                                    <i class="fas fa-address-card me-2"></i>Información de Contacto
-                                </h6>
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label for="contact_name" class="form-label">Nombre de Contacto</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="contact_name" 
-                                       name="contact_name" 
-                                       placeholder="Nombre completo">
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label for="dni_contact" class="form-label">Cédula de Contacto</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="dni_contact" 
-                                       name="dni_contact" 
-                                       placeholder="0000000000">
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label for="contact_position" class="form-label">Cargo de Contacto</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="contact_position" 
-                                       name="contact_position" 
-                                       placeholder="Cargo">
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label for="date_contact" class="form-label">Fecha de Contacto</label>
-                                <input type="date" 
-                                       class="form-control" 
-                                       id="date_contact" 
-                                       name="date_contact">
-                            </div>
+                <div class="grid grid-cols-12 text-xs mt-4 border border-gray-300">
+                    <div class="col-span-4 border-r border-gray-300">
+                        <div class="text-center font-bold bg-base-200 border-b border-gray-300 py-1">LUGAR DE ORIGEN</div>
+                        <div class="p-1 border-b border-gray-300">
+                            NOMBRE:
+                            <input type="text" id="contact_name" name="contact_name" class="input input-bordered input-xs w-full mt-1">
                         </div>
-
-                        <hr class="horizontal dark">
-
-                        <!-- Sección: Información de Transportista -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h6 class="text-uppercase text-primary font-weight-bolder mb-3">
-                                    <i class="fas fa-truck me-2"></i>Información de Transportista
-                                </h6>
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label for="driver_name" class="form-label">Nombre de Transportista</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="driver_name" 
-                                       name="driver_name" 
-                                       placeholder="Nombre completo">
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label for="dni_driver" class="form-label">Cédula de Transportista</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="dni_driver" 
-                                       name="dni_driver" 
-                                       placeholder="0000000000">
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label for="driver_position" class="form-label">Cargo de Transportista</label>
-                                <input type="text" 
-                                       class="form-control" 
-                                       id="driver_position" 
-                                       name="driver_position" 
-                                       placeholder="Cargo">
-                            </div>
-
-                            <div class="col-md-3 mb-3">
-                                <label for="driver_date" class="form-label">Fecha de Transportista</label>
-                                <input type="date" 
-                                       class="form-control" 
-                                       id="driver_date" 
-                                       name="driver_date">
-                            </div>
+                        <div class="p-1 border-b border-gray-300">
+                            C.I.:
+                            <input type="text" id="dni_contact" name="dni_contact" class="input input-bordered input-xs w-full mt-1">
                         </div>
-
-                        <hr class="horizontal dark">
-
-                        <!-- Sección: Totales -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h6 class="text-uppercase text-primary font-weight-bolder mb-3">
-                                    <i class="fas fa-calculator me-2"></i>Totales
-                                </h6>
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <label for="total_gallons" class="form-label">Total de Galones</label>
-                                <input type="number" 
-                                       class="form-control" 
-                                       id="total_gallons" 
-                                       name="total_gallons" 
-                                       value="0"
-                                       min="0">
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <label for="total_barrels" class="form-label">Total de Barriles</label>
-                                <input type="number" 
-                                       class="form-control" 
-                                       id="total_barrels" 
-                                       name="total_barrels" 
-                                       value="0"
-                                       min="0">
-                            </div>
-
-                            <div class="col-md-4 mb-3">
-                                <label for="total_cubic_meters" class="form-label">Total de Metros Cúbicos</label>
-                                <input type="number" 
-                                       class="form-control" 
-                                       id="total_cubic_meters" 
-                                       name="total_cubic_meters" 
-                                       value="0"
-                                       min="0">
-                            </div>
+                        <div class="p-1 border-b border-gray-300">
+                            CARGO:
+                            <input type="text" id="contact_position" name="contact_position" class="input input-bordered input-xs w-full mt-1">
                         </div>
-
-                        <hr class="horizontal dark">
-
-                        <!-- Sección: Detalle de Recursos -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h6 class="text-uppercase text-primary font-weight-bolder mb-3">
-                                    <i class="fas fa-list me-2"></i>Detalle de Recursos del Proyecto
-                                </h6>
-                            </div>
-
-                            <div class="col-12 mb-3">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="resourcesTable">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th width="5%">
-                                                    <input type="checkbox" id="selectAll" class="form-check-input">
-                                                </th>
-                                                <th width="10%">Código</th>
-                                                <th width="35%">Descripción</th>
-                                                <th width="15%">Tipo</th>
-                                                <th width="15%">Fecha Inicio</th>
-                                                <th width="15%">Fecha Fin</th>
-                                                <th width="5%">Estado</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="resourcesTableBody">
-                                            <!-- Las filas se cargarán dinámicamente cuando se seleccione una planilla -->
-                                            <tr>
-                                                <td colspan="7" class="text-center text-muted">
-                                                    Seleccione una planilla de proyecto para cargar los recursos disponibles
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                        <div class="p-1 border-b border-gray-300">
+                            FECHA:
+                            <input type="date" id="date_contact" name="date_contact" class="input input-bordered input-xs w-full mt-1">
                         </div>
-
-                        <hr class="horizontal dark">
-
-                        <!-- Sección: Notas -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h6 class="text-uppercase text-primary font-weight-bolder mb-3">
-                                    <i class="fas fa-sticky-note me-2"></i>Notas Adicionales
-                                </h6>
-                            </div>
-
-                            <div class="col-md-12 mb-3">
-                                <label for="notes" class="form-label">Notas</label>
-                                <textarea class="form-control" 
-                                          id="notes" 
-                                          name="notes" 
-                                          rows="4"
-                                          placeholder="Ingrese notas adicionales sobre la cadena de custodia..."></textarea>
-                            </div>
+                        <div class="p-1">FIRMA:</div>
+                    </div>
+                    <div class="col-span-4 border-r border-gray-300">
+                        <div class="text-center font-bold bg-base-200 border-b border-gray-300 py-1">TRANSPORTISTA</div>
+                        <div class="p-1 border-b border-gray-300">
+                            NOMBRE:
+                            <input type="text" id="driver_name" name="driver_name" class="input input-bordered input-xs w-full mt-1">
                         </div>
-
-                        <!-- Botones de Acción -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="d-flex justify-content-end">
-                                    <a href="{% url 'custody_chain_list' %}" 
-                                       class="btn btn-outline-secondary me-2">
-                                        <i class="fas fa-times me-1"></i>Cancelar
-                                    </a>
-                                    <button type="submit" 
-                                            class="btn btn-primary">
-                                        <i class="fas fa-save me-1"></i>Guardar Cadena de Custodia
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="p-1 border-b border-gray-300">
+                            C.I.:
+                            <input type="text" id="dni_driver" name="dni_driver" class="input input-bordered input-xs w-full mt-1">
                         </div>
-                    </form>
+                        <div class="p-1 border-b border-gray-300">
+                            CARGO:
+                            <input type="text" id="driver_position" name="driver_position" class="input input-bordered input-xs w-full mt-1">
+                        </div>
+                        <div class="p-1 border-b border-gray-300">
+                            FECHA:
+                            <input type="date" id="driver_date" name="driver_date" class="input input-bordered input-xs w-full mt-1">
+                        </div>
+                        <div class="p-1">FIRMA:</div>
+                    </div>
+                    <div class="col-span-4">
+                        <div class="text-center font-bold bg-base-200 border-b border-gray-300 py-1">LUGAR DE DISPOSICIÓN FINAL</div>
+                        <div class="p-1 border-b border-gray-300">PEISOL S.A.</div>
+                        <div class="p-1 border-b border-gray-300">2191744791001</div>
+                        <div class="p-1 border-b border-gray-300 h-8"></div>
+                        <div class="p-1 border-b border-gray-300 h-8"></div>
+                        <div class="p-1 text-center mt-6">RECIBÍ CONFORME</div>
+                    </div>
                 </div>
-            </div>
+
+                <div class="text-xs mt-2 border border-gray-300">
+                    <div class="text-center font-bold bg-base-200 border-b border-gray-300 py-1">OBSERVACIONES</div>
+                    <div class="p-2">
+                        <textarea id="notes" name="notes" rows="4" class="textarea textarea-bordered w-full"></textarea>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="flex justify-end gap-3 mt-8">
+                    <a href="{% url 'custody_chain_list' %}" class="btn btn-outline gap-2">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary gap-2">
+                        <i class="fas fa-save"></i>
+                        Guardar Cadena de Custodia
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -386,58 +469,13 @@ document.addEventListener('DOMContentLoaded', function() {
     startTimeInput.addEventListener('change', calculateDuration);
     endTimeInput.addEventListener('change', calculateDuration);
 
-    // Seleccionar/Deseleccionar todos los recursos
-    const selectAllCheckbox = document.getElementById('selectAll');
-    
-    selectAllCheckbox.addEventListener('change', function() {
-        const checkboxes = document.querySelectorAll('#resourcesTableBody input[type="checkbox"]');
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = selectAllCheckbox.checked;
-        });
-    });
-
-    // Cargar recursos cuando se selecciona una planilla
+    // Mantener compatibilidad si el select existe
     const sheetProjectSelect = document.getElementById('sheet_project');
-    
-    sheetProjectSelect.addEventListener('change', function() {
-        const sheetProjectId = this.value;
-        
-        if (!sheetProjectId) {
-            document.getElementById('resourcesTableBody').innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center text-muted">
-                        Seleccione una planilla de proyecto para cargar los recursos disponibles
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-
-        // TODO: Implementar carga dinámica de recursos vía AJAX
-        // Por ahora, mostrar mensaje de carga
-        document.getElementById('resourcesTableBody').innerHTML = `
-            <tr>
-                <td colspan="7" class="text-center">
-                    <div class="spinner-border spinner-border-sm text-primary" role="status">
-                        <span class="visually-hidden">Cargando...</span>
-                    </div>
-                    <span class="ms-2">Cargando recursos del proyecto...</span>
-                </td>
-            </tr>
-        `;
-
-        // Simulación de carga (eliminar cuando se implemente AJAX)
-        setTimeout(() => {
-            document.getElementById('resourcesTableBody').innerHTML = `
-                <tr>
-                    <td colspan="7" class="text-center text-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        Funcionalidad de carga de recursos pendiente de implementación
-                    </td>
-                </tr>
-            `;
-        }, 1000);
-    });
+    if (sheetProjectSelect) {
+        sheetProjectSelect.addEventListener('change', function() {
+            // Placeholder para futura carga dinámica
+        });
+    }
 
     // Validación del formulario
     const form = document.getElementById('custodyChainForm');
