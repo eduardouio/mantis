@@ -4,289 +4,190 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <!-- Header -->
-                <div class="card-header pb-0">
-                    <div class="row">
-                        <div class="col-lg-6 col-7">
-                            <h5 class="mb-0">{{ title }}</h5>
-                            <p class="text-sm mb-0">
-                                <i class="fas fa-clipboard-list me-1"></i>
-                                Total de registros: <strong>{{ total_count }}</strong>
-                            </p>
-                        </div>
-                        <div class="col-lg-6 col-5 my-auto text-end">
-                            <a href="{% url 'custody_chain_create' %}" class="btn btn-primary btn-sm mb-0">
-                                <i class="fas fa-plus me-1"></i>Nueva Cadena
-                            </a>
-                        </div>
-                    </div>
+<div class="container mx-auto px-4 py-8">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div>
+                    <h2 class="card-title text-2xl">{{ title }}</h2>
+                    <p class="text-sm flex items-center gap-2 mt-1">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>Total de registros: <strong>{{ total_count }}</strong></span>
+                    </p>
                 </div>
+                <a href="{% url 'custody_chain_create' %}" class="btn btn-primary gap-2">
+                    <i class="fas fa-plus"></i>
+                    Nueva Cadena
+                </a>
+            </div>
 
-                <!-- Filtros y Búsqueda -->
-                <div class="card-body px-4 pt-3 pb-2">
-                    <form method="get" class="row g-3 mb-3">
-                        <div class="col-md-10">
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                                <input type="text" 
-                                       class="form-control" 
-                                       name="search" 
-                                       placeholder="Buscar por consecutivo, ubicación, proyecto, técnico, vehículo..."
-                                       value="{{ search_query }}">
+            <!-- Filtros y Búsqueda -->
+            <form method="get" class="mb-6">
+                <div class="flex flex-col md:flex-row gap-3">
+                    <div class="flex-1">
+                        <div class="join w-full">
+                            <div class="join-item flex items-center justify-center px-4 bg-base-200">
+                                <i class="fas fa-search"></i>
                             </div>
+                            <input type="text" 
+                                   name="search" 
+                                   placeholder="Buscar por consecutivo, ubicación, proyecto, técnico, vehículo..."
+                                   value="{{ search_query }}"
+                                   class="input input-bordered join-item flex-1 w-full">
                         </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-outline-primary w-100">
-                                <i class="fas fa-filter me-1"></i>Filtrar
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- Tabla de resultados -->
-                    <div class="table-responsive p-0">
-                        <table class="table align-items-center mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Consecutivo
-                                    </th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Planilla/Proyecto
-                                    </th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Cliente
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Fecha Actividad
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Ubicación
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Técnico
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Vehículo
-                                    </th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Acciones
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if custody_chains %}
-                                    {% for chain in custody_chains %}
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex px-2 py-1">
-                                                <div class="d-flex flex-column justify-content-center">
-                                                    <h6 class="mb-0 text-sm">{{ chain.consecutive }}</h6>
-                                                    <p class="text-xs text-secondary mb-0">
-                                                        <i class="far fa-calendar me-1"></i>
-                                                        {{ chain.issue_date|date:"d/m/Y"|default:"N/A" }}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ chain.sheet_project.series_code }}</p>
-                                            <p class="text-xs text-secondary mb-0">
-                                                Proyecto #{{ chain.sheet_project.project.id }}
-                                            </p>
-                                        </td>
-                                        <td>
-                                            <p class="text-xs font-weight-bold mb-0">
-                                                {{ chain.sheet_project.project.partner.name|truncatewords:5 }}
-                                            </p>
-                                        </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-info">
-                                                {{ chain.activity_date|date:"d/m/Y" }}
-                                            </span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <span class="text-secondary text-xs font-weight-normal">
-                                                {{ chain.location|truncatewords:3|default:"N/A" }}
-                                            </span>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            {% if chain.technical %}
-                                                <span class="text-secondary text-xs">
-                                                    <i class="fas fa-user me-1"></i>
-                                                    {{ chain.technical.first_name }} {{ chain.technical.last_name|slice:":1" }}.
-                                                </span>
-                                            {% else %}
-                                                <span class="text-xs text-muted">N/A</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            {% if chain.vehicle %}
-                                                <span class="text-secondary text-xs">
-                                                    <i class="fas fa-truck me-1"></i>
-                                                    {{ chain.vehicle.no_plate }}
-                                                </span>
-                                            {% else %}
-                                                <span class="text-xs text-muted">N/A</span>
-                                            {% endif %}
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <a href="{% url 'custody_chain_detail' chain.pk %}" 
-                                               class="btn btn-link text-info px-2 mb-0" 
-                                               data-bs-toggle="tooltip" 
-                                               data-bs-placement="top" 
-                                               title="Ver detalle">
-                                                <i class="fas fa-eye text-lg"></i>
-                                            </a>
-                                            <a href="#" 
-                                               class="btn btn-link text-warning px-2 mb-0"
-                                               data-bs-toggle="tooltip" 
-                                               data-bs-placement="top" 
-                                               title="Editar">
-                                                <i class="fas fa-edit text-lg"></i>
-                                            </a>
-                                            <a href="#" 
-                                               class="btn btn-link text-success px-2 mb-0"
-                                               data-bs-toggle="tooltip" 
-                                               data-bs-placement="top" 
-                                               title="Imprimir PDF">
-                                                <i class="fas fa-print text-lg"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="8" class="text-center py-4">
-                                            <div class="text-center">
-                                                <i class="fas fa-inbox fa-3x text-secondary mb-3"></i>
-                                                <p class="text-secondary mb-0">
-                                                    No se encontraron cadenas de custodia
-                                                </p>
-                                                {% if search_query %}
-                                                <p class="text-xs text-muted">
-                                                    Intenta con otros términos de búsqueda
-                                                </p>
-                                                {% endif %}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
                     </div>
+                    <button type="submit" class="btn btn-outline gap-2">
+                        <i class="fas fa-filter"></i>
+                        Filtrar
+                    </button>
+                </div>
+            </form>
 
-                    <!-- Paginación -->
-                    {% if page_obj.has_other_pages %}
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination justify-content-center">
-                                    {% if page_obj.has_previous %}
-                                    <li class="page-item">
-                                        <a class="page-link" 
-                                           href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" 
-                                           aria-label="Primera">
-                                            <span aria-hidden="true">&laquo;&laquo;</span>
-                                        </a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" 
-                                           href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                                           aria-label="Anterior">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
+            <!-- Tabla de resultados -->
+            <div class="overflow-x-auto">
+                <table class="table table-zebra">
+                    <thead>
+                        <tr>
+                            <th>Consecutivo</th>
+                            <th>Planilla/Proyecto</th>
+                            <th>Cliente</th>
+                            <th class="text-center">Fecha Actividad</th>
+                            <th class="text-center">Ubicación</th>
+                            <th class="text-center">Técnico</th>
+                            <th class="text-center">Vehículo</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if custody_chains %}
+                            {% for chain in custody_chains %}
+                            <tr>
+                                <td>
+                                    <div>
+                                        <div class="font-bold text-sm">{{ chain.consecutive }}</div>
+                                        <div class="text-xs opacity-60">
+                                            <i class="far fa-calendar me-1"></i>
+                                            {{ chain.issue_date|date:"d/m/Y"|default:"N/A" }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-xs font-bold">{{ chain.sheet_project.series_code }}</div>
+                                    <div class="text-xs opacity-60">
+                                        Proyecto #{{ chain.sheet_project.project.id }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="text-xs font-bold">
+                                        {{ chain.sheet_project.project.partner.name|truncatewords:5 }}
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge badge-info badge-sm">
+                                        {{ chain.activity_date|date:"d/m/Y" }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="text-xs">
+                                        {{ chain.location|truncatewords:3|default:"N/A" }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    {% if chain.technical %}
+                                        <span class="text-xs flex items-center justify-center gap-1">
+                                            <i class="fas fa-user"></i>
+                                            {{ chain.technical.first_name }} {{ chain.technical.last_name|slice:":1" }}.
+                                        </span>
+                                    {% else %}
+                                        <span class="text-xs opacity-50">N/A</span>
                                     {% endif %}
-
-                                    {% for num in page_obj.paginator.page_range %}
-                                        {% if page_obj.number == num %}
-                                        <li class="page-item active">
-                                            <span class="page-link">{{ num }}</span>
-                                        </li>
-                                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                        <li class="page-item">
-                                            <a class="page-link" 
-                                               href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}">
-                                                {{ num }}
-                                            </a>
-                                        </li>
+                                </td>
+                                <td class="text-center">
+                                    {% if chain.vehicle %}
+                                        <span class="text-xs flex items-center justify-center gap-1">
+                                            <i class="fas fa-truck"></i>
+                                            {{ chain.vehicle.no_plate }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-xs opacity-50">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="flex items-center justify-center gap-1">
+                                        <a href="{% url 'custody_chain_detail' chain.pk %}" 
+                                           class="btn btn-ghost btn-xs tooltip" 
+                                           data-tip="Ver detalle">
+                                            <i class="fas fa-eye text-info"></i>
+                                        </a>
+                                        <a href="#" 
+                                           class="btn btn-ghost btn-xs tooltip"
+                                           data-tip="Editar">
+                                            <i class="fas fa-edit text-warning"></i>
+                                        </a>
+                                        <a href="#" 
+                                           class="btn btn-ghost btn-xs tooltip"
+                                           data-tip="Imprimir PDF">
+                                            <i class="fas fa-print text-success"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8">
+                                    <div class="text-center py-8">
+                                        <i class="fas fa-inbox fa-3x opacity-30 mb-4"></i>
+                                        <p class="text-base-content/60 mb-0">
+                                            No se encontraron cadenas de custodia
+                                        </p>
+                                        {% if search_query %}
+                                        <p class="text-xs opacity-50">
+                                            Intenta con otros términos de búsqueda
+                                        </p>
                                         {% endif %}
-                                    {% endfor %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
 
-                                    {% if page_obj.has_next %}
-                                    <li class="page-item">
-                                        <a class="page-link" 
-                                           href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                                           aria-label="Siguiente">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link" 
-                                           href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                                           aria-label="Última">
-                                            <span aria-hidden="true">&raquo;&raquo;</span>
-                                        </a>
-                                    </li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                            <p class="text-center text-sm text-secondary">
-                                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
-                            </p>
-                        </div>
-                    </div>
+            <!-- Paginación -->
+            {% if page_obj.has_other_pages %}
+            <div class="flex justify-center mt-6">
+                <div class="join">
+                    {% if page_obj.has_previous %}
+                    <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" 
+                       class="join-item btn btn-sm">«</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                       class="join-item btn btn-sm">‹</a>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <button class="join-item btn btn-sm btn-active">{{ num }}</button>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                           class="join-item btn btn-sm">{{ num }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                       class="join-item btn btn-sm">›</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" 
+                       class="join-item btn btn-sm">»</a>
                     {% endif %}
                 </div>
             </div>
+            <p class="text-center text-sm opacity-60 mt-3">
+                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+            </p>
+            {% endif %}
         </div>
     </div>
 </div>
-
-<style>
-.card-header {
-    background: linear-gradient(195deg, #42424a 0%, #191919 100%);
-    border-radius: 0.75rem;
-    margin: 1rem;
-    padding: 1rem;
-}
-
-.card-header h5,
-.card-header p {
-    color: white;
-}
-
-.badge {
-    font-weight: 600;
-}
-
-.pagination .page-link {
-    color: #cb0c9f;
-}
-
-.pagination .page-item.active .page-link {
-    background-color: #cb0c9f;
-    border-color: #cb0c9f;
-}
-
-.btn-link:hover {
-    transform: scale(1.1);
-}
-</style>
-
-<script>
-// Inicializar tooltips
-document.addEventListener('DOMContentLoaded', function() {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-});
-</script>
 {% endblock %}
