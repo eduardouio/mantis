@@ -1,0 +1,460 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="card-title text-2xl">{{ title }}</h2>
+                <a href="{% url 'custody_chain_list' %}" class="btn btn-outline btn-sm gap-2">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+            <form method="post" id="custodyChainForm">
+                {% csrf_token %}
+
+                <!-- Sección: Información General -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        <span>Información General</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                        <div class="form-control">
+                            <label class="label" for="consecutive">
+                                <span class="label-text font-semibold">Consecutivo</span>
+                            </label>
+                            <input type="text" id="consecutive" name="consecutive" value="{{ consecutive }}" 
+                                   class="input input-bordered" readonly>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label" for="activity_date">
+                                <span class="label-text font-semibold">Fecha de Actividad *</span>
+                            </label>
+                            <input type="date" id="activity_date" name="activity_date" 
+                                   class="input input-bordered" required>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label" for="issue_date">
+                                <span class="label-text font-semibold">Fecha de Emisión</span>
+                            </label>
+                            <input type="date" id="issue_date" name="issue_date" 
+                                   class="input input-bordered">
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label" for="sheet_project">
+                                <span class="label-text font-semibold">Planilla de Proyecto *</span>
+                            </label>
+                            <select id="sheet_project" name="sheet_project" class="select select-bordered" required>
+                                <option value="">Seleccione una planilla...</option>
+                                {% for sheet in sheet_projects %}
+                                <option value="{{ sheet.id }}">
+                                    {{ sheet.series_code }} - {{ sheet.project.partner.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-control mt-4">
+                        <label class="label" for="location">
+                            <span class="label-text font-semibold">Ubicación</span>
+                        </label>
+                        <input type="text" id="location" name="location" 
+                               placeholder="Ingrese la ubicación" class="input input-bordered">
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Sección: Recursos Asignados -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-users text-primary"></i>
+                        <span>Recursos Asignados</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-control">
+                            <label class="label" for="technical">
+                                <span class="label-text font-semibold">Técnico</span>
+                            </label>
+                            <select id="technical" name="technical" class="select select-bordered">
+                                <option value="">Seleccione un técnico...</option>
+                                {% for tech in technicals %}
+                                <option value="{{ tech.id }}">
+                                    {{ tech.first_name }} {{ tech.last_name }} - {{ tech.dni }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label" for="vehicle">
+                                <span class="label-text font-semibold">Vehículo</span>
+                            </label>
+                            <select id="vehicle" name="vehicle" class="select select-bordered">
+                                <option value="">Seleccione un vehículo...</option>
+                                {% for veh in vehicles %}
+                                <option value="{{ veh.id }}">
+                                    {{ veh.no_plate }} - {{ veh.type_vehicle }} - {{ veh.brand }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <!-- Sección: Horarios -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-clock text-primary"></i>
+                        <span>Horarios</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="form-control">
+                            <label class="label" for="start_time">
+                                <span class="label-text font-semibold">Hora de Inicio</span>
+                            </label>
+                            <input type="time" id="start_time" name="start_time" 
+                                   class="input input-bordered">
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label" for="end_time">
+                                <span class="label-text font-semibold">Hora de Salida</span>
+                            </label>
+                            <input type="time" id="end_time" name="end_time" 
+                                   class="input input-bordered">
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label" for="time_duration">
+                                <span class="label-text font-semibold">Horas Totales</span>
+                            </label>
+                            <input type="number" id="time_duration" name="time_duration" 
+                                   step="0.01" placeholder="0.00" class="input input-bordered" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                        <hr class="horizontal dark">
+
+                        <!-- Sección: Información de Contacto -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-uppercase text-primary font-weight-bolder mb-3">
+                                    <i class="fas fa-address-card me-2"></i>Información de Contacto
+                                </h6>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="contact_name" class="form-label">Nombre de Contacto</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="contact_name" 
+                                       name="contact_name" 
+                                       placeholder="Nombre completo">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="dni_contact" class="form-label">Cédula de Contacto</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="dni_contact" 
+                                       name="dni_contact" 
+                                       placeholder="0000000000">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="contact_position" class="form-label">Cargo de Contacto</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="contact_position" 
+                                       name="contact_position" 
+                                       placeholder="Cargo">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="date_contact" class="form-label">Fecha de Contacto</label>
+                                <input type="date" 
+                                       class="form-control" 
+                                       id="date_contact" 
+                                       name="date_contact">
+                            </div>
+                        </div>
+
+                        <hr class="horizontal dark">
+
+                        <!-- Sección: Información de Transportista -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-uppercase text-primary font-weight-bolder mb-3">
+                                    <i class="fas fa-truck me-2"></i>Información de Transportista
+                                </h6>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="driver_name" class="form-label">Nombre de Transportista</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="driver_name" 
+                                       name="driver_name" 
+                                       placeholder="Nombre completo">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="dni_driver" class="form-label">Cédula de Transportista</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="dni_driver" 
+                                       name="dni_driver" 
+                                       placeholder="0000000000">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="driver_position" class="form-label">Cargo de Transportista</label>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="driver_position" 
+                                       name="driver_position" 
+                                       placeholder="Cargo">
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label for="driver_date" class="form-label">Fecha de Transportista</label>
+                                <input type="date" 
+                                       class="form-control" 
+                                       id="driver_date" 
+                                       name="driver_date">
+                            </div>
+                        </div>
+
+                        <hr class="horizontal dark">
+
+                        <!-- Sección: Totales -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-uppercase text-primary font-weight-bolder mb-3">
+                                    <i class="fas fa-calculator me-2"></i>Totales
+                                </h6>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label for="total_gallons" class="form-label">Total de Galones</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="total_gallons" 
+                                       name="total_gallons" 
+                                       value="0"
+                                       min="0">
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label for="total_barrels" class="form-label">Total de Barriles</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="total_barrels" 
+                                       name="total_barrels" 
+                                       value="0"
+                                       min="0">
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label for="total_cubic_meters" class="form-label">Total de Metros Cúbicos</label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="total_cubic_meters" 
+                                       name="total_cubic_meters" 
+                                       value="0"
+                                       min="0">
+                            </div>
+                        </div>
+
+                        <hr class="horizontal dark">
+
+                        <!-- Sección: Detalle de Recursos -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-uppercase text-primary font-weight-bolder mb-3">
+                                    <i class="fas fa-list me-2"></i>Detalle de Recursos del Proyecto
+                                </h6>
+                            </div>
+
+                            <div class="col-12 mb-3">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="resourcesTable">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th width="5%">
+                                                    <input type="checkbox" id="selectAll" class="form-check-input">
+                                                </th>
+                                                <th width="10%">Código</th>
+                                                <th width="35%">Descripción</th>
+                                                <th width="15%">Tipo</th>
+                                                <th width="15%">Fecha Inicio</th>
+                                                <th width="15%">Fecha Fin</th>
+                                                <th width="5%">Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="resourcesTableBody">
+                                            <!-- Las filas se cargarán dinámicamente cuando se seleccione una planilla -->
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted">
+                                                    Seleccione una planilla de proyecto para cargar los recursos disponibles
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="horizontal dark">
+
+                        <!-- Sección: Notas -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-uppercase text-primary font-weight-bolder mb-3">
+                                    <i class="fas fa-sticky-note me-2"></i>Notas Adicionales
+                                </h6>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="notes" class="form-label">Notas</label>
+                                <textarea class="form-control" 
+                                          id="notes" 
+                                          name="notes" 
+                                          rows="4"
+                                          placeholder="Ingrese notas adicionales sobre la cadena de custodia..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-end">
+                                    <a href="{% url 'custody_chain_list' %}" 
+                                       class="btn btn-outline-secondary me-2">
+                                        <i class="fas fa-times me-1"></i>Cancelar
+                                    </a>
+                                    <button type="submit" 
+                                            class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i>Guardar Cadena de Custodia
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para funcionalidad del formulario -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Calcular duración automáticamente
+    const startTimeInput = document.getElementById('start_time');
+    const endTimeInput = document.getElementById('end_time');
+    const durationInput = document.getElementById('time_duration');
+
+    function calculateDuration() {
+        if (startTimeInput.value && endTimeInput.value) {
+            const start = new Date('2000-01-01 ' + startTimeInput.value);
+            const end = new Date('2000-01-01 ' + endTimeInput.value);
+            
+            let diff = (end - start) / 1000 / 60 / 60; // Diferencia en horas
+            
+            if (diff < 0) {
+                diff += 24; // Si termina al día siguiente
+            }
+            
+            durationInput.value = diff.toFixed(2);
+        }
+    }
+
+    startTimeInput.addEventListener('change', calculateDuration);
+    endTimeInput.addEventListener('change', calculateDuration);
+
+    // Seleccionar/Deseleccionar todos los recursos
+    const selectAllCheckbox = document.getElementById('selectAll');
+    
+    selectAllCheckbox.addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('#resourcesTableBody input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+    });
+
+    // Cargar recursos cuando se selecciona una planilla
+    const sheetProjectSelect = document.getElementById('sheet_project');
+    
+    sheetProjectSelect.addEventListener('change', function() {
+        const sheetProjectId = this.value;
+        
+        if (!sheetProjectId) {
+            document.getElementById('resourcesTableBody').innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center text-muted">
+                        Seleccione una planilla de proyecto para cargar los recursos disponibles
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        // TODO: Implementar carga dinámica de recursos vía AJAX
+        // Por ahora, mostrar mensaje de carga
+        document.getElementById('resourcesTableBody').innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <span class="ms-2">Cargando recursos del proyecto...</span>
+                </td>
+            </tr>
+        `;
+
+        // Simulación de carga (eliminar cuando se implemente AJAX)
+        setTimeout(() => {
+            document.getElementById('resourcesTableBody').innerHTML = `
+                <tr>
+                    <td colspan="7" class="text-center text-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Funcionalidad de carga de recursos pendiente de implementación
+                    </td>
+                </tr>
+            `;
+        }, 1000);
+    });
+
+    // Validación del formulario
+    const form = document.getElementById('custodyChainForm');
+    
+    form.addEventListener('submit', function(e) {
+        // Validación adicional puede agregarse aquí
+        const activityDate = document.getElementById('activity_date').value;
+        const sheetProject = document.getElementById('sheet_project').value;
+
+        if (!activityDate || !sheetProject) {
+            e.preventDefault();
+            alert('Por favor complete los campos obligatorios (*)');
+            return false;
+        }
+    });
+});
+</script>
+
+
+{% endblock %}
