@@ -4,7 +4,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
+<div class="w-full max-w-none px-2 py-4">
     <!-- Botones de acción superiores (no se imprimen) -->
     <div class="flex gap-2 mb-6 print:hidden">
         <a href="{% url 'custody_chain_list' %}" class="btn btn-outline gap-2">
@@ -22,7 +22,7 @@
     </div>
 
     <!-- Documento de Cadena de Custodia -->
-    <div class="card bg-base-100 shadow-xl print:shadow-none border-2 border-gray-300" id="custody-chain-document">
+    <div class="card bg-base-100 shadow-xl print:shadow-none border-2 border-gray-300 w-full" id="custody-chain-document">
         <div class="card-body p-0">
             <!-- Encabezado del Documento - Estilo formulario físico -->
             <div class="border-b-2 border-gray-300">
@@ -195,6 +195,28 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Totales (igual que el formulario) -->
+            <div class="grid grid-cols-3 gap-3 mt-4 text-xs">
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">Total de Galones</span></label>
+                    <div class="input input-bordered input-xs w-full bg-base-100">
+                        {{ custody_chain.total_gallons }}
+                    </div>
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">Total de Metros Cúbicos</span></label>
+                    <div class="input input-bordered input-xs w-full bg-base-100">
+                        {{ custody_chain.total_cubic_meters }}
+                    </div>
+                </div>
+                <div class="form-control">
+                    <label class="label"><span class="label-text font-semibold">Total de Barriles</span></label>
+                    <div class="input input-bordered input-xs w-full bg-base-100">
+                        {{ custody_chain.total_barrels }}
+                    </div>
+                </div>
             </div>
 
             <!-- Sección inferior: Origen, Transportista, Disposición Final -->
