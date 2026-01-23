@@ -17,6 +17,12 @@ from .SheetProject import (
     SheetProject
 )
 
+from .ShippingGuide import (
+    ShippingGuide,
+	ShippingGuideDetail
+	
+)
+
 __all__ = [
     'Partner',
     'Project',
@@ -25,5 +31,7 @@ __all__ = [
     'CustodyChain',
     'ChainCustodyDetail',
     'FinalDispositionCertificate',
-    'FinalDispositionCertificateDetail'
+    'FinalDispositionCertificateDetail',
+	'ShippingGuide',
+	'ShippingGuideDetail'
 ]
