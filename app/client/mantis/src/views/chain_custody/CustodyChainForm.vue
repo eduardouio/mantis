@@ -225,7 +225,7 @@ const openVehicleModal = () => {
 }
 
 const cancelForm = () => {
-  router.push({ name: 'custody-chain' })
+  router.push({ name: 'sheet-project-view', params: { id: appConfig.idWorkSheet } })
 }
 
 // Actualizar ubicación cuando cambia el proyecto

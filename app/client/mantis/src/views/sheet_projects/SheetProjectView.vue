@@ -184,7 +184,7 @@ onMounted(async () => {
               <th class="p-2 border border-gray-100 text-center">Fecha Actividad</th>
               <th class="p-2 border border-gray-100 text-center">Hora Inicio</th>
               <th class="p-2 border border-gray-100 text-center">Hora Fin</th>
-              <th class="p-2 border border-gray-100 text-center">Horas</th>
+              <th class="p-2 border border-gray-100 text-center">Minutos</th>
               <th class="p-2 border border-gray-100 text-center">Ubicación</th>
               <th class="p-2 border border-gray-100 text-center">Técnico</th>
               <th class="p-2 border border-gray-100 text-center">Vehículo</th>
@@ -248,9 +248,9 @@ onMounted(async () => {
             </template>
           </tbody>
           <tfoot v-if="custodyChains.length > 0">
-            <tr class="bg-gray-100 font-bold">
+            <tr class="bg-gray-500 font-bold text-white">
               <td colspan="5" class="p-2 border border-gray-300 text-right">TOTALES:</td>
-              <td class="p-2 border border-gray-300 text-center">{{ totalHours }} hrs</td>
+              <td class="p-2 border border-gray-300 text-center">{{ totalHours }} Mins</td>
               <td colspan="3" class="p-2 border border-gray-300"></td>
               <td class="p-2 border border-gray-300 text-right font-mono">{{ totalGallons }}</td>
               <td class="p-2 border border-gray-300 text-right font-mono">{{ totalBarrels }}</td>
