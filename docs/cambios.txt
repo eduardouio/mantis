@@ -1,0 +1,38 @@
+en li=ugar del numero de proyecto que s eponga el nombre del proyecto
+en el modificar en 
+
+simplificar la agregacion de recursos luego e crear proyetcto
+
+revisar el proceso de eliminacion de proyectos
+
+
+
+elimniar los proyetcto
+
+#2
+#9
+#14
+#20
+
+
+numero en el listado de  proyectos
+# torura uno en 22 
+25
+26
+27
+30
+31
+33
+37
+39
+
+
+poner el id del proyecto-junto al nombre
+
+
+desde el listado ir de una a la ficha del proyecto, que no vaya 
+
+no mostrar none en 
+
+
+
