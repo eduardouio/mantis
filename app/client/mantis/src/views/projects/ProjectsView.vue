@@ -68,9 +68,8 @@ const saveProjectFooter = () => {
 }
 
 onMounted(() => {
-  projectStore.fetchProjectData();
+  projectStore.fetchProjectData(); // Esto ya carga todo: proyecto, work_orders y custody_chains
   projectResourceStore.fetchResourcesProject();
-  sheetProjectsStore.fetchSheetProjects();
 });
 </script>
 

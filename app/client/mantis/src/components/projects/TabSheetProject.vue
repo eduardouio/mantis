@@ -7,10 +7,7 @@ const router = useRouter();
 const sheetProjectsStore = UseSheetProjectsStore();
 
 const sheetProjects = computed(() => sheetProjectsStore.sheetProjects);
-
-const hasInProgressSheet = computed(() => {
-  return sheetProjects.value.some(sheet => sheet.status === 'IN_PROGRESS');
-});
+const hasInProgressSheet = computed(() => sheetProjectsStore.hasInProgressSheet);
 
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('es-GT', {
@@ -78,10 +75,11 @@ const handleCloseClick = (sheetId) => {
 const closeSheet = async (sheetId) => {
   try {
     console.log('Cerrando planilla:', sheetId);
-    // Aquí irá la llamada al store para cerrar la planilla
-    // await sheetProjectsStore.closeSheetProject(sheetId);
+    await sheetProjectsStore.closeSheetProject(sheetId);
+    confirmingCloseId.value = null;
   } catch (error) {
     console.error('Error al cerrar planilla:', error);
+    // Opcional: mostrar notificación de error
   }
 };
 
