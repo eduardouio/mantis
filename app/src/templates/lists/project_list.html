@@ -27,8 +27,14 @@
         <tbody>
             {% for item in object_list %}
             <tr class="p-0">
-                <td class="text-center hidden md:table-cell p-1">{{ forloop.counter }}</td>
-                <td class="p-1 hidden md:table-cell">{{ item.partner }}</td>
+                <td class="text-center hidden md:table-cell p-1">
+                    <span class="font-mono">
+                        PSLP-{{ item.pk|stringformat:"05d" }}
+                    </span>  
+                </td>
+                <td class="p-1 hidden md:table-cell">
+                    {{ item.partner }}
+                </td>
                 <td class="p-1 hidden md:table-cell ">
                     <div class="flex justify-between">
                         <span>{{ item.location }}</span>
@@ -56,10 +62,10 @@
                     </div>
                  </td>
                 <td class="p-1 hidden md:table-cell">{{ item.start_date }}</td>
-                <td class="p-1 text-center hidden md:table-cell">{{ item.end_date }}</td>
+                <td class="p-1 text-center hidden md:table-cell text-end">{{ item.end_date|default:'--' }}</td>
                 <td class="p-1 text-center">{% if item.is_active %}Activo{% else %}Inactivo{% endif %}</td>
                 <td class="p-1 text-center hidden md:table-cell">
-                    <a href="{% url 'project_detail' item.id %}" class="btn btn-xs btn-info">Ver</a>
+                    <a href="{% url 'project_detail' item.id %}" class="btn btn-xs btn-info">Ficha</a>
                     <a href="{% url 'project_update' item.id %}" class="btn btn-xs btn-warning">Editar</a>
                 </td>
             </tr>
