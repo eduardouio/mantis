@@ -31,10 +31,12 @@ class CustodyChainReportView(TemplateView):
 
         time_duration_hours = None
         if custody_chain.time_duration:
-
             time_duration_hours = round(float(custody_chain.time_duration) / 60, 2)
         
-        import ipdb; ipdb.set_trace()
+        # Validar que no haya más de 10 equipos
+        equipment_overflow = False
+        if custody_details and len(custody_details) > 10:
+            equipment_overflow = True
 
         context.update(
             {
@@ -46,6 +48,7 @@ class CustodyChainReportView(TemplateView):
                 "technical": custody_chain.technical,
                 "vehicle": custody_chain.vehicle,
                 "time_duration_hours": time_duration_hours,
+                "equipment_overflow": equipment_overflow,
             }
         )
 
