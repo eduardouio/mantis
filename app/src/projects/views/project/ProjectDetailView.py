@@ -1,7 +1,6 @@
 from django.views.generic import DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from projects.models import Project
-import json
 
 
 class ProjectDetailView(LoginRequiredMixin, DetailView):
@@ -17,4 +16,5 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
         context['title_page'] = 'Detalle del Proyecto {}'.format(
             self.object.partner
         )
+        context['popup_window'] = False
         return context
