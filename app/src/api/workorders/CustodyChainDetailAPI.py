@@ -8,7 +8,7 @@ from decimal import Decimal
 from datetime import date, datetime
 
 
-class CustodyChainDetaikAPI(View):
+class CustodyChainDetailAPI(View):
     """Detalle completo de una cadena de custodia con dependencias y metadatos."""
 
     def get(self, request, id):
