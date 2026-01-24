@@ -1,102 +1,29 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { UseProjectStore } from '@/stores/ProjectStore';
+import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 
 const route = useRoute();
 const router = useRouter();
+const projectStore = UseProjectStore();
+const sheetProjectsStore = UseSheetProjectsStore();
 
-// Datos de ejemplo del proyecto
-const project = ref({
-  id: 4,
-  partner_name: "ABARCA QUEZADA CONSTRUCCIONES Y SERVICIOS AQSERVIC CIA. LTDA.",
-  location: "PAMBIL",
-  cardinal_point: "NORTE",
-  contact_name: "Edison Guano",
-  contact_phone: "0992936569",
-  start_date: "2025-11-01",
-  end_date: null,
-  is_closed: false
+// Obtener el ID de la planilla desde la ruta
+const sheetId = computed(() => parseInt(route.params.id));
+
+// Obtener datos del proyecto desde el store
+const project = computed(() => projectStore.project);
+
+// Obtener la planilla específica
+const sheetProject = computed(() => {
+  return sheetProjectsStore.getSheetProjectById(sheetId.value);
 });
 
-// Datos de ejemplo de la planilla
-const sheetProject = ref({
-  id: 1,
-  series_code: "PSL-PS-2025-1000",
-  status: "IN_PROGRESS",
-  issue_date: null,
-  period_start: "2025-11-01",
-  period_end: null,
-  service_type: "ALQUILER Y MANTENIMIENTO",
-  total_gallons: 0,
-  total_barrels: 0,
-  total_cubic_meters: 0,
-  subtotal: 0,
-  tax_amount: 0,
-  total: 0,
-  contact_reference: "Edison Guano",
-  contact_phone_reference: "0992936569"
+// Obtener cadenas de custodia de la planilla
+const custodyChains = computed(() => {
+  return sheetProjectsStore.getCustodyChainsForSheet(sheetId.value);
 });
-
-// Datos de ejemplo de cadenas de custodia
-const custodyChains = ref([
-  {
-    id: 1,
-    series_code: "CC-2025-001",
-    issue_date: "2025-11-05",
-    start_time: "08:00",
-    end_time: "16:00",
-    time_duration: 8.00,
-    contact_name: "Juan Pérez",
-    dni_contact: "1234567890",
-    contact_position: "Supervisor de Campo",
-    date_contact: "2025-11-05",
-    driver_name: "Carlos López",
-    dni_driver: "0987654321",
-    driver_position: "Conductor",
-    driver_date: "2025-11-05",
-    total_gallons: 450,
-    total_barrels: 12,
-    total_cubic_meters: 15
-  },
-  {
-    id: 2,
-    series_code: "CC-2025-002",
-    issue_date: "2025-11-06",
-    start_time: "07:30",
-    end_time: "15:30",
-    time_duration: 8.00,
-    contact_name: "María García",
-    dni_contact: "1122334455",
-    contact_position: "Jefe de Proyecto",
-    date_contact: "2025-11-06",
-    driver_name: "Pedro Ramírez",
-    dni_driver: "5544332211",
-    driver_position: "Conductor",
-    driver_date: "2025-11-06",
-    total_gallons: 380,
-    total_barrels: 10,
-    total_cubic_meters: 12
-  },
-  {
-    id: 3,
-    series_code: "CC-2025-003",
-    issue_date: "2025-11-07",
-    start_time: "08:00",
-    end_time: "17:00",
-    time_duration: 9.00,
-    contact_name: "Luis Morales",
-    dni_contact: "9988776655",
-    contact_position: "Coordinador",
-    date_contact: "2025-11-07",
-    driver_name: "Jorge Vásquez",
-    dni_driver: "6677889900",
-    driver_position: "Conductor",
-    driver_date: "2025-11-07",
-    total_gallons: 520,
-    total_barrels: 14,
-    total_cubic_meters: 18
-  }
-]);
 
 const formatDate = (date) => {
   if (!date) return 'N/A';
@@ -118,19 +45,19 @@ const getStatusBadge = (status) => {
 };
 
 const totalGallons = computed(() => {
-  return custodyChains.value.reduce((sum, cc) => sum + cc.total_gallons, 0);
+  return custodyChains.value.reduce((sum, cc) => sum + (cc.total_gallons || 0), 0);
 });
 
 const totalBarrels = computed(() => {
-  return custodyChains.value.reduce((sum, cc) => sum + cc.total_barrels, 0);
+  return custodyChains.value.reduce((sum, cc) => sum + (cc.total_barrels || 0), 0);
 });
 
 const totalCubicMeters = computed(() => {
-  return custodyChains.value.reduce((sum, cc) => sum + cc.total_cubic_meters, 0);
+  return custodyChains.value.reduce((sum, cc) => sum + (cc.total_cubic_meters || 0), 0);
 });
 
 const totalHours = computed(() => {
-  return custodyChains.value.reduce((sum, cc) => sum + parseFloat(cc.time_duration), 0).toFixed(2);
+  return custodyChains.value.reduce((sum, cc) => sum + parseFloat(cc.time_duration || 0), 0).toFixed(2);
 });
 
 const goBack = () => {
@@ -147,13 +74,15 @@ const viewCustodyChainDetail = (id) => {
 const createNewCustodyChain = () => {
   router.push({ 
     name: 'custody-chain-form',
-    query: { sheet_id: sheetProject.value.id }
+    query: { sheet_id: sheetProject.value?.id }
   });
 };
 
-onMounted(() => {
-  // Aquí se cargarían los datos reales
-  console.log('Sheet ID:', route.query.sheet_id);
+onMounted(async () => {
+  // Si no hay datos, cargar el proyecto completo
+  if (!project.value.id) {
+    await projectStore.fetchProjectData();
+  }
 });
 </script>
 
@@ -164,7 +93,7 @@ onMounted(() => {
       <div class="flex justify-between items-center border-b-blue-500 border-b pb-3 mb-4">
         <h1 class="text-xl font-semibold text-blue-500">
           <i class="las la-link text-2xl"></i>
-          Cadenas de Custodia - Planilla {{ sheetProject.series_code }}
+          Cadenas de Custodia - Planilla {{ sheetProject?.series_code || 'N/A' }}
         </h1>
         <div class="flex gap-3">
           <button @click="createNewCustodyChain" class="btn btn-primary btn-sm">
@@ -184,24 +113,24 @@ onMounted(() => {
         <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
           <h3 class="font-semibold text-blue-700 mb-3 flex items-center gap-2">
             <i class="las la-building"></i>
-            Información del Proyecto #{{ project.id }}
+            Información del Proyecto #{{ project?.id || 'N/A' }}
           </h3>
           <div class="space-y-2 text-sm">
             <div>
               <span class="font-medium">Cliente:</span>
-              <span class="ml-2">{{ project.partner_name }}</span>
+              <span class="ml-2">{{ project?.partner_name || 'N/A' }}</span>
             </div>
             <div>
               <span class="font-medium">Ubicación:</span>
-              <span class="ml-2">{{ project.location }} - {{ project.cardinal_point }}</span>
+              <span class="ml-2">{{ project?.location || 'N/A' }}{{ project?.cardinal_point ? ' - ' + project.cardinal_point : '' }}</span>
             </div>
             <div>
               <span class="font-medium">Contacto:</span>
-              <span class="ml-2">{{ project.contact_name }} ({{ project.contact_phone }})</span>
+              <span class="ml-2">{{ project?.contact_name || 'N/A' }} ({{ project?.contact_phone || 'N/A' }})</span>
             </div>
             <div>
               <span class="font-medium">Fecha Inicio:</span>
-              <span class="ml-2">{{ formatDate(project.start_date) }}</span>
+              <span class="ml-2">{{ formatDate(project?.start_date) }}</span>
             </div>
           </div>
         </div>
@@ -215,23 +144,23 @@ onMounted(() => {
           <div class="space-y-2 text-sm">
             <div>
               <span class="font-medium">Serie:</span>
-              <span class="ml-2 font-mono">{{ sheetProject.series_code }}</span>
+              <span class="ml-2 font-mono">{{ sheetProject?.series_code || 'N/A' }}</span>
             </div>
             <div>
               <span class="font-medium">Estado:</span>
-              <span class="ml-2 badge" :class="getStatusBadge(sheetProject.status).class">
-                {{ getStatusBadge(sheetProject.status).text }}
+              <span class="ml-2 badge" :class="getStatusBadge(sheetProject?.status).class">
+                {{ getStatusBadge(sheetProject?.status).text }}
               </span>
             </div>
             <div>
               <span class="font-medium">Tipo Servicio:</span>
-              <span class="ml-2">{{ sheetProject.service_type }}</span>
+              <span class="ml-2">{{ sheetProject?.service_type || 'N/A' }}</span>
             </div>
             <div>
               <span class="font-medium">Período:</span>
               <span class="ml-2">
-                {{ formatDate(sheetProject.period_start) }} - 
-                {{ sheetProject.period_end ? formatDate(sheetProject.period_end) : 'En curso' }}
+                {{ formatDate(sheetProject?.period_start) }} - 
+                {{ sheetProject?.period_end ? formatDate(sheetProject.period_end) : 'En curso' }}
               </span>
             </div>
           </div>
@@ -243,7 +172,7 @@ onMounted(() => {
     <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
       <h2 class="font-semibold text-lg mb-4 flex items-center gap-2 text-gray-800">
         <i class="las la-list text-blue-600"></i>
-        Listado de Cadenas de Custodia
+        Listado de Cadenas de Custodia ({{ custodyChains.length }})
       </h2>
 
       <div class="overflow-x-auto">
@@ -251,23 +180,25 @@ onMounted(() => {
           <thead>
             <tr class="bg-gray-500 text-white">
               <th class="p-2 border border-gray-100 text-center">#</th>
-              <th class="p-2 border border-gray-100 text-center">Serie</th>
-              <th class="p-2 border border-gray-100 text-center">Fecha Emisión</th>
+              <th class="p-2 border border-gray-100 text-center">Consecutivo</th>
+              <th class="p-2 border border-gray-100 text-center">Fecha Actividad</th>
               <th class="p-2 border border-gray-100 text-center">Hora Inicio</th>
               <th class="p-2 border border-gray-100 text-center">Hora Fin</th>
               <th class="p-2 border border-gray-100 text-center">Horas</th>
-              <th class="p-2 border border-gray-100 text-center">Contacto</th>
-              <th class="p-2 border border-gray-100 text-center">Conductor</th>
+              <th class="p-2 border border-gray-100 text-center">Ubicación</th>
+              <th class="p-2 border border-gray-100 text-center">Técnico</th>
+              <th class="p-2 border border-gray-100 text-center">Vehículo</th>
               <th class="p-2 border border-gray-100 text-center">Galones</th>
               <th class="p-2 border border-gray-100 text-center">Barriles</th>
               <th class="p-2 border border-gray-100 text-center">M³</th>
+              <th class="p-2 border border-gray-100 text-center">Recursos</th>
               <th class="p-2 border border-gray-100 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
             <template v-if="custodyChains.length === 0">
               <tr>
-                <td colspan="12" class="text-center text-gray-500 py-8">
+                <td colspan="14" class="text-center text-gray-500 py-8">
                   <i class="las la-inbox text-4xl"></i>
                   <p>No hay cadenas de custodia registradas para esta planilla</p>
                 </td>
@@ -276,26 +207,31 @@ onMounted(() => {
             <template v-else>
               <tr v-for="cc in custodyChains" :key="cc.id">
                 <td class="p-2 border border-gray-300 text-center">{{ cc.id }}</td>
-                <td class="p-2 border border-gray-300 font-mono">{{ cc.series_code }}</td>
-                <td class="p-2 border border-gray-300 text-center">{{ formatDate(cc.issue_date) }}</td>
+                <td class="p-2 border border-gray-300 font-mono">{{ cc.consecutive }}</td>
+                <td class="p-2 border border-gray-300 text-center">{{ formatDate(cc.activity_date) }}</td>
                 <td class="p-2 border border-gray-300 text-center font-mono">{{ formatTime(cc.start_time) }}</td>
                 <td class="p-2 border border-gray-300 text-center font-mono">{{ formatTime(cc.end_time) }}</td>
-                <td class="p-2 border border-gray-300 text-center font-semibold">{{ cc.time_duration }}</td>
+                <td class="p-2 border border-gray-300 text-center font-semibold">{{ cc.time_duration || 0 }}</td>
+                <td class="p-2 border border-gray-300">{{ cc.location || 'N/A' }}</td>
                 <td class="p-2 border border-gray-300">
-                  <div class="text-xs">
-                    <div class="font-semibold">{{ cc.contact_name }}</div>
-                    <div class="text-gray-500">{{ cc.contact_position }}</div>
+                  <div class="text-xs" v-if="cc.technical">
+                    <div class="font-semibold">{{ cc.technical.first_name }} {{ cc.technical.last_name }}</div>
                   </div>
+                  <span v-else class="text-gray-400">N/A</span>
                 </td>
                 <td class="p-2 border border-gray-300">
-                  <div class="text-xs">
-                    <div class="font-semibold">{{ cc.driver_name }}</div>
-                    <div class="text-gray-500">CI: {{ cc.dni_driver }}</div>
+                  <div class="text-xs" v-if="cc.vehicle">
+                    <div class="font-semibold">{{ cc.vehicle.no_plate }}</div>
+                    <div class="text-gray-500">{{ cc.vehicle.brand }}</div>
                   </div>
+                  <span v-else class="text-gray-400">N/A</span>
                 </td>
-                <td class="p-2 border border-gray-300 text-right font-mono">{{ cc.total_gallons }}</td>
-                <td class="p-2 border border-gray-300 text-right font-mono">{{ cc.total_barrels }}</td>
-                <td class="p-2 border border-gray-300 text-right font-mono">{{ cc.total_cubic_meters }}</td>
+                <td class="p-2 border border-gray-300 text-right font-mono">{{ cc.total_gallons || 0 }}</td>
+                <td class="p-2 border border-gray-300 text-right font-mono">{{ cc.total_barrels || 0 }}</td>
+                <td class="p-2 border border-gray-300 text-right font-mono">{{ cc.total_cubic_meters || 0 }}</td>
+                <td class="p-2 border border-gray-300 text-center">
+                  <span class="badge badge-info">{{ cc.details_count || 0 }}</span>
+                </td>
                 <td class="p-2 border border-gray-300 text-end">
                   <div class="flex gap-2 justify-end">
                     <button 
@@ -315,11 +251,11 @@ onMounted(() => {
             <tr class="bg-gray-100 font-bold">
               <td colspan="5" class="p-2 border border-gray-300 text-right">TOTALES:</td>
               <td class="p-2 border border-gray-300 text-center">{{ totalHours }} hrs</td>
-              <td colspan="2" class="p-2 border border-gray-300"></td>
+              <td colspan="3" class="p-2 border border-gray-300"></td>
               <td class="p-2 border border-gray-300 text-right font-mono">{{ totalGallons }}</td>
               <td class="p-2 border border-gray-300 text-right font-mono">{{ totalBarrels }}</td>
               <td class="p-2 border border-gray-300 text-right font-mono">{{ totalCubicMeters }}</td>
-              <td class="p-2 border border-gray-300"></td>
+              <td colspan="2" class="p-2 border border-gray-300"></td>
             </tr>
           </tfoot>
         </table>
