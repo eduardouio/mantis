@@ -170,9 +170,9 @@ class SheetProjectAdmin(BaseModelAdmin):
 @admin.register(CustodyChain)
 class CustodyChainAdmin(BaseModelAdmin):
     list_display = (
-        'id', 'consecutive', 'technical', 'sheet_project',
-        'activity_date', 'location', 'issue_date', 'time_duration',
-        'total_gallons', 'total_barrels', 'total_cubic_meters'
+        'id', 'consecutive', 'get_sheet_project_id', 'get_project_id', 
+        'technical', 'sheet_project', 'activity_date', 'location', 'issue_date', 
+        'time_duration', 'total_gallons', 'total_barrels', 'total_cubic_meters'
     )
     list_filter = (
         'technical', 'sheet_project', 'activity_date', 'issue_date', 'is_active'
@@ -211,17 +211,27 @@ class CustodyChainAdmin(BaseModelAdmin):
         })
     )
 
+    def get_sheet_project_id(self, obj):
+        return obj.sheet_project.id if obj.sheet_project else None
+    get_sheet_project_id.short_description = 'ID Hoja'
+    get_sheet_project_id.admin_order_field = 'sheet_project__id'
+
+    def get_project_id(self, obj):
+        return obj.sheet_project.project.id if obj.sheet_project and obj.sheet_project.project else None
+    get_project_id.short_description = 'ID Proyecto'
+    get_project_id.admin_order_field = 'sheet_project__project__id'
+
 
 @admin.register(ChainCustodyDetail)
 class ChainCustodyDetailAdmin(BaseModelAdmin):
     list_display = (
-        'custody_chain', 'project_resource',
+        'custody_chain', 'get_sheet_project_id', 'get_project_id', 'project_resource',
     )
     list_filter = (
-        'custody_chain', 'project_resource', 'is_active'
+        'custody_chain', 'custody_chain__sheet_project', 'custody_chain__sheet_project__project', 'project_resource', 'is_active'
     )
     search_fields = (
-        'custody_chain__technical__first_name', 'project_resource__name'
+        'custody_chain__technical__first_name', 'project_resource__resource_item__name'
     )
     # readonly heredado
     fieldsets = (
@@ -235,6 +245,18 @@ class ChainCustodyDetailAdmin(BaseModelAdmin):
             'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'), 'classes': ('collapse',)
         })
     )
+
+    def get_sheet_project_id(self, obj):
+        return obj.custody_chain.sheet_project.id if obj.custody_chain and obj.custody_chain.sheet_project else None
+    get_sheet_project_id.short_description = 'ID Hoja'
+    get_sheet_project_id.admin_order_field = 'custody_chain__sheet_project__id'
+
+    def get_project_id(self, obj):
+        if obj.custody_chain and obj.custody_chain.sheet_project and obj.custody_chain.sheet_project.project:
+            return obj.custody_chain.sheet_project.project.id
+        return None
+    get_project_id.short_description = 'ID Proyecto'
+    get_project_id.admin_order_field = 'custody_chain__sheet_project__project__id'
 
 
 @admin.register(FinalDispositionCertificate)
