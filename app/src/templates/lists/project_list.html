@@ -29,7 +29,9 @@
             <tr class="p-0">
                 <td class="text-center hidden md:table-cell p-1">
                     <span class="font-mono">
-                        PSLP-{{ item.pk|stringformat:"05d" }}
+                        <a href="{% url 'project_detail' item.id %}">
+                            PSLP-{{ item.pk|stringformat:"05d" }}
+                        </a>
                     </span>  
                 </td>
                 <td class="p-1 hidden md:table-cell">

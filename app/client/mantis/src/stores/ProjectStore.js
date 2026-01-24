@@ -36,7 +36,7 @@ export const UseProjectStore = defineStore("projectStore", {
         async fetchAllProjects() {
             console.log("Fetching all projects...");
             try {
-                const response = await fetch(appConfig.URLAllProjectData, {
+                const response = await fetch(appConfig.URLProjectData, {
                     method: "GET",
                     headers: appConfig.headers
                 });
