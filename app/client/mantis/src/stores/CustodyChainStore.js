@@ -96,7 +96,7 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
                 duration_hours: 0.0,
             };
         },
-        async fetchCustodyChainDetail(id) {
+        async fetchCustodyCapphainDetail(id) {
             this.loading = true;
             this.error = null;
             console.log("Fetching custody chain detail for ID:", id);

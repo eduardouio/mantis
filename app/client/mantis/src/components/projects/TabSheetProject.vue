@@ -1,13 +1,38 @@
 <script setup>
 import { computed, defineEmits, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 
 const router = useRouter();
+const projectStore = UseProjectStore();
 const sheetProjectsStore = UseSheetProjectsStore();
 
-const sheetProjects = computed(() => sheetProjectsStore.sheetProjects);
-const hasInProgressSheet = computed(() => sheetProjectsStore.hasInProgressSheet);
+// Obtener las work orders con sus cadenas de custodia
+const workOrders = computed(() => projectStore.workOrders || []);
+const hasInProgressSheet = computed(() => {
+  return workOrders.value.some(wo => wo.status === 'IN_PROGRESS');
+});
+
+// Calcular totales para cada work order desde sus cadenas de custodia
+const enrichedWorkOrders = computed(() => {
+  return workOrders.value.map(wo => {
+    const custodyChains = wo.custody_chains || [];
+    
+    // Sumar totales desde las cadenas de custodia
+    const totalGallons = custodyChains.reduce((sum, cc) => sum + (cc.total_gallons || 0), 0);
+    const totalBarrels = custodyChains.reduce((sum, cc) => sum + (cc.total_barrels || 0), 0);
+    const totalCubicMeters = custodyChains.reduce((sum, cc) => sum + (cc.total_cubic_meters || 0), 0);
+    
+    return {
+      ...wo,
+      calculated_total_gallons: totalGallons,
+      calculated_total_barrels: totalBarrels,
+      calculated_total_cubic_meters: totalCubicMeters,
+      custody_chains_count: custodyChains.length
+    };
+  });
+});
 
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('es-GT', {
@@ -57,13 +82,10 @@ const confirmingCloseId = ref(null);
 
 const handleCloseClick = (sheetId) => {
   if (confirmingCloseId.value === sheetId) {
-    // Segunda vez: ejecutar el cierre
     closeSheet(sheetId);
     confirmingCloseId.value = null;
   } else {
-    // Primera vez: mostrar confirmación
     confirmingCloseId.value = sheetId;
-    // Resetear después de 3 segundos si no confirma
     setTimeout(() => {
       if (confirmingCloseId.value === sheetId) {
         confirmingCloseId.value = null;
@@ -77,9 +99,10 @@ const closeSheet = async (sheetId) => {
     console.log('Cerrando planilla:', sheetId);
     await sheetProjectsStore.closeSheetProject(sheetId);
     confirmingCloseId.value = null;
+    // Recargar datos del proyecto después de cerrar
+    await projectStore.fetchProjectData();
   } catch (error) {
     console.error('Error al cerrar planilla:', error);
-    // Opcional: mostrar notificación de error
   }
 };
 
@@ -132,7 +155,7 @@ const viewCustodyChains = (sheetId) => {
           </tr>
         </thead>
         <tbody>
-          <template v-if="sheetProjects.length === 0">
+          <template v-if="enrichedWorkOrders.length === 0">
             <tr>
               <td colspan="13" class="text-center text-gray-500 py-8">
                 <i class="las la-inbox text-4xl"></i>
@@ -141,7 +164,7 @@ const viewCustodyChains = (sheetId) => {
             </tr>
           </template>
           <template v-else>
-            <tr v-for="sheet in sheetProjects" :key="sheet.id">
+            <tr v-for="sheet in enrichedWorkOrders" :key="sheet.id">
               <td class="p-2 border border-gray-300">{{ sheet.id }}</td>
               <td class="p-2 border border-gray-300 font-mono">{{ sheet.series_code }}</td>
               <td class="p-2 border border-gray-300">
@@ -158,9 +181,15 @@ const viewCustodyChains = (sheetId) => {
               <td class="p-2 border border-gray-300">{{ sheet.contact_reference || 'N/A' }}</td>
               <td class="p-2 border border-gray-300">{{ sheet.contact_phone_reference || 'N/A' }}</td>
               <td class="p-2 border border-gray-300">{{ sheet.service_type }}</td>
-              <td class="p-2 border border-gray-300 text-right">{{ sheet.total_gallons.toLocaleString() }}</td>
-              <td class="p-2 border border-gray-300 text-right">{{ sheet.total_barrels.toLocaleString() }}</td>
-              <td class="p-2 border border-gray-300 text-right">{{ sheet.total_cubic_meters.toFixed(1) }}</td>
+              <td class="p-2 border border-gray-300 text-right font-mono">
+                {{ sheet.calculated_total_gallons.toLocaleString() }}
+              </td>
+              <td class="p-2 border border-gray-300 text-right font-mono">
+                {{ sheet.calculated_total_barrels.toLocaleString() }}
+              </td>
+              <td class="p-2 border border-gray-300 text-right font-mono">
+                {{ sheet.calculated_total_cubic_meters.toFixed(2) }}
+              </td>
               <td class="p-2 border border-gray-300 text-end">
                 <div class="flex gap-2 justify-end">
                   <button 
@@ -177,7 +206,7 @@ const viewCustodyChains = (sheetId) => {
                     title="Ver cadenas de custodia"
                   >
                     <i class="las la-link"></i>
-                    C. CUSTODIA
+                    C. CUSTODIA ({{ sheet.custody_chains_count }})
                   </button>
                   <button
                     @click="handleCloseClick(sheet.id)"  

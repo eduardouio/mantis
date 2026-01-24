@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { appConfig } from '@/AppConfig.js'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
@@ -20,44 +20,19 @@ const projectResourceStore = UseProjectResourceStore()
 const custodyChainStore = UseCustodyChainStore()
 
 const router = useRouter()
+const route = useRoute()
 const isLoading = ref(false)
 const showTechnicalModal = ref(false)
 const showVehicleModal = ref(false)
 
-onMounted(async () => {
-  await projectStore.fetchProjectData()
-  await technicalStore.fetchTechnicalsAvailable()
-  await vehicleStore.fetchVehicles()
-  await projectResourceStore.fetchResourcesProject()
-  
-  // Inicializar con datos del store
-  custodyChain.value = {
-    ...custodyChainStore.newCustodyChain,
-    location: projectStore.project?.location || '',
-    contact_name: projectStore.project?.contact_name || '',
-    technical: null,
-    vehicle: null,
-    technical_name: '',
-    technical_dni: '',
-    technical_position: '',
-    vehicle_plate: '',
-    vehicle_brand: '',
-    vehicle_model: '',
-    start_time: '',
-    end_time: '',
-    time_duration: 0,
-    dni_contact: '',
-    contact_position: '',
-    date_contact: new Date().toISOString().split('T')[0],
-    driver_name: '',
-    dni_driver: '',
-    driver_position: '',
-    driver_date: new Date().toISOString().split('T')[0],
-    total_barrels: 0,
-    total_cubic_meters: 0,
-    notes: ''
-  }
+// Obtener el ID de la cadena de custodia desde la ruta (0 o undefined = crear, >0 = editar)
+const custodyChainId = computed(() => {
+  const id = parseInt(route.params.id)
+  return isNaN(id) ? 0 : id
 })
+
+// Modo edición o creación
+const isEditMode = computed(() => custodyChainId.value > 0)
 
 const custodyChain = ref({
   technical: null,
@@ -65,12 +40,12 @@ const custodyChain = ref({
   sheet_project: null,
   consecutive: '',
   activity_date: new Date().toISOString().split('T')[0],
-  location: projectStore.project?.location || '',
+  location: '',
   issue_date: new Date().toISOString().split('T')[0],
   start_time: '',
   end_time: '',
   time_duration: 0,
-  contact_name: projectStore.project?.contact_name || '',
+  contact_name: '',
   dni_contact: '',
   contact_position: '',
   date_contact: new Date().toISOString().split('T')[0],
@@ -82,17 +57,88 @@ const custodyChain = ref({
   total_barrels: 0,
   total_cubic_meters: 0,
   notes: '',
-  // Campos copiados del técnico
   technical_name: '',
   technical_dni: '',
   technical_position: '',
-  // Campos copiados del vehículo
   vehicle_plate: '',
   vehicle_brand: '',
   vehicle_model: ''
 })
 
 const selectedResourceIds = ref([])
+
+// Cargar datos de la cadena de custodia si estamos en modo edición
+const loadCustodyChainData = async () => {
+  if (!isEditMode.value) return
+
+  try {
+    isLoading.value = true
+    
+    // Buscar la cadena en el store del proyecto
+    const chain = projectStore.getCustodyChainById(custodyChainId.value)
+    
+    if (chain) {
+      // Cargar datos de la cadena
+      custodyChain.value = {
+        technical: chain.technical?.id || null,
+        vehicle: chain.vehicle?.id || null,
+        sheet_project: chain.sheet_project_id,
+        consecutive: chain.consecutive,
+        activity_date: chain.activity_date,
+        location: chain.location,
+        issue_date: chain.issue_date || new Date().toISOString().split('T')[0],
+        start_time: chain.start_time || '',
+        end_time: chain.end_time || '',
+        time_duration: chain.time_duration || 0,
+        contact_name: chain.contact_name || '',
+        dni_contact: chain.dni_contact || '',
+        contact_position: chain.contact_position || '',
+        date_contact: chain.date_contact || new Date().toISOString().split('T')[0],
+        driver_name: chain.driver_name || '',
+        dni_driver: chain.dni_driver || '',
+        driver_position: chain.driver_position || '',
+        driver_date: chain.driver_date || new Date().toISOString().split('T')[0],
+        total_gallons: chain.total_gallons || 0,
+        total_barrels: chain.total_barrels || 0,
+        total_cubic_meters: chain.total_cubic_meters || 0,
+        notes: chain.metadata?.notes || '',
+        technical_name: chain.technical ? `${chain.technical.first_name} ${chain.technical.last_name}` : '',
+        technical_dni: chain.dni_driver || '',
+        technical_position: chain.driver_position || '',
+        vehicle_plate: chain.vehicle?.no_plate || '',
+        vehicle_brand: chain.vehicle?.brand || '',
+        vehicle_model: chain.vehicle?.model || ''
+      }
+      
+      // Cargar IDs de recursos seleccionados
+      if (chain.details && chain.details.length > 0) {
+        selectedResourceIds.value = chain.details.map(d => d.project_resource_id)
+      }
+    } else {
+      console.warn('Cadena de custodia no encontrada')
+      router.push({ name: 'projects-detail' })
+    }
+  } catch (error) {
+    console.error('Error al cargar cadena de custodia:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(async () => {
+  await projectStore.fetchProjectData()
+  await technicalStore.fetchTechnicalsAvailable()
+  await vehicleStore.fetchVehicles()
+  await projectResourceStore.fetchResourcesProject()
+  
+  if (isEditMode.value) {
+    await loadCustodyChainData()
+  } else {
+    // Modo creación: inicializar con datos del proyecto
+    custodyChain.value.location = projectStore.project?.location || ''
+    custodyChain.value.contact_name = projectStore.project?.contact_name || ''
+  }
+})
 
 const availableResources = computed(() => {
   return projectResourceStore.resourcesProject
@@ -149,21 +195,9 @@ const submitForm = async () => {
   try {
     isLoading.value = true
     
-    // Validar campos requeridos
     if (!custodyChain.value.technical || !custodyChain.value.vehicle || selectedResources.value.length === 0) {
       alert('Por favor complete los campos requeridos y seleccione al menos un recurso')
       return
-    }
-
-    // Actualizar el store antes de enviar
-    custodyChainStore.newCustodyChain = {
-      ...custodyChainStore.newCustodyChain,
-      issue_date: custodyChain.value.issue_date,
-      consecutive: custodyChain.value.consecutive,
-      activity_date: custodyChain.value.activity_date,
-      location: custodyChain.value.location,
-      total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
-      duration_hours: custodyChain.value.time_duration,
     }
 
     const payload = {
@@ -198,11 +232,24 @@ const submitForm = async () => {
       resources: selectedResourceIds.value
     }
 
-    const result = await custodyChainStore.addCustodyChain(payload)
-    
-    if (result) {
-      alert('Cadena de custodia guardada exitosamente')
-      router.push({ name: 'custody-chain' })
+    if (isEditMode.value) {
+      // TODO: Implementar actualización
+      console.log('Actualizar cadena de custodia:', custodyChainId.value, payload)
+      alert('Función de actualización pendiente de implementar')
+    } else {
+      const result = await custodyChainStore.addCustodyChain(payload)
+      
+      if (result) {
+        alert('Cadena de custodia guardada exitosamente')
+        
+        // Obtener el sheet_project_id de la primera work order activa
+        const workOrder = projectStore.workOrders.find(wo => wo.status === 'IN_PROGRESS')
+        if (workOrder) {
+          router.push({ name: 'sheet-project-view', params: { id: workOrder.id } })
+        } else {
+          router.push({ name: 'projects-detail' })
+        }
+      }
     }
   } catch (error) {
     console.error('Error al guardar:', error)
@@ -225,19 +272,23 @@ const openVehicleModal = () => {
 }
 
 const cancelForm = () => {
-  router.push({ name: 'sheet-project-view', params: { id: appConfig.idWorkSheet } })
+  // Volver a la vista de la planilla
+  const workOrder = projectStore.workOrders.find(wo => wo.status === 'IN_PROGRESS')
+  if (workOrder) {
+    router.push({ name: 'sheet-project-view', params: { id: workOrder.id } })
+  } else {
+    router.push({ name: 'projects-detail' })
+  }
 }
 
-// Actualizar ubicación cuando cambia el proyecto
 watch(() => projectStore.project?.location, (newLocation) => {
-  if (newLocation && !custodyChain.value.location) {
+  if (newLocation && !custodyChain.value.location && !isEditMode.value) {
     custodyChain.value.location = newLocation
   }
 })
 
-// Actualizar contacto cuando cambia el proyecto
 watch(() => projectStore.project?.contact_name, (newContact) => {
-  if (newContact && !custodyChain.value.contact_name) {
+  if (newContact && !custodyChain.value.contact_name && !isEditMode.value) {
     custodyChain.value.contact_name = newContact
   }
 })
@@ -252,7 +303,6 @@ const selectedVehicleData = computed(() => {
   return vehicleStore.vehicles.find(v => v.id === custodyChain.value.vehicle)
 })
 
-// Validaciones de técnico y vehículo
 const technicalValidation = computed(() => {
   return validateTechnical(selectedTechnicalData.value)
 })
@@ -268,7 +318,6 @@ const hasValidationIssues = computed(() => {
          vehicleValidation.value.hasWarnings
 })
 
-// Validación de horas
 const timeValidation = computed(() => {
   if (!custodyChain.value.start_time || !custodyChain.value.end_time) {
     return { isValid: true, message: '' }
@@ -290,25 +339,22 @@ const timeValidation = computed(() => {
   return { isValid: true, message: '' }
 })
 
-// Calcular duración automáticamente cuando cambia la hora de inicio
 watch(() => custodyChain.value.start_time, () => {
   calculateDuration()
 })
 
-// Calcular duración automáticamente cuando cambia la hora de fin
 watch(() => custodyChain.value.end_time, () => {
   calculateDuration()
 })
 
 watch(() => custodyChain.value.technical, (newTechnicalId) => {
-  if (newTechnicalId) {
+  if (newTechnicalId && !isEditMode.value) {
     const selectedTech = technicalStore.technicals.find(t => t.id === newTechnicalId)
     if (selectedTech) {
       custodyChain.value.technical_name = `${selectedTech.first_name} ${selectedTech.last_name}`
       custodyChain.value.technical_dni = selectedTech.dni
       custodyChain.value.technical_position = selectedTech.work_area_display || selectedTech.work_area
       
-      // Copiar información al transportista
       custodyChain.value.driver_name = `${selectedTech.first_name} ${selectedTech.last_name}`
       custodyChain.value.dni_driver = selectedTech.dni
       custodyChain.value.driver_position = selectedTech.work_area_display || selectedTech.work_area
@@ -317,9 +363,8 @@ watch(() => custodyChain.value.technical, (newTechnicalId) => {
   }
 })
 
-
 watch(() => custodyChain.value.vehicle, (newVehicleId) => {
-  if (newVehicleId) {
+  if (newVehicleId && !isEditMode.value) {
     const selectedVehicle = vehicleStore.vehicles.find(v => v.id === newVehicleId)
     if (selectedVehicle) {
       custodyChain.value.vehicle_plate = selectedVehicle.no_plate
@@ -329,13 +374,8 @@ watch(() => custodyChain.value.vehicle, (newVehicleId) => {
   }
 })
 
-// Bandera para evitar loops infinitos en las conversiones
-const isUpdatingVolumes = ref(false)
-
-// Rastrear qué campo de volumen fue editado por última vez
 const lastEditedVolumeField = ref(null)
 
-// Watcher para convertir desde galones
 watch(() => custodyChain.value.total_gallons, (newValue, oldValue) => {
   if (lastEditedVolumeField.value === 'gallons' && newValue !== oldValue) {
     const converted = fromGallons(newValue)
@@ -345,7 +385,6 @@ watch(() => custodyChain.value.total_gallons, (newValue, oldValue) => {
   }
 })
 
-// Watcher para convertir desde barriles
 watch(() => custodyChain.value.total_barrels, (newValue, oldValue) => {
   if (lastEditedVolumeField.value === 'barrels' && newValue !== oldValue) {
     const converted = fromBarrels(newValue)
@@ -355,7 +394,6 @@ watch(() => custodyChain.value.total_barrels, (newValue, oldValue) => {
   }
 })
 
-// Watcher para convertir desde metros cúbicos
 watch(() => custodyChain.value.total_cubic_meters, (newValue, oldValue) => {
   if (lastEditedVolumeField.value === 'cubicMeters' && newValue !== oldValue) {
     const converted = fromCubicMeters(newValue)
@@ -365,7 +403,6 @@ watch(() => custodyChain.value.total_cubic_meters, (newValue, oldValue) => {
   }
 })
 
-// Funciones para manejar el input de los campos de volumen
 const handleGallonsInput = () => {
   lastEditedVolumeField.value = 'gallons'
 }
@@ -381,6 +418,17 @@ const handleCubicMetersInput = () => {
 
 <template>
   <div class="max-w-7xl mx-auto p-4">
+    <!-- Título dinámico según modo -->
+    <div class="bg-white rounded-lg p-4 mb-4 border border-gray-200 shadow-sm">
+      <h2 class="text-xl font-semibold text-gray-800">
+        <i class="las la-link text-blue-600"></i>
+        {{ isEditMode ? `Editar Cadena de Custodia #${custodyChainId}` : 'Nueva Cadena de Custodia' }}
+      </h2>
+      <p class="text-sm text-gray-600 mt-1">
+        {{ isEditMode ? 'Modifique los datos de la cadena de custodia' : 'Complete los datos para crear una nueva cadena de custodia' }}
+      </p>
+    </div>
+
     <!-- Alertas de Validación -->
     <div v-if="hasValidationIssues" class="mb-6 space-y-3">
       <!-- Alertas del Técnico -->
@@ -882,7 +930,7 @@ const handleCubicMetersInput = () => {
         <button type="submit" class="btn btn-primary" :disabled="isLoading">
           <i v-if="!isLoading" class="las la-save"></i>
           <i v-else class="las la-spinner animate-spin"></i>
-          {{ isLoading ? 'Guardando...' : 'Guardar Cadena de Custodia' }}
+          {{ isLoading ? 'Guardando...' : (isEditMode ? 'Actualizar Cadena de Custodia' : 'Guardar Cadena de Custodia') }}
         </button>
       </div>
     </form>
