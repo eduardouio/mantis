@@ -168,8 +168,21 @@ class ChainCustodyDetail(BaseModel):
     )
 
     @classmethod
+    def get_by_sheet_project(cls, sheet_project):
+        asigns =  cls.objects.filter(
+            is_active=True,
+            custody_chain__sheet_project=sheet_project,
+        )
+
+        if len(asigns) > 0:
+            return asigns
+        
+        return None
+
+    @classmethod
     def get_by_resource_id(cls, resource_id):
         asigns =  cls.objects.filter(
+            is_active=True,
             project_resource__id=resource_id,
         )
 

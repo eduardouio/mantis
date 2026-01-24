@@ -125,14 +125,14 @@
 
   <table>
     <tr>
-      <td colspan="2" style="text-align: left;"><strong>FECHA:</strong> {{ custody_chain.activity_date|date:"d/m/Y" }}</td>
+      <td colspan="2" style="text-align: left;"><strong>FECHA:</strong> {% if custody_chain.activity_date %}{{ custody_chain.activity_date|date:"d/m/Y" }}{% endif %}</td>
       <td  colspan="2" style="text-align: left;"><strong>PLACAS:</strong> {% if custody_chain.vehicle %}{{ custody_chain.vehicle.no_plate }}{% endif %}</td>
       <td style="text-align: right;">
        <strong style="font-size:18px;color:red;font-family:monospace;">No. {% if custody_chain.consecutive %}{{ custody_chain.consecutive }}{% else %}0000000{% endif %}</strong>
       </td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align: left;"><strong>CLIENTE:</strong> {{ partner.name }}</td>
+      <td colspan="2" style="text-align: left;"><strong>CLIENTE:</strong> {% if partner %}{{ partner.name }}{% endif %}</td>
       <td colspan="2" style="text-align: left;"><strong>LOGISTICA:</strong>
         <span style="margin-left: 30px;">SI</span>
         <div class="checkbox"></div>
@@ -144,15 +144,10 @@
     </td>
     </tr>
     <tr>
-      <td style="text-align: left;width: 40%;"><strong>PROYECTO:</strong> {{ project.location }}{% if project.cardinal_point %} - {{ project.cardinal_point }}{% endif %}</td>
+      <td style="text-align: left;width: 40%;"><strong>PROYECTO:</strong> {% if project %}{% if project.location %}{{ project.location }}{% endif %}{% if project.cardinal_point %} - {{ project.cardinal_point }}{% endif %}{% endif %}</td>
       <td colspan="2" style="text-align: left;"><strong>HORA DE LLEGADA:</strong> {% if custody_chain.start_time %}{{ custody_chain.start_time|time:"H:i" }}{% endif %}</td>
       <td  style="text-align: left;"><strong>HORA DE SALIDA:</strong> {% if custody_chain.end_time %}{{ custody_chain.end_time|time:"H:i" }}{% endif %}</td>
-      <td  style="text-align: left;"><strong>TOTAL DE HORAS:</strong> {% if custody_chain.time_duration %}{{ custody_chain.time_duration }}{% endif %}</td>
-    </tr>
-    <tr>
-      <td colspan="2" style="text-align: left;"><strong>TÉCNICO:</strong> {% if custody_chain.technical %}{{ custody_chain.technical.first_name }} {{ custody_chain.technical.last_name }}{% endif %}</td>
-      <td colspan="2" style="text-align: left;"><strong>UBICACIÓN:</strong> {{ custody_chain.location|default:"" }}</td>
-      <td style="text-align: left;"><strong>CONTACTO:</strong> {{ project.contact_name }}</td>
+      <td  style="text-align: left;"><strong>TOTAL DE HORAS:</strong> {% if time_duration_hours %}{{ time_duration_hours }}{% endif %}</td>
     </tr>
   </table>
 
@@ -187,10 +182,9 @@
       </tr>
     </thead>
     <tbody>
-      {% for detail in custody_details %}
       <tr>
-        <td class="grid-cell" style="text-align: left; font-size: 8px;">{{ detail.project_resource.resource_item.get_type_equipment_display|default:"SERVICIO" }}</td>
-        <td class="grid-cell" style="background-color: #f7f7f7; font-size: 8px;">{{ detail.project_resource.resource_item.code|default:"" }}</td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell" style="background-color:#f7f7f7"></td>
@@ -206,18 +200,98 @@
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td style="font-size: 8px;">{{ detail.project_resource.resource_item.name }}</td>
-        <td style="font-size: 8px;">{{ detail.project_resource.resource_item.type_equipment|default:"--" }}</td>
-        <td style="font-size: 8px;">{{ detail.project_resource.detailed_description|default:"" }}</td>
+        <td><strong>BAÑOS</strong></td>
+        <td><strong>BT</strong></td>
+        <td><strong>AGUAS NEGRAS</strong></td>
       </tr>
-      {% empty %}
-      <!-- No hay equipos registrados -->
       <tr>
-        <td colspan="20" style="text-align: center; padding: 10px; font-style: italic;">No hay equipos registrados en esta cadena de custodia</td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td><strong>LAVAMANOS</strong></td>
+        <td><strong>LV</strong></td>
+        <td><strong>AGUAS GRISES</strong></td>
       </tr>
-      {% endfor %}
-      
-      <!-- Filas adicionales con resúmenes -->
+      <tr>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td><strong>URINARIO</strong></td>
+        <td><strong>UR</strong></td>
+        <td><strong>AGUA LIMPIA</strong></td>
+      </tr>
+      <tr>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td><strong>BIODIGESTOR</strong></td>
+        <td><strong>BG</strong></td>
+        <td><strong>LODOS ACTIVADOS</strong></td>
+      </tr>
+      <tr>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell" style="background-color:#f7f7f7"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td><strong>TRAMPA DE GRASA</strong></td>
+        <td><strong>TG</strong></td>
+        <td><strong>AGUA RESIDUAL TRATADA</strong></td>
+      </tr>
       <tr>
         <td class="grid-cell"></td>
         <td class="grid-cell" style="background-color: #f7f7f7;"></td>
@@ -236,13 +310,57 @@
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
+        <td><strong>ESTACIÓN DE BOMBEO</strong></td>
+        <td><strong>EB</strong></td>
+        <td><strong>GRASA ORGÁNICA</strong></td>
+      </tr>
+      <tr>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td><strong>PLANTA DE AGUA RESIDUAL</strong></td>
+        <td><strong>PTAR</strong></td>
         <td style="background-color: #f8fff2;"><strong>PESO Y/O VOLUMEN</strong></td>
-        <td>--</td>
+      </tr>
+      <tr>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell" style="background-color: #f7f7f7;"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td class="grid-cell"></td>
+        <td><strong>PLANTA DE AGUA POTABLE</strong></td>
+        <td><strong>PTAP</strong></td>
         <td style="text-align: left;">
           <table border="0">
             <tr>
               <td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>GALON</strong></td>
-              <td style="border: 0px solid;">{{ custody_chain.total_gallons }}</td>
+              <td style="border: 0px solid;">{% if custody_chain.total_gallons and custody_chain.total_gallons > 0 %}{{ custody_chain.total_gallons }}{% endif %}</td>
             </tr>
           </table>
         </td>
@@ -265,13 +383,13 @@
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
         <td class="grid-cell"></td>
-        <td>--</td>
-        <td>--</td>
+        <td><strong>OTROS</strong></td>
+        <td><strong>OT</strong></td>
          <td style="text-align: left;">
           <table border="0">
             <tr>
               <td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>M3</strong></td>
-              <td style="border: 0px solid;">{{ custody_chain.total_cubic_meters }}</td>
+              <td style="border: 0px solid;">{% if custody_chain.total_cubic_meters and custody_chain.total_cubic_meters > 0 %}{{ custody_chain.total_cubic_meters }}{% endif %}</td>
             </tr>
           </table>
         </td>
@@ -300,7 +418,7 @@
           <table border="0">
             <tr>
               <td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>BARRIL</strong></td>
-              <td style="border: 0px solid;">{{ custody_chain.total_barrels }}</td>
+              <td style="border: 0px solid;">{% if custody_chain.total_barrels and custody_chain.total_barrels > 0 %}{{ custody_chain.total_barrels }}{% endif %}</td>
             </tr>
           </table>
         </td>
