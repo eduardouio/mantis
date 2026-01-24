@@ -125,6 +125,16 @@ class CustodyChain(BaseModel):
         'Total de Metros Cúbicos',
         default=0
     )
+    have_logistic = models.CharField(
+        'Se realiza Logística',
+        choices=(
+            ('SI', 'SI'),
+            ('NO', 'NO'),
+            ('NA', 'NO APLICA'),
+        ),
+        default='NA',
+        max_length=2
+    )
 
 
     @classmethod
