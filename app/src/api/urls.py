@@ -28,7 +28,6 @@ from api.workorders import (
 )
 
 from api.projects.ProjectResources import ProjectResources
-from api.projects.ProjectData import ProjectData
 from api.workorders.GetAllSheerProjectItems import GetAllSheerProjectItemsAPI
 from api.workorders.CreateCustodyChain import CreateCustodyChainAPI
 from api.projects.UpdateResourceItem import UpdateResourceItemAPI
@@ -56,7 +55,6 @@ urlpatterns = [
     path('resources/update/', UpdateResourceAPI.as_view(), name='api_update_resource'),
     
     # projects
-    path('projects/data/<int:project_id>/', ProjectData.as_view(), name='api_project_data'),
     path('projects/resources/available/', ResourcesAvailableAPI.as_view(), name='api_resources_available'),
     path('projects/resources/add/', AddResourceProjectAPI.as_view(), name='api_add_resource_project'),
     path('projects/resources/update/', UpdateResourceItemAPI.as_view(), name='api_update_resource_item'),
