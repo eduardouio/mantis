@@ -206,10 +206,14 @@ class TestAllInfoProjectAPI:
         assert data["success"] is True
         assert "data" in data
         
-        # Validar estructura del proyecto
+        # Validar estructura completa del proyecto
         assert "project" in data["data"]
-        assert "id" in data["data"]["project"]
-        assert "name" in data["data"]["project"]
+        project_fields = [
+            "id", "partner_id", "partner_name", "location", "cardinal_point",
+            "contact_name", "contact_phone", "start_date", "end_date", "is_closed"
+        ]
+        for field in project_fields:
+            assert field in data["data"]["project"], f"Campo '{field}' faltante en project"
         
         # Validar estructura de work_orders
         assert "work_orders" in data["data"]
@@ -309,8 +313,16 @@ class TestAllInfoProjectAPI:
         assert data["success"] is True
         assert "data" in data
         
-        # Validar que tenga las claves principales
+        # Validar que tenga las claves principales del proyecto
         assert "project" in data["data"]
+        project_fields = [
+            "id", "partner_id", "partner_name", "location", "cardinal_point",
+            "contact_name", "contact_phone", "start_date", "end_date", "is_closed"
+        ]
+        for field in project_fields:
+            assert field in data["data"]["project"]
+        
+        # Validar work_orders
         assert "work_orders" in data["data"]
         assert "work_orders_count" in data["data"]
         assert "total_custody_chains" in data["data"]
@@ -569,6 +581,13 @@ class TestAllInfoProjectAPI:
         assert isinstance(data["data"]["work_orders"], list)
         assert isinstance(data["data"]["work_orders_count"], int)
         assert isinstance(data["data"]["total_custody_chains"], int)
+        
+        # Validar tipos del proyecto
+        project = data["data"]["project"]
+        assert isinstance(project["id"], int)
+        assert isinstance(project["partner_id"], int)
+        assert isinstance(project["partner_name"], str)
+        assert isinstance(project["is_closed"], bool)
         
         # Validar tipos en work_order
         wo = data["data"]["work_orders"][0]

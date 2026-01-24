@@ -12,7 +12,7 @@ class AllInfoProjectAPI(View):
     def get(self, request, project_id):
         try:
             try:
-                project = Project.objects.get(
+                project = Project.objects.select_related('partner').get(
                     pk=project_id, is_active=True, is_deleted=False
                 )
             except Project.DoesNotExist:
@@ -161,13 +161,21 @@ class AllInfoProjectAPI(View):
                 }
                 work_orders.append(work_order_data)
 
+            project_data = {
+                "id": project.id,
+                "partner_id": project.partner.id,
+                "partner_name": project.partner.name,
+                "location": project.location,
+                "cardinal_point": project.cardinal_point,
+                "contact_name": project.contact_name,
+                "contact_phone": project.contact_phone,
+                "start_date": serialize_date(project.start_date),
+                "end_date": serialize_date(project.end_date) if project.end_date else None,
+                "is_closed": project.is_closed,
+            }
+
             response_data = {
-                "project": {
-                    "id": project.id,
-                    "name": (
-                        project.partner.name if hasattr(project, "partner") else None
-                    ),
-                },
+                "project": project_data,
                 "work_orders": work_orders,
                 "work_orders_count": len(work_orders),
                 "total_custody_chains": sum(
