@@ -120,6 +120,7 @@ class CreateCustodyChainAPI(View):
             total_gallons=int(float(data.get("total_gallons", 0))),
             total_barrels=int(float(data.get("total_barrels", 0))),
             total_cubic_meters=int(float(data.get("total_cubic_meters", 0))),
+            have_logistic=data.get("have_logistic", "NA"),
             notes=data.get("notes", "")
         )
         custody_chain.save()

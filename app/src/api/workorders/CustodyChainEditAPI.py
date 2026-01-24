@@ -94,6 +94,9 @@ class CustodyChainEditAPI(View):
                 if "time_duration" in chain_data:
                     instance.time_duration = parse_decimal(chain_data["time_duration"])
 
+                if "have_logistic" in chain_data:
+                    instance.have_logistic = chain_data["have_logistic"]
+
                 if "contact_name" in chain_data:
                     instance.contact_name = chain_data["contact_name"]
 

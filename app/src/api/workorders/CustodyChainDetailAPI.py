@@ -59,6 +59,7 @@ class CustodyChainDetailAPI(View):
                 "start_time": serialize_date(c.start_time),
                 "end_time": serialize_date(c.end_time),
                 "time_duration": float(c.time_duration) if c.time_duration is not None else None,
+                "have_logistic": c.have_logistic,
                 "contact_name": c.contact_name,
                 "dni_contact": c.dni_contact,
                 "contact_position": c.contact_position,
