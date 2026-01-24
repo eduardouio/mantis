@@ -99,6 +99,7 @@ class AllInfoProjectAPI(View):
                             if chain.time_duration is not None
                             else None
                         ),
+                        "have_logistic": chain.have_logistic,
                         "contact_name": chain.contact_name,
                         "dni_contact": chain.dni_contact,
                         "contact_position": chain.contact_position,
