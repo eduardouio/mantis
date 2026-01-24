@@ -108,6 +108,14 @@
     isSubmitting.value = true
     
     try {
+      // Validar que todos los recursos tengan fecha de inicio
+      const resourcesWithoutDate = list_resources.value.filter(r => !r.operation_start_date)
+      if (resourcesWithoutDate.length > 0) {
+        errorMessage.value = 'Todos los recursos deben tener una fecha de inicio de operaciones'
+        isSubmitting.value = false
+        return
+      }
+
       const result = await projectResourceStore.addResourcesToProject(
         list_resources.value,
       )
@@ -242,7 +250,7 @@
                   <th class="border">#</th>
                   <th class="border">Detalle</th>
                   <th class="border">Tipo</th>
-                  <th class="border">Fecha Inicio</th>
+                  <th class="border">Fecha Inicio *</th>
                   <th class="border">Costo Alq</th>
                   <th class="border">Mant</th>
                   <th class="border">Frecuencia</th>
@@ -261,7 +269,9 @@
                     <input 
                       type="date" 
                       class="input input-sm input-bordered w-full" 
+                      :class="{ 'input-error': !resource.operation_start_date }"
                       v-model="resource.operation_start_date"
+                      required
                     />
                   </td>
                   <td class="border border-gray-300">
