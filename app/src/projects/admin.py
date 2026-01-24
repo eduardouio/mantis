@@ -8,7 +8,9 @@ from projects.models import (
     CustodyChain,
     ChainCustodyDetail,
     FinalDispositionCertificate,
-    FinalDispositionCertificateDetail
+    FinalDispositionCertificateDetail,
+    ShippingGuide,
+    ShippingGuideDetail
 )
 
 
@@ -290,6 +292,76 @@ class FinalDispositionCertificateDetailAdmin(BaseModelAdmin):
             )
         }),
         ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),
+        ('Auditoría', {
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+            ), 'classes': ('collapse',)
+        })
+    )
+
+
+@admin.register(ShippingGuide)
+class ShippingGuideAdmin(BaseModelAdmin):
+    list_display = (
+        'id', 'guide_number', 'project', 'issue_date', 'start_date', 'end_date',
+        'carrier_name', 'vehicle_plate'
+    )
+    list_filter = (
+        'project', 'issue_date', 'start_date', 'end_date', 'is_active'
+    )
+    search_fields = (
+        'guide_number', 'project__partner__name', 'carrier_name',
+        'vehicle_plate', 'dispatcher_name', 'contact_name'
+    )
+    fieldsets = (
+        ('Guía', {
+            'fields': (
+                'project', 'guide_number', 'issue_date', 'start_date', 'end_date',
+                'origin_place', 'destination_place', 'is_active'
+            )
+        }),
+        ('Transporte', {
+            'fields': (
+                'carrier_name', 'carrier_ci', 'vehicle_plate',
+                'dispatcher_name', 'dispatcher_ci'
+            )
+        }),
+        ('Contacto y Recepción', {
+            'fields': (
+                'contact_name', 'contact_phone', 'recibed_by', 'recibed_ci'
+            ), 'classes': ('collapse',)
+        }),
+        ('Notas', {
+            'fields': ('notes',), 'classes': ('collapse',)
+        }),
+        ('Auditoría', {
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+            ), 'classes': ('collapse',)
+        })
+    )
+
+
+@admin.register(ShippingGuideDetail)
+class ShippingGuideDetailAdmin(BaseModelAdmin):
+    list_display = (
+        'id', 'shipping_guide', 'description', 'quantity', 'unit'
+    )
+    list_filter = (
+        'shipping_guide', 'is_active'
+    )
+    search_fields = (
+        'shipping_guide__guide_number', 'description'
+    )
+    fieldsets = (
+        ('Detalle', {
+            'fields': (
+                'shipping_guide', 'description', 'quantity', 'unit', 'is_active'
+            )
+        }),
+        ('Notas', {
+            'fields': ('notes',), 'classes': ('collapse',)
+        }),
         ('Auditoría', {
             'fields': (
                 'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
