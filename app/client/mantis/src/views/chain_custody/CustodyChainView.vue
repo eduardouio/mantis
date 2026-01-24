@@ -268,7 +268,10 @@ const formatDate = (date) => {
             Volver
           </button>
           <div class="flex gap-2">
-            <button class="btn btn-sm btn-primary">
+            <button 
+              class="btn btn-sm btn-primary"
+              @click="router.push({ name: 'custody-chain-form', params: { id: chain.id } })"
+            >
               <i class="las la-edit"></i>
               Editar
             </button>

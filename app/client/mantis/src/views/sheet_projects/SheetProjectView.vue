@@ -242,6 +242,14 @@ onMounted(async () => {
                       <i class="las la-eye"></i>
                       VER
                     </button>
+                    <button 
+                      @click="router.push({ name: 'custody-chain-form', params: { id: cc.id } })"
+                      class="btn btn-xs border-orange-500 text-orange-500 bg-white"
+                      title="Editar cadena"
+                    >
+                      <i class="las la-edit"></i>
+                      EDITAR
+                    </button>
                   </div>
                 </td>
               </tr>

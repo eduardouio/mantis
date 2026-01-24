@@ -114,9 +114,47 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
                 
                 const data = await response.json();
                 this.selectedCustodyChain = data.data;
+                return data.data;
             } catch (error) {
                 console.error("Error fetching custody chain detail:", error);
                 this.error = error.message;
+                throw error;
+            } finally {
+                this.loading = false;
+            }
+        },
+        async updateCustodyChain(custodyChainId, custodyChainData) {
+            this.loading = true;
+            this.error = null;
+            console.log("Updating custody chain", custodyChainId, custodyChainData);
+            
+            try {
+                const url = appConfig.URLUpdateCustodyChain.replace("${id}", custodyChainId);
+                const response = await fetch(url, {
+                    method: "PUT",
+                    headers: appConfig.headers,
+                    body: JSON.stringify(custodyChainData)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || "Failed to update custody chain");
+                }
+                
+                const data = await response.json();
+                
+                // Actualizar la cadena en la lista local si existe
+                const index = this.custodyChains.findIndex(cc => cc.id === custodyChainId);
+                if (index !== -1) {
+                    // Reemplazar con los nuevos datos
+                    this.custodyChains[index] = { ...this.custodyChains[index], ...data.data };
+                }
+                
+                return data.data;
+            } catch (error) {
+                console.error("Error updating custody chain:", error);
+                this.error = error.message;
+                throw error;
             } finally {
                 this.loading = false;
             }

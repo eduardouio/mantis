@@ -25,4 +25,5 @@ export const appConfig = {
     "URLAddResourceToProject": apiBaseUrl + "/api/projects/resources/add/",
     "URLCreateCustodyChain": apiBaseUrl + "/api/workorders/custody_chain/create/",
     "URLCustodyChainDetail": apiBaseUrl + "/api/workorders/custody_chain/detail/${id}/",
+    "URLUpdateCustodyChain": apiBaseUrl + "/api/workorders/custody_chain/${id}/edit/",
 }

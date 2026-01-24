@@ -74,14 +74,19 @@ const loadCustodyChainData = async () => {
   try {
     isLoading.value = true
     
-    // Buscar la cadena en el store del proyecto
-    const chain = projectStore.getCustodyChainById(custodyChainId.value)
+    // Obtener los datos completos de la cadena desde la API
+    const chainData = await custodyChainStore.fetchCustodyCapphainDetail(custodyChainId.value)
     
-    if (chain) {
-      // Cargar datos de la cadena
+    if (chainData) {
+      // Cargar datos de la cadena desde la respuesta de la API
+      const chain = chainData.custody_chain
+      const technical = chainData.technical
+      const vehicle = chainData.vehicle
+      const details = chainData.details || []
+      
       custodyChain.value = {
-        technical: chain.technical?.id || null,
-        vehicle: chain.vehicle?.id || null,
+        technical: technical?.id || null,
+        vehicle: vehicle?.id || null,
         sheet_project: chain.sheet_project_id,
         consecutive: chain.consecutive,
         activity_date: chain.activity_date,
@@ -101,18 +106,18 @@ const loadCustodyChainData = async () => {
         total_gallons: chain.total_gallons || 0,
         total_barrels: chain.total_barrels || 0,
         total_cubic_meters: chain.total_cubic_meters || 0,
-        notes: chain.metadata?.notes || '',
-        technical_name: chain.technical ? `${chain.technical.first_name} ${chain.technical.last_name}` : '',
-        technical_dni: chain.dni_driver || '',
-        technical_position: chain.driver_position || '',
-        vehicle_plate: chain.vehicle?.no_plate || '',
-        vehicle_brand: chain.vehicle?.brand || '',
-        vehicle_model: chain.vehicle?.model || ''
+        notes: chain.meta?.notes || '',
+        technical_name: technical ? `${technical.first_name} ${technical.last_name}` : '',
+        technical_dni: technical?.dni || '',
+        technical_position: technical?.work_area_display || technical?.work_area || '',
+        vehicle_plate: vehicle?.no_plate || '',
+        vehicle_brand: vehicle?.brand || '',
+        vehicle_model: vehicle?.model || ''
       }
       
       // Cargar IDs de recursos seleccionados
-      if (chain.details && chain.details.length > 0) {
-        selectedResourceIds.value = chain.details.map(d => d.project_resource_id)
+      if (details.length > 0) {
+        selectedResourceIds.value = details.map(d => d.project_resource.id)
       }
     } else {
       console.warn('Cadena de custodia no encontrada')
@@ -120,6 +125,8 @@ const loadCustodyChainData = async () => {
     }
   } catch (error) {
     console.error('Error al cargar cadena de custodia:', error)
+    alert('Error al cargar los datos de la cadena de custodia: ' + error.message)
+    router.push({ name: 'projects-detail' })
   } finally {
     isLoading.value = false
   }
@@ -201,43 +208,87 @@ const submitForm = async () => {
     }
 
     const payload = {
-      technical_id: custodyChain.value.technical,
-      vehicle_id: custodyChain.value.vehicle,
-      project_id: appConfig.idProject,
-      activity_date: custodyChain.value.activity_date,
-      issue_date: custodyChain.value.issue_date,
-      consecutive: custodyChain.value.consecutive,
-      location: custodyChain.value.location,
-      start_time: custodyChain.value.start_time,
-      end_time: custodyChain.value.end_time,
-      duration_hours: custodyChain.value.time_duration,
-      contact_name: custodyChain.value.contact_name,
-      dni_contact: custodyChain.value.dni_contact,
-      contact_position: custodyChain.value.contact_position,
-      date_contact: custodyChain.value.date_contact,
-      driver_name: custodyChain.value.driver_name,
-      dni_driver: custodyChain.value.dni_driver,
-      driver_position: custodyChain.value.driver_position,
-      driver_date: custodyChain.value.driver_date,
-      technical_name: custodyChain.value.technical_name,
-      technical_dni: custodyChain.value.technical_dni,
-      technical_position: custodyChain.value.technical_position,
-      vehicle_plate: custodyChain.value.vehicle_plate,
-      vehicle_brand: custodyChain.value.vehicle_brand,
-      vehicle_model: custodyChain.value.vehicle_model,
-      total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
-      total_barrels: parseFloat(custodyChain.value.total_barrels) || 0,
-      total_cubic_meters: parseFloat(custodyChain.value.total_cubic_meters) || 0,
-      notes: custodyChain.value.notes,
-      resources: selectedResourceIds.value
+      custody_chain: {
+        technical_id: custodyChain.value.technical,
+        vehicle_id: custodyChain.value.vehicle,
+        activity_date: custodyChain.value.activity_date,
+        issue_date: custodyChain.value.issue_date,
+        consecutive: custodyChain.value.consecutive,
+        location: custodyChain.value.location,
+        start_time: custodyChain.value.start_time,
+        end_time: custodyChain.value.end_time,
+        time_duration: custodyChain.value.time_duration,
+        contact_name: custodyChain.value.contact_name,
+        dni_contact: custodyChain.value.dni_contact,
+        contact_position: custodyChain.value.contact_position,
+        date_contact: custodyChain.value.date_contact,
+        driver_name: custodyChain.value.driver_name,
+        dni_driver: custodyChain.value.dni_driver,
+        driver_position: custodyChain.value.driver_position,
+        driver_date: custodyChain.value.driver_date,
+        total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
+        total_barrels: parseFloat(custodyChain.value.total_barrels) || 0,
+        total_cubic_meters: parseFloat(custodyChain.value.total_cubic_meters) || 0,
+        meta: {
+          notes: custodyChain.value.notes,
+          id_user_updated: appConfig.userId || 1
+        }
+      },
+      details: selectedResourceIds.value.map(resourceId => ({
+        project_resource_id: resourceId
+      }))
     }
 
     if (isEditMode.value) {
-      // TODO: Implementar actualización
-      console.log('Actualizar cadena de custodia:', custodyChainId.value, payload)
-      alert('Función de actualización pendiente de implementar')
+      const result = await custodyChainStore.updateCustodyChain(custodyChainId.value, payload)
+      
+      if (result) {
+        // Recargar datos del proyecto
+        await projectStore.fetchProjectData()
+        
+        // Redirigir directamente sin mostrar mensaje
+        const workOrder = projectStore.workOrders.find(wo => wo.status === 'IN_PROGRESS')
+        if (workOrder) {
+          router.push({ name: 'sheet-project-view', params: { id: workOrder.id } })
+        } else {
+          router.push({ name: 'projects-detail' })
+        }
+      }
     } else {
-      const result = await custodyChainStore.addCustodyChain(payload)
+      // Para creación, mantener el payload original
+      const createPayload = {
+        technical_id: custodyChain.value.technical,
+        vehicle_id: custodyChain.value.vehicle,
+        project_id: appConfig.idProject,
+        activity_date: custodyChain.value.activity_date,
+        issue_date: custodyChain.value.issue_date,
+        consecutive: custodyChain.value.consecutive,
+        location: custodyChain.value.location,
+        start_time: custodyChain.value.start_time,
+        end_time: custodyChain.value.end_time,
+        duration_hours: custodyChain.value.time_duration,
+        contact_name: custodyChain.value.contact_name,
+        dni_contact: custodyChain.value.dni_contact,
+        contact_position: custodyChain.value.contact_position,
+        date_contact: custodyChain.value.date_contact,
+        driver_name: custodyChain.value.driver_name,
+        dni_driver: custodyChain.value.dni_driver,
+        driver_position: custodyChain.value.driver_position,
+        driver_date: custodyChain.value.driver_date,
+        technical_name: custodyChain.value.technical_name,
+        technical_dni: custodyChain.value.technical_dni,
+        technical_position: custodyChain.value.technical_position,
+        vehicle_plate: custodyChain.value.vehicle_plate,
+        vehicle_brand: custodyChain.value.vehicle_brand,
+        vehicle_model: custodyChain.value.vehicle_model,
+        total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
+        total_barrels: parseFloat(custodyChain.value.total_barrels) || 0,
+        total_cubic_meters: parseFloat(custodyChain.value.total_cubic_meters) || 0,
+        notes: custodyChain.value.notes,
+        resources: selectedResourceIds.value
+      }
+      
+      const result = await custodyChainStore.addCustodyChain(createPayload)
       
       if (result) {
         alert('Cadena de custodia guardada exitosamente')
@@ -253,7 +304,7 @@ const submitForm = async () => {
     }
   } catch (error) {
     console.error('Error al guardar:', error)
-    alert('Error al guardar la cadena de custodia: ' + error.message)
+    alert('Error al ' + (isEditMode.value ? 'actualizar' : 'guardar') + ' la cadena de custodia: ' + error.message)
   } finally {
     isLoading.value = false
   }
