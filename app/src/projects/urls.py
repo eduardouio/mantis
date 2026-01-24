@@ -23,11 +23,11 @@ urlpatterns = [
     path('socios/update/<int:pk>/', PartnerUpdateView.as_view(), name='partner_update'),
     path('socios/delete/<int:pk>/', PartnerDeleteView.as_view(), name='partner_delete'),
     # projects
-    path('proyectos/', ProjectListView.as_view(), name='project_list'),
-    path('proyectos/<int:pk>/', ProjectDetailView.as_view(), name='project_detail'),
-    path('proyectos/create/', ProjectCreateView.as_view(), name='project_create'),
-    path('proyectos/update/<int:pk>/', ProjectUpdateView.as_view(), name='project_update'),
-    path('proyectos/delete/<int:pk>/', ProjectDeleteView.as_view(), name='project_delete'),
+    path('projects/', ProjectListView.as_view(), name='project_list'),
+    path('projects/<int:pk>/', ProjectDetailView.as_view(), name='project_detail'),
+    path('projects/create/', ProjectCreateView.as_view(), name='project_create'),
+    path('projects/update/<int:pk>/', ProjectUpdateView.as_view(), name='project_update'),
+    path('projects/delete/<int:pk>/', ProjectDeleteView.as_view(), name='project_delete'),
 	
     # custody chain
     path('cadenas-custodia/', CustodyChainListView.as_view(), name='custody_chain_list'),
