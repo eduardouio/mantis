@@ -140,8 +140,8 @@ const calculateDuration = () => {
     const startMinutes = parseInt(start[0]) * 60 + parseInt(start[1])
     const endMinutes = parseInt(end[0]) * 60 + parseInt(end[1])
     
-    const duration = (endMinutes - startMinutes) / 60
-    custodyChain.value.time_duration = duration > 0 ? parseFloat(duration.toFixed(2)) : 0
+    const duration = endMinutes - startMinutes
+    custodyChain.value.time_duration = duration > 0 ? duration : 0
   }
 }
 
@@ -266,6 +266,38 @@ const hasValidationIssues = computed(() => {
          technicalValidation.value.hasWarnings ||
          vehicleValidation.value.hasErrors || 
          vehicleValidation.value.hasWarnings
+})
+
+// Validación de horas
+const timeValidation = computed(() => {
+  if (!custodyChain.value.start_time || !custodyChain.value.end_time) {
+    return { isValid: true, message: '' }
+  }
+  
+  const start = custodyChain.value.start_time.split(':')
+  const end = custodyChain.value.end_time.split(':')
+  
+  const startMinutes = parseInt(start[0]) * 60 + parseInt(start[1])
+  const endMinutes = parseInt(end[0]) * 60 + parseInt(end[1])
+  
+  if (endMinutes <= startMinutes) {
+    return {
+      isValid: false,
+      message: 'La hora de fin debe ser mayor que la hora de inicio'
+    }
+  }
+  
+  return { isValid: true, message: '' }
+})
+
+// Calcular duración automáticamente cuando cambia la hora de inicio
+watch(() => custodyChain.value.start_time, () => {
+  calculateDuration()
+})
+
+// Calcular duración automáticamente cuando cambia la hora de fin
+watch(() => custodyChain.value.end_time, () => {
+  calculateDuration()
 })
 
 watch(() => custodyChain.value.technical, (newTechnicalId) => {
@@ -557,8 +589,8 @@ const handleCubicMetersInput = () => {
               type="time"
               id="start_time"
               v-model="custodyChain.start_time"
-              @change="calculateDuration"
               class="input input-bordered w-full"
+              :class="{ 'input-error': !timeValidation.isValid }"
             />
           </div>
 
@@ -571,15 +603,21 @@ const handleCubicMetersInput = () => {
               type="time"
               id="end_time"
               v-model="custodyChain.end_time"
-              @change="calculateDuration"
               class="input input-bordered w-full"
+              :class="{ 'input-error': !timeValidation.isValid }"
             />
+            <label v-if="!timeValidation.isValid" class="label">
+              <span class="label-text-alt text-error">
+                <i class="las la-exclamation-circle"></i>
+                {{ timeValidation.message }}
+              </span>
+            </label>
           </div>
 
           <!-- Duración -->
           <div class="form-control w-full">
             <label class="label" for="time_duration">
-              <span class="label-text font-medium">Duración (horas)</span>
+              <span class="label-text font-medium">Duración (Minutos)</span>
             </label>
             <input 
               type="number"
