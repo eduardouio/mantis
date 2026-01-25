@@ -121,9 +121,9 @@ const loadCustodyChainData = async () => {
         dni_driver: chain.dni_driver || '',
         driver_position: chain.driver_position || '',
         driver_date: chain.driver_date || new Date().toISOString().split('T')[0],
-        total_gallons: chain.total_gallons || 0,
-        total_barrels: chain.total_barrels || 0,
-        total_cubic_meters: chain.total_cubic_meters || 0,
+        total_gallons: parseFloat(chain.total_gallons) || 0,
+        total_barrels: parseFloat(chain.total_barrels) || 0,
+        total_cubic_meters: parseFloat(chain.total_cubic_meters) || 0,
         notes: chain.meta?.notes || '',
         technical_name: technical ? `${technical.first_name} ${technical.last_name}` : '',
         technical_dni: technical?.dni || '',
@@ -246,9 +246,9 @@ const submitForm = async () => {
         dni_driver: custodyChain.value.dni_driver,
         driver_position: custodyChain.value.driver_position,
         driver_date: custodyChain.value.driver_date,
-        total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
-        total_barrels: parseFloat(custodyChain.value.total_barrels) || 0,
-        total_cubic_meters: parseFloat(custodyChain.value.total_cubic_meters) || 0,
+        total_gallons: parseFloat((parseFloat(custodyChain.value.total_gallons) || 0).toFixed(2)),
+        total_barrels: parseFloat((parseFloat(custodyChain.value.total_barrels) || 0).toFixed(2)),
+        total_cubic_meters: parseFloat((parseFloat(custodyChain.value.total_cubic_meters) || 0).toFixed(2)),
         have_logistic: custodyChain.value.have_logistic,
         meta: {
           notes: custodyChain.value.notes,
@@ -1048,9 +1048,9 @@ const currentStatusBadge = computed(() => {
               @input="handleGallonsInput"
               :disabled="isChainClosed"
               min="0"
-              step="0.0001"
+              step="0.01"
               class="input input-bordered w-full"
-              placeholder="0.0000"
+              placeholder="0.00"
             />
           </div>
 
@@ -1065,9 +1065,9 @@ const currentStatusBadge = computed(() => {
               @input="handleBarrelsInput"
               :disabled="isChainClosed"
               min="0"
-              step="0.0001"
+              step="0.01"
               class="input input-bordered w-full"
-              placeholder="0.0000"
+              placeholder="0.00"
             />
           </div>
 
@@ -1082,9 +1082,9 @@ const currentStatusBadge = computed(() => {
               @input="handleCubicMetersInput"
               :disabled="isChainClosed"
               min="0"
-              step="0.0001"
+              step="0.01"
               class="input input-bordered w-full"
-              placeholder="0.0000"
+              placeholder="0.00"
             />
           </div>
         </div>
