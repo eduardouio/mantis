@@ -120,7 +120,9 @@
                   {% elif m.frequency_type == 'WEEK' %}bg-purple-500
                   {% elif m.frequency_type == 'MONTH' %}bg-orange-500
                   {% else %}bg-gray-500{% endif %}"></span>
-                <span class="text-xs truncate text-gray-600">{{ m.code }}</span>
+                <span class="text-xs truncate text-gray-600" title="{{ m.project_name }} - {{ m.project_location }}{% if m.project_cardinal %} {{ m.project_cardinal }}{% endif %}">
+                  {{ m.code }} <span class="text-gray-400">| {{ m.project_name|truncatechars:10 }}</span>
+                </span>
               </div>
               {% endfor %}
               {% if day_info.count > 3 %}
@@ -150,10 +152,9 @@
           <table class="table table-sm">
             <thead>
               <tr class="bg-gray-50">
-                <th class="text-xs">Proyecto</th>
+                <th class="text-xs">Proyecto / Ubicación</th>
                 <th class="text-xs">Código</th>
                 <th class="text-xs">Recurso</th>
-                <th class="text-xs">Descripción</th>
                 <th class="text-xs">Frecuencia</th>
                 <th class="text-xs text-right">Costo</th>
               </tr>
@@ -163,7 +164,7 @@
             </tbody>
             <tfoot>
               <tr class="bg-gray-100 font-semibold">
-                <td colspan="5" class="text-right text-xs">Total del día:</td>
+                <td colspan="4" class="text-right text-xs">Total del día:</td>
                 <td id="day-details-total" class="text-right text-xs">Q0.00</td>
               </tr>
             </tfoot>
@@ -737,17 +738,25 @@ function showDayDetails(dateStr) {
                          (m.interval_days === 0 ? 'Diario' : `Cada ${m.interval_days} días`) :
                          m.frequency_type === 'WEEK' ? 'Semanal' : 'Mensual';
         
+        // Construir ubicación con cardinal point
+        let ubicacion = m.project_location || '';
+        if (m.project_cardinal) {
+            ubicacion += ubicacion ? ` - ${m.project_cardinal}` : m.project_cardinal;
+        }
+        
         html += `
             <tr class="hover:bg-gray-50">
                 <td class="text-xs">
-                    <span class="font-medium">${m.project_name}</span>
-                    <br><span class="text-gray-500">${m.project_location}</span>
+                    <a href="/proyectos/projects/${m.project_id}/" class="font-medium text-blue-600 hover:underline">
+                        <i class="las la-external-link-alt"></i> ${m.project_name}
+                    </a>
+                    <br><span class="text-gray-500">${ubicacion || '-'}</span>
                 </td>
                 <td class="text-xs">
                     <span class="badge badge-outline badge-sm">${m.code}</span>
+                    <br><span class="text-gray-500 text-xs">${m.description || ''}</span>
                 </td>
                 <td class="text-xs font-medium">${m.name}</td>
-                <td class="text-xs text-gray-600">${m.description || '-'}</td>
                 <td class="text-xs">
                     <span class="badge badge-sm ${freqColor}">${freqLabel}</span>
                 </td>

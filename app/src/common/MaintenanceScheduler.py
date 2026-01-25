@@ -60,6 +60,7 @@ class MaintenanceScheduler:
                     'project_id': resource.project.id,
                     'project_name': resource.project.partner.name,
                     'project_location': resource.project.location or '',
+                    'project_cardinal': resource.project.cardinal_point or '',
                 })
         
         # Generar estructura de semanas
