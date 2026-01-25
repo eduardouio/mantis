@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from accounts.models.Technical import Technical
 from equipment.models.Vehicle import Vehicle
 from projects.models.SheetProject import SheetProject
@@ -165,6 +166,28 @@ class CustodyChain(BaseModel):
 
         return str(next_number).zfill(7)
 
+    def save(self, *args, **kwargs):
+        """Validar que solo se pueda modificar si está en estado DRAFT."""
+        if self.pk:  # Si ya existe (actualización)
+            try:
+                original = CustodyChain.objects.get(pk=self.pk)
+                if original.status != 'DRAFT':
+                    raise ValidationError(
+                        'No se puede modificar una cadena de custodia que no está en estado BORRADOR.'
+                    )
+            except CustodyChain.DoesNotExist:
+                pass
+        
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        """Validar que solo se pueda eliminar si está en estado DRAFT."""
+        if self.status != 'DRAFT':
+            raise ValidationError(
+                'No se puede eliminar una cadena de custodia que no está en estado BORRADOR.'
+            )
+        super().delete(*args, **kwargs)
+
     class Meta:
         verbose_name = 'Cadena de Custodia'
         verbose_name_plural = 'Cadenas de Custodia'
@@ -209,6 +232,22 @@ class ChainCustodyDetail(BaseModel):
             return asigns
         
         return None
+
+    def save(self, *args, **kwargs):
+        """Validar que solo se pueda modificar si la cadena de custodia está en estado DRAFT."""
+        if self.custody_chain and self.custody_chain.status != 'DRAFT':
+            raise ValidationError(
+                'No se pueden modificar los detalles de una cadena de custodia que no está en estado BORRADOR.'
+            )
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        """Validar que solo se pueda eliminar si la cadena de custodia está en estado DRAFT."""
+        if self.custody_chain and self.custody_chain.status != 'DRAFT':
+            raise ValidationError(
+                'No se pueden eliminar los detalles de una cadena de custodia que no está en estado BORRADOR.'
+            )
+        super().delete(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Detalle de Cadena de Custodia'
