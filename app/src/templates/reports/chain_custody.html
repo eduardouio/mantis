@@ -175,7 +175,7 @@
         <th class="header-cell">20</th>
         <th class="header-cell">30</th>
         <th class="header-cell">40</th>
-        <th class="header-cell">50</th>
+        <th class="header-cell">50</th> 
         <th class="header-cell">60</th>
         <th class="header-cell">70</th>
         <th class="header-cell">>71</th>
@@ -192,8 +192,8 @@
         {% for detail in custody_details %}
         {% if forloop.counter <= 10 %}
         <tr>
-          <td class="grid-cell">{{ detail.project_resource.resource_item.get_type_equipment_display|default:"" }}</td>
-          <td class="grid-cell" style="background-color: #f7f7f7;">{{ detail.project_resource.resource_item.code|default:"" }}</td>
+          <td class="grid-cell">{{ detail.project_resource.detailed_description|default:"" }}</td>
+          <td class="grid-cell" style="background-color: #f7f7f7;">{{ detail.project_resource.detailed_description|default:""|slice:"14:" }}</td>
           <td class="grid-cell"></td>
           <td class="grid-cell"></td>
           <td class="grid-cell" style="background-color:#f7f7f7"></td>
@@ -335,7 +335,7 @@
       <td style="text-align: left; width: 33%;">
         <table>
           <tr>
-            <td style="width: 25%; height: 100%;;border:0px solid #fff;text-align: left;background-color: #f8fff2;">
+            <td style="width: 25%;border:0px solid #fff;text-align: left;background-color: #f8fff2;">
               <strong>FECHA:</strong></td>
             <td style="border:0px solid #fff">{% if custody_chain.date_contact %}{{ custody_chain.date_contact|date:"d/m/Y" }}{% endif %}</td>
           </tr>
@@ -344,7 +344,7 @@
       <td style="text-align: left; width: 33%;">
         <table>
           <tr>
-            <td style="width: 25%; height: 100%;;border:0px solid #fff;text-align: left;background-color: #f8fff2;">
+            <td style="width: 25%;border:0px solid #fff;text-align: left;background-color: #f8fff2;">
               <strong>FECHA:</strong></td>
             <td style="border:0px solid #fff">{% if custody_chain.driver_date %}{{ custody_chain.driver_date|date:"d/m/Y" }}{% endif %}</td>
           </tr>

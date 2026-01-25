@@ -10,6 +10,15 @@ class CustodyChain(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
+    status = models.CharField(
+        "Estado",
+        max_length=50,
+        choices=(
+            ("DRAFT", "BORRADOR"),
+            ("CLOSE", "CERRADO"),
+        ),
+        default="DRAFT",
+    )
     technical = models.ForeignKey(
         Technical,
         on_delete=models.PROTECT,
