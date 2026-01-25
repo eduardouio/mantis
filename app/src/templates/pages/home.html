@@ -1,4 +1,5 @@
 {% extends 'base/base.html'%}
+{% load static %}
 
 {% block content %}
 <div class="p-4 sm:p-6 lg:p-8 space-y-6">
@@ -62,17 +63,20 @@
       <!-- Alertas vencidas -->
       {% if alerts.expired %}
       <div class="alert alert-error shadow-lg">
-        <div class="flex gap-3">
-          <i class="las la-exclamation-triangle text-2xl"></i>
-          <h3 class="font-semibold">Elementos Vencidos ({{ alerts.total_expired }})</h3>
+        <div class="flex justify-between items-center">
+          <div class="flex gap-3">
+            <i class="las la-exclamation-triangle text-2xl"></i>
+            <h3 class="font-semibold">Elementos Vencidos ({{ alerts.total_expired }})</h3>
+          </div>
+          <div id="buttons-expired" class="flex gap-1"></div>
         </div>
       </div>
       <div class="overflow-x-auto">
-        <table class="table table-zebra w-full">
+        <table id="table-expired" class="table table-zebra w-full">
           <thead>
             <tr>
               <th>Tipo</th>
-              <th>Descripción</th>in
+              <th>Descripción</th>
               <th>Identificación</th>
               <th>Días vencido</th>
               <th>Fecha vencimiento</th>
@@ -91,16 +95,12 @@
               <td>{{ issue.label }}</td>
               <td>
                 {% if issue.technical_name %}
-                  <a href="{% url 'technical_detail' issue.technical_id %}" class="link link-hover text-primary">
-                    {{ issue.technical_name }}
-                  </a>
+                  {{ issue.technical_name }}
                 {% elif issue.vehicle_plate %}
-                  <a href="{% url 'vehicle_detail' issue.vehicle_id %}" class="link link-hover text-secondary">
-                    {{ issue.vehicle_plate }}
-                  </a>
+                  {{ issue.vehicle_plate }}
                 {% endif %}
               </td>
-              <td><span class="badge badge-error w-24">{{ issue.days_expired_abs }} días</span></td>
+              <td>{{ issue.days_expired_abs }} días</td>
               <td>{{ issue.expires_on|date:"d/m/Y" }}</td>
             </tr>
             {% endfor %}
@@ -112,13 +112,16 @@
       <!-- Alertas por vencer en 10 días -->
       {% if alerts.due_10 %}
       <div class="alert alert-warning shadow-lg">
-        <div class="flex-1">
-          <i class="las la-exclamation-circle text-2xl"></i>
-          <h3 class="font-semibold">Por vencer en 10 días o menos ({{ alerts.total_due_10 }})</h3>
+        <div class="flex justify-between items-center">
+          <div class="flex gap-3">
+            <i class="las la-exclamation-circle text-2xl"></i>
+            <h3 class="font-semibold">Por vencer en 10 días o menos ({{ alerts.total_due_10 }})</h3>
+          </div>
+          <div id="buttons-due-10" class="flex gap-1"></div>
         </div>
       </div>
       <div class="overflow-x-auto">
-        <table class="table table-zebra w-full">
+        <table id="table-due-10" class="table table-zebra w-full">
           <thead>
             <tr>
               <th>Tipo</th>
@@ -141,16 +144,12 @@
               <td>{{ issue.label }}</td>
               <td>
                 {% if issue.technical_name %}
-                  <a href="{% url 'technical_detail' issue.technical_id %}" class="link link-hover text-primary">
-                    {{ issue.technical_name }}
-                  </a>
+                  {{ issue.technical_name }}
                 {% elif issue.vehicle_plate %}
-                  <a href="{% url 'vehicle_detail' issue.vehicle_id %}" class="link link-hover text-secondary">
-                    {{ issue.vehicle_plate }}
-                  </a>
+                  {{ issue.vehicle_plate }}
                 {% endif %}
               </td>
-              <td><span class="badge badge-warning w-24">{{ issue.days_left }} días</span></td>
+              <td>{{ issue.days_left }} días</td>
               <td>{{ issue.expires_on|date:"d/m/Y" }}</td>
             </tr>
             {% endfor %}
@@ -162,13 +161,16 @@
       <!-- Alertas por vencer en 30 días -->
       {% if alerts.due_30 %}
       <div class="alert alert-info shadow-lg">
-        <div class="flex-1">
-          <i class="las la-info-circle text-2xl"></i>
-          <h3 class="font-semibold">Por vencer en 30 días o menos ({{ alerts.total_due_30 }})</h3>
+        <div class="flex justify-between items-center">
+          <div class="flex gap-3">
+            <i class="las la-info-circle text-2xl"></i>
+            <h3 class="font-semibold">Por vencer en 30 días o menos ({{ alerts.total_due_30 }})</h3>
+          </div>
+          <div id="buttons-due-30" class="flex gap-1"></div>
         </div>
       </div>
       <div class="overflow-x-auto">
-        <table class="table table-zebra w-full">
+        <table id="table-due-30" class="table table-zebra w-full">
           <thead>
             <tr>
               <th>Tipo</th>
@@ -191,16 +193,12 @@
               <td>{{ issue.label }}</td>
               <td>
                 {% if issue.technical_name %}
-                  <a href="{% url 'technical_detail' issue.technical_id %}" class="link link-hover text-primary">
-                    {{ issue.technical_name }}
-                  </a>
+                  {{ issue.technical_name }}
                 {% elif issue.vehicle_plate %}
-                  <a href="{% url 'vehicle_detail' issue.vehicle_id %}" class="link link-hover text-secondary">
-                    {{ issue.vehicle_plate }}
-                  </a>
+                  {{ issue.vehicle_plate }}
                 {% endif %}
               </td>
-              <td><span class="badge badge-info w-24">{{ issue.days_left }} días</span></td>
+              <td>{{ issue.days_left }} días</td>
               <td>{{ issue.expires_on|date:"d/m/Y" }}</td>
             </tr>
             {% endfor %}
@@ -255,13 +253,16 @@
       <!-- Equipos con inconsistencias -->
       {% if equipment_status.with_issues %}
       <div class="alert alert-error shadow-lg">
-        <div class="flex gap-3">
-          <i class="las la-exclamation-triangle text-2xl"></i>
-          <h3 class="font-semibold">Equipos con Inconsistencias ({{ equipment_status.total_with_issues }})</h3>
+        <div class="flex justify-between items-center">
+          <div class="flex gap-3">
+            <i class="las la-exclamation-triangle text-2xl"></i>
+            <h3 class="font-semibold">Equipos con Inconsistencias ({{ equipment_status.total_with_issues }})</h3>
+          </div>
+          <div id="buttons-equipment-issues" class="flex gap-1"></div>
         </div>
       </div>
       <div class="overflow-x-auto">
-        <table class="table table-zebra w-full">
+        <table id="table-equipment-issues" class="table table-zebra w-full">
           <thead>
             <tr>
               <th>Código</th>
@@ -269,37 +270,25 @@
               <th>Tipo</th>
               <th>Estado</th>
               <th>Problemas</th>
-              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {% for item in equipment_status.with_issues %}
             <tr>
-              <td>
-                <a href="{% url 'resource_detail' item.equipment.id %}" class="link link-hover text-primary font-mono">
-                  {{ item.equipment.code }}
-                </a>
-              </td>
+              <td>{{ item.equipment.code }}</td>
               <td>{{ item.equipment.name }}</td>
-              <td><span class="badge">{{ item.equipment.get_type_equipment_display }}</span></td>
+              <td>{{ item.equipment.get_type_equipment_display }}</td>
               <td>
                 {% if item.availability_status == 'DISPONIBLE' %}
-                <span class="badge badge-success">Disponible</span>
+                Disponible
                 {% elif item.availability_status == 'RENTADO' %}
-                <span class="badge badge-info">Rentado</span>
+                Rentado
                 {% endif %}
               </td>
               <td>
-                <ul class="text-sm">
-                  {% for issue in item.report.inconsistencies.found %}
-                  <li class="text-error">• {{ issue.description }}</li>
-                  {% endfor %}
-                </ul>
-              </td>
-              <td>
-                <a href="{% url 'resource_detail' item.equipment.id %}" class="btn btn-sm btn-ghost">
-                  <i class="las la-eye"></i> Ver
-                </a>
+                {% for issue in item.report.inconsistencies.found %}
+                {{ issue.description }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
               </td>
             </tr>
             {% endfor %}
@@ -311,47 +300,33 @@
       <!-- Equipos incompletos -->
       {% if equipment_status.incomplete %}
       <div class="alert alert-warning shadow-lg">
-        <div class="flex gap-3">
-          <i class="las la-clipboard-list text-2xl"></i>
-          <h3 class="font-semibold">Equipos Incompletos ({{ equipment_status.total_incomplete }})</h3>
+        <div class="flex justify-between items-center">
+          <div class="flex gap-3">
+            <i class="las la-clipboard-list text-2xl"></i>
+            <h3 class="font-semibold">Equipos Incompletos ({{ equipment_status.total_incomplete }})</h3>
+          </div>
+          <div id="buttons-equipment-incomplete" class="flex gap-1"></div>
         </div>
       </div>
       <div class="overflow-x-auto">
-        <table class="table table-zebra w-full">
+        <table id="table-equipment-incomplete" class="table table-zebra w-full">
           <thead>
             <tr>
               <th>Código</th>
               <th>Nombre</th>
               <th>Tipo</th>
-              <th>Completitud</th>
-              <th>Faltantes</th>
-              <th>Acciones</th>
+              <th>Completitud %</th>
+              <th>Elementos Faltantes</th>
             </tr>
           </thead>
           <tbody>
             {% for item in equipment_status.incomplete %}
             <tr>
-              <td>
-                <a href="{% url 'resource_detail' item.equipment.id %}" class="link link-hover text-primary font-mono">
-                  {{ item.equipment.code }}
-                </a>
-              </td>
+              <td>{{ item.equipment.code }}</td>
               <td>{{ item.equipment.name }}</td>
-              <td><span class="badge">{{ item.equipment.get_type_equipment_display }}</span></td>
-              <td>
-                <div class="flex items-center gap-2">
-                  <progress class="progress progress-warning w-20" value="{{ item.completion_percentage }}" max="100"></progress>
-                  <span class="text-sm">{{ item.completion_percentage|floatformat:0 }}%</span>
-                </div>
-              </td>
-              <td>
-                <span class="badge badge-warning">{{ item.missing_count }} elementos</span>
-              </td>
-              <td>
-                <a href="{% url 'resource_detail' item.equipment.id %}" class="btn btn-sm btn-ghost">
-                  <i class="las la-edit"></i> Completar
-                </a>
-              </td>
+              <td>{{ item.equipment.get_type_equipment_display }}</td>
+              <td>{{ item.completion_percentage|floatformat:0 }}%</td>
+              <td>{{ item.missing_count }}</td>
             </tr>
             {% endfor %}
           </tbody>
@@ -362,13 +337,16 @@
       <!-- Equipos rentados -->
       {% if equipment_status.rented %}
       <div class="alert alert-info shadow-lg">
-        <div class="flex gap-3">
-          <i class="las la-handshake text-2xl"></i>
-          <h3 class="font-semibold">Equipos Rentados ({{ equipment_status.total_rented }})</h3>
+        <div class="flex justify-between items-center">
+          <div class="flex gap-3">
+            <i class="las la-handshake text-2xl"></i>
+            <h3 class="font-semibold">Equipos Rentados ({{ equipment_status.total_rented }})</h3>
+          </div>
+          <div id="buttons-equipment-rented" class="flex gap-1"></div>
         </div>
       </div>
       <div class="overflow-x-auto">
-        <table class="table table-zebra w-full">
+        <table id="table-equipment-rented" class="table table-zebra w-full">
           <thead>
             <tr>
               <th>Código</th>
@@ -376,20 +354,15 @@
               <th>Tipo</th>
               <th>Cliente</th>
               <th>Ubicación</th>
-              <th>Liberación</th>
-              <th>Acciones</th>
+              <th>Fecha Liberación</th>
             </tr>
           </thead>
           <tbody>
             {% for item in equipment_status.rented %}
             <tr>
-              <td>
-                <a href="{% url 'resource_detail' item.equipment.id %}" class="link link-hover text-primary font-mono">
-                  {{ item.equipment.code }}
-                </a>
-              </td>
+              <td>{{ item.equipment.code }}</td>
               <td>{{ item.equipment.name }}</td>
-              <td><span class="badge">{{ item.equipment.get_type_equipment_display }}</span></td>
+              <td>{{ item.equipment.get_type_equipment_display }}</td>
               <td>
                 {% if item.report.rental_info %}
                   {{ item.report.rental_info.project_partner }}
@@ -407,17 +380,9 @@
               <td>
                 {% if item.report.availability.release_date %}
                   {{ item.report.availability.release_date|date:"d/m/Y" }}
-                  {% if item.report.rental_info.remaining_days %}
-                    <br><span class="text-sm text-info">({{ item.report.rental_info.remaining_days }} días)</span>
-                  {% endif %}
                 {% else %}
                   N/A
                 {% endif %}
-              </td>
-              <td>
-                <a href="{% url 'resource_detail' item.equipment.id %}" class="btn btn-sm btn-ghost">
-                  <i class="las la-eye"></i> Ver
-                </a>
               </td>
             </tr>
             {% endfor %}
@@ -449,4 +414,84 @@
 </div>
 {% endblock %}
 
-{% block script_app %}{% endblock %}
+{% block script_app %}
+<script>
+$(document).ready(function() {
+    // Función para inicializar DataTables con botones de exportación
+    function initializeDataTable(tableId, containerId, title) {
+        var table = $('#' + tableId);
+        
+        // Verificar si la tabla existe y tiene datos
+        if (table.length && table.find('tbody tr').length > 0) {
+            var dataTable = table.DataTable({
+                language: {
+                    url: "{% static 'i18n/es-ES.json' %}"
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: '<i class="las la-file-excel text-xl"></i>',
+                        className: 'btn btn-secondary border btn-xs',
+                        title: title,
+                        filename: title + '_' + new Date().toISOString().slice(0,10)
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="las la-file-pdf text-xl"></i>',
+                        className: 'btn btn-secondary border btn-xs',
+                        title: title,
+                        filename: title + '_' + new Date().toISOString().slice(0,10)
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="las la-file-csv text-xl"></i>',
+                        className: 'btn btn-secondary border btn-xs',
+                        title: title,
+                        filename: title + '_' + new Date().toISOString().slice(0,10)
+                    }
+                ],
+                lengthMenu: [
+                    [15, 50, 100, -1],
+                    ['15', '50', '100', 'Todos']
+                ],
+                pageLength: 15,
+                searching: false,
+                lengthChange: false,
+                info: false,
+                paging: false
+            });
+            
+            // Mover los botones al contenedor específico
+            var buttons = dataTable.buttons().container();
+            buttons.appendTo('#' + containerId);
+        }
+    }
+    
+    // Inicializar todas las tablas
+    {% if alerts.expired %}
+        initializeDataTable('table-expired', 'buttons-expired', 'Elementos Vencidos');
+    {% endif %}
+    
+    {% if alerts.due_10 %}
+        initializeDataTable('table-due-10', 'buttons-due-10', 'Por Vencer 10 Días');
+    {% endif %}
+    
+    {% if alerts.due_30 %}
+        initializeDataTable('table-due-30', 'buttons-due-30', 'Por Vencer 30 Días');
+    {% endif %}
+    
+    {% if equipment_status.with_issues %}
+        initializeDataTable('table-equipment-issues', 'buttons-equipment-issues', 'Equipos con Inconsistencias');
+    {% endif %}
+    
+    {% if equipment_status.incomplete %}
+        initializeDataTable('table-equipment-incomplete', 'buttons-equipment-incomplete', 'Equipos Incompletos');
+    {% endif %}
+    
+    {% if equipment_status.rented %}
+        initializeDataTable('table-equipment-rented', 'buttons-equipment-rented', 'Equipos Rentados');
+    {% endif %}
+});
+</script>
+{% endblock %}
