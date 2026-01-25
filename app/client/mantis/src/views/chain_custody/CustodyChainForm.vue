@@ -42,6 +42,7 @@ const custodyChain = ref({
   activity_date: new Date().toISOString().split('T')[0],
   location: '',
   issue_date: new Date().toISOString().split('T')[0],
+  status: 'DRAFT',
   start_time: '',
   end_time: '',
   time_duration: 0,
@@ -67,7 +68,19 @@ const custodyChain = ref({
 
 const selectedResourceIds = ref([])
 
-// Cargar datos de la cadena de custodia si estamos en modo edición
+// Estado original al cargar (para detectar si ya estaba cerrado)
+const originalStatus = ref('DRAFT')
+
+// Computed para verificar si la cadena está cerrada
+const isChainClosed = computed(() => {
+  return originalStatus.value === 'CLOSE'
+})
+
+// Computed para verificar si se puede editar
+const canEdit = computed(() => {
+  return !isChainClosed.value
+})
+
 const loadCustodyChainData = async () => {
   if (!isEditMode.value) return
 
@@ -84,6 +97,9 @@ const loadCustodyChainData = async () => {
       const vehicle = chainData.vehicle
       const details = chainData.details || []
       
+      // Guardar el estado original
+      originalStatus.value = chain.status || 'DRAFT'
+      
       custodyChain.value = {
         technical: technical?.id || null,
         vehicle: vehicle?.id || null,
@@ -92,6 +108,7 @@ const loadCustodyChainData = async () => {
         activity_date: chain.activity_date,
         location: chain.location,
         issue_date: chain.issue_date || new Date().toISOString().split('T')[0],
+        status: chain.status || 'DRAFT',
         start_time: chain.start_time || '',
         end_time: chain.end_time || '',
         time_duration: chain.time_duration || 0,
@@ -214,6 +231,7 @@ const submitForm = async () => {
         activity_date: custodyChain.value.activity_date,
         issue_date: custodyChain.value.issue_date,
         consecutive: custodyChain.value.consecutive,
+        status: custodyChain.value.status,
         location: custodyChain.value.location,
         start_time: custodyChain.value.start_time,
         end_time: custodyChain.value.end_time,
@@ -243,10 +261,10 @@ const submitForm = async () => {
       const result = await custodyChainStore.updateCustodyChain(custodyChainId.value, payload)
       
       if (result) {
-        // Recargar datos del proyecto
+        // Recargar datos del proyecto para actualizar el listado
         await projectStore.fetchProjectData()
         
-        // Redirigir directamente sin mostrar mensaje
+        // Redirigir sin mostrar mensaje
         const workOrder = projectStore.workOrders.find(wo => wo.status === 'IN_PROGRESS')
         if (workOrder) {
           router.push({ name: 'sheet-project-view', params: { id: workOrder.id } })
@@ -255,7 +273,7 @@ const submitForm = async () => {
         }
       }
     } else {
-      // Para creación, mantener el payload original
+      // Para creación
       const createPayload = {
         technical_id: custodyChain.value.technical,
         vehicle_id: custodyChain.value.vehicle,
@@ -291,9 +309,10 @@ const submitForm = async () => {
       const result = await custodyChainStore.addCustodyChain(createPayload)
       
       if (result) {
-        alert('Cadena de custodia guardada exitosamente')
+        // Recargar datos del proyecto para actualizar el listado
+        await projectStore.fetchProjectData()
         
-        // Obtener el sheet_project_id de la primera work order activa
+        // Redirigir sin mostrar mensaje
         const workOrder = projectStore.workOrders.find(wo => wo.status === 'IN_PROGRESS')
         if (workOrder) {
           router.push({ name: 'sheet-project-view', params: { id: workOrder.id } })
@@ -465,19 +484,85 @@ const handleBarrelsInput = () => {
 const handleCubicMetersInput = () => {
   lastEditedVolumeField.value = 'cubicMeters'
 }
+
+const statusOptions = computed(() => [
+  { value: 'DRAFT', label: 'BORRADOR', class: 'badge-warning' },
+  { value: 'CLOSE', label: 'CERRADO', class: 'badge-success' }
+])
+
+const currentStatusBadge = computed(() => {
+  return statusOptions.value.find(opt => opt.value === custodyChain.value.status) || statusOptions.value[0]
+})
 </script>
 
 <template>
   <div class="max-w-7xl mx-auto p-4">
     <!-- Título dinámico según modo -->
     <div class="bg-white rounded-lg p-4 mb-4 border border-gray-200 shadow-sm">
-      <h2 class="text-xl font-semibold text-gray-800">
-        <i class="las la-link text-blue-600"></i>
-        {{ isEditMode ? `Editar Cadena de Custodia #${custodyChainId}` : 'Nueva Cadena de Custodia' }}
-      </h2>
-      <p class="text-sm text-gray-600 mt-1">
-        {{ isEditMode ? 'Modifique los datos de la cadena de custodia' : 'Complete los datos para crear una nueva cadena de custodia' }}
-      </p>
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-800">
+            <i class="las la-link text-blue-600"></i>
+            {{ isEditMode ? `${isChainClosed ? 'Ver' : 'Editar'} Cadena de Custodia #${custodyChainId}` : 'Nueva Cadena de Custodia' }}
+          </h2>
+          <p class="text-sm text-gray-600 mt-1">
+            {{ isChainClosed ? 'Esta cadena de custodia está cerrada y no puede ser modificada' : (isEditMode ? 'Modifique los datos de la cadena de custodia' : 'Complete los datos para crear una nueva cadena de custodia') }}
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- Selector de Estado -->
+          <div class="form-control">
+            <label class="label py-0 mb-1">
+              <span class="label-text font-semibold text-xs">Estado</span>
+            </label>
+            <select 
+              v-model="custodyChain.status"
+              :disabled="isChainClosed"
+              class="select select-bordered select-sm"
+              :class="{
+                'select-warning': custodyChain.status === 'DRAFT',
+                'select-success': custodyChain.status === 'CLOSE'
+              }"
+            >
+              <option 
+                v-for="option in statusOptions" 
+                :key="option.value" 
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          
+          <!-- Badge de Estado Visual -->
+          <div class="flex flex-col items-center">
+            <span class="text-xs text-gray-500 mb-1">Estado Actual</span>
+            <span class="badge badge-lg" :class="currentStatusBadge.class">
+              <i class="las mr-1" :class="{
+                'la-edit': custodyChain.status === 'DRAFT',
+                'la-lock': custodyChain.status === 'CLOSE'
+              }"></i>
+              {{ currentStatusBadge.label }}
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mensaje informativo sobre el estado -->
+      <div v-if="isEditMode" class="mt-3 pt-3 border-t border-gray-200">
+        <div v-if="!isChainClosed && custodyChain.status === 'DRAFT'" class="flex items-center gap-2 text-sm text-amber-600">
+          <i class="las la-info-circle text-lg"></i>
+          <span>La cadena de custodia está en estado <strong>BORRADOR</strong> y puede ser modificada libremente.</span>
+        </div>
+        <div v-else-if="isChainClosed" class="flex items-center gap-2 text-sm text-red-600">
+          <i class="las la-lock text-lg"></i>
+          <span>La cadena de custodia está <strong>CERRADA</strong>. No se pueden realizar modificaciones.</span>
+        </div>
+        <div v-else class="flex items-center gap-2 text-sm text-green-600">
+          <i class="las la-check-circle text-lg"></i>
+          <span>Al guardar con estado <strong>CERRADO</strong>, no se podrán realizar más modificaciones.</span>
+        </div>
+      </div>
     </div>
 
     <!-- Alertas de Validación -->
@@ -564,6 +649,7 @@ const handleCubicMetersInput = () => {
               <select 
                 id="technical"
                 v-model.number="custodyChain.technical"
+                :disabled="isChainClosed"
                 required
                 class="select select-bordered w-full flex-1"
                 :class="{ 'select-error': technicalValidation.hasErrors, 'select-warning': technicalValidation.hasWarnings && !technicalValidation.hasErrors }"
@@ -602,6 +688,7 @@ const handleCubicMetersInput = () => {
               <select 
                 id="vehicle"
                 v-model.number="custodyChain.vehicle"
+                :disabled="isChainClosed"
                 required
                 class="select select-bordered w-full flex-1"
                 :class="{ 'select-error': vehicleValidation.hasErrors, 'select-warning': vehicleValidation.hasWarnings && !vehicleValidation.hasErrors }"
@@ -647,6 +734,7 @@ const handleCubicMetersInput = () => {
               type="date"
               id="activity_date"
               v-model="custodyChain.activity_date"
+              :disabled="isChainClosed"
               required
               class="input input-bordered w-full"
             />
@@ -661,6 +749,7 @@ const handleCubicMetersInput = () => {
               type="text"
               id="location"
               v-model="custodyChain.location"
+              :disabled="isChainClosed"
               placeholder="Ej: Bloque 31"
               class="input input-bordered w-full"
             />
@@ -675,6 +764,7 @@ const handleCubicMetersInput = () => {
               type="date"
               id="issue_date"
               v-model="custodyChain.issue_date"
+              :disabled="isChainClosed"
               class="input input-bordered w-full"
             />
           </div>
@@ -688,6 +778,7 @@ const handleCubicMetersInput = () => {
               type="time"
               id="start_time"
               v-model="custodyChain.start_time"
+              :disabled="isChainClosed"
               class="input input-bordered w-full"
               :class="{ 'input-error': !timeValidation.isValid }"
             />
@@ -702,6 +793,7 @@ const handleCubicMetersInput = () => {
               type="time"
               id="end_time"
               v-model="custodyChain.end_time"
+              :disabled="isChainClosed"
               class="input input-bordered w-full"
               :class="{ 'input-error': !timeValidation.isValid }"
             />
@@ -729,6 +821,7 @@ const handleCubicMetersInput = () => {
           </div>
         </div>
       </div>
+
       <!-- Información del Transportista -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información del Transportista</h6>
@@ -742,6 +835,7 @@ const handleCubicMetersInput = () => {
               type="text"
               id="driver_name"
               v-model="custodyChain.driver_name"
+              :disabled="isChainClosed"
               placeholder="Nombre completo"
               class="input input-bordered w-full"
             />
@@ -755,6 +849,7 @@ const handleCubicMetersInput = () => {
               type="text"
               id="dni_driver"
               v-model="custodyChain.dni_driver"
+              :disabled="isChainClosed"
               placeholder="Número de identificación"
               maxlength="15"
               class="input input-bordered w-full"
@@ -769,6 +864,7 @@ const handleCubicMetersInput = () => {
               type="text"
               id="driver_position"
               v-model="custodyChain.driver_position"
+              :disabled="isChainClosed"
               placeholder="Ej: Conductor"
               class="input input-bordered w-full"
             />
@@ -782,12 +878,12 @@ const handleCubicMetersInput = () => {
               type="date"
               id="driver_date"
               v-model="custodyChain.driver_date"
+              :disabled="isChainClosed"
               class="input input-bordered w-full"
             />
           </div>
         </div>
       </div>
-
 
       <!-- Información de Contacto -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
@@ -802,6 +898,7 @@ const handleCubicMetersInput = () => {
               type="text"
               id="contact_name"
               v-model="custodyChain.contact_name"
+              :disabled="isChainClosed"
               placeholder="Nombre completo"
               class="input input-bordered w-full"
             />
@@ -815,6 +912,7 @@ const handleCubicMetersInput = () => {
               type="text"
               id="dni_contact"
               v-model="custodyChain.dni_contact"
+              :disabled="isChainClosed"
               placeholder="Número de identificación"
               maxlength="15"
               class="input input-bordered w-full"
@@ -829,6 +927,7 @@ const handleCubicMetersInput = () => {
               type="text"
               id="contact_position"
               v-model="custodyChain.contact_position"
+              :disabled="isChainClosed"
               placeholder="Ej: Maquinista"
               class="input input-bordered w-full"
             />
@@ -842,11 +941,13 @@ const handleCubicMetersInput = () => {
               type="date"
               id="date_contact"
               v-model="custodyChain.date_contact"
+              :disabled="isChainClosed"
               class="input input-bordered w-full"
             />
           </div>
         </div>
       </div>
+
       <!-- Recursos del Proyecto -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">
@@ -859,7 +960,7 @@ const handleCubicMetersInput = () => {
             <thead>
               <tr class="bg-gray-500 text-white">
                 <th class="border border-gray-300 w-16 text-center">
-                  <input type="checkbox" class="checkbox checkbox-sm" />
+                  <input type="checkbox" class="checkbox checkbox-sm" :disabled="isChainClosed" />
                 </th>
                 <th class="border border-gray-300">#</th>
                 <th class="border border-gray-300">Código</th>
@@ -871,16 +972,20 @@ const handleCubicMetersInput = () => {
               <tr 
                 v-for="(resource, index) in availableResources" 
                 :key="resource.id"
-                class="cursor-pointer hover:bg-blue-50"
-                :class="{ 'bg-blue-100': resource.selected }"
-                @click="toggleResourceSelection(resource.id)"
+                :class="{ 
+                  'bg-blue-100': resource.selected,
+                  'cursor-pointer hover:bg-blue-50': !isChainClosed,
+                  'opacity-60': isChainClosed
+                }"
+                @click="!isChainClosed && toggleResourceSelection(resource.id)"
               >
                 <td class="border border-gray-300 text-center">
                   <input 
                     type="checkbox" 
                     class="checkbox checkbox-sm checkbox-primary"
                     :checked="resource.selected"
-                    @click.stop="toggleResourceSelection(resource.id)"
+                    :disabled="isChainClosed"
+                    @click.stop="!isChainClosed && toggleResourceSelection(resource.id)"
                   />
                 </td>
                 <td class="border border-gray-300">{{ index + 1 }}</td>
@@ -916,6 +1021,7 @@ const handleCubicMetersInput = () => {
               id="total_gallons"
               v-model.number="custodyChain.total_gallons"
               @input="handleGallonsInput"
+              :disabled="isChainClosed"
               min="0"
               step="0.0001"
               class="input input-bordered w-full"
@@ -932,6 +1038,7 @@ const handleCubicMetersInput = () => {
               id="total_barrels"
               v-model.number="custodyChain.total_barrels"
               @input="handleBarrelsInput"
+              :disabled="isChainClosed"
               min="0"
               step="0.0001"
               class="input input-bordered w-full"
@@ -948,6 +1055,7 @@ const handleCubicMetersInput = () => {
               id="total_cubic_meters"
               v-model.number="custodyChain.total_cubic_meters"
               @input="handleCubicMetersInput"
+              :disabled="isChainClosed"
               min="0"
               step="0.0001"
               class="input input-bordered w-full"
@@ -965,6 +1073,7 @@ const handleCubicMetersInput = () => {
           <textarea 
             id="notes"
             v-model="custodyChain.notes"
+            :disabled="isChainClosed"
             rows="4"
             placeholder="Observaciones o notas adicionales..."
             class="textarea textarea-bordered w-full"
@@ -976,9 +1085,14 @@ const handleCubicMetersInput = () => {
       <div class="flex gap-3 justify-end mt-6">
         <button type="button" class="btn btn-outline" @click="cancelForm" :disabled="isLoading">
           <i class="las la-times"></i>
-          Cancelar
+          {{ isChainClosed ? 'Cerrar' : 'Cancelar' }}
         </button>
-        <button type="submit" class="btn btn-primary" :disabled="isLoading">
+        <button 
+          v-if="!isChainClosed"
+          type="submit" 
+          class="btn btn-primary" 
+          :disabled="isLoading"
+        >
           <i v-if="!isLoading" class="las la-save"></i>
           <i v-else class="las la-spinner animate-spin"></i>
           {{ isLoading ? 'Guardando...' : (isEditMode ? 'Actualizar Cadena de Custodia' : 'Guardar Cadena de Custodia') }}
