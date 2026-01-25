@@ -63,7 +63,8 @@ const custodyChain = ref({
   technical_position: '',
   vehicle_plate: '',
   vehicle_brand: '',
-  vehicle_model: ''
+  vehicle_model: '',
+  have_logistic: 'NA'
 })
 
 const selectedResourceIds = ref([])
@@ -129,7 +130,8 @@ const loadCustodyChainData = async () => {
         technical_position: technical?.work_area_display || technical?.work_area || '',
         vehicle_plate: vehicle?.no_plate || '',
         vehicle_brand: vehicle?.brand || '',
-        vehicle_model: vehicle?.model || ''
+        vehicle_model: vehicle?.model || '',
+        have_logistic: chain.have_logistic || 'NA'
       }
       
       // Cargar IDs de recursos seleccionados
@@ -247,6 +249,7 @@ const submitForm = async () => {
         total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
         total_barrels: parseFloat(custodyChain.value.total_barrels) || 0,
         total_cubic_meters: parseFloat(custodyChain.value.total_cubic_meters) || 0,
+        have_logistic: custodyChain.value.have_logistic,
         meta: {
           notes: custodyChain.value.notes,
           id_user_updated: appConfig.userId || 1
@@ -261,10 +264,8 @@ const submitForm = async () => {
       const result = await custodyChainStore.updateCustodyChain(custodyChainId.value, payload)
       
       if (result) {
-        // Recargar datos del proyecto para actualizar el listado
         await projectStore.fetchProjectData()
         
-        // Redirigir sin mostrar mensaje
         const workOrder = projectStore.workOrders.find(wo => wo.status === 'IN_PROGRESS')
         if (workOrder) {
           router.push({ name: 'sheet-project-view', params: { id: workOrder.id } })
@@ -273,7 +274,6 @@ const submitForm = async () => {
         }
       }
     } else {
-      // Para creación
       const createPayload = {
         technical_id: custodyChain.value.technical,
         vehicle_id: custodyChain.value.vehicle,
@@ -302,6 +302,7 @@ const submitForm = async () => {
         total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
         total_barrels: parseFloat(custodyChain.value.total_barrels) || 0,
         total_cubic_meters: parseFloat(custodyChain.value.total_cubic_meters) || 0,
+        have_logistic: custodyChain.value.have_logistic,
         notes: custodyChain.value.notes,
         resources: selectedResourceIds.value
       }
@@ -309,10 +310,8 @@ const submitForm = async () => {
       const result = await custodyChainStore.addCustodyChain(createPayload)
       
       if (result) {
-        // Recargar datos del proyecto para actualizar el listado
         await projectStore.fetchProjectData()
         
-        // Redirigir sin mostrar mensaje
         const workOrder = projectStore.workOrders.find(wo => wo.status === 'IN_PROGRESS')
         if (workOrder) {
           router.push({ name: 'sheet-project-view', params: { id: workOrder.id } })
@@ -818,6 +817,24 @@ const currentStatusBadge = computed(() => {
               readonly
               class="input input-bordered w-full bg-gray-100"
             />
+          </div>
+
+          <!-- Logística -->
+          <div class="form-control w-full">
+            <label class="label" for="have_logistic">
+              <span class="label-text font-medium">¿Tiene Logística? *</span>
+            </label>
+            <select 
+              id="have_logistic"
+              v-model="custodyChain.have_logistic"
+              :disabled="isChainClosed"
+              required
+              class="select select-bordered w-full"
+            >
+              <option value="SI">SÍ</option>
+              <option value="NO">NO</option>
+              <option value="NA">NO APLICA</option>
+            </select>
           </div>
         </div>
       </div>
