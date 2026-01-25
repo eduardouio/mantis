@@ -62,21 +62,25 @@ const handleDeleteResource = async (resource) => {
   if (confirmDeleteId.value === resource.id) {
     // Segunda vez haciendo clic - ejecutar eliminación
     try {
+      // Eliminar el recurso principal
       await projectResourceStore.deleteResourceProject(resource.id)
       
-      // Si tiene servicio asociado, intentar eliminarlo también
+      // Solo si se eliminó exitosamente, intentar eliminar el servicio asociado
       if (resource.related_service_id) {
          try {
            await projectResourceStore.deleteResourceProject(resource.related_service_id)
          } catch (e) {
-           console.warn('No se pudo eliminar el servicio asociado', e)
+           console.warn('No se pudo eliminar el servicio de mantenimiento asociado', e)
+           alert('Recurso eliminado pero no se pudo eliminar su servicio de mantenimiento asociado.')
          }
       }
       
       confirmDeleteId.value = null
     } catch (error) {
+      // Si falla la eliminación del recurso principal, mostrar error y NO intentar eliminar el servicio
       console.error('Error al eliminar recurso:', error)
-      alert('Error al eliminar el recurso')
+      alert(error.message || 'Error al eliminar el recurso')
+      confirmDeleteId.value = null // Resetear el estado de confirmación
     }
   } else {
     // Primera vez haciendo clic - pedir confirmación

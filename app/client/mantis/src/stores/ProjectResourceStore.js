@@ -131,11 +131,18 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 })
                 
                 if (!response.ok) {
-                    const data = await response.json()
-                    throw new Error(data.error || "Failed to delete project resource")
+                    let errorMessage = "Failed to delete project resource"
+                    try {
+                        const data = await response.json()
+                        errorMessage = data.error || errorMessage
+                    } catch (e) {
+                        // Si la respuesta no es JSON, intentar leer como texto
+                        errorMessage = await response.text() || errorMessage
+                    }
+                    throw new Error(errorMessage)
                 }
                 
-                // Eliminar el recurso del store
+                // Solo eliminar el recurso del store si la petición fue exitosa
                 this.resourcesProject = this.resourcesProject.filter(r => r.id !== id_project_resource)
                 
             } catch (error) {

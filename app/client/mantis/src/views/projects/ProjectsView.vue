@@ -7,13 +7,11 @@ import ResourceForm from '@/components/projects/ResourceForm.vue'
 import SheetProjectForm from '@/components/projects/SheetPorjectForm.vue'
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
-import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { onMounted, computed, ref } from 'vue';
 import { formatDate } from '@/utils/formatters';
 
 const projectStore = UseProjectStore();
 const projectResourceStore = UseProjectResourceStore();
-const sheetProjectsStore = UseSheetProjectsStore();
 const project = computed(() => projectStore.project);
 
 const isModalOpen = ref(false);
@@ -21,13 +19,6 @@ const modalTitle = ref('');
 const currentModalComponent = ref(null);
 const selectedResourceForEdit = ref(null);
 const selectedSheetForEdit = ref(null);
-
-const openResourceFormModal = () => {
-  modalTitle.value = 'Agregar Recurso al Proyecto';
-  currentModalComponent.value = 'ResourceForm';
-  selectedResourceForEdit.value = null;
-  isModalOpen.value = true;
-};
 
 const openEditResourceModal = (resource) => {
   modalTitle.value = 'Editar Recurso del Proyecto';
@@ -59,12 +50,8 @@ const closeModal = () => {
 };
 
 const cancelProjectFooter = () => {
-  console.log('Acción cancelar proyecto')
+  alert('implemtar la cancelacion de un proyecto');
   // Opcional: router.push('/') u otra ruta
-}
-const saveProjectFooter = () => {
-  console.log('Acción guardar proyecto (stub)')
-  // Opcional: lógica de guardado
 }
 
 onMounted(() => {
