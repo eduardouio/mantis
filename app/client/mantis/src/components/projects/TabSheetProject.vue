@@ -182,13 +182,13 @@ const viewCustodyChains = (sheetId) => {
               <td class="p-2 border border-gray-300">{{ sheet.contact_phone_reference || 'N/A' }}</td>
               <td class="p-2 border border-gray-300">{{ sheet.service_type }}</td>
               <td class="p-2 border border-gray-300 text-right font-mono">
-                {{ sheet.calculated_total_gallons.toLocaleString() }}
+                {{ parseFloat(sheet.calculated_total_gallons || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
               </td>
               <td class="p-2 border border-gray-300 text-right font-mono">
-                {{ sheet.calculated_total_barrels.toLocaleString() }}
+                {{ parseFloat(sheet.calculated_total_barrels || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
               </td>
               <td class="p-2 border border-gray-300 text-right font-mono">
-                {{ sheet.calculated_total_cubic_meters.toFixed(2) }}
+                {{ parseFloat(sheet.calculated_total_cubic_meters || 0).toFixed(2) }}
               </td>
               <td class="p-2 border border-gray-300 text-end">
                 <div class="flex gap-2 justify-end">
