@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
+import { appConfig } from '@/AppConfig';
 
 const route = useRoute();
 const router = useRouter();
@@ -44,6 +45,14 @@ const getStatusBadge = (status) => {
   return statusConfig[status] || { text: status, class: 'badge-ghost' };
 };
 
+const getCustodyChainStatusBadge = (status) => {
+  const statusConfig = {
+    'DRAFT': { text: 'BORRADOR', class: 'badge-warning' },
+    'CLOSE': { text: 'CERRADO', class: 'badge-success' }
+  };
+  return statusConfig[status] || { text: status, class: 'badge-ghost' };
+};
+
 const totalGallons = computed(() => {
   return custodyChains.value.reduce((sum, cc) => sum + (cc.total_gallons || 0), 0);
 });
@@ -76,6 +85,11 @@ const createNewCustodyChain = () => {
     name: 'custody-chain-form',
     query: { sheet_id: sheetProject.value?.id }
   });
+};
+
+const viewCustodyChainPDF = (id) => {
+  const pdfUrl = appConfig.PDFCustodyChainReport.replace('${id}', id);
+  window.open(pdfUrl, '_blank');
 };
 
 onMounted(async () => {
@@ -181,6 +195,7 @@ onMounted(async () => {
             <tr class="bg-gray-500 text-white">
               <th class="p-2 border border-gray-100 text-center">#</th>
               <th class="p-2 border border-gray-100 text-center">Consecutivo</th>
+              <th class="p-2 border border-gray-100 text-center">Estado</th>
               <th class="p-2 border border-gray-100 text-center">Fecha Actividad</th>
               <th class="p-2 border border-gray-100 text-center">Hora Inicio</th>
               <th class="p-2 border border-gray-100 text-center">Hora Fin</th>
@@ -198,7 +213,7 @@ onMounted(async () => {
           <tbody>
             <template v-if="custodyChains.length === 0">
               <tr>
-                <td colspan="14" class="text-center text-gray-500 py-8">
+                <td colspan="15" class="text-center text-gray-500 py-8">
                   <i class="las la-inbox text-4xl"></i>
                   <p>No hay cadenas de custodia registradas para esta planilla</p>
                 </td>
@@ -208,6 +223,11 @@ onMounted(async () => {
               <tr v-for="cc in custodyChains" :key="cc.id">
                 <td class="p-2 border border-gray-300 text-center">{{ cc.id }}</td>
                 <td class="p-2 border border-gray-300 font-mono">{{ cc.consecutive }}</td>
+                <td class="p-2 border border-gray-300 text-center">
+                  <span class="badge" :class="getCustodyChainStatusBadge(cc.status).class">
+                    {{ getCustodyChainStatusBadge(cc.status).text }}
+                  </span>
+                </td>
                 <td class="p-2 border border-gray-300 text-center">{{ formatDate(cc.activity_date) }}</td>
                 <td class="p-2 border border-gray-300 text-center font-mono">{{ formatTime(cc.start_time) }}</td>
                 <td class="p-2 border border-gray-300 text-center font-mono">{{ formatTime(cc.end_time) }}</td>
@@ -243,6 +263,15 @@ onMounted(async () => {
                       VER
                     </button>
                     <button 
+                      @click="viewCustodyChainPDF(cc.id)"
+                      class="btn btn-xs border-red-500 text-red-500 bg-white"
+                      title="Generar PDF"
+                    >
+                      <i class="las la-file-pdf"></i>
+                      PDF
+                    </button>
+                    <button 
+                      v-if="cc.status === 'DRAFT'"
                       @click="router.push({ name: 'custody-chain-form', params: { id: cc.id } })"
                       class="btn btn-xs border-orange-500 text-orange-500 bg-white"
                       title="Editar cadena"
@@ -250,6 +279,14 @@ onMounted(async () => {
                       <i class="las la-edit"></i>
                       EDITAR
                     </button>
+                    <span 
+                      v-else
+                      class="btn btn-xs btn-disabled"
+                      title="No se puede editar una cadena cerrada"
+                    >
+                      <i class="las la-lock"></i>
+                      CERRADA
+                    </span>
                   </div>
                 </td>
               </tr>
@@ -257,7 +294,7 @@ onMounted(async () => {
           </tbody>
           <tfoot v-if="custodyChains.length > 0">
             <tr class="bg-gray-500 font-bold text-white">
-              <td colspan="5" class="p-2 border border-gray-300 text-right">TOTALES:</td>
+              <td colspan="6" class="p-2 border border-gray-300 text-right">TOTALES:</td>
               <td class="p-2 border border-gray-300 text-center">{{ totalHours }} Mins</td>
               <td colspan="3" class="p-2 border border-gray-300"></td>
               <td class="p-2 border border-gray-300 text-right font-mono">{{ totalGallons }}</td>
