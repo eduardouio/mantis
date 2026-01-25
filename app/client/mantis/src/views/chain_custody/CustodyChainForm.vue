@@ -725,9 +725,10 @@ const currentStatusBadge = computed(() => {
               type="text"
               id="consecutive"
               v-model="custodyChain.consecutive"
-              readonly
+              :disabled="isChainClosed"
               placeholder="Se generará automáticamente"
-              class="input input-bordered w-full bg-gray-100"
+              class="input input-bordered w-full"
+              maxlength="7"
             />
           </div>
 
