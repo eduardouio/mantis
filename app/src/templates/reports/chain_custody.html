@@ -135,9 +135,9 @@
       <td colspan="2" style="text-align: left;"><strong>CLIENTE:</strong> {% if partner %}{{ partner.name }}{% endif %}</td>
       <td colspan="2" style="text-align: left;"><strong>LOGISTICA:</strong>
         <span style="margin-left: 30px;">SI</span>
-        <div class="checkbox"></div>
+        <div class="checkbox">{% if custody_chain.have_logistic == 'SI' %}<strong style="font-size: 14px;">X</strong>{% endif %}</div>
         <span style="margin-left: 90px;">NO</span>
-        <div class="checkbox"></div>
+        <div class="checkbox">{% if custody_chain.have_logistic == 'NO' %}<strong style="font-size: 14px;">X</strong>{% endif %}</div>
       </td>
       <td style="text-align:right">
         
