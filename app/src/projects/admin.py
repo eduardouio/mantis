@@ -172,10 +172,10 @@ class CustodyChainAdmin(BaseModelAdmin):
     list_display = (
         'id', 'consecutive', 'get_sheet_project_id', 'get_project_id', 
         'technical', 'sheet_project', 'activity_date', 'location', 'issue_date', 
-        'time_duration', 'have_logistic', 'total_gallons', 'total_barrels', 'total_cubic_meters'
+        'status', 'time_duration', 'have_logistic', 'total_gallons', 'total_barrels', 'total_cubic_meters'
     )
     list_filter = (
-        'technical', 'sheet_project', 'activity_date', 'issue_date', 'is_active'
+        'technical', 'sheet_project', 'activity_date', 'issue_date', 'status', 'is_active'
     )
     search_fields = (
         'consecutive',
@@ -187,7 +187,7 @@ class CustodyChainAdmin(BaseModelAdmin):
         ('Cadena', {
             'fields': (
                 'technical', 'sheet_project', 'consecutive', 'activity_date',
-                'location', 'issue_date', 'start_time', 'end_time', 'time_duration', 'have_logistic'
+                'location', 'issue_date', 'status', 'start_time', 'end_time', 'time_duration', 'have_logistic'
             )
         }),
         ('Contacto', {
