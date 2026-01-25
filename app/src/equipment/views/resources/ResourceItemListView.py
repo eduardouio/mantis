@@ -2,6 +2,7 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from equipment.models import ResourceItem
+from projects.models import Project
 
 
 class ResourceItemListView(LoginRequiredMixin, ListView):
@@ -53,6 +54,26 @@ class ResourceItemListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['title_section'] = 'Listado De Equipos Registrados'
         context['title_page'] = 'Listado De Equipos'
+
+        # Crear diccionario de proyectos para acceso rápido
+        project_ids = [item.stst_current_project_id for item in context['equipments'] if item.stst_current_project_id]
+        if project_ids:
+            projects = Project.objects.filter(
+                id__in=project_ids, 
+                is_deleted=False
+            ).select_related('partner').only('id', 'location', 'partner__name')
+            projects_dict = {p.id: {'location': p.location, 'partner_name': p.partner.name} for p in projects}
+            
+            # Agregar el location y partner_name a cada item
+            for item in context['equipments']:
+                if item.stst_current_project_id:
+                    proj_data = projects_dict.get(item.stst_current_project_id)
+                    if proj_data:
+                        item.project_location = proj_data['location']
+                        item.partner_name = proj_data['partner_name']
+                    else:
+                        item.project_location = None
+                        item.partner_name = None
 
         # Variables para filtros
         context['search'] = self.request.GET.get('search', '')
