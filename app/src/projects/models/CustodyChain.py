@@ -123,16 +123,22 @@ class CustodyChain(BaseModel):
         null=True,
         default=None
     )
-    total_gallons = models.PositiveSmallIntegerField(
+    total_gallons = models.DecimalField(
         'Total de Galones',
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
-    total_barrels = models.PositiveSmallIntegerField(
+    total_barrels = models.DecimalField(
         'Total de Barriles',
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
-    total_cubic_meters = models.PositiveSmallIntegerField(
+    total_cubic_meters = models.DecimalField(
         'Total de Metros Cúbicos',
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
     have_logistic = models.CharField(
