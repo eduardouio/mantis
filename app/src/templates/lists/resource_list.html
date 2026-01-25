@@ -74,8 +74,8 @@
         <thead>
             <tr>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">#</th>
-                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Nombre</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 text-left px-2 py-1">Código</th>
+                <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Tipo</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Capacidad</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden md:table-cell text-left px-2 py-1">Estado</th>
                 <th class="bg-purple-400 bg-opacity-75 text-gray-600 hidden lg:table-cell text-left px-2 py-1">Cliente</th>
@@ -88,16 +88,16 @@
             {% for item in equipments %}
             <tr class="hover:bg-gray-50"> 
                 <td class="text-left hidden md:table-cell px-2 py-1">{{ forloop.counter }}</td>
-                <td class="text-left hidden lg:table-cell px-2 py-1">
-                    {% if item.type_equipment %}
-                        <span class=" text-gray-700">{{ item.display_name }}</span>
-                    {% else %}
-                        <span class="text-gray-400 ">SERVICIO</span>
-                    {% endif %}
-                </td>
                 <td class="text-left px-2 py-1">
                     <a href="{% url 'resource_detail' item.id %}" class="link link-hover text-primary md:hidden font-semibold">{{ item.code }}</a>
                     <span class="hidden md:inline">{{ item.code }}</span>
+                </td>
+                <td class="text-left hidden md:table-cell px-2 py-1">
+                    {% if item.type_equipment %}
+                        <span class="text-gray-700">EQUIPO</span>
+                    {% else %}
+                        <span class="text-gray-400">SERVICIO</span>
+                    {% endif %}
                 </td>
                 <td class="text-left hidden md:table-cell px-2 py-1">
                     {% if item.capacity_gallons %}
@@ -151,6 +151,9 @@
                         </a>
                         <a href="{% url 'resource_update' item.id %}" class="btn btn-xs btn-warning" title="Editar">
                             <i class="las la-edit text-sm"></i>
+                        </a>
+                        <a href="{% url 'reports:equipment-info-pdf' item.id %}" class="btn btn-xs btn-error" title="Descargar PDF" target="_blank">
+                            <i class="las la-file-pdf text-sm"></i>
                         </a>
                     </div>
                 </td>
