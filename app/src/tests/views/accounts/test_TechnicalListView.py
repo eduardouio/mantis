@@ -1,8 +1,11 @@
 import pytest
+from datetime import date
+
 from django.urls import reverse
+
+from accounts.models.Technical import Technical
+from projects.models.CustodyChain import CustodyChain
 from tests.BaseTestView import BaseTestView
-from accounts.models import Technical
-from datetime import date, timedelta
 
 
 @pytest.mark.django_db
@@ -14,6 +17,15 @@ class TestTechnicalListView(BaseTestView):
 
     @pytest.fixture(autouse=True)
     def setup_test_data(self, db):
+        # Eliminar primero los detalles de cadena de custodia si existen
+        from django.apps import apps
+        try:
+            ChainCustodyDetail = apps.get_model('projects', 'ChainCustodyDetail')
+            ChainCustodyDetail.objects.all().delete()
+        except LookupError:
+            pass
+        
+        CustodyChain.objects.all().delete()
         Technical.objects.all().delete()
 
     @pytest.fixture
@@ -23,7 +35,7 @@ class TestTechnicalListView(BaseTestView):
         # Técnico 1: Activo, con todos los certificados
         tech1 = Technical.objects.create(
             first_name='Juan', last_name='Perez', email='juan.perez@example.com',
-            nro_phone='123456789', dni='11111111A', work_area='MECHANICS', is_active=True,
+            nro_phone='123456789', dni='11111111A', work_area='PLANT_PROJECTS', is_active=True,
             license_issue_date=today, defensive_driving_certificate_issue_date=today,
             mae_certificate_issue_date=today, medical_certificate_issue_date=today
         )
@@ -32,14 +44,14 @@ class TestTechnicalListView(BaseTestView):
         # Técnico 2: Inactivo, sin certificados
         tech2 = Technical.objects.create(
             first_name='Ana', last_name='Gomez', email='ana.gomez@example.com',
-            nro_phone='987654321', dni='22222222B', work_area='ELECTRICITY', is_active=False
+            nro_phone='987654321', dni='22222222B', work_area='ASSISTANT', is_active=False
         )
         technicals.append(tech2)
 
         # Técnico 3: Activo, algunos certificados
         tech3 = Technical.objects.create(
             first_name='Luis', last_name='Martinez', email='luis.martinez@example.com',
-            nro_phone='555555555', dni='33333333C', work_area='MECHANICS', is_active=True,
+            nro_phone='555555555', dni='33333333C', work_area='PLANT_PROJECTS', is_active=True,
             license_issue_date=today, medical_certificate_issue_date=today
         )
         technicals.append(tech3)
@@ -86,11 +98,11 @@ class TestTechnicalListView(BaseTestView):
         assert response.context['technicals'][0].dni == '33333333C'
 
     def test_filter_by_work_area(self, client_logged, url, technical_data):
-        response = client_logged.get(url, {'work_area': 'MECHANICS'})
+        response = client_logged.get(url, {'work_area': 'PLANT_PROJECTS'})
         assert response.status_code == 200
         assert len(response.context['technicals']) == 2
         for tech in response.context['technicals']:
-            assert tech.work_area == 'MECHANICS'
+            assert tech.work_area == 'PLANT_PROJECTS'
 
     def test_filter_by_is_active_true(self, client_logged, url, technical_data):
         response = client_logged.get(url, {'is_active': 'true'})
@@ -140,14 +152,14 @@ class TestTechnicalListView(BaseTestView):
 
     def test_combined_filters(self, client_logged, url, technical_data):
         response = client_logged.get(url, {
-            'work_area': 'MECHANICS',
+            'work_area': 'PLANT_PROJECTS',
             'is_active': 'true',
             'has_license': 'true'
         })
         assert response.status_code == 200
         assert len(response.context['technicals']) == 2  # Juan y Luis
         for tech in response.context['technicals']:
-            assert tech.work_area == 'MECHANICS'
+            assert tech.work_area == 'PLANT_PROJECTS'
             assert tech.is_active is True
             assert tech.license_issue_date is not None
 
@@ -158,13 +170,13 @@ class TestTechnicalListView(BaseTestView):
 
     def test_context_variables_present(self, client_logged, url, technical_data):
         response = client_logged.get(url, {
-            'search': 'test', 'work_area': 'MECHANICS', 'is_active': 'true',
+            'search': 'test', 'work_area': 'PLANT_PROJECTS', 'is_active': 'true',
             'has_license': 'true', 'has_defensive_driving': 'false',
             'has_mae_certificate': 'true', 'has_medical_certificate': 'false'
         })
         assert response.status_code == 200
         assert response.context['search'] == 'test'
-        assert response.context['work_area'] == 'MECHANICS'
+        assert response.context['work_area'] == 'PLANT_PROJECTS'
         assert response.context['is_active'] == 'true'
         assert response.context['has_license'] == 'true'
         assert response.context['has_defensive_driving'] == 'false'
@@ -214,14 +226,14 @@ class TestTechnicalListView(BaseTestView):
 
     def test_filter_by_work_area_and_active(self, client_logged, url, technical_data):
         response = client_logged.get(
-            url, {'work_area': 'MECHANICS', 'is_active': 'true'})
+            url, {'work_area': 'PLANT_PROJECTS', 'is_active': 'true'})
         assert response.status_code == 200
         assert len(response.context['technicals']) == 2  # Juan y Luis
         names = {tech.first_name for tech in response.context['technicals']}
         assert 'Juan' in names
         assert 'Luis' in names
         for tech in response.context['technicals']:
-            assert tech.work_area == 'MECHANICS'
+            assert tech.work_area == 'PLANT_PROJECTS'
             assert tech.is_active is True
 
     def test_filter_by_certificates_combination(self, client_logged, url, technical_data):
