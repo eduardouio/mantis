@@ -183,13 +183,6 @@
       </tr>
     </thead>
     <tbody>
-      {% if equipment_overflow %}
-      <tr>
-        <td colspan="20" style="text-align: center; color: red; font-weight: bold; padding: 10px;">
-          ERROR: Se han encontrado más de 10 equipos activos. El reporte sólo admite un máximo de 10 equipos.
-        </td>
-      </tr>
-      {% else %}
         {% for detail in custody_details %}
         {% if forloop.counter <= 10 %}
         <tr>
@@ -258,7 +251,6 @@
         </tr>
         {% endif %}
         {% endfor %}
-      {% endif %}
     </tbody>
   </table>
 
