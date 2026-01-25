@@ -1,0 +1,239 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Reporte de Vehículos por Estado{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-truck me-2"></i>
+                        Reporte de Vehículos por Estado
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <!-- Estadísticas Generales -->
+                    <div class="flex align-items-center py-3 bg-light rounded mb-4">
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Total</h5>
+                            <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Disponible</h5>
+                            <h2 class="text-success mb-0">{{ stats.disponible }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Mantenimiento</h5>
+                            <h2 class="text-warning mb-0">{{ stats.mantenimiento }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Standby</h5>
+                            <h2 class="text-secondary mb-0">{{ stats.standby }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Con Alertas</h5>
+                            <h2 class="text-danger mb-0">{{ stats.con_alertas }}</h2>
+                        </div>
+                        <div class="text-center px-3">
+                            <h5 class="text-muted mb-1">Sin Alertas</h5>
+                            <h2 class="text-success mb-0">{{ stats.sin_alertas }}</h2>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de vehículos -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped" id="vehiclesTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Placa</th>
+                                    <th>Marca/Modelo</th>
+                                    <th>Tipo</th>
+                                    <th>Estado</th>
+                                    <th>Alertas</th>
+                                    <th>Documentos Vencidos</th>
+                                    <th>Pases</th>
+                                    <th>Certificaciones</th>
+                                    <th class="no-export">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vehicle_data in all_vehicles %}
+                                <tr>
+                                    <td><strong>{{ vehicle_data.vehicle.no_plate }}</strong></td>
+                                    <td>{{ vehicle_data.vehicle.brand }} {{ vehicle_data.vehicle.model|default:"" }}</td>
+                                    <td>{{ vehicle_data.vehicle.get_type_vehicle_display }}</td>
+                                    <td>
+                                        <span class="text-{{ vehicle_data.status_class }} fw-bold">
+                                            {{ vehicle_data.status_display }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if vehicle_data.expired_count > 0 %}
+                                            <span class="badge bg-danger" title="Vencidos">{{ vehicle_data.expired_count }}</span>
+                                        {% endif %}
+                                        {% if vehicle_data.due_10_count > 0 %}
+                                            <span class="badge bg-warning" title="Vencen en 10 días">{{ vehicle_data.due_10_count }}</span>
+                                        {% endif %}
+                                        {% if vehicle_data.due_30_count > 0 %}
+                                            <span class="badge bg-info" title="Vencen en 30 días">{{ vehicle_data.due_30_count }}</span>
+                                        {% endif %}
+                                        {% if not vehicle_data.has_alerts %}
+                                            <span class="text-success">✓</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if vehicle_data.issues %}
+                                            <small>
+                                                {% for issue in vehicle_data.issues %}
+                                                    {% if issue.status == 'expired' %}
+                                                    <div class="text-danger">
+                                                        <i class="fas fa-exclamation-circle"></i>
+                                                        {{ issue.label }}: {{ issue.expires_on|date:"d/m/Y" }}
+                                                    </div>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </small>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if vehicle_data.passes %}
+                                            <small>
+                                                {% for pass in vehicle_data.passes %}
+                                                    <div class="{% if pass.is_expired %}text-danger{% elif pass.is_expiring_soon %}text-warning{% endif %}">
+                                                        {{ pass.bloque }}
+                                                        {% if pass.fecha_caducidad %}
+                                                            ({{ pass.fecha_caducidad|date:"d/m/Y" }})
+                                                        {% endif %}
+                                                    </div>
+                                                {% endfor %}
+                                            </small>
+                                        {% else %}
+                                            <span class="text-muted">Sin pases</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if vehicle_data.certifications %}
+                                            <small>
+                                                {% for cert in vehicle_data.certifications %}
+                                                    <div class="{% if cert.is_expired %}text-danger{% endif %}">
+                                                        {{ cert.name }}
+                                                        {% if cert.date_end %}
+                                                            ({{ cert.date_end|date:"d/m/Y" }})
+                                                        {% endif %}
+                                                    </div>
+                                                {% endfor %}
+                                            </small>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'vehicle_detail' vehicle_data.vehicle.id %}" 
+                                           class="btn btn-xs btn-info">
+                                            Ficha
+                                        </a>
+                                        <a href="{% url 'reports:vehicle-status-report' vehicle_data.vehicle.id %}" 
+                                           class="btn btn-xs btn-success">
+                                            Reporte
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center">
+                                        <div class="alert alert-info mb-0">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            No hay vehículos registrados.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .table thead th {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    
+    .table tbody td {
+        vertical-align: middle;
+    }
+    
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.35em 0.65em;
+        margin: 0 2px;
+    }
+</style>
+
+<script>
+    // Inicializar DataTables con botones de exportación
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof $.fn.DataTable !== 'undefined') {
+            $('#vehiclesTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                },
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: '<i class="las la-file-excel"></i> Excel',
+                        className: 'btn btn-success btn-sm',
+                        title: 'Reporte de Vehículos por Estado',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="las la-file-csv"></i> CSV',
+                        className: 'btn btn-info btn-sm',
+                        title: 'Reporte de Vehículos por Estado',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="las la-file-pdf"></i> PDF',
+                        className: 'btn btn-danger btn-sm',
+                        title: 'Reporte de Vehículos por Estado',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    }
+                ],
+                pageLength: 25,
+                lengthMenu: [
+                    [25, 50, 100, -1],
+                    ['25', '50', '100', 'Todos']
+                ],
+                order: [[0, 'asc']],
+                columnDefs: [
+                    { orderable: false, targets: 8 } // Desactivar ordenamiento en columna de acciones
+                ]
+            });
+        }
+    });
+</script>
+{% endblock %}
