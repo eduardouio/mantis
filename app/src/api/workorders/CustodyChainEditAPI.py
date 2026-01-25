@@ -58,23 +58,32 @@ class CustodyChainEditAPI(View):
 
         try:
             with transaction.atomic():
-                # Actualizar campos de cabecera
+
                 chain_data = data.get("custody_chain", {})
-                
+
                 if "technical_id" in chain_data:
                     if chain_data["technical_id"]:
-                        instance.technical = Technical.objects.get(pk=chain_data["technical_id"])
+                        instance.technical = Technical.objects.get(
+                            pk=chain_data["technical_id"]
+                        )
                     else:
                         instance.technical = None
 
                 if "vehicle_id" in chain_data:
                     if chain_data["vehicle_id"]:
-                        instance.vehicle = Vehicle.objects.get(pk=chain_data["vehicle_id"])
+                        instance.vehicle = Vehicle.objects.get(
+                            pk=chain_data["vehicle_id"]
+                        )
                     else:
                         instance.vehicle = None
 
                 if "sheet_project_id" in chain_data:
-                    instance.sheet_project = SheetProject.objects.get(pk=chain_data["sheet_project_id"])
+                    instance.sheet_project = SheetProject.objects.get(
+                        pk=chain_data["sheet_project_id"]
+                    )
+
+                if "consecutive" in chain_data:
+                    instance.consecutive = chain_data["consecutive"]
 
                 if "activity_date" in chain_data:
                     instance.activity_date = parse_date(chain_data["activity_date"])
@@ -133,39 +142,31 @@ class CustodyChainEditAPI(View):
                 if "total_cubic_meters" in chain_data:
                     instance.total_cubic_meters = chain_data["total_cubic_meters"]
 
-                # Actualizar notas desde metadatos
                 meta = chain_data.get("meta", {})
                 if "notes" in meta:
                     instance.notes = meta["notes"]
 
-                # Guardar la instancia con todos los cambios
                 instance.save()
 
-                # Actualizar id_user_updated usando update() para evitar que save() lo sobrescriba
                 if "id_user_updated" in meta:
                     CustodyChain.objects.filter(pk=instance.pk).update(
                         id_user_updated=meta["id_user_updated"]
                     )
 
-                # Gestionar detalles
                 details_data = data.get("details", [])
-                
-                # Obtener IDs de detalles existentes en la petición
+
                 incoming_detail_ids = [
                     d["id"] for d in details_data if "id" in d and d["id"]
                 ]
 
-                # Eliminar detalles que ya no están en la lista (soft delete)
                 existing_details = ChainCustodyDetail.objects.filter(
-                    custody_chain=instance,
-                    is_active=True
+                    custody_chain=instance, is_active=True
                 )
                 for detail in existing_details:
                     if detail.id not in incoming_detail_ids:
                         detail.is_active = False
                         detail.save()
 
-                # Actualizar o crear detalles
                 for detail_data in details_data:
                     detail_id = detail_data.get("id")
                     project_resource_id = detail_data.get("project_resource_id")
@@ -174,38 +175,40 @@ class CustodyChainEditAPI(View):
                         continue
 
                     try:
-                        project_resource = ProjectResourceItem.objects.get(pk=project_resource_id)
+                        project_resource = ProjectResourceItem.objects.get(
+                            pk=project_resource_id
+                        )
                     except ProjectResourceItem.DoesNotExist:
                         continue
 
                     if detail_id:
-                        # Actualizar detalle existente
+
                         try:
                             detail = ChainCustodyDetail.objects.get(
-                                pk=detail_id,
-                                custody_chain=instance
+                                pk=detail_id, custody_chain=instance
                             )
                             detail.project_resource = project_resource
                             detail.is_active = True
                             detail.save()
                         except ChainCustodyDetail.DoesNotExist:
-                            # Si no existe, crear uno nuevo
+
                             ChainCustodyDetail.objects.create(
                                 custody_chain=instance,
-                                project_resource=project_resource
+                                project_resource=project_resource,
                             )
                     else:
-                        # Crear nuevo detalle
+
                         ChainCustodyDetail.objects.create(
-                            custody_chain=instance,
-                            project_resource=project_resource
+                            custody_chain=instance, project_resource=project_resource
                         )
 
-                return JsonResponse({
-                    "success": True,
-                    "message": "Cadena de custodia actualizada exitosamente.",
-                    "data": {"id": instance.id}
-                })
+                return JsonResponse(
+                    {
+                        "success": True,
+                        "message": "Cadena de custodia actualizada exitosamente.",
+                        "data": {"id": instance.id},
+                    }
+                )
 
         except Technical.DoesNotExist:
             return JsonResponse(
