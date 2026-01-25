@@ -25,6 +25,7 @@ from api.workorders import (
     AddUpdateSheetProjectAPI,
     GetAllSheetProjectAPI,
     DeleteSheetOrderAPI,
+    UpdateSheetOrderAPI,
 )
 
 from api.projects.ProjectResources import ProjectResources
@@ -65,7 +66,9 @@ urlpatterns = [
     # workorders
     path('workorders/sheets/project/<int:project_id>/', GetAllSheetProjectAPI.as_view(), name='api_get_all_sheets'),
     path('workorders/sheets/create/', AddUpdateSheetProjectAPI.as_view(), name='api_create_sheet'),
+    path('workorders/sheets/update/', UpdateSheetOrderAPI.as_view(), name='api_update_sheet'),
     path('workorders/sheets/delete/', DeleteSheetOrderAPI.as_view(), name='api_delete_sheet'),
+	
     path('workorders/sheets/items/<int:sheet_project_id>/', GetAllSheerProjectItemsAPI.as_view(), name='api_get_all_sheet_project_items'),
     path('workorders/custody_chain/create/', CreateCustodyChainAPI.as_view(), name='api_create_custody_chain'),
     path('workorders/custody_chain/detail/<int:id>/', CustodyChainDetailAPI.as_view(), name='api_custody_chain_detail'),
