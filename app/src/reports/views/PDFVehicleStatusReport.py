@@ -39,7 +39,7 @@ class PDFVehicleStatusReport(View):
             "reports:vehicle-status-report",
             kwargs={"pk": pk},
         )
-        target_url = request.build_absolute_uri(template_path)
+        target_url = f"{request.scheme}://{request.get_host()}{template_path}"
 
         cookies = []
         for name, value in request.COOKIES.items():

@@ -40,7 +40,7 @@ class PDFTechnicalVaccineReport(View):
             "reports:technical-vaccine-report",
             kwargs={"id": id},
         )
-        target_url = request.build_absolute_uri(vaccine_report_path)
+        target_url = f"{request.scheme}://{request.get_host()}{vaccine_report_path}"
 
         cookies = []
         for name, value in request.COOKIES.items():

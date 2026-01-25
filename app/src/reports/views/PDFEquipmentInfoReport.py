@@ -40,7 +40,7 @@ class PDFEquipmentInfoReport(View):
             "reports:equipment-info-report",
             kwargs={"equipment_id": equipment_id},
         )
-        target_url = request.build_absolute_uri(template_path)
+        target_url = f"{request.scheme}://{request.get_host()}{template_path}"
 
         # Preparar cookies de sesión para Playwright
         cookies = []

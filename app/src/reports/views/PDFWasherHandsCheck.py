@@ -39,7 +39,7 @@ class PDFWasherHandsCheck(View):
             "reports:equipment-washer-hands-checklist",
             kwargs={"equipment_id": equipment_id},
         )
-        target_url = request.build_absolute_uri(template_path)
+        target_url = f"{request.scheme}://{request.get_host()}{template_path}"
 
         cookies = []
         for name, value in request.COOKIES.items():
