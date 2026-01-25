@@ -195,14 +195,28 @@ class ChainCustodyDetail(BaseModel):
     )
 
     @classmethod
+    def get_by_custody_chain(cls, custody_chain):
+        """Obtiene los detalles de una cadena de custodia específica"""
+        details = cls.objects.filter(
+            is_active=True,
+            custody_chain=custody_chain,
+        )
+
+        if details.exists():
+            return details
+        
+        return None
+
+    @classmethod
     def get_by_sheet_project(cls, sheet_project):
-        asigns =  cls.objects.filter(
+        """Obtiene los detalles de todas las cadenas de custodia de una planilla"""
+        details = cls.objects.filter(
             is_active=True,
             custody_chain__sheet_project=sheet_project,
         )
 
-        if len(asigns) > 0:
-            return asigns
+        if details.exists():
+            return details
         
         return None
 

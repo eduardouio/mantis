@@ -15,9 +15,11 @@ class CustodyChainReportView(TemplateView):
         id_custody_chain = kwargs.get("id_custody_chain")
         custody_chain = get_object_or_404(CustodyChain, id=id_custody_chain)
 
-        custody_details = ChainCustodyDetail.get_by_sheet_project(
-            sheet_project=custody_chain.sheet_project
+        # Usar get_by_custody_chain en lugar de get_by_sheet_project
+        custody_details = ChainCustodyDetail.get_by_custody_chain(
+            custody_chain=custody_chain
         )
+
         if custody_details is None:
             custody_details = []
 
@@ -32,11 +34,6 @@ class CustodyChainReportView(TemplateView):
         time_duration_hours = None
         if custody_chain.time_duration:
             time_duration_hours = round(float(custody_chain.time_duration) / 60, 2)
-        
-        # Validar que no haya más de 10 equipos
-        equipment_overflow = False
-        if custody_details and len(custody_details) > 10:
-            equipment_overflow = True
 
         context.update(
             {
@@ -48,8 +45,6 @@ class CustodyChainReportView(TemplateView):
                 "technical": custody_chain.technical,
                 "vehicle": custody_chain.vehicle,
                 "time_duration_hours": time_duration_hours,
-                "equipment_overflow": equipment_overflow,
-                "status": custody_chain.status,
             }
         )
 
