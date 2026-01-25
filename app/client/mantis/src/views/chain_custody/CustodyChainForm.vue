@@ -416,6 +416,13 @@ watch(() => custodyChain.value.end_time, () => {
   calculateDuration()
 })
 
+watch(() => custodyChain.value.activity_date, (newActivityDate) => {
+  if (newActivityDate && !isEditMode.value) {
+    custodyChain.value.issue_date = newActivityDate
+    custodyChain.value.driver_date = newActivityDate
+  }
+})
+
 watch(() => custodyChain.value.technical, (newTechnicalId) => {
   if (newTechnicalId && !isEditMode.value) {
     const selectedTech = technicalStore.technicals.find(t => t.id === newTechnicalId)
