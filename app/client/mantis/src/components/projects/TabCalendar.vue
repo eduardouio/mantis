@@ -1,19 +1,23 @@
 <script setup>
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
 import { generateMaintenanceSchedule, getMaintenanceSummary } from '@/utils/scheduler';
+import { storeToRefs } from 'pinia';
 
 const projectResourceStore = UseProjectResourceStore();
-const resources = computed(() => projectResourceStore.resources || []);
+const { resourcesProject } = storeToRefs(projectResourceStore);
+
+// Estado de carga
+const isLoading = ref(true);
+
+// Nombres de los días de la semana (Lunes a Domingo)
+const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
 // Estado para navegación de meses
 const currentMonthOffset = ref(0); // 0 = mes actual, -1 = mes anterior, +1 = mes siguiente
 
 // Día seleccionado para ver detalles
 const selectedDay = ref(null);
-
-// Nombres de los días de la semana (Lunes a Domingo)
-const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
 // Calcular el primer y último día del mes actual
 const currentMonth = computed(() => {
@@ -35,12 +39,12 @@ const currentMonth = computed(() => {
 
 // Generar calendario del mes
 const maintenanceSchedule = computed(() => {
-  if (!resources.value || resources.value.length === 0) return [];
+  if (!resourcesProject.value || resourcesProject.value.length === 0) return [];
   
   const { firstDay, lastDay } = currentMonth.value;
   const daysAhead = Math.ceil((lastDay - firstDay) / (1000 * 60 * 60 * 24)) + 1;
   
-  return generateMaintenanceSchedule(resources.value, daysAhead, firstDay);
+  return generateMaintenanceSchedule(resourcesProject.value, daysAhead, firstDay);
 });
 
 // Agrupar mantenimientos por fecha (clave: YYYY-MM-DD)
@@ -187,10 +191,18 @@ const getFrequencyLabel = (maintenance) => {
 };
 
 onMounted(async () => {
-  if (!resources.value || resources.value.length === 0) {
+  if (!resourcesProject.value || resourcesProject.value.length === 0) {
     await projectResourceStore.fetchResourcesProject();
   }
+  isLoading.value = false;
 });
+
+// Watch para detectar cambios en recursos
+watch(resourcesProject, (newVal) => {
+  if (newVal && newVal.length > 0) {
+    isLoading.value = false;
+  }
+}, { immediate: true });
 </script>
 
 <template>
@@ -266,9 +278,15 @@ onMounted(async () => {
     </div>
 
     <!-- Mensaje de carga -->
-    <div v-if="!resources || resources.length === 0" class="alert alert-warning">
+    <div v-if="isLoading" class="alert alert-warning">
       <i class="las la-spinner la-spin text-2xl"></i>
       <span>Cargando recursos del proyecto...</span>
+    </div>
+
+    <!-- Mensaje si no hay recursos -->
+    <div v-else-if="!resourcesProject || resourcesProject.length === 0" class="alert alert-info">
+      <i class="las la-info-circle text-2xl"></i>
+      <span>No hay recursos asignados a este proyecto.</span>
     </div>
 
     <!-- Calendario Visual del Mes -->
@@ -417,7 +435,7 @@ onMounted(async () => {
 
     <!-- Mensaje si no hay mantenimientos en el mes -->
     <div 
-      v-if="resources && resources.length > 0 && maintenanceSchedule.length === 0" 
+      v-if="resourcesProject && resourcesProject.length > 0 && maintenanceSchedule.length === 0" 
       class="alert alert-info"
     >
       <i class="las la-info-circle text-2xl"></i>

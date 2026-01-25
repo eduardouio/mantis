@@ -77,7 +77,13 @@ export function generateMaintenanceSchedule(resources, daysAhead = 90, fromDate 
   const maintenanceSchedule = [];
   
   resources.forEach(resource => {
-    if (!resource.is_active) {
+    // Filtrar recursos no activos o retirados
+    if (!resource.is_active || resource.is_retired) {
+      return;
+    }
+
+    // Solo procesar equipos, no servicios
+    if (resource.type_resource === 'SERVICIO') {
       return;
     }
 
