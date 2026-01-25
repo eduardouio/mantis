@@ -129,12 +129,7 @@
                         <details>
                            <summary>Reportes</summary>
                            <ul class="p-2">
-                              <li><a  class="whitespace-nowrap" href="#"><i class="las la-tools mr-2"></i>Reporte de Mantenimiento</a></li>
-                              <li><a  class="whitespace-nowrap" href="#"><i class="las la-check-circle mr-2"></i>Reporte de Disponibilidad de Equipos</a></li>
-                              <li><a  class="whitespace-nowrap" href="#"><i class="las la-wrench mr-2"></i>Reporte de Mantenimiento por Equipos</a></li>
-                              <li><a  class="whitespace-nowrap" href="#"><i class="las la-folder-open mr-2"></i>Reporte de Proyectos Activos</a></li>
-                              <li><a  class="whitespace-nowrap" href="#"><i class="las la-user-tie mr-2"></i>Reporte de Técnicos</a></li>
-                              <li><a  class="whitespace-nowrap" href="#"><i class="las la-certificate mr-2"></i>Licencias</a></li>
+                              <li><a class="whitespace-nowrap" href="{% url 'reports:equipment-status-report' %}"><i class="las la-clipboard-list mr-2"></i>Equipos por Estado</a></li>
                            </ul>
                         </details>
                      </li>
@@ -241,12 +236,7 @@
                            <span class="text-sm">Reportes</span>
                         </summary>
                         <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50">
-                           <li><a  class="whitespace-nowrap bg-base-100 text-sm" href="#"><i class="las la-tools mr-2"></i>Reporte de Mantenimiento</a></li>
-                           <li><a  class="whitespace-nowrap bg-base-100 text-sm" href="#"><i class="las la-check-circle mr-2"></i>Reporte de Disponibilidad de Equipos</a></li>
-                           <li><a  class="whitespace-nowrap bg-base-100 text-sm" href="#"><i class="las la-wrench mr-2"></i>Reporte de Mantenimiento por Equipos</a></li>
-                           <li><a  class="whitespace-nowrap bg-base-100 text-sm" href="#"><i class="las la-folder-open mr-2"></i>Reporte de Proyectos Activos</a></li>
-                           <li><a  class="whitespace-nowrap bg-base-100 text-sm" href="#"><i class="las la-user-tie mr-2"></i>Reporte de Técnicos</a></li>
-                           <li><a  class="whitespace-nowrap bg-base-100 text-sm" href="#"><i class="las la-certificate mr-2"></i>Licencias</a></li>
+                           <li><a class="whitespace-nowrap bg-base-100 text-sm" href="{% url 'reports:equipment-status-report' %}"><i class="las la-clipboard-list mr-2"></i>Equipos por Estado</a></li>
                         </ul>
                      </details>
                   </li>
@@ -348,10 +338,9 @@
                      </ul>
                   </div>
                   <div>
-                     <h5 class="font-bold text-lg mb-3">Reportes y Otros</h5>
+                     <h5 class="font-bold text-lg mb-3">Reportes</h5>
                      <ul class="space-y-2">
-                        <li><a  class="whitespace-nowrap" href="#" class="link link-hover">Reporte de Mantenimiento</a></li>
-                        <li><a  class="whitespace-nowrap" href="#" class="link link-hover">Licencias</a></li>
+                        <li><a class="whitespace-nowrap" href="{% url 'reports:equipment-status-report' %}" class="link link-hover">Equipos por Estado</a></li>
                      </ul>
                   </div>
                </div>
