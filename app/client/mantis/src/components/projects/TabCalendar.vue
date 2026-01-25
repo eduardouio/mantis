@@ -208,19 +208,19 @@ watch(resourcesProject, (newVal) => {
 <template>
   <div class="space-y-4">
     <!-- Controles de Navegación -->
-    <div class="bg-gradient-to-r from-lime-500 to-lime-600 rounded-lg p-4 shadow-lg">
+    <div class="bg-gray-100 rounded-lg p-4 shadow border border-gray-200">
       <div class="flex items-center justify-between">
         <!-- Botón Anterior -->
         <button 
           @click="goToPreviousPeriod"
-          class="btn btn-circle btn-sm bg-white text-lime-600 hover:bg-lime-50 border-none"
+          class="btn btn-circle btn-sm bg-white text-gray-600 hover:bg-gray-50 border-gray-300"
         >
           <i class="las la-chevron-left text-xl"></i>
         </button>
 
         <!-- Información del Período -->
         <div class="text-center flex-1">
-          <h2 class="text-white font-bold text-xl capitalize">
+          <h2 class="text-gray-800 font-bold text-xl capitalize">
             {{ periodInfo.monthYear }}
           </h2>
           
@@ -228,7 +228,7 @@ watch(resourcesProject, (newVal) => {
           <button 
             v-if="currentMonthOffset !== 0"
             @click="goToCurrentPeriod"
-            class="btn btn-xs bg-white text-lime-600 hover:bg-lime-50 border-none mt-2"
+            class="btn btn-xs bg-white text-gray-600 hover:bg-gray-50 border-gray-300 mt-2"
           >
             <i class="las la-calendar-day"></i>
             Mes Actual
@@ -238,7 +238,7 @@ watch(resourcesProject, (newVal) => {
         <!-- Botón Siguiente -->
         <button 
           @click="goToNextPeriod"
-          class="btn btn-circle btn-sm bg-white text-lime-600 hover:bg-lime-50 border-none"
+          class="btn btn-circle btn-sm bg-white text-gray-600 hover:bg-gray-50 border-gray-300"
         >
           <i class="las la-chevron-right text-xl"></i>
         </button>
@@ -246,17 +246,17 @@ watch(resourcesProject, (newVal) => {
 
       <!-- Resumen Rápido -->
       <div class="grid grid-cols-3 gap-4 mt-4">
-        <div class="bg-white bg-opacity-20 rounded-lg p-3 text-center">
-          <p class="text-lime-100 text-xs">Mantenimientos</p>
-          <p class="text-white font-bold text-2xl">{{ summary.total_maintenances }}</p>
+        <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
+          <p class="text-gray-500 text-xs">Mantenimientos</p>
+          <p class="text-gray-800 font-bold text-2xl">{{ summary.total_maintenances }}</p>
         </div>
-        <div class="bg-white bg-opacity-20 rounded-lg p-3 text-center">
-          <p class="text-lime-100 text-xs">Recursos</p>
-          <p class="text-white font-bold text-2xl">{{ summary.resources_count }}</p>
+        <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
+          <p class="text-gray-500 text-xs">Recursos</p>
+          <p class="text-gray-800 font-bold text-2xl">{{ summary.resources_count }}</p>
         </div>
-        <div class="bg-white bg-opacity-20 rounded-lg p-3 text-center">
-          <p class="text-lime-100 text-xs">Costo Total</p>
-          <p class="text-white font-bold text-lg">{{ formatCurrency(summary.total_cost) }}</p>
+        <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
+          <p class="text-gray-500 text-xs">Costo Total</p>
+          <p class="text-gray-800 font-bold text-lg">{{ formatCurrency(summary.total_cost) }}</p>
         </div>
       </div>
 
@@ -264,15 +264,15 @@ watch(resourcesProject, (newVal) => {
       <div class="flex justify-center gap-4 mt-4">
         <div class="flex items-center gap-1">
           <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-          <span class="text-white text-xs">Intervalo días</span>
+          <span class="text-gray-700 text-xs">Intervalo días</span>
         </div>
         <div class="flex items-center gap-1">
           <span class="w-3 h-3 rounded-full bg-purple-500"></span>
-          <span class="text-white text-xs">Días semana</span>
+          <span class="text-gray-700 text-xs">Días semana</span>
         </div>
         <div class="flex items-center gap-1">
           <span class="w-3 h-3 rounded-full bg-orange-500"></span>
-          <span class="text-white text-xs">Días mes</span>
+          <span class="text-gray-700 text-xs">Días mes</span>
         </div>
       </div>
     </div>
