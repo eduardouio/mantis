@@ -1,155 +1,237 @@
-{% if equipment_list %}
-    <div class="row">
-        {% for equipment_data in equipment_list %}
-        <div class="col-md-6 col-lg-4 mb-3">
-            <div class="card equipment-card border-{{ status_class }} h-100">
-                <div class="card-header bg-{{ status_class }} bg-opacity-10">
-                    <h5 class="mb-0">
-                        <i class="fas fa-box me-2"></i>
-                        {{ equipment_data.resource.name }}
-                    </h5>
-                    <small class="text-muted">Código: {{ equipment_data.resource.code }}</small>
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Reporte de Equipos por Estado{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        Reporte de Equipos por Estado
+                    </h3>
                 </div>
                 <div class="card-body">
-                    <!-- Tipo de equipo -->
-                    <p class="mb-2">
-                        <strong>Tipo:</strong> 
-                        <span class="badge bg-secondary">{{ equipment_data.resource.get_type_equipment_display|default:"Servicio" }}</span>
-                    </p>
+                  <div class="flex align-items-center  py-3 bg-light rounded">
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">Total</h5>
+        <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+    </div>
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">Disponible</h5>
+        <h2 class="text-success mb-0">{{ stats.disponible }}</h2>
+    </div>
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">Rentado</h5>
+        <h2 class="text-info mb-0">{{ stats.rentado }}</h2>
+    </div>
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">Dañado</h5>
+        <h2 class="text-danger mb-0">{{ stats.danado }}</h2>
+    </div>
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">En Reparación</h5>
+        <h2 class="text-warning mb-0">{{ stats.en_reparacion }}</h2>
+    </div>
+    <div class="text-center px-3">
+        <h5 class="text-muted mb-1">Incompleto</h5>
+        <h2 class="text-secondary mb-0">{{ stats.incompleto }}</h2>
+    </div>
+</div>
 
-                    <!-- Estado de completitud -->
-                    <div class="mb-3">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <strong>Completitud:</strong>
-                            <span class="badge {% if equipment_data.is_complete %}badge-complete{% else %}badge-incomplete{% endif %}">
-                                {{ equipment_data.completion_percentage }}%
-                            </span>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar {% if equipment_data.is_complete %}bg-success{% else %}bg-warning{% endif %}" 
-                                 role="progressbar" 
-                                 style="width: {{ equipment_data.completion_percentage }}%"
-                                 aria-valuenow="{{ equipment_data.completion_percentage }}" 
-                                 aria-valuemin="0" 
-                                 aria-valuemax="100">
-                            </div>
-                        </div>
-                        {% if equipment_data.missing_items_count > 0 %}
-                        <small class="text-muted">{{ equipment_data.missing_items_count }} elemento(s) faltante(s)</small>
-                        {% endif %}
-                    </div>
 
-                    <!-- Información de proyecto (solo para rentados) -->
-                    {% if show_project and equipment_data.project_info %}
-                    <div class="mb-3 p-2 bg-light rounded">
-                        <p class="mb-1">
-                            <strong><i class="fas fa-project-diagram me-2"></i>Proyecto:</strong><br>
-                            <small>{{ equipment_data.project_info.partner_name }}</small>
-                        </p>
-                        <p class="mb-1">
-                            <strong><i class="fas fa-map-marker-alt me-2"></i>Ubicación:</strong><br>
-                            <small>{{ equipment_data.project_info.location }}</small>
-                        </p>
-                        {% if equipment_data.rental_info %}
-                        <p class="mb-1">
-                            <strong><i class="fas fa-calendar me-2"></i>Fecha compromiso:</strong><br>
-                            <small>{{ equipment_data.rental_info.rental_start_date|date:"d/m/Y" }} - {{ equipment_data.rental_info.rental_end_date|date:"d/m/Y" }}</small>
-                        </p>
-                        {% if equipment_data.rental_info.days_remaining %}
-                        <p class="mb-0">
-                            <strong><i class="fas fa-clock me-2"></i>Días restantes:</strong>
-                            <span class="badge bg-info">{{ equipment_data.rental_info.days_remaining }}</span>
-                        </p>
-                        {% endif %}
-                        {% endif %}
-                    </div>
-                    {% elif equipment_data.current_location %}
-                    <p class="mb-2">
-                        <strong><i class="fas fa-map-marker-alt me-2"></i>Ubicación:</strong>
-                        <small>{{ equipment_data.current_location }}</small>
-                    </p>
-                    {% endif %}
-
-                    <!-- Estado del equipo -->
-                    {% if equipment_data.resource.stst_status_equipment %}
-                    <p class="mb-2">
-                        <strong>Estado:</strong>
-                        <span class="badge bg-{{ status_class }}">{{ equipment_data.resource.stst_status_equipment }}</span>
-                    </p>
-                    {% endif %}
-
-                    <!-- Motivo de reparación si aplica -->
-                    {% if equipment_data.resource.stst_repair_reason %}
-                    <p class="mb-2">
-                        <strong>Motivo:</strong>
-                        <small class="text-muted">{{ equipment_data.resource.stst_repair_reason }}</small>
-                    </p>
-                    {% endif %}
-                </div>
-                <div class="card-footer bg-transparent">
-                    <div class="d-flex gap-2 flex-wrap">
-                        <!-- Enlace a la ficha del equipo -->
-                        <a href="{% url 'resource_detail' equipment_data.resource.id %}" 
-                           class="btn btn-sm btn-outline-primary flex-fill" 
-                           title="Ver ficha completa">
-                            <i class="fas fa-file-alt me-1"></i>Ficha
-                        </a>
-                        
-                        <!-- Enlace al checklist según el tipo de equipo -->
-                        {% if not equipment_data.resource.is_service %}
-                            {% if equipment_data.resource.type_equipment == 'BTSNHM' or equipment_data.resource.type_equipment == 'BTSNMJ' %}
-                            <a href="{% url 'reports:equipment-bateries-checklist' equipment_data.resource.id %}" 
-                               class="btn btn-sm btn-outline-success flex-fill" 
-                               title="Ver checklist">
-                                <i class="fas fa-tasks me-1"></i>Checklist
-                            </a>
-                            {% elif equipment_data.resource.type_equipment == 'LVMNOS' %}
-                            <a href="{% url 'reports:equipment-washer-hands-checklist' equipment_data.resource.id %}" 
-                               class="btn btn-sm btn-outline-success flex-fill" 
-                               title="Ver checklist">
-                                <i class="fas fa-tasks me-1"></i>Checklist
-                            </a>
-                            {% elif equipment_data.resource.type_equipment == 'EST4UR' %}
-                            <a href="{% url 'reports:equipment-urinal-station-checklist' equipment_data.resource.id %}" 
-                               class="btn btn-sm btn-outline-success flex-fill" 
-                               title="Ver checklist">
-                                <i class="fas fa-tasks me-1"></i>Checklist
-                            </a>
-                            {% elif equipment_data.resource.type_equipment == 'CMPRBN' %}
-                            <a href="{% url 'reports:equipment-bathroom-camper-checklist' equipment_data.resource.id %}" 
-                               class="btn btn-sm btn-outline-success flex-fill" 
-                               title="Ver checklist">
-                                <i class="fas fa-tasks me-1"></i>Checklist
-                            </a>
-                            {% elif equipment_data.resource.type_equipment == 'TNQAAC' %}
-                            <a href="{% url 'reports:equipment-raw-water-tanks-checklist' equipment_data.resource.id %}" 
-                               class="btn btn-sm btn-outline-success flex-fill" 
-                               title="Ver checklist">
-                                <i class="fas fa-tasks me-1"></i>Checklist
-                            </a>
-                            {% elif equipment_data.resource.type_equipment == 'TNQAAR' %}
-                            <a href="{% url 'reports:equipment-wastewater-tanks-checklist' equipment_data.resource.id %}" 
-                               class="btn btn-sm btn-outline-success flex-fill" 
-                               title="Ver checklist">
-                                <i class="fas fa-tasks me-1"></i>Checklist
-                            </a>
-                            {% else %}
-                            <a href="{% url 'reports:equipment-info-report' equipment_data.resource.id %}" 
-                               class="btn btn-sm btn-outline-success flex-fill" 
-                               title="Ver información del equipo">
-                                <i class="fas fa-tasks me-1"></i>Checklist
-                            </a>
-                            {% endif %}
-                        {% endif %}
+                    <!-- Tabla de equipos -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped" id="equipmentTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Tipo</th>
+                                    <th>Estado</th>
+                                    <th>Completitud</th>
+                                    <th>Proyecto</th>
+                                    <th>Ubicación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for equipment_data in all_equipment %}
+                                <tr>
+                                    <td><strong>{{ equipment_data.resource.code }}</strong></td>
+                                    <td>{{ equipment_data.resource.name }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">
+                                            {{ equipment_data.resource.get_type_equipment_display|default:"Servicio" }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ equipment_data.status_class }}">
+                                            {{ equipment_data.status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress flex-grow-1 me-2" style="height: 20px; min-width: 80px;">
+                                                <div class="progress-bar {% if equipment_data.is_complete %}bg-success{% else %}bg-warning{% endif %}" 
+                                                     role="progressbar" 
+                                                     style="width: {{ equipment_data.completion_percentage }}%"
+                                                     aria-valuenow="{{ equipment_data.completion_percentage }}" 
+                                                     aria-valuemin="0" 
+                                                     aria-valuemax="100">
+                                                    {{ equipment_data.completion_percentage }}%
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if equipment_data.project_info %}
+                                            <small>
+                                                <strong>{{ equipment_data.project_info.partner_name }}</strong><br>
+                                                {% if equipment_data.rental_info %}
+                                                <span class="text-muted">
+                                                    {{ equipment_data.rental_info.rental_start_date|date:"d/m/Y" }} - 
+                                                    {{ equipment_data.rental_info.rental_end_date|date:"d/m/Y" }}
+                                                </span>
+                                                {% endif %}
+                                            </small>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if equipment_data.current_location %}
+                                            <small>{{ equipment_data.current_location }}</small>
+                                        {% elif equipment_data.project_info %}
+                                            <small>{{ equipment_data.project_info.location }}</small>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <!-- Enlace a la ficha del equipo -->
+                                            <a href="{% url 'resource_detail' equipment_data.resource.id %}" 
+                                               class="btn btn-outline-primary btn-sm" 
+                                               title="Ver ficha completa">
+                                                <i class="fas fa-file-alt"></i>
+                                            </a>
+                                            
+                                            <!-- Enlace al checklist según el tipo de equipo -->
+                                            {% if not equipment_data.resource.is_service %}
+                                                {% if equipment_data.resource.type_equipment == 'BTSNHM' or equipment_data.resource.type_equipment == 'BTSNMJ' %}
+                                                <a href="{% url 'reports:equipment-bateries-checklist' equipment_data.resource.id %}" 
+                                                   class="btn btn-outline-success btn-sm" 
+                                                   title="Ver checklist">
+                                                    <i class="fas fa-tasks"></i>
+                                                </a>
+                                                {% elif equipment_data.resource.type_equipment == 'LVMNOS' %}
+                                                <a href="{% url 'reports:equipment-washer-hands-checklist' equipment_data.resource.id %}" 
+                                                   class="btn btn-outline-success btn-sm" 
+                                                   title="Ver checklist">
+                                                    <i class="fas fa-tasks"></i>
+                                                </a>
+                                                {% elif equipment_data.resource.type_equipment == 'EST4UR' %}
+                                                <a href="{% url 'reports:equipment-urinal-station-checklist' equipment_data.resource.id %}" 
+                                                   class="btn btn-outline-success btn-sm" 
+                                                   title="Ver checklist">
+                                                    <i class="fas fa-tasks"></i>
+                                                </a>
+                                                {% elif equipment_data.resource.type_equipment == 'CMPRBN' %}
+                                                <a href="{% url 'reports:equipment-bathroom-camper-checklist' equipment_data.resource.id %}" 
+                                                   class="btn btn-outline-success btn-sm" 
+                                                   title="Ver checklist">
+                                                    <i class="fas fa-tasks"></i>
+                                                </a>
+                                                {% elif equipment_data.resource.type_equipment == 'TNQAAC' %}
+                                                <a href="{% url 'reports:equipment-raw-water-tanks-checklist' equipment_data.resource.id %}" 
+                                                   class="btn btn-outline-success btn-sm" 
+                                                   title="Ver checklist">
+                                                    <i class="fas fa-tasks"></i>
+                                                </a>
+                                                {% elif equipment_data.resource.type_equipment == 'TNQAAR' %}
+                                                <a href="{% url 'reports:equipment-wastewater-tanks-checklist' equipment_data.resource.id %}" 
+                                                   class="btn btn-outline-success btn-sm" 
+                                                   title="Ver checklist">
+                                                    <i class="fas fa-tasks"></i>
+                                                </a>
+                                                {% else %}
+                                                <a href="{% url 'reports:equipment-info-report' equipment_data.resource.id %}" 
+                                                   class="btn btn-outline-success btn-sm" 
+                                                   title="Ver información del equipo">
+                                                    <i class="fas fa-tasks"></i>
+                                                </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center">
+                                        <div class="alert alert-info mb-0">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            No hay equipos registrados.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
-{% else %}
-    <div class="alert alert-info">
-        <i class="fas fa-info-circle me-2"></i>
-        No hay equipos en esta categoría.
-    </div>
-{% endif %}
+</div>
+
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .table thead th {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    
+    .table tbody td {
+        vertical-align: middle;
+    }
+    
+    .progress {
+        background-color: #e9ecef;
+    }
+    
+    .badge {
+        font-size: 0.85rem;
+        padding: 0.35em 0.65em;
+    }
+    
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+</style>
+
+<script>
+    // Inicializar DataTables si está disponible
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof $.fn.DataTable !== 'undefined') {
+            $('#equipmentTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                },
+                pageLength: 25,
+                order: [[0, 'asc']],
+                columnDefs: [
+                    { orderable: false, targets: 7 } // Desactivar ordenamiento en columna de acciones
+                ]
+            });
+        }
+    });
+</script>
+{% endblock %}

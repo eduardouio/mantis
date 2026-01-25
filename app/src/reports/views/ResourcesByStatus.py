@@ -14,13 +14,17 @@ class ResourcesByStatusView(TemplateView):
         # Obtener todos los equipos activos
         all_resources = ResourceItem.objects.filter(is_active=True, is_deleted=False)
 
-        # Agrupar equipos por estado
-        equipment_by_status = {
-            'DISPONIBLE': [],
-            'RENTADO': [],
-            'DAÑADO': [],
-            'EN REPARACION': [],
-            'INCOMPLETO': []
+        # Lista para todos los equipos con su estado
+        all_equipment_list = []
+        
+        # Contadores por estado
+        stats = {
+            'total': 0,
+            'disponible': 0,
+            'rentado': 0,
+            'danado': 0,
+            'en_reparacion': 0,
+            'incompleto': 0,
         }
 
         # Analizar cada equipo
@@ -32,9 +36,35 @@ class ResourcesByStatusView(TemplateView):
             availability = status_report.get('availability_status', 'DISPONIBLE')
             equipment_status = getattr(resource, 'stst_status_equipment', None)
             
+            # Determinar el estado para la columna
+            if equipment_status == 'DAÑADO':
+                status_display = 'DAÑADO'
+                status_class = 'danger'
+                stats['danado'] += 1
+            elif equipment_status == 'EN REPARACION':
+                status_display = 'EN REPARACIÓN'
+                status_class = 'warning'
+                stats['en_reparacion'] += 1
+            elif not status_report.get('is_complete', False):
+                status_display = 'INCOMPLETO'
+                status_class = 'secondary'
+                stats['incompleto'] += 1
+            elif availability == 'RENTADO':
+                status_display = 'RENTADO'
+                status_class = 'info'
+                stats['rentado'] += 1
+            else:
+                status_display = 'DISPONIBLE'
+                status_class = 'success'
+                stats['disponible'] += 1
+            
+            stats['total'] += 1
+            
             # Preparar datos del equipo
             equipment_data = {
                 'resource': resource,
+                'status_display': status_display,
+                'status_class': status_class,
                 'status_report': status_report,
                 'is_complete': status_report.get('is_complete', False),
                 'completion_percentage': status_report.get('completion_percentage', 0),
@@ -44,35 +74,10 @@ class ResourcesByStatusView(TemplateView):
                 'missing_items_count': len(status_report.get('missing_items', [])),
             }
             
-            # Clasificar el equipo según su estado
-            if equipment_status == 'DAÑADO':
-                equipment_by_status['DAÑADO'].append(equipment_data)
-            elif equipment_status == 'EN REPARACION':
-                equipment_by_status['EN REPARACION'].append(equipment_data)
-            elif not status_report.get('is_complete', False):
-                equipment_by_status['INCOMPLETO'].append(equipment_data)
-            elif availability == 'RENTADO':
-                equipment_by_status['RENTADO'].append(equipment_data)
-            else:
-                equipment_by_status['DISPONIBLE'].append(equipment_data)
-
-        # Calcular estadísticas
-        total_equipments = all_resources.count()
-        stats = {
-            'total': total_equipments,
-            'disponible': len(equipment_by_status['DISPONIBLE']),
-            'rentado': len(equipment_by_status['RENTADO']),
-            'danado': len(equipment_by_status['DAÑADO']),
-            'en_reparacion': len(equipment_by_status['EN REPARACION']),
-            'incompleto': len(equipment_by_status['INCOMPLETO']),
-        }
+            all_equipment_list.append(equipment_data)
 
         context.update({
-            'equipment_disponible': equipment_by_status['DISPONIBLE'],
-            'equipment_rentado': equipment_by_status['RENTADO'],
-            'equipment_danado': equipment_by_status['DAÑADO'],
-            'equipment_reparacion': equipment_by_status['EN REPARACION'],
-            'equipment_incompleto': equipment_by_status['INCOMPLETO'],
+            'all_equipment': all_equipment_list,
             'stats': stats,
         })
 
