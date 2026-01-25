@@ -1,10 +1,9 @@
 from django.http import JsonResponse
 from django.views import View
-from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
-from projects.models.Project import Project, ProjectResourceItem
+from projects.models.CustodyChain import CustodyChain
+from projects.models.Project import ProjectResourceItem
 from equipment.models.Vehicle import Vehicle
 from accounts.models.Technical import Technical
-from decimal import Decimal
 from datetime import date, datetime
 
 
