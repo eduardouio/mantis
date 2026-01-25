@@ -18,6 +18,7 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
             location: null,
             total_gallons: 0.0,
             duration_hours: 0.0,
+            have_logistic: 'NA',
         }
     }),
     actions: {
@@ -57,6 +58,7 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
                 location: null,
                 total_gallons: 0.0,
                 duration_hours: 0.0,
+                have_logistic: 'NA',
             };
         },
         async fetchCustodyCapphainDetail(id) {
