@@ -52,6 +52,20 @@ class UpdateSheetOrderAPI(View):
             )
 
         # Actualizar campos permitidos
+        if "issue_date" in data:
+            try:
+                sheet.issue_date = datetime.strptime(
+                    data["issue_date"], "%Y-%m-%d"
+                ).date()
+            except ValueError:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "Formato de fecha inválido para issue_date",
+                    },
+                    status=400,
+                )
+
         if "period_start" in data:
             try:
                 sheet.period_start = datetime.strptime(
@@ -128,6 +142,9 @@ class UpdateSheetOrderAPI(View):
                 "message": "Hoja de trabajo actualizada exitosamente",
                 "data": {
                     "id": sheet.id,
+                    "issue_date": (
+                        sheet.issue_date.isoformat() if sheet.issue_date else None
+                    ),
                     "period_start": (
                         sheet.period_start.isoformat() if sheet.period_start else None
                     ),

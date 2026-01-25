@@ -19,6 +19,7 @@ const project = computed(() => projectStore.project);
 const isEditMode = computed(() => props.sheet !== null);
 
 const formData = ref({
+  issue_date: '',
   period_start: '',
   period_end: '',
   service_type: 'ALQUILER Y MANTENIMIENTO',
@@ -38,6 +39,7 @@ onMounted(async () => {
 watch(() => props.sheet, (newSheet) => {
   if (newSheet) {
     formData.value = {
+      issue_date: newSheet.issue_date || '',
       period_start: newSheet.period_start || '',
       period_end: newSheet.period_end || '',
       service_type: newSheet.service_type || 'ALQUILER Y MANTENIMIENTO',
@@ -56,6 +58,7 @@ const handleSubmit = async (e) => {
       // Modo edición
       const updatedSheet = {
         id: props.sheet.id,
+        issue_date: formData.value.issue_date || null,
         period_start: formData.value.period_start,
         period_end: formData.value.period_end || null,
         service_type: formData.value.service_type,
@@ -169,6 +172,22 @@ const getStatusBadge = (status) => {
     </div>
     <!-- Formulario -->
     <form @submit.prevent="handleSubmit" class="space-y-4">
+      <!-- Fecha de Emisión (solo en edición) -->
+      <div v-if="isEditMode" class="form-control w-full">
+        <label class="label" for="issue_date">
+          <span class="label-text font-medium">Fecha de Emisión</span>
+        </label>
+        <input
+          type="date"
+          id="issue_date"
+          v-model="formData.issue_date"
+          class="input input-bordered w-full"
+        />
+        <label class="label">
+          <span class="label-text-alt">Fecha de emisión de la planilla</span>
+        </label>
+      </div>
+
       <!-- Fecha Inicio Período -->
       <div class="form-control w-full">
         <label class="label" for="period_start">
