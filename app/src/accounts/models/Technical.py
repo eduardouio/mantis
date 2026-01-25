@@ -44,7 +44,8 @@ class Technical(BaseModel):
     )
     dni = models.CharField(
         'Cédula',
-        max_length=15
+        max_length=15,
+        unique=True
     )
     nro_phone = models.CharField(
         'Número de Celular',
