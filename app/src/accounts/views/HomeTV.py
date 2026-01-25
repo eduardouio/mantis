@@ -7,7 +7,10 @@ from common.VehicleIssuesCheck import VehicleIssuesCheck
 from common.VehichlePassIssuesCheck import PassVehichleIssuesCheck
 from common.VehicleIssuesCertificationVehicle import VehicleIssuesCertificationVehicle
 from common.StatusResourceItem import StatusResourceItem
+from common.MaintenanceScheduler import MaintenanceScheduler
 from equipment.models import ResourceItem
+from datetime import date
+import json
 
 
 class HomeTV(LoginRequiredMixin, TemplateView):
@@ -16,6 +19,28 @@ class HomeTV(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["user"] = self.request.user
+
+        # Calendario de mantenimientos
+        today = date.today()
+        month_offset = int(self.request.GET.get('month_offset', 0))
+        
+        # Calcular año y mes con offset
+        target_month = today.month + month_offset
+        target_year = today.year
+        
+        while target_month > 12:
+            target_month -= 12
+            target_year += 1
+        while target_month < 1:
+            target_month += 12
+            target_year -= 1
+        
+        calendar_data = MaintenanceScheduler.get_month_calendar(target_year, target_month)
+        calendar_data['month_offset'] = month_offset
+        calendar_data['weekdays'] = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+        # Serializar maintenance_by_date como JSON para JavaScript
+        calendar_data['maintenance_by_date_json'] = json.dumps(calendar_data['maintenance_by_date'])
+        context["calendar"] = calendar_data
 
         all_issues = []
 
