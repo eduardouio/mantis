@@ -149,7 +149,7 @@
           </button>
         </div>
         <div class="overflow-x-auto">
-          <table class="table table-sm">
+          <table id="day-details-table" class="table table-sm w-full">
             <thead>
               <tr class="bg-gray-50">
                 <th class="text-xs">Proyecto / Ubicación</th>
@@ -162,13 +162,11 @@
             <tbody id="day-details-body">
               <!-- Se llena dinámicamente -->
             </tbody>
-            <tfoot>
-              <tr class="bg-gray-100 font-semibold">
-                <td colspan="4" class="text-right text-xs">Total del día:</td>
-                <td id="day-details-total" class="text-right text-xs">Q0.00</td>
-              </tr>
-            </tfoot>
           </table>
+          <div class="bg-gray-100 font-semibold p-2 text-right border-t">
+            <span class="text-xs">Total del día: </span>
+            <span id="day-details-total" class="text-xs font-bold">Q0.00</span>
+          </div>
         </div>
       </div>
 
@@ -769,13 +767,69 @@ function showDayDetails(dateStr) {
     tbody.innerHTML = html;
     totalCell.textContent = `Q${total.toFixed(2)}`;
     
+    // Destruir DataTable existente si existe
+    if ($.fn.DataTable.isDataTable('#day-details-table')) {
+        $('#day-details-table').DataTable().destroy();
+    }
+    
+    // Inicializar DataTable
+    $('#day-details-table').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excel',
+                text: '<i class="las la-file-excel"></i> Excel',
+                className: 'btn btn-sm btn-success',
+                title: 'Mantenimientos_' + dateStr
+            },
+            {
+                extend: 'pdf',
+                text: '<i class="las la-file-pdf"></i> PDF',
+                className: 'btn btn-sm btn-error',
+                title: 'Mantenimientos_' + dateStr
+            },
+            {
+                extend: 'print',
+                text: '<i class="las la-print"></i> Imprimir',
+                className: 'btn btn-sm btn-info'
+            }
+        ],
+        pageLength: 10,
+        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+            emptyTable: 'No hay datos disponibles',
+            info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+            infoEmpty: 'Mostrando 0 a 0 de 0 registros',
+            infoFiltered: '(filtrado de _MAX_ registros totales)',
+            lengthMenu: 'Mostrar _MENU_ registros',
+            search: 'Buscar:',
+            zeroRecords: 'No se encontraron coincidencias',
+            paginate: {
+                first: 'Primero',
+                last: 'Último',
+                next: 'Siguiente',
+                previous: 'Anterior'
+            }
+        },
+        order: [[0, 'asc']],
+        responsive: true
+    });
+    
     // Mostrar panel
     panel.classList.remove('hidden');
     panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+// Variable para almacenar referencia al DataTable
+let dayDetailsDataTable = null;
+
 // Ocultar detalles del día
 function hideDayDetails() {
+    // Destruir DataTable al cerrar
+    if ($.fn.DataTable.isDataTable('#day-details-table')) {
+        $('#day-details-table').DataTable().destroy();
+    }
     document.getElementById('day-details-panel').classList.add('hidden');
 }
 </script>
