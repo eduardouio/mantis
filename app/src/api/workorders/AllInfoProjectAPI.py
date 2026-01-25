@@ -92,6 +92,7 @@ class AllInfoProjectAPI(View):
                         "activity_date": serialize_date(chain.activity_date),
                         "location": chain.location,
                         "issue_date": serialize_date(chain.issue_date),
+                        "status": chain.status,
                         "start_time": serialize_date(chain.start_time),
                         "end_time": serialize_date(chain.end_time),
                         "time_duration": (

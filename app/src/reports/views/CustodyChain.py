@@ -49,6 +49,7 @@ class CustodyChainReportView(TemplateView):
                 "vehicle": custody_chain.vehicle,
                 "time_duration_hours": time_duration_hours,
                 "equipment_overflow": equipment_overflow,
+                "status": custody_chain.status,
             }
         )
 

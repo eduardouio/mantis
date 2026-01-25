@@ -116,7 +116,11 @@
 <div class="container">
   <div class="header-content">
     <div class="header-text" style="height: 35px;">
-      <h3>MANTENIMIENTO DE EQUIPOS SANITARIOS, TRANSPORTE Y CADENA DE CUSTODIA DE AGUAS RESIDUALES</h3>
+      <h3>MANTENIMIENTO DE EQUIPOS SANITARIOS, TRANSPORTE Y CADENA DE CUSTODIA DE AGUAS RESIDUALES
+        {% if custody_chain.status == 'DRAFT' %}
+          <strong style="color: red; font-size: 14px; font-weight: bold;">BORRADOR</strong>
+        {% endif %}
+      </h3>
     </div>
     <div class="header-logo">
       <img src="{% static 'img/logo.png' %}" alt="">
@@ -133,7 +137,8 @@
     </tr>
     <tr>
       <td colspan="2" style="text-align: left;"><strong>CLIENTE:</strong> {% if partner %}{{ partner.name }}{% endif %}</td>
-      <td colspan="2" style="text-align: left;"><strong>LOGISTICA:</strong>
+      <td colspan="1" style="text-align: left;"><strong>ESTADO:</strong> {% if custody_chain.status %}{{ custody_chain.status }}{% endif %}</td>
+      <td colspan="1" style="text-align: left;"><strong>LOGISTICA:</strong>
         <span style="margin-left: 30px;">SI</span>
         <div class="checkbox">{% if custody_chain.have_logistic == 'SI' %}<strong style="font-size: 14px;">X</strong>{% endif %}</div>
         <span style="margin-left: 90px;">NO</span>

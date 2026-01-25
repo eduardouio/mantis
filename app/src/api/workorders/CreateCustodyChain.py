@@ -105,6 +105,7 @@ class CreateCustodyChainAPI(View):
             consecutive=CustodyChain.get_next_consecutive(),
             activity_date=data.get("activity_date"),
             issue_date=data.get("issue_date"),
+            status=data.get("status", "PENDIENTE"),
             start_time=data.get("start_time") if data.get("start_time") else None,
             end_time=data.get("end_time") if data.get("end_time") else None,
             time_duration=float(data.get("duration_hours", 0)),

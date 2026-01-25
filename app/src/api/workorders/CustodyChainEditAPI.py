@@ -85,6 +85,9 @@ class CustodyChainEditAPI(View):
                 if "issue_date" in chain_data:
                     instance.issue_date = parse_date(chain_data["issue_date"])
 
+                if "status" in chain_data:
+                    instance.status = chain_data["status"]
+
                 if "start_time" in chain_data:
                     instance.start_time = parse_time(chain_data["start_time"])
 
