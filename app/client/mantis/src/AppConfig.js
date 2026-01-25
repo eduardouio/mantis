@@ -1,4 +1,4 @@
-const idProject = window.djangoConfig?.projectId ?? 4
+const idProject = window.djangoConfig?.projectId ?? 6
 const apiBaseUrl = window.djangoConfig?.baseUrl ?? "http://localhost:8000"
 const csrfToken = window.djangoConfig?.csrfToken ?? "falsocsrf"
 
@@ -26,4 +26,5 @@ export const appConfig = {
     "URLCreateCustodyChain": apiBaseUrl + "/api/workorders/custody_chain/create/",
     "URLCustodyChainDetail": apiBaseUrl + "/api/workorders/custody_chain/detail/${id}/",
     "URLUpdateCustodyChain": apiBaseUrl + "/api/workorders/custody_chain/${id}/edit/",
+    "PDFCustodyChainReport": apiBaseUrl + "/reports/custody-chain/${id}/",
 }
