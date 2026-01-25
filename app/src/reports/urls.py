@@ -21,6 +21,7 @@ from reports.views.PDFWastewaterStorageTanks import PDFWastewaterStorageTanks
 from reports.views.PDFEquipmentInfoReport import PDFEquipmentInfoReport
 from reports.views.VehicleStatusReport import VehicleStatusReport
 from reports.views.PDFVehicleStatusReport import PDFVehicleStatusReport
+from reports.views.ResourcesByStatus import ResourcesByStatusView
 
 app_name = 'reports'
 
@@ -32,6 +33,7 @@ urlpatterns = [
     path('reports/template-technical-vaccine/<int:id>/', TechnicalVaccineReport.as_view(), name='technical-vaccine-report'),
     path('reports/template-equipment-info/<int:equipment_id>/', EquipmentInfoReport.as_view(), name='equipment-info-report'),
     path('reports/template-vehicle-status/<int:pk>/', VehicleStatusReport.as_view(), name='vehicle-status-report'),
+    path('reports/equipment-status/', ResourcesByStatusView.as_view(), name='equipment-status-report'),
     
     # Equipment Checklists Templates
     path('reports/template-equipment-bateries/<int:equipment_id>/', EquipmentBateriesCheckList.as_view(), name='equipment-bateries-checklist'),
