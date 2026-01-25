@@ -6,9 +6,17 @@ from projects.models.Project import Project, ProjectResourceItem
 from accounts.models.Technical import Technical
 from equipment.models.Vehicle import Vehicle
 import json
+from datetime import date, datetime
+
 
 class CreateCustodyChainAPI(View):
     """Crear una nueva cadena de custodia."""
+
+    def serialize_date(self, value):
+        """Serializa fechas y datetimes a formato ISO"""
+        if isinstance(value, (date, datetime)):
+            return value.isoformat()
+        return value
 
     def post(self, request):
         """Crear una cadena de custodia con todos sus detalles."""
@@ -126,18 +134,65 @@ class CreateCustodyChainAPI(View):
         )
         custody_chain.save()
 
-        detail_ids = []
+        # Crear los detalles y recopilar la información
+        details_data = []
         for resource in valid_resources:
             detail = ChainCustodyDetail(
                 custody_chain=custody_chain,
                 project_resource=resource
             )
             detail.save()
-            detail_ids.append(detail.id)
+            
+            detail_data = {
+                "id": detail.id,
+                "project_resource_id": resource.id,
+                "project_resource": {
+                    "id": resource.id,
+                    "resource_item_id": resource.resource_item.id if resource.resource_item else None,
+                    "resource_item_name": resource.resource_item.name if resource.resource_item else None,
+                },
+            }
+            details_data.append(detail_data)
 
+        # Construir el objeto completo de respuesta
         response_data = {
-            "custody_chain_id": custody_chain.id,
-            "consecutive": custody_chain.consecutive,
+            "custody_chain": {
+                "id": custody_chain.id,
+                "consecutive": custody_chain.consecutive,
+                "activity_date": self.serialize_date(custody_chain.activity_date),
+                "location": custody_chain.location,
+                "issue_date": self.serialize_date(custody_chain.issue_date),
+                "status": custody_chain.status,
+                "start_time": self.serialize_date(custody_chain.start_time),
+                "end_time": self.serialize_date(custody_chain.end_time),
+                "time_duration": float(custody_chain.time_duration) if custody_chain.time_duration is not None else None,
+                "have_logistic": custody_chain.have_logistic,
+                "contact_name": custody_chain.contact_name,
+                "dni_contact": custody_chain.dni_contact,
+                "contact_position": custody_chain.contact_position,
+                "date_contact": self.serialize_date(custody_chain.date_contact),
+                "driver_name": custody_chain.driver_name,
+                "dni_driver": custody_chain.dni_driver,
+                "driver_position": custody_chain.driver_position,
+                "driver_date": self.serialize_date(custody_chain.driver_date),
+                "total_gallons": custody_chain.total_gallons,
+                "total_barrels": custody_chain.total_barrels,
+                "total_cubic_meters": custody_chain.total_cubic_meters,
+                "sheet_project_id": custody_chain.sheet_project_id,
+            },
+            "technical": {
+                "id": technical.id,
+                "first_name": technical.first_name,
+                "last_name": technical.last_name,
+            },
+            "vehicle": {
+                "id": vehicle.id,
+                "no_plate": vehicle.no_plate,
+                "brand": vehicle.brand,
+                "model": vehicle.model,
+            },
+            "details": details_data,
+            "details_count": len(details_data),
         }
 
         return JsonResponse(
