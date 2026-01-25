@@ -206,6 +206,7 @@ watch(resourcesProject, (newVal) => {
 </script>
 
 <template>
+  <!-- CALENDARIO TEMPORALMENTE DESHABILITADO - NO ELIMINAR
   <div class="space-y-4">
     <!-- Controles de Navegación -->
     <div class="bg-gray-100 rounded-lg p-4 shadow border border-gray-200">
@@ -441,5 +442,11 @@ watch(resourcesProject, (newVal) => {
       <i class="las la-info-circle text-2xl"></i>
       <span>No hay mantenimientos programados para este mes.</span>
     </div>
+  </div>
+  FIN CALENDARIO TEMPORALMENTE DESHABILITADO -->
+  
+  <div class="alert alert-warning">
+    <i class="las la-wrench text-2xl"></i>
+    <span>Calendario en desarrollo. Próximamente disponible.</span>
   </div>
 </template>
