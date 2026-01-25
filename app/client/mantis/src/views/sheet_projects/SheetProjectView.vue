@@ -271,22 +271,15 @@ onMounted(async () => {
                       PDF
                     </button>
                     <button 
-                      v-if="cc.status === 'DRAFT'"
-                      @click="router.push({ name: 'custody-chain-form', params: { id: cc.id } })"
+                      @click="cc.status === 'DRAFT' ? router.push({ name: 'custody-chain-form', params: { id: cc.id } }) : null"
                       class="btn btn-xs border-orange-500 text-orange-500 bg-white"
-                      title="Editar cadena"
+                      :class="{ 'btn-disabled opacity-50 cursor-not-allowed': cc.status !== 'DRAFT' }"
+                      :title="cc.status === 'DRAFT' ? 'Editar cadena' : 'No se puede editar una cadena cerrada'"
+                      :disabled="cc.status !== 'DRAFT'"
                     >
                       <i class="las la-edit"></i>
                       EDITAR
                     </button>
-                    <span 
-                      v-else
-                      class="btn btn-xs btn-disabled"
-                      title="No se puede editar una cadena cerrada"
-                    >
-                      <i class="las la-lock"></i>
-                      CERRADA
-                    </span>
                   </div>
                 </td>
               </tr>
