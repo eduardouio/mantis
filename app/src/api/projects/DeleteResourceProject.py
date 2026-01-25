@@ -8,7 +8,7 @@ class DeleteResourceProjectAPI(View):
     
     def delete(self, request, id_project_resource):
         try:
-            ProjectResourceItem.objects.get(id=id_project_resource)
+            project_resource = ProjectResourceItem.objects.get(id=id_project_resource)
         except ProjectResourceItem.DoesNotExist:
             return HttpResponse(status=404)
         
@@ -19,5 +19,11 @@ class DeleteResourceProjectAPI(View):
                 status=400
             )
         
+        # Actualizar el estado de disponibilidad del recurso a DISPONIBLE
+        resource_item = project_resource.resource_item
+        resource_item.stst_status_disponibility = 'DISPONIBLE'
+        resource_item.save(update_fields=['stst_status_disponibility'])
+        
+        # Eliminar el recurso del proyecto
         ProjectResourceItem.delete_forever(id_project_resource)
         return HttpResponse(status=204)
