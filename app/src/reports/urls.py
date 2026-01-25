@@ -23,6 +23,7 @@ from reports.views.VehicleStatusReport import VehicleStatusReport
 from reports.views.PDFVehicleStatusReport import PDFVehicleStatusReport
 from reports.views.ResourcesByStatus import ResourcesByStatusView
 from reports.views.VehiclesByStatus import VehiclesByStatusView
+from reports.views.TechnicalByStatus import TechnicalByStatusView
 
 app_name = 'reports'
 
@@ -35,6 +36,7 @@ urlpatterns = [
     path('reports/template-equipment-info/<int:equipment_id>/', EquipmentInfoReport.as_view(), name='equipment-info-report'),
     path('reports/template-vehicle-status/<int:pk>/', VehicleStatusReport.as_view(), name='vehicle-status-report'),
     path('reports/equipment-status/', ResourcesByStatusView.as_view(), name='equipment-status-report'),
+    path('reports/technicals-status/', TechnicalByStatusView.as_view(), name='technicals-status-report'),
     path('reports/vehicles-status/', VehiclesByStatusView.as_view(), name='vehicles-status-report'),
 
     # Equipment Checklists Templates

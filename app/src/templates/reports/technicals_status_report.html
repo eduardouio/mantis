@@ -1,0 +1,199 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Reporte de Técnicos por Estado{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="las la-users me-2"></i>
+                        Reporte de Técnicos por Estado
+                    </h3>
+                </div>
+                <div class="card-body">
+                  <div class="flex align-items-center py-3 bg-light rounded">
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">Total</h5>
+        <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+    </div>
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">Al Día</h5>
+        <h2 class="text-success mb-0">{{ stats.sin_alertas }}</h2>
+    </div>
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">Vencidos</h5>
+        <h2 class="text-danger mb-0">{{ stats.alertas_vencidas }}</h2>
+    </div>
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">Urgente (≤10d)</h5>
+        <h2 class="text-warning mb-0">{{ stats.alertas_10_dias }}</h2>
+    </div>
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">Próximo (≤30d)</h5>
+        <h2 class="text-info mb-0">{{ stats.alertas_30_dias }}</h2>
+    </div>
+    <div class="text-center px-3 border-end">
+        <h5 class="text-muted mb-1">Sin Pases</h5>
+        <h2 class="text-secondary mb-0">{{ stats.sin_pases }}</h2>
+    </div>
+    <div class="text-center px-3">
+        <h5 class="text-muted mb-1">Sin Vacunas</h5>
+        <h2 class="text-secondary mb-0">{{ stats.sin_vacunas }}</h2>
+    </div>
+</div>
+
+                    <!-- Tabla de técnicos -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped" id="technicalsTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Cédula</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Área de Trabajo</th>
+                                    <th>Estado General</th>
+                                    <th>Alertas</th>
+                                    <th>Detalles</th>
+                                    <th>Pases</th>
+                                    <th>Vacunas</th>
+                                    <th class="no-export">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tech_data in all_technicals %}
+                                <tr>
+                                    <td><strong>{{ tech_data.technical.dni }}</strong></td>
+                                    <td>{{ tech_data.technical.first_name }} {{ tech_data.technical.last_name }}</td>
+                                    <td>{{ tech_data.work_area }}</td>
+                                    <td>
+                                        <span class="text-{{ tech_data.status_class }} fw-bold">
+                                            {{ tech_data.status_display }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if tech_data.expired_count > 0 %}
+                                            <span class="badge bg-danger">{{ tech_data.expired_count }} vencido(s)</span>
+                                        {% endif %}
+                                        {% if tech_data.due_10_count > 0 %}
+                                            <span class="badge bg-warning">{{ tech_data.due_10_count }} urgente(s)</span>
+                                        {% endif %}
+                                        {% if tech_data.due_30_count > 0 %}
+                                            <span class="badge bg-info">{{ tech_data.due_30_count }} próximo(s)</span>
+                                        {% endif %}
+                                        {% if tech_data.total_issues == 0 %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if tech_data.all_issues %}
+                                            <small>
+                                                {% for issue in tech_data.all_issues %}
+                                                    <div class="mb-1">
+                                                        <strong class="text-{{ tech_data.status_class }}">{{ issue.label }}</strong>:
+                                                        {% if issue.status == 'expired' %}
+                                                            <span class="text-danger">Vencido hace {% widthratio issue.days_left 1 -1 %} días</span>
+                                                        {% elif issue.status == 'due_10' %}
+                                                            <span class="text-warning">Vence en {{ issue.days_left }} días</span>
+                                                        {% elif issue.status == 'due_30' %}
+                                                            <span class="text-info">Vence en {{ issue.days_left }} días</span>
+                                                        {% endif %}
+                                                        ({{ issue.expires_on|date:"d/m/Y" }})
+                                                    </div>
+                                                {% endfor %}
+                                            </small>
+                                        {% else %}
+                                            <span class="text-success">Sin alertas</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if tech_data.has_passes %}
+                                            <span class="badge bg-success">{{ tech_data.passes_count }}</span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if tech_data.has_vaccines %}
+                                            <span class="badge bg-success">Sí</span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'reports:technical-information-report' tech_data.technical.id %}" 
+                                               class="btn btn-xs btn-info" 
+                                               title="Ver Ficha">
+                                                <i class="las la-file-alt"></i> Ficha
+                                            </a>
+                                            <a href="{% url 'reports:technical-vaccine-report' tech_data.technical.id %}" 
+                                               class="btn btn-xs btn-success" 
+                                               title="Ver Vacunas">
+                                                <i class="las la-syringe"></i> Vacunas
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block files_footer %}
+{{ block.super }}
+<script>
+    $(document).ready(function() {
+        $('#technicalsTable').DataTable({
+            dom: 'Blfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="las la-file-excel"></i> Excel',
+                    className: 'btn btn-success btn-sm',
+                    title: 'Reporte de Técnicos por Estado',
+                    exportOptions: {
+                        columns: ':not(.no-export)'
+                    }
+                },
+                {
+                    extend: 'csvHtml5',
+                    text: '<i class="las la-file-csv"></i> CSV',
+                    className: 'btn btn-primary btn-sm',
+                    title: 'Reporte de Técnicos por Estado',
+                    exportOptions: {
+                        columns: ':not(.no-export)'
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    text: '<i class="las la-file-pdf"></i> PDF',
+                    className: 'btn btn-danger btn-sm',
+                    title: 'Reporte de Técnicos por Estado',
+                    orientation: 'landscape',
+                    pageSize: 'LEGAL',
+                    exportOptions: {
+                        columns: ':not(.no-export)'
+                    }
+                }
+            ],
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+            },
+            pageLength: 25,
+            order: [[3, 'asc']], // Ordenar por estado
+            columnDefs: [
+                { orderable: false, targets: -1 } // Deshabilitar ordenamiento en columna de acciones
+            ]
+        });
+    });
+</script>
+{% endblock %}
