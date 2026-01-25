@@ -49,11 +49,6 @@ const closeModal = () => {
   selectedSheetForEdit.value = null;
 };
 
-const cancelProjectFooter = () => {
-  alert('implemtar la cancelacion de un proyecto');
-  // Opcional: router.push('/') u otra ruta
-}
-
 onMounted(() => {
   projectStore.fetchProjectData(); // Esto ya carga todo: proyecto, work_orders y custody_chains
   projectResourceStore.fetchResourcesProject();
@@ -150,7 +145,7 @@ onMounted(() => {
       </div>
       <!-- Botones con sombra (estilo cadena de custodia) -->
       <div class="mt-8 bg-white border-t border-gray-200 shadow-md rounded-b-xl flex justify-end gap-3 px-4 py-3">
-        <a href="/proyectos/" class="btn btn-primary btn-sm" @click="cancelProjectFooter">
+        <a href="/proyectos/" class="btn btn-primary btn-sm">
           <i class="las la-times"></i>
           Volver A Proyectos
         </a>
