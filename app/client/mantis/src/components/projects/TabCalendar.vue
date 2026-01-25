@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
-import { generateMaintenanceSchedule, groupMaintenanceByMonth, getMaintenanceSummary } from '@/utils/scheduler';
+import { generateMaintenanceSchedule, getMaintenanceSummary } from '@/utils/scheduler';
 
 const projectResourceStore = UseProjectResourceStore();
 const resources = computed(() => projectResourceStore.resources || []);
@@ -9,40 +9,105 @@ const resources = computed(() => projectResourceStore.resources || []);
 // Estado para navegación de meses
 const currentMonthOffset = ref(0); // 0 = mes actual, -1 = mes anterior, +1 = mes siguiente
 
-// Calcular el rango de fechas basado en el offset de meses
-const dateRange = computed(() => {
+// Día seleccionado para ver detalles
+const selectedDay = ref(null);
+
+// Nombres de los días de la semana (Lunes a Domingo)
+const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+
+// Calcular el primer y último día del mes actual
+const currentMonth = computed(() => {
   const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const year = today.getFullYear();
+  const month = today.getMonth() + currentMonthOffset.value;
   
-  // Calcular el primer día del mes con offset
-  const startDate = new Date(today.getFullYear(), today.getMonth() + currentMonthOffset.value, 1);
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
   
-  // Calcular 90 días desde el inicio del mes
-  const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 89); // 90 días incluyendo el día de inicio
-  
-  return { startDate, endDate };
+  return {
+    year: firstDay.getFullYear(),
+    month: firstDay.getMonth(),
+    firstDay,
+    lastDay,
+    daysInMonth: lastDay.getDate()
+  };
 });
 
-// Generar calendario basado en el rango de fechas actual
+// Generar calendario del mes
 const maintenanceSchedule = computed(() => {
   if (!resources.value || resources.value.length === 0) return [];
   
-  const { startDate, endDate } = dateRange.value;
-  const daysAhead = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+  const { firstDay, lastDay } = currentMonth.value;
+  const daysAhead = Math.ceil((lastDay - firstDay) / (1000 * 60 * 60 * 24)) + 1;
   
-  // Generar mantenimientos y filtrar por el rango
-  const allMaintenances = generateMaintenanceSchedule(resources.value, daysAhead + Math.abs(currentMonthOffset.value) * 30, startDate);
-  
-  return allMaintenances.filter(m => {
-    const mDate = new Date(m.scheduled_date);
-    return mDate >= startDate && mDate <= endDate;
-  });
+  return generateMaintenanceSchedule(resources.value, daysAhead, firstDay);
 });
 
-const maintenanceByMonth = computed(() => {
-  return groupMaintenanceByMonth(maintenanceSchedule.value);
+// Agrupar mantenimientos por fecha (clave: YYYY-MM-DD)
+const maintenanceByDate = computed(() => {
+  const byDate = {};
+  maintenanceSchedule.value.forEach(m => {
+    if (!byDate[m.scheduled_date]) {
+      byDate[m.scheduled_date] = [];
+    }
+    byDate[m.scheduled_date].push(m);
+  });
+  return byDate;
 });
+
+// Generar la estructura del calendario (semanas y días)
+const calendarWeeks = computed(() => {
+  const { firstDay, daysInMonth, year, month } = currentMonth.value;
+  const weeks = [];
+  
+  // Obtener el día de la semana del primer día (0=Domingo en JS, convertir a 0=Lunes)
+  let startDayOfWeek = (firstDay.getDay() + 6) % 7;
+  
+  let currentWeek = [];
+  
+  // Agregar días vacíos al inicio
+  for (let i = 0; i < startDayOfWeek; i++) {
+    currentWeek.push(null);
+  }
+  
+  // Agregar los días del mes
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const maintenances = maintenanceByDate.value[dateStr] || [];
+    
+    currentWeek.push({
+      day,
+      dateStr,
+      maintenances,
+      isToday: isToday(year, month, day),
+      hasMaintenances: maintenances.length > 0
+    });
+    
+    // Si es domingo (posición 6), empezar nueva semana
+    if (currentWeek.length === 7) {
+      weeks.push(currentWeek);
+      currentWeek = [];
+    }
+  }
+  
+  // Agregar días vacíos al final si es necesario
+  if (currentWeek.length > 0) {
+    while (currentWeek.length < 7) {
+      currentWeek.push(null);
+    }
+    weeks.push(currentWeek);
+  }
+  
+  return weeks;
+});
+
+// Verificar si una fecha es hoy
+const isToday = (year, month, day) => {
+  const today = new Date();
+  return today.getFullYear() === year && 
+         today.getMonth() === month && 
+         today.getDate() === day;
+};
 
 const summary = computed(() => {
   return getMaintenanceSummary(maintenanceSchedule.value);
@@ -50,25 +115,33 @@ const summary = computed(() => {
 
 // Información del período actual
 const periodInfo = computed(() => {
-  const { startDate, endDate } = dateRange.value;
+  const { firstDay } = currentMonth.value;
   return {
-    start: startDate.toLocaleDateString('es-GT', { day: '2-digit', month: 'long', year: 'numeric' }),
-    end: endDate.toLocaleDateString('es-GT', { day: '2-digit', month: 'long', year: 'numeric' }),
-    monthYear: startDate.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })
+    monthYear: firstDay.toLocaleDateString('es-GT', { month: 'long', year: 'numeric' })
   };
 });
 
 // Navegación
 const goToPreviousPeriod = () => {
   currentMonthOffset.value -= 1;
+  selectedDay.value = null;
 };
 
 const goToNextPeriod = () => {
   currentMonthOffset.value += 1;
+  selectedDay.value = null;
 };
 
 const goToCurrentPeriod = () => {
   currentMonthOffset.value = 0;
+  selectedDay.value = null;
+};
+
+// Seleccionar un día para ver detalles
+const selectDay = (dayInfo) => {
+  if (dayInfo && dayInfo.hasMaintenances) {
+    selectedDay.value = selectedDay.value?.dateStr === dayInfo.dateStr ? null : dayInfo;
+  }
 };
 
 // Formatear moneda
@@ -79,24 +152,38 @@ const formatCurrency = (value) => {
   }).format(value);
 };
 
-// Formatear fecha
-const formatDate = (dateStr) => {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString('es-GT', { 
-    weekday: 'short',
-    day: '2-digit', 
-    month: 'short'
-  });
-};
-
 // Obtener color por tipo de frecuencia
 const getFrequencyColor = (frequencyType) => {
+  const colors = {
+    'DAY': 'bg-blue-500',
+    'WEEK': 'bg-purple-500',
+    'MONTH': 'bg-orange-500'
+  };
+  return colors[frequencyType] || 'bg-gray-500';
+};
+
+// Obtener badge color por tipo de frecuencia
+const getFrequencyBadgeColor = (frequencyType) => {
   const colors = {
     'DAY': 'badge-primary',
     'WEEK': 'badge-secondary',
     'MONTH': 'badge-accent'
   };
   return colors[frequencyType] || 'badge-ghost';
+};
+
+// Obtener etiqueta de frecuencia
+const getFrequencyLabel = (maintenance) => {
+  switch (maintenance.frequency_type) {
+    case 'DAY':
+      return maintenance.interval_days === 0 ? 'Diario' : `Cada ${maintenance.interval_days} días`;
+    case 'WEEK':
+      return 'Semanal';
+    case 'MONTH':
+      return 'Mensual';
+    default:
+      return maintenance.frequency_type;
+  }
 };
 
 onMounted(async () => {
@@ -121,12 +208,9 @@ onMounted(async () => {
 
         <!-- Información del Período -->
         <div class="text-center flex-1">
-          <h2 class="text-white font-bold text-lg capitalize">
+          <h2 class="text-white font-bold text-xl capitalize">
             {{ periodInfo.monthYear }}
           </h2>
-          <p class="text-lime-100 text-sm">
-            Del {{ periodInfo.start }} al {{ periodInfo.end }}
-          </p>
           
           <!-- Botón Hoy (solo si no estamos en el mes actual) -->
           <button 
@@ -135,7 +219,7 @@ onMounted(async () => {
             class="btn btn-xs bg-white text-lime-600 hover:bg-lime-50 border-none mt-2"
           >
             <i class="las la-calendar-day"></i>
-            Período Actual
+            Mes Actual
           </button>
         </div>
 
@@ -163,6 +247,22 @@ onMounted(async () => {
           <p class="text-white font-bold text-lg">{{ formatCurrency(summary.total_cost) }}</p>
         </div>
       </div>
+
+      <!-- Leyenda de Frecuencias -->
+      <div class="flex justify-center gap-4 mt-4">
+        <div class="flex items-center gap-1">
+          <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+          <span class="text-white text-xs">Intervalo días</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-3 h-3 rounded-full bg-purple-500"></span>
+          <span class="text-white text-xs">Días semana</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <span class="w-3 h-3 rounded-full bg-orange-500"></span>
+          <span class="text-white text-xs">Días mes</span>
+        </div>
+      </div>
     </div>
 
     <!-- Mensaje de carga -->
@@ -171,26 +271,109 @@ onMounted(async () => {
       <span>Cargando recursos del proyecto...</span>
     </div>
 
-    <!-- Mensaje si no hay mantenimientos -->
-    <div v-else-if="maintenanceSchedule.length === 0" class="alert alert-info">
-      <i class="las la-info-circle text-2xl"></i>
-      <span>No hay mantenimientos programados para este período.</span>
+    <!-- Calendario Visual del Mes -->
+    <div v-else class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <!-- Encabezado de días de la semana -->
+      <div class="grid grid-cols-7 bg-lime-100">
+        <div 
+          v-for="day in weekDays" 
+          :key="day" 
+          class="p-2 text-center text-sm font-semibold text-lime-700 border-r border-lime-200 last:border-r-0"
+        >
+          {{ day }}
+        </div>
+      </div>
+
+      <!-- Semanas del mes -->
+      <div v-for="(week, weekIndex) in calendarWeeks" :key="weekIndex" class="grid grid-cols-7 border-t border-gray-200">
+        <div 
+          v-for="(dayInfo, dayIndex) in week" 
+          :key="dayIndex"
+          class="min-h-24 p-1 border-r border-gray-200 last:border-r-0 transition-colors"
+          :class="{
+            'bg-gray-50': !dayInfo,
+            'bg-lime-50 hover:bg-lime-100 cursor-pointer': dayInfo?.hasMaintenances,
+            'bg-white': dayInfo && !dayInfo.hasMaintenances,
+            'ring-2 ring-lime-500 ring-inset': dayInfo?.isToday,
+            'bg-lime-200': selectedDay?.dateStr === dayInfo?.dateStr
+          }"
+          @click="selectDay(dayInfo)"
+        >
+          <template v-if="dayInfo">
+            <!-- Número del día -->
+            <div class="flex items-center justify-between mb-1">
+              <span 
+                class="text-sm font-medium"
+                :class="{
+                  'text-lime-700': dayInfo.isToday,
+                  'text-gray-700': !dayInfo.isToday && dayInfo.hasMaintenances,
+                  'text-gray-400': !dayInfo.hasMaintenances
+                }"
+              >
+                {{ dayInfo.day }}
+              </span>
+              <span 
+                v-if="dayInfo.hasMaintenances" 
+                class="badge badge-xs badge-success"
+              >
+                {{ dayInfo.maintenances.length }}
+              </span>
+            </div>
+
+            <!-- Indicadores de mantenimientos (máximo 3 visibles) -->
+            <div v-if="dayInfo.hasMaintenances" class="space-y-0.5">
+              <div 
+                v-for="(m, idx) in dayInfo.maintenances.slice(0, 3)" 
+                :key="m.resource_id"
+                class="flex items-center gap-1"
+              >
+                <span 
+                  class="w-2 h-2 rounded-full flex-shrink-0"
+                  :class="getFrequencyColor(m.frequency_type)"
+                ></span>
+                <span class="text-xs truncate text-gray-600">
+                  {{ m.resource_code }}
+                </span>
+              </div>
+              <div 
+                v-if="dayInfo.maintenances.length > 3" 
+                class="text-xs text-gray-500 pl-3"
+              >
+                +{{ dayInfo.maintenances.length - 3 }} más
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
     </div>
 
-    <!-- Calendario Agrupado por Mes -->
-    <div v-else v-for="(maintenances, monthKey) in maintenanceByMonth" :key="monthKey" class="space-y-3">
-      <h3 class="text-lg font-semibold text-gray-700 capitalize border-b-2 border-lime-500 pb-2">
-        <i class="las la-calendar text-lime-600"></i>
-        {{ monthKey }}
-        <span class="badge badge-lime ml-2">{{ maintenances.length }} mantenimientos</span>
-      </h3>
+    <!-- Panel de Detalles del Día Seleccionado -->
+    <div 
+      v-if="selectedDay" 
+      class="bg-white rounded-lg shadow-lg p-4 border-l-4 border-lime-500"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold text-gray-700">
+          <i class="las la-calendar-check text-lime-600"></i>
+          Mantenimientos del {{ new Date(selectedDay.dateStr).toLocaleDateString('es-GT', { 
+            weekday: 'long', 
+            day: 'numeric', 
+            month: 'long', 
+            year: 'numeric' 
+          }) }}
+        </h3>
+        <button 
+          @click="selectedDay = null" 
+          class="btn btn-circle btn-sm btn-ghost"
+        >
+          <i class="las la-times"></i>
+        </button>
+      </div>
 
       <div class="overflow-x-auto">
-        <table class="table table-zebra table-sm">
+        <table class="table table-sm">
           <thead>
-            <tr class="bg-lime-100">
-              <th class="text-xs">Fecha</th>
-              <th class="text-xs">Día</th>
+            <tr class="bg-lime-50">
               <th class="text-xs">Código</th>
               <th class="text-xs">Recurso</th>
               <th class="text-xs">Descripción</th>
@@ -199,34 +382,46 @@ onMounted(async () => {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="maintenance in maintenances" :key="`${maintenance.resource_id}-${maintenance.scheduled_date}`">
-              <td class="text-xs font-semibold">{{ formatDate(maintenance.scheduled_date) }}</td>
+            <tr 
+              v-for="m in selectedDay.maintenances" 
+              :key="m.resource_id"
+              class="hover:bg-lime-50"
+            >
               <td class="text-xs">
-                <span class="capitalize">{{ maintenance.day_of_week }}</span>
+                <span class="badge badge-outline badge-sm">{{ m.resource_code }}</span>
               </td>
+              <td class="text-xs font-medium">{{ m.resource_name }}</td>
+              <td class="text-xs text-gray-600">{{ m.description || '-' }}</td>
               <td class="text-xs">
-                <span class="badge badge-outline badge-sm">{{ maintenance.resource_code }}</span>
-              </td>
-              <td class="text-xs font-medium">{{ maintenance.resource_name }}</td>
-              <td class="text-xs text-gray-600">{{ maintenance.description }}</td>
-              <td class="text-xs">
-                <span class="badge badge-sm" :class="getFrequencyColor(maintenance.frequency_type)">
-                  {{ maintenance.frequency_type }}
+                <span 
+                  class="badge badge-sm" 
+                  :class="getFrequencyBadgeColor(m.frequency_type)"
+                >
+                  {{ getFrequencyLabel(m) }}
                 </span>
               </td>
-              <td class="text-xs text-right font-semibold">{{ formatCurrency(maintenance.cost) }}</td>
+              <td class="text-xs text-right font-semibold">{{ formatCurrency(m.cost) }}</td>
             </tr>
           </tbody>
           <tfoot>
-            <tr class="bg-lime-50 font-semibold">
-              <td colspan="6" class="text-right text-xs">Subtotal {{ monthKey }}:</td>
+            <tr class="bg-lime-100 font-semibold">
+              <td colspan="4" class="text-right text-xs">Total del día:</td>
               <td class="text-right text-xs">
-                {{ formatCurrency(maintenances.reduce((sum, m) => sum + m.cost, 0)) }}
+                {{ formatCurrency(selectedDay.maintenances.reduce((sum, m) => sum + m.cost, 0)) }}
               </td>
             </tr>
           </tfoot>
         </table>
       </div>
+    </div>
+
+    <!-- Mensaje si no hay mantenimientos en el mes -->
+    <div 
+      v-if="resources && resources.length > 0 && maintenanceSchedule.length === 0" 
+      class="alert alert-info"
+    >
+      <i class="las la-info-circle text-2xl"></i>
+      <span>No hay mantenimientos programados para este mes.</span>
     </div>
   </div>
 </template>
