@@ -4,6 +4,7 @@ from tests.BaseTestView import BaseTestView
 from equipment.models import Vehicle
 from equipment.models.CertificationVehicle import CertificationVehicle
 from equipment.models.PassVehicle import PassVehicle
+from projects.models.CustodyChain import CustodyChain
 from datetime import date, timedelta
 
 
@@ -17,7 +18,14 @@ class TestVehicleListView(BaseTestView):
     @pytest.fixture(autouse=True)
     def setup_test_data(self, db):
         """Limpiar la base de datos antes de cada test"""
-        # Solo borra los modelos existentes
+        from django.apps import apps
+        try:
+            ChainCustodyDetail = apps.get_model('projects', 'ChainCustodyDetail')
+            ChainCustodyDetail.objects.all().delete()
+        except LookupError:
+            pass
+        
+        CustodyChain.objects.all().delete()
         CertificationVehicle.objects.all().delete()
         PassVehicle.objects.all().delete()
         Vehicle.objects.all().delete()
