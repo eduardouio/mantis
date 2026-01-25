@@ -21,7 +21,13 @@ class EquipmentInfoReport(TemplateView):
         # Datos básicos del equipo
         context['equipment'] = equipment
         context['inspection_date'] = datetime.now().date()
-        context['generated_by'] = self.request.user.get_full_name() or self.request.user.username
+        
+        # Manejar usuario anónimo de forma segura
+        context['generated_by'] = (
+            self.request.user.get_full_name() or self.request.user.username
+            if self.request.user.is_authenticated 
+            else 'Sistema'
+        )
         
         # Obtener campos organizados
         context['common_fields'] = equipment.present_common_fields
@@ -29,11 +35,7 @@ class EquipmentInfoReport(TemplateView):
         context['have_fields'] = equipment.present_have_fields
         context['state_fields'] = equipment.present_state_fields
         
-        # Manejar usuario anónimo de forma segura
-        context['report_generated_by'] = (
-            self.request.user.get_full_name() 
-            if self.request.user.is_authenticated 
-            else 'Sistema'
-        )
+        # Alias para compatibilidad
+        context['report_generated_by'] = context['generated_by']
         
         return context
