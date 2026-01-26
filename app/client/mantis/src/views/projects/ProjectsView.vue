@@ -145,7 +145,7 @@ onMounted(() => {
       </div>
       <!-- Botones con sombra (estilo cadena de custodia) -->
       <div class="mt-8 bg-white border-t border-gray-200 shadow-md rounded-b-xl flex justify-end gap-3 px-4 py-3">
-        <a href="/proyectos/" class="btn btn-primary btn-sm">
+        <a href="/projects/" class="btn btn-primary btn-sm">
           <i class="las la-times"></i>
           Volver A Proyectos
         </a>
