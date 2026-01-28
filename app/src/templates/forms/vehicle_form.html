@@ -19,18 +19,18 @@
 
   <form method="post" class="space-y-6">
     {% csrf_token %}
-    <div class="grid md:grid-cols-3 gap-8">
+    <div class="grid lg:grid-cols-3 gap-6">
       <!-- Columna 1: Datos básicos -->
-      <div class="space-y-4">
+      <div class="space-y-3">
         <h3 class="text-sm font-semibold text-gray-600 tracking-wide">Datos Básicos</h3>
         <div class="form-control">
           <label class="label pb-1"><span class="label-text text-xs font-semibold">Placa</span></label>
-          <input name="{{ form.no_plate.html_name }}" value="{{ form.no_plate.value|default:'' }}" type="text" class="input input-bordered h-9" placeholder="Placa" {% if form.no_plate.field.required %}required{% endif %}>
+          <input name="{{ form.no_plate.html_name }}" value="{{ form.no_plate.value|default:'' }}" type="text" class="input input-bordered h-9 w-full" placeholder="Placa" {% if form.no_plate.field.required %}required{% endif %}>
           {% if form.no_plate.errors %}<span class="text-xs text-red-500">{{ form.no_plate.errors.0 }}</span>{% endif %}
         </div>
         <div class="form-control">
           <label class="label pb-1"><span class="label-text text-xs font-semibold">Tipo</span></label>
-          <select name="{{ form.type_vehicle.html_name }}" class="select select-bordered h-9" {% if form.type_vehicle.field.required %}required{% endif %}>
+          <select name="{{ form.type_vehicle.html_name }}" class="select select-bordered h-9 w-full" {% if form.type_vehicle.field.required %}required{% endif %}>
             <option value="">Seleccione</option>
             {% for value, label in form.type_vehicle.field.choices %}
               <option value="{{ value }}" {% if form.type_vehicle.value == value %}selected{% endif %}>{{ label }}</option>
@@ -41,28 +41,28 @@
         <div class="grid grid-cols-2 gap-3">
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Marca</span></label>
-            <input name="{{ form.brand.html_name }}" value="{{ form.brand.value|default:'' }}" class="input input-bordered h-9" placeholder="Marca">
+            <input name="{{ form.brand.html_name }}" value="{{ form.brand.value|default:'' }}" class="input input-bordered h-9 w-full" placeholder="Marca">
             {% if form.brand.errors %}<span class="text-xs text-red-500">{{ form.brand.errors.0 }}</span>{% endif %}
           </div>
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Modelo</span></label>
-            <input name="{{ form.model.html_name }}" value="{{ form.model.value|default:'' }}" class="input input-bordered h-9" placeholder="Modelo">
+            <input name="{{ form.model.html_name }}" value="{{ form.model.value|default:'' }}" class="input input-bordered h-9 w-full" placeholder="Modelo">
             {% if form.model.errors %}<span class="text-xs text-red-500">{{ form.model.errors.0 }}</span>{% endif %}
           </div>
         </div>
         <div class="form-control">
           <label class="label pb-1"><span class="label-text text-xs font-semibold">Año</span></label>
-          <input name="{{ form.year.html_name }}" value="{{ form.year.value|default:'' }}" type="number" class="input input-bordered h-9" placeholder="Año">
+          <input name="{{ form.year.html_name }}" value="{{ form.year.value|default:'' }}" type="number" class="input input-bordered h-9 w-full" placeholder="Año">
           {% if form.year.errors %}<span class="text-xs text-red-500">{{ form.year.errors.0 }}</span>{% endif %}
         </div>
         <div class="form-control">
           <label class="label pb-1"><span class="label-text text-xs font-semibold">Propietario</span></label>
-          <input name="{{ form.owner_transport.html_name }}" value="{{ form.owner_transport.value|default:'PEISOL' }}" class="input input-bordered h-9" placeholder="Propietario">
+          <input name="{{ form.owner_transport.html_name }}" value="{{ form.owner_transport.value|default:'PEISOL' }}" class="input input-bordered h-9 w-full" placeholder="Propietario">
           {% if form.owner_transport.errors %}<span class="text-xs text-red-500">{{ form.owner_transport.errors.0 }}</span>{% endif %}
         </div>
         <div class="form-control">
           <label class="label pb-1"><span class="label-text text-xs font-semibold">Estado</span></label>
-          <select name="{{ form.status_vehicle.html_name }}" class="select select-bordered h-9">
+          <select name="{{ form.status_vehicle.html_name }}" class="select select-bordered h-9 w-full">
             {% for value, label in form.status_vehicle.field.choices %}
               <option value="{{ value }}" {% if form.status_vehicle.value == value %}selected{% endif %}>{{ label }}</option>
             {% endfor %}
@@ -72,24 +72,24 @@
         <div class="grid grid-cols-2 gap-3">
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Color</span></label>
-            <input name="{{ form.color.html_name }}" value="{{ form.color.value|default:'' }}" class="input input-bordered h-9" placeholder="Color">
+            <input name="{{ form.color.html_name }}" value="{{ form.color.value|default:'' }}" class="input input-bordered h-9 w-full" placeholder="Color">
             {% if form.color.errors %}<span class="text-xs text-red-500">{{ form.color.errors.0 }}</span>{% endif %}
           </div>
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Chasis</span></label>
-            <input name="{{ form.chassis_number.html_name }}" value="{{ form.chassis_number.value|default:'' }}" class="input input-bordered h-9" placeholder="Chasis">
+            <input name="{{ form.chassis_number.html_name }}" value="{{ form.chassis_number.value|default:'' }}" class="input input-bordered h-9 w-full" placeholder="Chasis">
             {% if form.chassis_number.errors %}<span class="text-xs text-red-500">{{ form.chassis_number.errors.0 }}</span>{% endif %}
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Motor</span></label>
-            <input name="{{ form.engine_number.html_name }}" value="{{ form.engine_number.value|default:'' }}" class="input input-bordered h-9" placeholder="Motor">
+            <input name="{{ form.engine_number.html_name }}" value="{{ form.engine_number.value|default:'' }}" class="input input-bordered h-9 w-full" placeholder="Motor">
             {% if form.engine_number.errors %}<span class="text-xs text-red-500">{{ form.engine_number.errors.0 }}</span>{% endif %}
           </div>
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Serie</span></label>
-            <input name="{{ form.serial_number.html_name }}" value="{{ form.serial_number.value|default:'' }}" class="input input-bordered h-9" placeholder="Serie">
+            <input name="{{ form.serial_number.html_name }}" value="{{ form.serial_number.value|default:'' }}" class="input input-bordered h-9 w-full" placeholder="Serie">
             {% if form.serial_number.errors %}<span class="text-xs text-red-500">{{ form.serial_number.errors.0 }}</span>{% endif %}
           </div>
         </div>
@@ -99,46 +99,46 @@
         </div>
       </div>
 
-      <!-- Columna 2: Seguros -->
-      <div class="space-y-4">
+      <!-- Columna 2: Seguros y Documentos -->
+      <div class="space-y-3">
         <h3 class="text-sm font-semibold text-gray-600 tracking-wide">Seguros</h3>
         <div class="form-control">
           <label class="label pb-1"><span class="label-text text-xs font-semibold">Compañía</span></label>
-          <input name="{{ form.insurance_company.html_name }}" value="{{ form.insurance_company.value|default:'' }}" class="input input-bordered h-9" placeholder="Compañía">
+          <input name="{{ form.insurance_company.html_name }}" value="{{ form.insurance_company.value|default:'' }}" class="input input-bordered h-9 w-full" placeholder="Compañía">
           {% if form.insurance_company.errors %}<span class="text-xs text-red-500">{{ form.insurance_company.errors.0 }}</span>{% endif %}
         </div>
         <div class="form-control">
           <label class="label pb-1"><span class="label-text text-xs font-semibold">Póliza</span></label>
-          <input name="{{ form.nro_poliza.html_name }}" value="{{ form.nro_poliza.value|default:'' }}" class="input input-bordered h-9" placeholder="Póliza">
+          <input name="{{ form.nro_poliza.html_name }}" value="{{ form.nro_poliza.value|default:'' }}" class="input input-bordered h-9 w-full" placeholder="Póliza">
           {% if form.nro_poliza.errors %}<span class="text-xs text-red-500">{{ form.nro_poliza.errors.0 }}</span>{% endif %}
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Emisión Póliza</span></label>
-            <input id="id_insurance_issue_date" type="date" name="{{ form.insurance_issue_date.html_name }}" value="{{ form.insurance_issue_date.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_insurance_issue_date" type="date" name="{{ form.insurance_issue_date.html_name }}" value="{{ form.insurance_issue_date.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
             {% if form.insurance_issue_date.errors %}<span class="text-xs text-red-500">{{ form.insurance_issue_date.errors.0 }}</span>{% endif %}
           </div>
           <div class="form-control">
-            <label class="label pb-1 flex justify-between items-center">
+            <label class="label pb-1">
               <span class="label-text text-xs font-semibold">Vencimiento Póliza</span>
-              <span id="insuranceExpiryBadge" class="badge badge-ghost badge-sm hidden"></span>
             </label>
-            <input id="id_insurance_expiration_date" type="date" name="{{ form.insurance_expiration_date.html_name }}" value="{{ form.insurance_expiration_date.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_insurance_expiration_date" type="date" name="{{ form.insurance_expiration_date.html_name }}" value="{{ form.insurance_expiration_date.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
+            <span id="insuranceExpiryBadge" class="badge badge-ghost badge-xs mt-1 hidden"></span>
             {% if form.insurance_expiration_date.errors %}<span class="text-xs text-red-500">{{ form.insurance_expiration_date.errors.0 }}</span>{% endif %}
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Emisión Satelital</span></label>
-            <input id="id_date_satellite" type="date" name="{{ form.date_satellite.html_name }}" value="{{ form.date_satellite.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_date_satellite" type="date" name="{{ form.date_satellite.html_name }}" value="{{ form.date_satellite.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
             {% if form.date_satellite.errors %}<span class="text-xs text-red-500">{{ form.date_satellite.errors.0 }}</span>{% endif %}
           </div>
           <div class="form-control">
-            <label class="label pb-1 flex justify-between items-center">
+            <label class="label pb-1">
               <span class="label-text text-xs font-semibold">Vencimiento Satelital</span>
-              <span id="satelliteExpiryBadge" class="badge badge-ghost badge-sm hidden"></span>
             </label>
-            <input id="id_due_date_satellite" type="date" name="{{ form.due_date_satellite.html_name }}" value="{{ form.due_date_satellite.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_due_date_satellite" type="date" name="{{ form.due_date_satellite.html_name }}" value="{{ form.due_date_satellite.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
+            <span id="satelliteExpiryBadge" class="badge badge-ghost badge-xs mt-1 hidden"></span>
             {% if form.due_date_satellite.errors %}<span class="text-xs text-red-500">{{ form.due_date_satellite.errors.0 }}</span>{% endif %}
           </div>
         </div>
@@ -147,36 +147,36 @@
         <div class="grid grid-cols-2 gap-3">
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Emisión Matrícula</span></label>
-            <input id="id_date_matricula" type="date" name="{{ form.date_matricula.html_name }}" value="{{ form.date_matricula.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_date_matricula" type="date" name="{{ form.date_matricula.html_name }}" value="{{ form.date_matricula.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
             {% if form.date_matricula.errors %}<span class="text-xs text-red-500">{{ form.date_matricula.errors.0 }}</span>{% endif %}
           </div>
           <div class="form-control">
-            <label class="label pb-1 flex justify-between items-center">
+            <label class="label pb-1">
               <span class="label-text text-xs font-semibold">Vencimiento Matrícula</span>
-              <span id="matriculaExpiryBadge" class="badge badge-ghost badge-sm hidden"></span>
             </label>
-            <input id="id_due_date_matricula" type="date" name="{{ form.due_date_matricula.html_name }}" value="{{ form.due_date_matricula.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_due_date_matricula" type="date" name="{{ form.due_date_matricula.html_name }}" value="{{ form.due_date_matricula.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
+            <span id="matriculaExpiryBadge" class="badge badge-ghost badge-xs mt-1 hidden"></span>
             {% if form.due_date_matricula.errors %}<span class="text-xs text-red-500">{{ form.due_date_matricula.errors.0 }}</span>{% endif %}
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Emisión Cert. Operación</span></label>
-            <input id="id_date_cert_oper" type="date" name="{{ form.date_cert_oper.html_name }}" value="{{ form.date_cert_oper.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_date_cert_oper" type="date" name="{{ form.date_cert_oper.html_name }}" value="{{ form.date_cert_oper.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
             {% if form.date_cert_oper.errors %}<span class="text-xs text-red-500">{{ form.date_cert_oper.errors.0 }}</span>{% endif %}
           </div>
           <div class="form-control">
-            <label class="label pb-1 flex justify-between items-center">
+            <label class="label pb-1">
               <span class="label-text text-xs font-semibold">Vencimiento Cert. Operación</span>
-              <span id="certOperExpiryBadge" class="badge badge-ghost badge-sm hidden"></span>
             </label>
-            <input id="id_due_date_cert_oper" type="date" name="{{ form.due_date_cert_oper.html_name }}" value="{{ form.due_date_cert_oper.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_due_date_cert_oper" type="date" name="{{ form.due_date_cert_oper.html_name }}" value="{{ form.due_date_cert_oper.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
+            <span id="certOperExpiryBadge" class="badge badge-ghost badge-xs mt-1 hidden"></span>
             {% if form.due_date_cert_oper.errors %}<span class="text-xs text-red-500">{{ form.due_date_cert_oper.errors.0 }}</span>{% endif %}
           </div>
         </div>
         <div class="form-control">
           <label class="label pb-1"><span class="label-text text-xs font-semibold">Estado Cert. Operación</span></label>
-          <select name="{{ form.status_cert_oper.html_name }}" class="select select-bordered h-9">
+          <select name="{{ form.status_cert_oper.html_name }}" class="select select-bordered h-9 w-full">
             <option value="">Seleccione</option>
             {% for value, label in form.status_cert_oper.field.choices %}
               <option value="{{ value }}" {% if form.status_cert_oper.value == value %}selected{% endif %}>{{ label }}</option>
@@ -187,41 +187,42 @@
         <div class="grid grid-cols-2 gap-3">
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Emisión MTOP</span></label>
-            <input id="id_date_mtop" type="date" name="{{ form.date_mtop.html_name }}" value="{{ form.date_mtop.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_date_mtop" type="date" name="{{ form.date_mtop.html_name }}" value="{{ form.date_mtop.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
             {% if form.date_mtop.errors %}<span class="text-xs text-red-500">{{ form.date_mtop.errors.0 }}</span>{% endif %}
           </div>
           <div class="form-control">
-            <label class="label pb-1 flex justify-between items-center">
+            <label class="label pb-1">
               <span class="label-text text-xs font-semibold">Vencimiento MTOP</span>
-              <span id="mtopExpiryBadge" class="badge badge-ghost badge-sm hidden"></span>
             </label>
-            <input id="id_due_date_mtop" type="date" name="{{ form.due_date_mtop.html_name }}" value="{{ form.due_date_mtop.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_due_date_mtop" type="date" name="{{ form.due_date_mtop.html_name }}" value="{{ form.due_date_mtop.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
+            <span id="mtopExpiryBadge" class="badge badge-ghost badge-xs mt-1 hidden"></span>
             {% if form.due_date_mtop.errors %}<span class="text-xs text-red-500">{{ form.due_date_mtop.errors.0 }}</span>{% endif %}
           </div>
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div class="form-control">
             <label class="label pb-1"><span class="label-text text-xs font-semibold">Emisión Rev. Técnica</span></label>
-            <input id="id_date_technical_review" type="date" name="{{ form.date_technical_review.html_name }}" value="{{ form.date_technical_review.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_date_technical_review" type="date" name="{{ form.date_technical_review.html_name }}" value="{{ form.date_technical_review.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
             {% if form.date_technical_review.errors %}<span class="text-xs text-red-500">{{ form.date_technical_review.errors.0 }}</span>{% endif %}
           </div>
           <div class="form-control">
-            <label class="label pb-1 flex justify-between items-center">
+            <label class="label pb-1">
               <span class="label-text text-xs font-semibold">Vencimiento Rev. Técnica</span>
-              <span id="technicalReviewExpiryBadge" class="badge badge-ghost badge-sm hidden"></span>
             </label>
-            <input id="id_due_date_technical_review" type="date" name="{{ form.due_date_technical_review.html_name }}" value="{{ form.due_date_technical_review.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9">
+            <input id="id_due_date_technical_review" type="date" name="{{ form.due_date_technical_review.html_name }}" value="{{ form.due_date_technical_review.value|date:'Y-m-d'|default:'' }}" class="input input-bordered h-9 w-full">
+            <span id="technicalReviewExpiryBadge" class="badge badge-ghost badge-xs mt-1 hidden"></span>
             {% if form.due_date_technical_review.errors %}<span class="text-xs text-red-500">{{ form.due_date_technical_review.errors.0 }}</span>{% endif %}
           </div>
         </div>
       </div>
 
-      <!-- Columna 3: Notas y espacio para app JS -->
-      <div class="space-y-4">
+      <!-- Columna 3: Notas -->
+      <div class="space-y-3">
         <h3 class="text-sm font-semibold text-gray-600 tracking-wide">Notas</h3>
         <div class="form-control">
-          <textarea name="{{ form.notes.html_name }}" class="textarea textarea-bordered min-h-40" placeholder="Notas adicionales">{{ form.notes.value|default:'' }}</textarea>
-          {% if form.notes.errors %}<span class="text-xs text-red-500">{{ form.notes.errors.0 }}</span>{% endif %}
+          <label class="label pb-1"><span class="label-text text-xs font-semibold">Observaciones</span></label>
+          <textarea name="{{ form.notes.html_name }}" class="textarea textarea-bordered w-full" rows="20" placeholder="Notas adicionales sobre el vehículo...">{{ form.notes.value|default:'' }}</textarea>
+          {% if form.notes.errors %}<span class="text-xs text-red-500 mt-1">{{ form.notes.errors.0 }}</span>{% endif %}
         </div>
       </div>
     </div>
