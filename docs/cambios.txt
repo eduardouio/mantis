@@ -36,3 +36,8 @@ no mostrar none en
 
 
 
+## detalle de cambios realizados
+- correccion en calculo de diferencia de fechas, no se actualizaba cuando la fecha en el input cambiaba
+- se mejoró la alineación del formulario y se lo hizo mas ancho.
+- Agregamos el boton de eliminacion en listado de técnicos
+- El listado de técnicos no muestra los técnicos eliminados
