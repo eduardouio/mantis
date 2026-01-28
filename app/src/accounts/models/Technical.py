@@ -152,10 +152,6 @@ class Technical(BaseModel):
         blank=True,
         null=True
     )
-    is_active = models.BooleanField(
-        'Activo?',
-        default=True
-    )
 
     @classmethod
     def get_by_dni(cls, id):
