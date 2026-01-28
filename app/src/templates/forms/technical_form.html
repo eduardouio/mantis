@@ -1,6 +1,6 @@
 {% extends 'base/base.html' %}
 {% block content %}
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
+<div class="max-w-6xl mx-auto p-6 bg-white rounded-2xl shadow-md border border-t-[15px] border-t-blue-500">
   <div class="flex justify-between items-center border-b-blue-500 border-b pb-1 mb-3">
     <h1 class="text-2xl font-semibold text-blue-500">
       {% if object.pk %}Editar Técnico{% else %}Nuevo Técnico{% endif %}
@@ -379,8 +379,23 @@
         <i class="las la-times text-xl"></i>
         Cancelar
       </a>
+      {% if object.pk %}
+      <button type="button" id="btn-deactivate" class="btn btn-error" 
+              data-url="{% url 'technical_deactivate' object.pk %}"
+              data-technical-name="{{ object.first_name }} {{ object.last_name }}">
+        <i class="las la-trash text-xl"></i>
+        Eliminar Técnico
+      </button>
+      {% endif %}
     </div>
   </form>
+  
+  <!-- Formulario oculto para desactivación -->
+  {% if object.pk %}
+  <form id="deactivate-form" method="post" action="{% url 'technical_deactivate' object.pk %}" style="display: none;">
+    {% csrf_token %}
+  </form>
+  {% endif %}
 </div>
 
 <!-- Script para manejo de certificados -->

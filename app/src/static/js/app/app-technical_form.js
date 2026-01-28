@@ -173,9 +173,48 @@ function updateAllCertificateBadges() {
   Object.keys(CERTIFICATE_CONFIG).forEach(key => updateCertificateBadge(key));
 }
 
+/**
+ * Manejo del botón de desactivación con confirmación en dos pasos
+ */
+function setupDeactivateButton() {
+  const btnDeactivate = document.getElementById('btn-deactivate');
+  
+  if (!btnDeactivate) return;
+  
+  let confirmState = false;
+  const originalText = '<i class="las la-trash text-xl"></i> Eliminar Técnico';
+  const confirmText = '<i class="las la-check text-xl"></i> Confirmar Eliminación';
+  const technicalName = btnDeactivate.dataset.technicalName;
+  
+  btnDeactivate.addEventListener('click', function() {
+    if (!confirmState) {
+      // Primera vez: cambiar a modo confirmación
+      confirmState = true;
+      btnDeactivate.innerHTML = confirmText;
+      btnDeactivate.classList.remove('btn-error');
+      btnDeactivate.classList.add('btn-warning', 'animate-pulse');
+      
+      // Resetear después de 5 segundos si no confirma
+      setTimeout(function() {
+        if (confirmState) {
+          confirmState = false;
+          btnDeactivate.innerHTML = originalText;
+          btnDeactivate.classList.remove('btn-warning', 'animate-pulse');
+          btnDeactivate.classList.add('btn-error');
+        }
+      }, 5000);
+      
+    } else {
+      // Segunda vez: ejecutar la desactivación directamente
+      document.getElementById('deactivate-form').submit();
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   setupCertificateWatchers();
   updateAllCertificateBadges();
+  setupDeactivateButton();
   
   setInterval(updateAllCertificateBadges, 60000);
 });
