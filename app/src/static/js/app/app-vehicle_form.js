@@ -23,12 +23,12 @@ const VEHICLE_DATE_CONFIG = {
     name: 'Cert. Operación'
   },
   mtop: {
-    endField: 'id_date_mtop',
+    endField: 'id_due_date_mtop',
     badgeId: 'mtopExpiryBadge',
     name: 'MTOP'
   },
   technicalReview: {
-    endField: 'id_date_technical_review',
+    endField: 'id_due_date_technical_review',
     badgeId: 'technicalReviewExpiryBadge',
     name: 'Rev. Técnica'
   }
