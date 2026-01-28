@@ -1,0 +1,29 @@
+ajuntar en la planilla la order de compra
+adjuntar guia de remision
+
+
+apuntes de planirlla
+el certificado de laboratorio es mensual, es uno solo para todo el mens
+
+la ceda de custodia va en la planilla y en el cerficado de dispocion final
+
+
+poner un estado que diga planillado en la cadena de custodia
+
+
+numero de po de cliente en la planilla se debe poder editar
+
+igual hacer que se pueda crear con numero de orden 
+
+se debe mostrar el nombre del que realiza la planilla -> usuario auntenticado y bombre apellido y el cargo
+
+
+en la planilla al pie es lo que etsba escri=BiquadFilterNode
+
+
+editar el contacto de la planilla 
+
+
+permitir modificar todos los campos de la planilla
+
+el contacto es el que firma en aprobado contratante
