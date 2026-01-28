@@ -15,6 +15,9 @@ from .views import (
     LicenseListView,
 )
 
+from accounts.views.technicals.TechnicalDeactivateView import TechnicalDeactivateView
+
+
 urlpatterns = [
     # cuentas
     path('', HomeTV.as_view(), name='home'),
@@ -26,6 +29,7 @@ urlpatterns = [
     path('tecnicos/nuevo/', TechnicalCreateView.as_view(), name='technical_create'),
     path('tecnicos/actualizar/<int:pk>/', TechnicalUpdateView.as_view(), name='technical_update'),
     path('tecnicos/eliminar/<int:pk>/', TechnicalDeleteView.as_view(), name='technical_delete'),
+    path('tecnicos/desactivar/<int:pk>/', TechnicalDeactivateView.as_view(), name='technical_deactivate'),
     # Licencias
     path('licencias/', LicenseListView.as_view(), name='license_list'),
     path('licencias/<int:pk>/', LicenseDetailView.as_view(), name='license_detail'),
