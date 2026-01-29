@@ -24,6 +24,8 @@ from reports.views.PDFVehicleStatusReport import PDFVehicleStatusReport
 from reports.views.ResourcesByStatus import ResourcesByStatusView
 from reports.views.VehiclesByStatus import VehiclesByStatusView
 from reports.views.TechnicalByStatus import TechnicalByStatusView
+from reports.views.WorkSheetTemplateView import WorkSheetTemplateView
+from reports.views.PDFWorkSheet import PDFWorkSheet
 
 app_name = 'reports'
 
@@ -38,6 +40,7 @@ urlpatterns = [
     path('reports/equipment-status/', ResourcesByStatusView.as_view(), name='equipment-status-report'),
     path('reports/technicals-status/', TechnicalByStatusView.as_view(), name='technicals-status-report'),
     path('reports/vehicles-status/', VehiclesByStatusView.as_view(), name='vehicles-status-report'),
+    path('reports/worksheet-template/<int:id>/', WorkSheetTemplateView.as_view(), name='worksheet-template'),
 
     # Equipment Checklists Templates
     path('reports/template-equipment-bateries/<int:equipment_id>/', EquipmentBateriesCheckList.as_view(), name='equipment-bateries-checklist'),
@@ -53,6 +56,7 @@ urlpatterns = [
     path('reports/technical-vaccine/<int:id>/', PDFTechnicalVaccineReport.as_view(), name='technical-vaccine-pdf'),
     path('reports/equipment-info/<int:equipment_id>/', PDFEquipmentInfoReport.as_view(), name='equipment-info-pdf'),
     path('reports/vehicle-status/<int:pk>/', PDFVehicleStatusReport.as_view(), name='vehicle-status-pdf'),
+    path('reports/worksheet/<int:id>/', PDFWorkSheet.as_view(), name='worksheet-pdf'),
     
     # Equipment Checklists PDF
     path('reports/equipment-bateries/<int:equipment_id>/', PDFBateriesCheckList.as_view(), name='equipment-bateries-pdf'),
