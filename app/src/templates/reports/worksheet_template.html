@@ -1,0 +1,454 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planilla de Cantidades del Servicio - PEISOL S.A.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 9px;
+            background: #fff;
+            padding: 8px;
+        }
+
+        .sheet {
+            width: 1150px;
+            margin: 0 auto;
+            border: 1px solid #000;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .cell {
+            border: 1px solid #000;
+            padding: 3px 5px;
+            vertical-align: middle;
+        }
+
+        .label-red {
+            color: #c00;
+            font-weight: bold;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .header-table td {
+            border: 1px solid #000;
+        }
+
+        .logo-cell {
+            width: 180px;
+            text-align: center;
+            padding: 8px 6px;
+        }
+
+        .logo-cell img {
+            width: 130px;
+            height: auto;
+        }
+
+        .title-cell {
+            text-align: center;
+            padding: 6px 8px;
+        }
+
+        .title-main {
+            color: #c00;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .title-sub {
+            color: #c00;
+            font-weight: bold;
+            font-size: 10px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .object-table td {
+            border: 1px solid #000;
+        }
+
+        .object-label {
+            background: #f0f0f0;
+            font-weight: bold;
+            padding: 3px 5px;
+        }
+
+        .object-code {
+            width: 180px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .object-value {
+            padding: 3px 5px;
+            font-size: 9px;
+        }
+
+        .info-table td,
+        .info-table th {
+            border: 1px solid #000;
+            padding: 3px 4px;
+            text-align: center;
+        }
+
+        .info-table th {
+            background: #f0f0f0;
+        }
+
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .main-table th,
+        .main-table td {
+            border: 1px solid #000;
+            padding: 2px 2px;
+            text-align: center;
+            font-size: 8px;
+        }
+
+        .main-table thead th {
+            background: #e6e6e6;
+            color: #c00;
+            font-weight: bold;
+        }
+
+        .main-table .col-item { width: 28px; }
+        .main-table .col-equipo { width: 85px; text-align: left; padding-left: 4px; }
+        .main-table .col-detalle { width: 160px; text-align: left; padding-left: 4px; font-size: 7px; }
+        .main-table .col-cantidad { width: 40px; }
+        .main-table .col-unidad { width: 40px; }
+        .main-table .col-precio { width: 55px; }
+        .main-table .col-costo { width: 55px; }
+
+        .main-table .day-header { 
+            width: 20px !important; 
+            min-width: 20px; 
+            max-width: 20px; 
+            padding: 2px 1px;
+            font-size: 7px;
+        }
+        .main-table col.day-col { width: 20px !important; }
+        .main-table tbody td:nth-child(n+6):nth-child(-n+36) { 
+            width: 20px !important; 
+            min-width: 20px; 
+            max-width: 20px; 
+            padding: 2px 1px; 
+        }
+
+        .observaciones-row {
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+            padding: 4px 5px 18px 5px;
+        }
+
+        .totales-wrap {
+            display: flex;
+            justify-content: flex-end;
+            padding: 4px 5px;
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+
+        .totales-table {
+            border-collapse: collapse;
+        }
+
+        .totales-table td {
+            border: 1px solid #000;
+            padding: 3px 8px;
+            font-size: 8px;
+        }
+
+        .totales-table .label {
+            background: #f0f0f0;
+            text-align: right;
+        }
+
+        .totales-table .value {
+            text-align: right;
+            min-width: 70px;
+        }
+
+        .solicitado-row {
+            border-left: 1px solid #000;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+            padding: 4px 5px;
+        }
+
+        .sign-table td {
+            border: 1px solid #000;
+            padding: 0;
+            vertical-align: top;
+        }
+
+        .sign-title {
+            background: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            padding: 4px 5px;
+            font-size: 8px;
+            text-transform: uppercase;
+        }
+
+        .sign-body {
+            height: 70px;
+            padding: 6px 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            text-align: center;
+        }
+
+        .sign-line {
+            border-top: 1px solid #000;
+            padding-top: 4px;
+        }
+
+        .text-left { text-align: left !important; }
+        .text-right { text-align: right !important; }
+
+        @media print {
+            body { padding: 0; }
+            .sheet { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sheet">
+        <table class="table header-table">
+            <tr>
+                <td class="logo-cell">
+                    <img src="{% static 'img/logo.png' %}" alt="PEISOL Logo">
+                </td>
+                <td class="title-cell">
+                    <div class="title-main">COMPAÑÍA DE INGENIERIA Y SOLUCIONES DE PROYECTOS INTEGRALES PEISOL S.A.</div>
+                    <div class="title-sub">PLANILLA DE CANTIDADES DEL SERVICIO</div>
+                </td>
+            </tr>
+        </table>
+
+        <table class="table object-table">
+            <tr>
+                <td class="object-label">OBJETO DEL SERVICIO:</td>
+                <td class="object-code">PSL-PS-00377-25</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="object-value">ALQUILER Y MANTENIMIENTO DE EQUIPOS</td>
+            </tr>
+        </table>
+
+        <table class="table info-table">
+            <tr>
+                <th class="label-red">TIPO DE SERVICIO:</th>
+                <th class="label-red" colspan="2">PERIÓDO DE MEDICIÓN:</th>
+                <th class="label-red">MES DE EJECUCIÓN:</th>
+                <th class="label-red">SITIO DE EJECUCIÓN:</th>
+            </tr>
+            <tr>
+                <td>ALQUILER Y MANTENIMIENTO DE EQUIPOS</td>
+                <td>7/1/2025</td>
+                <td>7/31/2025</td>
+                <td>JULIO</td>
+                <td>MDC 40</td>
+            </tr>
+        </table>
+
+        <table class="table info-table">
+            <tr>
+                <th class="label-red">CANTIDAD:</th>
+                <td>BBLS</td>
+                <td>1.19</td>
+                <td>M³</td>
+                <td>0.19</td>
+                <td>CAMPAMENTO</td>
+            </tr>
+        </table>
+
+        <table class="table info-table">
+            <tr>
+                <th class="label-red">CONTRATADA:</th>
+                <td colspan="2">ARCOLANDS CIA. LTDA</td>
+                <th class="label-red">RUC:</th>
+                <td>1791240154001</td>
+                <th class="label-red">ORDEN No.</th>
+                <td></td>
+                <th class="label-red">CONTACTO:</th>
+                <td>Ing. Catalina Velandia</td>
+            </tr>
+        </table>
+
+        <table class="main-table">
+            <colgroup>
+                <col class="col-item">
+                <col class="col-equipo">
+                <col class="col-detalle">
+                <col class="col-cantidad">
+                <col class="col-unidad">
+                <col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col">
+                <col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col">
+                <col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col">
+                <col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col">
+                <col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col">
+                <col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col"><col class="day-col">
+                <col class="day-col">
+                <col class="col-precio">
+                <col class="col-costo">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th rowspan="2" class="col-item">ITEM</th>
+                    <th rowspan="2" class="col-equipo">EQUIPO</th>
+                    <th rowspan="2" class="col-detalle">DETALLE</th>
+                    <th rowspan="2" class="col-cantidad">CANTIDAD</th>
+                    <th rowspan="2" class="col-unidad">UNIDAD</th>
+                    <th colspan="31">DIAS MES</th>
+                    <th rowspan="2" class="col-precio">PRECIO<br>UNITARIO</th>
+                    <th rowspan="2" class="col-costo">COSTO<br>TOTAL</th>
+                </tr>
+                <tr>
+                    <th class="day-header">1</th><th class="day-header">2</th><th class="day-header">3</th><th class="day-header">4</th><th class="day-header">5</th>
+                    <th class="day-header">6</th><th class="day-header">7</th><th class="day-header">8</th><th class="day-header">9</th><th class="day-header">10</th>
+                    <th class="day-header">11</th><th class="day-header">12</th><th class="day-header">13</th><th class="day-header">14</th><th class="day-header">15</th>
+                    <th class="day-header">16</th><th class="day-header">17</th><th class="day-header">18</th><th class="day-header">19</th><th class="day-header">20</th>
+                    <th class="day-header">21</th><th class="day-header">22</th><th class="day-header">23</th><th class="day-header">24</th><th class="day-header">25</th>
+                    <th class="day-header">26</th><th class="day-header">27</th><th class="day-header">28</th><th class="day-header">29</th><th class="day-header">30</th>
+                    <th class="day-header">31</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td class="col-equipo">BATERIAS SANITARIAS</td>
+                    <td class="col-detalle">ALQUILER DE BATERIA SANITARIA PSRT-323</td>
+                    <td>31</td>
+                    <td>DIAS</td>
+                    <td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td>
+                    <td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td>
+                    <td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td>
+                    <td>4.00</td>
+                    <td>124.00</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td class="col-equipo">BATERIAS SANITARIAS</td>
+                    <td class="col-detalle">MANTENIMIENTO Y LIMPIEZA DE BATERIAS SANITARIAS</td>
+                    <td>0</td>
+                    <td>UNIDAD</td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td>60.00</td>
+                    <td>0.00</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td class="col-equipo"></td>
+                    <td class="col-detalle"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td class="col-equipo"></td>
+                    <td class="col-detalle"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td class="col-equipo"></td>
+                    <td class="col-detalle"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="observaciones-row">
+            <span class="label-red">Observaciones:</span>
+        </div>
+
+        <div class="totales-wrap">
+            <table class="totales-table">
+                <tr><td class="label">Subtotal</td><td class="value">124.00</td></tr>
+                <tr><td class="label">IVA 0%</td><td class="value">0.00</td></tr>
+                <tr><td class="label">IVA 15%</td><td class="value">18.60</td></tr>
+                <tr><td class="label">Total</td><td class="value">142.60</td></tr>
+            </table>
+        </div>
+
+        <div class="solicitado-row">
+            <span class="label-red">Solicitado por:</span>
+            <span>Ing. Catalina Velandia</span>
+        </div>
+
+        <table class="table sign-table">
+            <tr>
+                <td>
+                    <div class="sign-title">ELABORADO POR</div>
+                    <div class="sign-body">
+                        <div class="sign-line">
+                            <div><strong>Ing. Blanca Rueda</strong></div>
+                            <div><strong>OPERACIONES</strong></div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="sign-title">APROBADO POR PEISOL S.A.</div>
+                    <div class="sign-body">
+                        <div class="sign-line">
+                            <div><strong>Ing. Juan Gabriel Verdezoto</strong></div>
+                            <div><strong>GERENTE GENERAL</strong></div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="sign-title">APROBADO CONTRATANTE</div>
+                    <div class="sign-body">
+                        <div class="sign-line">
+                            <div><strong>Ing. Catalina Velandia</strong></div>
+                            <div><strong>ARCOLANDS CIA. LTDA</strong></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
