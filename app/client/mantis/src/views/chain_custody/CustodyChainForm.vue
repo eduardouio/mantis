@@ -168,7 +168,6 @@ onMounted(async () => {
 
 const availableResources = computed(() => {
   return projectResourceStore.resourcesProject
-    .filter(resource => resource.type_resource === 'SERVICIO')
     .map(resource => ({
       ...resource,
       selected: selectedResourceIds.value.includes(resource.id)
