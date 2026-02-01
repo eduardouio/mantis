@@ -456,8 +456,8 @@ watch(() => custodyChain.value.total_gallons, (newValue, oldValue) => {
   if (lastEditedVolumeField.value === 'gallons' && newValue !== oldValue) {
     const converted = fromGallons(newValue)
     lastEditedVolumeField.value = null
-    custodyChain.value.total_barrels = converted.barrels
-    custodyChain.value.total_cubic_meters = converted.cubicMeters
+    custodyChain.value.total_barrels = parseFloat(converted.barrels.toFixed(2))
+    custodyChain.value.total_cubic_meters = parseFloat(converted.cubicMeters.toFixed(2))
   }
 })
 
@@ -465,8 +465,8 @@ watch(() => custodyChain.value.total_barrels, (newValue, oldValue) => {
   if (lastEditedVolumeField.value === 'barrels' && newValue !== oldValue) {
     const converted = fromBarrels(newValue)
     lastEditedVolumeField.value = null
-    custodyChain.value.total_gallons = converted.gallons
-    custodyChain.value.total_cubic_meters = converted.cubicMeters
+    custodyChain.value.total_gallons = parseFloat(converted.gallons.toFixed(2))
+    custodyChain.value.total_cubic_meters = parseFloat(converted.cubicMeters.toFixed(2))
   }
 })
 
@@ -474,8 +474,8 @@ watch(() => custodyChain.value.total_cubic_meters, (newValue, oldValue) => {
   if (lastEditedVolumeField.value === 'cubicMeters' && newValue !== oldValue) {
     const converted = fromCubicMeters(newValue)
     lastEditedVolumeField.value = null
-    custodyChain.value.total_gallons = converted.gallons
-    custodyChain.value.total_barrels = converted.barrels
+    custodyChain.value.total_gallons = parseFloat(converted.gallons.toFixed(2))
+    custodyChain.value.total_barrels = parseFloat(converted.barrels.toFixed(2))
   }
 })
 
