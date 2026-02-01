@@ -1,0 +1,182 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8 p-4">
+    <!-- Header del perfil -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Editar perfil -->
+        <a href="{% url 'profile_edit' %}" class="btn btn-primary btn-md gap-2 text-white">
+            <i class="las la-edit text-lg"></i>
+            Editar Perfil
+        </a>
+        
+        <!-- Cambiar contraseña -->
+        <button class="btn btn-primary btn-md gap-2 text-white" onclick="openChangePasswordModal()">
+            <i class="las la-key text-lg"></i>
+            Cambiar Contraseña
+        </button>
+    </div>
+    
+    <!-- Card principal del perfil -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <!-- Información del usuario -->
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Avatar y nombre -->
+                <div class="flex-shrink-0 text-center lg:text-left">
+                    <div class="avatar mb-4">
+                        <div class="w-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                            {% if user.picture %}
+                                <img src="{{ user.picture.url }}" alt="Foto de perfil" />
+                            {% else %}
+                                <div class="bg-neutral text-neutral-content flex items-center justify-center">
+                                    <span class="text-4xl font-bold">{{ user.first_name.0|default:"U" }}{{ user.last_name.0|default:"" }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <h2 class="text-2xl font-bold">{{ user.get_full_name|default:user.email }}</h2>
+                    <p class="text-gray-600 dark:text-gray-300">{{ user.email }}</p>
+                    
+                    <!-- Badge de rol -->
+                    {% if user.role %}
+                    <div class="badge badge-primary mt-2">{{ user.get_role_display }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Información detallada -->
+                <div class="flex-grow">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Información personal -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold flex items-center gap-2 border-b pb-2">
+                                <i class="las la-user"></i>
+                                Información Personal
+                            </h3>
+                            
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600 dark:text-gray-300">Nombre</label>
+                                    <p class="text-base">{{ user.first_name|default:"No especificado" }}</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600 dark:text-gray-300">Apellido</label>
+                                    <p class="text-base">{{ user.last_name|default:"No especificado" }}</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600 dark:text-gray-300">Correo Electrónico</label>
+                                    <p class="text-base">{{ user.email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de cuenta -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold flex items-center gap-2 border-b pb-2">
+                                <i class="las la-shield-alt"></i>
+                                Estado de Cuenta
+                            </h3>
+                            
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600 dark:text-gray-300">Estado de Email</label>
+                                    <p class="text-base">
+                                        {% if user.is_confirmed_mail %}
+                                            <span class="badge badge-success">Verificado</span>
+                                        {% else %}
+                                            <span class="badge badge-warning">Pendiente</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600 dark:text-gray-300">Tipo de Usuario</label>
+                                    <p class="text-base">
+                                        {% if user.is_superuser %}
+                                            <span class="badge badge-error">Super Admin</span>
+                                        {% elif user.is_staff %}
+                                            <span class="badge badge-warning">Staff</span>
+                                        {% else %}
+                                            <span class="badge badge-info">Usuario</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600 dark:text-gray-300">Cuenta Activa</label>
+                                    <p class="text-base">
+                                        {% if user.is_active %}
+                                            <span class="badge badge-success">Activa</span>
+                                        {% else %}
+                                            <span class="badge badge-error">Inactiva</span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notas -->
+                    {% if user.notes %}
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold flex items-center gap-2 border-b pb-2 mb-3">
+                            <i class="las la-sticky-note"></i>
+                            Notas
+                        </h3>
+                        <p class="text-base text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{{ user.notes }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Estadísticas adicionales -->
+    <div class="stats shadow w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <div class="stat">
+            <div class="stat-figure text-primary">
+                <i class="las la-calendar text-3xl"></i>
+            </div>
+            <div class="stat-title">Miembro desde</div>
+            <div class="stat-value text-lg">{{ user.date_joined|timesince }}</div>
+            <div class="stat-desc">{{ user.date_joined|date:"d/m/Y" }}</div>
+        </div>
+        
+        <div class="stat">
+            <div class="stat-figure text-secondary">
+                <i class="las la-envelope text-3xl"></i>
+            </div>
+            <div class="stat-title">Estado de Email</div>
+            <div class="stat-value text-lg">{% if user.is_confirmed_mail %}Verificado{% else %}Pendiente{% endif %}</div>
+            <div class="stat-desc">{% if user.is_confirmed_mail %}Email confirmado{% else %}Requiere verificación{% endif %}</div>
+        </div>
+        
+        <div class="stat">
+            <div class="stat-figure text-accent">
+                <i class="las la-user-shield text-3xl"></i>
+            </div>
+            <div class="stat-title">Tipo de Usuario</div>
+            <div class="stat-value text-lg">{% if user.is_superuser %}Super Admin{% elif user.is_staff %}Staff{% else %}Usuario{% endif %}</div>
+            <div class="stat-desc">{% if user.is_superuser %}Acceso completo{% elif user.is_staff %}Acceso administrativo{% else %}Acceso estándar{% endif %}</div>
+        </div>
+        
+        <div class="stat">
+            <div class="stat-figure text-info">
+                <i class="las la-clock text-3xl"></i>
+            </div>
+            <div class="stat-title">Último acceso</div>
+            <div class="stat-value text-lg">{% if user.last_login %}{{ user.last_login|timesince }}{% else %}Nunca{% endif %}</div>
+            <div class="stat-desc">{% if user.last_login %}{{ user.last_login|date:"d/m/Y H:i" }}{% else %}Primera sesión{% endif %}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+{% endblock %}

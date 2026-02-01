@@ -126,9 +126,24 @@
                         </details>
                      </li>
                      <li><div class="divider my-1"></div></li>
+                     <!-- Usuario para móvil -->
+                     <li>
+                        <details>
+                           <summary>
+                              <i class="las la-user mr-2"></i>
+                              {{ user.get_full_name|default:user.email }}
+                           </summary>
+                           <ul class="p-2">
+                              <li><a class="whitespace-nowrap" href="{% url 'profile' %}"><i class="las la-user mr-2"></i>Mi Perfil</a></li>
+                              <li><a class="whitespace-nowrap" href="{% url 'profile_edit' %}"><i class="las la-edit mr-2"></i>Editar Perfil</a></li>
+                              <li><a class="whitespace-nowrap" href="#" onclick="openChangePasswordModal(); return false;"><i class="las la-key mr-2"></i>Cambiar Contraseña</a></li>
+                           </ul>
+                        </details>
+                     </li>
                      <!-- Salir para móvil -->
                      <li>
                         <a class="text-error border border-black" href="{% url 'logout' %}">
+                           <i class="las la-sign-out-alt mr-2"></i>
                            Salir
                         </a>
                      </li>
@@ -239,11 +254,21 @@
                            </summary>
                            <ul class="p-2 bg-base-100 z-[1000] shadow rounded-box bg-gray-50 w-52">
                               <li>
-                                 <a class="whitespace-nowrap bg-base-100 text-sm" href="#">
+                                 <a class="whitespace-nowrap bg-base-100 text-sm" href="{% url 'profile' %}">
                                     <i class="las la-user mr-2"></i>Mi Perfil
                                  </a>
                               </li>
                               <li>
+                                 <a class="whitespace-nowrap bg-base-100 text-sm" href="{% url 'profile_edit' %}">
+                                    <i class="las la-edit mr-2"></i>Editar Perfil
+                                 </a>
+                              </li>
+                              <li>
+                                 <a class="whitespace-nowrap bg-base-100 text-sm" href="#" onclick="openChangePasswordModal(); return false;">
+                                    <i class="las la-key mr-2"></i>Cambiar Contraseña
+                                 </a>
+                              </li>
+                              <li class="border-t border-base-300 mt-2 pt-2">
                                  <a class="whitespace-nowrap bg-base-100 text-error text-sm" href="{% url 'logout' %}">
                                     <i class="las la-sign-out-alt mr-2"></i>Salir
                                  </a>
@@ -430,5 +455,193 @@
          {% block script_app %}
          {% endblock %}
       </div>
+
+      <!-- Modal para cambio de contraseña (global) -->
+      {% if user.is_authenticated %}
+      <dialog id="changePasswordModal" class="modal">
+         <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+               <i class="las la-key"></i>
+               Cambiar Contraseña
+            </h3>
+            
+            <!-- Área de mensajes -->
+            <div id="passwordChangeMessages" class="hidden mb-4"></div>
+            
+            <!-- Contenedor del formulario -->
+            <div id="passwordFormContainer">
+               <div class="flex justify-center">
+                  <span class="loading loading-spinner loading-lg"></span>
+               </div>
+            </div>
+         </div>
+         <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+         </form>
+      </dialog>
+
+      <script>
+         // Variables globales para el modal de cambio de contraseña
+         const changePasswordModal = document.getElementById('changePasswordModal');
+         const passwordFormContainer = document.getElementById('passwordFormContainer');
+         const passwordChangeMessages = document.getElementById('passwordChangeMessages');
+         
+         // Función para abrir el modal de cambio de contraseña
+         function openChangePasswordModal() {
+            if (!changePasswordModal) return;
+            
+            // Mostrar el modal
+            changePasswordModal.showModal();
+            
+            // Limpiar mensajes previos
+            hidePasswordMessages();
+            
+            // Mostrar loading
+            passwordFormContainer.innerHTML = `
+               <div class="flex justify-center py-8">
+                  <span class="loading loading-spinner loading-lg"></span>
+               </div>
+            `;
+            
+            // Cargar el formulario por AJAX
+            fetch('{% url "change_password" %}', {
+               method: 'GET',
+               headers: {
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'Content-Type': 'application/json'
+               }
+            })
+            .then(response => response.json())
+            .then(data => {
+               if (data.success) {
+                  passwordFormContainer.innerHTML = data.form_html;
+                  setupPasswordFormSubmit();
+               } else {
+                  showPasswordMessage('Error al cargar el formulario.', 'error');
+               }
+            })
+            .catch(error => {
+               console.error('Error:', error);
+               showPasswordMessage('Error de conexión.', 'error');
+            });
+         }
+         
+         // Función para cerrar el modal
+         function closeChangePasswordModal() {
+            if (changePasswordModal) {
+               changePasswordModal.close();
+            }
+         }
+         
+         // Configurar el envío del formulario por AJAX
+         function setupPasswordFormSubmit() {
+            const form = document.getElementById('changePasswordForm');
+            if (!form) return;
+            
+            form.addEventListener('submit', function(e) {
+               e.preventDefault();
+               
+               // Limpiar errores previos
+               clearPasswordFormErrors();
+               hidePasswordMessages();
+               
+               // Obtener los datos del formulario
+               const formData = new FormData(form);
+               
+               // Enviar por AJAX
+               fetch('{% url "change_password" %}', {
+                  method: 'POST',
+                  body: formData,
+                  headers: {
+                     'X-Requested-With': 'XMLHttpRequest',
+                  }
+               })
+               .then(response => response.json())
+               .then(data => {
+                  if (data.success) {
+                     showPasswordMessage(data.message, 'success');
+                     // Cerrar el modal después de 2 segundos
+                     setTimeout(() => {
+                        closeChangePasswordModal();
+                        // Recargar la página para actualizar la sesión
+                        window.location.reload();
+                     }, 2000);
+                  } else {
+                     showPasswordMessage(data.message || 'Error al cambiar contraseña', 'error');
+                     if (data.errors) {
+                        showPasswordFormErrors(data.errors);
+                     }
+                  }
+               })
+               .catch(error => {
+                  console.error('Error:', error);
+                  showPasswordMessage('Error de conexión.', 'error');
+               });
+            });
+         }
+         
+         // Mostrar mensajes en el modal
+         function showPasswordMessage(message, type) {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+            const icon = type === 'success' ? 'la-check-circle' : 'la-exclamation-triangle';
+            
+            passwordChangeMessages.innerHTML = `
+               <div class="alert ${alertClass}">
+                  <i class="las ${icon}"></i>
+                  <span>${message}</span>
+               </div>
+            `;
+            passwordChangeMessages.classList.remove('hidden');
+         }
+         
+         // Ocultar mensajes
+         function hidePasswordMessages() {
+            if (passwordChangeMessages) {
+               passwordChangeMessages.classList.add('hidden');
+               passwordChangeMessages.innerHTML = '';
+            }
+         }
+         
+         // Mostrar errores específicos de campos
+         function showPasswordFormErrors(errors) {
+            for (const [fieldName, errorMessages] of Object.entries(errors)) {
+               const errorContainer = document.getElementById(`${fieldName}_errors`);
+               if (errorContainer) {
+                  const textElement = errorContainer.querySelector('.label-text-alt');
+                  if (textElement) {
+                     textElement.textContent = errorMessages.join(', ');
+                  }
+                  errorContainer.classList.remove('hidden');
+               }
+            }
+         }
+         
+         // Limpiar errores de campos
+         function clearPasswordFormErrors() {
+            const errorContainers = document.querySelectorAll('[id$="_errors"]');
+            errorContainers.forEach(container => {
+               container.classList.add('hidden');
+               const textElement = container.querySelector('.label-text-alt');
+               if (textElement) textElement.textContent = '';
+            });
+         }
+         
+         // Función para obtener el token CSRF
+         function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+               const cookies = document.cookie.split(';');
+               for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                     cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                     break;
+                  }
+               }
+            }
+            return cookieValue;
+         }
+      </script>
+      {% endif %}
    </body>
 </html>

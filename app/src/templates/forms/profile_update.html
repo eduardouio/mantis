@@ -1,0 +1,222 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8 p-4">
+    <!-- Header -->
+    <div class="text-center">
+        <h1 class="text-3xl font-bold tracking-tight mb-2">{{ title }}</h1>
+        <p class="text-gray-600 dark:text-gray-300">{{ subtitle }}</p>
+    </div>
+
+    <!-- Mensajes -->
+    {% if messages %}
+        <div class="space-y-2">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }}">
+                    <i class="las {% if message.tags == 'success' %}la-check-circle{% elif message.tags == 'error' %}la-exclamation-triangle{% else %}la-info-circle{% endif %}"></i>
+                    <span>{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Formulario -->
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data" class="space-y-6" novalidate>
+                {% csrf_token %}
+                
+                <!-- Errores generales del formulario -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-error">
+                        <i class="las la-exclamation-triangle"></i>
+                        <div>
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Información Personal -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="las la-user"></i>
+                        Información Personal
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Nombre -->
+                        <div class="form-control">
+                            <label for="{{ form.first_name.id_for_label }}" class="label">
+                                <span class="label-text font-medium">{{ form.first_name.label }} *</span>
+                            </label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <label class="label">
+                                    <span class="label-text-alt text-error">{{ form.first_name.errors.0 }}</span>
+                                </label>
+                            {% endif %}
+                        </div>
+
+                        <!-- Apellido -->
+                        <div class="form-control">
+                            <label for="{{ form.last_name.id_for_label }}" class="label">
+                                <span class="label-text font-medium">{{ form.last_name.label }} *</span>
+                            </label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <label class="label">
+                                    <span class="label-text-alt text-error">{{ form.last_name.errors.0 }}</span>
+                                </label>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-control">
+                        <label for="{{ form.email.id_for_label }}" class="label">
+                            <span class="label-text font-medium">{{ form.email.label }} *</span>
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.help_text %}
+                            <label class="label">
+                                <span class="label-text-alt">{{ form.email.help_text }}</span>
+                            </label>
+                        {% endif %}
+                        {% if form.email.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ form.email.errors.0 }}</span>
+                            </label>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Foto de Perfil -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="las la-image"></i>
+                        Foto de Perfil
+                    </h3>
+                    
+                    <!-- Foto actual -->
+                    {% if user.picture %}
+                        <div class="flex items-center gap-4">
+                            <div class="avatar">
+                                <div class="w-24 rounded-full">
+                                    <img src="{{ user.picture.url }}" alt="Foto actual" />
+                                </div>
+                            </div>
+                            <div>
+                                <p class="font-medium">Foto actual</p>
+                                <p class="text-sm text-gray-600">Selecciona una nueva imagen para cambiarla</p>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Campo de archivo -->
+                    <div class="form-control">
+                        <label for="{{ form.picture.id_for_label }}" class="label">
+                            <span class="label-text font-medium">{{ form.picture.label }}</span>
+                        </label>
+                        {{ form.picture }}
+                        {% if form.picture.help_text %}
+                            <label class="label">
+                                <span class="label-text-alt">{{ form.picture.help_text }}</span>
+                            </label>
+                        {% endif %}
+                        {% if form.picture.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ form.picture.errors.0 }}</span>
+                            </label>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Notas -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="las la-sticky-note"></i>
+                        Información Adicional
+                    </h3>
+                    
+                    <div class="form-control">
+                        <label for="{{ form.notes.id_for_label }}" class="label">
+                            <span class="label-text font-medium">{{ form.notes.label }}</span>
+                        </label>
+                        {{ form.notes }}
+                        {% if form.notes.help_text %}
+                            <label class="label">
+                                <span class="label-text-alt">{{ form.notes.help_text }}</span>
+                            </label>
+                        {% endif %}
+                        {% if form.notes.errors %}
+                            <label class="label">
+                                <span class="label-text-alt text-error">{{ form.notes.errors.0 }}</span>
+                            </label>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Botones -->
+                <div class="flex flex-col sm:flex-row gap-4 pt-6">
+                    <button type="submit" class="btn btn-primary gap-2 flex-1 sm:flex-none">
+                        <i class="las la-save"></i>
+                        Guardar Cambios
+                    </button>
+                    <a href="{% url 'profile' %}" class="btn btn-ghost gap-2 flex-1 sm:flex-none">
+                        <i class="las la-times"></i>
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script>
+    // Preview de imagen antes de subir
+    document.getElementById('{{ form.picture.id_for_label }}').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Buscar si ya existe un preview
+                let preview = document.getElementById('image-preview');
+                if (!preview) {
+                    // Crear el preview
+                    preview = document.createElement('div');
+                    preview.id = 'image-preview';
+                    preview.className = 'mt-4 flex items-center gap-4';
+                    preview.innerHTML = `
+                        <div class="avatar">
+                            <div class="w-24 rounded-full">
+                                <img id="preview-img" src="" alt="Preview" />
+                            </div>
+                        </div>
+                        <div>
+                            <p class="font-medium">Nueva imagen</p>
+                            <p class="text-sm text-gray-600">Esta será tu nueva foto de perfil</p>
+                        </div>
+                    `;
+                    e.target.parentNode.appendChild(preview);
+                }
+                document.getElementById('preview-img').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // Remover preview si no hay archivo
+            const preview = document.getElementById('image-preview');
+            if (preview) {
+                preview.remove();
+            }
+        }
+    });
+</script>
+{% endblock %}

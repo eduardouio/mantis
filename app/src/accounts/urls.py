@@ -14,8 +14,11 @@ from .views import (
     LicenseDeleteView,
     LicenseListView,
 )
-
+from .views.ProfileTempView import ProfileTempView
+from .views.ProfileUpdtView import ProfileUpdtView
+from .views.ChangePassUpdtView import ChangePassUpdtView
 from accounts.views.technicals.TechnicalDeactivateView import TechnicalDeactivateView
+
 
 
 urlpatterns = [
@@ -23,6 +26,9 @@ urlpatterns = [
     path('', HomeTV.as_view(), name='home'),
     path('accounts/login/', LoginTV.as_view(), name='login'),
     path('accounts/logout/', LogoutRV.as_view(), name='logout'),
+    path('profile/', ProfileTempView.as_view(), name='profile'),
+    path('profile/edit/', ProfileUpdtView.as_view(), name='profile_edit'),
+    path('profile/change-password/', ChangePassUpdtView.as_view(), name='change_password'),
     # Tecnicos
     path('tecnicos/', TechnicalListView.as_view(), name='technical_list'),
     path('tecnicos/<int:pk>/', TechnicalDetailView.as_view(), name='technical_detail'),
