@@ -8,43 +8,9 @@ const emit = defineEmits(['edit-resource'])
 
 const projectResourceStore = UseProjectResourceStore()
 
-// Computed property to filter equipment and merge with related maintenance services
+// Computed property que devuelve todos los recursos sin agrupar
 const projectResources = computed(() => {
-  const allResources = projectResourceStore.resourcesProject
-  const equipment = allResources.filter(r => r.type_resource === 'EQUIPO')
-  const services = allResources.filter(r => r.type_resource === 'SERVICIO')
-  const usedServiceIds = new Set()
-
-  const mappedEquipment = equipment.map(eq => {
-    // Relación por convención de nombre: "MANTENIMIENTO {nombre_item}"
-    // Esto vincula el equipo con su servicio de mantenimiento correspondiente
-    const relatedService = services.find(s => 
-      s.detailed_description === `MANTENIMIENTO ${eq.resource_item_name}`
-    )
-
-    if (relatedService) {
-      usedServiceIds.add(relatedService.id)
-    }
-
-    return {
-      ...eq,
-      has_maintenance: !!relatedService,
-      maintenance_cost: relatedService ? relatedService.cost : 0,
-      related_service_id: relatedService ? relatedService.id : null
-    }
-  })
-
-  // Servicios que no están vinculados a ningún equipo (servicios independientes)
-  const standaloneServices = services
-    .filter(s => !usedServiceIds.has(s.id))
-    .map(s => ({
-      ...s,
-      has_maintenance: false,
-      maintenance_cost: 0,
-      related_service_id: null
-    }))
-
-  return [...mappedEquipment, ...standaloneServices]
+  return projectResourceStore.resourcesProject
 })
 
 const selectedResources= []
@@ -62,25 +28,12 @@ const handleDeleteResource = async (resource) => {
   if (confirmDeleteId.value === resource.id) {
     // Segunda vez haciendo clic - ejecutar eliminación
     try {
-      // Eliminar el recurso principal
       await projectResourceStore.deleteResourceProject(resource.id)
-      
-      // Solo si se eliminó exitosamente, intentar eliminar el servicio asociado
-      if (resource.related_service_id) {
-         try {
-           await projectResourceStore.deleteResourceProject(resource.related_service_id)
-         } catch (e) {
-           console.warn('No se pudo eliminar el servicio de mantenimiento asociado', e)
-           alert('Recurso eliminado pero no se pudo eliminar su servicio de mantenimiento asociado.')
-         }
-      }
-      
       confirmDeleteId.value = null
     } catch (error) {
-      // Si falla la eliminación del recurso principal, mostrar error y NO intentar eliminar el servicio
       console.error('Error al eliminar recurso:', error)
       alert(error.message || 'Error al eliminar el recurso')
-      confirmDeleteId.value = null // Resetear el estado de confirmación
+      confirmDeleteId.value = null
     }
   } else {
     // Primera vez haciendo clic - pedir confirmación
@@ -94,7 +47,7 @@ const handleDeleteResource = async (resource) => {
     <div class="flex justify-between items-center mb-4">
       <h2 class="font-semibold text-gray-800 flex items-center gap-2">
         <i class="las la-tools text-blue-600"></i>
-        Equipos Asignados
+        Recursos Asignados
       </h2>
       <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'resource-form' }">
         <i class="las la-plus"></i>
@@ -107,47 +60,51 @@ const handleDeleteResource = async (resource) => {
         <thead>
           <tr class="bg-gray-500 text-white">
             <th class="p-2 border border-gray-100 text-center">#</th>
+            <th class="p-2 border border-gray-100 text-center">Tipo</th>
             <th class="p-2 border border-gray-100 text-center">Código</th>
-            <th class="p-2 border border-gray-100 text-center">Nombre/Descripción</th>
-            <th class="p-2 border border-gray-100 text-center">Alquiler</th>
-            <th class="p-2 border border-gray-100 text-center">Mantenimiento</th>
+            <th class="p-2 border border-gray-100 text-center">Descripción</th>
+            <th class="p-2 border border-gray-100 text-center">Costo</th>
+            <th class="p-2 border border-gray-100 text-center">Frecuencia</th>
             <th class="p-2 border border-gray-100 text-center">Fecha Inicio</th>
-            <th class="p-2 border border-gray-100 text-center text-center">Acciones</th>
+            <th class="p-2 border border-gray-100 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <template v-if="projectResources.length === 0">
             <tr>
-              <td colspan="7" class="text-center text-gray-500 py-8">
+              <td colspan="8" class="text-center text-gray-500 py-8">
                 <i class="las la-inbox text-4xl"></i>
-                <p>No hay equipos asignados a este proyecto</p>
+                <p>No hay recursos asignados a este proyecto</p>
               </td>
             </tr>
           </template>
           <template v-else>
             <tr v-for="resource in projectResources" :key="resource.id" :class="{ 'text-red-500 font-bold bg-red-100': isZeroCost(resource.cost) }">
               <td class="p-2 border border-gray-300">{{ resource.id }}</td>
+              <td class="p-2 border border-gray-300 text-center">
+                <span 
+                  class="badge text-xs font-semibold"
+                  :class="resource.type_resource === 'EQUIPO' ? 'badge-primary' : 'badge-secondary'"
+                >
+                  {{ resource.type_resource }}
+                </span>
+              </td>
               <td class="p-2 border border-gray-300">
                 <div class="flex items-center gap-2">
-                    <i v-if="resource.has_maintenance" class="las la-tools text-orange-500 text-xl" title="Incluye Mantenimiento"></i>
                     <span v-if="resource.is_retired" class="text-red-500 border rounded p-1 bg-red-100 text-xs mr-1">RETIRADO</span>  
                     {{ resource.resource_item_code }}
                 </div>
               </td>
-              <td 
-                class="p-2 border border-gray-300"
-              >
+              <td class="p-2 border border-gray-300">
                 {{ resource.detailed_description }}
               </td>
-              <td 
-                class="p-2 border border-gray-300 text-right font-mono"
-              >
+              <td class="p-2 border border-gray-300 text-right font-mono">
                 {{ formatNumber(resource.cost) }}
               </td>
-              <td 
-                class="p-2 border border-gray-300 text-right font-mono"
-              >
-                {{ formatNumber(resource.maintenance_cost) }}
+              <td class="p-2 border border-gray-300 text-center">
+                <span class="text-xs">
+                  {{ resource.frequency_type === 'DAY' ? 'Diario' : resource.frequency_type === 'WEEK' ? 'Semanal' : resource.frequency_type === 'MONTH' ? 'Mensual' : resource.frequency_type }}
+                </span>
               </td>
               <td class="p-2 border border-gray-300 text-end font-mono">{{ formatDate(resource.operation_start_date) }}</td>
               <td class="p-2 border border-gray-300 text-end">
@@ -181,20 +138,20 @@ const handleDeleteResource = async (resource) => {
       </table>
     </div>
 
-    <!-- Resumen de equipos -->
+    <!-- Resumen de recursos -->
     <div class="stats shadow w-full">
       <div class="stat">
         <div class="stat-title">Total Recursos</div>
         <div class="stat-value text-primary">{{ projectResources.length }}</div>
-        <div class="stat-desc">Equipos y Servicios asignados</div>
+        <div class="stat-desc">{{ projectResources.filter(r => r.type_resource === 'EQUIPO').length }} Equipos y {{ projectResources.filter(r => r.type_resource === 'SERVICIO').length }} Servicios</div>
       </div>
       
       <div class="stat text-end">
-        <div class="stat-title">Costo Total (Alq + Mant)</div>
+        <div class="stat-title">Costo Total</div>
         <div class="stat-value text-info text-end">
-          {{ formatCurrency(projectResources.reduce((sum, r) => sum + parseFloat(r.cost) + parseFloat(r.maintenance_cost), 0)) }}
+          {{ formatCurrency(projectResources.reduce((sum, r) => sum + parseFloat(r.cost), 0)) }}
         </div>
-        <div class="stat-desc">Suma de alquiler y mantenimiento</div>
+        <div class="stat-desc">Suma de todos los recursos</div>
       </div>
     </div>
   </div>
