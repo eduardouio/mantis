@@ -138,6 +138,12 @@
       resource.monthdays = []
       resource.maintenance_cost = 0
     } else {
+      // Inicializar con valores por defecto según el tipo de frecuencia
+      resource.frequency_type = resource.frequency_type || 'DAY'
+      if (resource.frequency_type === 'DAY' && (!resource.interval_days || resource.interval_days === 0)) {
+        resource.interval_days = 3
+      }
+      
       const checkbox = event.target
       const row = checkbox.closest('tr')
       const intervalInput = row.querySelector('input[data-input="interval"]')
@@ -152,7 +158,10 @@
 
   const handleFrequencyTypeChange = (resource) => {
     if (resource.frequency_type === 'DAY') {
-      resource.interval_days = resource.interval_days || 2
+      // Si no hay intervalo o es 0, usar 3 como valor por defecto
+      if (!resource.interval_days || resource.interval_days === 0) {
+        resource.interval_days = 3
+      }
       resource.weekdays = []
       resource.monthdays = []
     } else if (resource.frequency_type === 'WEEK') {
