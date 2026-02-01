@@ -54,15 +54,15 @@ const getCustodyChainStatusBadge = (status) => {
 };
 
 const totalGallons = computed(() => {
-  return custodyChains.value.reduce((sum, cc) => sum + (cc.total_gallons || 0), 0);
+  return custodyChains.value.reduce((sum, cc) => sum + parseFloat(cc.total_gallons || 0), 0);
 });
 
 const totalBarrels = computed(() => {
-  return custodyChains.value.reduce((sum, cc) => sum + (cc.total_barrels || 0), 0);
+  return custodyChains.value.reduce((sum, cc) => sum + parseFloat(cc.total_barrels || 0), 0);
 });
 
 const totalCubicMeters = computed(() => {
-  return custodyChains.value.reduce((sum, cc) => sum + (cc.total_cubic_meters || 0), 0);
+  return custodyChains.value.reduce((sum, cc) => sum + parseFloat(cc.total_cubic_meters || 0), 0);
 });
 
 const totalHours = computed(() => {
