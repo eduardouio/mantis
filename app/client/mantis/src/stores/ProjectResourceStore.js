@@ -64,7 +64,9 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                     if (resource.include_maintenance) {
                         switch (resource.frequency_type) {
                             case 'DAY':
-                                baseData.interval_days = resource.interval_days || 1
+                                // Usar el valor del usuario, convertir a número entero
+                                const intervalDays = parseInt(resource.interval_days)
+                                baseData.interval_days = isNaN(intervalDays) || intervalDays < 1 ? 1 : intervalDays
                                 break
                             case 'WEEK':
                                 baseData.weekdays = resource.weekdays || []
