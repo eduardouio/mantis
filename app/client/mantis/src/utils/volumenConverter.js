@@ -13,8 +13,8 @@ const M3_PER_GALLON = 0.00378541
 export const fromGallons = (gallons) => {
   const value = parseFloat(gallons) || 0
   return {
-    barrels: parseFloat((value / GALLONS_PER_BARREL).toFixed(4)),
-    cubicMeters: parseFloat((value * M3_PER_GALLON).toFixed(4))
+    barrels: parseFloat((value / GALLONS_PER_BARREL).toFixed(2)),
+    cubicMeters: parseFloat((value * M3_PER_GALLON).toFixed(2))
   }
 }
 
@@ -22,8 +22,8 @@ export const fromGallons = (gallons) => {
 export const fromBarrels = (barrels) => {
   const value = parseFloat(barrels) || 0
   return {
-    gallons: parseFloat((value * GALLONS_PER_BARREL).toFixed(4)),
-    cubicMeters: parseFloat((value * M3_PER_BARREL).toFixed(4))
+    gallons: parseFloat((value * GALLONS_PER_BARREL).toFixed(2)),
+    cubicMeters: parseFloat((value * M3_PER_BARREL).toFixed(2))
   }
 }
 
@@ -31,8 +31,8 @@ export const fromBarrels = (barrels) => {
 export const fromCubicMeters = (cubicMeters) => {
   const value = parseFloat(cubicMeters) || 0
   return {
-    gallons: parseFloat((value / M3_PER_GALLON).toFixed(4)),
-    barrels: parseFloat((value / M3_PER_BARREL).toFixed(4))
+    gallons: parseFloat((value / M3_PER_GALLON).toFixed(2)),
+    barrels: parseFloat((value / M3_PER_BARREL).toFixed(2))
   }
 }
 
@@ -79,7 +79,7 @@ export const convertVolume = (value, fromUnit) => {
 }
 
 
-export const formatVolume = (value, decimals = 4) => {
+export const formatVolume = (value, decimals = 2) => {
   const num = parseFloat(value) || 0
   return num.toFixed(decimals)
 }
