@@ -71,12 +71,6 @@ const selectedResourceIds = computed(() => {
 
 watch(() => props.resource, (newResource) => {
   if (newResource) {
-    // Determinar si tiene mantenimiento configurado
-    const hasIntervalDays = newResource.frequency_type === 'DAY' && newResource.interval_days > 0
-    const hasWeekdays = newResource.frequency_type === 'WEEK' && newResource.weekdays && newResource.weekdays.length > 0
-    const hasMonthdays = newResource.frequency_type === 'MONTH' && newResource.monthdays && newResource.monthdays.length > 0
-    const hasMaintenance = hasIntervalDays || hasWeekdays || hasMonthdays
-    
     formData.value = {
       id: newResource.id,
       resource_id: newResource.resource_id,
@@ -85,13 +79,15 @@ watch(() => props.resource, (newResource) => {
       type_resource: newResource.type_resource,
       cost: newResource.cost || 0,
       frequency_type: newResource.frequency_type || 'DAY',
-      interval_days: newResource.interval_days ?? 0,
+      interval_days: newResource.interval_days || 3,
       weekdays: newResource.weekdays || [],
       monthdays: newResource.monthdays || [],
       maintenance_cost: newResource.maintenance_cost || 0,
       operation_start_date: newResource.operation_start_date,
       operation_end_date: newResource.operation_end_date,
-      include_maintenance: hasMaintenance
+      include_maintenance: newResource.interval_days > 0 || 
+                          (newResource.weekdays && newResource.weekdays.length > 0) ||
+                          (newResource.monthdays && newResource.monthdays.length > 0)
     }
   }
 }, { immediate: true })
