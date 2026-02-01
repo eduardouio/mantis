@@ -82,12 +82,7 @@ const handleDeleteResource = async (resource) => {
             <tr v-for="resource in projectResources" :key="resource.id" :class="{ 'text-red-500 font-bold bg-red-100': isZeroCost(resource.cost) }">
               <td class="p-2 border border-gray-300">{{ resource.id }}</td>
               <td class="p-2 border border-gray-300 text-center">
-                <span 
-                  class="badge text-xs font-semibold"
-                  :class="resource.type_resource === 'EQUIPO' ? 'badge-primary' : 'badge-secondary'"
-                >
-                  {{ resource.type_resource }}
-                </span>
+                {{ resource.type_resource }}
               </td>
               <td class="p-2 border border-gray-300">
                 <div class="flex items-center gap-2">
