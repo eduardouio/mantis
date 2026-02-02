@@ -98,6 +98,9 @@ class LicenseAdmin(SimpleHistoryAdmin):
                 'licence_file', 'url_server'
             )
         }),
+        ('Archivos', {
+            'fields': ('license_file',)
+        }),
         ('BaseModel Fields', {
             'fields': (
                 'notes', 'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
@@ -150,6 +153,11 @@ class TechnicalAdmin(SimpleHistoryAdmin):
                 'defensive_driving_certificate_issue_date', 'defensive_driving_certificate_expiry_date',
                 'mae_certificate_issue_date', 'mae_certificate_expiry_date',
                 'medical_certificate_issue_date', 'medical_certificate_expiry_date'
+            )
+        }),
+        ('Archivos', {
+            'fields': (
+                'dni_file', 'license_file', 'vaccine_certificate_file'
             )
         }),
         ('Seguros y Afiliaciones', {
@@ -213,6 +221,9 @@ class VaccinationRecordAdmin(SimpleHistoryAdmin):
                 'application_date', 'next_dose_date'
             )
         }),
+        ('Archivos', {
+            'fields': ('vaccine_file',)
+        }),
         ('BaseModel Fields', {
             'fields': (
                 'notes', 'is_active', 'created_at', 'updated_at',
@@ -259,6 +270,9 @@ class PassTechnicalAdmin(SimpleHistoryAdmin):
             'fields': (
                 'technical', 'bloque', 'fecha_caducidad'
             )
+        }),
+        ('Archivos', {
+            'fields': ('pass_file',)
         }),
         ('Estado', {
             'fields': (
