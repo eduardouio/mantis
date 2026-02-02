@@ -251,10 +251,10 @@
         <table class="table object-table">
             <tr>
                 <td class="object-label">OBJETO DEL SERVICIO:</td>
-                <td class="object-code">PSL-PS-00377-25</td>
+                <td class="object-code">{{ sheet_project.series_code }}</td>
             </tr>
             <tr>
-                <td colspan="2" class="object-value">ALQUILER Y MANTENIMIENTO DE EQUIPOS</td>
+                <td colspan="2" class="object-value">{{ sheet_project.get_service_type_display }}</td>
             </tr>
         </table>
 
@@ -266,11 +266,11 @@
                 <th class="label-red">SITIO DE EJECUCIÓN:</th>
             </tr>
             <tr>
-                <td>ALQUILER Y MANTENIMIENTO DE EQUIPOS</td>
-                <td>7/1/2025</td>
-                <td>7/31/2025</td>
-                <td>JULIO</td>
-                <td>MDC 40</td>
+                <td>{{ sheet_project.get_service_type_display }}</td>
+                <td>{{ period_start|date:"n/j/Y" }}</td>
+                <td>{{ period_end|date:"n/j/Y" }}</td>
+                <td>{{ month_name }}</td>
+                <td>{{ project.location|default:"" }}</td>
             </tr>
         </table>
 
@@ -278,23 +278,23 @@
             <tr>
                 <th class="label-red">CANTIDAD:</th>
                 <td>BBLS</td>
-                <td>1.19</td>
+                <td>{{ total_barrels|floatformat:2 }}</td>
                 <td>M³</td>
-                <td>0.19</td>
-                <td>CAMPAMENTO</td>
+                <td>{{ total_cubic_meters|floatformat:2 }}</td>
+                <td>{{ project.location|default:"CAMPAMENTO" }}</td>
             </tr>
         </table>
 
         <table class="table info-table">
             <tr>
                 <th class="label-red">CONTRATADA:</th>
-                <td colspan="2">ARCOLANDS CIA. LTDA</td>
+                <td colspan="2">{{ partner.name }}</td>
                 <th class="label-red">RUC:</th>
-                <td>1791240154001</td>
+                <td>{{ partner.business_tax_id }}</td>
                 <th class="label-red">ORDEN No.</th>
-                <td></td>
+                <td>{{ sheet_project.client_po_reference|default:"" }}</td>
                 <th class="label-red">CONTACTO:</th>
-                <td>Ing. Catalina Velandia</td>
+                <td>{{ sheet_project.contact_reference|default:project.contact_name }}</td>
             </tr>
         </table>
 
@@ -337,32 +337,20 @@
                 </tr>
             </thead>
             <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.item_number }}</td>
+                    <td class="col-equipo">{{ item.equipment_name }}</td>
+                    <td class="col-detalle">{{ item.detail }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.unit }}</td>
+                    {% for day_val in item.days %}<td>{{ day_val }}</td>{% endfor %}
+                    <td>{{ item.unit_price|floatformat:2 }}</td>
+                    <td>{{ item.total_cost|floatformat:2 }}</td>
+                </tr>
+                {% empty %}
                 <tr>
                     <td>1</td>
-                    <td class="col-equipo">BATERIAS SANITARIAS</td>
-                    <td class="col-detalle">ALQUILER DE BATERIA SANITARIA PSRT-323</td>
-                    <td>31</td>
-                    <td>DIAS</td>
-                    <td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td>
-                    <td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td>
-                    <td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td>
-                    <td>4.00</td>
-                    <td>124.00</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td class="col-equipo">BATERIAS SANITARIAS</td>
-                    <td class="col-detalle">MANTENIMIENTO Y LIMPIEZA DE BATERIAS SANITARIAS</td>
-                    <td>0</td>
-                    <td>UNIDAD</td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td>60.00</td>
-                    <td>0.00</td>
-                </tr>
-                <tr>
-                    <td>3</td>
                     <td class="col-equipo"></td>
                     <td class="col-detalle"></td>
                     <td></td>
@@ -373,30 +361,7 @@
                     <td></td>
                     <td></td>
                 </tr>
-                <tr>
-                    <td>4</td>
-                    <td class="col-equipo"></td>
-                    <td class="col-detalle"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td class="col-equipo"></td>
-                    <td class="col-detalle"></td>
-                    <td></td>
-                    <td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
 
@@ -406,16 +371,16 @@
 
         <div class="totales-wrap">
             <table class="totales-table">
-                <tr><td class="label">Subtotal</td><td class="value">124.00</td></tr>
+                <tr><td class="label">Subtotal</td><td class="value">{{ subtotal|floatformat:2 }}</td></tr>
                 <tr><td class="label">IVA 0%</td><td class="value">0.00</td></tr>
-                <tr><td class="label">IVA 15%</td><td class="value">18.60</td></tr>
-                <tr><td class="label">Total</td><td class="value">142.60</td></tr>
+                <tr><td class="label">IVA 15%</td><td class="value">{{ tax_amount|floatformat:2 }}</td></tr>
+                <tr><td class="label">Total</td><td class="value">{{ total|floatformat:2 }}</td></tr>
             </table>
         </div>
 
         <div class="solicitado-row">
             <span class="label-red">Solicitado por:</span>
-            <span>Ing. Catalina Velandia</span>
+            <span>{{ sheet_project.contact_reference|default:project.contact_name }}</span>
         </div>
 
         <table class="table sign-table">
@@ -442,8 +407,8 @@
                     <div class="sign-title">APROBADO CONTRATANTE</div>
                     <div class="sign-body">
                         <div class="sign-line">
-                            <div><strong>Ing. Catalina Velandia</strong></div>
-                            <div><strong>ARCOLANDS CIA. LTDA</strong></div>
+                            <div><strong>{{ sheet_project.contact_reference|default:project.contact_name }}</strong></div>
+                            <div><strong>{{ partner.name }}</strong></div>
                         </div>
                     </div>
                 </td>
