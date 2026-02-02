@@ -36,6 +36,12 @@ class PassTechnical(BaseModel):
         blank=True,
         null=True
     )
+    pass_file = models.FileField(
+        upload_to='pass_technicals/',
+        verbose_name='Archivo de pase',
+        blank=True,
+        null=True
+    )
 
     @classmethod
     def get_by_technical(cls, technical_id):

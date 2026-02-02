@@ -189,6 +189,30 @@ class Vehicle(BaseModel):
         blank=True,
         null=True
     )
+    vehicle_image = models.ImageField(
+        upload_to='vehicle_images/',
+        verbose_name='Imagen del Vehículo',
+        blank=True,
+        null=True
+    )
+    poliza_file = models.FileField(
+        upload_to='poliza_vehicles/',
+        verbose_name='Archivo de Póliza',
+        blank=True,
+        null=True
+    )
+    matricula_file = models.FileField(
+        upload_to='matricula_vehicles/',
+        verbose_name='Archivo de Matrícula',
+        blank=True,
+        null=True
+    )
+    rev_tec_file = models.FileField(
+        upload_to='rev_tec_vehicles/',
+        verbose_name='Archivo de Revisión Técnica',
+        blank=True,
+        null=True
+    )
 
     @classmethod
     def get_true_false_list(cls, partner):

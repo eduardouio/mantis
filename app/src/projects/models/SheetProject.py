@@ -132,6 +132,18 @@ class SheetProject(BaseModel):
         decimal_places=2,
         default=0
     )
+    sheet_project_file = models.FileField(
+        upload_to='sheet_projects/',
+        verbose_name='Archivo de Planilla',
+        blank=True,
+        null=True
+    )
+    certificate_final_disposition_file = models.FileField(
+        upload_to='final_disposition_certificates/',
+        verbose_name='Archivo de Certificado de Disposición Final',
+        blank=True,
+        null=True
+    )
 
     class Meta:
         unique_together = ("project", "period_start", "period_end")

@@ -152,6 +152,24 @@ class Technical(BaseModel):
         blank=True,
         null=True
     )
+    dni_file = models.FileField(
+        upload_to='dni_technicals/',
+        verbose_name='Archivo de cédula',
+        blank=True,
+        null=True
+    )
+    license_file = models.FileField(
+            upload_to='license_technicals/',
+            verbose_name='Archivo de licencia',
+            blank=True,
+            null=True
+    )
+    vaccine_certificate_file = models.FileField(
+        upload_to='vaccine_certificate_technicals/',
+        verbose_name='Archivo de certificado de vacunación',
+        blank=True,
+        null=True
+    )
 
     @classmethod
     def get_by_dni(cls, id):

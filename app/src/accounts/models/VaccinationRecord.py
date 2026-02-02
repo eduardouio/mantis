@@ -55,6 +55,12 @@ class VaccinationRecord(BaseModel):
         blank=True,
         null=True
     )
+    vaccine_file = models.FileField(
+        upload_to='vaccination_records/',
+        verbose_name='Archivo de Vacunación',
+        blank=True,
+        null=True
+    )
 
     @property
     def days_to_next_dose(self):

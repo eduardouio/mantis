@@ -783,8 +783,6 @@ class ResourceItem(BaseModel):
         null=True,
         help_text='Solo para plantas y tanques'
     )
-
-    
     pump_filter = models.CharField(
         'Bomba de filtracion',
         max_length=255,
@@ -863,6 +861,18 @@ class ResourceItem(BaseModel):
     )
     stst_release_date = models.DateField(
         'Fecha de Liberación',
+        blank=True,
+        null=True
+    )
+    resource_image = models.ImageField(
+        upload_to='resource_items/',
+        verbose_name='Imagen del Recurso',
+        blank=True,
+        null=True
+    )
+    resource_image_2 = models.ImageField(
+        upload_to='resource_items/',
+        verbose_name='Imagen del Recurso 2',
         blank=True,
         null=True
     )

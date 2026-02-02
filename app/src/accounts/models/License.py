@@ -53,6 +53,12 @@ class License(BaseModel):
         blank=True,
         default='https://dev-7.com/licenses/'
     )
+    license_file = models.FileField(
+        upload_to='licenses/',
+        verbose_name='Archivo de Licencia',
+        blank=True,
+        null=True
+    )
     user = models.ForeignKey(
         CustomUserModel,
         on_delete=models.PROTECT

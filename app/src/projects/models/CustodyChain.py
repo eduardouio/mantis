@@ -151,6 +151,12 @@ class CustodyChain(BaseModel):
         default='NA',
         max_length=2
     )
+    custody_chain_file = models.FileField(
+        upload_to='custody_chains/',
+        verbose_name='Archivo de Cadena de Custodia',
+        blank=True,
+        null=True
+    )
 
 
     @classmethod

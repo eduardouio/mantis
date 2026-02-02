@@ -36,7 +36,12 @@ class PassVehicle(BaseModel):
         blank=True,
         null=True
     )
-
+    pass_file = models.FileField(
+        upload_to='pass_vehicles/',
+        verbose_name='Archivo de pase',
+        blank=True,
+        null=True
+    )
     @classmethod
     def get_by_vehicle(cls, vehicle_id):
         """

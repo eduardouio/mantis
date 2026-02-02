@@ -35,6 +35,12 @@ class CertificationVehicle(BaseModel):
         blank=True,
         null=True
     )
+    certification_file = models.FileField(
+        upload_to='certification_vehicles/',
+        verbose_name='Archivo de Certificación',
+        blank=True,
+        null=True
+    )
 
     def __str__(self):
         return f'{self.get_name_display()} - {self.vehicle.no_plate if self.vehicle else "Sin Vehículo"}'
