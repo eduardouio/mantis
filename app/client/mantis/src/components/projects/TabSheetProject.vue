@@ -219,7 +219,7 @@ const viewCustodyChains = (sheetId) => {
                     {{ confirmingCloseId === sheet.id ? 'CONFIRMAR' : 'CERRAR' }}
                   </button>
                   <a
-                    :href="appConfig.apiBaseUrl + '/reports/worksheet-template/' + sheet.id + '/'"
+                    :href="appConfig.URLWorkSheetReport.replace('${id}', sheet.id)"
                     target="_blank"
                     class="btn btn-xs border-green-500 text-green-500 bg-white"
                     title="Descargar reporte PDF de la planilla"
