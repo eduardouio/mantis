@@ -8,7 +8,7 @@ from calendar import monthrange
 from datetime import date, timedelta
 
 
-# Mapeo de tipos de equipo a nombres cortos para la columna EQUIPO
+
 EQUIPMENT_SHORT_NAMES = {
     'SERVIC': 'SERVICIO',
     'LVMNOS': 'LAVAMANOS',
@@ -40,11 +40,11 @@ class WorkSheetTemplateView(TemplateView):
         """
         days_count = {d: 0 for d in range(1, 32)}
         
-        # Obtener fechas de operación del recurso
+        
         op_start = project_resource.operation_start_date
         op_end = project_resource.operation_end_date
         
-        # Determinar el rango efectivo (intersección entre periodo de planilla y operación)
+        
         effective_start = max(period_start, op_start) if op_start else period_start
         effective_end = min(period_end, op_end) if op_end else period_end
         
@@ -58,17 +58,17 @@ class WorkSheetTemplateView(TemplateView):
             day_of_month = current_date.day
             
             if frequency_type == 'DAY':
-                # Por intervalo de días - todos los días dentro del rango
+                
                 days_count[day_of_month] = 1
                 
             elif frequency_type == 'WEEK':
-                # Días específicos de la semana (0=Lunes, 6=Domingo)
+                
                 weekdays = project_resource.weekdays or []
                 if current_date.weekday() in weekdays:
                     days_count[day_of_month] = 1
                     
             elif frequency_type == 'MONTH':
-                # Días específicos del mes
+                
                 monthdays = project_resource.monthdays or []
                 if day_of_month in monthdays:
                     days_count[day_of_month] = 1
@@ -86,11 +86,11 @@ class WorkSheetTemplateView(TemplateView):
         project = sheet_project.project
         partner = project.partner if project else None
         
-        # Obtener el periodo de la planilla
+        
         period_start = sheet_project.period_start
         period_end = sheet_project.period_end
         
-        # Calcular días del mes
+        
         if period_start and period_end:
             year = period_start.year
             month = period_start.month
@@ -100,7 +100,7 @@ class WorkSheetTemplateView(TemplateView):
             month = 1
             year = 2026
         
-        # Obtener nombre del mes en español
+        
         month_names = {
             1: 'ENERO', 2: 'FEBRERO', 3: 'MARZO', 4: 'ABRIL',
             5: 'MAYO', 6: 'JUNIO', 7: 'JULIO', 8: 'AGOSTO',
@@ -112,9 +112,9 @@ class WorkSheetTemplateView(TemplateView):
         subtotal = Decimal('0')
         item_number = 0
         
-        # ========================================
-        # PARTE 1: EQUIPOS DE ALQUILER DEL PROYECTO
-        # ========================================
+        
+        
+        
         equipment_resources = ProjectResourceItem.objects.filter(
             project=project,
             type_resource='EQUIPO',
@@ -125,7 +125,7 @@ class WorkSheetTemplateView(TemplateView):
         for project_resource in equipment_resources:
             resource_item = project_resource.resource_item
             
-            # Obtener información del SheetProjectDetail si existe
+            
             sheet_detail = SheetProjectDetail.objects.filter(
                 sheet_project=sheet_project,
                 resource_item=resource_item
@@ -134,12 +134,12 @@ class WorkSheetTemplateView(TemplateView):
             unit_price = sheet_detail.unit_price if sheet_detail else project_resource.cost
             item_unity = sheet_detail.item_unity if sheet_detail else 'DIAS'
             
-            # Calcular días de alquiler según la frecuencia configurada
+            
             days_count = self.calculate_rental_days(
                 project_resource, period_start, period_end, days_in_month
             )
             
-            # Contar días con actividad
+            
             total_days = sum(1 for d in range(1, days_in_month + 1) if days_count[d] > 0)
             
             if total_days > 0:
@@ -148,10 +148,10 @@ class WorkSheetTemplateView(TemplateView):
                 total_cost = total_days * unit_price_decimal
                 subtotal += total_cost
                 
-                # Generar lista de 31 días con '1' o '' para el template
+                
                 days_list = ['1' if days_count[d] > 0 else '' for d in range(1, 32)]
                 
-                # Obtener nombre corto del tipo de equipo
+                
                 equipment_name = self.get_short_equipment_name(resource_item)
                 detail = project_resource.detailed_description or f"ALQUILER DE {resource_item.name} {resource_item.code}"
                 
@@ -167,16 +167,16 @@ class WorkSheetTemplateView(TemplateView):
                     'type_resource': 'EQUIPO',
                 })
         
-        # ========================================
-        # PARTE 2: SERVICIOS DE CADENAS DE CUSTODIA
-        # (Una sola línea sumando todas las cadenas)
-        # ========================================
+        
+        
+        
+        
         custody_chains = CustodyChain.objects.filter(
             sheet_project=sheet_project,
             is_active=True
         ).select_related('technical', 'vehicle')
         
-        # Estructura para agregar TODOS los servicios en una sola línea
+        
         service_days_count = {d: 0 for d in range(1, 32)}
         service_total_cost = Decimal('0')
         service_detail_parts = []
@@ -195,15 +195,15 @@ class WorkSheetTemplateView(TemplateView):
             for detail in chain_details:
                 project_resource = detail.project_resource
                 
-                # Solo procesar servicios
+                
                 if project_resource.type_resource != 'SERVICIO':
                     continue
                 
-                # Marcar el día con actividad
+                
                 if activity_day and 1 <= activity_day <= 31:
                     service_days_count[activity_day] = 1
                 
-                # Sumar el costo de este servicio
+                
                 resource_item = project_resource.resource_item
                 sheet_detail = SheetProjectDetail.objects.filter(
                     sheet_project=sheet_project,
@@ -214,12 +214,12 @@ class WorkSheetTemplateView(TemplateView):
                 unit_price_decimal = Decimal(str(unit_price)) if unit_price else Decimal('0')
                 service_total_cost += unit_price_decimal
                 
-                # Agregar detalle si no está ya
+                
                 detail_text = project_resource.detailed_description or f"{resource_item.name}"
                 if detail_text not in service_detail_parts:
                     service_detail_parts.append(detail_text)
         
-        # Agregar línea de servicios si hay actividad
+        
         total_service_days = sum(1 for d in range(1, days_in_month + 1) if service_days_count[d] > 0)
         
         if total_service_days > 0 or service_total_cost > 0:
@@ -228,7 +228,7 @@ class WorkSheetTemplateView(TemplateView):
             
             days_list = ['1' if service_days_count[d] > 0 else '' for d in range(1, 32)]
             
-            # Calcular precio unitario promedio si hay días
+            
             if total_service_days > 0:
                 unit_price_service = service_total_cost / total_service_days
             else:
@@ -246,12 +246,12 @@ class WorkSheetTemplateView(TemplateView):
                 'type_resource': 'SERVICIO',
             })
         
-        # Calcular IVA y total
+        
         tax_rate = Decimal('0.15')
         tax_amount = subtotal * tax_rate
         total = subtotal + tax_amount
         
-        # Calcular totales de galones, barriles y metros cúbicos
+        
         total_gallons = sum(chain.total_gallons or 0 for chain in custody_chains)
         total_barrels = sum(chain.total_barrels or 0 for chain in custody_chains)
         total_cubic_meters = sum(chain.total_cubic_meters or 0 for chain in custody_chains)
