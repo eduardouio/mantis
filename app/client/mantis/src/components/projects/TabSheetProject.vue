@@ -3,6 +3,7 @@ import { computed, defineEmits, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
+import { appConfig } from '@/AppConfig';
 
 const router = useRouter();
 const projectStore = UseProjectStore();
@@ -217,6 +218,15 @@ const viewCustodyChains = (sheetId) => {
                     <i class="las la-times"></i>
                     {{ confirmingCloseId === sheet.id ? 'CONFIRMAR' : 'CERRAR' }}
                   </button>
+                  <a
+                    :href="appConfig.apiBaseUrl + '/reports/worksheet-template/' + sheet.id + '/'"
+                    target="_blank"
+                    class="btn btn-xs border-green-500 text-green-500 bg-white"
+                    title="Descargar reporte PDF de la planilla"
+                  >
+                    <i class="las la-file-pdf"></i>
+                    PLANILLA
+                  </a>
                 </div>
               </td>
             </tr>
