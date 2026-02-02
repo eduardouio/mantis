@@ -1,5 +1,6 @@
 from django.db import models
 from common.BaseModel import BaseModel
+from common.validators import validate_pdf_file
 from .Technical import Technical
 
 
@@ -56,8 +57,9 @@ class VaccinationRecord(BaseModel):
         null=True
     )
     vaccine_file = models.FileField(
-        upload_to='vaccination_records/',
+        upload_to='technicals/vaccination_records/',
         verbose_name='Archivo de Vacunación',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )

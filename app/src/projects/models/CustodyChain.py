@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from common.validators import validate_pdf_file
 from accounts.models.Technical import Technical
 from equipment.models.Vehicle import Vehicle
 from projects.models.SheetProject import SheetProject
@@ -152,8 +153,9 @@ class CustodyChain(BaseModel):
         max_length=2
     )
     custody_chain_file = models.FileField(
-        upload_to='custody_chains/',
+        upload_to='projects/custody_chains/',
         verbose_name='Archivo de Cadena de Custodia',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )

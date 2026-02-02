@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.exceptions import FieldDoesNotExist
 from common.BaseModel import BaseModel
+from common.validators import validate_image_file
  
 
 
@@ -865,14 +866,16 @@ class ResourceItem(BaseModel):
         null=True
     )
     resource_image = models.ImageField(
-        upload_to='resource_items/',
+        upload_to='equipment/resource_items/images/',
         verbose_name='Imagen del Recurso',
+        validators=[validate_image_file],
         blank=True,
         null=True
     )
     resource_image_2 = models.ImageField(
-        upload_to='resource_items/',
+        upload_to='equipment/resource_items/images/',
         verbose_name='Imagen del Recurso 2',
+        validators=[validate_image_file],
         blank=True,
         null=True
     )

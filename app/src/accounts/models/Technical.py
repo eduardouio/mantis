@@ -1,5 +1,6 @@
 from django.db import models
 from common.BaseModel import BaseModel
+from common.validators import validate_pdf_file
 
 
 WORK_AREA_CHOICES = (
@@ -153,20 +154,23 @@ class Technical(BaseModel):
         null=True
     )
     dni_file = models.FileField(
-        upload_to='dni_technicals/',
+        upload_to='technicals/dni/',
         verbose_name='Archivo de cédula',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )
     license_file = models.FileField(
-            upload_to='license_technicals/',
+            upload_to='technicals/licenses/',
             verbose_name='Archivo de licencia',
+            validators=[validate_pdf_file],
             blank=True,
             null=True
     )
     vaccine_certificate_file = models.FileField(
-        upload_to='vaccine_certificate_technicals/',
+        upload_to='technicals/vaccine_certificates/',
         verbose_name='Archivo de certificado de vacunación',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )

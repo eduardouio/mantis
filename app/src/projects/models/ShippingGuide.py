@@ -103,6 +103,13 @@ class ShippingGuide(BaseModel):
 		blank=True,
 		null=True
 	)
+	shipping_guide_file = models.FileField(
+		upload_to='projects/shipping_guides/',
+		verbose_name='Archivo de Guía de Envío',
+		validators=[],
+		blank=True,
+		null=True
+	)
 
 	class Meta:
 		verbose_name = 'Guía de Envío'

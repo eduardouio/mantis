@@ -158,6 +158,9 @@ class SheetProjectAdmin(BaseModelAdmin):
         ('Totales', {
             'fields': ('total_gallons', 'total_barrels', 'total_cubic_meters', 'subtotal', 'tax_amount', 'total')
         }),
+        ('Archivos', {
+            'fields': ('sheet_project_file', 'certificate_final_disposition_file')
+        }),
         ('Notas', {
             'fields': ('notes',), 'classes': ('collapse',)
         }),
@@ -202,6 +205,9 @@ class CustodyChainAdmin(BaseModelAdmin):
         }),
         ('Volúmenes', {
             'fields': ('total_gallons', 'total_barrels', 'total_cubic_meters')
+        }),
+        ('Archivos', {
+            'fields': ('custody_chain_file',)
         }),
         ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),
         ('Auditoría', {

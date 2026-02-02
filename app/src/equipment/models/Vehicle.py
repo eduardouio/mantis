@@ -1,5 +1,6 @@
 from django.db import models
 from common.BaseModel import BaseModel
+from common.validators import validate_pdf_file, validate_image_file
 
 CHOICES_TYPE_VEHICLE = (
     ('CAMION', 'CAMION'),
@@ -190,26 +191,30 @@ class Vehicle(BaseModel):
         null=True
     )
     vehicle_image = models.ImageField(
-        upload_to='vehicle_images/',
+        upload_to='vehicles/images/',
         verbose_name='Imagen del Vehículo',
+        validators=[validate_image_file],
         blank=True,
         null=True
     )
     poliza_file = models.FileField(
-        upload_to='poliza_vehicles/',
+        upload_to='vehicles/polizas/',
         verbose_name='Archivo de Póliza',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )
     matricula_file = models.FileField(
-        upload_to='matricula_vehicles/',
+        upload_to='vehicles/matriculas/',
         verbose_name='Archivo de Matrícula',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )
     rev_tec_file = models.FileField(
-        upload_to='rev_tec_vehicles/',
+        upload_to='vehicles/revisiones_tecnicas/',
         verbose_name='Archivo de Revisión Técnica',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )

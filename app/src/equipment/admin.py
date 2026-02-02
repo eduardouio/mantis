@@ -110,6 +110,10 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
             ),
             'classes': ('collapse',)
         }),
+        ('Imágenes', {
+            'fields': ('resource_image', 'resource_image_2'),
+            'classes': ('collapse',)
+        }),
         ('Auditoría', {
             'fields': (
                 'created_at', 'updated_at',
@@ -187,6 +191,9 @@ class VehicleAdmin(SimpleHistoryAdmin):
             'fields': ('nro_poliza', 'insurance_company', 'insurance_issue_date', 'insurance_expiration_date', 'due_date_satellite'),
             'classes': ('collapse',)
         }),
+        ('Archivos', {
+            'fields': ('vehicle_image', 'poliza_file', 'matricula_file', 'rev_tec_file')
+        }),
         ('Información Adicional', {
             'fields': ('notes',),
             'classes': ('collapse',)
@@ -238,6 +245,9 @@ class CertificationVehicleAdmin(SimpleHistoryAdmin):
         ('Vigencia', {
             'fields': ('date_start', 'date_end')
         }),
+        ('Archivos', {
+            'fields': ('certification_file',)
+        }),
         ('Información Adicional', {
             'fields': ('notes',),
             'classes': ('collapse',)
@@ -286,6 +296,9 @@ class PassVehicleAdmin(SimpleHistoryAdmin):
     fieldsets = (
         ('Información del Pase', {
             'fields': ('vehicle', 'bloque', 'fecha_caducidad', 'is_active')
+        }),
+        ('Archivos', {
+            'fields': ('pass_file',)
         }),
         ('Información Adicional', {
             'fields': ('notes',),

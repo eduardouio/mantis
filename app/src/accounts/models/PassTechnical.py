@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import Technical
 from common.BaseModel import BaseModel
+from common.validators import validate_pdf_file
 
 
 class PassTechnical(BaseModel):
@@ -37,8 +38,9 @@ class PassTechnical(BaseModel):
         null=True
     )
     pass_file = models.FileField(
-        upload_to='pass_technicals/',
+        upload_to='technicals/passes/',
         verbose_name='Archivo de pase',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )

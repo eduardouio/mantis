@@ -1,6 +1,7 @@
 from projects.models.Project import Project
 from django.db import models
 from common.BaseModel import BaseModel
+from common.validators import validate_pdf_file
 from equipment.models.ResourceItem import ResourceItem
 from datetime import datetime
 
@@ -133,14 +134,16 @@ class SheetProject(BaseModel):
         default=0
     )
     sheet_project_file = models.FileField(
-        upload_to='sheet_projects/',
+        upload_to='projects/sheet_projects/',
         verbose_name='Archivo de Planilla',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )
     certificate_final_disposition_file = models.FileField(
-        upload_to='final_disposition_certificates/',
+        upload_to='projects/final_disposition_certificates/',
         verbose_name='Archivo de Certificado de Disposición Final',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )

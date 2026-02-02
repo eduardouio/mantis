@@ -1,5 +1,6 @@
 from django.db import models
 from common.BaseModel import BaseModel
+from common.validators import validate_pdf_file
 from accounts.models import CustomUserModel
 
 ROLE_CHOICES = (
@@ -56,6 +57,7 @@ class License(BaseModel):
     license_file = models.FileField(
         upload_to='licenses/',
         verbose_name='Archivo de Licencia',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )

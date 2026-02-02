@@ -1,5 +1,6 @@
 from django.db import models
 from common.BaseModel import BaseModel
+from common.validators import validate_pdf_file
 
 
 class CertificationVehicle(BaseModel):
@@ -36,8 +37,9 @@ class CertificationVehicle(BaseModel):
         null=True
     )
     certification_file = models.FileField(
-        upload_to='certification_vehicles/',
+        upload_to='vehicles/certifications/',
         verbose_name='Archivo de Certificación',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )
