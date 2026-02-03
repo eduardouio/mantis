@@ -508,6 +508,171 @@
       </div>
     </div>
 
+    <!-- Nueva pestaña Documentos Adjuntos -->
+    <input type="radio" name="my_tabs_6" class="tab" aria-label="Documentos Adjuntos" />
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <h3 class="text-md font-semibold text-blue-500 mb-4">Documentos Adjuntos</h3>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Documentos del Técnico -->
+        <div class="p-4 bg-gray-50 rounded-lg border border-blue-200">
+          <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+            <i class="las la-user-tie text-xl"></i>
+            Documentos Personales
+          </h4>
+          <div class="space-y-2">
+            <!-- Cédula -->
+            <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+              <div class="flex items-center gap-2">
+                <i class="las la-id-card text-blue-600"></i>
+                <span class="text-sm">Cédula de Identidad</span>
+              </div>
+              {% if technical.dni_file %}
+                <a href="{{ technical.dni_file.url }}" target="_blank" class="btn btn-xs btn-primary">
+                  <i class="las la-download"></i> Descargar
+                </a>
+              {% else %}
+                <span class="text-xs text-gray-400">No disponible</span>
+              {% endif %}
+            </div>
+            
+            <!-- Licencia -->
+            <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+              <div class="flex items-center gap-2">
+                <i class="las la-id-card text-blue-600"></i>
+                <span class="text-sm">Licencia de Conducir</span>
+              </div>
+              {% if technical.license_file %}
+                <a href="{{ technical.license_file.url }}" target="_blank" class="btn btn-xs btn-primary">
+                  <i class="las la-download"></i> Descargar
+                </a>
+              {% else %}
+                <span class="text-xs text-gray-400">No disponible</span>
+              {% endif %}
+            </div>
+            
+            <!-- Certificado de Vacunación General -->
+            <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+              <div class="flex items-center gap-2">
+                <i class="las la-syringe text-blue-600"></i>
+                <span class="text-sm">Certificado de Vacunación</span>
+              </div>
+              {% if technical.vaccine_certificate_file %}
+                <a href="{{ technical.vaccine_certificate_file.url }}" target="_blank" class="btn btn-xs btn-primary">
+                  <i class="las la-download"></i> Descargar
+                </a>
+              {% else %}
+                <span class="text-xs text-gray-400">No disponible</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Documentos de Pases -->
+        <div class="p-4 bg-gray-50 rounded-lg border border-blue-200">
+          <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+            <i class="las la-id-badge text-xl"></i>
+            Pases de Bloques
+          </h4>
+          <div class="space-y-2 max-h-64 overflow-y-auto">
+            {% if pass_technical %}
+              {% for pass in pass_technical %}
+                <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                      <i class="las la-building text-green-600"></i>
+                      <span class="text-sm font-medium">{{ pass.get_bloque_display }}</span>
+                    </div>
+                    <div class="text-xs text-gray-500 ml-6">
+                      Vence: {{ pass.fecha_caducidad|date:"d/m/Y" }}
+                    </div>
+                  </div>
+                  {% if pass.pass_file %}
+                    <a href="{{ pass.pass_file.url }}" target="_blank" class="btn btn-xs btn-primary">
+                      <i class="las la-download"></i> Descargar
+                    </a>
+                  {% else %}
+                    <span class="text-xs text-gray-400">No disponible</span>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-sm text-gray-500 text-center py-4">No hay pases registrados</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Documentos de Vacunaciones -->
+        <div class="p-4 bg-gray-50 rounded-lg border border-blue-200 md:col-span-2">
+          <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+            <i class="las la-syringe text-xl"></i>
+            Registros de Vacunación
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+            {% if vaccination_records %}
+              {% for vaccine in vaccination_records %}
+                <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                      <i class="las la-vial text-purple-600"></i>
+                      <span class="text-sm font-medium">{{ vaccine.get_vaccine_type_display }}</span>
+                    </div>
+                    <div class="text-xs text-gray-500 ml-6">
+                      Aplicada: {{ vaccine.application_date|date:"d/m/Y" }}
+                      {% if vaccine.dose_number %}
+                        - Dosis {{ vaccine.dose_number }}
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% if vaccine.vaccine_file %}
+                    <a href="{{ vaccine.vaccine_file.url }}" target="_blank" class="btn btn-xs btn-primary">
+                      <i class="las la-download"></i> Descargar
+                    </a>
+                  {% else %}
+                    <span class="text-xs text-gray-400">No disponible</span>
+                  {% endif %}
+                </div>
+              {% endfor %}
+            {% else %}
+              <p class="text-sm text-gray-500 text-center py-4 col-span-2">No hay registros de vacunación</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Resumen de documentos -->
+      <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="las la-info-circle text-blue-600 text-xl"></i>
+            <span class="text-sm font-medium text-blue-700">Resumen de Documentos</span>
+          </div>
+          <div class="flex gap-4 text-sm">
+            <span class="text-gray-600">
+              Personales: 
+              <span class="font-semibold">
+                {% if technical.dni_file %}1{% else %}0{% endif %} + 
+                {% if technical.license_file %}1{% else %}0{% endif %} + 
+                {% if technical.vaccine_certificate_file %}1{% else %}0{% endif %}
+              </span>
+            </span>
+            <span class="text-gray-600">
+              Pases: 
+              <span class="font-semibold">
+                {{ pass_technical|length|default:0 }}
+              </span>
+            </span>
+            <span class="text-gray-600">
+              Vacunas: 
+              <span class="font-semibold">
+                {{ vaccination_records|length|default:0 }}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Nueva pestaña de Metadatos -->
     <input type="radio" name="my_tabs_6" class="tab" aria-label="Metadatos" />
     <div class="tab-content bg-base-100 border-base-300 p-6">

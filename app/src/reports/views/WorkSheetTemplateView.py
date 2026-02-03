@@ -1,5 +1,6 @@
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
 from projects.models.SheetProject import SheetProject, SheetProjectDetail
 from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
 from projects.models.Project import ProjectResourceItem
@@ -44,6 +45,11 @@ class WorkSheetTemplateView(TemplateView):
         op_start = project_resource.operation_start_date
         op_end = project_resource.operation_end_date
 
+        # Validar que todas las fechas necesarias existan
+        if not period_start or not period_end:
+            return days_count
+        
+        # Calcular fechas efectivas considerando las fechas de operación
         effective_start = max(period_start, op_start) if op_start else period_start
         effective_end = min(period_end, op_end) if op_end else period_end
 
@@ -87,6 +93,16 @@ class WorkSheetTemplateView(TemplateView):
 
         period_start = sheet_project.period_start
         period_end = sheet_project.period_end
+        
+        # Lista para almacenar errores de validación
+        validation_errors = []
+
+        # Validar que existan las fechas del período
+        if not period_start or not period_end:
+            validation_errors.append(
+                "La planilla no tiene fechas de período definidas. "
+                "Por favor configure las fechas de inicio y fin del período."
+            )
 
         if period_start and period_end:
             year = period_start.year
