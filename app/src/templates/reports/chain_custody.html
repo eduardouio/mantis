@@ -162,7 +162,7 @@
         <th colspan="8" class="header-cell">AGUA RESIDUAL SUCCIONADA</th>
         <th rowspan="2" class="header-cell">DESCRIPCIÓN</th>
         <th rowspan="2" class="header-cell">ABREVIATURA</th>
-        <th rowspan="2" class="header-cell">MATERIAL TRANSPORTADO</th>
+        <th colspan="3" rowspan="2" class="header-cell" style="text-align: center;">MATERIAL TRANSPORTADO</th>
       </tr>
       <tr>
         <th class="header-cell">SUC</th>
@@ -184,7 +184,7 @@
     </thead>
     <tbody>
         {% for detail in custody_details %}
-        {% if forloop.counter <= 10 %}
+        {% if forloop.counter <= 9 %}
         <tr>
           <td class="grid-cell">{{ detail.project_resource.detailed_description|default:"" }}</td>
           <td class="grid-cell" style="background-color: #f7f7f7;">{{ detail.project_resource.detailed_description|default:""|slice:"14:" }}</td>
@@ -203,22 +203,21 @@
           <td class="grid-cell"></td>
           <td class="grid-cell"></td>
           <td class="grid-cell"></td>
-          {% if forloop.counter == 1 %}<td><strong>BAÑOS</strong></td><td><strong>BT</strong></td><td><strong>AGUAS NEGRAS</strong></td>{% endif %}
-          {% if forloop.counter == 2 %}<td><strong>LAVAMANOS</strong></td><td><strong>LV</strong></td><td><strong>AGUAS GRISES</strong></td>{% endif %}
-          {% if forloop.counter == 3 %}<td><strong>URINARIO</strong></td><td><strong>UR</strong></td><td><strong>AGUA LIMPIA</strong></td>{% endif %}
-          {% if forloop.counter == 4 %}<td><strong>BIODIGESTOR</strong></td><td><strong>BG</strong></td><td><strong>LODOS ACTIVADOS</strong></td>{% endif %}
-          {% if forloop.counter == 5 %}<td><strong>TRAMPA DE GRASA</strong></td><td><strong>TG</strong></td><td><strong>AGUA RESIDUAL TRATADA</strong></td>{% endif %}
-          {% if forloop.counter == 6 %}<td><strong>ESTACIÓN DE BOMBEO</strong></td><td><strong>EB</strong></td><td><strong>GRASA ORGÁNICA</strong></td>{% endif %}
-          {% if forloop.counter == 7 %}<td><strong>PLANTA DE AGUA RESIDUAL</strong></td><td><strong>PTAR</strong></td><td style="background-color: #f8fff2;"><strong>PESO Y/O VOLUMEN</strong></td>{% endif %}
-          {% if forloop.counter == 8 %}<td><strong>PLANTA DE AGUA POTABLE</strong></td><td><strong>PTAP</strong></td><td style="text-align: left;"><table border="0"><tr><td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>GALON</strong></td><td style="border: 0px solid;">{% if custody_chain.total_gallons and custody_chain.total_gallons > 0 %}{{ custody_chain.total_gallons }}{% endif %}</td></tr></table></td>{% endif %}
-          {% if forloop.counter == 9 %}<td><strong>OTROS</strong></td><td><strong>OT</strong></td><td style="text-align: left;"><table border="0"><tr><td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>M3</strong></td><td style="border: 0px solid;">{% if custody_chain.total_cubic_meters and custody_chain.total_cubic_meters > 0 %}{{ custody_chain.total_cubic_meters }}{% endif %}</td></tr></table></td>{% endif %}
-          {% if forloop.counter == 10 %}<td>--</td><td>--</td><td style="text-align: left;"><table border="0"><tr><td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>BARRIL</strong></td><td style="border: 0px solid;">{% if custody_chain.total_barrels and custody_chain.total_barrels > 0 %}{{ custody_chain.total_barrels }}{% endif %}</td></tr></table></td>{% endif %}
+          {% if forloop.counter == 1 %}<td><strong>BAÑOS</strong></td><td><strong>BT</strong></td><td colspan="2"><strong>AGUAS NEGRAS</strong></td><td></td>{% endif %}
+          {% if forloop.counter == 2 %}<td><strong>LAVAMANOS</strong></td><td><strong>LV</strong></td><td colspan="2"><strong>AGUAS GRISES</strong></td><td></td>{% endif %}
+          {% if forloop.counter == 3 %}<td><strong>URINARIO</strong></td><td><strong>UR</strong></td><td colspan="2"><strong>AGUA LIMPIA</strong></td><td></td>{% endif %}
+          {% if forloop.counter == 4 %}<td><strong>BIODIGESTOR</strong></td><td><strong>BG</strong></td><td colspan="2"><strong>LODOS ACTIVADOS</strong></td><td></td>{% endif %}
+          {% if forloop.counter == 5 %}<td><strong>TRAMPA DE GRASA</strong></td><td><strong>TG</strong></td><td colspan="2"><strong>AGUA RESIDUAL TRATADA</strong></td><td></td>{% endif %}
+          {% if forloop.counter == 6 %}<td><strong>ESTACIÓN DE BOMBEO</strong></td><td><strong>EB</strong></td><td colspan="2"><strong>GRASA ORGÁNICA</strong></td><td></td>{% endif %}
+          {% if forloop.counter == 7 %}<td><strong>PLANTA DE AGUA RESIDUAL</strong></td><td><strong>PTAR</strong></td><td colspan="3" style="background-color: #f8fff2;"><strong>PESO Y/O VOLUMEN</strong></td>{% endif %}
+          {% if forloop.counter == 8 %}<td><strong>PLANTA DE AGUA POTABLE</strong></td><td><strong>PTAP</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>Galón</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>m3</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>Barril</strong></td>{% endif %}
+          {% if forloop.counter == 9 %}<td><strong>OTROS</strong></td><td><strong>OT</strong></td><td>{% if custody_chain.total_gallons and custody_chain.total_gallons > 0 %}{{ custody_chain.total_gallons }}{% endif %}</td><td>{% if custody_chain.total_cubic_meters and custody_chain.total_cubic_meters > 0 %}{{ custody_chain.total_cubic_meters }}{% endif %}</td><td>{% if custody_chain.total_barrels and custody_chain.total_barrels > 0 %}{{ custody_chain.total_barrels }}{% endif %}</td>{% endif %}
         </tr>
         {% endif %}
         {% endfor %}
         
-        <!-- Llenar filas vacías hasta completar 10 -->
-        {% for i in "0123456789"|make_list %}
+        <!-- Llenar filas vacías hasta completar 9 -->
+        {% for i in "012345678"|make_list %}
         {% if forloop.counter > custody_details|length %}
         <tr>
           <td class="grid-cell"></td>
@@ -238,16 +237,15 @@
           <td class="grid-cell"></td>
           <td class="grid-cell"></td>
           <td class="grid-cell"></td>
-          {% if forloop.counter == 1 and custody_details|length == 0 %}<td><strong>BAÑOS</strong></td><td><strong>BT</strong></td><td><strong>AGUAS NEGRAS</strong></td>{% endif %}
-          {% if forloop.counter == 2 and custody_details|length <= 1 %}<td><strong>LAVAMANOS</strong></td><td><strong>LV</strong></td><td><strong>AGUAS GRISES</strong></td>{% endif %}
-          {% if forloop.counter == 3 and custody_details|length <= 2 %}<td><strong>URINARIO</strong></td><td><strong>UR</strong></td><td><strong>AGUA LIMPIA</strong></td>{% endif %}
-          {% if forloop.counter == 4 and custody_details|length <= 3 %}<td><strong>BIODIGESTOR</strong></td><td><strong>BG</strong></td><td><strong>LODOS ACTIVADOS</strong></td>{% endif %}
-          {% if forloop.counter == 5 and custody_details|length <= 4 %}<td><strong>TRAMPA DE GRASA</strong></td><td><strong>TG</strong></td><td><strong>AGUA RESIDUAL TRATADA</strong></td>{% endif %}
-          {% if forloop.counter == 6 and custody_details|length <= 5 %}<td><strong>ESTACIÓN DE BOMBEO</strong></td><td><strong>EB</strong></td><td><strong>GRASA ORGÁNICA</strong></td>{% endif %}
-          {% if forloop.counter == 7 and custody_details|length <= 6 %}<td><strong>PLANTA DE AGUA RESIDUAL</strong></td><td><strong>PTAR</strong></td><td style="background-color: #f8fff2;"><strong>PESO Y/O VOLUMEN</strong></td>{% endif %}
-          {% if forloop.counter == 8 and custody_details|length <= 7 %}<td><strong>PLANTA DE AGUA POTABLE</strong></td><td><strong>PTAP</strong></td><td style="text-align: left;"><table border="0"><tr><td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>GALON</strong></td><td style="border: 0px solid;">{% if custody_chain.total_gallons and custody_chain.total_gallons > 0 %}{{ custody_chain.total_gallons }}{% endif %}</td></tr></table></td>{% endif %}
-          {% if forloop.counter == 9 and custody_details|length <= 8 %}<td><strong>OTROS</strong></td><td><strong>OT</strong></td><td style="text-align: left;"><table border="0"><tr><td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>M3</strong></td><td style="border: 0px solid;">{% if custody_chain.total_cubic_meters and custody_chain.total_cubic_meters > 0 %}{{ custody_chain.total_cubic_meters }}{% endif %}</td></tr></table></td>{% endif %}
-          {% if forloop.counter == 10 and custody_details|length <= 9 %}<td>--</td><td>--</td><td style="text-align: left;"><table border="0"><tr><td style="width: 33%;background-color: #f8fff2;border: 0px solid;"><strong>BARRIL</strong></td><td style="border: 0px solid;">{% if custody_chain.total_barrels and custody_chain.total_barrels > 0 %}{{ custody_chain.total_barrels }}{% endif %}</td></tr></table></td>{% endif %}
+          {% if forloop.counter == 1 and custody_details|length == 0 %}<td><strong>BAÑOS</strong></td><td><strong>BT</strong></td><td colspan="3"><strong>AGUAS NEGRAS</strong></td>{% endif %}
+          {% if forloop.counter == 2 and custody_details|length <= 1 %}<td><strong>LAVAMANOS</strong></td><td><strong>LV</strong></td><td colspan="3"><strong>AGUAS GRISES</strong></td>{% endif %}
+          {% if forloop.counter == 3 and custody_details|length <= 2 %}<td><strong>URINARIO</strong></td><td><strong>UR</strong></td><td colspan="3"><strong>AGUA LIMPIA</strong></td>{% endif %}
+          {% if forloop.counter == 4 and custody_details|length <= 3 %}<td><strong>BIODIGESTOR</strong></td><td><strong>BG</strong></td><td colspan="3"><strong>LODOS ACTIVADOS</strong></td>{% endif %}
+          {% if forloop.counter == 5 and custody_details|length <= 4 %}<td><strong>TRAMPA DE GRASA</strong></td><td><strong>TG</strong></td><td colspan="3"><strong>AGUA RESIDUAL TRATADA</strong></td>{% endif %}
+          {% if forloop.counter == 6 and custody_details|length <= 5 %}<td><strong>ESTACIÓN DE BOMBEO</strong></td><td><strong>EB</strong></td><td colspan="3"><strong>GRASA ORGÁNICA</strong></td>{% endif %}
+          {% if forloop.counter == 7 and custody_details|length <= 6 %}<td><strong>PLANTA DE AGUA RESIDUAL</strong></td><td><strong>PTAR</strong></td><td colspan="3" style="background-color: #f8fff2;"><strong>PESO Y/O VOLUMEN</strong></td>{% endif %}
+          {% if forloop.counter == 8 and custody_details|length <= 7 %}<td><strong>PLANTA DE AGUA POTABLE</strong></td><td><strong>PTAP</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>Galón</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>m3</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>Barril</strong></td>{% endif %}
+          {% if forloop.counter == 9 and custody_details|length <= 8 %}<td><strong>OTROS</strong></td><td><strong>OT</strong></td><td>{% if custody_chain.total_gallons and custody_chain.total_gallons > 0 %}{{ custody_chain.total_gallons }}{% endif %}</td><td>{% if custody_chain.total_cubic_meters and custody_chain.total_cubic_meters > 0 %}{{ custody_chain.total_cubic_meters }}{% endif %}</td><td>{% if custody_chain.total_barrels and custody_chain.total_barrels > 0 %}{{ custody_chain.total_barrels }}{% endif %}</td>{% endif %}
         </tr>
         {% endif %}
         {% endfor %}

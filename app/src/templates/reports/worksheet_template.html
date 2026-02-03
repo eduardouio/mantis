@@ -228,13 +228,50 @@
         .text-left { text-align: left !important; }
         .text-right { text-align: right !important; }
 
+        .error-banner {
+            background-color: #ffebee;
+            border: 2px solid #c62828;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .error-banner h3 {
+            color: #c62828;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+
+        .error-banner ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .error-banner li {
+            color: #d32f2f;
+            margin: 5px 0;
+            font-size: 11px;
+        }
+
         @media print {
             body { padding: 0; }
             .sheet { width: 100%; }
+            .error-banner { display: none; }
         }
     </style>
 </head>
 <body>
+    {% if validation_errors %}
+    <div class="error-banner">
+        <h3>⚠️ Advertencias de Validación</h3>
+        <ul>
+            {% for error in validation_errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     <div class="sheet">
         <table class="table header-table">
             <tr>

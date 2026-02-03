@@ -296,6 +296,7 @@ class WorkSheetTemplateView(TemplateView):
                 "total_gallons": total_gallons,
                 "total_barrels": total_barrels,
                 "total_cubic_meters": total_cubic_meters,
+                "validation_errors": validation_errors,
             }
         )
 
