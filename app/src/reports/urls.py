@@ -26,6 +26,9 @@ from reports.views.VehiclesByStatus import VehiclesByStatusView
 from reports.views.TechnicalByStatus import TechnicalByStatusView
 from reports.views.WorkSheetTemplateView import WorkSheetTemplateView
 from reports.views.PDFWorkSheet import PDFWorkSheet
+from reports.views.FinalDispositionCertificate import FinalDispositionCertificateView
+from reports.views.PDFFinalDispositionCertificateView import PDFFinalDispositionCertificateView
+
 
 app_name = 'reports'
 
@@ -41,6 +44,7 @@ urlpatterns = [
     path('reports/technicals-status/', TechnicalByStatusView.as_view(), name='technicals-status-report'),
     path('reports/vehicles-status/', VehiclesByStatusView.as_view(), name='vehicles-status-report'),
     path('reports/worksheet-template/<int:id>/', WorkSheetTemplateView.as_view(), name='worksheet-template'),
+    path('reports/template-final-disposition/', FinalDispositionCertificateView.as_view(), name='final-disposition-certificate'),
 
     # Equipment Checklists Templates
     path('reports/template-equipment-bateries/<int:equipment_id>/', EquipmentBateriesCheckList.as_view(), name='equipment-bateries-checklist'),
@@ -51,6 +55,7 @@ urlpatterns = [
     path('reports/template-equipment-wastewater-tanks/<int:equipment_id>/', EquipmentWastewaterStorageTanks.as_view(), name='equipment-wastewater-tanks-checklist'),
 	
     # PDF URLs
+	path('reports/final-disposition/', PDFFinalDispositionCertificateView.as_view(), name='final-disposition-pdf'),
     path('reports/custody-chain/<int:id_custody_chain>/', PDFCustodyChain.as_view(), name='custody-chain-pdf'),
     path('reports/technical/<int:id>/', PDFTechnicalInformation.as_view(), name='technical-information-pdf'),
     path('reports/technical-vaccine/<int:id>/', PDFTechnicalVaccineReport.as_view(), name='technical-vaccine-pdf'),
@@ -65,4 +70,5 @@ urlpatterns = [
     path('reports/equipment-bathroom-camper/<int:equipment_id>/', PDFBathroomCamperChecker.as_view(), name='equipment-bathroom-camper-pdf'),
     path('reports/equipment-raw-water-tanks/<int:equipment_id>/', PDFRawWaterStorageTanks.as_view(), name='equipment-raw-water-tanks-pdf'),
     path('reports/equipment-wastewater-tanks/<int:equipment_id>/', PDFWastewaterStorageTanks.as_view(), name='equipment-wastewater-tanks-pdf'),
+    
 ]

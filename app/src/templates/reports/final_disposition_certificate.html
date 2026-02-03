@@ -1,0 +1,311 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Certificado de Disposición Final</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    color: #000;
+    margin: 0;
+    padding: 10mm;
+    line-height: 1.4;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  .container {
+    width: 100%;
+    max-width: 190mm;
+    margin: 0 auto;
+  }
+  
+  /* Header */
+  .header-content {
+    display: flex;
+    align-items: center;
+    border: 2px solid #0077b6;
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+  .header-text {
+    width: 75%;
+    text-align: left;
+    padding: 10px 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #0077b6;
+  }
+  .header-logo {
+    width: 25%;
+    text-align: center;
+    padding: 10px;
+    border-left: 2px solid #0077b6;
+  }
+  .header-logo img {
+    max-width: 100%;
+    max-height: 50px;
+  }
+  
+  /* Reference number */
+  .reference-box {
+    border: 2px solid #0077b6;
+    border-top: none;
+    padding: 8px 15px;
+    text-align: right;
+  }
+  .reference-number {
+    font-size: 14px;
+    font-weight: bold;
+    color: #0077b6;
+    text-decoration: underline;
+  }
+  
+  /* Main content */
+  .content {
+    padding: 20px 0;
+  }
+  .main-title {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    text-decoration: underline;
+  }
+  .certificate-text {
+    text-align: justify;
+    margin-bottom: 20px;
+    font-size: 11px;
+  }
+  .certificate-text strong {
+    font-weight: bold;
+  }
+  
+  /* Client info */
+  .client-info {
+    margin-bottom: 15px;
+  }
+  .client-row {
+    display: flex;
+    margin-bottom: 3px;
+  }
+  .client-label {
+    font-weight: bold;
+    width: 100px;
+  }
+  .client-value {
+    flex: 1;
+  }
+  
+  /* Table */
+  .details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 10px;
+  }
+  .details-table th {
+    background-color: #e6f3ff;
+    border: 1px solid #0077b6;
+    padding: 6px 4px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 9px;
+  }
+  .details-table td {
+    border: 1px solid #0077b6;
+    padding: 5px 4px;
+    text-align: center;
+  }
+  .details-table .total-row td {
+    font-weight: bold;
+    background-color: #f5f5f5;
+  }
+  
+  /* Conformity text */
+  .conformity-text {
+    text-align: justify;
+    margin: 20px 0;
+    font-size: 11px;
+  }
+  
+  /* Signature */
+  .signature-section {
+    margin-top: 40px;
+  }
+  .signature-line {
+    margin-bottom: 5px;
+  }
+  .signature-name {
+    font-size: 11px;
+  }
+  .signature-title {
+    font-weight: bold;
+    font-size: 11px;
+  }
+  
+  /* Footer */
+  .footer {
+    position: fixed;
+    bottom: 10mm;
+    left: 10mm;
+    right: 10mm;
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #0077b6;
+    border-top: 1px solid #0077b6;
+    padding-top: 5px;
+  }
+  .footer-left {
+    text-align: left;
+  }
+  .footer-center {
+    text-align: center;
+  }
+  .footer-right {
+    text-align: right;
+  }
+  
+  /* Watermark */
+  .watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.05;
+    z-index: -1;
+  }
+  .watermark img {
+    width: 400px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header-content">
+    <div class="header-text">
+      CERTIFICADO DE DISPOSICIÓN FINAL
+    </div>
+    <div class="header-logo">
+      <img src="{% static 'img/logo.png' %}" alt="PEISOL">
+    </div>
+  </div>
+  
+  <!-- Reference Number -->
+  <div class="reference-box">
+    <span class="reference-number">{{ certificate.reference_number|default:"242PSL-CDF-00000000-00000" }}</span>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="content">
+    <h2 class="main-title">CERTIFICADO DE TRATAMIENTO Y DISPOSICIÓN FINAL</h2>
+    
+    <p class="certificate-text">
+      En conformidad al procedimiento autorizado mediante la resolución del Registro
+      Ambiental No. <strong>240282</strong> como <strong>GESTORES DE RESIDUOS ORGÁNICOS
+      (RECOLECCIÓN, ALMACENAMIENTO, TRANSPORTE Y DISPOSICIÓN FINAL
+      DE RESIDUOS SÓLIDOS Y LÍQUIDOS)</strong> emitido por el Ministerio del Ambiente,
+      <strong>COMPAÑÍA DE INGENIERIA Y SOLUCIONES DE PROYECTOS INTEGRALES
+      PEISOL S.A.,</strong> certifica que en su centro de Tratamiento de Aguas Residuales (grises
+      y negras), ubicado en la provincia de Sucumbíos, cantón Lago Agrio, ha recibido
+      las Aguas Residuales (grises y negras) provenientes de:
+    </p>
+    
+    <!-- Client Info -->
+    <div class="client-info">
+      <div class="client-row">
+        <span class="client-label">CLIENTE:</span>
+        <span class="client-value">{{ partner.name|default:"" }}</span>
+      </div>
+      <div class="client-row">
+        <span class="client-label">RUC:</span>
+        <span class="client-value">{{ partner.ruc|default:"" }}</span>
+      </div>
+      <div class="client-row">
+        <span class="client-label">PROYECTO:</span>
+        <span class="client-value">{{ project.name|default:"" }}{% if project.location %} / {{ project.location }}{% endif %}</span>
+      </div>
+    </div>
+    
+    <p>Detallados en la siguiente tabla:</p>
+    
+    <!-- Details Table -->
+    <table class="details-table">
+      <thead>
+        <tr>
+          <th>FECHA DE<br>INGRESO</th>
+          <th>DESCRIPCIÓN DE RESIDUO<br>VALIDADO</th>
+          <th>CADENA<br>DE<br>CUSTODIA</th>
+          <th>TIPO DE<br>TRATAMIENTO</th>
+          <th>CANTIDAD<br>BARRILES</th>
+          <th>CANTIDAD<br>M3</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for detail in details %}
+        <tr>
+          <td>{{ detail.date|date:"d/m/Y" }}</td>
+          <td>{{ detail.residue_description|default:"AGUAS NEGRAS Y GRISES" }}</td>
+          <td>{{ detail.custody_chain_number }}</td>
+          <td>{{ detail.treatment_type }}</td>
+          <td>{{ detail.barrels|floatformat:2 }}</td>
+          <td>{{ detail.cubic_meters|floatformat:2 }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">No hay registros</td>
+        </tr>
+        {% endfor %}
+        <tr class="total-row">
+          <td colspan="3"></td>
+          <td><strong>TOTAL</strong></td>
+          <td><strong>{{ total_barrels|floatformat:2|default:"0.00" }}</strong></td>
+          <td><strong>{{ total_cubic_meters|floatformat:2|default:"0.00" }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Conformity Text -->
+    <p class="conformity-text">
+      Los cuales fueron sometidos a tratamiento y/o disposición final conforme a las
+      normativas sanitarias y ambientales vigentes.
+    </p>
+    
+    <!-- Signature -->
+    <div class="signature-section">
+      <div class="signature-line">
+        <img src="{% static 'img/signature.png' %}" alt="" style="height: 40px;">
+      </div>
+      <p class="signature-name">Ing. Maryuri Álvarez.</p>
+      <p class="signature-title">Supervisora Ambiental PEISOL S.A.</p>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-left">
+      Jardines del Sur 1, Puyupungo S/N y Jumandy<br>
+      T: (593-6) 2366 962 &nbsp;&nbsp; W: www.peisol.com.ec
+    </div>
+    <div class="footer-center">
+      Página 1 de 1
+    </div>
+    <div class="footer-right">
+      Revisión 00
+    </div>
+  </div>
+  
+  <!-- Watermark -->
+  <div class="watermark">
+    <img src="{% static 'img/logo.png' %}" alt="">
+  </div>
+</div>
+
+</body>
+</html>
