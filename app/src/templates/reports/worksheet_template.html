@@ -110,6 +110,53 @@
             background: #f0f0f0;
         }
 
+        .header-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .header-info-table th,
+        .header-info-table td {
+            border: 1px solid #000;
+            padding: 3px 4px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .header-info-table th {
+            background: #f0f0f0;
+        }
+
+        .header-info-table col { width: 25%; }
+
+        .periodo-inner,
+        .cantidad-inner {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .periodo-inner {
+            table-layout: fixed;
+        }
+
+        .periodo-inner td,
+        .cantidad-inner td {
+            border: 0;
+            padding: 3px 4px;
+            text-align: center;
+        }
+
+        .periodo-inner td + td {
+            border-left: 1px solid #000;
+        }
+
+        .header-pair {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
         .main-table {
             width: 100%;
             border-collapse: collapse;
@@ -295,43 +342,56 @@
             </tr>
         </table>
 
-        <table class="table info-table">
+        <table class="table header-info-table">
+            <colgroup>
+                <col><col><col><col><col><col>
+            </colgroup>
             <tr>
                 <th class="label-red">TIPO DE SERVICIO:</th>
                 <th class="label-red" colspan="2">PERIÓDO DE MEDICIÓN:</th>
                 <th class="label-red">MES DE EJECUCIÓN:</th>
-                <th class="label-red">SITIO DE EJECUCIÓN:</th>
+                <th class="label-red" colspan="2">SITIO DE EJECUCIÓN:</th>
             </tr>
             <tr>
                 <td>{{ sheet_project.get_service_type_display }}</td>
                 <td>{{ period_start|date:"n/j/Y" }}</td>
                 <td>{{ period_end|date:"n/j/Y" }}</td>
                 <td>{{ month_name }}</td>
-                <td>{{ project.location|default:"" }}</td>
+                <td colspan="2">{{ project.location|default:"" }}</td>
             </tr>
-        </table>
-
-        <table class="table info-table">
             <tr>
                 <th class="label-red">CANTIDAD:</th>
-                <td>BBLS</td>
+                <td><strong>BBLS</strong></td>
                 <td>{{ total_barrels|floatformat:2 }}</td>
-                <td>M³</td>
+                <td><strong>M³</strong></td>
                 <td>{{ total_cubic_meters|floatformat:2 }}</td>
-                <td>{{ project.location|default:"CAMPAMENTO" }}</td>
+                <td>{{ project.location|default:"CAMPAMENTO / OFICINAS" }}</td>
             </tr>
-        </table>
-
-        <table class="table info-table">
             <tr>
-                <th class="label-red">CONTRATADA:</th>
-                <td colspan="2">{{ partner.name }}</td>
-                <th class="label-red">RUC:</th>
-                <td>{{ partner.business_tax_id }}</td>
-                <th class="label-red">ORDEN No.</th>
-                <td>{{ sheet_project.client_po_reference|default:"" }}</td>
-                <th class="label-red">CONTACTO:</th>
-                <td>{{ sheet_project.contact_reference|default:project.contact_name }}</td>
+                <td colspan="2">
+                    <div class="header-pair">
+                        <span class="label-red">CONTRATADA:</span>
+                        <span>{{ partner.name }}</span>
+                    </div>
+                </td>
+                <td colspan="2">
+                    <div class="header-pair">
+                        <span class="label-red">RUC:</span>
+                        <span>{{ partner.business_tax_id }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="header-pair">
+                        <span class="label-red">ORDEN No.</span>
+                        <span>{{ sheet_project.client_po_reference|default:"" }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="header-pair">
+                        <span class="label-red">CONTACTO:</span>
+                        <span>{{ sheet_project.contact_reference|default:project.contact_name }}</span>
+                    </div>
+                </td>
             </tr>
         </table>
 
