@@ -55,7 +55,7 @@ urlpatterns = [
     path('reports/template-equipment-wastewater-tanks/<int:equipment_id>/', EquipmentWastewaterStorageTanks.as_view(), name='equipment-wastewater-tanks-checklist'),
 	
     # PDF URLs
-	path('reports/final-disposition/', PDFFinalDispositionCertificateView.as_view(), name='final-disposition-pdf'),
+	path('reports/final-disposition/<int:id>/', PDFFinalDispositionCertificateView.as_view(), name='final-disposition-pdf'),
     path('reports/custody-chain/<int:id_custody_chain>/', PDFCustodyChain.as_view(), name='custody-chain-pdf'),
     path('reports/technical/<int:id>/', PDFTechnicalInformation.as_view(), name='technical-information-pdf'),
     path('reports/technical-vaccine/<int:id>/', PDFTechnicalVaccineReport.as_view(), name='technical-vaccine-pdf'),

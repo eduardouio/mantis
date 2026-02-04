@@ -57,14 +57,12 @@
         }
 
         .title-main {
-            color: #c00;
             font-weight: bold;
             font-size: 12px;
             text-transform: uppercase;
         }
 
         .title-sub {
-            color: #c00;
             font-weight: bold;
             font-size: 10px;
             margin-top: 4px;
@@ -166,17 +164,20 @@
 
         .main-table thead th {
             background: #e6e6e6;
-            color: #c00;
             font-weight: bold;
         }
 
         .main-table .col-item { width: 28px; }
         .main-table .col-equipo { width: 85px; text-align: left; padding-left: 4px; }
         .main-table .col-detalle { width: 160px; text-align: left; padding-left: 4px; font-size: 7px; }
-        .main-table .col-cantidad { width: 40px; }
+        .main-table .col-cantidad { width: 40px; text-align: right; padding-right: 4px; }
         .main-table .col-unidad { width: 40px; }
-        .main-table .col-precio { width: 55px; }
-        .main-table .col-costo { width: 55px; }
+        .main-table .col-precio { width: 55px; text-align: right; padding-right: 4px; }
+        .main-table .col-costo { width: 55px; text-align: right; padding-right: 4px; }
+
+        .main-table tbody td:nth-child(4) { text-align: right; padding-right: 4px; }
+        .main-table tbody td:nth-child(37) { text-align: right; padding-right: 4px; }
+        .main-table tbody td:nth-child(38) { text-align: right; padding-right: 4px; }
 
         .main-table .day-header { 
             width: 20px !important; 
@@ -277,7 +278,6 @@
         }
 
         .error-banner h3 {
-            color: #c62828;
             margin: 0 0 10px 0;
             font-size: 14px;
         }
@@ -288,7 +288,6 @@
         }
 
         .error-banner li {
-            color: #d32f2f;
             margin: 5px 0;
             font-size: 11px;
         }
@@ -428,11 +427,11 @@
                     <td>{{ item.item_number }}</td>
                     <td class="col-equipo">{{ item.equipment_name }}</td>
                     <td class="col-detalle">{{ item.detail }}</td>
-                    <td>{{ item.quantity }}</td>
+                    <td class="col-cantidad">{{ item.quantity }}</td>
                     <td>{{ item.unit }}</td>
                     {% for day_val in item.days %}<td>{{ day_val }}</td>{% endfor %}
-                    <td>{{ item.unit_price|floatformat:2 }}</td>
-                    <td>{{ item.total_cost|floatformat:2 }}</td>
+                    <td class="col-precio">{{ item.unit_price|floatformat:2 }}</td>
+                    <td class="col-costo">{{ item.total_cost|floatformat:2 }}</td>
                 </tr>
                 {% empty %}
                 <tr>
