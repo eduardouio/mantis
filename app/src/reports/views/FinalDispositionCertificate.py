@@ -1,8 +1,10 @@
 from django.views.generic import TemplateView
+from django.shortcuts import get_object_or_404
 from common.AppLoggin import loggin_event
 from projects.models.CustodyChain import CustodyChain
 from projects.models.SheetProject import SheetProject
 from projects.models.Project import ProjectResourceItem
+from projects.models.Project import Project
 
 
 class FinalDispositionCertificateView(TemplateView):
@@ -12,89 +14,65 @@ class FinalDispositionCertificateView(TemplateView):
         loggin_event("Mostrando certificado de disposición final")
         context = super().get_context_data(**kwargs)
 
-        # Datos de ejemplo para visualizar el formato
-        context.update(
-            {
-                "certificate": {
-                    "reference_number": "242PSL-CDF-20250731-00305",
-                },
-                "partner": {
-                    "name": "BIOREMEDIACION BIOX CIA. LTDA",
-                    "ruc": "1791856031001",
-                },
-                "project": {
-                    "name": "RÍO LOCO",
-                    "location": "CAPE 100",
-                },
-                "details": [
-                    {
-                        "date": "2025-07-06",
-                        "residue_description": "AGUAS NEGRAS Y GRISES",
-                        "custody_chain_number": "11838",
-                        "treatment_type": "TB3",
-                        "barrels": 3.10,
-                        "cubic_meters": 0.49,
-                    },
-                    {
-                        "date": "2025-07-11",
-                        "residue_description": "AGUAS NEGRAS Y GRISES",
-                        "custody_chain_number": "11847",
-                        "treatment_type": "TB3",
-                        "barrels": 2.38,
-                        "cubic_meters": 0.38,
-                    },
-                    {
-                        "date": "2025-07-19",
-                        "residue_description": "AGUAS NEGRAS Y GRISES",
-                        "custody_chain_number": "11856",
-                        "treatment_type": "TB4",
-                        "barrels": 3.10,
-                        "cubic_meters": 0.49,
-                    },
-                    {
-                        "date": "2025-07-21",
-                        "residue_description": "AGUAS NEGRAS Y GRISES",
-                        "custody_chain_number": "12306",
-                        "treatment_type": "TB5",
-                        "barrels": 2.14,
-                        "cubic_meters": 0.34,
-                    },
-                    {
-                        "date": "2025-07-23",
-                        "residue_description": "AGUAS NEGRAS Y GRISES",
-                        "custody_chain_number": "11859",
-                        "treatment_type": "TB6",
-                        "barrels": 2.38,
-                        "cubic_meters": 0.38,
-                    },
-                    {
-                        "date": "2025-07-26",
-                        "residue_description": "AGUAS NEGRAS Y GRISES",
-                        "custody_chain_number": "12312",
-                        "treatment_type": "TB6",
-                        "barrels": 2.38,
-                        "cubic_meters": 0.38,
-                    },
-                    {
-                        "date": "2025-07-29",
-                        "residue_description": "AGUAS NEGRAS Y GRISES",
-                        "custody_chain_number": "12026",
-                        "treatment_type": "TB6",
-                        "barrels": 2.86,
-                        "cubic_meters": 0.45,
-                    },
-                    {
-                        "date": "2025-07-30",
-                        "residue_description": "AGUAS NEGRAS Y GRISES",
-                        "custody_chain_number": "12727",
-                        "treatment_type": "TB6",
-                        "barrels": 2.38,
-                        "cubic_meters": 0.38,
-                    },
-                ],
-                "total_barrels": 20.71,
-                "total_cubic_meters": 3.29,
-            }
-        )
+        # Obtener el ID del worksheet desde los parámetros de URL
+        sheet_project_id = self.kwargs.get('id')
+        
+        if not sheet_project_id:
+            # Si no hay ID, retornar datos vacíos
+            context.update({
+                "certificate": {"reference_number": "242PSL-CDF-00000000-00000"},
+                "partner": {"name": "", "ruc": ""},
+                "project": {"name": "", "location": ""},
+                "details": [],
+                "total_barrels": 0,
+                "total_cubic_meters": 0,
+            })
+            return context
+
+        # Obtener el SheetProject
+        sheet_project = get_object_or_404(SheetProject, id=sheet_project_id)
+        project = sheet_project.project
+        partner = project.partner
+
+        # Obtener todas las cadenas de custodia asociadas al worksheet
+        custody_chains = CustodyChain.objects.filter(
+            sheet_project=sheet_project,
+            is_deleted=False
+        ).order_by('activity_date')
+
+        # Construir la lista de detalles y calcular totales
+        details = []
+        total_barrels = 0
+        total_cubic_meters = 0
+
+        for chain in custody_chains:
+            details.append({
+                "date": chain.activity_date,
+                "residue_description": "AGUAS NEGRAS Y GRISES",
+                "custody_chain_number": chain.consecutive or "",
+                "treatment_type": "",  # No está en el modelo, se deja vacío
+                "barrels": float(chain.total_barrels),
+                "cubic_meters": float(chain.total_cubic_meters),
+            })
+            total_barrels += float(chain.total_barrels)
+            total_cubic_meters += float(chain.total_cubic_meters)
+
+        # Actualizar el contexto con datos reales
+        context.update({
+            "certificate": {
+                "reference_number": "242PSL-CDF-20250731-00305",  # Número quemado
+            },
+            "partner": {
+                "name": partner.name,
+                "ruc": partner.business_tax_id,
+            },
+            "project": {
+                "name": partner.name,
+                "location": f"{project.location or ''} {project.cardinal_point or ''}".strip(),
+            },
+            "details": details,
+            "total_barrels": round(total_barrels, 2),
+            "total_cubic_meters": round(total_cubic_meters, 2),
+        })
 
         return context

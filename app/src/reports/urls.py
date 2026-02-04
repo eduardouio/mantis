@@ -44,7 +44,7 @@ urlpatterns = [
     path('reports/technicals-status/', TechnicalByStatusView.as_view(), name='technicals-status-report'),
     path('reports/vehicles-status/', VehiclesByStatusView.as_view(), name='vehicles-status-report'),
     path('reports/template-worksheet/<int:id>/', WorkSheetTemplateView.as_view(), name='worksheet-template'),
-    path('reports/template-final-disposition/', FinalDispositionCertificateView.as_view(), name='final-disposition-certificate'),
+    path('reports/template-final-disposition/<int:id>/', FinalDispositionCertificateView.as_view(), name='final-disposition-certificate'),
 
     # Equipment Checklists Templates
     path('reports/template-equipment-bateries/<int:equipment_id>/', EquipmentBateriesCheckList.as_view(), name='equipment-bateries-checklist'),
