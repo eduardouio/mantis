@@ -37,7 +37,10 @@ class PDFFinalDispositionCertificateView(View):
 
     def get(self, request, *args, **kwargs):
         """Genera un PDF del certificado de disposición final y lo devuelve como respuesta."""
-        certificate_path = reverse("reports:final-disposition-certificate")
+        # Obtener el ID del worksheet desde los parámetros de URL
+        sheet_project_id = kwargs.get('id')
+        
+        certificate_path = reverse("reports:final-disposition-certificate", kwargs={'id': sheet_project_id})
         target_url = f"{settings.BASE_URL}{certificate_path}"
 
         cookies = []
@@ -53,7 +56,7 @@ class PDFFinalDispositionCertificateView(View):
 
         pdf_bytes = self.render_pdf_to_bytes(target_url, cookies)
 
-        filename = f"CertificadoDisposicionFinal-{datetime.now().strftime('%Y%m%d')}.pdf"
+        filename = f"CertificadoDisposicionFinal-{sheet_project_id}-{datetime.now().strftime('%Y%m%d')}.pdf"
 
         response = HttpResponse(pdf_bytes, content_type="application/pdf")
         response["Content-Disposition"] = f'attachment; filename="{filename}"'
