@@ -36,13 +36,6 @@
             vertical-align: middle;
         }
 
-        .label-red {
-            color: #c00;
-            font-weight: bold;
-            text-decoration: underline;
-            text-underline-offset: 2px;
-        }
-
         .header-table td {
             border: 1px solid #000;
         }
@@ -344,54 +337,50 @@
 
         <table class="table header-info-table">
             <colgroup>
-                <col><col><col><col><col><col>
+                <col style="width: 40%">
+                <col style="width: 10%">
+                <col style="width: 10%">
+                <col style="width: 10%">
+                <col style="width: 10%">
+                <col style="width: 20%">
             </colgroup>
+            <!-- Primera fila -->
             <tr>
-                <th class="label-red">TIPO DE SERVICIO:</th>
-                <th class="label-red" colspan="2">PERIÓDO DE MEDICIÓN:</th>
-                <th class="label-red">MES DE EJECUCIÓN:</th>
-                <th class="label-red" colspan="2">SITIO DE EJECUCIÓN:</th>
+                <th>TIPO DE SERVICIO:</th>
+                <th colspan="2">PERÍODO DE MEDICIÓN:</th>
+                <th colspan="2">MES DE EJECUCIÓN:</th>
+                <th>SITIO DE EJECUCIÓN:</th>
             </tr>
+            <!-- Segunda fila -->
             <tr>
                 <td>{{ sheet_project.get_service_type_display }}</td>
                 <td>{{ period_start|date:"n/j/Y" }}</td>
                 <td>{{ period_end|date:"n/j/Y" }}</td>
-                <td>{{ month_name }}</td>
-                <td colspan="2">{{ project.location|default:"" }}</td>
+                <td colspan="2">{{ month_name }}</td>
+                <td>{{ project.location|default:"CAMPAMENTO CSSFD" }}</td>
             </tr>
+            <!-- Tercera fila -->
             <tr>
-                <th class="label-red">CANTIDAD:</th>
+                <th>CANTIDAD:</th>
                 <td><strong>BBLS</strong></td>
                 <td>{{ total_barrels|floatformat:2 }}</td>
                 <td><strong>M³</strong></td>
                 <td>{{ total_cubic_meters|floatformat:2 }}</td>
-                <td>{{ project.location|default:"CAMPAMENTO / OFICINAS" }}</td>
+                <td>OFICINAS/CAMPAMENTO</td>
             </tr>
+            <!-- Cuarta fila -->
             <tr>
-                <td colspan="2">
-                    <div class="header-pair">
-                        <span class="label-red">CONTRATADA:</span>
-                        <span>{{ partner.name }}</span>
-                    </div>
-                </td>
-                <td colspan="2">
-                    <div class="header-pair">
-                        <span class="label-red">RUC:</span>
-                        <span>{{ partner.business_tax_id }}</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="header-pair">
-                        <span class="label-red">ORDEN No.</span>
-                        <span>{{ sheet_project.client_po_reference|default:"" }}</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="header-pair">
-                        <span class="label-red">CONTACTO:</span>
-                        <span>{{ sheet_project.contact_reference|default:project.contact_name }}</span>
-                    </div>
-                </td>
+                <th>CONTRATADA:</th>
+                <th colspan="2">RUC:</th>
+                <th colspan="2">ORDEN No.</th>
+                <th>CONTACTO:</th>
+            </tr>
+            <!-- Quinta fila -->
+            <tr>
+                <td>{{ partner.name }}</td>
+                <td colspan="2">{{ partner.business_tax_id }}</td>
+                <td colspan="2">{{ sheet_project.client_po_reference|default:"20000001" }}</td>
+                <td>{{ sheet_project.contact_reference|default:project.contact_name }}</td>
             </tr>
         </table>
 
@@ -463,7 +452,7 @@
         </table>
 
         <div class="observaciones-row">
-            <span class="label-red">Observaciones:</span>
+            <span><strong>Observaciones:</strong></span>
         </div>
 
         <div class="totales-wrap">
@@ -476,7 +465,7 @@
         </div>
 
         <div class="solicitado-row">
-            <span class="label-red">Solicitado por:</span>
+            <span><strong>Solicitado por:</strong></span>
             <span>{{ sheet_project.contact_reference|default:project.contact_name }}</span>
         </div>
 
