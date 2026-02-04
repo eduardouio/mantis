@@ -227,6 +227,15 @@ const viewCustodyChains = (sheetId) => {
                     <i class="las la-file-pdf"></i>
                     PLANILLA
                   </a>
+                  <a
+                    :href="appConfig.PDFCertFinalDisposition.replace('${id}', sheet.id)"
+                    target="_blank"
+                    class="btn btn-xs border-amber-500 text-amber-600 bg-white"
+                    title="Descargar certificado de disposición final"
+                  >
+                    <i class="las la-certificate"></i>
+                    CDF
+                  </a>
                 </div>
               </td>
             </tr>

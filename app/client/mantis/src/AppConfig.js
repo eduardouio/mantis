@@ -27,5 +27,6 @@ export const appConfig = {
     "URLCustodyChainDetail": apiBaseUrl + "/api/workorders/custody_chain/detail/${id}/",
     "URLUpdateCustodyChain": apiBaseUrl + "/api/workorders/custody_chain/${id}/edit/",
     "PDFCustodyChainReport": apiBaseUrl + "/reports/custody-chain/${id}/",
+    "PDFCertFinalDisposition" : apiBaseUrl + "/reports/final-disposition/${id}/",
     "URLWorkSheetReport": apiBaseUrl + "/reports/worksheet/${id}/",
 }
