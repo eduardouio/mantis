@@ -10,7 +10,6 @@ class ResourceItemListView(LoginRequiredMixin, ListView):
     template_name = 'lists/resource_list.html'
     context_object_name = 'equipments'
     ordering = ['name']
-    paginate_by = 100  # Limitar resultados iniciales
 
     def get_queryset(self):
         # Solo equipos activos (soft delete via is_active)
