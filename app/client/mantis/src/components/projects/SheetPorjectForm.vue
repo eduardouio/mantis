@@ -27,6 +27,7 @@ const formData = ref({
   contact_phone_reference: ''
 });
 const errorMessage = ref('');
+const closeSheetAction = ref('');
 
 onMounted(async () => {
   await projectStore.fetchProjectData();
@@ -52,6 +53,18 @@ watch(() => props.sheet, (newSheet) => {
 const handleSubmit = async (e) => {
   e.preventDefault();
   errorMessage.value = '';
+  
+  // Validar campos requeridos si se va a cerrar la planilla
+  if (closeSheetAction.value === 'close') {
+    if (!formData.value.issue_date) {
+      errorMessage.value = 'La fecha de emisión es requerida para cerrar la planilla';
+      return;
+    }
+    if (!formData.value.period_end) {
+      errorMessage.value = 'La fecha de fin de período es requerida para cerrar la planilla';
+      return;
+    }
+  }
   
   try {
     if (isEditMode.value) {
@@ -175,16 +188,21 @@ const getStatusBadge = (status) => {
       <!-- Fecha de Emisión (solo en edición) -->
       <div v-if="isEditMode" class="form-control w-full">
         <label class="label" for="issue_date">
-          <span class="label-text font-medium">Fecha de Emisión</span>
+          <span class="label-text font-medium">Fecha de Emisión
+            <span v-if="closeSheetAction === 'close'" class="text-error">*</span>
+          </span>
         </label>
         <input
           type="date"
           id="issue_date"
           v-model="formData.issue_date"
-          class="input input-bordered w-full"
+          :class="['input input-bordered w-full', closeSheetAction === 'close' && !formData.issue_date ? 'input-error' : '']"
+          :required="closeSheetAction === 'close'"
         />
         <label class="label">
-          <span class="label-text-alt">Fecha de emisión de la planilla</span>
+          <span class="label-text-alt" :class="closeSheetAction === 'close' ? 'text-error font-semibold' : ''">
+            {{ closeSheetAction === 'close' ? 'Requerida para cerrar la planilla' : 'Fecha de emisión de la planilla' }}
+          </span>
         </label>
       </div>
 
@@ -208,16 +226,21 @@ const getStatusBadge = (status) => {
       <!-- Fecha Fin Período (solo en edición) -->
       <div v-if="isEditMode" class="form-control w-full">
         <label class="label" for="period_end">
-          <span class="label-text font-medium">Fecha Fin Período</span>
+          <span class="label-text font-medium">Fecha Fin Período
+            <span v-if="closeSheetAction === 'close'" class="text-error">*</span>
+          </span>
         </label>
         <input
           type="date"
           id="period_end"
           v-model="formData.period_end"
-          class="input input-bordered w-full"
+          :class="['input input-bordered w-full', closeSheetAction === 'close' && !formData.period_end ? 'input-error' : '']"
+          :required="closeSheetAction === 'close'"
         />
         <label class="label">
-          <span class="label-text-alt">Fecha de fin del período (opcional)</span>
+          <span class="label-text-alt" :class="closeSheetAction === 'close' ? 'text-error font-semibold' : ''">
+            {{ closeSheetAction === 'close' ? 'Requerida para cerrar la planilla' : 'Fecha de fin del período (opcional)' }}
+          </span>
         </label>
       </div>
 
@@ -264,6 +287,26 @@ const getStatusBadge = (status) => {
           placeholder="Teléfono del contacto"
           class="input input-bordered w-full"
         />
+      </div>
+
+      <!-- Cerrar Planilla (solo en edición) -->
+      <div v-if="isEditMode" class="form-control w-full">
+        <label class="label" for="close_sheet">
+          <span class="label-text font-medium">Cerrar Planilla</span>
+        </label>
+        <select
+          id="close_sheet"
+          v-model="closeSheetAction"
+          class="select select-bordered w-full"
+        >
+          <option value="">Seleccionar acción</option>
+          <option value="close">Cerrar Planilla</option>
+        </select>
+        <label class="label">
+          <span class="label-text-alt" :class="closeSheetAction === 'close' ? 'text-warning font-semibold' : ''">
+            {{ closeSheetAction === 'close' ? '⚠️ Se requerirán la fecha de emisión y fecha fin de período' : 'Selecciona esta opción para cerrar la planilla' }}
+          </span>
+        </label>
       </div>
 
       <!-- Botones -->
