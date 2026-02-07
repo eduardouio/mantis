@@ -79,34 +79,6 @@ const editSheet = (sheet) => {
   emit('edit-sheet', sheet);
 };
 
-const confirmingCloseId = ref(null);
-
-const handleCloseClick = (sheetId) => {
-  if (confirmingCloseId.value === sheetId) {
-    closeSheet(sheetId);
-    confirmingCloseId.value = null;
-  } else {
-    confirmingCloseId.value = sheetId;
-    setTimeout(() => {
-      if (confirmingCloseId.value === sheetId) {
-        confirmingCloseId.value = null;
-      }
-    }, 3000);
-  }
-};
-
-const closeSheet = async (sheetId) => {
-  try {
-    console.log('Cerrando planilla:', sheetId);
-    await sheetProjectsStore.closeSheetProject(sheetId);
-    confirmingCloseId.value = null;
-    // Recargar datos del proyecto después de cerrar
-    await projectStore.fetchProjectData();
-  } catch (error) {
-    console.error('Error al cerrar planilla:', error);
-  }
-};
-
 const viewCustodyChains = (sheetId) => {
   router.push({ 
     name: 'sheet-project-view', 
@@ -208,15 +180,6 @@ const viewCustodyChains = (sheetId) => {
                   >
                     <i class="las la-link"></i>
                     C. CUSTODIA ({{ sheet.custody_chains_count }})
-                  </button>
-                  <button
-                    @click="handleCloseClick(sheet.id)"  
-                    class="btn btn-xs bg-white"
-                    :class="confirmingCloseId === sheet.id ? 'border-orange-500 text-orange-500' : 'border-red-500 text-red-500'"
-                    :title="confirmingCloseId === sheet.id ? 'Haz clic nuevamente para confirmar' : 'Cerrar planilla'"
-                  >
-                    <i class="las la-times"></i>
-                    {{ confirmingCloseId === sheet.id ? 'CONFIRMAR' : 'CERRAR' }}
                   </button>
                   <a
                     :href="appConfig.URLWorkSheetReport.replace('${id}', sheet.id)"

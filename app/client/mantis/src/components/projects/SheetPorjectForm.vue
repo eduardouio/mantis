@@ -76,7 +76,8 @@ const handleSubmit = async (e) => {
         period_end: formData.value.period_end || null,
         service_type: formData.value.service_type,
         contact_reference: formData.value.contact_reference,
-        contact_phone_reference: formData.value.contact_phone_reference
+        contact_phone_reference: formData.value.contact_phone_reference,
+        status: closeSheetAction.value === 'close' ? 'INVOICED' : props.sheet.status
       };
       
       await sheetProjectStore.updateSheetProject(updatedSheet);

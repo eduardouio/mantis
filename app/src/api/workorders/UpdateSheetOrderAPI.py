@@ -132,6 +132,39 @@ class UpdateSheetOrderAPI(View):
         if "invoice_reference" in data:
             sheet.invoice_reference = data["invoice_reference"]
 
+        # Actualizar estado si se proporciona
+        if "status" in data:
+            valid_statuses = ["IN_PROGRESS", "INVOICED", "CANCELLED"]
+            if data["status"] not in valid_statuses:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": f"Estado inválido. Valores permitidos: {', '.join(valid_statuses)}",
+                    },
+                    status=400,
+                )
+            
+            # Si se cambia a INVOICED, validar que tenga issue_date y period_end
+            if data["status"] == "INVOICED":
+                if not sheet.issue_date:
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "error": "La fecha de emisión es requerida para facturar la planilla",
+                        },
+                        status=400,
+                    )
+                if not sheet.period_end:
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "error": "La fecha de fin de período es requerida para facturar la planilla",
+                        },
+                        status=400,
+                    )
+            
+            sheet.status = data["status"]
+
         # Actualizar metadatos
         sheet.updated_by = request.user
         sheet.save()
