@@ -3,7 +3,6 @@ import { appConfig } from "@/AppConfig"
 
 export const UseProjectResourceStore = defineStore("projectResourcesStore", {
     state: () => ({
-        resources: [], // Inicializar como array vacío
         selectedResource: null,
         resourcesProject: [],
         newResourceProject: {

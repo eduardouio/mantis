@@ -180,6 +180,7 @@ onMounted(async () => {
 
 const availableResources = computed(() => {
   return projectResourceStore.resourcesProject
+    .filter(resource => resource.type === 'SERVIC')
     .map(resource => ({
       ...resource,
       selected: selectedResourceIds.value.includes(resource.id)
