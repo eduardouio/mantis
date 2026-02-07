@@ -207,20 +207,26 @@ class CustodyChainEditAPI(View):
 
                 details_data = data.get("details", [])
 
-                incoming_detail_ids = [
-                    d["id"] for d in details_data if "id" in d and d["id"]
+                # Obtener los IDs de recursos del proyecto que vienen en la solicitud
+                incoming_project_resource_ids = [
+                    d.get("project_resource_id") for d in details_data 
+                    if d.get("project_resource_id")
                 ]
 
+                # Obtener todos los detalles existentes (activos e inactivos)
                 existing_details = ChainCustodyDetail.objects.filter(
-                    custody_chain=instance, is_active=True
+                    custody_chain=instance
                 )
+                
+                # Desactivar los detalles que ya no están en la selección actual
                 for detail in existing_details:
-                    if detail.id not in incoming_detail_ids:
-                        detail.is_active = False
-                        detail.save()
+                    if detail.project_resource_id not in incoming_project_resource_ids:
+                        if detail.is_active:
+                            detail.is_active = False
+                            detail.save()
 
+                # Procesar cada recurso seleccionado
                 for detail_data in details_data:
-                    detail_id = detail_data.get("id")
                     project_resource_id = detail_data.get("project_resource_id")
 
                     if not project_resource_id:
@@ -233,40 +239,24 @@ class CustodyChainEditAPI(View):
                     except ProjectResourceItem.DoesNotExist:
                         continue
 
-                    if detail_id:
+                    # Buscar si ya existe un detalle para este recurso (activo o inactivo)
+                    existing_detail = ChainCustodyDetail.objects.filter(
+                        custody_chain=instance,
+                        project_resource_id=project_resource_id
+                    ).first()
 
-                        try:
-                            detail = ChainCustodyDetail.objects.get(
-                                pk=detail_id, custody_chain=instance
-                            )
-                            detail.project_resource = project_resource
-                            detail.is_active = True
+                    code_equipment, equipment_abbr = (
+                        get_equipment_code_and_abbreviation(project_resource)
+                    )
 
-                            code_equipment, equipment_abbr = (
-                                get_equipment_code_and_abbreviation(project_resource)
-                            )
-                            detail.code_equipment = code_equipment
-                            detail.equipment = equipment_abbr
-
-                            detail.save()
-                        except ChainCustodyDetail.DoesNotExist:
-
-                            code_equipment, equipment_abbr = (
-                                get_equipment_code_and_abbreviation(project_resource)
-                            )
-
-                            ChainCustodyDetail.objects.create(
-                                custody_chain=instance,
-                                project_resource=project_resource,
-                                code_equipment=code_equipment,
-                                equipment=equipment_abbr,
-                            )
+                    if existing_detail:
+                        # Si existe, actualizarlo y reactivarlo si estaba inactivo
+                        existing_detail.is_active = True
+                        existing_detail.code_equipment = code_equipment
+                        existing_detail.equipment = equipment_abbr
+                        existing_detail.save()
                     else:
-
-                        code_equipment, equipment_abbr = (
-                            get_equipment_code_and_abbreviation(project_resource)
-                        )
-
+                        # Si no existe, crear uno nuevo
                         ChainCustodyDetail.objects.create(
                             custody_chain=instance,
                             project_resource=project_resource,
