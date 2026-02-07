@@ -37,7 +37,7 @@ class PDFBateriesCheckList(View):
     def get(self, request, equipment_id, *args, **kwargs):
         """Genera un PDF del checklist de baterías sanitarias."""
         template_path = reverse(
-            "reports:equipment-bateries-checklist",
+            "equipment-bateries-checklist",
             kwargs={"equipment_id": equipment_id},
         )
         target_url = f"{settings.BASE_URL}{template_path}"

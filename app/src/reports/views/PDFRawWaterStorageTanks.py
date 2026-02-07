@@ -37,7 +37,7 @@ class PDFRawWaterStorageTanks(View):
     def get(self, request, equipment_id, *args, **kwargs):
         """Genera un PDF del checklist de tanque de agua cruda."""
         template_path = reverse(
-            "reports:equipment-raw-water-tanks-checklist",
+            "equipment-raw-water-tanks-checklist",
             kwargs={"equipment_id": equipment_id},
         )
         target_url = f"{settings.BASE_URL}{template_path}"

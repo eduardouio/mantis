@@ -37,7 +37,7 @@ class PDFWasherHandsCheck(View):
     def get(self, request, equipment_id, *args, **kwargs):
         """Genera un PDF del checklist de lavamanos."""
         template_path = reverse(
-            "reports:equipment-washer-hands-checklist",
+            "equipment-washer-hands-checklist",
             kwargs={"equipment_id": equipment_id},
         )
         target_url = f"{settings.BASE_URL}{template_path}"

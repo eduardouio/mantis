@@ -38,7 +38,7 @@ class PDFTechnicalInformation(View):
     def get(self, request, id, *args, **kwargs):
         """Genera un PDF del reporte técnico y lo devuelve como respuesta."""
         technical_report_path = reverse(
-            "reports:technical-information-report",
+            "technical-information-report",
             kwargs={"id": id},
         )
         target_url = f"{settings.BASE_URL}{technical_report_path}"

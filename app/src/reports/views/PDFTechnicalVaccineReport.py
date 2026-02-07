@@ -38,7 +38,7 @@ class PDFTechnicalVaccineReport(View):
     def get(self, request, id, *args, **kwargs):
         """Genera un PDF del reporte de vacunas del técnico y lo devuelve como respuesta."""
         vaccine_report_path = reverse(
-            "reports:technical-vaccine-report",
+            "technical-vaccine-report",
             kwargs={"id": id},
         )
         target_url = f"{settings.BASE_URL}{vaccine_report_path}"

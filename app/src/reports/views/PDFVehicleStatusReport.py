@@ -37,7 +37,7 @@ class PDFVehicleStatusReport(View):
     def get(self, request, pk, *args, **kwargs):
         """Genera un PDF del reporte de estado del vehículo."""
         template_path = reverse(
-            "reports:vehicle-status-report",
+            "vehicle-status-report",
             kwargs={"pk": pk},
         )
         target_url = f"{settings.BASE_URL}{template_path}"

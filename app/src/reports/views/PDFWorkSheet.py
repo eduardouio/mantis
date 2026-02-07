@@ -38,7 +38,7 @@ class PDFWorkSheet(View):
     def get(self, request, id, *args, **kwargs):
         """Genera un PDF de la planilla de trabajo y lo devuelve como respuesta."""
         worksheet_path = reverse(
-            "reports:worksheet-template",
+            "worksheet-template",
             kwargs={"id": id},
         )
         target_url = f"{settings.BASE_URL}{worksheet_path}"

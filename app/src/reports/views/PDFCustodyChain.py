@@ -38,7 +38,7 @@ class PDFCustodyChain(View):
     def get(self, request, id_custody_chain, *args, **kwargs):
         """Genera un PDF de la cadena de custodia y lo devuelve como respuesta."""
         custody_chain_path = reverse(
-            "reports:custody-chain-report",
+            "custody-chain-report",
             kwargs={"id_custody_chain": id_custody_chain},
         )
         target_url = f"{settings.BASE_URL}{custody_chain_path}"

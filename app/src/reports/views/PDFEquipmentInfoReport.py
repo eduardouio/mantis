@@ -37,7 +37,7 @@ class PDFEquipmentInfoReport(View):
     def get(self, request, equipment_id, *args, **kwargs):
         """Genera un PDF del reporte general del equipo."""
         template_path = reverse(
-            "reports:equipment-info-report",
+            "equipment-info-report",
             kwargs={"equipment_id": equipment_id},
         )
         target_url = f"{settings.BASE_URL}{template_path}"

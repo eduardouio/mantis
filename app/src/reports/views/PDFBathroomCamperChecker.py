@@ -37,7 +37,7 @@ class PDFBathroomCamperChecker(View):
     def get(self, request, equipment_id, *args, **kwargs):
         """Genera un PDF del checklist de camper baño."""
         template_path = reverse(
-            "reports:equipment-bathroom-camper-checklist",
+            "equipment-bathroom-camper-checklist",
             kwargs={"equipment_id": equipment_id},
         )
         target_url = f"{settings.BASE_URL}{template_path}"

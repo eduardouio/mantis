@@ -40,7 +40,7 @@ class PDFFinalDispositionCertificateView(View):
         # Obtener el ID del worksheet desde los parámetros de URL
         sheet_project_id = kwargs.get('id')
         
-        certificate_path = reverse("reports:final-disposition-certificate", kwargs={'id': sheet_project_id})
+        certificate_path = reverse("final-disposition-certificate", kwargs={'id': sheet_project_id})
         target_url = f"{settings.BASE_URL}{certificate_path}"
 
         cookies = []

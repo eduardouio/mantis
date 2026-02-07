@@ -37,7 +37,7 @@ class PDFUrinalStationCheck(View):
     def get(self, request, equipment_id, *args, **kwargs):
         """Genera un PDF del checklist de estación de urinarios."""
         template_path = reverse(
-            "reports:equipment-urinal-station-checklist",
+            "equipment-urinal-station-checklist",
             kwargs={"equipment_id": equipment_id},
         )
         target_url = f"{settings.BASE_URL}{template_path}"
