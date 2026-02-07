@@ -112,6 +112,12 @@ class AllInfoProjectAPI(View):
                         "total_gallons": chain.total_gallons,
                         "total_barrels": chain.total_barrels,
                         "total_cubic_meters": chain.total_cubic_meters,
+                        "black_water": chain.black_water,
+                        "grey_water": chain.grey_water,
+                        "clean_water": chain.clean_water,
+                        "activated_sludge": chain.activated_sludge,
+                        "treated_wastewater": chain.treated_wastewater,
+                        "organic_grease": chain.organic_grease,
                         "sheet_project_id": chain.sheet_project_id,
                         "technical": (
                             {
