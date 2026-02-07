@@ -110,10 +110,21 @@ onMounted(async () => {
           Cadenas de Custodia - Planilla {{ sheetProject?.series_code || 'N/A' }}
         </h1>
         <div class="flex gap-3">
-          <button @click="createNewCustodyChain" class="btn btn-primary btn-sm">
+          <button 
+            v-if="sheetProject?.status === 'IN_PROGRESS'"
+            @click="createNewCustodyChain" 
+            class="btn btn-primary btn-sm"
+          >
             <i class="las la-plus"></i>
             Nueva Cadena de Custodia
           </button>
+          <div 
+            v-else 
+            class="text-orange-700 badge bg-orange-100 px-4 py-3"
+          >
+            <i class="las la-exclamation-triangle"></i>
+            PLANILLA CERRADA - NO SE PUEDEN AGREGAR CADENAS
+          </div>
           <button @click="goBack" class="btn btn-outline btn-sm">
             <i class="las la-arrow-left"></i>
             Volver
