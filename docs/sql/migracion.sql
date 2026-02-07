@@ -86,3 +86,16 @@ SET equipment = regexp_replace(
 WHERE (equipment IS NULL OR equipment = '')
   AND code_equipment IS NOT NULL
   AND code_equipment <> '';
+
+
+-- detalle de cadenas de custodia por servicio
+update public.projects_chaincustodydetail set equipment = 'OT' where equipment is NULL ;
+
+
+UPDATE projects_chaincustodydetail cc
+SET code_equipment = pp.detailed_description
+FROM projects_projectresourceitem pp
+WHERE cc.project_resource_id = pp.id
+  AND (cc.code_equipment IS NULL OR cc.code_equipment = '')
+  AND pp.detailed_description IS NOT NULL
+  AND pp.detailed_description <> '';
