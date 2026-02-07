@@ -5,8 +5,44 @@ from projects.models.SheetProject import SheetProject
 from projects.models.Project import Project, ProjectResourceItem
 from accounts.models.Technical import Technical
 from equipment.models.Vehicle import Vehicle
+from equipment.models.ResourceItem import ResourceItem
 import json
 from datetime import date, datetime
+
+
+def get_equipment_code_and_abbreviation(project_resource):
+    """Obtiene el código completo y la abreviatura del equipo.
+    
+    Args:
+        project_resource: Instancia de ProjectResourceItem
+        
+    Returns:
+        tuple: (code_equipment, equipment_abbreviation) o (None, None) si no se encuentra
+    """
+    try:
+        physical_code = project_resource.physical_equipment_code
+        if not physical_code:
+            return None, None
+        
+        # Buscar el ResourceItem con ese código físico
+        resource_item = ResourceItem.objects.filter(
+            id=physical_code,
+            is_active=True
+        ).first()
+        
+        if not resource_item or not resource_item.code:
+            return None, None
+        
+        # Obtener el código completo
+        code_equipment = resource_item.code
+        
+        # Extraer la abreviatura (lo que está entre el primer y segundo guion)
+        parts = code_equipment.split('-')
+        equipment_abbreviation = parts[1] if len(parts) > 1 else None
+        
+        return code_equipment, equipment_abbreviation
+    except Exception:
+        return None, None
 
 
 class CreateCustodyChainAPI(View):
@@ -143,15 +179,22 @@ class CreateCustodyChainAPI(View):
         # Crear los detalles y recopilar la información
         details_data = []
         for resource in valid_resources:
+            # Obtener código y abreviatura del equipo
+            code_equipment, equipment_abbr = get_equipment_code_and_abbreviation(resource)
+            
             detail = ChainCustodyDetail(
                 custody_chain=custody_chain,
-                project_resource=resource
+                project_resource=resource,
+                code_equipment=code_equipment,
+                equipment=equipment_abbr
             )
             detail.save()
             
             detail_data = {
                 "id": detail.id,
                 "project_resource_id": resource.id,
+                "code_equipment": detail.code_equipment,
+                "equipment": detail.equipment,
                 "project_resource": {
                     "id": resource.id,
                     "resource_item_id": resource.resource_item.id if resource.resource_item else None,

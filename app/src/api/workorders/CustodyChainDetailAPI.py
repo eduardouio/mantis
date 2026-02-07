@@ -213,6 +213,8 @@ class CustodyChainDetailAPI(View):
         details = [
             {
                 "id": d.id,
+                "equipment": d.equipment,
+                "code_equipment": d.code_equipment,
                 "project_resource": serialize_project_resource(d.project_resource),
                 "meta": serialize_meta(d),
             }
