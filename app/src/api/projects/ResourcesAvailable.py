@@ -2,20 +2,18 @@ from django.http import JsonResponse
 from django.views import View
 from django.db.models import Q
 from equipment.models import ResourceItem
-from equipment.models.ResourceItem import TYPE_EQUIPMENT
 
 
 class ResourcesAvailableAPI(View):
-    """Listar recursos disponibles para asignar a un proyecto.
+    """Listar todos los recursos activos.
 
-    Retorna recursos que:
-        - Estén activos (is_active=True)
-        - Tengan estado de disponibilidad DISPONIBLE
+    Retorna todos los recursos que estén activos (is_active=True),
+    incluyendo un campo 'available' que indica si están disponibles o no.
     """
 
     def get(self, request):
-        """Obtener lista de recursos disponibles."""
-        filters = Q(is_active=True, stst_status_disponibility="DISPONIBLE")
+        """Obtener lista completa de recursos activos."""
+        filters = Q(is_active=True)
         resources = ResourceItem.objects.filter(filters).order_by(
             "type_equipment", "code"
         )
@@ -32,6 +30,10 @@ class ResourcesAvailableAPI(View):
         display_name = f"{type_resource} {resource.name} - {resource.get_type_equipment_display()}"
         if type_resource == 'SERVICIO':
             display_name = f"{type_resource} {resource.name}"
+        
+        # Determinar si el recurso está disponible
+        is_available = resource.stst_status_disponibility == "DISPONIBLE"
+        
         return {
             "id": resource.id,
             "code": resource.code,
@@ -43,6 +45,7 @@ class ResourcesAvailableAPI(View):
             "model": resource.model,
             "status_equipment": resource.stst_status_equipment,
             "status_disponibility": resource.stst_status_disponibility,
+            "available": is_available,
             "current_location": resource.stst_current_location,
             "capacity_gallons": (
                 str(resource.capacity_gallons) if resource.capacity_gallons else None
