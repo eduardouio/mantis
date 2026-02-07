@@ -31,7 +31,7 @@ def get_equipment_code_and_abbreviation(project_resource):
         ).first()
         
         if not resource_item or not resource_item.code:
-            return None, None
+            return project_resource.detailed_description, 'OT'
         
         # Obtener el código completo
         code_equipment = resource_item.code
@@ -42,7 +42,7 @@ def get_equipment_code_and_abbreviation(project_resource):
         
         return code_equipment, equipment_abbreviation
     except Exception:
-        return None, None
+        return project_resource.detailed_description, 'OT'
 
 
 class CreateCustodyChainAPI(View):
