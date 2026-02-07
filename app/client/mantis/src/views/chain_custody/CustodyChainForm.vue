@@ -57,6 +57,12 @@ const custodyChain = ref({
   total_gallons: 0,
   total_barrels: 0,
   total_cubic_meters: 0,
+  black_water: false,
+  grey_water: false,
+  clean_water: false,
+  activated_sludge: false,
+  treated_wastewater: false,
+  organic_grease: false,
   notes: '',
   technical_name: '',
   technical_dni: '',
@@ -124,6 +130,12 @@ const loadCustodyChainData = async () => {
         total_gallons: parseFloat(chain.total_gallons) || 0,
         total_barrels: parseFloat(chain.total_barrels) || 0,
         total_cubic_meters: parseFloat(chain.total_cubic_meters) || 0,
+        black_water: chain.black_water || false,
+        grey_water: chain.grey_water || false,
+        clean_water: chain.clean_water || false,
+        activated_sludge: chain.activated_sludge || false,
+        treated_wastewater: chain.treated_wastewater || false,
+        organic_grease: chain.organic_grease || false,
         notes: chain.meta?.notes || '',
         technical_name: technical ? `${technical.first_name} ${technical.last_name}` : '',
         technical_dni: technical?.dni || '',
@@ -248,6 +260,12 @@ const submitForm = async () => {
         total_gallons: parseFloat((parseFloat(custodyChain.value.total_gallons) || 0).toFixed(2)),
         total_barrels: parseFloat((parseFloat(custodyChain.value.total_barrels) || 0).toFixed(2)),
         total_cubic_meters: parseFloat((parseFloat(custodyChain.value.total_cubic_meters) || 0).toFixed(2)),
+        black_water: custodyChain.value.black_water,
+        grey_water: custodyChain.value.grey_water,
+        clean_water: custodyChain.value.clean_water,
+        activated_sludge: custodyChain.value.activated_sludge,
+        treated_wastewater: custodyChain.value.treated_wastewater,
+        organic_grease: custodyChain.value.organic_grease,
         have_logistic: custodyChain.value.have_logistic,
         meta: {
           notes: custodyChain.value.notes,
@@ -301,6 +319,12 @@ const submitForm = async () => {
         total_gallons: parseFloat(custodyChain.value.total_gallons) || 0,
         total_barrels: parseFloat(custodyChain.value.total_barrels) || 0,
         total_cubic_meters: parseFloat(custodyChain.value.total_cubic_meters) || 0,
+        black_water: custodyChain.value.black_water,
+        grey_water: custodyChain.value.grey_water,
+        clean_water: custodyChain.value.clean_water,
+        activated_sludge: custodyChain.value.activated_sludge,
+        treated_wastewater: custodyChain.value.treated_wastewater,
+        organic_grease: custodyChain.value.organic_grease,
         have_logistic: custodyChain.value.have_logistic,
         notes: custodyChain.value.notes,
         resources: selectedResourceIds.value
@@ -1025,6 +1049,85 @@ const currentStatusBadge = computed(() => {
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Tipo de Residuos -->
+      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Tipo de Residuos / Aguas</h6>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+              <input 
+                type="checkbox" 
+                v-model="custodyChain.black_water"
+                :disabled="isChainClosed"
+                class="checkbox checkbox-primary"
+              />
+              <span class="label-text font-medium">Aguas Negras</span>
+            </label>
+          </div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+              <input 
+                type="checkbox" 
+                v-model="custodyChain.grey_water"
+                :disabled="isChainClosed"
+                class="checkbox checkbox-primary"
+              />
+              <span class="label-text font-medium">Aguas Grises</span>
+            </label>
+          </div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+              <input 
+                type="checkbox" 
+                v-model="custodyChain.clean_water"
+                :disabled="isChainClosed"
+                class="checkbox checkbox-primary"
+              />
+              <span class="label-text font-medium">Aguas Limpias</span>
+            </label>
+          </div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+              <input 
+                type="checkbox" 
+                v-model="custodyChain.activated_sludge"
+                :disabled="isChainClosed"
+                class="checkbox checkbox-primary"
+              />
+              <span class="label-text font-medium">Lodos Activados</span>
+            </label>
+          </div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+              <input 
+                type="checkbox" 
+                v-model="custodyChain.treated_wastewater"
+                :disabled="isChainClosed"
+                class="checkbox checkbox-primary"
+              />
+              <span class="label-text font-medium">Aguas Residuales Tratadas</span>
+            </label>
+          </div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer justify-start gap-3">
+              <input 
+                type="checkbox" 
+                v-model="custodyChain.organic_grease"
+                :disabled="isChainClosed"
+                class="checkbox checkbox-primary"
+              />
+              <span class="label-text font-medium">Grasa Orgánica</span>
+            </label>
+          </div>
         </div>
       </div>
 
