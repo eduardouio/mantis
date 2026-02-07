@@ -113,9 +113,15 @@ class ProjectResourceItem(BaseModel):
     )
     detailed_description = models.CharField(
         'Descripción Detallada',
-        max_length=255,
+        max_length=120,
         blank=True,
         null=True
+    )
+    physical_equipment_code = models.PositiveSmallIntegerField(
+        'Código de Equipo Físico',
+        blank=True,
+        null=True,
+        default=0
     )
     cost = models.DecimalField(
         'Costo',
