@@ -30,8 +30,6 @@ from reports.views.FinalDispositionCertificate import FinalDispositionCertificat
 from reports.views.PDFFinalDispositionCertificateView import PDFFinalDispositionCertificateView
 
 
-app_name = 'reports'
-
 urlpatterns = [
 	
 	# Template URLs

@@ -12,7 +12,6 @@ from equipment.views import (
 )
 from equipment.views.resources.ResourcesPurgeView import ResourcesPurgeView
 
-app_name = 'equipment'
 
 urlpatterns = [
     # Vehicle URLs
