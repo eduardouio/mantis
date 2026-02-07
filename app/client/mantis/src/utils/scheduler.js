@@ -82,8 +82,8 @@ export function generateMaintenanceSchedule(resources, daysAhead = 90, fromDate 
       return;
     }
 
-    // Solo procesar equipos, no servicios
-    if (resource.type_resource === 'SERVICIO') {
+    // Solo procesar servicios, no equipos
+    if (resource.type_resource !== 'SERVICIO') {
       return;
     }
 

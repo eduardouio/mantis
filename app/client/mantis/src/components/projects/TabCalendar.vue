@@ -209,7 +209,7 @@ watch(resourcesProject, (newVal) => {
   <!-- CALENDARIO -->
   <div class="space-y-4">
     <!-- Controles de Navegación -->
-    <div class="bg-gray-100 rounded-lg p-4 shadow border border-gray-200">
+    <div class="bg-slate-700 rounded-lg p-3 shadow border border-slate-600">
       <div class="flex items-center justify-between">
         <!-- Botón Anterior -->
         <button 
@@ -221,7 +221,7 @@ watch(resourcesProject, (newVal) => {
 
         <!-- Información del Período -->
         <div class="text-center flex-1">
-          <h2 class="text-gray-800 font-bold text-xl capitalize">
+          <h2 class="text-white font-bold text-xl capitalize">
             {{ periodInfo.monthYear }}
           </h2>
           
@@ -246,7 +246,7 @@ watch(resourcesProject, (newVal) => {
       </div>
 
       <!-- Resumen Rápido -->
-      <div class="grid grid-cols-3 gap-4 mt-4">
+      <div class="grid grid-cols-3 gap-2 mt-3">
         <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
           <p class="text-gray-500 text-xs">Mantenimientos</p>
           <p class="text-gray-800 font-bold text-2xl">{{ summary.total_maintenances }}</p>
@@ -262,18 +262,18 @@ watch(resourcesProject, (newVal) => {
       </div>
 
       <!-- Leyenda de Frecuencias -->
-      <div class="flex justify-center gap-4 mt-4">
+      <div class="flex justify-center gap-3 mt-2 bg-slate-800 text-white rounded-lg py-1.5 px-2">
         <div class="flex items-center gap-1">
           <span class="w-3 h-3 rounded-full bg-blue-500"></span>
-          <span class="text-gray-700 text-xs">Intervalo días</span>
+          <span class="text-white text-xs">Intervalo días</span>
         </div>
         <div class="flex items-center gap-1">
           <span class="w-3 h-3 rounded-full bg-purple-500"></span>
-          <span class="text-gray-700 text-xs">Días semana</span>
+          <span class="text-white text-xs">Días semana</span>
         </div>
         <div class="flex items-center gap-1">
           <span class="w-3 h-3 rounded-full bg-orange-500"></span>
-          <span class="text-gray-700 text-xs">Días mes</span>
+          <span class="text-white text-xs">Días mes</span>
         </div>
       </div>
     </div>
@@ -291,24 +291,24 @@ watch(resourcesProject, (newVal) => {
     </div>
 
     <!-- Calendario Visual del Mes -->
-    <div v-else class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div v-else class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-slate-300">
       <!-- Encabezado de días de la semana -->
-      <div class="grid grid-cols-7 bg-lime-100">
+      <div class="grid grid-cols-7 bg-slate-700">
         <div 
           v-for="day in weekDays" 
           :key="day" 
-          class="p-2 text-center text-sm font-semibold text-lime-700 border-r border-lime-200 last:border-r-0"
+          class="p-2 text-center text-sm font-semibold text-white border-r border-slate-600 last:border-r-0"
         >
           {{ day }}
         </div>
       </div>
 
       <!-- Semanas del mes -->
-      <div v-for="(week, weekIndex) in calendarWeeks" :key="weekIndex" class="grid grid-cols-7 border-t border-gray-200">
+      <div v-for="(week, weekIndex) in calendarWeeks" :key="weekIndex" class="grid grid-cols-7 border-t-2 border-slate-300">
         <div 
           v-for="(dayInfo, dayIndex) in week" 
           :key="dayIndex"
-          class="min-h-24 p-1 border-r border-gray-200 last:border-r-0 transition-colors"
+          class="min-h-24 p-1 border-r-2 border-slate-300 last:border-r-0 transition-colors"
           :class="{
             'bg-gray-50': !dayInfo,
             'bg-lime-50 hover:bg-lime-100 cursor-pointer': dayInfo?.hasMaintenances,
