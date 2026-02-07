@@ -168,13 +168,13 @@ class CustodyChainEditAPI(View):
                     instance.driver_date = parse_date(chain_data["driver_date"])
 
                 if "total_gallons" in chain_data:
-                    instance.total_gallons = chain_data["total_gallons"]
+                    instance.total_gallons = parse_decimal(chain_data["total_gallons"])
 
                 if "total_barrels" in chain_data:
-                    instance.total_barrels = chain_data["total_barrels"]
+                    instance.total_barrels = parse_decimal(chain_data["total_barrels"])
 
                 if "total_cubic_meters" in chain_data:
-                    instance.total_cubic_meters = chain_data["total_cubic_meters"]
+                    instance.total_cubic_meters = parse_decimal(chain_data["total_cubic_meters"])
 
                 if "black_water" in chain_data:
                     instance.black_water = chain_data["black_water"]
