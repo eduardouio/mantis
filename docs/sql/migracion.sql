@@ -100,3 +100,11 @@ WHERE cc.project_resource_id = pp.id
   AND (cc.code_equipment IS NULL OR cc.code_equipment = '')
   AND pp.detailed_description IS NOT NULL
   AND pp.detailed_description <> '';
+
+
+-- pasamos a metros cubicos y barriles las cantidades en galones
+UPDATE projects_custodychain
+SET
+    total_barrels = ROUND(total_gallons / 42.0, 2),
+    total_cubic_meters = ROUND(total_gallons * 0.00378541, 2)
+WHERE total_gallons IS NOT NULL;
