@@ -13,7 +13,6 @@ class AddResourceProjectAPI(View):
         """Agregar uno o varios recursos al proyecto."""
         data = json.loads(request.body)
 
-        
         project = Project.get_by_id(data[0]["project_id"])
         if not project:
             raise Exception("Proyecto no encontrado.")
@@ -36,8 +35,46 @@ class AddResourceProjectAPI(View):
             type_resource = (
                 "SERVICIO" if resource_item.type_equipment == "SERVIC" else "EQUIPO"
             )
-            
-            
+
+            physical_equipment_code = resource_data.get("physical_equipment_code", 0)
+
+            detailed_description = resource_data.get("detailed_description", "")
+
+            if physical_equipment_code and physical_equipment_code != 0:
+                try:
+                    physical_equipment = ResourceItem.objects.get(
+                        id=physical_equipment_code
+                    )
+                    equipment_code = physical_equipment.code
+
+                    if type_resource == "SERVICIO":
+
+                        service_name = resource_item.name.upper()
+                        detailed_description = (
+                            f"SERVICIO / {equipment_code} / {service_name}"
+                        )
+                    else:
+
+                        parts = detailed_description.split(" - ")
+                        if len(parts) >= 2:
+                            equipment_type = parts[1]
+                            detailed_description = (
+                                f"ALQUILER / {equipment_code} / {equipment_type}"
+                            )
+                except ResourceItem.DoesNotExist:
+                    pass
+            else:
+
+                if type_resource == "EQUIPO":
+
+                    parts = detailed_description.split(" - ")
+                    if len(parts) >= 2:
+                        code_part = parts[0].split()[-1]
+                        equipment_type = parts[1]
+                        detailed_description = (
+                            f"ALQUILER / {code_part} / {equipment_type}"
+                        )
+
             p_freq_type = resource_data.get("frequency_type", "DAY")
             p_interval = resource_data.get("interval_days", 1)
             p_weekdays = resource_data.get("weekdays")
@@ -45,14 +82,14 @@ class AddResourceProjectAPI(View):
 
             if type_resource == "SERVICIO":
                 resource_cost = resource_data.get("maintenance_cost", 0.00)
-                
+
                 prim_freq_type = p_freq_type
                 prim_interval = p_interval
                 prim_weekdays = p_weekdays
                 prim_monthdays = p_monthdays
             else:
                 resource_cost = resource_data.get("cost", 0.00)
-                
+
                 prim_freq_type = "DAY"
                 prim_interval = 1
                 prim_weekdays = None
@@ -63,8 +100,8 @@ class AddResourceProjectAPI(View):
                     project=project,
                     resource_item=resource_item,
                     type_resource=type_resource,
-                    detailed_description=resource_data.get("detailed_description", ""),
-                    physical_equipment_code=resource_data.get("physical_equipment_code", 0),
+                    detailed_description=detailed_description,
+                    physical_equipment_code=physical_equipment_code,
                     cost=resource_cost,
                     frequency_type=prim_freq_type,
                     interval_days=prim_interval,
@@ -82,7 +119,7 @@ class AddResourceProjectAPI(View):
                     if not serv_resource_item:
                         raise Exception(
                             "Recurso de servicio para mantenimiento general "
-                             " PESIOL-SERV00 no encontrado. Contacte al administrador."
+                            " PESIOL-SERV00 no encontrado. Contacte al administrador."
                         )
 
                 maintenance_cost = resource_data.get("maintenance_cost", 0.00)
@@ -92,7 +129,7 @@ class AddResourceProjectAPI(View):
                         project=project,
                         resource_item=serv_resource_item,
                         type_resource="SERVICIO",
-                        detailed_description=f"MANTENIMIENTO {resource_item.name}",
+                        detailed_description=f"MANTENIMIENTO / {resource_item.code}",
                         physical_equipment_code=resource_item.id,
                         cost=maintenance_cost,
                         frequency_type=p_freq_type,
