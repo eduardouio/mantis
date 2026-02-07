@@ -1,0 +1,315 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="purgeApp" class="container mx-auto px-4 py-6">
+    <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-2xl mb-4">
+                <i class="las la-check-circle text-3xl"></i>
+                Verificación de Consistencia de Equipos
+            </h2>
+
+            <!-- Botones de acción -->
+            <div class="flex gap-3 mb-6">
+                <button @click="checkAllEquipments" 
+                        :disabled="loading"
+                        class="btn btn-primary">
+                    <i class="las la-sync"></i>
+                    Verificar Todos los Equipos
+                </button>
+                <button @click="fixAllInconsistencies" 
+                        :disabled="loading || !hasInconsistencies"
+                        class="btn btn-warning">
+                    <i class="las la-wrench"></i>
+                    Corregir Todas las Inconsistencias
+                </button>
+            </div>
+
+            <!-- Loading spinner -->
+            <div v-if="loading" class="flex justify-center py-8">
+                <span class="loading loading-spinner loading-lg"></span>
+            </div>
+
+            <!-- Mensajes de alerta -->
+            <div v-if="alertMessage" 
+                 :class="['alert', alertType === 'success' ? 'alert-success' : alertType === 'error' ? 'alert-error' : 'alert-info']"
+                 class="mb-4">
+                <div>
+                    <i :class="['las', alertType === 'success' ? 'la-check-circle' : alertType === 'error' ? 'la-exclamation-circle' : 'la-info-circle', 'text-2xl']"></i>
+                    <span>[[ alertMessage ]]</span>
+                </div>
+                <button @click="alertMessage = ''" class="btn btn-sm btn-ghost">
+                    <i class="las la-times"></i>
+                </button>
+            </div>
+
+            <!-- Resumen del reporte -->
+            <div v-if="report && !loading" class="stats shadow w-full mb-6">
+                <div class="stat">
+                    <div class="stat-figure text-primary">
+                        <i class="las la-cogs text-5xl"></i>
+                    </div>
+                    <div class="stat-title">Equipos Verificados</div>
+                    <div class="stat-value text-primary">[[ report.equipments_checked ]]</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-figure text-warning">
+                        <i class="las la-exclamation-triangle text-5xl"></i>
+                    </div>
+                    <div class="stat-title">Inconsistencias</div>
+                    <div class="stat-value text-warning">[[ report.inconsistencies_found ]]</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-figure text-error">
+                        <i class="las la-ban text-5xl"></i>
+                    </div>
+                    <div class="stat-title">Disponible pero Rentado</div>
+                    <div class="stat-value text-error">[[ report.summary?.marked_available_but_rented || 0 ]]</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-figure text-info">
+                        <i class="las la-question-circle text-5xl"></i>
+                    </div>
+                    <div class="stat-title">Rentado pero Disponible</div>
+                    <div class="stat-value text-info">[[ report.summary?.marked_rented_but_available || 0 ]]</div>
+                </div>
+            </div>
+
+            <!-- Tabla de inconsistencias -->
+            <div v-if="report && report.inconsistencies_found > 0" class="overflow-x-auto">
+                <h3 class="text-xl font-bold mb-4">Detalles de Inconsistencias</h3>
+                <table class="table table-zebra w-full">
+                    <thead>
+                        <tr class="bg-base-300">
+                            <th>#</th>
+                            <th>Código</th>
+                            <th>Equipo</th>
+                            <th>Problema</th>
+                            <th>Estado Actual</th>
+                            <th>Estado Esperado</th>
+                            <th>Proyectos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in report.inconsistencies" :key="item.equipment_id">
+                            <td>[[ index + 1 ]]</td>
+                            <td class="font-mono text-sm">[[ item.equipment_code ]]</td>
+                            <td>[[ item.equipment_name ]]</td>
+                            <td>
+                                <span class="badge" 
+                                      :class="item.issue === 'MARCADO_DISPONIBLE_PERO_RENTADO' ? 'badge-error' : 'badge-info'">
+                                    [[ formatIssue(item.issue) ]]
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-outline">[[ item.current_status ]]</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-success">[[ item.expected_status ]]</span>
+                            </td>
+                            <td>
+                                <div v-if="item.projects && item.projects.length > 0">
+                                    <div v-for="project in item.projects" :key="project.project_id" class="text-sm">
+                                        <strong>ID [[ project.project_id ]]:</strong> [[ project.project_name ]]
+                                    </div>
+                                </div>
+                                <span v-else class="text-gray-400">Sin proyectos</span>
+                                <div v-if="item.stored_project_id" class="text-xs text-warning mt-1">
+                                    Proyecto almacenado: [[ item.stored_project_id ]]
+                                </div>
+                            </td>
+                            <td>
+                                <button @click="fixSingleInconsistency(item.equipment_id)" 
+                                        :disabled="fixing"
+                                        class="btn btn-sm btn-warning">
+                                    <i class="las la-wrench"></i>
+                                    Corregir
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mensaje cuando no hay inconsistencias -->
+            <div v-if="report && report.inconsistencies_found === 0" 
+                 class="alert alert-success">
+                <div>
+                    <i class="las la-check-circle text-2xl"></i>
+                    <span>¡Excelente! No se encontraron inconsistencias. Todos los equipos están correctamente configurados.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script_app %}
+<script>
+const { createApp } = Vue;
+
+createApp({
+    delimiters: ['[[', ']]'],
+    data() {
+        return {
+            report: null,
+            loading: false,
+            fixing: false,
+            alertMessage: '',
+            alertType: 'info'
+        }
+    },
+    computed: {
+        hasInconsistencies() {
+            return this.report && this.report.inconsistencies_found > 0;
+        }
+    },
+    methods: {
+        async checkAllEquipments() {
+            this.loading = true;
+            this.alertMessage = '';
+            
+            try {
+                const response = await fetch('{% url "equipment:check_all_equipments" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': this.getCookie('csrftoken')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    this.report = data;
+                    this.showAlert(
+                        `Verificación completada: ${data.equipments_checked} equipos verificados, ${data.inconsistencies_found} inconsistencias encontradas.`,
+                        'info'
+                    );
+                } else {
+                    this.showAlert('Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.showAlert('Error al verificar equipos', 'error');
+            } finally {
+                this.loading = false;
+            }
+        },
+        
+        async fixSingleInconsistency(equipmentId) {
+            if (!confirm('¿Está seguro de corregir esta inconsistencia?')) {
+                return;
+            }
+            
+            this.fixing = true;
+            
+            try {
+                const response = await fetch('{% url "equipment:fix_inconsistency" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': this.getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ equipment_id: equipmentId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    this.showAlert(data.message, 'success');
+                    // Recargar el reporte
+                    await this.checkAllEquipments();
+                } else {
+                    this.showAlert('Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.showAlert('Error al corregir inconsistencia', 'error');
+            } finally {
+                this.fixing = false;
+            }
+        },
+        
+        async fixAllInconsistencies() {
+            if (!confirm('¿Está seguro de corregir TODAS las inconsistencias? Esta acción modificará múltiples registros.')) {
+                return;
+            }
+            
+            this.loading = true;
+            
+            try {
+                const response = await fetch('{% url "equipment:fix_all_inconsistencies" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': this.getCookie('csrftoken')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    this.showAlert(
+                        `Corrección completada: ${data.fixed} de ${data.total_inconsistencies} inconsistencias corregidas.`,
+                        'success'
+                    );
+                    // Recargar el reporte
+                    await this.checkAllEquipments();
+                } else {
+                    this.showAlert('Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                this.showAlert('Error al corregir inconsistencias', 'error');
+            } finally {
+                this.loading = false;
+            }
+        },
+        
+        formatIssue(issue) {
+            const issues = {
+                'MARCADO_DISPONIBLE_PERO_RENTADO': 'Marcado Disponible pero está Rentado',
+                'MARCADO_RENTADO_PERO_DISPONIBLE': 'Marcado Rentado pero está Disponible'
+            };
+            return issues[issue] || issue;
+        },
+        
+        showAlert(message, type = 'info') {
+            this.alertMessage = message;
+            this.alertType = type;
+            
+            // Auto-ocultar después de 5 segundos si es éxito
+            if (type === 'success') {
+                setTimeout(() => {
+                    this.alertMessage = '';
+                }, 5000);
+            }
+        },
+        
+        getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    },
+    mounted() {
+        console.log('Purge Equipment App initialized');
+    }
+}).mount('#purgeApp');
+</script>
+{% endblock %}

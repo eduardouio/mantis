@@ -168,10 +168,10 @@
                         <a href="{% url 'technical_update' technical.id %}" class="btn btn-xs btn-warning" title="Editar">
                             <i class="las la-edit text-sm"></i>
                         </a>
-                        <a href="{% url 'reports:technical-information-pdf' technical.id %}" class="btn btn-xs btn-error" title="Reporte de Estado" target="_blank">
+                        <a href="{% url 'technical-information-pdf' technical.id %}" class="btn btn-xs btn-error" title="Reporte de Estado" target="_blank">
                             <i class="las la-file-pdf text-sm"></i>
                         </a>
-                        <a href="{% url 'reports:technical-vaccine-pdf' technical.id %}" class="btn btn-xs btn-success" title="Reporte de Vacunas" target="_blank">
+                        <a href="{% url 'technical-vaccine-pdf' technical.id %}" class="btn btn-xs btn-success" title="Reporte de Vacunas" target="_blank">
                             <i class="las la-syringe text-sm"></i>
                         </a>
                     </div>

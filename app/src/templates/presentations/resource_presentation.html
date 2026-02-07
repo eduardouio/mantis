@@ -54,39 +54,39 @@
   {% if not is_service %}
   <div class="flex flex-wrap justify-end gap-2 mb-4">
     <!-- Botón Reporte General (ahora descarga PDF directamente) -->
-    <a href="{% url 'reports:equipment-info-pdf' equipment.id %}" class="btn btn-primary btn-sm">
+    <a href="{% url 'equipment-info-pdf' equipment.id %}" class="btn btn-primary btn-sm">
       <i class="las la-file-pdf text-lg"></i>
       Descargar Reporte General
     </a>
     
     <!-- Botones de Checklist según tipo de equipo - SOLO PDF -->
     {% if equipment.type_equipment == 'BTSNHM' or equipment.type_equipment == 'BTSNMJ' %}
-    <a href="{% url 'reports:equipment-bateries-pdf' equipment.id %}" class="btn btn-success btn-sm">
+    <a href="{% url 'equipment-bateries-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
       Descargar Checklist Batería
     </a>
     {% elif equipment.type_equipment == 'LVMNOS' %}
-    <a href="{% url 'reports:equipment-washer-hands-pdf' equipment.id %}" class="btn btn-success btn-sm">
+    <a href="{% url 'equipment-washer-hands-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
       Descargar Checklist Lavamanos
     </a>
     {% elif equipment.type_equipment == 'EST4UR' %}
-    <a href="{% url 'reports:equipment-urinal-station-pdf' equipment.id %}" class="btn btn-success btn-sm">
+    <a href="{% url 'equipment-urinal-station-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
       Descargar Checklist Urinarios
     </a>
     {% elif equipment.type_equipment == 'CMPRBN' %}
-    <a href="{% url 'reports:equipment-bathroom-camper-pdf' equipment.id %}" class="btn btn-success btn-sm">
+    <a href="{% url 'equipment-bathroom-camper-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
       Descargar Checklist Camper
     </a>
     {% elif equipment.type_equipment == 'TNQAAC' %}
-    <a href="{% url 'reports:equipment-raw-water-tanks-pdf' equipment.id %}" class="btn btn-success btn-sm">
+    <a href="{% url 'equipment-raw-water-tanks-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
       Descargar Checklist Tanque AC
     </a>
     {% elif equipment.type_equipment == 'TNQAAR' %}
-    <a href="{% url 'reports:equipment-wastewater-tanks-pdf' equipment.id %}" class="btn btn-success btn-sm">
+    <a href="{% url 'equipment-wastewater-tanks-pdf' equipment.id %}" class="btn btn-success btn-sm">
       <i class="las la-file-pdf text-lg"></i>
       Descargar Checklist Tanque AR
     </a>

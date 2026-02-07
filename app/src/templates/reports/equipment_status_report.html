@@ -119,37 +119,37 @@
                                         <!-- Enlace al checklist según el tipo de equipo -->
                                         {% if not equipment_data.resource.is_service %}
                                             {% if equipment_data.resource.type_equipment == 'BTSNHM' or equipment_data.resource.type_equipment == 'BTSNMJ' %}
-                                            <a href="{% url 'reports:equipment-bateries-checklist' equipment_data.resource.id %}" 
+                                            <a href="{% url 'equipment-bateries-checklist' equipment_data.resource.id %}" 
                                                class="btn btn-xs btn-success">
                                                 Checklist
                                             </a>
                                             {% elif equipment_data.resource.type_equipment == 'LVMNOS' %}
-                                            <a href="{% url 'reports:equipment-washer-hands-checklist' equipment_data.resource.id %}" 
+                                            <a href="{% url 'equipment-washer-hands-checklist' equipment_data.resource.id %}" 
                                                class="btn btn-xs btn-success">
                                                 Checklist
                                             </a>
                                             {% elif equipment_data.resource.type_equipment == 'EST4UR' %}
-                                            <a href="{% url 'reports:equipment-urinal-station-checklist' equipment_data.resource.id %}" 
+                                            <a href="{% url 'equipment-urinal-station-checklist' equipment_data.resource.id %}" 
                                                class="btn btn-xs btn-success">
                                                 Checklist
                                             </a>
                                             {% elif equipment_data.resource.type_equipment == 'CMPRBN' %}
-                                            <a href="{% url 'reports:equipment-bathroom-camper-checklist' equipment_data.resource.id %}" 
+                                            <a href="{% url 'equipment-bathroom-camper-checklist' equipment_data.resource.id %}" 
                                                class="btn btn-xs btn-success">
                                                 Checklist
                                             </a>
                                             {% elif equipment_data.resource.type_equipment == 'TNQAAC' %}
-                                            <a href="{% url 'reports:equipment-raw-water-tanks-checklist' equipment_data.resource.id %}" 
+                                            <a href="{% url 'equipment-raw-water-tanks-checklist' equipment_data.resource.id %}" 
                                                class="btn btn-xs btn-success">
                                                 Checklist
                                             </a>
                                             {% elif equipment_data.resource.type_equipment == 'TNQAAR' %}
-                                            <a href="{% url 'reports:equipment-wastewater-tanks-checklist' equipment_data.resource.id %}" 
+                                            <a href="{% url 'equipment-wastewater-tanks-checklist' equipment_data.resource.id %}" 
                                                class="btn btn-xs btn-success">
                                                 Checklist
                                             </a>
                                             {% else %}
-                                            <a href="{% url 'reports:equipment-info-report' equipment_data.resource.id %}" 
+                                            <a href="{% url 'equipment-info-report' equipment_data.resource.id %}" 
                                                class="btn btn-xs btn-success">
                                                 Checklist
                                             </a>

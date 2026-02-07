@@ -13,11 +13,11 @@
 
   <!-- Botones de Reporte -->
   <div class="flex flex-wrap justify-end gap-2 mb-4 pb-3 border-b">
-    <a href="{% url 'reports:technical-information-pdf' technical.id %}" class="btn btn-success btn-sm" target="_blank">
+    <a href="{% url 'technical-information-pdf' technical.id %}" class="btn btn-success btn-sm" target="_blank">
       <i class="las la-file-pdf text-lg"></i>
       Reporte General
     </a>
-    <a href="{% url 'reports:technical-vaccine-pdf' technical.id %}" class="btn btn-info btn-sm" target="_blank">
+    <a href="{% url 'technical-vaccine-pdf' technical.id %}" class="btn btn-info btn-sm" target="_blank">
       <i class="las la-syringe text-lg"></i>
       Reporte Vacunas
     </a>
@@ -486,7 +486,7 @@
         <div>
           <div class="flex justify-between items-center mb-3">
             <h3 class="text-md font-semibold text-blue-500">Vacunas Registradas</h3>
-            <a href="{% url 'reports:technical-vaccine-pdf' technical.id %}" target="_blank" class="btn btn-primary btn-sm">
+            <a href="{% url 'technical-vaccine-pdf' technical.id %}" target="_blank" class="btn btn-primary btn-sm">
               <i class="las la-file-download text-lg"></i>
               Descargar Reporte
             </a>
