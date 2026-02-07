@@ -10,6 +10,9 @@ from equipment.views import (
     ResourceItemDeleteView,
     ResourceItemListView,
 )
+from equipment.views.resources.ResourcesPurgeView import ResourcesPurgeView
+
+app_name = 'equipment'
 
 urlpatterns = [
     # Vehicle URLs
@@ -24,5 +27,5 @@ urlpatterns = [
     path('equipos/crear/', ResourceItemCreateUpdateView.as_view(), name='resource_create'),
     path('equipos/editar/<int:pk>/', ResourceItemCreateUpdateView.as_view(), name='resource_update'),
     path('equipos/eliminar/<int:pk>/', ResourceItemDeleteView.as_view(), name='resource_delete'),
-
+    path('equipos/verificacion/', ResourcesPurgeView.as_view(), name='purge_equipment'),
 ]
