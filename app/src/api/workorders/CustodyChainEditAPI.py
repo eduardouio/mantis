@@ -142,6 +142,24 @@ class CustodyChainEditAPI(View):
                 if "total_cubic_meters" in chain_data:
                     instance.total_cubic_meters = chain_data["total_cubic_meters"]
 
+                if "black_water" in chain_data:
+                    instance.black_water = chain_data["black_water"]
+
+                if "grey_water" in chain_data:
+                    instance.grey_water = chain_data["grey_water"]
+
+                if "clean_water" in chain_data:
+                    instance.clean_water = chain_data["clean_water"]
+
+                if "activated_sludge" in chain_data:
+                    instance.activated_sludge = chain_data["activated_sludge"]
+
+                if "treated_wastewater" in chain_data:
+                    instance.treated_wastewater = chain_data["treated_wastewater"]
+
+                if "organic_grease" in chain_data:
+                    instance.organic_grease = chain_data["organic_grease"]
+
                 meta = chain_data.get("meta", {})
                 if "notes" in meta:
                     instance.notes = meta["notes"]

@@ -71,6 +71,12 @@ class CustodyChainDetailAPI(View):
                 "total_gallons": c.total_gallons,
                 "total_barrels": c.total_barrels,
                 "total_cubic_meters": c.total_cubic_meters,
+                "black_water": c.black_water,
+                "grey_water": c.grey_water,
+                "clean_water": c.clean_water,
+                "activated_sludge": c.activated_sludge,
+                "treated_wastewater": c.treated_wastewater,
+                "organic_grease": c.organic_grease,
                 "meta": serialize_meta(c),
             }
 

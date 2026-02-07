@@ -129,6 +129,12 @@ class CreateCustodyChainAPI(View):
             total_gallons=int(float(data.get("total_gallons", 0))),
             total_barrels=int(float(data.get("total_barrels", 0))),
             total_cubic_meters=int(float(data.get("total_cubic_meters", 0))),
+            black_water=data.get("black_water", False),
+            grey_water=data.get("grey_water", False),
+            clean_water=data.get("clean_water", False),
+            activated_sludge=data.get("activated_sludge", False),
+            treated_wastewater=data.get("treated_wastewater", False),
+            organic_grease=data.get("organic_grease", False),
             have_logistic=data.get("have_logistic", "NA"),
             notes=data.get("notes", "")
         )
@@ -178,6 +184,12 @@ class CreateCustodyChainAPI(View):
                 "total_gallons": custody_chain.total_gallons,
                 "total_barrels": custody_chain.total_barrels,
                 "total_cubic_meters": custody_chain.total_cubic_meters,
+                "black_water": custody_chain.black_water,
+                "grey_water": custody_chain.grey_water,
+                "clean_water": custody_chain.clean_water,
+                "activated_sludge": custody_chain.activated_sludge,
+                "treated_wastewater": custody_chain.treated_wastewater,
+                "organic_grease": custody_chain.organic_grease,
                 "sheet_project_id": custody_chain.sheet_project_id,
             },
             "technical": {
