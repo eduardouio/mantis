@@ -37,22 +37,6 @@
     { value: 6, label: 'Domingo' }
   ]
 
-  const getFrequencyDisplay = (resource) => {
-    if (!resource.include_maintenance) return '-'
-    
-    if (resource.frequency_type === 'DAY') {
-      return `Cada ${resource.interval_days} día(s)`
-    } else if (resource.frequency_type === 'WEEK') {
-      if (!resource.weekdays || resource.weekdays.length === 0) return 'No configurado'
-      const days = resource.weekdays.map(d => weekdayOptions[d].label).join(', ')
-      return days
-    } else if (resource.frequency_type === 'MONTH') {
-      if (!resource.monthdays || resource.monthdays.length === 0) return 'No configurado'
-      return `Día(s): ${resource.monthdays.sort((a, b) => a - b).join(', ')}`
-    }
-    return '-'
-  }
-
   const handleResourceSelected = async () => {
     const resource = resourcesStore.selectedResource
     const isService = resource.type_equipment === 'SERVIC'

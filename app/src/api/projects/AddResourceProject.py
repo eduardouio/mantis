@@ -81,7 +81,7 @@ class AddResourceProjectAPI(View):
                     if not serv_resource_item:
                         raise Exception(
                             "Recurso de servicio para mantenimiento general "
-                            " PESIOL-SERV00 no encontrado. Contacte al administrador."
+                             " PESIOL-SERV00 no encontrado. Contacte al administrador."
                         )
 
                 maintenance_cost = resource_data.get("maintenance_cost", 0.00)
@@ -92,6 +92,7 @@ class AddResourceProjectAPI(View):
                         resource_item=serv_resource_item,
                         type_resource="SERVICIO",
                         detailed_description=f"MANTENIMIENTO {resource_item.name}",
+                        physical_equipment_code=resource_item.id,
                         cost=maintenance_cost,
                         frequency_type=p_freq_type,
                         interval_days=p_interval,
