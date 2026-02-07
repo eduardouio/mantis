@@ -5,6 +5,7 @@ from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
 from common.AppLoggin import loggin_event
 
 
+
 class CustodyChainReportView(TemplateView):
     template_name = "reports/chain_custody.html"
 

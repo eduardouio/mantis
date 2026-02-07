@@ -33,7 +33,7 @@ class MaintenanceScheduler:
             is_active=True,
             is_retired=False,
             is_deleted=False,
-            type_resource='EQUIPO'  # Solo equipos, no servicios
+            type_resource='SERVICIO'  # Solo servicios, no equipos
         ).select_related('project', 'project__partner', 'resource_item')
         
         # Generar mantenimientos por fecha
