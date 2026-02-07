@@ -28,11 +28,15 @@ const custodyChains = computed(() => {
 
 const formatDate = (date) => {
   if (!date) return 'N/A';
-  return new Intl.DateTimeFormat('es-GT').format(new Date(date));
+  return new Intl.DateTimeFormat('es-EC', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).format(new Date(date));
 };
 
 const formatTime = (time) => {
-  if (!time) return 'N/A';
+  if (!time) return '--:--';
   return time;
 };
 
