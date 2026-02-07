@@ -20,7 +20,7 @@ SET detailed_description =
 
 -- agregamos en los recusos del proyecto tipo equipo la referencia al equipos
 -- real, en este caso es solo una copia del id a la nueva colimna, 
-solo para os equipos y que tengas la columna en 0
+-- solo para os equipos y que tengas la columna en 0
 
 UPDATE projects_projectresourceitem
 SET physical_equipment_code = resource_item_id
@@ -91,6 +91,7 @@ WHERE (equipment IS NULL OR equipment = '')
 -- detalle de cadenas de custodia por servicio
 update public.projects_chaincustodydetail set equipment = 'OT' where equipment is NULL ;
 
+select * from public.projects_chaincustodydetail where equipment = 'OT';
 
 UPDATE projects_chaincustodydetail cc
 SET code_equipment = pp.detailed_description
