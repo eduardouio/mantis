@@ -14,37 +14,35 @@ import json
 
 def get_equipment_code_and_abbreviation(project_resource):
     """Obtiene el código completo y la abreviatura del equipo.
-    
+
     Args:
         project_resource: Instancia de ProjectResourceItem
-        
+
     Returns:
-        tuple: (code_equipment, equipment_abbreviation) o (None, None) si no se encuentra
+        tuple: (code_equipment, equipment_abbreviation) o valores por defecto si no se encuentra
     """
     try:
         physical_code = project_resource.physical_equipment_code
-        if not physical_code:
-            return None, None
-        
-        # Buscar el ResourceItem con ese código físico
+
+        if not physical_code or physical_code == 0:
+            return project_resource.detailed_description, "OT"
+
         resource_item = ResourceItem.objects.filter(
-            id=physical_code,
-            is_active=True
+            id=physical_code, is_active=True
         ).first()
-        
+
         if not resource_item or not resource_item.code:
-            return None, None
-        
-        # Obtener el código completo
+            return project_resource.detailed_description, "OT"
+
         code_equipment = resource_item.code
-        
-        # Extraer la abreviatura (lo que está entre el primer y segundo guion)
-        parts = code_equipment.split('-')
-        equipment_abbreviation = parts[1] if len(parts) > 1 else None
-        
+
+        parts = code_equipment.split("-")
+        equipment_abbreviation = parts[1] if len(parts) > 1 else "OT"
+
         return code_equipment, equipment_abbreviation
     except Exception:
-        return None, None
+
+        return project_resource.detailed_description, "OT"
 
 
 class CustodyChainEditAPI(View):
@@ -243,34 +241,37 @@ class CustodyChainEditAPI(View):
                             )
                             detail.project_resource = project_resource
                             detail.is_active = True
-                            
-                            # Actualizar código y abreviatura del equipo
-                            code_equipment, equipment_abbr = get_equipment_code_and_abbreviation(project_resource)
+
+                            code_equipment, equipment_abbr = (
+                                get_equipment_code_and_abbreviation(project_resource)
+                            )
                             detail.code_equipment = code_equipment
                             detail.equipment = equipment_abbr
-                            
+
                             detail.save()
                         except ChainCustodyDetail.DoesNotExist:
 
-                            # Obtener código y abreviatura del equipo
-                            code_equipment, equipment_abbr = get_equipment_code_and_abbreviation(project_resource)
-                            
+                            code_equipment, equipment_abbr = (
+                                get_equipment_code_and_abbreviation(project_resource)
+                            )
+
                             ChainCustodyDetail.objects.create(
                                 custody_chain=instance,
                                 project_resource=project_resource,
                                 code_equipment=code_equipment,
-                                equipment=equipment_abbr
+                                equipment=equipment_abbr,
                             )
                     else:
 
-                        # Obtener código y abreviatura del equipo
-                        code_equipment, equipment_abbr = get_equipment_code_and_abbreviation(project_resource)
-                        
+                        code_equipment, equipment_abbr = (
+                            get_equipment_code_and_abbreviation(project_resource)
+                        )
+
                         ChainCustodyDetail.objects.create(
-                            custody_chain=instance, 
+                            custody_chain=instance,
                             project_resource=project_resource,
                             code_equipment=code_equipment,
-                            equipment=equipment_abbr
+                            equipment=equipment_abbr,
                         )
 
                 return JsonResponse(
