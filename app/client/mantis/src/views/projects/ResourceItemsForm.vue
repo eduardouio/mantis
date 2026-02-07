@@ -15,6 +15,11 @@
   const errorMessage = ref('')
   const successMessage = ref('')
 
+  // Obtener equipos no disponibles para servicios
+  const physicalEquipments = computed(() => {
+    return resourcesStore.physicalEquipmentsNotAvailable || []
+  })
+
   const selectedResourceIds = computed(() => {
     return list_resources.value
       .filter(r => r.resource?.type_equipment_display !== 'SERVICIO')
@@ -62,7 +67,8 @@
       cost: 0,
       maintenance_cost: 0,
       operation_start_date: projectStore.project?.start_date || null,
-      include_maintenance: isService
+      include_maintenance: isService,
+      physical_equipment_code: null
     }
     
     list_resources.value.push(newProjectResource)
@@ -243,6 +249,7 @@
                   <th class="border">#</th>
                   <th class="border">Detalle</th>
                   <th class="border">Tipo</th>
+                  <th class="border">Equipo Físico</th>
                   <th class="border">Fecha Inicio *</th>
                   <th class="border">Costo Alq</th>
                   <th class="border">Mant</th>
@@ -258,6 +265,19 @@
                     {{ resource.resource_display_name || resource.detailed_description }}
                   </td>
                   <td class="border border-gray-300">{{ resource.resource?.type_equipment_display === 'SERVICIO' ? 'SERVICIO' : 'EQUIPO' }}</td>
+                  <td class="border border-gray-300">
+                    <select 
+                      v-if="resource.resource?.type_equipment === 'SERVIC'"
+                      class="select select-sm select-bordered w-full"
+                      v-model="resource.physical_equipment_code"
+                    >
+                      <option :value="null">Sin equipo asignado</option>
+                      <option v-for="equipment in physicalEquipments" :key="equipment.id" :value="equipment.id">
+                        {{ equipment.code }} - {{ equipment.type_equipment_display }}
+                      </option>
+                    </select>
+                    <span v-else class="text-gray-400 text-sm">-</span>
+                  </td>
                   <td class="border border-gray-300">
                     <input 
                       type="date" 
@@ -366,7 +386,7 @@
                   </td>
                 </tr>
                 <tr v-if="list_resources.length === 0">
-                  <td colspan="9" class="text-center py-4 text-gray-500">
+                  <td colspan="10" class="text-center py-4 text-gray-500">
                     No hay recursos agregados. Seleccione un recurso del autocomplete.
                   </td>
                 </tr>

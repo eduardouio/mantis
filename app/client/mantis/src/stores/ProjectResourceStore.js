@@ -57,7 +57,8 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                         maintenance_cost: resource.maintenance_cost || 0,
                         operation_start_date: resource.operation_start_date,
                         include_maintenance: resource.include_maintenance,
-                        frequency_type: resource.include_maintenance ? (resource.frequency_type || 'DAY') : null
+                        frequency_type: resource.include_maintenance ? (resource.frequency_type || 'DAY') : null,
+                        physical_equipment_code: resource.physical_equipment_code || null
                     }
                     
                     // Solo enviar los datos del intervalo correspondiente al tipo seleccionado

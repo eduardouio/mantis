@@ -25,7 +25,14 @@ export const UseResourcesStore = defineStore("resourcesStore", {
         }
     }),
     getters: {
-        resourcesAvailable: (state) => state.resources
+        resourcesAvailable: (state) => state.resources,
+        // Obtener solo equipos físicos (no servicios) que no están disponibles
+        physicalEquipmentsNotAvailable: (state) => {
+            return state.resources.filter(r => 
+                r.type_equipment !== 'SERVIC' && 
+                r.available === false
+            )
+        }
     },
     actions: {
         async fetchResourcesAvailable() {
