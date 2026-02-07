@@ -44,7 +44,11 @@ const formatCurrency = (value) => {
 
 const formatDate = (date) => {
   if (!date) return 'N/A';
-  return new Intl.DateTimeFormat('es-GT').format(new Date(date));
+  return new Intl.DateTimeFormat('es-EC', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  }).format(new Date(date));
 };
 
 const getStatusBadge = (status) => {
