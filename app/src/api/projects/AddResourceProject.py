@@ -64,6 +64,7 @@ class AddResourceProjectAPI(View):
                     resource_item=resource_item,
                     type_resource=type_resource,
                     detailed_description=resource_data.get("detailed_description", ""),
+                    physical_equipment_code=resource_data.get("physical_equipment_code", 0),
                     cost=resource_cost,
                     frequency_type=prim_freq_type,
                     interval_days=prim_interval,
