@@ -52,7 +52,7 @@ python manage.py dumpdata \
 
 ``` bash
 python manage.py loaddata data.json
-./manage.py loaddata ../../docs/sql/data-2026125154557.json -v 3  
+./manage.py loaddata ../../docs/sql/data_ccpl_07022026.json -v 3  
 
 
 ```python
