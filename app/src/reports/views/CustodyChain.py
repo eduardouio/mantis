@@ -1,9 +1,7 @@
-from multiprocessing import context
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
 from common.AppLoggin import loggin_event
-
 
 
 class CustodyChainReportView(TemplateView):
@@ -16,7 +14,6 @@ class CustodyChainReportView(TemplateView):
         id_custody_chain = kwargs.get("id_custody_chain")
         custody_chain = get_object_or_404(CustodyChain, id=id_custody_chain)
 
-        # Usar get_by_custody_chain en lugar de get_by_sheet_project
         custody_details = ChainCustodyDetail.get_by_custody_chain(
             custody_chain=custody_chain
         )
