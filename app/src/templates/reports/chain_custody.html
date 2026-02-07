@@ -375,13 +375,13 @@
   <div class="section-title" style="background-color: #f8fff2;text-align: center; border: #0077b6 1px solid;">OBSERVACIONES</div>
   <table>
     <tr>
-        <td></td>
-    </tr>
-    <tr>
-        <td></td>
-    </tr>
-    <tr>
-        <td></td>
+        <td style="text-align: left; padding: 1px; vertical-align: top; word-wrap: break-word; max-width: 240mm; white-space: pre-wrap; font-size: 12px;">
+          {% if custody_chain.notes %}
+            {{ custody_chain.notes }}
+          {% else %}
+            &nbsp;
+          {% endif %}
+        </td>
     </tr>
 </table>
 <div style="display: flex; justify-content: space-between; gap: 3px;">
