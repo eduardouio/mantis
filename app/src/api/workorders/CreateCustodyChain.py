@@ -17,19 +17,22 @@ def get_equipment_code_and_abbreviation(project_resource):
         project_resource: Instancia de ProjectResourceItem
         
     Returns:
-        tuple: (code_equipment, equipment_abbreviation) o (None, None) si no se encuentra
+        tuple: (code_equipment, equipment_abbreviation) o valores por defecto si no se encuentra
     """
     try:
         physical_code = project_resource.physical_equipment_code
-        if not physical_code:
-            return None, None
         
-        # Buscar el ResourceItem con ese código físico
+        # Si no hay código físico o es 0, retornar valores por defecto
+        if not physical_code or physical_code == 0:
+            return project_resource.detailed_description, 'OT'
+        
+        # Buscar el ResourceItem con ese código físico (usando el ID)
         resource_item = ResourceItem.objects.filter(
             id=physical_code,
             is_active=True
         ).first()
         
+        # Si no se encuentra el recurso o no tiene código, retornar valores por defecto
         if not resource_item or not resource_item.code:
             return project_resource.detailed_description, 'OT'
         
@@ -38,10 +41,11 @@ def get_equipment_code_and_abbreviation(project_resource):
         
         # Extraer la abreviatura (lo que está entre el primer y segundo guion)
         parts = code_equipment.split('-')
-        equipment_abbreviation = parts[1] if len(parts) > 1 else None
+        equipment_abbreviation = parts[1] if len(parts) > 1 else 'OT'
         
         return code_equipment, equipment_abbreviation
     except Exception:
+        # En caso de cualquier error, retornar valores por defecto
         return project_resource.detailed_description, 'OT'
 
 
