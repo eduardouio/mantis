@@ -38,6 +38,9 @@ onMounted(async () => {
 const filteredResources = computed(() => {
   let resources = availableResources.value;
   
+  // Filtrar solo recursos disponibles (available === true)
+  resources = resources.filter(resource => resource.available === true);
+  
   // Filtrar recursos ya seleccionados
   if (props.excludeIds.length > 0) {
     resources = resources.filter(resource => !props.excludeIds.includes(resource.id));

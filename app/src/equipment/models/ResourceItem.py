@@ -513,8 +513,6 @@ class ResourceItem(BaseModel):
         null=True,
         help_text='Capacidad específica para plantas de tratamiento'
     )
-
-    
     have_foot_pumps = models.BooleanField(
         'Bombas de Pie',
         default=False,
