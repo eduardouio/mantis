@@ -18,6 +18,8 @@ class CustodyChain(BaseModel):
         choices=(
             ("DRAFT", "BORRADOR"),
             ("CLOSE", "CERRADO"),
+            ("CANCELLED", "CANCELADO"),
+            ("INVOICE", "FACTURADO"),
         ),
         default="DRAFT",
     )
@@ -159,6 +161,30 @@ class CustodyChain(BaseModel):
         blank=True,
         null=True
     )
+    black_water = models.BooleanField(
+        'Aguas Negras',
+        default=False
+    )
+    grey_water = models.BooleanField(
+        'Aguas Grises',
+        default=False
+    )
+    clean_water = models.BooleanField(
+        'Aguas Limpias',
+        default=False
+    )
+    activated_sludge = models.BooleanField(
+        'Lodos Activados',
+        default=False
+    )
+    treated_wastewater = models.BooleanField(
+        'Aguas Residuales Tratadas',
+        default=False
+    )
+    organic_grease = models.BooleanField(
+        'Grasa Orgánica',
+        default=False
+    )
 
 
     @classmethod
@@ -207,7 +233,21 @@ class ChainCustodyDetail(BaseModel):
         ProjectResourceItem,
         on_delete=models.PROTECT
     )
-
+    equipment = models.CharField(
+        'Equipo',
+        max_length=60,
+        blank=True,
+        null=True
+        default=None
+    )
+    code_equipment = models.TextField(
+        'Detalle',
+        max_length=150,
+        blank=True,
+        null=True,
+        default=None
+    )
+    
     @classmethod
     def get_by_custody_chain(cls, custody_chain):
         """Obtiene los detalles de una cadena de custodia específica"""
