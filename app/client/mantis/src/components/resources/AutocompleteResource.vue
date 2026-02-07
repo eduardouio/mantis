@@ -13,7 +13,7 @@ const props = defineProps({
   },
   excludeIds: {
     type: Array,
-    default: () => []
+    default: () => [] 
   }
 });
 

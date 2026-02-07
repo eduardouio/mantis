@@ -49,6 +49,14 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
         async addResourcesToProject(resources) {
             try {
                 const cleanResources = resources.map(resource => {
+                    // Determinar el código del equipo físico
+                    // Si es un servicio, usar el valor seleccionado (si no hay, usar 0)
+                    // Si es un equipo, usar su propio ID
+                    const isService = resource.resource?.type_equipment === 'SERVIC'
+                    const physicalEquipmentCode = isService 
+                        ? (resource.physical_equipment_code || 0)
+                        : resource.resource_id
+                    
                     const baseData = {
                         project_id: appConfig.idProject,
                         resource_id: resource.resource_id,
@@ -58,7 +66,7 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                         operation_start_date: resource.operation_start_date,
                         include_maintenance: resource.include_maintenance,
                         frequency_type: resource.include_maintenance ? (resource.frequency_type || 'DAY') : null,
-                        physical_equipment_code: resource.physical_equipment_code || null
+                        physical_equipment_code: physicalEquipmentCode
                     }
                     
                     // Solo enviar los datos del intervalo correspondiente al tipo seleccionado
