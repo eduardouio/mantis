@@ -373,17 +373,27 @@
   </table>
 
   <div class="section-title" style="background-color: #f8fff2;text-align: center; border: #0077b6 1px solid;">OBSERVACIONES</div>
+  {% if custody_chain.notes %}
   <table>
     <tr>
-        <td style="text-align: left; padding: 1px; vertical-align: top; word-wrap: break-word; max-width: 240mm; white-space: pre-wrap; font-size: 12px;">
-          {% if custody_chain.notes %}
-            {{ custody_chain.notes }}
-          {% else %}
-            &nbsp;
-          {% endif %}
+        <td style="text-align: left; padding: 10px; vertical-align: top; word-wrap: break-word; max-width: 240mm; font-size: 12px;">
+          {{ custody_chain.notes }}
         </td>
     </tr>
-</table>
+  </table>
+  {% else %}
+  <table>
+    <tr>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+    </tr>
+    <tr>
+        <td></td>
+    </tr>
+  </table>
+  {% endif %}
 <div style="display: flex; justify-content: space-between; gap: 3px;">
 <span>PSL-GO-BS-F-002 08 JULIO 2024</span>
 <span>VERSION: 01</span>
