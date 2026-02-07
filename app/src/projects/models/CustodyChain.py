@@ -237,7 +237,7 @@ class ChainCustodyDetail(BaseModel):
         'Equipo',
         max_length=60,
         blank=True,
-        null=True
+        null=True,
         default=None
     )
     code_equipment = models.TextField(

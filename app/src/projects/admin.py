@@ -174,23 +174,30 @@ class SheetProjectAdmin(BaseModelAdmin):
 class CustodyChainAdmin(BaseModelAdmin):
     list_display = (
         'id', 'consecutive', 'get_sheet_project_id', 'get_project_id', 
-        'technical', 'sheet_project', 'activity_date', 'location', 'issue_date', 
+        'technical', 'vehicle', 'sheet_project', 'activity_date', 'location', 'issue_date', 
         'status', 'time_duration', 'have_logistic', 'total_gallons', 'total_barrels', 'total_cubic_meters'
     )
     list_filter = (
-        'technical', 'sheet_project', 'activity_date', 'issue_date', 'status', 'is_active'
+        'technical', 'vehicle', 'sheet_project', 'activity_date', 'issue_date', 'status', 'is_active'
     )
     search_fields = (
         'consecutive',
         'technical__first_name', 'technical__last_name',
+        'vehicle__plate',
         'location', 'contact_name', 'driver_name'
     )
     # readonly heredado
     fieldsets = (
         ('Cadena', {
             'fields': (
-                'technical', 'sheet_project', 'consecutive', 'activity_date',
+                'technical', 'vehicle', 'sheet_project', 'consecutive', 'activity_date',
                 'location', 'issue_date', 'status', 'start_time', 'end_time', 'time_duration', 'have_logistic'
+            )
+        }),
+        ('Tipos de Agua', {
+            'fields': (
+                'black_water', 'grey_water', 'clean_water', 'activated_sludge',
+                'treated_wastewater', 'organic_grease'
             )
         }),
         ('Contacto', {
