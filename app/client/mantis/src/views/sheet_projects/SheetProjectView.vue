@@ -290,9 +290,9 @@ onMounted(async () => {
               <td colspan="6" class="p-2 border border-gray-300 text-right">TOTALES:</td>
               <td class="p-2 border border-gray-300 text-center">{{ totalHours }} Mins</td>
               <td colspan="3" class="p-2 border border-gray-300"></td>
-              <td class="p-2 border border-gray-300 text-right font-mono">{{ totalGallons }}</td>
-              <td class="p-2 border border-gray-300 text-right font-mono">{{ totalBarrels }}</td>
-              <td class="p-2 border border-gray-300 text-right font-mono">{{ totalCubicMeters }}</td>
+              <td class="p-2 border border-gray-300 text-right font-mono">{{ totalGallons.toFixed(2) }}</td>
+              <td class="p-2 border border-gray-300 text-right font-mono">{{ totalBarrels.toFixed(2) }}</td>
+              <td class="p-2 border border-gray-300 text-right font-mono">{{ totalCubicMeters.toFixed(2) }}</td>
               <td colspan="2" class="p-2 border border-gray-300"></td>
             </tr>
           </tfoot>
@@ -316,19 +316,19 @@ onMounted(async () => {
 
       <div class="stat">
         <div class="stat-title">Total Galones</div>
-        <div class="stat-value text-info">{{ totalGallons.toLocaleString() }}</div>
+        <div class="stat-value text-info">{{ totalGallons.toFixed(2) }}</div>
         <div class="stat-desc">Acumulados</div>
       </div>
 
       <div class="stat">
         <div class="stat-title">Total Barriles</div>
-        <div class="stat-value text-info">{{ totalBarrels }}</div>
+        <div class="stat-value text-info">{{ totalBarrels.toFixed(2) }}</div>
         <div class="stat-desc">Acumulados</div>
       </div>
 
       <div class="stat">
         <div class="stat-title">Total M³</div>
-        <div class="stat-value text-info">{{ totalCubicMeters }}</div>
+        <div class="stat-value text-info">{{ totalCubicMeters.toFixed(2) }}</div>
         <div class="stat-desc">Acumulados</div>
       </div>
     </div>
