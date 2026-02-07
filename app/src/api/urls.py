@@ -37,6 +37,7 @@ from api.technicals.GetTechnicalsAvaliablesAPI import GetTechnicalsAvaliablesAPI
 from api.workorders.CustodyChainDetailAPI import CustodyChainDetailAPI
 from api.workorders.AllInfoProjectAPI import AllInfoProjectAPI
 from api.workorders.CustodyChainEditAPI import CustodyChainEditAPI
+from api.workorders.RegenerateEquipmentCodes import RegenerateEquipmentCodesAPI
 
 urlpatterns = [
     # vehicles
@@ -73,5 +74,6 @@ urlpatterns = [
     path('workorders/custody_chain/create/', CreateCustodyChainAPI.as_view(), name='api_create_custody_chain'),
     path('workorders/custody_chain/detail/<int:id>/', CustodyChainDetailAPI.as_view(), name='api_custody_chain_detail'),
     path('workorders/custody_chain/<int:id>/edit/', CustodyChainEditAPI.as_view(), name='api_edit_custody_chain'),
+    path('workorders/custody_chain/regenerate-codes/', RegenerateEquipmentCodesAPI.as_view(), name='api_regenerate_equipment_codes'),
 
 ]
