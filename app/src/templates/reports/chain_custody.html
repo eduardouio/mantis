@@ -192,8 +192,8 @@
         {% for detail in custody_details %}
         {% if forloop.counter <= 9 %}
         <tr>
-          <td class="grid-cell">{{ detail.project_resource.detailed_description|default:"" }}</td>
-          <td class="grid-cell" style="background-color: #f7f7f7;">{{ detail.project_resource.detailed_description|default:""|slice:"14:" }}</td>
+          <td class="grid-cell">{{ detail.equipment|default:"" }}</td>
+          <td class="grid-cell" style="background-color: #f7f7f7;">{{ detail.code_equipment|default:"" }}</td>
           <td class="grid-cell"></td>
           <td class="grid-cell"></td>
           <td class="grid-cell" style="background-color:#f7f7f7"></td>
