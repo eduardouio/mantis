@@ -29,7 +29,8 @@ const formData = ref({
   contact_phone_reference: '',
   client_po_reference: '',
   final_disposition_reference: '',
-  invoice_reference: ''
+  invoice_reference: '',
+  notes: ''
 });
 
 // Estadísticas (solo lectura, calculadas)
@@ -151,6 +152,7 @@ const handleSubmit = async () => {
       client_po_reference: formData.value.client_po_reference || null,
       final_disposition_reference: formData.value.final_disposition_reference || null,
       invoice_reference: formData.value.invoice_reference || null,
+      notes: formData.value.notes || null,
       total_gallons: stats.value.total_gallons,
       total_barrels: stats.value.total_barrels,
       total_cubic_meters: stats.value.total_cubic_meters,
@@ -462,6 +464,22 @@ const handleSubmit = async () => {
               </tr>
             </tfoot>
           </table>
+        </div>
+
+        <div class="divider">Notas Adicionales</div>
+
+        <!-- Campo de Notas -->
+        <div class="form-control w-full">
+          <label class="label">
+            <span class="label-text font-semibold">Notas</span>
+            <span class="label-text-alt text-gray-500">{{ formData.notes.length }}/500</span>
+          </label>
+          <textarea 
+            v-model="formData.notes" 
+            class="textarea textarea-bordered w-full h-24" 
+            placeholder="Ingrese notas adicionales sobre la planilla..."
+            maxlength="500"
+          ></textarea>
         </div>
 
         <div class="divider"></div>
