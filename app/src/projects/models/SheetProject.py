@@ -195,6 +195,12 @@ class SheetProjectDetail(BaseModel):
         ResourceItem,
         on_delete=models.PROTECT
     )
+    equipment = models.CharField(
+        "Equipo BT LV OT etc",
+        max_length=100,
+        blank=True,
+        null=True
+    )
     detail = models.TextField(
         "Detalle",
         blank=True,
@@ -226,23 +232,8 @@ class SheetProjectDetail(BaseModel):
         decimal_places=2,
         default=0
     )
-    unit_measurement = models.CharField(
-        "Unidad de Medida",
-        max_length=50,
-        choices=(
-            ("UNITY", "Unidad"),
-            ("DAIS", "Días")
-        ),
-        default="DAIS",
-    )
-    total_price = models.DecimalField(
-        "Precio Total",
-        max_digits=10,
-        decimal_places=2,
-        default=0
-    )
-    monthdays = models.JSONField(
-        'Días del Mes',
+    monthdays_apply_cost = models.JSONField(
+        'Días del Mes para Aplicar Costo',
         blank=True,
         null=True,
         default=None,
@@ -250,6 +241,5 @@ class SheetProjectDetail(BaseModel):
     )
 
     class Meta:
-        unique_together = ("sheet_project", "resource_item")
         verbose_name = "Detalle de Planilla de Proyecto"
         verbose_name_plural = "Detalles de Planilla de Proyecto"
