@@ -4,7 +4,8 @@ from django.db import transaction
 import json
 from datetime import datetime
 
-from projects.models import Project, SheetProject
+from projects.models import Project, SheetProject, SheetProjectDetail
+from equipment.models.ResourceItem import ResourceItem
 
 
 class CreateWorkSheetProjectAPI(View):
@@ -107,6 +108,44 @@ class CreateWorkSheetProjectAPI(View):
 
         sheet.save()
 
+        # Procesar los detalles (recursos seleccionados)
+        details = data.get("details", [])
+        created_details = []
+        
+        for detail_data in details:
+            resource_item_id = detail_data.get("resource_item_id")
+            if not resource_item_id:
+                continue
+                
+            try:
+                resource_item = ResourceItem.objects.get(id=resource_item_id, is_active=True)
+            except ResourceItem.DoesNotExist:
+                continue
+            
+            # Determinar la unidad basada en el tipo de recurso
+            item_unity = "DIAS" if detail_data.get("type_resource") == "SERVICIO" else "UNIDAD"
+            unit_measurement = "DAIS" if detail_data.get("type_resource") == "SERVICIO" else "UNITY"
+            
+            detail = SheetProjectDetail(
+                sheet_project=sheet,
+                resource_item=resource_item,
+                detail=detail_data.get("detailed_description", ""),
+                item_unity=item_unity,
+                quantity=detail_data.get("quantity", 0),
+                unit_price=detail_data.get("cost", 0),
+                total_line=detail_data.get("total_line", 0),
+                unit_measurement=unit_measurement,
+                total_price=detail_data.get("total_price", 0),
+                monthdays=detail_data.get("monthdays")
+            )
+            detail.save()
+            created_details.append({
+                "id": detail.id,
+                "resource_item_id": resource_item.id,
+                "resource_item_code": resource_item.code,
+                "detail": detail.detail
+            })
+
         return JsonResponse(
             {
                 "success": True,
@@ -117,7 +156,9 @@ class CreateWorkSheetProjectAPI(View):
                     "project_id": project.id,
                     "period_start": sheet.period_start.isoformat(),
                     "period_end": sheet.period_end.isoformat() if sheet.period_end else None,
-                    "status": sheet.status
+                    "status": sheet.status,
+                    "details_count": len(created_details),
+                    "details": created_details
                 },
             },
             status=201

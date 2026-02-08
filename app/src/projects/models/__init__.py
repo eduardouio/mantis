@@ -14,7 +14,8 @@ from projects.models.FinalDispositionCertificate import (
     FinalDispositionCertificateDetail
 )
 from .SheetProject import (
-    SheetProject
+    SheetProject,
+    SheetProjectDetail
 )
 
 from .ShippingGuide import (
@@ -28,6 +29,7 @@ __all__ = [
     'Project',
     'ProjectResourceItem',
     'SheetProject',
+    'SheetProjectDetail',
     'CustodyChain',
     'ChainCustodyDetail',
     'FinalDispositionCertificate',

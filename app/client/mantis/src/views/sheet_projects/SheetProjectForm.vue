@@ -241,8 +241,8 @@ const handleSubmit = async () => {
       resultId = payload.id;
       successMessage.value = 'Planilla actualizada exitosamente';
     } else {
-      // Crear nueva planilla
-      resultId = await sheetProjectStore.addSheetProject(payload);
+      // Crear nueva planilla con los recursos seleccionados
+      resultId = await sheetProjectStore.addSheetProject(payload, selectedResources.value);
       successMessage.value = `Planilla creada exitosamente con ID: ${resultId}`;
     }
     

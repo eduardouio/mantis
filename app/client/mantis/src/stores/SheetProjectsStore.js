@@ -78,12 +78,13 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
     },
     actions: {
         /**
-         * Crear una nueva planilla
+         * Crear una nueva planilla con detalles de recursos
          */
-        async addSheetProject(sheetProject) {
+        async addSheetProject(sheetProject, selectedResources = []) {
             this.loading = true;
             this.error = null;
             console.log("Adding new sheet project", sheetProject);
+            console.log("Selected resources:", selectedResources);
             
             try {
                 const payload = {
@@ -101,6 +102,23 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 if (sheetProject.client_po_reference) payload.client_po_reference = sheetProject.client_po_reference;
                 if (sheetProject.final_disposition_reference) payload.final_disposition_reference = sheetProject.final_disposition_reference;
                 if (sheetProject.invoice_reference) payload.invoice_reference = sheetProject.invoice_reference;
+                
+                // Agregar detalles de recursos seleccionados
+                if (selectedResources && selectedResources.length > 0) {
+                    payload.details = selectedResources.map(resource => ({
+                        resource_item_id: resource.resource_item_id,
+                        detailed_description: resource.detailed_description,
+                        cost: resource.cost,
+                        type_resource: resource.type_resource,
+                        frequency_type: resource.frequency_type,
+                        interval_days: resource.interval_days,
+                        weekdays: resource.weekdays,
+                        monthdays: resource.monthdays,
+                        quantity: 0,
+                        total_line: 0,
+                        total_price: 0
+                    }));
+                }
                 
                 const response = await fetch(appConfig.URLAddSheetProject, {
                     method: "POST",
