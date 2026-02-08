@@ -24,6 +24,7 @@ const successMessage = ref('')
 const showReleaseConfirm = ref(false)
 const releaseReason = ref('')
 const isReleasing = ref(false)
+const releaseConfirmationStep = ref(false)
 
 const frequencyTypes = [
   { value: 'DAY', label: 'Por intervalo de días' },
@@ -52,14 +53,12 @@ const formData = ref({
   interval_days: 3,
   weekdays: [],
   monthdays: [],
-  maintenance_cost: 0,
   operation_start_date: null,
   operation_end_date: null,
   is_retired: false
 })
 
 const isEditMode = computed(() => !!props.resource)
-const isService = computed(() => formData.value.type_resource === 'SERVICIO')
 const isRental = computed(() => formData.value.type_resource === 'EQUIPO' && parseFloat(formData.value.cost) > 0)
 
 // Opciones de frecuencia disponibles según el tipo de recurso
@@ -96,7 +95,6 @@ watch(() => props.resource, (newResource) => {
       interval_days: newResource.interval_days || 3,
       weekdays: newResource.weekdays || [],
       monthdays: newResource.monthdays || [],
-      maintenance_cost: newResource.maintenance_cost || 0,
       operation_start_date: newResource.operation_start_date,
       operation_end_date: newResource.operation_end_date,
       is_retired: newResource.is_retired || false
@@ -276,7 +274,8 @@ const submitForm = async () => {
 
     if (isEditMode.value) {
       await projectResourceStore.updateResourceProject(payload)
-      successMessage.value = 'Recurso actualizado exitosamente'
+      emit('close')
+      return
     } else {
       await projectResourceStore.addResourcesToProject([payload])
       successMessage.value = 'Recurso agregado exitosamente'
@@ -294,44 +293,71 @@ const submitForm = async () => {
 }
 
 const handleReleaseResource = () => {
-  showReleaseConfirm.value = true
+  // Validar que existan ambas fechas
+  if (!formData.value.operation_start_date) {
+    errorMessage.value = 'Debe establecer la fecha de inicio de operaciones para liberar el recurso'
+    return
+  }
+  
+  if (!formData.value.operation_end_date) {
+    errorMessage.value = 'Debe establecer la fecha de fin de operaciones para liberar el recurso'
+    return
+  }
+  
+  // Validar que la fecha de fin sea mayor que la fecha de inicio
+  const startDate = new Date(formData.value.operation_start_date)
+  const endDate = new Date(formData.value.operation_end_date)
+  
+  if (endDate <= startDate) {
+    errorMessage.value = 'La fecha de fin de operaciones debe ser mayor que la fecha de inicio'
+    return
+  }
+  
+  // Si ya está en paso de confirmación, proceder con la liberación
+  if (releaseConfirmationStep.value) {
+    confirmRelease()
+  } else {
+    // Primer clic: activar confirmación
+    errorMessage.value = ''
+    releaseConfirmationStep.value = true
+  }
 }
 
 const cancelRelease = () => {
   showReleaseConfirm.value = false
   releaseReason.value = ''
+  releaseConfirmationStep.value = false
 }
 
 const confirmRelease = async () => {
-  if (!releaseReason.value.trim()) {
-    errorMessage.value = 'Debe ingresar un motivo de liberación'
-    return
-  }
-
   isReleasing.value = true
   errorMessage.value = ''
 
   try {
-    const payload = {
+    // Primero actualizar las fechas
+    const updatePayload = {
       id: formData.value.id,
-      is_retired: true,
-      retirement_date: new Date().toISOString().split('T')[0],
-      retirement_reason: releaseReason.value
+      operation_start_date: formData.value.operation_start_date,
+      operation_end_date: formData.value.operation_end_date
     }
-
-    await projectResourceStore.updateResourceProject(payload)
-    successMessage.value = 'Equipo liberado exitosamente'
+    
+    await projectResourceStore.updateResourceProject(updatePayload)
+    
+    // Luego liberar el recurso
+    await projectResourceStore.releaseResourceProject(formData.value.id)
+    
+    successMessage.value = 'Recurso liberado exitosamente'
     
     setTimeout(() => {
       emit('close')
+      projectResourceStore.fetchResourcesProject()
     }, 1500)
   } catch (error) {
-    console.error('Error al liberar equipo:', error)
-    errorMessage.value = error.message || 'Error al liberar el equipo'
+    console.error('Error al liberar recurso:', error)
+    errorMessage.value = error.message || 'Error al liberar el recurso'
+    releaseConfirmationStep.value = false
   } finally {
     isReleasing.value = false
-    showReleaseConfirm.value = false
-    releaseReason.value = ''
   }
 }
 
@@ -431,14 +457,21 @@ onMounted(() => {
             type="date" 
             class="input input-bordered w-full" 
             v-model="formData.operation_end_date"
+            :min="formData.operation_start_date"
           />
+          <div v-if="formData.operation_end_date && formData.operation_start_date" class="label">
+            <span class="label-text-alt" :class="new Date(formData.operation_end_date) <= new Date(formData.operation_start_date) ? 'text-error' : 'text-success'">
+              <i :class="new Date(formData.operation_end_date) <= new Date(formData.operation_start_date) ? 'las la-times-circle' : 'las la-check-circle'"></i>
+              {{ new Date(formData.operation_end_date) <= new Date(formData.operation_start_date) ? 'La fecha de fin debe ser mayor a la de inicio' : 'Rango de fechas válido' }}
+            </span>
+          </div>
         </div>
       </div>
 
-      <!-- Costo Alquiler -->
+      <!-- Costo -->
       <div class="grid grid-cols-12 gap-4 items-center">
         <label class="col-span-4 text-right font-semibold">
-          Costo Alquiler (Bs)
+          Costo
         </label>
         <div class="col-span-8">
           <input 
@@ -447,24 +480,6 @@ onMounted(() => {
             min="0"
             class="input input-bordered text-right w-full" 
             v-model="formData.cost"
-            placeholder="0.00"
-            :disabled="isService"
-          />
-        </div>
-      </div>
-
-      <!-- Costo Mantenimiento -->
-      <div class="grid grid-cols-12 gap-4 items-center">
-        <label class="col-span-4 text-right font-semibold">
-          Costo Mantenimiento (Bs)
-        </label>
-        <div class="col-span-8">
-          <input 
-            type="number" 
-            step="0.01" 
-            min="0"
-            class="input input-bordered text-right w-full" 
-            v-model="formData.maintenance_cost"
             placeholder="0.00"
           />
         </div>
@@ -516,7 +531,7 @@ onMounted(() => {
               <div class="label">
                 <span class="label-text-alt text-info">
                   <i class="las la-info-circle"></i>
-                  Mantenimiento cada {{ formData.interval_days || 0 }} día(s)
+                  Frecuencia cada {{ formData.interval_days || 0 }} día(s)
                 </span>
               </div>
             </div>
@@ -582,14 +597,14 @@ onMounted(() => {
       <div class="flex justify-between items-center pt-4">
         <div>
           <button 
-            v-if="isEditMode && formData.type_resource === 'EQUIPO' && !formData.is_retired"
+            v-if="isEditMode && !formData.is_retired"
             type="button" 
-            class="btn btn-warning btn-sm"
+            :class="releaseConfirmationStep ? 'btn btn-error btn-sm' : 'btn btn-warning btn-sm'"
             @click="handleReleaseResource"
             :disabled="isSubmitting || isReleasing"
           >
-            <i class="las la-hand-paper"></i>
-            Liberar Equipo
+            <i :class="releaseConfirmationStep ? 'las la-exclamation-triangle' : 'las la-hand-paper'"></i>
+            {{ releaseConfirmationStep ? 'CONFIRMAR LIBERACIÓN' : 'Liberar Recurso' }}
           </button>
         </div>
         <div class="flex gap-3">
