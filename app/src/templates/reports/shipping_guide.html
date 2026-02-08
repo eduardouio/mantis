@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Guia de Remision</title>
+		<style>
+			:root {
+				--line: #8a8a8a;
+				--line-soft: #bcbcbc;
+				--shade: #e7efe6;
+				--shade-2: #f1f5f1;
+				--text: #1f1f1f;
+			}
+
+			* {
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: Arial, Helvetica, sans-serif;
+				color: var(--text);
+				margin: 0;
+				background: #ffffff;
+			}
+
+			.page {
+				width: 210mm;
+				min-height: 297mm;
+				padding: 18mm 14mm;
+				margin: 0 auto;
+			}
+
+			.header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				border: 1px solid var(--line);
+				padding: 10px 12px;
+			}
+
+			.header-title {
+				font-size: 12px;
+				font-weight: 700;
+				text-transform: uppercase;
+				letter-spacing: 0.4px;
+			}
+
+			.header-right {
+				text-align: right;
+			}
+
+			.company {
+				font-size: 14px;
+				font-weight: 700;
+			}
+
+			.guide-number {
+				margin-top: 6px;
+				font-size: 12px;
+			}
+
+			.guide-number strong {
+				color: #b52626;
+				font-size: 14px;
+			}
+
+			.section {
+				margin-top: 10px;
+				border: 1px solid var(--line);
+			}
+
+			.section-title {
+				background: var(--shade);
+				font-size: 12px;
+				font-weight: 700;
+				text-transform: uppercase;
+				padding: 6px 8px;
+				border-bottom: 1px solid var(--line);
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+				font-size: 12px;
+			}
+
+			td,
+			th {
+				border: 1px solid var(--line-soft);
+				padding: 6px 8px;
+				vertical-align: top;
+			}
+
+			.no-top td,
+			.no-top th {
+				border-top: 0;
+			}
+
+			.no-bottom td,
+			.no-bottom th {
+				border-bottom: 0;
+			}
+
+			.tight td,
+			.tight th {
+				padding: 5px 6px;
+			}
+
+			.motivo-grid {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				gap: 0;
+			}
+
+			.motivo-item {
+				border-right: 1px solid var(--line-soft);
+				padding: 8px 10px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				min-height: 30px;
+				font-size: 12px;
+			}
+
+			.motivo-item:last-child {
+				border-right: 0;
+			}
+
+			.circle {
+				width: 10px;
+				height: 10px;
+				border: 1px solid var(--line);
+				border-radius: 50%;
+				display: inline-block;
+				margin-left: 8px;
+			}
+
+			.items th {
+				background: var(--shade-2);
+				font-weight: 700;
+				text-transform: uppercase;
+				font-size: 11px;
+			}
+
+			.items td {
+				height: 26px;
+			}
+
+			.signatures td {
+				height: 44px;
+			}
+
+			.label {
+				font-weight: 700;
+				text-transform: uppercase;
+				font-size: 11px;
+				color: #3a3a3a;
+				margin-right: 4px;
+			}
+
+			.footer-note {
+				font-size: 10px;
+				margin-top: 8px;
+				color: #5f5f5f;
+			}
+
+			@media print {
+				body {
+					background: #ffffff;
+				}
+
+				.page {
+					padding: 0;
+					width: auto;
+					min-height: auto;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<div class="header">
+				<div class="header-title">Guia de remision de equipos / materiales</div>
+				<div class="header-right">
+					<div class="company">PEISOL</div>
+					<div class="guide-number">Guia de remision no. <strong>0000000</strong></div>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="section-title">Datos de origen</div>
+				<table class="tight no-top">
+					<tr>
+						<td><span class="label">Fecha inicio del traslado:</span> ____/____/______</td>
+						<td><span class="label">Fecha finalizacion del traslado:</span> ____/____/______</td>
+					</tr>
+					<tr>
+						<td><span class="label">Lugar de origen:</span> ________________________________</td>
+						<td><span class="label">Transportista:</span> ________________________________</td>
+					</tr>
+					<tr>
+						<td><span class="label">Conductor:</span> ________________________________</td>
+						<td><span class="label">Placa:</span> ________________________________</td>
+					</tr>
+					<tr>
+						<td><span class="label">Despachado por:</span> ________________________________</td>
+						<td><span class="label">Proyecto:</span> ________________________________</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="section">
+				<div class="section-title">Motivo del traslado</div>
+				<div class="motivo-grid">
+					<div class="motivo-item">Utilizacion en proyectos <span class="circle"></span></div>
+					<div class="motivo-item">Devolucion <span class="circle"></span></div>
+					<div class="motivo-item">Alquiler <span class="circle"></span></div>
+					<div class="motivo-item">Venta <span class="circle"></span></div>
+				</div>
+			</div>
+
+			<div class="section">
+				<div class="section-title">Datos de destino</div>
+				<table class="tight no-top">
+					<tr>
+						<td><span class="label">Cliente:</span> ________________________________</td>
+						<td><span class="label">Contacto:</span> ________________________________</td>
+					</tr>
+					<tr>
+						<td><span class="label">Punto de llegada:</span> ________________________________</td>
+						<td><span class="label">Telefono:</span> ________________________________</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="section">
+				<table class="items no-top">
+					<thead>
+						<tr>
+							<th style="width: 8%">Item</th>
+							<th style="width: 12%">Cantidad</th>
+							<th style="width: 18%">Unidad</th>
+							<th>Descripcion</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>&nbsp;</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="section">
+				<table class="signatures no-top">
+					<tr>
+						<td style="width: 50%">
+							<div class="label">Despachado por:</div>
+							________________________________
+						</td>
+						<td style="width: 25%">
+							<div class="label">C.I.:</div>
+							____________________
+						</td>
+						<td style="width: 25%">
+							<div class="label">Firma:</div>
+							____________________
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="label">Transportado por:</div>
+							________________________________
+						</td>
+						<td>
+							<div class="label">C.I.:</div>
+							____________________
+						</td>
+						<td>
+							<div class="label">Firma:</div>
+							____________________
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="label">Recibido por:</div>
+							________________________________
+						</td>
+						<td>
+							<div class="label">C.I.:</div>
+							____________________
+						</td>
+						<td>
+							<div class="label">Firma:</div>
+							____________________
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<div class="label">Observaciones:</div>
+							____________________________________________________________________________
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="footer-note">PSL-CO-BS-F-002 | 10 Mayo 2017</div>
+		</div>
+	</body>
+</html>
