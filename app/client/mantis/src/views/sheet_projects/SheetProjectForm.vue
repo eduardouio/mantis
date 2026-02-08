@@ -221,17 +221,18 @@ const handleSubmit = async () => {
       period_start: formData.value.period_start,
       period_end: formData.value.period_end,
       service_type: formData.value.service_type,
+      status: formData.value.status || "IN_PROGRESS",
+      series_code: formData.value.series_code || "PSL-PS-00000-00",
       contact_reference: formData.value.contact_reference || null,
-      contact_phone_reference: formData.value.contact_phone_reference || null
+      contact_phone_reference: formData.value.contact_phone_reference || null,
+      client_po_reference: formData.value.client_po_reference || null,
+      invoice_reference: formData.value.invoice_reference || null,
+      final_disposition_reference: formData.value.final_disposition_reference || null
     };
     
-    // Si es actualización, agregar campos adicionales
+    // Si es actualización, agregar ID
     if (isEditMode.value) {
       payload.id = formData.value.id;
-      payload.status = formData.value.status;
-      payload.client_po_reference = formData.value.client_po_reference || null;
-      payload.final_disposition_reference = formData.value.final_disposition_reference || null;
-      payload.invoice_reference = formData.value.invoice_reference || null;
     }
     
     let resultId;

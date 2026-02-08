@@ -90,18 +90,19 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 const payload = {
                     project_id: sheetProject.project,
                     period_start: sheetProject.period_start,
-                    service_type: sheetProject.service_type
+                    period_end: sheetProject.period_end,
+                    service_type: sheetProject.service_type,
+                    status: sheetProject.status || "IN_PROGRESS",
+                    series_code: sheetProject.series_code || "PSL-PS-00000-00",
+                    client_po_reference: sheetProject.client_po_reference || null,
+                    invoice_reference: sheetProject.invoice_reference || null
                 };
                 
                 // Agregar campos opcionales si existen
                 if (sheetProject.issue_date) payload.issue_date = sheetProject.issue_date;
-                if (sheetProject.period_end) payload.period_end = sheetProject.period_end;
-                if (sheetProject.status) payload.status = sheetProject.status;
                 if (sheetProject.contact_reference) payload.contact_reference = sheetProject.contact_reference;
                 if (sheetProject.contact_phone_reference) payload.contact_phone_reference = sheetProject.contact_phone_reference;
-                if (sheetProject.client_po_reference) payload.client_po_reference = sheetProject.client_po_reference;
                 if (sheetProject.final_disposition_reference) payload.final_disposition_reference = sheetProject.final_disposition_reference;
-                if (sheetProject.invoice_reference) payload.invoice_reference = sheetProject.invoice_reference;
                 
                 // Agregar detalles de recursos seleccionados
                 if (selectedResources && selectedResources.length > 0) {
