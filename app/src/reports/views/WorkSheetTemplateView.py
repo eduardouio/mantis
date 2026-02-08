@@ -150,8 +150,44 @@ class WorkSheetTemplateView(TemplateView):
             
             unit_price_decimal = Decimal(str(unit_price)) if unit_price else Decimal("0")
             
-            # Lista vacía de días por ahora
+            # Determinar los días según el tipo de recurso
             days_list = ["" for d in range(1, 32)]
+            quantity = 0
+            
+            if project_resource.type_resource == "EQUIPO":
+                # Para equipos: usar calculate_rental_days
+                if period_start and period_end:
+                    days_dict = self.calculate_rental_days(
+                        project_resource, period_start, period_end, days_in_month
+                    )
+                    for day in range(1, 32):
+                        if days_dict.get(day, 0) == 1:
+                            days_list[day - 1] = "1"
+                    quantity = sum(1 for v in days_dict.values() if v == 1)
+            
+            elif project_resource.type_resource == "SERVICIO":
+                # Para servicios: obtener días de las cadenas de custodia
+                chain_details = ChainCustodyDetail.objects.filter(
+                    custody_chain__sheet_project=sheet_project,
+                    custody_chain__is_active=True,
+                    project_resource=project_resource,
+                    is_active=True
+                ).select_related("custody_chain")
+                
+                # Marcar los días según activity_date de cada cadena
+                for detail in chain_details:
+                    activity_date = detail.custody_chain.activity_date
+                    if activity_date and period_start and period_end:
+                        if period_start <= activity_date <= period_end:
+                            day_of_month = activity_date.day
+                            if 1 <= day_of_month <= 31:
+                                days_list[day_of_month - 1] = "1"
+                
+                quantity = sum(1 for d in days_list if d == "1")
+            
+            # Calcular costo total
+            total_cost = unit_price_decimal * Decimal(str(quantity))
+            subtotal += total_cost
             
             equipment_name = self.get_short_equipment_name(resource_item)
             detail_text = (
@@ -166,19 +202,14 @@ class WorkSheetTemplateView(TemplateView):
                     "item_number": item_number,
                     "equipment_name": equipment_name,
                     "detail": detail_text,
-                    "quantity": 0,
+                    "quantity": quantity,
                     "unit": item_unity,
                     "days": days_list,
                     "unit_price": unit_price_decimal,
-                    "total_cost": Decimal("0"),
+                    "total_cost": total_cost,
                     "type_resource": project_resource.type_resource,
                 }
             )
-
-        custody_chains = CustodyChain.objects.filter(
-            sheet_project=sheet_project, is_active=True
-        ).select_related("technical", "vehicle")
-
 
         custody_chains = CustodyChain.objects.filter(
             sheet_project=sheet_project, is_active=True
@@ -190,9 +221,6 @@ class WorkSheetTemplateView(TemplateView):
 
         total_gallons = sum(chain.total_gallons or 0 for chain in custody_chains)
         total_barrels = sum(chain.total_barrels or 0 for chain in custody_chains)
-        total_cubic_meters = sum(
-            chain.total_cubic_meters or 0 for chain in custody_chains
-        )
         total_cubic_meters = sum(
             chain.total_cubic_meters or 0 for chain in custody_chains
         )
