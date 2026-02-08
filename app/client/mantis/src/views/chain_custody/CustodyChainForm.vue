@@ -5,7 +5,6 @@ import { appConfig } from '@/AppConfig.js'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
 import { UseVehicleStore } from '@/stores/VehicleStore'
-import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 import { UseCustodyChainStore } from '@/stores/CustodyChainStore'
 import Modal from '@/components/common/Modal.vue'
 import TechnicalPresentation from '@/components/resources/TechnicalPresentation.vue'
@@ -16,7 +15,6 @@ import { fromGallons, fromBarrels, fromCubicMeters } from '@/utils/volumenConver
 const projectStore = UseProjectStore()
 const technicalStore = UseTechnicalStore()
 const vehicleStore = UseVehicleStore()
-const projectResourceStore = UseProjectResourceStore()
 const custodyChainStore = UseCustodyChainStore()
 
 const router = useRouter()
@@ -167,7 +165,6 @@ onMounted(async () => {
   await projectStore.fetchProjectData()
   await technicalStore.fetchTechnicalsAvailable()
   await vehicleStore.fetchVehicles()
-  await projectResourceStore.fetchResourcesProject()
   
   if (isEditMode.value) {
     await loadCustodyChainData()
@@ -178,12 +175,25 @@ onMounted(async () => {
   }
 })
 
+// Obtener la work order activa (IN_PROGRESS) de la planilla
+const activeWorkOrder = computed(() => {
+  return projectStore.workOrders.find(wo => wo.status === 'IN_PROGRESS') || null
+})
+
+// Recursos tipo SERVICIO desde los detalles de la planilla activa
 const availableResources = computed(() => {
-  return projectResourceStore.resourcesProject
-    .filter(resource => resource.type === 'SERVIC')
-    .map(resource => ({
-      ...resource,
-      selected: selectedResourceIds.value.includes(resource.id)
+  if (!activeWorkOrder.value || !activeWorkOrder.value.details) return []
+  
+  return activeWorkOrder.value.details
+    .filter(detail => detail.project_resource_item?.type_resource === 'SERVICIO')
+    .map(detail => ({
+      id: detail.project_resource_item.id,
+      resource_item_code: detail.resource_item_code,
+      detailed_description: detail.project_resource_item.detailed_description || detail.detail,
+      cost: detail.unit_price || detail.project_resource_item.cost || 0,
+      is_active: detail.metadata?.is_active ?? true,
+      type: 'SERVIC',
+      selected: selectedResourceIds.value.includes(detail.project_resource_item.id)
     }))
 })
 
@@ -1008,7 +1018,7 @@ const currentStatusBadge = computed(() => {
       <!-- Recursos del Proyecto -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">
-          Recursos del Proyecto
+          Recursos de la Planilla
           <span class="badge badge-primary ml-2">{{ selectedResources.length }} seleccionados</span>
         </h6>
         
