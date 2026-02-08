@@ -1,6 +1,5 @@
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
-from django.contrib import messages
 from projects.models.SheetProject import SheetProject, SheetProjectDetail
 from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
 from projects.models.Project import ProjectResourceItem
@@ -45,11 +44,9 @@ class WorkSheetTemplateView(TemplateView):
         op_start = project_resource.operation_start_date
         op_end = project_resource.operation_end_date
 
-        # Validar que todas las fechas necesarias existan
         if not period_start or not period_end:
             return days_count
-        
-        # Calcular fechas efectivas considerando las fechas de operación
+
         effective_start = max(period_start, op_start) if op_start else period_start
         effective_end = min(period_end, op_end) if op_end else period_end
 
@@ -93,11 +90,9 @@ class WorkSheetTemplateView(TemplateView):
 
         period_start = sheet_project.period_start
         period_end = sheet_project.period_end
-        
-        # Lista para almacenar errores de validación
+
         validation_errors = []
 
-        # Validar que existan las fechas del período
         if not period_start or not period_end:
             validation_errors.append(
                 "La planilla no tiene fechas de período definidas. "
@@ -133,13 +128,60 @@ class WorkSheetTemplateView(TemplateView):
         subtotal = Decimal("0")
         item_number = 0
 
-        equipment_resources = ProjectResourceItem.objects.filter(
-            project=project, type_resource="EQUIPO", is_active=True, is_retired=False
-        ).select_related("resource_item")
+        # Obtener todas las cadenas de custodia del sheet_project
+        custody_chains = CustodyChain.objects.filter(
+            sheet_project=sheet_project, is_active=True
+        ).select_related("technical", "vehicle")
 
-        for project_resource in equipment_resources:
+        # Obtener todos los detalles de las cadenas de custodia
+        chain_details = ChainCustodyDetail.objects.filter(
+            custody_chain__sheet_project=sheet_project,
+            custody_chain__is_active=True,
+            is_active=True
+        ).select_related(
+            "project_resource__resource_item",
+            "project_resource__project",
+            "custody_chain"
+        )
+
+        # Agrupar recursos por project_resource para evitar duplicados
+        resources_data = {}
+        
+        for detail in chain_details:
+            project_resource = detail.project_resource
             resource_item = project_resource.resource_item
+            resource_key = project_resource.id
 
+            # Debug: imprimir información del recurso
+            print(f"Processing detail: PR_ID={project_resource.id}, Type={project_resource.type_resource}, Item={resource_item.name}")
+
+            # Solo procesar equipos (no servicios)
+            if project_resource.type_resource != "EQUIPO":
+                continue
+
+            if resource_key not in resources_data:
+                resources_data[resource_key] = {
+                    "project_resource": project_resource,
+                    "resource_item": resource_item,
+                    "days_used": set(),  # Usar set para evitar días duplicados
+                }
+
+            # Marcar el día de la actividad
+            activity_date = detail.custody_chain.activity_date
+            if activity_date and period_start and period_end:
+                if period_start <= activity_date <= period_end:
+                    resources_data[resource_key]["days_used"].add(activity_date.day)
+
+        # Debug: imprimir total de recursos únicos encontrados
+        print(f"Total unique equipment resources found: {len(resources_data)}")
+
+        # Crear ítems para cada recurso
+        for resource_key, data in resources_data.items():
+            project_resource = data["project_resource"]
+            resource_item = data["resource_item"]
+            days_used = data["days_used"]
+
+            # Obtener precio del detalle de la planilla o del costo del recurso
             sheet_detail = SheetProjectDetail.objects.filter(
                 sheet_project=sheet_project, resource_item=resource_item
             ).first()
@@ -149,47 +191,38 @@ class WorkSheetTemplateView(TemplateView):
             )
             item_unity = sheet_detail.item_unity if sheet_detail else "DIAS"
 
-            days_count = self.calculate_rental_days(
-                project_resource, period_start, period_end, days_in_month
+            total_days = len(days_used)
+
+            # Agregar el equipo aunque tenga 0 días
+            item_number += 1
+            unit_price_decimal = (
+                Decimal(str(unit_price)) if unit_price else Decimal("0")
+            )
+            total_cost = total_days * unit_price_decimal
+            subtotal += total_cost
+
+            # Crear lista de días marcados
+            days_list = ["1" if d in days_used else "" for d in range(1, 32)]
+
+            equipment_name = self.get_short_equipment_name(resource_item)
+            detail_text = (
+                project_resource.detailed_description
+                or f"ALQUILER DE {resource_item.name} {resource_item.code}"
             )
 
-            total_days = sum(
-                1 for d in range(1, days_in_month + 1) if days_count[d] > 0
+            items_list.append(
+                {
+                    "item_number": item_number,
+                    "equipment_name": equipment_name,
+                    "detail": detail_text,
+                    "quantity": total_days,
+                    "unit": item_unity,
+                    "days": days_list,
+                    "unit_price": unit_price_decimal,
+                    "total_cost": total_cost,
+                    "type_resource": "EQUIPO",
+                }
             )
-
-            if total_days > 0:
-                item_number += 1
-                unit_price_decimal = (
-                    Decimal(str(unit_price)) if unit_price else Decimal("0")
-                )
-                total_cost = total_days * unit_price_decimal
-                subtotal += total_cost
-
-                days_list = ["1" if days_count[d] > 0 else "" for d in range(1, 32)]
-
-                equipment_name = self.get_short_equipment_name(resource_item)
-                detail = (
-                    project_resource.detailed_description
-                    or f"ALQUILER DE {resource_item.name} {resource_item.code}"
-                )
-
-                items_list.append(
-                    {
-                        "item_number": item_number,
-                        "equipment_name": equipment_name,
-                        "detail": detail,
-                        "quantity": total_days,
-                        "unit": item_unity,
-                        "days": days_list,
-                        "unit_price": unit_price_decimal,
-                        "total_cost": total_cost,
-                        "type_resource": "EQUIPO",
-                    }
-                )
-
-        custody_chains = CustodyChain.objects.filter(
-            sheet_project=sheet_project, is_active=True
-        ).select_related("technical", "vehicle")
 
         service_days_count = {d: 0 for d in range(1, 32)}
         service_total_cost = Decimal("0")
