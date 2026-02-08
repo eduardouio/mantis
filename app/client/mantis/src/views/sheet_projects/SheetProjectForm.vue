@@ -1,11 +1,12 @@
 <script setup>
-import { RouterLink, useRouter } from 'vue-router';
+import { RouterLink, useRouter, useRoute } from 'vue-router';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
 import { onMounted, computed, ref } from 'vue';
 
 const router = useRouter();
+const route = useRoute();
 const sheetProjectStore = UseSheetProjectsStore();
 const projectStore = UseProjectStore();
 const projectResourceStore = UseProjectResourceStore();
@@ -14,24 +15,12 @@ const isSubmitting = ref(false);
 const project = computed(() => projectStore.project);
 const resources = computed(() => projectResourceStore.resourcesProject || []);
 
-// Formulario con todos los campos
-const formData = ref({
-  period_start: '',
-  period_end: '',
-  issue_date: new Date().toISOString().split('T')[0],
-  service_type: 'ALQUILER Y MANTENIMIENTO',
-  status: 'IN_PROGRESS',
-  series_code: 'PSL-PS-0000-0000',
-  secuence_prefix: 'PSL-PS',
-  secuence_year: new Date().getFullYear(),
-  secuence_number: 0,
-  contact_reference: '',
-  contact_phone_reference: '',
-  client_po_reference: '',
-  final_disposition_reference: '',
-  invoice_reference: '',
-  notes: ''
-});
+// Detectar si es modo edición o creación
+const sheetId = ref(route.params.id ? parseInt(route.params.id) : null);
+const isEditMode = computed(() => sheetId.value !== null);
+
+// Usar el store como fuente de datos
+const formData = computed(() => sheetProjectStore.newSheetProject);
 
 // Estadísticas (solo lectura, calculadas)
 const stats = ref({
@@ -93,16 +82,45 @@ const handleAttachCertificateFile = () => {
 onMounted(async () => {
   await projectStore.fetchProjectData();
   await projectResourceStore.fetchResourcesProject();
-  sheetProjectStore.initializeNewSheetProject(project.value);
   
-  // Inicializar contactos del proyecto
-  formData.value.contact_reference = project.value.contact_name || '';
-  formData.value.contact_phone_reference = project.value.contact_phone || '';
+  if (isEditMode.value) {
+    // Modo edición: cargar datos de la planilla existente
+    const existingSheet = sheetProjectStore.getSheetProjectById(sheetId.value);
+    if (existingSheet) {
+      // Cargar datos en el store
+      Object.assign(sheetProjectStore.newSheetProject, {
+        id: existingSheet.id,
+        project: existingSheet.project?.id || project.value.id,
+        period_start: existingSheet.period_start || '',
+        period_end: existingSheet.period_end || '',
+        issue_date: existingSheet.issue_date || '',
+        service_type: existingSheet.service_type || 'ALQUILER Y MANTENIMIENTO',
+        status: existingSheet.status || 'IN_PROGRESS',
+        series_code: existingSheet.series_code || 'PSL-PS-0000-0000',
+        secuence_prefix: existingSheet.secuence_prefix || 'PSL-PS',
+        secuence_year: existingSheet.secuence_year || new Date().getFullYear(),
+        secuence_number: existingSheet.secuence_number || 0,
+        contact_reference: existingSheet.contact_reference || '',
+        contact_phone_reference: existingSheet.contact_phone_reference || '',
+        client_po_reference: existingSheet.client_po_reference || '',
+        final_disposition_reference: existingSheet.final_disposition_reference || '',
+        invoice_reference: existingSheet.invoice_reference || '',
+        notes: existingSheet.notes || ''
+      });
+    } else {
+      errorMessage.value = 'Planilla no encontrada';
+    }
+  } else {
+    // Modo creación: inicializar con datos del proyecto
+    sheetProjectStore.initializeNewSheetProject(project.value);
+  }
   
-  // Seleccionar automáticamente todos los recursos activos
-  resources.value
-    .filter(r => r.is_active)
-    .forEach(r => { r.is_selected = true; });
+  // Seleccionar automáticamente todos los recursos activos (solo en modo creación)
+  if (!isEditMode.value) {
+    resources.value
+      .filter(r => r.is_active)
+      .forEach(r => { r.is_selected = true; });
+  }
 });
 
 const handleSubmit = async () => {
@@ -119,63 +137,50 @@ const handleSubmit = async () => {
       throw new Error('El tipo de servicio es requerido');
     }
     
-    if (selectedResources.value.length === 0) {
+    if (!isEditMode.value && selectedResources.value.length === 0) {
       throw new Error('Debes seleccionar al menos un recurso para la planilla');
     }
     
-    // Construir payload con recursos seleccionados
-    const resourcesPayload = selectedResources.value.map(r => ({
-      id: r.id,
-      resource_item_code: r.resource_item_code,
-      resource_item_name: r.resource_item_name,
-      type_resource: r.type_resource,
-      cost: r.cost,
-      maintenance_cost: r.maintenance_cost,
-      operation_start_date: r.operation_start_date,
-      is_active: r.is_active,
-      is_selected: r.is_selected
-    }));
-
-    const sheetProject = {
-      project: project.value.id,
+    // Construir payload desde el store
+    const payload = {
+      project: formData.value.project,
       period_start: formData.value.period_start,
-      period_end: formData.value.period_end || null,
-      issue_date: formData.value.issue_date || null,
       service_type: formData.value.service_type,
-      status: formData.value.status,
-      series_code: formData.value.series_code,
-      secuence_prefix: formData.value.secuence_prefix,
-      secuence_year: formData.value.secuence_year,
-      secuence_number: formData.value.secuence_number,
       contact_reference: formData.value.contact_reference || null,
-      contact_phone_reference: formData.value.contact_phone_reference || null,
-      client_po_reference: formData.value.client_po_reference || null,
-      final_disposition_reference: formData.value.final_disposition_reference || null,
-      invoice_reference: formData.value.invoice_reference || null,
-      notes: formData.value.notes || null,
-      total_gallons: stats.value.total_gallons,
-      total_barrels: stats.value.total_barrels,
-      total_cubic_meters: stats.value.total_cubic_meters,
-      subtotal: stats.value.subtotal,
-      tax_amount: stats.value.tax_amount,
-      total: stats.value.total,
-      selected_resources: resourcesPayload
+      contact_phone_reference: formData.value.contact_phone_reference || null
     };
     
-    // Mostrar JSON para validación antes de enviar
-    console.log('=== PAYLOAD PLANILLA ===');
-    console.log(JSON.stringify(sheetProject, null, 2));
+    // Si es actualización, agregar campos adicionales
+    if (isEditMode.value) {
+      payload.id = formData.value.id;
+      payload.period_end = formData.value.period_end || null;
+      payload.status = formData.value.status;
+      payload.client_po_reference = formData.value.client_po_reference || null;
+      payload.final_disposition_reference = formData.value.final_disposition_reference || null;
+      payload.invoice_reference = formData.value.invoice_reference || null;
+    }
     
-    // TODO: Descomentar cuando el backend esté listo
-    // const sheetId = await sheetProjectStore.addSheetProject(sheetProject);
-    successMessage.value = 'JSON generado — revisa la consola del navegador para validar el payload.';
+    console.log(`=== ${isEditMode.value ? 'ACTUALIZANDO' : 'CREANDO'} PLANILLA ===`);
+    console.log(JSON.stringify(payload, null, 2));
     
-    // setTimeout(() => {
-    //   router.push({ name: 'projects-detail' });
-    // }, 1500);
+    let resultId;
+    if (isEditMode.value) {
+      // Actualizar planilla existente
+      await sheetProjectStore.updateSheetProject(payload);
+      resultId = payload.id;
+      successMessage.value = 'Planilla actualizada exitosamente';
+    } else {
+      // Crear nueva planilla
+      resultId = await sheetProjectStore.addSheetProject(payload);
+      successMessage.value = `Planilla creada exitosamente con ID: ${resultId}`;
+    }
+    
+    setTimeout(() => {
+      router.push({ name: 'projects-detail' });
+    }, 1500);
   } catch (error) {
-    console.error('Error al crear planilla:', error);
-    errorMessage.value = error.message || 'Error al crear la planilla';
+    console.error('Error al guardar planilla:', error);
+    errorMessage.value = error.message || 'Error al guardar la planilla';
   } finally {
     isSubmitting.value = false;
   }
@@ -209,7 +214,7 @@ const handleSubmit = async () => {
           <div>
             <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
               <i class="las la-file-invoice text-blue-600"></i>
-              Planilla #{{ formData.id || 'Nueva' }} — Proyecto #{{ project?.id }}
+              {{ isEditMode ? `Planilla ${formData.series_code}` : 'Nueva Planilla' }} — Proyecto #{{ project?.id }}
             </h1>
             <p class="text-gray-600 text-sm mt-1">{{ project?.partner_name || '' }} · {{ project?.location || '' }}</p>
           </div>
@@ -472,7 +477,7 @@ const handleSubmit = async () => {
         <div class="form-control w-full">
           <label class="label">
             <span class="label-text font-semibold">Notas</span>
-            <span class="label-text-alt text-gray-500">{{ formData.notes.length }}/500</span>
+            <span class="label-text-alt text-gray-500">{{ (formData.notes || '').length }}/500</span>
           </label>
           <textarea 
             v-model="formData.notes" 
@@ -509,7 +514,7 @@ const handleSubmit = async () => {
             <button type="submit" class="btn btn-primary" :disabled="isSubmitting">
               <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
               <i v-else class="las la-save text-lg"></i>
-              {{ isSubmitting ? 'Creando...' : 'Crear Planilla' }}
+              {{ isSubmitting ? (isEditMode ? 'Actualizando...' : 'Creando...') : (isEditMode ? 'Actualizar Planilla' : 'Crear Planilla') }}
             </button>
           </div>
         </div>

@@ -27,6 +27,7 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
             subtotal: 0,
             tax_amount: 0,
             total: 0,
+            notes: '',
             sheet_project_file: null,
             certificate_final_disposition_file: null
         },
@@ -139,10 +140,25 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
             console.log("Updating sheet project:", sheetProject);
             
             try {
+                const payload = {
+                    id: sheetProject.id,
+                    period_start: sheetProject.period_start,
+                    service_type: sheetProject.service_type
+                };
+                
+                // Agregar campos opcionales si existen
+                if (sheetProject.period_end) payload.period_end = sheetProject.period_end;
+                if (sheetProject.status) payload.status = sheetProject.status;
+                if (sheetProject.contact_reference) payload.contact_reference = sheetProject.contact_reference;
+                if (sheetProject.contact_phone_reference) payload.contact_phone_reference = sheetProject.contact_phone_reference;
+                if (sheetProject.client_po_reference) payload.client_po_reference = sheetProject.client_po_reference;
+                if (sheetProject.final_disposition_reference) payload.final_disposition_reference = sheetProject.final_disposition_reference;
+                if (sheetProject.invoice_reference) payload.invoice_reference = sheetProject.invoice_reference;
+                
                 const response = await fetch(appConfig.URLUpdateSheetProject, {
                     method: "PUT",
                     headers: appConfig.headers,
-                    body: JSON.stringify(sheetProject)
+                    body: JSON.stringify(payload)
                 });
                 
                 const data = await response.json();
@@ -227,6 +243,7 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 subtotal: 0,
                 tax_amount: 0,
                 total: 0,
+                notes: '',
                 sheet_project_file: null,
                 certificate_final_disposition_file: null
             };
@@ -259,6 +276,7 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 subtotal: 0,
                 tax_amount: 0,
                 total: 0,
+                notes: '',
                 sheet_project_file: null,
                 certificate_final_disposition_file: null
             };

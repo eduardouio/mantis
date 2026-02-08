@@ -77,6 +77,13 @@ const openSheetFormModal = () => {
   router.push({ name: 'sheet-project-form' });
 };
 
+const editSheet = (sheet) => {
+  router.push({ 
+    name: 'sheet-project-form', 
+    params: { id: sheet.id } 
+  });
+};
+
 const viewCustodyChains = (sheetId) => {
   router.push({ 
     name: 'sheet-project-view', 

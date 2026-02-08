@@ -39,7 +39,7 @@ const router = createRouter({
       component: SheetProjectView,
     },
     {
-      path: '/work-sheet/form',
+      path: '/work-sheet/form/:id?',
       name: 'sheet-project-form',
       component: SheetProjectForm,
     },
