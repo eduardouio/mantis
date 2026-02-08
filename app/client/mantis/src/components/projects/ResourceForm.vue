@@ -345,13 +345,10 @@ const confirmRelease = async () => {
     
     // Luego liberar el recurso
     await projectResourceStore.releaseResourceProject(formData.value.id)
-    
-    successMessage.value = 'Recurso liberado exitosamente'
-    
-    setTimeout(() => {
-      emit('close')
-      projectResourceStore.fetchResourcesProject()
-    }, 1500)
+
+    projectResourceStore.fetchResourcesProject()
+    emit('close')
+    return
   } catch (error) {
     console.error('Error al liberar recurso:', error)
     errorMessage.value = error.message || 'Error al liberar el recurso'
