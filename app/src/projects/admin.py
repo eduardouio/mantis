@@ -12,6 +12,7 @@ from projects.models import (
     ShippingGuide,
     ShippingGuideDetail
 )
+from projects.models.SheetProject import SheetProjectDetail
 
 
 class BaseModelAdmin(SimpleHistoryAdmin):
@@ -167,6 +168,36 @@ class SheetProjectAdmin(BaseModelAdmin):
         }),
         ('Auditoría', {
             'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'), 'classes': ('collapse',)
+        })
+    )
+
+
+@admin.register(SheetProjectDetail)
+class SheetProjectDetailAdmin(BaseModelAdmin):
+    list_display = (
+        'id', 'sheet_project', 'resource_item', 'equipment', 'item_unity',
+        'quantity', 'unit_price', 'total_line'
+    )
+    list_filter = (
+        'sheet_project', 'resource_item', 'item_unity', 'is_active'
+    )
+    search_fields = (
+        'sheet_project__series_code', 'resource_item__name', 'equipment', 'detail'
+    )
+    fieldsets = (
+        ('Detalle', {
+            'fields': (
+                'sheet_project', 'resource_item', 'equipment', 'detail',
+                'item_unity', 'quantity', 'unit_price', 'total_line',
+                'monthdays_apply_cost', 'is_active'
+            )
+        }),
+        ('Notas', {
+            'fields': ('notes',), 'classes': ('collapse',)
+        }),
+        ('Auditoría', {
+            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'classes': ('collapse',)
         })
     )
 
