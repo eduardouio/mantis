@@ -21,11 +21,25 @@ const formData = ref({
   issue_date: new Date().toISOString().split('T')[0],
   service_type: 'ALQUILER Y MANTENIMIENTO',
   status: 'IN_PROGRESS',
+  series_code: 'PSL-PS-0000-0000',
+  secuence_prefix: 'PSL-PS',
+  secuence_year: new Date().getFullYear(),
+  secuence_number: 0,
   contact_reference: '',
   contact_phone_reference: '',
   client_po_reference: '',
   final_disposition_reference: '',
   invoice_reference: ''
+});
+
+// Estadísticas (solo lectura, calculadas)
+const stats = ref({
+  total_gallons: 0,
+  total_barrels: 0,
+  total_cubic_meters: 0,
+  subtotal: 0,
+  tax_amount: 0,
+  total: 0
 });
 
 const errorMessage = ref('');
@@ -43,6 +57,17 @@ const statusOptions = [
   { value: 'CANCELLED', label: 'Cancelado' }
 ];
 
+// Placeholder para adjuntar archivos PDF (implementación futura)
+const handleAttachSheetFile = () => {
+  // TODO: Implementar subida de archivo de planilla
+  console.log('Adjuntar archivo de planilla');
+};
+
+const handleAttachCertificateFile = () => {
+  // TODO: Implementar subida de certificado de disposición final
+  console.log('Adjuntar certificado de disposición final');
+};
+
 onMounted(async () => {
   await projectStore.fetchProjectData();
   await projectResourceStore.fetchResourcesProject();
@@ -59,7 +84,6 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
   
   try {
-    // Validaciones básicas
     if (!formData.value.period_start) {
       throw new Error('La fecha de inicio del período es requerida');
     }
@@ -75,6 +99,10 @@ const handleSubmit = async () => {
       issue_date: formData.value.issue_date || null,
       service_type: formData.value.service_type,
       status: formData.value.status,
+      series_code: formData.value.series_code,
+      secuence_prefix: formData.value.secuence_prefix,
+      secuence_year: formData.value.secuence_year,
+      secuence_number: formData.value.secuence_number,
       contact_reference: formData.value.contact_reference || null,
       contact_phone_reference: formData.value.contact_phone_reference || null,
       client_po_reference: formData.value.client_po_reference || null,
@@ -85,7 +113,6 @@ const handleSubmit = async () => {
     const sheetId = await sheetProjectStore.addSheetProject(sheetProject);
     successMessage.value = 'Planilla creada exitosamente';
     
-    // Redirigir después de un momento
     setTimeout(() => {
       router.push({ name: 'projects-detail' });
     }, 1500);
@@ -99,324 +126,235 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="w-[90%] mx-auto p-4">
-    <div class="mb-4">
-      <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
-        <i class="las la-file-invoice text-blue-600"></i>
-        Nueva Planilla del Proyecto #{{ project?.id }}
-      </h1>
-      <p class="text-gray-600 text-sm mt-1">Complete todos los campos requeridos para crear una nueva planilla de servicio</p>
+  <div class="w-[95%] mx-auto p-3">
+
+    <!-- ===== ENCABEZADO: Título + Botones PDF ===== -->
+    <div class="flex items-center justify-between mb-3">
+      <div>
+        <h1 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+          <i class="las la-file-invoice text-blue-600"></i>
+          Planilla #{{ formData.id || 'Nueva' }} — Proyecto #{{ project?.id }}
+        </h1>
+        <p class="text-gray-500 text-xs mt-0.5">{{ project?.partner_name || '' }} · {{ project?.location || '' }}</p>
+      </div>
+      <div class="flex gap-2">
+        <button type="button" @click="handleAttachSheetFile" class="btn btn-sm btn-outline btn-info gap-1">
+          <i class="las la-file-pdf text-lg"></i> Planilla PDF
+        </button>
+        <button type="button" @click="handleAttachCertificateFile" class="btn btn-sm btn-outline btn-warning gap-1">
+          <i class="las la-file-pdf text-lg"></i> Cert. Disp. Final
+        </button>
+      </div>
     </div>
-    
-    <form @submit.prevent="handleSubmit" class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg">
-      <div class="card-body space-y-6">
-        
-        <!-- Mensaje de Error -->
-        <div v-if="errorMessage" class="alert alert-error shadow-lg">
-          <div>
-            <i class="las la-exclamation-circle text-2xl"></i>
-            <span>{{ errorMessage }}</span>
-          </div>
-        </div>
 
-        <!-- Mensaje de Éxito -->
-        <div v-if="successMessage" class="alert alert-success shadow-lg">
-          <div>
-            <i class="las la-check-circle text-2xl"></i>
-            <span>{{ successMessage }}</span>
-          </div>
-        </div>
+    <!-- ===== ALERTAS ===== -->
+    <div v-if="errorMessage" class="alert alert-error shadow-sm mb-2 py-2 text-sm">
+      <i class="las la-exclamation-circle text-lg"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+    <div v-if="successMessage" class="alert alert-success shadow-sm mb-2 py-2 text-sm">
+      <i class="las la-check-circle text-lg"></i>
+      <span>{{ successMessage }}</span>
+    </div>
 
-        <!-- Información del Proyecto (solo lectura) -->
-        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <h3 class="font-semibold text-blue-700 mb-3 flex items-center gap-2">
-            <i class="las la-building"></i>
-            Información del Proyecto
+    <form @submit.prevent="handleSubmit">
+
+      <!-- ===== ESTADÍSTICAS (solo lectura) ===== -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 mb-3">
+        <div class="stat bg-base-100 border rounded-lg p-3 text-center shadow-sm">
+          <div class="text-xs text-gray-500 uppercase">Galones</div>
+          <div class="text-xl font-bold text-blue-700">{{ stats.total_gallons }}</div>
+        </div>
+        <div class="stat bg-base-100 border rounded-lg p-3 text-center shadow-sm">
+          <div class="text-xs text-gray-500 uppercase">Barriles</div>
+          <div class="text-xl font-bold text-green-700">{{ stats.total_barrels }}</div>
+        </div>
+        <div class="stat bg-base-100 border rounded-lg p-3 text-center shadow-sm">
+          <div class="text-xs text-gray-500 uppercase">m³</div>
+          <div class="text-xl font-bold text-purple-700">{{ stats.total_cubic_meters }}</div>
+        </div>
+        <div class="stat bg-base-100 border rounded-lg p-3 text-center shadow-sm">
+          <div class="text-xs text-gray-500 uppercase">Subtotal</div>
+          <div class="text-xl font-bold text-gray-700">${{ Number(stats.subtotal).toFixed(2) }}</div>
+        </div>
+        <div class="stat bg-base-100 border rounded-lg p-3 text-center shadow-sm">
+          <div class="text-xs text-gray-500 uppercase">IVA</div>
+          <div class="text-xl font-bold text-orange-600">${{ Number(stats.tax_amount).toFixed(2) }}</div>
+        </div>
+        <div class="stat bg-base-100 border rounded-lg p-3 text-center shadow-sm">
+          <div class="text-xs text-gray-500 uppercase">Total</div>
+          <div class="text-xl font-bold text-red-700">${{ Number(stats.total).toFixed(2) }}</div>
+        </div>
+      </div>
+
+      <!-- ===== FORMULARIO COMPACTO ===== -->
+      <div class="card bg-base-100 shadow border border-gray-200 rounded-lg">
+        <div class="card-body p-4 space-y-3">
+
+          <!-- Fila 1: Fechas + Estado + Tipo Servicio -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Fecha Emisión</span></label>
+              <input v-model="formData.issue_date" type="date" class="input input-bordered input-sm w-full" />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Inicio Período *</span></label>
+              <input v-model="formData.period_start" type="date" class="input input-bordered input-sm w-full" :class="{ 'input-error': !formData.period_start }" required />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Fin Período</span></label>
+              <input v-model="formData.period_end" type="date" class="input input-bordered input-sm w-full" />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Estado</span></label>
+              <select v-model="formData.status" class="select select-bordered select-sm w-full">
+                <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Fila 2: Secuencia + Tipo Servicio -->
+          <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Código Serie</span></label>
+              <input v-model="formData.series_code" type="text" class="input input-bordered input-sm w-full" placeholder="PSL-PS-0000-0000" />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Prefijo</span></label>
+              <input v-model="formData.secuence_prefix" type="text" class="input input-bordered input-sm w-full" placeholder="PSL-PS" />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Año</span></label>
+              <input v-model.number="formData.secuence_year" type="number" class="input input-bordered input-sm w-full" min="2020" />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Nº Secuencia</span></label>
+              <input v-model.number="formData.secuence_number" type="number" class="input input-bordered input-sm w-full" min="0" />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Tipo Servicio *</span></label>
+              <select v-model="formData.service_type" class="select select-bordered select-sm w-full" required>
+                <option v-for="opt in serviceTypeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Fila 3: Contacto + Referencias -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Contacto</span></label>
+              <input v-model="formData.contact_reference" type="text" class="input input-bordered input-sm w-full" placeholder="Nombre contacto" />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Teléfono</span></label>
+              <input v-model="formData.contact_phone_reference" type="text" class="input input-bordered input-sm w-full" placeholder="+593..." />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">PO Cliente</span></label>
+              <input v-model="formData.client_po_reference" type="text" class="input input-bordered input-sm w-full" placeholder="PO-2026-001" />
+            </div>
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Ref. Factura</span></label>
+              <input v-model="formData.invoice_reference" type="text" class="input input-bordered input-sm w-full" placeholder="FAC-2026-001" />
+            </div>
+          </div>
+
+          <!-- Fila 4: Disposición final -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="form-control">
+              <label class="label py-0.5"><span class="label-text text-xs font-semibold">Disposición Final</span></label>
+              <input v-model="formData.final_disposition_reference" type="text" class="input input-bordered input-sm w-full" placeholder="Planta de Tratamiento" />
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== RECURSOS ASIGNADOS ===== -->
+      <div class="card bg-base-100 shadow border border-gray-200 rounded-lg mt-3">
+        <div class="card-body p-4">
+          <h3 class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-1">
+            <i class="las la-tools text-base"></i> Recursos Asignados ({{ resources.length }})
           </h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-            <div class="bg-white p-2 rounded">
-              <span class="text-gray-600 text-xs">Cliente:</span>
-              <p class="font-semibold">{{ project?.partner_name || 'N/A' }}</p>
-            </div>
-            <div class="bg-white p-2 rounded">
-              <span class="text-gray-600 text-xs">Ubicación:</span>
-              <p class="font-semibold">{{ project?.location || 'N/A' }}</p>
-            </div>
-            <div class="bg-white p-2 rounded">
-              <span class="text-gray-600 text-xs">Fecha Inicio:</span>
-              <p class="font-semibold">{{ project?.start_date || 'N/A' }}</p>
-            </div>
+          <div class="overflow-x-auto">
+            <table class="table table-zebra w-full table-xs">
+              <thead>
+                <tr class="bg-lime-800 text-white text-center text-xs">
+                  <th class="border">#</th>
+                  <th class="border">Código</th>
+                  <th class="border">Nombre</th>
+                  <th class="border">Tipo</th>
+                  <th class="border">Costo</th>
+                  <th class="border">Fecha Inicio</th>
+                  <th class="border">Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="resources.length === 0">
+                  <td colspan="7" class="text-center py-3 text-gray-500 text-xs">
+                    No hay recursos asignados al proyecto
+                  </td>
+                </tr>
+                <tr v-for="(resource, index) in resources" :key="resource.id">
+                  <td class="border text-center">{{ index + 1 }}</td>
+                  <td class="border">{{ resource.resource_item_code || 'N/A' }}</td>
+                  <td class="border">{{ resource.resource_item_name || 'N/A' }}</td>
+                  <td class="border text-center">
+                    <span class="badge badge-xs" :class="resource.type_resource === 'EQUIPO' ? 'badge-primary' : 'badge-info'">
+                      {{ resource.type_resource }}
+                    </span>
+                  </td>
+                  <td class="border text-right">${{ parseFloat(resource.cost || 0).toFixed(2) }}</td>
+                  <td class="border text-center">{{ resource.operation_start_date ? new Date(resource.operation_start_date).toLocaleDateString('es-EC') : 'N/A' }}</td>
+                  <td class="border text-center">
+                    <span class="badge badge-xs" :class="resource.is_active ? 'badge-success' : 'badge-error'">
+                      {{ resource.is_active ? 'Activo' : 'Inactivo' }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot v-if="resources.length > 0">
+                <tr class="bg-gray-200 font-semibold text-xs">
+                  <td colspan="4" class="border text-right">Total recursos:</td>
+                  <td class="border text-right">${{ resources.reduce((s, r) => s + parseFloat(r.cost || 0), 0).toFixed(2) }}</td>
+                  <td colspan="2" class="border text-center">{{ resources.length }} recursos</td>
+                </tr>
+              </tfoot>
+            </table>
           </div>
         </div>
+      </div>
 
-        <div class="divider">Datos Principales</div>
-
-        <!-- Fila 1: Fechas y Tipo de Servicio -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Fecha Emisión -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Fecha de Emisión</span>
-            </label>
-            <input
-              v-model="formData.issue_date"
-              type="date"
-              class="input input-bordered w-full"
-            />
-            <label class="label">
-              <span class="label-text-alt text-gray-500">Fecha de emisión de la planilla</span>
-            </label>
-          </div>
-
-          <!-- Fecha Inicio Período -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Fecha Inicio Período *</span>
-            </label>
-            <input
-              v-model="formData.period_start"
-              type="date"
-              class="input input-bordered w-full"
-              :class="{ 'input-error': !formData.period_start }"
-              required
-            />
-            <label class="label">
-              <span class="label-text-alt text-gray-500">Inicio del período a facturar</span>
-            </label>
-          </div>
-
-          <!-- Fecha Fin Período -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Fecha Fin Período</span>
-            </label>
-            <input
-              v-model="formData.period_end"
-              type="date"
-              class="input input-bordered w-full"
-            />
-            <label class="label">
-              <span class="label-text-alt text-gray-500">Fin del período (opcional al crear)</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Fila 2: Tipo de Servicio y Estado -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Tipo de Servicio -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Tipo de Servicio *</span>
-            </label>
-            <select 
-              v-model="formData.service_type"
-              class="select select-bordered w-full"
-              required
-            >
-              <option v-for="option in serviceTypeOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
-            <label class="label">
-              <span class="label-text-alt text-gray-500">Tipo de servicio a facturar</span>
-            </label>
-          </div>
-
-          <!-- Estado -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Estado</span>
-            </label>
-            <select 
-              v-model="formData.status"
-              class="select select-bordered w-full"
-            >
-              <option v-for="option in statusOptions" :key="option.value" :value="option.value">
-                {{ option.label }}
-              </option>
-            </select>
-            <label class="label">
-              <span class="label-text-alt text-gray-500">Estado actual de la planilla</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="divider">Información de Contacto</div>
-
-        <!-- Fila 3: Contactos -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Nombre Contacto -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Nombre de Contacto</span>
-            </label>
-            <input
-              v-model="formData.contact_reference"
-              type="text"
-              class="input input-bordered w-full"
-              placeholder="Ej: Juan Pérez"
-            />
-            <label class="label">
-              <span class="label-text-alt text-gray-500">Persona de contacto en el proyecto</span>
-            </label>
-          </div>
-
-          <!-- Teléfono Contacto -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Teléfono de Contacto</span>
-            </label>
-            <input
-              v-model="formData.contact_phone_reference"
-              type="text"
-              class="input input-bordered w-full"
-              placeholder="Ej: +593999999999"
-            />
-            <label class="label">
-              <span class="label-text-alt text-gray-500">Teléfono del contacto</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="divider">Referencias Adicionales</div>
-
-        <!-- Fila 4: Referencias -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- PO Cliente -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">PO Cliente</span>
-            </label>
-            <input
-              v-model="formData.client_po_reference"
-              type="text"
-              class="input input-bordered w-full"
-              placeholder="Ej: PO-2026-001"
-            />
-            <label class="label">
-              <span class="label-text-alt text-gray-500">Número de orden de compra del cliente</span>
-            </label>
-          </div>
-
-          <!-- Disposición Final -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Disposición Final</span>
-            </label>
-            <input
-              v-model="formData.final_disposition_reference"
-              type="text"
-              class="input input-bordered w-full"
-              placeholder="Ej: Planta de Tratamiento"
-            />
-            <label class="label">
-              <span class="label-text-alt text-gray-500">Lugar de disposición final</span>
-            </label>
-          </div>
-
-          <!-- Referencia Factura -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Referencia Factura</span>
-            </label>
-            <input
-              v-model="formData.invoice_reference"
-              type="text"
-              class="input input-bordered w-full"
-              placeholder="Ej: FAC-2026-001"
-            />
-            <label class="label">
-              <span class="label-text-alt text-gray-500">Número de factura asociada</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Nota Informativa -->
-        <div class="alert alert-info">
-          <i class="las la-info-circle text-xl"></i>
+      <!-- ===== PIE: Totales financieros + Botones ===== -->
+      <div class="flex items-center justify-between mt-3 bg-base-100 border border-gray-200 rounded-lg shadow p-3">
+        <!-- Totales financieros -->
+        <div class="flex gap-6 text-sm">
           <div>
-            <h3 class="font-bold">Información</h3>
-            <p class="text-sm">Los campos marcados con (*) son obligatorios. El código de serie se generará automáticamente al crear la planilla.</p>
+            <span class="text-gray-500 text-xs">Subtotal:</span>
+            <span class="font-bold ml-1">${{ Number(stats.subtotal).toFixed(2) }}</span>
+          </div>
+          <div>
+            <span class="text-gray-500 text-xs">IVA:</span>
+            <span class="font-bold ml-1">${{ Number(stats.tax_amount).toFixed(2) }}</span>
+          </div>
+          <div>
+            <span class="text-gray-500 text-xs">Total:</span>
+            <span class="font-bold text-red-700 ml-1">${{ Number(stats.total).toFixed(2) }}</span>
           </div>
         </div>
-
-        <div class="divider">Recursos Asignados al Proyecto</div>
-
-        <!-- Tabla de Recursos -->
-        <div class="overflow-x-auto">
-          <table class="table table-zebra w-full table-sm">
-            <thead>
-              <tr class="bg-lime-800 text-white text-center text-xs">
-                <th class="border">#</th>
-                <th class="border">Código</th>
-                <th class="border">Nombre</th>
-                <th class="border">Tipo</th>
-                <th class="border">Costo</th>
-                <th class="border">Fecha Inicio</th>
-                <th class="border">Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-if="resources.length === 0">
-                <td colspan="7" class="text-center py-4 text-gray-500">
-                  No hay recursos asignados al proyecto
-                </td>
-              </tr>
-              <tr v-for="(resource, index) in resources" :key="resource.id">
-                <td class="border text-center">{{ index + 1 }}</td>
-                <td class="border">{{ resource.resource_item_code || 'N/A' }}</td>
-                <td class="border">{{ resource.resource_item_name || 'N/A' }}</td>
-                <td class="border text-center">
-                  <span 
-                    class="badge badge-sm"
-                    :class="resource.type_resource === 'EQUIPO' ? 'badge-primary' : 'badge-info'"
-                  >
-                    {{ resource.type_resource }}
-                  </span>
-                </td>
-                <td class="border text-right">
-                  {{ resource.cost ? `$${parseFloat(resource.cost).toFixed(2)}` : '$0.00' }}
-                </td>
-                <td class="border text-center">
-                  {{ resource.operation_start_date ? new Date(resource.operation_start_date).toLocaleDateString('es-EC') : 'N/A' }}
-                </td>
-                <td class="border text-center">
-                  <span 
-                    class="badge badge-sm"
-                    :class="resource.is_active ? 'badge-success' : 'badge-error'"
-                  >
-                    {{ resource.is_active ? 'Activo' : 'Inactivo' }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-            <tfoot v-if="resources.length > 0">
-              <tr class="bg-gray-200 font-semibold">
-                <td colspan="4" class="border text-right">Total de recursos:</td>
-                <td class="border text-right">
-                  ${{ resources.reduce((sum, r) => sum + parseFloat(r.cost || 0), 0).toFixed(2) }}
-                </td>
-                <td colspan="2" class="border text-center">{{ resources.length }} recursos</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- Botones de Acción -->
-        <div class="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
-          <RouterLink to="/project" class="btn btn-ghost" :class="{ 'btn-disabled': isSubmitting }">
-            <i class="las la-times text-lg"></i>
-            Cancelar
+        <!-- Botones -->
+        <div class="flex gap-2">
+          <RouterLink to="/project" class="btn btn-ghost btn-sm" :class="{ 'btn-disabled': isSubmitting }">
+            <i class="las la-times"></i> Cancelar
           </RouterLink>
-          <button type="submit" class="btn btn-primary" :disabled="isSubmitting">
-            <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
-            <i v-else class="las la-save text-lg"></i>
+          <button type="submit" class="btn btn-primary btn-sm" :disabled="isSubmitting">
+            <span v-if="isSubmitting" class="loading loading-spinner loading-xs"></span>
+            <i v-else class="las la-save"></i>
             {{ isSubmitting ? 'Creando...' : 'Crear Planilla' }}
           </button>
         </div>
       </div>
+
     </form>
   </div>
 </template>
