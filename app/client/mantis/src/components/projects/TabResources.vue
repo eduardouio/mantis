@@ -8,9 +8,15 @@ const emit = defineEmits(['edit-resource'])
 
 const projectResourceStore = UseProjectResourceStore()
 
-// Computed property que devuelve todos los recursos sin agruparen
+// Computed property que devuelve todos los recursos ordenados (primero equipos, luego servicios)
 const projectResources = computed(() => {
-  return projectResourceStore.resourcesProject
+  return [...projectResourceStore.resourcesProject].sort((a, b) => {
+    // Primero ordenar por tipo: EQUIPO antes que SERVICIO
+    if (a.type_resource === 'EQUIPO' && b.type_resource === 'SERVICIO') return -1
+    if (a.type_resource === 'SERVICIO' && b.type_resource === 'EQUIPO') return 1
+    // Si son del mismo tipo, ordenar por ID
+    return a.id - b.id
+  })
 })
 
 const selectedResources= []

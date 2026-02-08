@@ -21,6 +21,9 @@ const projectStore = UseProjectStore()
 const isSubmitting = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+const showReleaseConfirm = ref(false)
+const releaseReason = ref('')
+const isReleasing = ref(false)
 
 const frequencyTypes = [
   { value: 'DAY', label: 'Por intervalo de días' },
@@ -51,7 +54,8 @@ const formData = ref({
   monthdays: [],
   maintenance_cost: 0,
   operation_start_date: null,
-  operation_end_date: null
+  operation_end_date: null,
+  is_retired: false
 })
 
 const isEditMode = computed(() => !!props.resource)
@@ -94,7 +98,8 @@ watch(() => props.resource, (newResource) => {
       monthdays: newResource.monthdays || [],
       maintenance_cost: newResource.maintenance_cost || 0,
       operation_start_date: newResource.operation_start_date,
-      operation_end_date: newResource.operation_end_date
+      operation_end_date: newResource.operation_end_date,
+      is_retired: newResource.is_retired || false
     }
   }
 }, { immediate: true })
@@ -232,6 +237,48 @@ const submitForm = async () => {
     errorMessage.value = error.message || 'Error al guardar el recurso'
   } finally {
     isSubmitting.value = false
+  }
+}
+
+const handleReleaseResource = () => {
+  showReleaseConfirm.value = true
+}
+
+const cancelRelease = () => {
+  showReleaseConfirm.value = false
+  releaseReason.value = ''
+}
+
+const confirmRelease = async () => {
+  if (!releaseReason.value.trim()) {
+    errorMessage.value = 'Debe ingresar un motivo de liberación'
+    return
+  }
+
+  isReleasing.value = true
+  errorMessage.value = ''
+
+  try {
+    const payload = {
+      id: formData.value.id,
+      is_retired: true,
+      retirement_date: new Date().toISOString().split('T')[0],
+      retirement_reason: releaseReason.value
+    }
+
+    await projectResourceStore.updateResourceProject(payload)
+    successMessage.value = 'Equipo liberado exitosamente'
+    
+    setTimeout(() => {
+      emit('close')
+    }, 1500)
+  } catch (error) {
+    console.error('Error al liberar equipo:', error)
+    errorMessage.value = error.message || 'Error al liberar el equipo'
+  } finally {
+    isReleasing.value = false
+    showReleaseConfirm.value = false
+    releaseReason.value = ''
   }
 }
 
@@ -479,24 +526,89 @@ onMounted(() => {
         </div>
 
       <!-- Botones de Acción -->
-      <div class="flex justify-end gap-3 pt-4">
-        <button 
-          type="button" 
-          class="btn btn-ghost" 
-          @click="emit('close')"
-          :disabled="isSubmitting"
-        >
-          Cancelar
-        </button>
-        <button 
-          type="submit" 
-          class="btn btn-primary"
-          :disabled="isSubmitting"
-        >
-          <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
-          <span v-else>{{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
-        </button>
+      <div class="flex justify-between items-center pt-4">
+        <div>
+          <button 
+            v-if="isEditMode && formData.type_resource === 'EQUIPO' && !formData.is_retired"
+            type="button" 
+            class="btn btn-warning btn-sm"
+            @click="handleReleaseResource"
+            :disabled="isSubmitting || isReleasing"
+          >
+            <i class="las la-hand-paper"></i>
+            Liberar Equipo
+          </button>
+        </div>
+        <div class="flex gap-3">
+          <button 
+            type="button" 
+            class="btn btn-ghost" 
+            @click="emit('close')"
+            :disabled="isSubmitting || isReleasing"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary"
+            :disabled="isSubmitting || isReleasing"
+          >
+            <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
+            <span v-else>{{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
+          </button>
+        </div>
       </div>
     </form>
+
+    <!-- Modal de Confirmación de Liberación -->
+    <div v-if="showReleaseConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-semibold mb-4 text-warning">
+          <i class="las la-exclamation-triangle"></i>
+          Confirmar Liberación de Equipo
+        </h3>
+        
+        <div class="space-y-4">
+          <p class="text-sm text-gray-600">
+            ¿Está seguro que desea liberar este equipo del proyecto?
+          </p>
+          
+          <div>
+            <label class="block text-sm font-semibold mb-2">
+              Motivo de liberación <span class="text-error">*</span>
+            </label>
+            <textarea 
+              class="textarea textarea-bordered w-full h-24" 
+              v-model="releaseReason"
+              placeholder="Ingrese el motivo por el cual se libera el equipo..."
+              :disabled="isReleasing"
+            ></textarea>
+          </div>
+
+          <div class="flex justify-end gap-3">
+            <button 
+              type="button" 
+              class="btn btn-ghost btn-sm"
+              @click="cancelRelease"
+              :disabled="isReleasing"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-warning btn-sm"
+              @click="confirmRelease"
+              :disabled="isReleasing"
+            >
+              <span v-if="isReleasing" class="loading loading-spinner loading-sm"></span>
+              <span v-else>
+                <i class="las la-check"></i>
+                Confirmar Liberación
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
