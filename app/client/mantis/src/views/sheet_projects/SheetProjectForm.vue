@@ -35,6 +35,48 @@ const stats = ref({
 const errorMessage = ref('');
 const successMessage = ref('');
 
+// Validaciones de fechas
+const periodDatesError = computed(() => {
+  if (!formData.value.period_start || !formData.value.period_end) {
+    return '';
+  }
+  
+  const startDate = new Date(formData.value.period_start);
+  const endDate = new Date(formData.value.period_end);
+  
+  // Comparar solo las fechas (ignorar horas)
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(0, 0, 0, 0);
+  
+  if (startDate.getTime() === endDate.getTime()) {
+    return 'Las fechas no pueden ser iguales';
+  }
+  
+  if (startDate > endDate) {
+    return 'La fecha de inicio debe ser menor que la fecha de fin';
+  }
+  
+  return '';
+});
+
+// Calcular días de ejecución (incluyendo primer y último día)
+const executionDays = computed(() => {
+  if (!formData.value.period_start || !formData.value.period_end) {
+    return 0;
+  }
+  
+  const startDate = new Date(formData.value.period_start);
+  const endDate = new Date(formData.value.period_end);
+  
+  // Calcular diferencia en milisegundos
+  const diffTime = Math.abs(endDate - startDate);
+  
+  // Convertir a días y sumar 1 para incluir ambos días (inicio y fin)
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  
+  return diffDays;
+});
+
 const serviceTypeOptions = [
   { value: 'ALQUILER', label: 'Alquiler' },
   { value: 'MANTENIMIENTO', label: 'Mantenimiento' },
@@ -157,9 +199,20 @@ const handleSubmit = async () => {
       }
     }
     
-    // Validar que la fecha de fin sea posterior a la fecha de inicio
-    if (new Date(formData.value.period_end) < new Date(formData.value.period_start)) {
-      throw new Error('La fecha de fin del período debe ser posterior a la fecha de inicio');
+    // Validar que las fechas no sean iguales y que la fecha de inicio sea menor que la de fin
+    const periodStart = new Date(formData.value.period_start);
+    const periodEnd = new Date(formData.value.period_end);
+    
+    // Comparar solo las fechas (ignorar horas)
+    periodStart.setHours(0, 0, 0, 0);
+    periodEnd.setHours(0, 0, 0, 0);
+    
+    if (periodStart.getTime() === periodEnd.getTime()) {
+      throw new Error('Las fechas de inicio y fin del período no pueden ser iguales');
+    }
+    
+    if (periodStart > periodEnd) {
+      throw new Error('La fecha de inicio del período debe ser menor que la fecha de fin');
     }
     
     // Construir payload desde el store
@@ -180,9 +233,6 @@ const handleSubmit = async () => {
       payload.final_disposition_reference = formData.value.final_disposition_reference || null;
       payload.invoice_reference = formData.value.invoice_reference || null;
     }
-    
-    console.log(`=== ${isEditMode.value ? 'ACTUALIZANDO' : 'CREANDO'} PLANILLA ===`);
-    console.log(JSON.stringify(payload, null, 2));
     
     let resultId;
     if (isEditMode.value) {
@@ -237,7 +287,14 @@ const handleSubmit = async () => {
               <i class="las la-file-invoice text-blue-600"></i>
               {{ isEditMode ? `Planilla ${formData.series_code}` : 'Nueva Planilla' }} — Proyecto #{{ project?.id }}
             </h1>
-            <p class="text-gray-600 text-sm mt-1">{{ project?.partner_name || '' }} · {{ project?.location || '' }}</p>
+            <div class="flex items-center gap-3 mt-1">
+              <p class="text-gray-600 text-sm">{{ project?.partner_name || '' }} · {{ project?.location || '' }}</p>
+              <div v-if="executionDays > 0" class="badge badge-primary badge-lg gap-2">
+                <i class="las la-calendar-check"></i>
+                <span class="font-semibold">Días de Ejecución:</span>
+                <span class="font-bold">{{ executionDays }}</span>
+              </div>
+            </div>
           </div>
           <div class="flex gap-2 items-center">
             <button type="button" @click="handleAttachSheetFile" class="btn btn-info gap-2">
@@ -304,9 +361,12 @@ const handleSubmit = async () => {
               v-model="formData.period_start" 
               type="date" 
               class="input input-bordered w-full" 
-              :class="{ 'input-error': !formData.period_start }" 
+              :class="{ 'input-error': !formData.period_start || periodDatesError }" 
               required 
             />
+            <label v-if="periodDatesError && formData.period_start" class="label">
+              <span class="label-text-alt text-error">{{ periodDatesError }}</span>
+            </label>
           </div>
           <div class="form-control w-full">
             <label class="label">
@@ -316,9 +376,12 @@ const handleSubmit = async () => {
               v-model="formData.period_end" 
               type="date" 
               class="input input-bordered w-full" 
-              :class="{ 'input-error': !formData.period_end }" 
+              :class="{ 'input-error': !formData.period_end || periodDatesError }" 
               required 
             />
+            <label v-if="periodDatesError && formData.period_end" class="label">
+              <span class="label-text-alt text-error">{{ periodDatesError }}</span>
+            </label>
           </div>
           <div class="form-control w-full">
             <label class="label">

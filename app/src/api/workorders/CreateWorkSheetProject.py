@@ -71,10 +71,10 @@ class CreateWorkSheetProjectAPI(View):
                 status=400,
             )
         
-        # Validar que period_end sea posterior a period_start
-        if period_end < period_start:
+        # Validar que la fecha desde sea menor que la fecha hasta
+        if period_start >= period_end:
             return JsonResponse(
-                {"success": False, "error": "La fecha de fin del período debe ser posterior a la fecha de inicio"},
+                {"success": False, "error": "La fecha de inicio del período debe ser menor que la fecha de fin"},
                 status=400,
             )
         
