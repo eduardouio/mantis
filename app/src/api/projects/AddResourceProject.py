@@ -20,9 +20,9 @@ class AddResourceProjectAPI(View):
         resource_ids = [r["resource_id"] for r in data]
         resource_map = ResourceItem.objects.in_bulk(resource_ids)
 
-        primary_instances = []
-        maintenance_instances = []
+        instances_to_create = []
         equipment_to_update = []
+        equipment_updated_ids = set()
         serv_resource_item = None
 
         for resource_data in data:
@@ -32,14 +32,36 @@ class AddResourceProjectAPI(View):
                     f'Recurso con ID {resource_data["resource_id"]} no encontrado.'
                 )
 
-            type_resource = (
-                "SERVICIO" if resource_item.type_equipment == "SERVIC" else "EQUIPO"
-            )
+            # Determinar si es un registro de mantenimiento
+            is_maintenance = "maintenance_cost" in resource_data
+            
+            # Determinar el tipo de recurso y el costo
+            if is_maintenance:
+                # Es un registro de mantenimiento
+                type_resource = "SERVICIO"
+                resource_cost = resource_data.get("maintenance_cost", 0.00)
+                
+                # Obtener el recurso de servicio genérico para mantenimiento
+                if serv_resource_item is None:
+                    serv_resource_item = ResourceItem.get_by_code("PEISOL-SERV00")
+                    if not serv_resource_item:
+                        raise Exception(
+                            "Recurso de servicio para mantenimiento general "
+                            "PEISOL-SERV00 no encontrado. Contacte al administrador."
+                        )
+                actual_resource_item = serv_resource_item
+            else:
+                # Es un registro de alquiler o servicio normal
+                type_resource = (
+                    "SERVICIO" if resource_item.type_equipment == "SERVIC" else "EQUIPO"
+                )
+                resource_cost = resource_data.get("cost", 0.00)
+                actual_resource_item = resource_item
 
             physical_equipment_code = resource_data.get("physical_equipment_code", 0)
-
             detailed_description = resource_data.get("detailed_description", "")
 
+            # Construir la descripción formateada
             if physical_equipment_code and physical_equipment_code != 0:
                 try:
                     physical_equipment = ResourceItem.objects.get(
@@ -47,14 +69,17 @@ class AddResourceProjectAPI(View):
                     )
                     equipment_code = physical_equipment.code
 
-                    if type_resource == "SERVICIO":
-
+                    if is_maintenance:
+                        # Mantenimiento
+                        detailed_description = f"MANTENIMIENTO / {equipment_code}"
+                    elif type_resource == "SERVICIO":
+                        # Servicio normal
                         service_name = resource_item.name.upper()
                         detailed_description = (
                             f"SERVICIO / {equipment_code} / {service_name}"
                         )
                     else:
-
+                        # Equipo (alquiler)
                         parts = detailed_description.split(" - ")
                         if len(parts) >= 2:
                             equipment_type = parts[1]
@@ -64,9 +89,8 @@ class AddResourceProjectAPI(View):
                 except ResourceItem.DoesNotExist:
                     pass
             else:
-
-                if type_resource == "EQUIPO":
-
+                # Sin equipo físico asignado
+                if type_resource == "EQUIPO" and not is_maintenance:
                     parts = detailed_description.split(" - ")
                     if len(parts) >= 2:
                         code_part = parts[0].split()[-1]
@@ -75,72 +99,40 @@ class AddResourceProjectAPI(View):
                             f"ALQUILER / {code_part} / {equipment_type}"
                         )
 
-            p_freq_type = resource_data.get("frequency_type", "DAY")
-            p_interval = resource_data.get("interval_days", 1)
-            p_weekdays = resource_data.get("weekdays")
-            p_monthdays = resource_data.get("monthdays")
+            # Obtener los datos de frecuencia directamente del request
+            frequency_type = resource_data.get("frequency_type", "DAY")
+            interval_days = resource_data.get("interval_days")
+            weekdays = resource_data.get("weekdays")
+            monthdays = resource_data.get("monthdays")
 
-            if type_resource == "SERVICIO":
-                resource_cost = resource_data.get("maintenance_cost", 0.00)
-
-                prim_freq_type = p_freq_type
-                prim_interval = p_interval
-                prim_weekdays = p_weekdays
-                prim_monthdays = p_monthdays
+            # Asegurar que interval_days tenga un valor válido según el tipo de frecuencia
+            if frequency_type == "DAY":
+                # Para DAY, si no viene interval_days, usar 1 como default
+                if interval_days is None:
+                    interval_days = 1
             else:
-                resource_cost = resource_data.get("cost", 0.00)
+                # Para WEEK y MONTH, interval_days debe ser 0
+                if interval_days is None:
+                    interval_days = 0
 
-                prim_freq_type = "DAY"
-                prim_interval = 1
-                prim_weekdays = None
-                prim_monthdays = None
-
-            primary_instances.append(
+            instances_to_create.append(
                 ProjectResourceItem(
                     project=project,
-                    resource_item=resource_item,
+                    resource_item=actual_resource_item,
                     type_resource=type_resource,
                     detailed_description=detailed_description,
                     physical_equipment_code=physical_equipment_code,
                     cost=resource_cost,
-                    frequency_type=prim_freq_type,
-                    interval_days=prim_interval,
-                    weekdays=prim_weekdays,
-                    monthdays=prim_monthdays,
+                    frequency_type=frequency_type,
+                    interval_days=interval_days,
+                    weekdays=weekdays,
+                    monthdays=monthdays,
                     operation_start_date=resource_data.get("operation_start_date"),
                 )
             )
 
-            have_mantenance = resource_data.get("include_maintenance", False)
-
-            if have_mantenance and type_resource == "EQUIPO":
-                if serv_resource_item is None:
-                    serv_resource_item = ResourceItem.get_by_code("PEISOL-SERV00")
-                    if not serv_resource_item:
-                        raise Exception(
-                            "Recurso de servicio para mantenimiento general "
-                            " PESIOL-SERV00 no encontrado. Contacte al administrador."
-                        )
-
-                maintenance_cost = resource_data.get("maintenance_cost", 0.00)
-
-                maintenance_instances.append(
-                    ProjectResourceItem(
-                        project=project,
-                        resource_item=serv_resource_item,
-                        type_resource="SERVICIO",
-                        detailed_description=f"MANTENIMIENTO / {resource_item.code}",
-                        physical_equipment_code=resource_item.id,
-                        cost=maintenance_cost,
-                        frequency_type=p_freq_type,
-                        interval_days=p_interval,
-                        weekdays=p_weekdays,
-                        monthdays=p_monthdays,
-                        operation_start_date=resource_data.get("operation_start_date"),
-                    )
-                )
-
-            if type_resource == "EQUIPO":
+            # Actualizar el estado del equipo solo una vez por equipo físico
+            if type_resource == "EQUIPO" and not is_maintenance and resource_item.id not in equipment_updated_ids:
                 resource_item.stst_current_project_id = project.id
                 resource_item.stst_commitment_date = resource_data.get(
                     "commitment_date"
@@ -148,27 +140,18 @@ class AddResourceProjectAPI(View):
                 resource_item.stst_status_disponibility = "RENTADO"
                 resource_item.stst_current_location = project.location
                 equipment_to_update.append(resource_item)
+                equipment_updated_ids.add(resource_item.id)
 
+        # Crear todos los recursos
         created_resources = []
+        if instances_to_create:
+            ProjectResourceItem.objects.bulk_create(instances_to_create)
+            # Obtener los recursos creados
+            created_resources = ProjectResourceItem.objects.filter(
+                project=project
+            ).order_by("-id")[: len(instances_to_create)]
 
-        if primary_instances:
-            ProjectResourceItem.objects.bulk_create(primary_instances)
-            created_primary_ids = ProjectResourceItem.objects.filter(
-                project=project,
-                resource_item_id__in=resource_ids,
-                type_resource__in=["EQUIPO", "SERVICIO"],
-            ).order_by("-id")[: len(primary_instances)]
-            created_resources.extend(created_primary_ids)
-
-        if maintenance_instances:
-            ProjectResourceItem.objects.bulk_create(maintenance_instances)
-            created_maintenance_ids = ProjectResourceItem.objects.filter(
-                project=project,
-                resource_item=serv_resource_item,
-                type_resource="SERVICIO",
-            ).order_by("-id")[: len(maintenance_instances)]
-            created_resources.extend(created_maintenance_ids)
-
+        # Actualizar el estado de los equipos
         if equipment_to_update:
             ResourceItem.objects.bulk_update(
                 equipment_to_update,
