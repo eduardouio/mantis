@@ -7,14 +7,33 @@ from datetime import datetime
 from projects.models import Project, SheetProject
 
 
-class AddUpdateSheetProjectAPI(View):
-    """Crear hojas de trabajo (SheetProject)."""
+class UpdateSheetProjectAPI(View):
+    """Crear y actualizar hojas de trabajo (SheetProject)."""
 
     def post(self, request):
         """Crear nueva hoja de trabajo."""
         try:
             data = json.loads(request.body)
             return self._create_sheet(request, data)
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"success": False, "error": "JSON inválido"}, status=400
+            )
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+    def put(self, request, sheet_id=None):
+        """Actualizar hoja de trabajo existente."""
+        try:
+            data = json.loads(request.body)
+            if not sheet_id:
+                sheet_id = data.get("id")
+            if not sheet_id:
+                return JsonResponse(
+                    {"success": False, "error": "ID de hoja de trabajo requerido"},
+                    status=400
+                )
+            return self._update_sheet(request, sheet_id, data)
         except json.JSONDecodeError:
             return JsonResponse(
                 {"success": False, "error": "JSON inválido"}, status=400
@@ -92,6 +111,75 @@ class AddUpdateSheetProjectAPI(View):
                 },
             },
             status=201
+        )
+
+    @transaction.atomic
+    def _update_sheet(self, request, sheet_id, data):
+        """Actualizar hoja de trabajo existente."""
+        try:
+            sheet = SheetProject.objects.get(id=sheet_id, is_active=True)
+        except SheetProject.DoesNotExist:
+            return JsonResponse(
+                {"success": False, "error": "Hoja de trabajo no encontrada"},
+                status=404
+            )
+
+        # Validar que no esté facturada
+        if sheet.status == "INVOICED":
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "No se puede actualizar una hoja de trabajo facturada"
+                },
+                status=400
+            )
+
+        # Actualizar campos permitidos
+        if "period_start" in data:
+            period_start = self._parse_date(data["period_start"])
+            if period_start:
+                sheet.period_start = period_start
+
+        if "period_end" in data:
+            period_end = self._parse_date(data["period_end"])
+            if period_end:
+                sheet.period_end = period_end
+
+        if "service_type" in data:
+            sheet.service_type = data["service_type"]
+
+        if "contact_reference" in data:
+            sheet.contact_reference = data["contact_reference"]
+
+        if "contact_phone_reference" in data:
+            sheet.contact_phone_reference = data["contact_phone_reference"]
+
+        if "client_po_reference" in data:
+            sheet.client_po_reference = data["client_po_reference"]
+
+        if "final_disposition_reference" in data:
+            sheet.final_disposition_reference = data["final_disposition_reference"]
+
+        if "status" in data and data["status"] in ["IN_PROGRESS", "INVOICED", "CANCELLED"]:
+            sheet.status = data["status"]
+
+        sheet.save()
+
+        return JsonResponse(
+            {
+                "success": True,
+                "message": "Hoja de trabajo actualizada exitosamente",
+                "data": {
+                    "id": sheet.id,
+                    "series_code": sheet.series_code,
+                    "project_id": sheet.project.id,
+                    "period_start": sheet.period_start.isoformat() if sheet.period_start else None,
+                    "period_end": sheet.period_end.isoformat() if sheet.period_end else None,
+                    "status": sheet.status,
+                    "service_type": sheet.service_type
+                },
+            },
+            status=200
         )
 
     def _parse_date(self, date_str):

@@ -22,7 +22,6 @@ from api.projects import (
 )
 
 from api.workorders import (
-    AddUpdateSheetProjectAPI,
     GetAllSheetProjectAPI,
     DeleteSheetOrderAPI,
     UpdateSheetOrderAPI,
@@ -39,6 +38,8 @@ from api.workorders.AllInfoProjectAPI import AllInfoProjectAPI
 from api.workorders.CustodyChainEditAPI import CustodyChainEditAPI
 from api.workorders.RegenerateEquipmentCodes import RegenerateEquipmentCodesAPI
 from api.resources.ResourceReleaserAPI import ResourceReleaserAPI
+from api.workorders.CreateWorkSheetProject import CreateWorkSheetProjectAPI
+from api.workorders.UpdateSheetProject import UpdateSheetProjectAPI
 
 urlpatterns = [
     # vehicles
@@ -68,8 +69,8 @@ urlpatterns = [
     
     # workorders
     path('workorders/sheets/project/<int:project_id>/', GetAllSheetProjectAPI.as_view(), name='api_get_all_sheets'),
-    path('workorders/sheets/create/', AddUpdateSheetProjectAPI.as_view(), name='api_create_sheet'),
-    path('workorders/sheets/update/', UpdateSheetOrderAPI.as_view(), name='api_update_sheet'),
+    path('workorders/sheets/create/', CreateWorkSheetProjectAPI.as_view(), name='api_create_sheet'),
+    path('workorders/sheets/update/', UpdateSheetProjectAPI.as_view(), name='api_update_sheet'),
     path('workorders/sheets/delete/', DeleteSheetOrderAPI.as_view(), name='api_delete_sheet'),
 	
     path('workorders/sheets/items/<int:sheet_project_id>/', GetAllSheerProjectItemsAPI.as_view(), name='api_get_all_sheet_project_items'),
