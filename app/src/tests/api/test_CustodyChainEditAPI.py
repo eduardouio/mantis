@@ -59,8 +59,6 @@ class CustodyChainEditAPITest(TestCase):
             total_gallons=0,
             total_barrels=0,
             total_cubic_meters=0,
-            subtotal=Decimal("0.00"),
-            tax_amount=Decimal("0.00"),
             total=Decimal("0.00")
         )
         

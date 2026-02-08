@@ -1,8 +1,6 @@
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from projects.models.SheetProject import SheetProject, SheetProjectDetail
-from projects.models.CustodyChain import CustodyChain
-from decimal import Decimal
 from calendar import monthrange
 from common.WorkSheetBuilder import WorkSheetBuilder
 
@@ -97,7 +95,7 @@ class WorkSheetTemplateView(TemplateView):
             
             # Construir la lista de días del mes
             days_list = ["" for d in range(1, 32)]
-            monthdays = sheet_detail.monthdays or []
+            monthdays = sheet_detail.monthdays_apply_cost or []
             
             for day in monthdays:
                 if 1 <= day <= 31:
@@ -123,8 +121,6 @@ class WorkSheetTemplateView(TemplateView):
             )
 
         # Usar los totales ya calculados en la cabecera
-        subtotal = sheet_project.subtotal
-        tax_amount = sheet_project.tax_amount
         total = sheet_project.total
         total_gallons = sheet_project.total_gallons
         total_barrels = sheet_project.total_barrels
@@ -142,8 +138,6 @@ class WorkSheetTemplateView(TemplateView):
                 "days_range": range(1, days_in_month + 1),
                 "all_days_range": range(1, 32),
                 "items": items_list,
-                "subtotal": subtotal,
-                "tax_amount": tax_amount,
                 "total": total,
                 "total_gallons": total_gallons,
                 "total_barrels": total_barrels,

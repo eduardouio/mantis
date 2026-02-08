@@ -137,7 +137,7 @@ class ProjectResourceItemAdmin(BaseModelAdmin):
 class SheetProjectAdmin(BaseModelAdmin):
     list_display = (
         'id', 'project', 'issue_date', 'period_start', 'period_end', 'status',
-        'series_code', 'service_type', 'subtotal', 'tax_amount', 'total'
+        'series_code', 'service_type', 'total'
     )
     list_filter = (
         'project', 'status', 'period_start', 'period_end', 'issue_date', 'is_active'
@@ -158,7 +158,7 @@ class SheetProjectAdmin(BaseModelAdmin):
             ), 'classes': ('collapse',)
         }),
         ('Totales', {
-            'fields': ('total_gallons', 'total_barrels', 'total_cubic_meters', 'subtotal', 'tax_amount', 'total')
+            'fields': ('total_gallons', 'total_barrels', 'total_cubic_meters', 'total')
         }),
         ('Archivos', {
             'fields': ('sheet_project_file', 'certificate_final_disposition_file')

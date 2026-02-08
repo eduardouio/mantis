@@ -287,8 +287,6 @@ class PartnerCompleteInfo:
                     "client_po_reference": sheet.client_po_reference,
                     "contact_reference": sheet.contact_reference,
                     "invoice_reference": sheet.invoice_reference,
-                    "subtotal": sheet.subtotal,
-                    "tax_amount": sheet.tax_amount,
                     "total": sheet.total,
                     "details_count": 0,  # No hay detalles disponibles
                     "created_at": sheet.created_at,

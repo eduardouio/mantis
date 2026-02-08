@@ -141,8 +141,6 @@ class TestAllInfoProjectAPI:
             service_type="ALQUILER Y MANTENIMIENTO",
             contact_reference="Ing. Catalina Velandia",
             contact_phone_reference="+593984066240",
-            subtotal=Decimal("0.00"),
-            tax_amount=Decimal("0.00"),
             total=Decimal("0.00"),
             id_user_created=test_user.id,
             id_user_updated=test_user.id,
@@ -228,7 +226,7 @@ class TestAllInfoProjectAPI:
             "status", "service_type", "total_gallons", "total_barrels",
             "total_cubic_meters", "client_po_reference", "contact_reference",
             "contact_phone_reference", "final_disposition_reference",
-            "invoice_reference", "subtotal", "tax_amount", "total",
+            "invoice_reference", "total",
             "custody_chains", "custody_chains_count", "metadata"
         ]
         for field in required_wo_fields:
@@ -598,8 +596,6 @@ class TestAllInfoProjectAPI:
         assert isinstance(wo["total_gallons"], int)
         assert isinstance(wo["total_barrels"], int)
         assert isinstance(wo["total_cubic_meters"], int)
-        assert isinstance(wo["subtotal"], (int, float))
-        assert isinstance(wo["tax_amount"], (int, float))
         assert isinstance(wo["total"], (int, float))
         assert isinstance(wo["custody_chains"], list)
         assert isinstance(wo["custody_chains_count"], int)

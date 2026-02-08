@@ -205,8 +205,6 @@ class AllInfoProjectAPI(View):
                     "contact_phone_reference": sheet.contact_phone_reference,
                     "final_disposition_reference": sheet.final_disposition_reference,
                     "invoice_reference": sheet.invoice_reference,
-                    "subtotal": float(sheet.subtotal),
-                    "tax_amount": float(sheet.tax_amount),
                     "total": float(sheet.total),
                     "details": sheet_details_data,
                     "details_count": len(sheet_details_data),
