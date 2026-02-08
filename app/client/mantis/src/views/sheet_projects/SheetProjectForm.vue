@@ -97,9 +97,6 @@ onMounted(async () => {
         service_type: existingSheet.service_type || 'ALQUILER Y MANTENIMIENTO',
         status: existingSheet.status || 'IN_PROGRESS',
         series_code: existingSheet.series_code || 'PSL-PS-0000-0000',
-        secuence_prefix: existingSheet.secuence_prefix || 'PSL-PS',
-        secuence_year: existingSheet.secuence_year || new Date().getFullYear(),
-        secuence_number: existingSheet.secuence_number || 0,
         contact_reference: existingSheet.contact_reference || '',
         contact_phone_reference: existingSheet.contact_phone_reference || '',
         client_po_reference: existingSheet.client_po_reference || '',
@@ -133,6 +130,10 @@ const handleSubmit = async () => {
       throw new Error('La fecha de inicio del período es requerida');
     }
     
+    if (!formData.value.period_end) {
+      throw new Error('La fecha de fin del período es requerida');
+    }
+    
     if (!formData.value.service_type) {
       throw new Error('El tipo de servicio es requerido');
     }
@@ -141,10 +142,31 @@ const handleSubmit = async () => {
       throw new Error('Debes seleccionar al menos un recurso para la planilla');
     }
     
+    // Validar que las fechas no excedan la fecha de fin del proyecto
+    if (project.value.end_date) {
+      const projectEndDate = new Date(project.value.end_date);
+      const periodStart = new Date(formData.value.period_start);
+      const periodEnd = new Date(formData.value.period_end);
+      
+      if (periodStart > projectEndDate) {
+        throw new Error(`La fecha de inicio del período no puede ser posterior a la fecha de fin del proyecto (${new Date(project.value.end_date).toLocaleDateString('es-EC')})`);
+      }
+      
+      if (periodEnd > projectEndDate) {
+        throw new Error(`La fecha de fin del período no puede ser posterior a la fecha de fin del proyecto (${new Date(project.value.end_date).toLocaleDateString('es-EC')})`);
+      }
+    }
+    
+    // Validar que la fecha de fin sea posterior a la fecha de inicio
+    if (new Date(formData.value.period_end) < new Date(formData.value.period_start)) {
+      throw new Error('La fecha de fin del período debe ser posterior a la fecha de inicio');
+    }
+    
     // Construir payload desde el store
     const payload = {
       project: formData.value.project,
       period_start: formData.value.period_start,
+      period_end: formData.value.period_end,
       service_type: formData.value.service_type,
       contact_reference: formData.value.contact_reference || null,
       contact_phone_reference: formData.value.contact_phone_reference || null
@@ -153,7 +175,6 @@ const handleSubmit = async () => {
     // Si es actualización, agregar campos adicionales
     if (isEditMode.value) {
       payload.id = formData.value.id;
-      payload.period_end = formData.value.period_end || null;
       payload.status = formData.value.status;
       payload.client_po_reference = formData.value.client_po_reference || null;
       payload.final_disposition_reference = formData.value.final_disposition_reference || null;
@@ -209,7 +230,7 @@ const handleSubmit = async () => {
     <form @submit.prevent="handleSubmit" class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg">
       <div class="card-body">
 
-        <!-- ===== ENCABEZADO: Título + Botones PDF ===== -->
+        <!-- ===== ENCABEZADO: Título + Botones PDF + Código Serie ===== -->
         <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
           <div>
             <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
@@ -218,13 +239,16 @@ const handleSubmit = async () => {
             </h1>
             <p class="text-gray-600 text-sm mt-1">{{ project?.partner_name || '' }} · {{ project?.location || '' }}</p>
           </div>
-          <div class="flex gap-2">
-            <button type="button" @click="handleAttachSheetFile" class="btn btn-outline btn-info gap-2">
+          <div class="flex gap-2 items-center">
+            <button type="button" @click="handleAttachSheetFile" class="btn btn-info gap-2">
               <i class="las la-file-pdf text-xl"></i> Adjuntar Planilla PDF
             </button>
-            <button type="button" @click="handleAttachCertificateFile" class="btn btn-outline btn-warning gap-2">
+            <button type="button" @click="handleAttachCertificateFile" class="btn btn-warning gap-2">
               <i class="las la-file-pdf text-xl"></i> Adjuntar Cert. Disp. Final
             </button>
+            <div class="form-control w-48">
+              <input v-model="formData.series_code" type="text" class="input input-bordered input-sm w-full font-bold text-red-800 font-mono text-[16px]" readonly />
+            </div>
           </div>
         </div>
 
@@ -286,9 +310,15 @@ const handleSubmit = async () => {
           </div>
           <div class="form-control w-full">
             <label class="label">
-              <span class="label-text font-semibold">Fin Período</span>
+              <span class="label-text font-semibold">Fin Período *</span>
             </label>
-            <input v-model="formData.period_end" type="date" class="input input-bordered w-full" />
+            <input 
+              v-model="formData.period_end" 
+              type="date" 
+              class="input input-bordered w-full" 
+              :class="{ 'input-error': !formData.period_end }" 
+              required 
+            />
           </div>
           <div class="form-control w-full">
             <label class="label">
@@ -297,36 +327,6 @@ const handleSubmit = async () => {
             <select v-model="formData.status" class="select select-bordered w-full">
               <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
             </select>
-          </div>
-        </div>
-
-        <div class="divider">Código de Serie y Secuencia</div>
-
-        <!-- Fila 2: Código Serie + Prefijo + Año + Número (4 columnas) -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Código Serie</span>
-            </label>
-            <input v-model="formData.series_code" type="text" class="input input-bordered w-full" placeholder="PSL-PS-0000-0000" />
-          </div>
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Prefijo</span>
-            </label>
-            <input v-model="formData.secuence_prefix" type="text" class="input input-bordered w-full" placeholder="PSL-PS" />
-          </div>
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Año</span>
-            </label>
-            <input v-model.number="formData.secuence_year" type="number" class="input input-bordered w-full" min="2020" />
-          </div>
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Nº Secuencia</span>
-            </label>
-            <input v-model.number="formData.secuence_number" type="number" class="input input-bordered w-full" min="0" />
           </div>
         </div>
 

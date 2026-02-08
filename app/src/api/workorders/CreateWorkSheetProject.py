@@ -25,7 +25,7 @@ class CreateWorkSheetProjectAPI(View):
     @transaction.atomic
     def _create_sheet(self, request, data):
         """Crear nueva hoja de trabajo."""
-        required_fields = ["project_id", "period_start", "service_type"]
+        required_fields = ["project_id", "period_start", "period_end", "service_type"]
         missing_fields = [f for f in required_fields if not data.get(f)]
         if missing_fields:
             return JsonResponse(
@@ -57,6 +57,7 @@ class CreateWorkSheetProjectAPI(View):
             )
 
         period_start = self._parse_date(data.get("period_start"))
+        period_end = self._parse_date(data.get("period_end"))
         
         if not period_start:
             return JsonResponse(
@@ -64,10 +65,37 @@ class CreateWorkSheetProjectAPI(View):
                 status=400,
             )
         
+        if not period_end:
+            return JsonResponse(
+                {"success": False, "error": "Fecha de fin de período inválida"},
+                status=400,
+            )
+        
+        # Validar que period_end sea posterior a period_start
+        if period_end < period_start:
+            return JsonResponse(
+                {"success": False, "error": "La fecha de fin del período debe ser posterior a la fecha de inicio"},
+                status=400,
+            )
+        
+        # Validar que las fechas no excedan la fecha de fin del proyecto (si existe)
+        if project.end_date:
+            if period_start > project.end_date:
+                return JsonResponse(
+                    {"success": False, "error": f"La fecha de inicio del período no puede ser posterior a la fecha de fin del proyecto ({project.end_date.strftime('%d/%m/%Y')})"},
+                    status=400,
+                )
+            if period_end > project.end_date:
+                return JsonResponse(
+                    {"success": False, "error": f"La fecha de fin del período no puede ser posterior a la fecha de fin del proyecto ({project.end_date.strftime('%d/%m/%Y')})"},
+                    status=400,
+                )
+        
         series_code = SheetProject.get_next_series_code()
         sheet = SheetProject(
             project=project,
             period_start=period_start,
+            period_end=period_end,
             status="IN_PROGRESS",
             series_code=series_code,
             secuence_year=int(series_code.split("-")[2]),
@@ -88,6 +116,7 @@ class CreateWorkSheetProjectAPI(View):
                     "series_code": sheet.series_code,
                     "project_id": project.id,
                     "period_start": sheet.period_start.isoformat(),
+                    "period_end": sheet.period_end.isoformat() if sheet.period_end else None,
                     "status": sheet.status
                 },
             },
