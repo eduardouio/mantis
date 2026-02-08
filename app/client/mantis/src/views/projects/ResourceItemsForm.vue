@@ -352,6 +352,7 @@
                   </td>
                   <td class="border border-gray-300">
                     <input 
+                      v-if="resource.resource?.type_equipment_display !== 'SERVICIO'"
                       type="number" 
                       step="0.01" 
                       min="0"
@@ -359,8 +360,8 @@
                       v-model="resource.cost"
                       @focus="handleCostFocus(resource)"
                       placeholder="0.00"
-                      :disabled="resource.resource?.type_equipment_display === 'SERVICIO'"
                     />
+                    <span v-else class="text-gray-400 text-sm">N/A</span>
                   </td>
                   <!-- Frecuencia del Alquiler -->
                   <td class="border border-gray-300">

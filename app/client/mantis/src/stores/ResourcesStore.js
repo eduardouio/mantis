@@ -36,7 +36,6 @@ export const UseResourcesStore = defineStore("resourcesStore", {
     },
     actions: {
         async fetchResourcesAvailable() {
-            console.log("Fetching available resources...");
             try {
                 const response = await fetch(appConfig.URLSourcesAvailable, {
                     method: "GET",
@@ -53,7 +52,6 @@ export const UseResourcesStore = defineStore("resourcesStore", {
             }
         },
         setSelectedResource(idResource) {
-            console.log("Setting selected resource with ID:", idResource);
             this.selectedResource = this.resources.find(
                 (resource) => resource.id === idResource
             ) || null
