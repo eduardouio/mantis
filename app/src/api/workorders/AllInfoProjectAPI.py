@@ -156,14 +156,13 @@ class AllInfoProjectAPI(View):
                         "resource_item_id": detail.resource_item.id,
                         "resource_item_name": detail.resource_item.name if detail.resource_item else None,
                         "resource_item_code": detail.resource_item.code if detail.resource_item else None,
+                        "equipment": detail.equipment,
                         "detail": detail.detail,
                         "item_unity": detail.item_unity,
                         "quantity": float(detail.quantity),
                         "unit_price": float(detail.unit_price),
                         "total_line": float(detail.total_line),
-                        "unit_measurement": detail.unit_measurement,
-                        "total_price": float(detail.total_price),
-                        "monthdays": detail.monthdays,
+                        "monthdays_apply_cost": detail.monthdays_apply_cost,
                         "metadata": get_base_metadata(detail),
                     }
                     sheet_details_data.append(detail_data)
