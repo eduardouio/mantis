@@ -44,7 +44,6 @@ const stats = ref({
 
 const errorMessage = ref('');
 const successMessage = ref('');
-const selectedResources = ref([]);
 
 const serviceTypeOptions = [
   { value: 'ALQUILER', label: 'Alquiler' },
@@ -58,33 +57,25 @@ const statusOptions = [
   { value: 'CANCELLED', label: 'Cancelado' }
 ];
 
-// Computed para verificar si todos los recursos activos están seleccionados
+// Solo mostrar recursos activos
 const activeResources = computed(() => resources.value.filter(r => r.is_active));
+
+// Recursos seleccionados (is_selected === true)
+const selectedResources = computed(() => activeResources.value.filter(r => r.is_selected));
+
 const allSelected = computed(() => {
   return activeResources.value.length > 0 && 
-         activeResources.value.every(r => selectedResources.value.includes(r.id));
+         activeResources.value.every(r => r.is_selected);
 });
 
-// Métodos de selección
+// Métodos de selección usando is_selected del recurso
 const toggleSelectAll = () => {
-  if (allSelected.value) {
-    selectedResources.value = [];
-  } else {
-    selectedResources.value = activeResources.value.map(r => r.id);
-  }
+  const newValue = !allSelected.value;
+  activeResources.value.forEach(r => { r.is_selected = newValue; });
 };
 
-const toggleResourceSelection = (resourceId) => {
-  const index = selectedResources.value.indexOf(resourceId);
-  if (index === -1) {
-    selectedResources.value.push(resourceId);
-  } else {
-    selectedResources.value.splice(index, 1);
-  }
-};
-
-const isResourceSelected = (resourceId) => {
-  return selectedResources.value.includes(resourceId);
+const toggleResourceSelection = (resource) => {
+  resource.is_selected = !resource.is_selected;
 };
 
 // Placeholder para adjuntar archivos PDF (implementación futura)
@@ -108,9 +99,9 @@ onMounted(async () => {
   formData.value.contact_phone_reference = project.value.contact_phone || '';
   
   // Seleccionar automáticamente todos los recursos activos
-  selectedResources.value = resources.value
+  resources.value
     .filter(r => r.is_active)
-    .map(r => r.id);
+    .forEach(r => { r.is_selected = true; });
 });
 
 const handleSubmit = async () => {
@@ -131,6 +122,19 @@ const handleSubmit = async () => {
       throw new Error('Debes seleccionar al menos un recurso para la planilla');
     }
     
+    // Construir payload con recursos seleccionados
+    const resourcesPayload = selectedResources.value.map(r => ({
+      id: r.id,
+      resource_item_code: r.resource_item_code,
+      resource_item_name: r.resource_item_name,
+      type_resource: r.type_resource,
+      cost: r.cost,
+      maintenance_cost: r.maintenance_cost,
+      operation_start_date: r.operation_start_date,
+      is_active: r.is_active,
+      is_selected: r.is_selected
+    }));
+
     const sheetProject = {
       project: project.value.id,
       period_start: formData.value.period_start,
@@ -147,15 +151,26 @@ const handleSubmit = async () => {
       client_po_reference: formData.value.client_po_reference || null,
       final_disposition_reference: formData.value.final_disposition_reference || null,
       invoice_reference: formData.value.invoice_reference || null,
-      selected_resources: selectedResources.value // Agregar recursos seleccionados
+      total_gallons: stats.value.total_gallons,
+      total_barrels: stats.value.total_barrels,
+      total_cubic_meters: stats.value.total_cubic_meters,
+      subtotal: stats.value.subtotal,
+      tax_amount: stats.value.tax_amount,
+      total: stats.value.total,
+      selected_resources: resourcesPayload
     };
     
-    const sheetId = await sheetProjectStore.addSheetProject(sheetProject);
-    successMessage.value = 'Planilla creada exitosamente';
+    // Mostrar JSON para validación antes de enviar
+    console.log('=== PAYLOAD PLANILLA ===');
+    console.log(JSON.stringify(sheetProject, null, 2));
     
-    setTimeout(() => {
-      router.push({ name: 'projects-detail' });
-    }, 1500);
+    // TODO: Descomentar cuando el backend esté listo
+    // const sheetId = await sheetProjectStore.addSheetProject(sheetProject);
+    successMessage.value = 'JSON generado — revisa la consola del navegador para validar el payload.';
+    
+    // setTimeout(() => {
+    //   router.push({ name: 'projects-detail' });
+    // }, 1500);
   } catch (error) {
     console.error('Error al crear planilla:', error);
     errorMessage.value = error.message || 'Error al crear la planilla';
@@ -367,8 +382,8 @@ const handleSubmit = async () => {
             <h3 class="font-bold">Recursos Seleccionados</h3>
             <p class="text-sm">
               {{ selectedResources.length > 0 
-                ? `Has seleccionado ${selectedResources.length} recurso(s) para esta planilla.` 
-                : 'Selecciona al menos un recurso para incluir en la planilla.' 
+                ? `Has seleccionado ${selectedResources.length} de ${activeResources.length} recurso(s) activos para esta planilla.` 
+                : 'Selecciona al menos un recurso activo para incluir en la planilla.' 
               }}
             </p>
           </div>
@@ -397,19 +412,18 @@ const handleSubmit = async () => {
               </tr>
             </thead>
             <tbody>
-              <tr v-if="resources.length === 0">
+              <tr v-if="activeResources.length === 0">
                 <td colspan="8" class="text-center py-4 text-gray-500">
-                  No hay recursos asignados al proyecto
+                  No hay recursos activos asignados al proyecto
                 </td>
               </tr>
-              <tr v-for="(resource, index) in resources" :key="resource.id">
+              <tr v-for="(resource, index) in activeResources" :key="resource.id">
                 <td class="border text-center">
                   <input 
                     type="checkbox" 
                     class="checkbox checkbox-sm" 
-                    :checked="isResourceSelected(resource.id)"
-                    @change="toggleResourceSelection(resource.id)"
-                    :disabled="!resource.is_active"
+                    :checked="resource.is_selected"
+                    @change="toggleResourceSelection(resource)"
                   />
                 </td>
                 <td class="border text-center">{{ index + 1 }}</td>
@@ -437,14 +451,14 @@ const handleSubmit = async () => {
                 </td>
               </tr>
             </tbody>
-            <tfoot v-if="resources.length > 0">
+            <tfoot v-if="activeResources.length > 0">
               <tr class="bg-gray-200 font-semibold">
                 <td class="border text-center">
                   <span class="badge badge-sm badge-primary">{{ selectedResources.length }}</span>
                 </td>
-                <td colspan="4" class="border text-right">Total recursos:</td>
-                <td class="border text-right">${{ resources.reduce((s, r) => s + parseFloat(r.cost || 0), 0).toFixed(2) }}</td>
-                <td colspan="2" class="border text-center">{{ resources.length }} recursos</td>
+                <td colspan="4" class="border text-right">Total recursos seleccionados:</td>
+                <td class="border text-right">${{ selectedResources.reduce((s, r) => s + parseFloat(r.cost || 0), 0).toFixed(2) }}</td>
+                <td colspan="2" class="border text-center">{{ activeResources.length }} activos</td>
               </tr>
             </tfoot>
           </table>
