@@ -150,15 +150,23 @@ class CreateWorkSheetProjectAPI(View):
             # item_unity: SERVICIO -> DIAS, EQUIPO -> UNIDAD
             type_resource = detail_data.get("type_resource", "")
             
-            # Buscar el ProjectResourceItem para obtener el physical_equipment_code
+            # Obtener el ProjectResourceItem por ID directo o por búsqueda
             physical_equipment_code = None
+            project_resource = None
+            project_resource_id = detail_data.get("project_resource_id")
             try:
-                project_resource = ProjectResourceItem.objects.filter(
-                    project_id=project.id,
-                    resource_item_id=resource_item_id,
-                    type_resource=type_resource,
-                    is_deleted=False
-                ).first()
+                if project_resource_id:
+                    project_resource = ProjectResourceItem.objects.filter(
+                        id=project_resource_id,
+                        is_deleted=False
+                    ).first()
+                else:
+                    project_resource = ProjectResourceItem.objects.filter(
+                        project_id=project.id,
+                        resource_item_id=resource_item_id,
+                        type_resource=type_resource,
+                        is_deleted=False
+                    ).first()
                 if project_resource:
                     physical_equipment_code = project_resource.physical_equipment_code
             except Exception:
@@ -184,6 +192,7 @@ class CreateWorkSheetProjectAPI(View):
             detail = SheetProjectDetail(
                 sheet_project=sheet,
                 resource_item=resource_item,
+                project_resource_item=project_resource,
                 equipment=equipment,
                 detail=detail_data.get("detailed_description", ""),
                 item_unity=item_unity,

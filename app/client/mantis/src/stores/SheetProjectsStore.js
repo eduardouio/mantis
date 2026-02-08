@@ -107,6 +107,7 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 // Agregar detalles de recursos seleccionados
                 if (selectedResources && selectedResources.length > 0) {
                     payload.details = selectedResources.map(resource => ({
+                        project_resource_id: resource.id,
                         resource_item_id: resource.resource_item_id,
                         detailed_description: resource.detailed_description,
                         cost: resource.cost,
