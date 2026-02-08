@@ -147,10 +147,31 @@ class AllInfoProjectAPI(View):
                 # Consultar detalles de la planilla (SheetProjectDetail)
                 sheet_details = SheetProjectDetail.objects.filter(
                     sheet_project_id=sheet.id, is_active=True, is_deleted=False
-                ).select_related("resource_item")
+                ).select_related("resource_item", "project_resource_item")
 
                 sheet_details_data = []
                 for detail in sheet_details:
+                    # Construir información de project_resource_item si existe
+                    project_resource_item_data = None
+                    if detail.project_resource_item:
+                        pri = detail.project_resource_item
+                        project_resource_item_data = {
+                            "id": pri.id,
+                            "type_resource": pri.type_resource,
+                            "detailed_description": pri.detailed_description,
+                            "physical_equipment_code": pri.physical_equipment_code,
+                            "cost": float(pri.cost),
+                            "frequency_type": pri.frequency_type,
+                            "interval_days": pri.interval_days,
+                            "weekdays": pri.weekdays,
+                            "monthdays": pri.monthdays,
+                            "operation_start_date": serialize_date(pri.operation_start_date),
+                            "operation_end_date": serialize_date(pri.operation_end_date) if pri.operation_end_date else None,
+                            "is_retired": pri.is_retired,
+                            "retirement_date": serialize_date(pri.retirement_date) if pri.retirement_date else None,
+                            "retirement_reason": pri.retirement_reason,
+                        }
+                    
                     detail_data = {
                         "id": detail.id,
                         "resource_item_id": detail.resource_item.id,
@@ -163,6 +184,7 @@ class AllInfoProjectAPI(View):
                         "unit_price": float(detail.unit_price),
                         "total_line": float(detail.total_line),
                         "monthdays_apply_cost": detail.monthdays_apply_cost,
+                        "project_resource_item": project_resource_item_data,
                         "metadata": get_base_metadata(detail),
                     }
                     sheet_details_data.append(detail_data)
