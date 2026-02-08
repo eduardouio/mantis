@@ -208,6 +208,14 @@ const vehicles = computed(() => {
 })
 
 const toggleResourceSelection = (resourceId) => {
+  // Buscar el recurso
+  const resource = availableResources.value.find(r => r.id === resourceId)
+  
+  // Si el recurso es tipo SERVICIO y está inactivo, no permitir selección
+  if (resource && resource.type === 'SERVIC' && !resource.is_active) {
+    return
+  }
+  
   const index = selectedResourceIds.value.indexOf(resourceId)
   if (index > -1) {
     selectedResourceIds.value.splice(index, 1)
@@ -1008,7 +1016,7 @@ const currentStatusBadge = computed(() => {
           <table class="table table-zebra w-full table-sm">
             <thead>
               <tr class="bg-gray-500 text-white">
-                <th class="border border-gray-300 w-16 text-center">
+                <th class="border border-gray-300 w-24 text-center">
                   <input type="checkbox" class="checkbox checkbox-sm" :disabled="isChainClosed" />
                 </th>
                 <th class="border border-gray-300">#</th>
@@ -1023,19 +1031,38 @@ const currentStatusBadge = computed(() => {
                 :key="resource.id"
                 :class="{ 
                   'bg-blue-100': resource.selected,
-                  'cursor-pointer hover:bg-blue-50': !isChainClosed,
-                  'opacity-60': isChainClosed
+                  'cursor-pointer hover:bg-blue-50': !isChainClosed && (resource.type !== 'SERVIC' || resource.is_active),
+                  'opacity-60': isChainClosed,
+                  'opacity-50 bg-gray-100': resource.type === 'SERVIC' && !resource.is_active,
+                  'cursor-not-allowed': resource.type === 'SERVIC' && !resource.is_active
                 }"
                 @click="!isChainClosed && toggleResourceSelection(resource.id)"
+                :title="resource.type === 'SERVIC' && !resource.is_active ? 'Recurso inactivo - no se puede seleccionar' : ''"
               >
-                <td class="border border-gray-300 text-center">
-                  <input 
-                    type="checkbox" 
-                    class="checkbox checkbox-sm checkbox-primary"
-                    :checked="resource.selected"
-                    :disabled="isChainClosed"
-                    @click.stop="!isChainClosed && toggleResourceSelection(resource.id)"
-                  />
+                <td class="border border-gray-300">
+                  <div class="flex items-center justify-between px-2">
+                    <span 
+                      v-if="resource.is_active" 
+                      class="badge badge-success badge-sm gap-1" 
+                      title="Recurso activo"
+                    >
+                      <i class="las la-check-circle"></i>
+                    </span>
+                    <span 
+                      v-else 
+                      class="badge badge-error badge-sm gap-1" 
+                      title="Recurso inactivo"
+                    >
+                      <i class="las la-times-circle"></i>
+                    </span>
+                    <input 
+                      type="checkbox" 
+                      class="checkbox checkbox-sm checkbox-primary"
+                      :checked="resource.selected"
+                      :disabled="isChainClosed || (resource.type === 'SERVIC' && !resource.is_active)"
+                      @click.stop="!isChainClosed && toggleResourceSelection(resource.id)"
+                    />
+                  </div>
                 </td>
                 <td class="border border-gray-300">{{ index + 1 }}</td>
                 <td class="border border-gray-300">{{ resource.resource_item_code }}</td>
