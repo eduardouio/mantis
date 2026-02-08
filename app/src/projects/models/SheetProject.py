@@ -241,6 +241,13 @@ class SheetProjectDetail(BaseModel):
         decimal_places=2,
         default=0
     )
+    monthdays = models.JSONField(
+        'Días del Mes',
+        blank=True,
+        null=True,
+        default=None,
+        help_text='Lista de días del mes. Ej: [1, 15, 28]'
+    )
 
     class Meta:
         unique_together = ("sheet_project", "resource_item")
