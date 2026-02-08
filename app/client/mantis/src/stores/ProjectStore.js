@@ -48,6 +48,21 @@ export const UseProjectStore = defineStore("projectStore", {
             inProgressWorkOrders: state.workOrders.filter(wo => wo.status === 'IN_PROGRESS').length,
             invoicedWorkOrders: state.workOrders.filter(wo => wo.status === 'INVOICED').length,
         }),
+        resourceIdsInSheets: (state) => {
+            const ids = new Set();
+            state.workOrders.forEach(workOrder => {
+                (workOrder.details || []).forEach(detail => {
+                    const resourceId = detail?.project_resource_item?.id;
+                    if (resourceId) ids.add(resourceId);
+                });
+            });
+            return ids;
+        },
+        isResourceInSheet: (state) => (resourceId) => {
+            return state.workOrders.some(workOrder =>
+                (workOrder.details || []).some(detail => detail?.project_resource_item?.id === resourceId)
+            );
+        },
     },
     actions: {
         /**

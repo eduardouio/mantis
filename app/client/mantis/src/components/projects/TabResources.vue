@@ -2,11 +2,13 @@
 import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
+import { UseProjectStore } from '@/stores/ProjectStore'
 import { formatCurrency, formatDate, formatNumber } from '@/utils/formatters'
 
 const emit = defineEmits(['edit-resource'])
 
 const projectResourceStore = UseProjectResourceStore()
+const projectStore = UseProjectStore()
 
 // Computed property que devuelve todos los recursos ordenados (primero equipos, luego servicios)
 const projectResources = computed(() => {
@@ -25,6 +27,10 @@ const confirmDeleteId = ref(null)
 const isZeroCost = (cost) => {
   return parseFloat(cost) === 0;
 };
+
+const isResourceInSheet = (resourceId) => {
+  return projectStore.isResourceInSheet(resourceId)
+}
 
 const handleEditResource = (resource) => {
   emit('edit-resource', resource);
@@ -111,7 +117,7 @@ const handleDeleteResource = async (resource) => {
               <td class="p-2 border border-gray-300">
                 <div class="flex items-center gap-2">
                     <span v-if="resource.is_retired" class="text-red-500 border rounded p-1 bg-red-100 text-xs mr-1">RETIRADO</span>
-                    <span v-if="!resource.is_deleteable" class="text-blue-600 border rounded p-1 bg-blue-100 text-xs mr-1" title="Este recurso está en uso en cadenas de custodia">EN USO</span>
+                    <span v-if="isResourceInSheet(resource.id)" class="text-blue-600 border rounded p-1 bg-blue-100 text-xs mr-1" title="Este recurso está asignado a una planilla de trabajo">EN USO</span>
                     {{ resource.resource_item_code }}
                 </div>
               </td>
@@ -143,10 +149,10 @@ const handleDeleteResource = async (resource) => {
                 </button>
                 <button 
                   class="btn btn-xs border-red-500 text-red-500 bg-white" 
-                  :title="!resource.is_active ? 'No se puede eliminar: el recurso está inactivo' : (!resource.is_deleteable ? 'No se puede eliminar: el recurso está en uso en una o más cadenas de custodia' : (confirmDeleteId === resource.id ? 'Haz clic nuevamente para confirmar' : 'Eliminar recurso'))"
-                  :disabled="!resource.is_deleteable || !resource.is_active"
+                  :title="!resource.is_active ? 'No se puede eliminar: el recurso está inactivo' : (isResourceInSheet(resource.id) ? 'No se puede eliminar: el recurso está asignado a una planilla de trabajo' : (confirmDeleteId === resource.id ? 'Haz clic nuevamente para confirmar' : 'Eliminar recurso'))"
+                  :disabled="isResourceInSheet(resource.id) || !resource.is_active"
                   :class="{ 
-                    'opacity-50 cursor-not-allowed': !resource.is_deleteable || !resource.is_active,
+                    'opacity-50 cursor-not-allowed': isResourceInSheet(resource.id) || !resource.is_active,
                     'bg-red-500 text-black': confirmDeleteId === resource.id
                   }"
                   @click="handleDeleteResource(resource)"
