@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.views import View
-from projects.models.SheetProject import SheetProject
+from projects.models.SheetProject import SheetProject, SheetProjectDetail
 from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
 from projects.models.Project import Project
 from datetime import date, datetime
@@ -144,6 +144,30 @@ class AllInfoProjectAPI(View):
                     }
                     custody_chains_data.append(chain_data)
 
+                # Consultar detalles de la planilla (SheetProjectDetail)
+                sheet_details = SheetProjectDetail.objects.filter(
+                    sheet_project_id=sheet.id, is_active=True, is_deleted=False
+                ).select_related("resource_item")
+
+                sheet_details_data = []
+                for detail in sheet_details:
+                    detail_data = {
+                        "id": detail.id,
+                        "resource_item_id": detail.resource_item.id,
+                        "resource_item_name": detail.resource_item.name if detail.resource_item else None,
+                        "resource_item_code": detail.resource_item.code if detail.resource_item else None,
+                        "detail": detail.detail,
+                        "item_unity": detail.item_unity,
+                        "quantity": float(detail.quantity),
+                        "unit_price": float(detail.unit_price),
+                        "total_line": float(detail.total_line),
+                        "unit_measurement": detail.unit_measurement,
+                        "total_price": float(detail.total_price),
+                        "monthdays": detail.monthdays,
+                        "metadata": get_base_metadata(detail),
+                    }
+                    sheet_details_data.append(detail_data)
+
                 work_order_data = {
                     "id": sheet.id,
                     "series_code": sheet.series_code,
@@ -163,6 +187,8 @@ class AllInfoProjectAPI(View):
                     "subtotal": float(sheet.subtotal),
                     "tax_amount": float(sheet.tax_amount),
                     "total": float(sheet.total),
+                    "details": sheet_details_data,
+                    "details_count": len(sheet_details_data),
                     "custody_chains": custody_chains_data,
                     "custody_chains_count": len(custody_chains_data),
                     "metadata": get_base_metadata(sheet),
