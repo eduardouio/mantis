@@ -2,14 +2,17 @@
 import { RouterLink, useRouter } from 'vue-router';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { UseProjectStore } from '@/stores/ProjectStore';
+import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
 import { onMounted, computed, ref } from 'vue';
 
 const router = useRouter();
 const sheetProjectStore = UseSheetProjectsStore();
 const projectStore = UseProjectStore();
+const projectResourceStore = UseProjectResourceStore();
 const isSubmitting = ref(false);
 
 const project = computed(() => projectStore.project);
+const resources = computed(() => projectResourceStore.resourcesProject || []);
 
 // Formulario con todos los campos
 const formData = ref({
@@ -42,6 +45,7 @@ const statusOptions = [
 
 onMounted(async () => {
   await projectStore.fetchProjectData();
+  await projectResourceStore.fetchResourcesProject();
   sheetProjectStore.initializeNewSheetProject(project.value);
   
   // Inicializar contactos del proyecto
@@ -95,7 +99,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div class="container mx-auto p-4 max-w-5xl">
+  <div class="w-[90%] mx-auto p-4">
     <div class="mb-4">
       <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
         <i class="las la-file-invoice text-blue-600"></i>
@@ -334,6 +338,68 @@ const handleSubmit = async () => {
             <h3 class="font-bold">Información</h3>
             <p class="text-sm">Los campos marcados con (*) son obligatorios. El código de serie se generará automáticamente al crear la planilla.</p>
           </div>
+        </div>
+
+        <div class="divider">Recursos Asignados al Proyecto</div>
+
+        <!-- Tabla de Recursos -->
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full table-sm">
+            <thead>
+              <tr class="bg-lime-800 text-white text-center text-xs">
+                <th class="border">#</th>
+                <th class="border">Código</th>
+                <th class="border">Nombre</th>
+                <th class="border">Tipo</th>
+                <th class="border">Costo</th>
+                <th class="border">Fecha Inicio</th>
+                <th class="border">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="resources.length === 0">
+                <td colspan="7" class="text-center py-4 text-gray-500">
+                  No hay recursos asignados al proyecto
+                </td>
+              </tr>
+              <tr v-for="(resource, index) in resources" :key="resource.id">
+                <td class="border text-center">{{ index + 1 }}</td>
+                <td class="border">{{ resource.resource_item_code || 'N/A' }}</td>
+                <td class="border">{{ resource.resource_item_name || 'N/A' }}</td>
+                <td class="border text-center">
+                  <span 
+                    class="badge badge-sm"
+                    :class="resource.type_resource === 'EQUIPO' ? 'badge-primary' : 'badge-info'"
+                  >
+                    {{ resource.type_resource }}
+                  </span>
+                </td>
+                <td class="border text-right">
+                  {{ resource.cost ? `$${parseFloat(resource.cost).toFixed(2)}` : '$0.00' }}
+                </td>
+                <td class="border text-center">
+                  {{ resource.operation_start_date ? new Date(resource.operation_start_date).toLocaleDateString('es-EC') : 'N/A' }}
+                </td>
+                <td class="border text-center">
+                  <span 
+                    class="badge badge-sm"
+                    :class="resource.is_active ? 'badge-success' : 'badge-error'"
+                  >
+                    {{ resource.is_active ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot v-if="resources.length > 0">
+              <tr class="bg-gray-200 font-semibold">
+                <td colspan="4" class="border text-right">Total de recursos:</td>
+                <td class="border text-right">
+                  ${{ resources.reduce((sum, r) => sum + parseFloat(r.cost || 0), 0).toFixed(2) }}
+                </td>
+                <td colspan="2" class="border text-center">{{ resources.length }} recursos</td>
+              </tr>
+            </tfoot>
+          </table>
         </div>
 
         <div class="divider"></div>
