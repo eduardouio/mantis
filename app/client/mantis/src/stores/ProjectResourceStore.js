@@ -47,7 +47,7 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
         },
         async addResourcesToProject(resources) {
             try {
-                const cleanResources = resources.map(resource => {
+                const cleanResources = resources.flatMap(resource => {
                     // Determinar el código del equipo físico
                     // Si es un servicio, usar el valor seleccionado (si no hay, usar 0)
                     // Si es un equipo, usar su propio ID
@@ -61,13 +61,12 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                         resource_id: resource.resource_id,
                         detailed_description: resource.detailed_description,
                         cost: resource.cost || 0,
-                        maintenance_cost: resource.maintenance_cost || 0,
                         operation_start_date: resource.operation_start_date,
                         frequency_type: resource.frequency_type || 'MONTH',
                         physical_equipment_code: physicalEquipmentCode
                     }
                     
-                    // Solo enviar los datos del intervalo correspondiente al tipo seleccionado
+                    // Solo enviar los datos del intervalo correspondiente al tipo seleccionado para el alquiler
                     switch (resource.frequency_type) {
                         case 'DAY':
                             // Usar el valor del usuario, convertir a número entero
@@ -82,7 +81,39 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                             break
                     }
                     
-                    return baseData
+                    // Si incluye mantenimiento, crear un objeto separado para el servicio de mantenimiento
+                    if (resource.include_maintenance && resource.maintenance_cost > 0) {
+                        const maintenanceData = {
+                            project_id: appConfig.idProject,
+                            resource_id: resource.resource_id,
+                            detailed_description: `MANTENIMIENTO ${resource.resource_display_name}`,
+                            cost: 0,
+                            maintenance_cost: resource.maintenance_cost,
+                            operation_start_date: resource.operation_start_date,
+                            frequency_type: resource.maintenance_frequency_type || 'DAY',
+                            physical_equipment_code: physicalEquipmentCode
+                        }
+                        
+                        // Agregar datos de frecuencia para el mantenimiento
+                        switch (resource.maintenance_frequency_type) {
+                            case 'DAY':
+                                const maintIntervalDays = parseInt(resource.maintenance_interval_days)
+                                maintenanceData.interval_days = isNaN(maintIntervalDays) || maintIntervalDays < 1 ? 1 : maintIntervalDays
+                                break
+                            case 'WEEK':
+                                maintenanceData.weekdays = resource.maintenance_weekdays || []
+                                break
+                            case 'MONTH':
+                                maintenanceData.monthdays = resource.maintenance_monthdays || []
+                                break
+                        }
+                        
+                        // Retornar ambos: alquiler y mantenimiento como objetos separados
+                        return [baseData, maintenanceData]
+                    }
+                    
+                    // Si no incluye mantenimiento, solo retornar el alquiler
+                    return [baseData]
                 })
 
                 const response = await fetch(appConfig.URLAddResourceToProject, {
