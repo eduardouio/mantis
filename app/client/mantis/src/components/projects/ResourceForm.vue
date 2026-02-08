@@ -133,6 +133,35 @@ const handleResourceSelected = () => {
   }
 }
 
+const calculateMonthDaysFromStartDate = (startDate) => {
+  if (!startDate) return []
+  
+  const start = new Date(startDate)
+  const startDay = start.getDate()
+  
+  // Calcular el último día del mes
+  const lastDayOfMonth = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate()
+  
+  // Generar array de días desde startDay hasta el último día del mes
+  const days = []
+  for (let day = startDay; day <= lastDayOfMonth; day++) {
+    days.push(day)
+  }
+  
+  return days
+}
+
+// Watch para calcular automáticamente los días del mes cuando cambia la fecha de inicio en EQUIPOS
+watch(() => formData.value.operation_start_date, (startDate) => {
+  // Solo aplicar para equipos y cuando el frequency_type sea MONTH
+  if (formData.value.type_resource === 'EQUIPO' && formData.value.frequency_type === 'MONTH') {
+    const calculatedDays = calculateMonthDaysFromStartDate(startDate)
+    if (calculatedDays.length > 0) {
+      formData.value.monthdays = calculatedDays
+    }
+  }
+})
+
 const handleFrequencyTypeChange = () => {
   if (formData.value.frequency_type === 'DAY') {
     formData.value.interval_days = formData.value.interval_days || 3
