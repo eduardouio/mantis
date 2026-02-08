@@ -59,15 +59,15 @@ const formData = ref({
 })
 
 const isEditMode = computed(() => !!props.resource)
-const isRental = computed(() => formData.value.type_resource === 'EQUIPO' && parseFloat(formData.value.cost) > 0)
+const isEquipment = computed(() => formData.value.type_resource === 'EQUIPO')
 
 // Opciones de frecuencia disponibles según el tipo de recurso
 const availableFrequencyTypes = computed(() => {
-  // Si es un recurso de alquiler (EQUIPO con costo > 0), solo mostrar "Días del mes"
-  if (isRental.value) {
-    return frequencyTypes.filter(ft => ft.value === 'MONTH')
+  // Si es un equipo, solo DAY
+  if (isEquipment.value) {
+    return frequencyTypes.filter(ft => ft.value === 'DAY')
   }
-  // Para servicios y equipos sin costo, mostrar todas las opciones
+  // Para servicios, mostrar todas las opciones
   return frequencyTypes
 })
 
@@ -91,10 +91,10 @@ watch(() => props.resource, (newResource) => {
       detailed_description: newResource.detailed_description,
       type_resource: newResource.type_resource,
       cost: newResource.cost || 0,
-      frequency_type: newResource.frequency_type || 'MONTH',
-      interval_days: newResource.interval_days || 3,
-      weekdays: newResource.weekdays || [],
-      monthdays: newResource.monthdays || [],
+      frequency_type: newResource.type_resource === 'EQUIPO' ? 'DAY' : (newResource.frequency_type || 'DAY'),
+      interval_days: newResource.type_resource === 'EQUIPO' ? 1 : (newResource.interval_days || 3),
+      weekdays: newResource.type_resource === 'EQUIPO' ? [] : (newResource.weekdays || []),
+      monthdays: newResource.type_resource === 'EQUIPO' ? [] : (newResource.monthdays || []),
       operation_start_date: newResource.operation_start_date,
       operation_end_date: newResource.operation_end_date,
       is_retired: newResource.is_retired || false
@@ -102,15 +102,16 @@ watch(() => props.resource, (newResource) => {
   }
 }, { immediate: true })
 
-// Watch para cambiar automáticamente a MONTH si es recurso de alquiler
+// Watch para cambiar automáticamente a DAY si es equipo
 watch(() => formData.value.cost, (newCost) => {
   const cost = parseFloat(newCost)
-  // Si es un equipo y tiene costo (es alquiler), cambiar a MONTH automáticamente
-  if (formData.value.type_resource === 'EQUIPO' && cost > 0) {
-    if (formData.value.frequency_type !== 'MONTH') {
-      formData.value.frequency_type = 'MONTH'
-      formData.value.interval_days = 0
+  // Si es un equipo, siempre DAY
+  if (formData.value.type_resource === 'EQUIPO') {
+    if (formData.value.frequency_type !== 'DAY') {
+      formData.value.frequency_type = 'DAY'
+      formData.value.interval_days = 1
       formData.value.weekdays = []
+      formData.value.monthdays = []
     }
   }
 })
@@ -123,10 +124,10 @@ const handleResourceSelected = () => {
     formData.value.detailed_description = resource.display_name
     formData.value.type_resource = resource.type_equipment === 'SERVIC' ? 'SERVICIO' : 'EQUIPO'
     
-    // Para equipos, configurar siempre MONTH
+    // Para equipos, configurar siempre DAY
     if (formData.value.type_resource === 'EQUIPO') {
-      formData.value.frequency_type = 'MONTH'
-      formData.value.interval_days = 0
+      formData.value.frequency_type = 'DAY'
+      formData.value.interval_days = 1
       formData.value.weekdays = []
       formData.value.monthdays = []
     } else {
@@ -157,30 +158,24 @@ const calculateMonthDaysFromStartDate = (startDate) => {
   return days
 }
 
-// Watch para calcular automáticamente los días del mes cuando cambia la fecha de inicio en EQUIPOS
+// Watch para calcular automáticamente cuando cambia la fecha de inicio en EQUIPOS
 watch(() => formData.value.operation_start_date, (startDate) => {
-  // Solo aplicar para equipos y cuando el frequency_type sea MONTH
-  if (formData.value.type_resource === 'EQUIPO' && formData.value.frequency_type === 'MONTH') {
-    const calculatedDays = calculateMonthDaysFromStartDate(startDate)
-    if (calculatedDays.length > 0) {
-      formData.value.monthdays = calculatedDays
-    }
+  // Para equipos, siempre forzar DAY
+  if (formData.value.type_resource === 'EQUIPO') {
+    formData.value.frequency_type = 'DAY'
+    formData.value.interval_days = 1
+    formData.value.weekdays = []
+    formData.value.monthdays = []
   }
 })
 
-// Watch para asegurar que cuando se cambia a EQUIPO, se configure MONTH y calcule los días
+// Watch para asegurar que cuando se cambia a EQUIPO, se configure DAY
 watch(() => formData.value.type_resource, (newType) => {
   if (newType === 'EQUIPO') {
-    formData.value.frequency_type = 'MONTH'
-    formData.value.interval_days = 0
+    formData.value.frequency_type = 'DAY'
+    formData.value.interval_days = 1
     formData.value.weekdays = []
-    // Recalcular días si ya hay fecha de inicio
-    if (formData.value.operation_start_date) {
-      const calculatedDays = calculateMonthDaysFromStartDate(formData.value.operation_start_date)
-      if (calculatedDays.length > 0) {
-        formData.value.monthdays = calculatedDays
-      }
-    }
+    formData.value.monthdays = []
   }
 })
 
@@ -502,10 +497,10 @@ onMounted(() => {
                   {{ ft.label }}
                 </option>
               </select>
-              <div v-if="isRental" class="label">
+              <div v-if="isEquipment" class="label">
                 <span class="label-text-alt text-info">
                   <i class="las la-info-circle"></i>
-                  Para recursos de alquiler solo está disponible "Días del mes"
+                  Los equipos siempre operan con frecuencia diaria
                 </span>
               </div>
             </div>

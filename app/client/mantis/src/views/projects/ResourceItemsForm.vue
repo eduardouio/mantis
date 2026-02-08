@@ -55,28 +55,15 @@
       }
     }
     
-    // Calcular días del mes automáticamente para equipos
-    let calculatedMonthdays = []
-    const startDate = projectStore.project?.start_date
-    if (!isService && startDate) {
-      const start = new Date(startDate)
-      const startDay = start.getDate()
-      const lastDayOfMonth = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate()
-      
-      for (let day = startDay; day <= lastDayOfMonth; day++) {
-        calculatedMonthdays.push(day)
-      }
-    }
-    
     const newProjectResource = {
       resource: resource,
       resource_id: resource.id,
       resource_display_name: resource.display_name,
       detailed_description: resource.display_name,
-      frequency_type: isService ? 'DAY' : 'MONTH',
-      interval_days: isService ? 3 : 0,
+      frequency_type: 'DAY',
+      interval_days: isService ? 3 : 1,
       weekdays: [],
-      monthdays: isService ? [] : calculatedMonthdays,
+      monthdays: [],
       cost: 0,
       maintenance_cost: 0,
       operation_start_date: projectStore.project?.start_date || null,
@@ -365,57 +352,9 @@
                   </td>
                   <!-- Frecuencia del Alquiler -->
                   <td class="border border-gray-300">
-                    <div v-if="resource.resource?.type_equipment_display !== 'SERVICIO'" class="space-y-2">
-                      <select 
-                        class="select select-sm select-bordered w-full"
-                        v-model="resource.frequency_type"
-                        @change="handleFrequencyTypeChange(resource)"
-                      >
-                        <option v-for="ft in frequencyTypes" :key="ft.value" :value="ft.value">
-                          {{ ft.label }}
-                        </option>
-                      </select>
-                      
-                      <!-- Intervalo de días -->
-                      <div v-if="resource.frequency_type === 'DAY'">
-                        <input 
-                          type="number" 
-                          min="1"
-                          class="input input-sm input-bordered w-full" 
-                          v-model="resource.interval_days"
-                          data-input="interval"
-                          placeholder="Días"
-                        />
-                      </div>
-                      
-                      <!-- Días de la semana -->
-                      <div v-else-if="resource.frequency_type === 'WEEK'" class="flex flex-wrap gap-1">
-                        <button
-                          v-for="day in weekdayOptions"
-                          :key="day.value"
-                          type="button"
-                          class="btn btn-xs"
-                          :class="resource.weekdays?.includes(day.value) ? 'btn-primary' : 'btn-outline'"
-                          @click="toggleWeekday(resource, day.value)"
-                        >
-                          {{ day.label.substring(0, 3) }}
-                        </button>
-                      </div>
-                      
-                      <!-- Días del mes -->
-                      <div v-else-if="resource.frequency_type === 'MONTH'" class="grid grid-cols-7 gap-1">
-                        <button
-                          v-for="day in 31"
-                          :key="day"
-                          type="button"
-                          class="btn btn-xs"
-                          :class="resource.monthdays?.includes(day) ? 'btn-primary' : 'btn-outline'"
-                          @click="toggleMonthday(resource, day)"
-                        >
-                          {{ day }}
-                        </button>
-                      </div>
-                    </div>
+                    <span v-if="resource.resource?.type_equipment_display !== 'SERVICIO'" class="text-sm font-medium text-gray-600">
+                      Diario
+                    </span>
                     <span v-else class="text-gray-400 text-sm">N/A</span>
                   </td>
                   <td class="border border-gray-300 text-center">

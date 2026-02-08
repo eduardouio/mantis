@@ -1,4 +1,4 @@
-const idProject = window.djangoConfig?.projectId ?? 20
+const idProject = window.djangoConfig?.projectId ?? 14
 const apiBaseUrl = window.djangoConfig?.baseUrl ?? "http://localhost:8000"
 const csrfToken = window.djangoConfig?.csrfToken ?? "falsocsrf"
 
