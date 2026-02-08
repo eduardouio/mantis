@@ -29,4 +29,5 @@ export const appConfig = {
     "PDFCustodyChainReport": apiBaseUrl + "/reports/custody-chain/${id}/",
     "PDFCertFinalDisposition" : apiBaseUrl + "/reports/final-disposition/${id}/",
     "URLWorkSheetReport": apiBaseUrl + "/reports/worksheet/${id}/",
+    "URLReleaseResource": apiBaseUrl + "/api/projects/resources/release/",
 }

@@ -38,6 +38,7 @@ from api.workorders.CustodyChainDetailAPI import CustodyChainDetailAPI
 from api.workorders.AllInfoProjectAPI import AllInfoProjectAPI
 from api.workorders.CustodyChainEditAPI import CustodyChainEditAPI
 from api.workorders.RegenerateEquipmentCodes import RegenerateEquipmentCodesAPI
+from api.resources.ResourceReleaserAPI import ResourceReleaserAPI
 
 urlpatterns = [
     # vehicles
@@ -61,6 +62,7 @@ urlpatterns = [
     path('projects/resources/add/', AddResourceProjectAPI.as_view(), name='api_add_resource_project'),
     path('projects/resources/update/', UpdateResourceItemAPI.as_view(), name='api_update_resource_item'),
     path('projects/resources/delete/<int:id_project_resource>/', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
+	path('projects/resources/release/', ResourceReleaserAPI.as_view(), name='api_release_resource_project'),
     path('projects/<int:project_id>/resources/', ProjectResources.as_view(), name='api_project_resources'),
     path('projects/all-info/<int:project_id>/', AllInfoProjectAPI.as_view(), name='api_all_info_project'),
     
