@@ -5,7 +5,7 @@ from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
 from projects.models.Project import ProjectResourceItem
 from decimal import Decimal
 from calendar import monthrange
-from datetime import date, timedelta
+from datetime import timedelta
 
 
 EQUIPMENT_SHORT_NAMES = {
