@@ -153,30 +153,37 @@ class CreateWorkSheetProjectAPI(View):
             except (InvalidOperation, TypeError, ValueError):
                 unit_price = Decimal("0")
 
-            quantity = Decimal("0")
-            total_line = unit_price * quantity  # 0
+            # Extraer equipment del código del recurso (ej: PSL-BT-001 -> BT)
+            equipment = ""
+            if resource_item.code:
+                code_parts = resource_item.code.split("-")
+                if len(code_parts) > 1:
+                    equipment = code_parts[1]
 
-            # Construir monthdays como JSON con la info de frecuencia/intervalo
-            monthdays = self._build_monthdays(detail_data)
+            # item_unity: SERVICIO -> DIAS, EQUIPO -> UNIDAD
+            type_resource = detail_data.get("type_resource", "")
+            item_unity = "DIAS" if type_resource == "SERVICIO" else "UNIDAD"
 
             detail = SheetProjectDetail(
                 sheet_project=sheet,
                 resource_item=resource_item,
+                equipment=equipment,
                 detail=detail_data.get("detailed_description", ""),
-                item_unity="UNIDAD",
-                quantity=quantity,
+                item_unity=item_unity,
+                quantity=Decimal("0"),
                 unit_price=unit_price,
-                total_line=total_line,
-                monthdays=monthdays,
+                total_line=Decimal("0"),
+                monthdays_apply_cost=None,
             )
             detail.save()
             created_details.append({
                 "id": detail.id,
                 "resource_item_id": resource_item.id,
                 "resource_item_code": resource_item.code,
+                "equipment": detail.equipment,
                 "detail": detail.detail,
+                "item_unity": detail.item_unity,
                 "unit_price": str(detail.unit_price),
-                "monthdays": detail.monthdays,
             })
 
         return JsonResponse(
@@ -202,24 +209,6 @@ class CreateWorkSheetProjectAPI(View):
             },
             status=201,
         )
-
-    def _build_monthdays(self, detail_data):
-        """Construir el JSON de monthdays con la info de frecuencia/intervalo."""
-        frequency_type = detail_data.get("frequency_type")
-        interval_days = detail_data.get("interval_days")
-        weekdays = detail_data.get("weekdays")
-        monthdays = detail_data.get("monthdays")
-
-        # Si no hay datos de frecuencia, retornar None
-        if not frequency_type and not interval_days and not weekdays and not monthdays:
-            return None
-
-        return {
-            "frequency_type": frequency_type,
-            "interval_days": interval_days,
-            "weekdays": weekdays,
-            "monthdays": monthdays,
-        }
 
     def _parse_date(self, date_str):
         """Parsear fecha desde string."""
