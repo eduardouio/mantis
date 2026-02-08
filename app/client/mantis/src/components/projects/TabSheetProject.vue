@@ -73,14 +73,8 @@ const getStatusBadge = (status) => {
   };
 };
 
-const emit = defineEmits(['open-sheet-form', 'edit-sheet']);
-
 const openSheetFormModal = () => {
-  emit('open-sheet-form');
-};
-
-const editSheet = (sheet) => {
-  emit('edit-sheet', sheet);
+  router.push({ name: 'sheet-project-form' });
 };
 
 const viewCustodyChains = (sheetId) => {
