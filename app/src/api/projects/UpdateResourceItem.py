@@ -19,6 +19,18 @@ class UpdateResourceItemAPI(View):
 				status=500
 			)
 
+		if not project_resource.is_active:
+			return JsonResponse(
+				{"error": "No se puede actualizar un recurso inactivo."},
+				status=400
+			)
+
+		if not project_resource.project.is_active:
+			return JsonResponse(
+				{"error": "No se puede actualizar un recurso de un proyecto inactivo."},
+				status=400
+			)
+
 		project_resource.cost =  data.get('cost', 0.00)
 
 		# Validación y asignación según tipo de frecuencia
