@@ -115,6 +115,18 @@ class SheetProject(BaseModel):
         blank=True,
         null=True
     )
+    subtotal = models.DecimalField(
+        "Subtotal",
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+    tax_amount = models.DecimalField(
+        "IVA (15%)",
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
     total = models.DecimalField(
         "Total",
         max_digits=10,

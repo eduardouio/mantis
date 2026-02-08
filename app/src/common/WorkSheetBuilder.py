@@ -193,16 +193,25 @@ class WorkSheetBuilder:
         Calcula y actualiza los totales en la cabecera de la planilla.
         
         Actualiza:
-        - total: Suma de todos los totales de línea
+        - subtotal: Suma de todos los totales de línea
+        - tax_amount: IVA (15% del subtotal)
+        - total: subtotal + tax_amount
         - total_gallons, total_barrels, total_cubic_meters: De las cadenas de custodia
         """
-        # Calcular total desde los detalles
+        # Calcular subtotal desde los detalles
         details = SheetProjectDetail.objects.filter(
             sheet_project=self.sheet_project,
             is_active=True
         )
         
-        total = sum(detail.total_line for detail in details)
+        subtotal = sum(detail.total_line for detail in details)
+        
+        # Calcular IVA (15%)
+        tax_rate = Decimal("0.15")
+        tax_amount = subtotal * tax_rate
+        
+        # Calcular total
+        total = subtotal + tax_amount
         
         # Calcular totales de volúmenes desde cadenas de custodia
         custody_chains = CustodyChain.objects.filter(
@@ -215,6 +224,8 @@ class WorkSheetBuilder:
         total_cubic_meters = sum(chain.total_cubic_meters or 0 for chain in custody_chains)
         
         # Actualizar cabecera
+        self.sheet_project.subtotal = subtotal
+        self.sheet_project.tax_amount = tax_amount
         self.sheet_project.total = total
         self.sheet_project.total_gallons = total_gallons
         self.sheet_project.total_barrels = total_barrels
@@ -222,6 +233,8 @@ class WorkSheetBuilder:
         self.sheet_project.save()
         
         return {
+            'subtotal': subtotal,
+            'tax_amount': tax_amount,
             'total': total,
             'total_gallons': total_gallons,
             'total_barrels': total_barrels,

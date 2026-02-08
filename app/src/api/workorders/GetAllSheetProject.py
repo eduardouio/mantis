@@ -27,6 +27,8 @@ class GetAllSheetProjectAPI(View):
                     'total_gallons': sheet.total_gallons,
                     'total_barrels': sheet.total_barrels,
                     'total_cubic_meters': sheet.total_cubic_meters,
+                    'subtotal': float(sheet.subtotal),
+                    'tax_amount': float(sheet.tax_amount),
                     'total': float(sheet.total),
                     'contact_reference': sheet.contact_reference,
                     'contact_phone_reference': sheet.contact_phone_reference,

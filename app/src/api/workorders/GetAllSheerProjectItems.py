@@ -111,6 +111,8 @@ class GetAllSheerProjectItemsAPI(View):
                     "status": sheet_project.status,
                     "series_code": sheet_project.series_code,
                     "service_type": sheet_project.service_type,
+                    "subtotal": float(sheet_project.subtotal),
+                    "tax_amount": float(sheet_project.tax_amount),
                     "total": float(sheet_project.total),
                     "custody_chains": custody_chains,
                 },
@@ -143,6 +145,8 @@ class GetAllSheerProjectItemsAPI(View):
                     "status": sheet.status,
                     "series_code": sheet.series_code,
                     "service_type": sheet.service_type,
+                    "subtotal": float(sheet.subtotal),
+                    "tax_amount": float(sheet.tax_amount),
                     "total": float(sheet.total),
                     "custody_chains": custody_chains,
                 }

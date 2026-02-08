@@ -166,6 +166,8 @@ class CustodyChainDetailAPI(View):
                 "contact_phone_reference": s.contact_phone_reference,
                 "final_disposition_reference": s.final_disposition_reference,
                 "invoice_reference": s.invoice_reference,
+                "subtotal": float(s.subtotal) if s.subtotal is not None else 0.0,
+                "tax_amount": float(s.tax_amount) if s.tax_amount is not None else 0.0,
                 "total": float(s.total) if s.total is not None else 0.0,
                 "meta": serialize_meta(s),
             }
