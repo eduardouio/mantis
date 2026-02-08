@@ -4,7 +4,6 @@ from common.BaseModel import BaseModel
 from common.validators import validate_image_file
  
 
-
 FASES_COUNT = (
     ('1', '1 FASE'),
     ('2', '2 FASES'),
