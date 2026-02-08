@@ -8,7 +8,7 @@ const emit = defineEmits(['edit-resource'])
 
 const projectResourceStore = UseProjectResourceStore()
 
-// Computed property que devuelve todos los recursos sin agrupar
+// Computed property que devuelve todos los recursos sin agruparen
 const projectResources = computed(() => {
   return projectResourceStore.resourcesProject
 })

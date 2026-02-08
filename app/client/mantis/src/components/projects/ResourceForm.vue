@@ -45,18 +45,28 @@ const formData = ref({
   detailed_description: '',
   type_resource: 'SERVICIO',
   cost: 0,
-  frequency_type: 'DAY',
+  frequency_type: 'MONTH',
   interval_days: 3,
   weekdays: [],
   monthdays: [],
   maintenance_cost: 0,
   operation_start_date: null,
-  operation_end_date: null,
-  include_maintenance: true
+  operation_end_date: null
 })
 
 const isEditMode = computed(() => !!props.resource)
 const isService = computed(() => formData.value.type_resource === 'SERVICIO')
+const isRental = computed(() => formData.value.type_resource === 'EQUIPO' && parseFloat(formData.value.cost) > 0)
+
+// Opciones de frecuencia disponibles según el tipo de recurso
+const availableFrequencyTypes = computed(() => {
+  // Si es un recurso de alquiler (EQUIPO con costo > 0), solo mostrar "Días del mes"
+  if (isRental.value) {
+    return frequencyTypes.filter(ft => ft.value === 'MONTH')
+  }
+  // Para servicios y equipos sin costo, mostrar todas las opciones
+  return frequencyTypes
+})
 
 const selectedResourceIds = computed(() => {
   if (isEditMode.value) {
@@ -78,19 +88,29 @@ watch(() => props.resource, (newResource) => {
       detailed_description: newResource.detailed_description,
       type_resource: newResource.type_resource,
       cost: newResource.cost || 0,
-      frequency_type: newResource.frequency_type || 'DAY',
+      frequency_type: newResource.frequency_type || 'MONTH',
       interval_days: newResource.interval_days || 3,
       weekdays: newResource.weekdays || [],
       monthdays: newResource.monthdays || [],
       maintenance_cost: newResource.maintenance_cost || 0,
       operation_start_date: newResource.operation_start_date,
-      operation_end_date: newResource.operation_end_date,
-      include_maintenance: newResource.interval_days > 0 || 
-                          (newResource.weekdays && newResource.weekdays.length > 0) ||
-                          (newResource.monthdays && newResource.monthdays.length > 0)
+      operation_end_date: newResource.operation_end_date
     }
   }
 }, { immediate: true })
+
+// Watch para cambiar automáticamente a MONTH si es recurso de alquiler
+watch(() => formData.value.cost, (newCost) => {
+  const cost = parseFloat(newCost)
+  // Si es un equipo y tiene costo (es alquiler), cambiar a MONTH automáticamente
+  if (formData.value.type_resource === 'EQUIPO' && cost > 0) {
+    if (formData.value.frequency_type !== 'MONTH') {
+      formData.value.frequency_type = 'MONTH'
+      formData.value.interval_days = 0
+      formData.value.weekdays = []
+    }
+  }
+})
 
 const handleResourceSelected = () => {
   const resource = resourcesStore.selectedResource
@@ -100,25 +120,11 @@ const handleResourceSelected = () => {
     formData.value.detailed_description = resource.display_name
     formData.value.type_resource = resource.type_equipment === 'SERVIC' ? 'SERVICIO' : 'EQUIPO'
     
-    if (formData.value.type_resource === 'SERVICIO') {
-      formData.value.include_maintenance = true
-      formData.value.frequency_type = 'DAY'
-      formData.value.interval_days = 3
-    }
-  }
-}
-
-const handleMaintenanceChange = () => {
-  if (!formData.value.include_maintenance) {
-    formData.value.frequency_type = 'DAY'
-    formData.value.interval_days = 0
+    // Configurar valores por defecto de intervalos
+    formData.value.frequency_type = 'MONTH'
+    formData.value.interval_days = 3
     formData.value.weekdays = []
     formData.value.monthdays = []
-    formData.value.maintenance_cost = 0
-  } else {
-    if (formData.value.frequency_type === 'DAY' && formData.value.interval_days === 0) {
-      formData.value.interval_days = 3
-    }
   }
 }
 
@@ -156,6 +162,8 @@ const toggleMonthday = (day) => {
   }
 }
 
+
+
 const validateForm = () => {
   if (!isEditMode.value && !formData.value.resource_id) {
     errorMessage.value = 'Debe seleccionar un recurso'
@@ -167,19 +175,18 @@ const validateForm = () => {
     return false
   }
 
-  if (formData.value.include_maintenance) {
-    if (formData.value.frequency_type === 'DAY' && (!formData.value.interval_days || formData.value.interval_days < 1)) {
-      errorMessage.value = 'El intervalo de días debe ser mayor a 0'
-      return false
-    }
-    if (formData.value.frequency_type === 'WEEK' && (!formData.value.weekdays || formData.value.weekdays.length === 0)) {
-      errorMessage.value = 'Debe seleccionar al menos un día de la semana'
-      return false
-    }
-    if (formData.value.frequency_type === 'MONTH' && (!formData.value.monthdays || formData.value.monthdays.length === 0)) {
-      errorMessage.value = 'Debe seleccionar al menos un día del mes'
-      return false
-    }
+  // Validar configuración de intervalos (siempre requerido)
+  if (formData.value.frequency_type === 'DAY' && (!formData.value.interval_days || formData.value.interval_days < 1)) {
+    errorMessage.value = 'El intervalo de días debe ser mayor a 0'
+    return false
+  }
+  if (formData.value.frequency_type === 'WEEK' && (!formData.value.weekdays || formData.value.weekdays.length === 0)) {
+    errorMessage.value = 'Debe seleccionar al menos un día de la semana'
+    return false
+  }
+  if (formData.value.frequency_type === 'MONTH' && (!formData.value.monthdays || formData.value.monthdays.length === 0)) {
+    errorMessage.value = 'Debe seleccionar al menos un día del mes'
+    return false
   }
 
   return true
@@ -198,13 +205,13 @@ const submitForm = async () => {
   try {
     const payload = {
       ...formData.value,
-      interval_days: formData.value.include_maintenance && formData.value.frequency_type === 'DAY' 
+      interval_days: formData.value.frequency_type === 'DAY' 
         ? formData.value.interval_days 
         : 0,
-      weekdays: formData.value.include_maintenance && formData.value.frequency_type === 'WEEK'
+      weekdays: formData.value.frequency_type === 'WEEK'
         ? formData.value.weekdays
         : null,
-      monthdays: formData.value.include_maintenance && formData.value.frequency_type === 'MONTH'
+      monthdays: formData.value.frequency_type === 'MONTH'
         ? formData.value.monthdays
         : null
     }
@@ -359,34 +366,14 @@ onMounted(() => {
             class="input input-bordered text-right w-full" 
             v-model="formData.maintenance_cost"
             placeholder="0.00"
-            :disabled="!formData.include_maintenance"
           />
         </div>
       </div>
 
-      <!-- Mantenimiento -->
-      <div class="divider">Configuración de Mantenimiento</div>
-
-      <div class="grid grid-cols-12 gap-4 items-center">
-        <label class="col-span-4 text-right font-semibold">
-          Incluir Mantenimiento
-        </label>
-        <div class="col-span-8">
-          <label class="label cursor-pointer justify-start gap-3">
-            <input 
-              type="checkbox" 
-              class="checkbox checkbox-primary" 
-              v-model="formData.include_maintenance"
-              :disabled="isService"
-              @change="handleMaintenanceChange"
-            />
-            <span class="label-text">{{ formData.include_maintenance ? 'Sí' : 'No' }}</span>
-          </label>
-        </div>
-      </div>
+      <!-- Configuración de Intervalos -->
+      <div class="divider">Configuración de Intervalos</div>
 
       <!-- Configuración de Frecuencia -->
-      <template v-if="formData.include_maintenance">
         <div class="bg-gray-50 rounded-lg p-4 space-y-3">
           <!-- Tipo de Frecuencia -->
           <div class="grid grid-cols-12 gap-4 items-center">
@@ -399,10 +386,16 @@ onMounted(() => {
                 v-model="formData.frequency_type"
                 @change="handleFrequencyTypeChange"
               >
-                <option v-for="ft in frequencyTypes" :key="ft.value" :value="ft.value">
+                <option v-for="ft in availableFrequencyTypes" :key="ft.value" :value="ft.value">
                   {{ ft.label }}
                 </option>
               </select>
+              <div v-if="isRental" class="label">
+                <span class="label-text-alt text-info">
+                  <i class="las la-info-circle"></i>
+                  Para recursos de alquiler solo está disponible "Días del mes"
+                </span>
+              </div>
             </div>
           </div>
 
@@ -484,7 +477,6 @@ onMounted(() => {
             </div>
           </div>
         </div>
-      </template>
 
       <!-- Botones de Acción -->
       <div class="flex justify-end gap-3 pt-4">
