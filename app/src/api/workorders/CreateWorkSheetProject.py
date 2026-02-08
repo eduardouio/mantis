@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views import View
 from django.db import transaction
 import json
+from decimal import Decimal, InvalidOperation
 from datetime import datetime
 
 from projects.models import Project, SheetProject, SheetProjectDetail
@@ -26,7 +27,7 @@ class CreateWorkSheetProjectAPI(View):
     @transaction.atomic
     def _create_sheet(self, request, data):
         """Crear nueva hoja de trabajo."""
-        required_fields = ["project_id", "period_start", "period_end", "service_type"]
+        required_fields = ["project_id", "period_start", "period_end"]
         missing_fields = [f for f in required_fields if not data.get(f)]
         if missing_fields:
             return JsonResponse(
@@ -59,26 +60,26 @@ class CreateWorkSheetProjectAPI(View):
 
         period_start = self._parse_date(data.get("period_start"))
         period_end = self._parse_date(data.get("period_end"))
-        
+
         if not period_start:
             return JsonResponse(
                 {"success": False, "error": "Fecha de inicio de período inválida"},
                 status=400,
             )
-        
+
         if not period_end:
             return JsonResponse(
                 {"success": False, "error": "Fecha de fin de período inválida"},
                 status=400,
             )
-        
+
         # Validar que la fecha desde sea menor que la fecha hasta
         if period_start >= period_end:
             return JsonResponse(
                 {"success": False, "error": "La fecha de inicio del período debe ser menor que la fecha de fin"},
                 status=400,
             )
-        
+
         # Validar que las fechas no excedan la fecha de fin del proyecto (si existe)
         if project.end_date:
             if period_start > project.end_date:
@@ -91,19 +92,37 @@ class CreateWorkSheetProjectAPI(View):
                     {"success": False, "error": f"La fecha de fin del período no puede ser posterior a la fecha de fin del proyecto ({project.end_date.strftime('%d/%m/%Y')})"},
                     status=400,
                 )
-        
+
+        # Generar series_code y extraer componentes
         series_code = SheetProject.get_next_series_code()
+        parts = series_code.split("-")
+        secuence_prefix = f"{parts[0]}-{parts[1]}"
+        secuence_year = int(parts[2])
+        secuence_number = int(parts[3])
+
+        # Determinar status: usar el del JSON o por defecto IN_PROGRESS
+        status = data.get("status", "IN_PROGRESS")
+        if status not in ("IN_PROGRESS", "INVOICED", "CANCELLED"):
+            status = "IN_PROGRESS"
+
+        issue_date = self._parse_date(data.get("issue_date"))
+
         sheet = SheetProject(
             project=project,
+            issue_date=issue_date,
             period_start=period_start,
             period_end=period_end,
-            status="IN_PROGRESS",
+            status=status,
             series_code=series_code,
-            secuence_year=int(series_code.split("-")[2]),
-            secuence_number=int(series_code.split("-")[3]),
-            service_type=data.get("service_type"),
+            secuence_prefix=secuence_prefix,
+            secuence_year=secuence_year,
+            secuence_number=secuence_number,
+            service_type=data.get("service_type", "ALQUILER Y MANTENIMIENTO"),
+            client_po_reference=data.get("client_po_reference"),
             contact_reference=data.get("contact_reference"),
-            contact_phone_reference=data.get("contact_phone_reference")
+            contact_phone_reference=data.get("contact_phone_reference"),
+            final_disposition_reference=data.get("final_disposition_reference"),
+            invoice_reference=data.get("invoice_reference"),
         )
 
         sheet.save()
@@ -111,39 +130,53 @@ class CreateWorkSheetProjectAPI(View):
         # Procesar los detalles (recursos seleccionados)
         details = data.get("details", [])
         created_details = []
-        
+        seen_resource_items = set()
+
         for detail_data in details:
             resource_item_id = detail_data.get("resource_item_id")
             if not resource_item_id:
                 continue
-                
+
+            # Evitar duplicados por unique_together (sheet_project, resource_item)
+            if resource_item_id in seen_resource_items:
+                continue
+            seen_resource_items.add(resource_item_id)
+
             try:
                 resource_item = ResourceItem.objects.get(id=resource_item_id, is_active=True)
             except ResourceItem.DoesNotExist:
                 continue
-            
-            # Determinar la unidad basada en el tipo de recurso
-            item_unity = "DIAS" if detail_data.get("type_resource") == "SERVICIO" else "UNIDAD"
-            unit_measurement = "DAIS" if detail_data.get("type_resource") == "SERVICIO" else "UNITY"
-            
+
+            # unit_price desde cost
+            try:
+                unit_price = Decimal(str(detail_data.get("cost", 0)))
+            except (InvalidOperation, TypeError, ValueError):
+                unit_price = Decimal("0")
+
+            quantity = Decimal("0")
+            total_line = unit_price * quantity  # 0
+
+            # Construir monthdays como JSON con la info de frecuencia/intervalo
+            monthdays = self._build_monthdays(detail_data)
+
             detail = SheetProjectDetail(
                 sheet_project=sheet,
                 resource_item=resource_item,
                 detail=detail_data.get("detailed_description", ""),
-                item_unity=item_unity,
-                quantity=detail_data.get("quantity", 0),
-                unit_price=detail_data.get("cost", 0),
-                total_line=detail_data.get("total_line", 0),
-                unit_measurement=unit_measurement,
-                total_price=detail_data.get("total_price", 0),
-                monthdays=detail_data.get("monthdays")
+                item_unity="UNIDAD",
+                quantity=quantity,
+                unit_price=unit_price,
+                total_line=total_line,
+                monthdays=monthdays,
             )
             detail.save()
             created_details.append({
                 "id": detail.id,
                 "resource_item_id": resource_item.id,
                 "resource_item_code": resource_item.code,
-                "detail": detail.detail
+                "detail": detail.detail,
+                "unit_price": str(detail.unit_price),
+                "monthdays": detail.monthdays,
             })
 
         return JsonResponse(
@@ -157,12 +190,36 @@ class CreateWorkSheetProjectAPI(View):
                     "period_start": sheet.period_start.isoformat(),
                     "period_end": sheet.period_end.isoformat() if sheet.period_end else None,
                     "status": sheet.status,
+                    "service_type": sheet.service_type,
+                    "client_po_reference": sheet.client_po_reference,
+                    "invoice_reference": sheet.invoice_reference,
+                    "contact_reference": sheet.contact_reference,
+                    "contact_phone_reference": sheet.contact_phone_reference,
+                    "final_disposition_reference": sheet.final_disposition_reference,
                     "details_count": len(created_details),
-                    "details": created_details
+                    "details": created_details,
                 },
             },
-            status=201
+            status=201,
         )
+
+    def _build_monthdays(self, detail_data):
+        """Construir el JSON de monthdays con la info de frecuencia/intervalo."""
+        frequency_type = detail_data.get("frequency_type")
+        interval_days = detail_data.get("interval_days")
+        weekdays = detail_data.get("weekdays")
+        monthdays = detail_data.get("monthdays")
+
+        # Si no hay datos de frecuencia, retornar None
+        if not frequency_type and not interval_days and not weekdays and not monthdays:
+            return None
+
+        return {
+            "frequency_type": frequency_type,
+            "interval_days": interval_days,
+            "weekdays": weekdays,
+            "monthdays": monthdays,
+        }
 
     def _parse_date(self, date_str):
         """Parsear fecha desde string."""
