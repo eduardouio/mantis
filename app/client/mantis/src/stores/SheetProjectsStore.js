@@ -12,9 +12,23 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
             period_end: null,
             status: "IN_PROGRESS",
             series_code: "PSL-PS-00000-00",
+            secuence_prefix: "PSL-PS",
+            secuence_year: new Date().getFullYear(),
+            secuence_number: 0,
             service_type: "ALQUILER Y MANTENIMIENTO",
+            total_gallons: 0,
+            total_barrels: 0,
+            total_cubic_meters: 0,
+            client_po_reference: null,
             contact_reference: null,
-            contact_phone_reference: null
+            contact_phone_reference: null,
+            final_disposition_reference: null,
+            invoice_reference: null,
+            subtotal: 0,
+            tax_amount: 0,
+            total: 0,
+            sheet_project_file: null,
+            certificate_final_disposition_file: null
         },
         loading: false,
         error: null,
@@ -80,12 +94,15 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                     service_type: sheetProject.service_type
                 };
                 
-                if (sheetProject.contact_reference) {
-                    payload.contact_reference = sheetProject.contact_reference;
-                }
-                if (sheetProject.contact_phone_reference) {
-                    payload.contact_phone_reference = sheetProject.contact_phone_reference;
-                }
+                // Agregar campos opcionales si existen
+                if (sheetProject.issue_date) payload.issue_date = sheetProject.issue_date;
+                if (sheetProject.period_end) payload.period_end = sheetProject.period_end;
+                if (sheetProject.status) payload.status = sheetProject.status;
+                if (sheetProject.contact_reference) payload.contact_reference = sheetProject.contact_reference;
+                if (sheetProject.contact_phone_reference) payload.contact_phone_reference = sheetProject.contact_phone_reference;
+                if (sheetProject.client_po_reference) payload.client_po_reference = sheetProject.client_po_reference;
+                if (sheetProject.final_disposition_reference) payload.final_disposition_reference = sheetProject.final_disposition_reference;
+                if (sheetProject.invoice_reference) payload.invoice_reference = sheetProject.invoice_reference;
                 
                 const response = await fetch(appConfig.URLAddSheetProject, {
                     method: "POST",
@@ -190,14 +207,28 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
             this.newSheetProject = {
                 id: null,
                 project: project.id,
-                issue_date: null,
+                issue_date: new Date().toISOString().split('T')[0],
                 period_start: null,
                 period_end: null,
                 status: "IN_PROGRESS",
                 series_code: "PSL-PS-00000-00",
+                secuence_prefix: "PSL-PS",
+                secuence_year: new Date().getFullYear(),
+                secuence_number: 0,
                 service_type: "ALQUILER Y MANTENIMIENTO",
+                total_gallons: 0,
+                total_barrels: 0,
+                total_cubic_meters: 0,
+                client_po_reference: null,
                 contact_reference: project.contact_name,
-                contact_phone_reference: project.contact_phone
+                contact_phone_reference: project.contact_phone,
+                final_disposition_reference: null,
+                invoice_reference: null,
+                subtotal: 0,
+                tax_amount: 0,
+                total: 0,
+                sheet_project_file: null,
+                certificate_final_disposition_file: null
             };
         },
         
@@ -213,9 +244,23 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 period_end: null,
                 status: "IN_PROGRESS",
                 series_code: "PSL-PS-00000-00",
+                secuence_prefix: "PSL-PS",
+                secuence_year: new Date().getFullYear(),
+                secuence_number: 0,
                 service_type: "ALQUILER Y MANTENIMIENTO",
+                total_gallons: 0,
+                total_barrels: 0,
+                total_cubic_meters: 0,
+                client_po_reference: null,
                 contact_reference: null,
-                contact_phone_reference: null
+                contact_phone_reference: null,
+                final_disposition_reference: null,
+                invoice_reference: null,
+                subtotal: 0,
+                tax_amount: 0,
+                total: 0,
+                sheet_project_file: null,
+                certificate_final_disposition_file: null
             };
         },
     }

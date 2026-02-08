@@ -44,6 +44,7 @@ const stats = ref({
 
 const errorMessage = ref('');
 const successMessage = ref('');
+const selectedResources = ref([]);
 
 const serviceTypeOptions = [
   { value: 'ALQUILER', label: 'Alquiler' },
@@ -56,6 +57,35 @@ const statusOptions = [
   { value: 'INVOICED', label: 'Facturado' },
   { value: 'CANCELLED', label: 'Cancelado' }
 ];
+
+// Computed para verificar si todos los recursos activos están seleccionados
+const activeResources = computed(() => resources.value.filter(r => r.is_active));
+const allSelected = computed(() => {
+  return activeResources.value.length > 0 && 
+         activeResources.value.every(r => selectedResources.value.includes(r.id));
+});
+
+// Métodos de selección
+const toggleSelectAll = () => {
+  if (allSelected.value) {
+    selectedResources.value = [];
+  } else {
+    selectedResources.value = activeResources.value.map(r => r.id);
+  }
+};
+
+const toggleResourceSelection = (resourceId) => {
+  const index = selectedResources.value.indexOf(resourceId);
+  if (index === -1) {
+    selectedResources.value.push(resourceId);
+  } else {
+    selectedResources.value.splice(index, 1);
+  }
+};
+
+const isResourceSelected = (resourceId) => {
+  return selectedResources.value.includes(resourceId);
+};
 
 // Placeholder para adjuntar archivos PDF (implementación futura)
 const handleAttachSheetFile = () => {
@@ -76,6 +106,11 @@ onMounted(async () => {
   // Inicializar contactos del proyecto
   formData.value.contact_reference = project.value.contact_name || '';
   formData.value.contact_phone_reference = project.value.contact_phone || '';
+  
+  // Seleccionar automáticamente todos los recursos activos
+  selectedResources.value = resources.value
+    .filter(r => r.is_active)
+    .map(r => r.id);
 });
 
 const handleSubmit = async () => {
@@ -90,6 +125,10 @@ const handleSubmit = async () => {
     
     if (!formData.value.service_type) {
       throw new Error('El tipo de servicio es requerido');
+    }
+    
+    if (selectedResources.value.length === 0) {
+      throw new Error('Debes seleccionar al menos un recurso para la planilla');
     }
     
     const sheetProject = {
@@ -107,7 +146,8 @@ const handleSubmit = async () => {
       contact_phone_reference: formData.value.contact_phone_reference || null,
       client_po_reference: formData.value.client_po_reference || null,
       final_disposition_reference: formData.value.final_disposition_reference || null,
-      invoice_reference: formData.value.invoice_reference || null
+      invoice_reference: formData.value.invoice_reference || null,
+      selected_resources: selectedResources.value // Agregar recursos seleccionados
     };
     
     const sheetId = await sheetProjectStore.addSheetProject(sheetProject);
@@ -320,11 +360,33 @@ const handleSubmit = async () => {
 
         <div class="divider">Recursos Asignados al Proyecto</div>
 
+        <!-- Badge informativo -->
+        <div class="alert" :class="selectedResources.length > 0 ? 'alert-info' : 'alert-warning'">
+          <i class="las text-xl" :class="selectedResources.length > 0 ? 'la-info-circle' : 'la-exclamation-triangle'"></i>
+          <div>
+            <h3 class="font-bold">Recursos Seleccionados</h3>
+            <p class="text-sm">
+              {{ selectedResources.length > 0 
+                ? `Has seleccionado ${selectedResources.length} recurso(s) para esta planilla.` 
+                : 'Selecciona al menos un recurso para incluir en la planilla.' 
+              }}
+            </p>
+          </div>
+        </div>
+
         <!-- Tabla de Recursos -->
         <div class="overflow-x-auto">
           <table class="table table-zebra w-full">
             <thead>
               <tr class="bg-lime-800 text-white text-center">
+                <th class="border">
+                  <input 
+                    type="checkbox" 
+                    class="checkbox checkbox-sm" 
+                    :checked="allSelected"
+                    @change="toggleSelectAll"
+                  />
+                </th>
                 <th class="border">#</th>
                 <th class="border">Código</th>
                 <th class="border">Nombre</th>
@@ -336,11 +398,20 @@ const handleSubmit = async () => {
             </thead>
             <tbody>
               <tr v-if="resources.length === 0">
-                <td colspan="7" class="text-center py-4 text-gray-500">
+                <td colspan="8" class="text-center py-4 text-gray-500">
                   No hay recursos asignados al proyecto
                 </td>
               </tr>
               <tr v-for="(resource, index) in resources" :key="resource.id">
+                <td class="border text-center">
+                  <input 
+                    type="checkbox" 
+                    class="checkbox checkbox-sm" 
+                    :checked="isResourceSelected(resource.id)"
+                    @change="toggleResourceSelection(resource.id)"
+                    :disabled="!resource.is_active"
+                  />
+                </td>
                 <td class="border text-center">{{ index + 1 }}</td>
                 <td class="border">{{ resource.resource_item_code || 'N/A' }}</td>
                 <td class="border">{{ resource.resource_item_name || 'N/A' }}</td>
@@ -368,6 +439,9 @@ const handleSubmit = async () => {
             </tbody>
             <tfoot v-if="resources.length > 0">
               <tr class="bg-gray-200 font-semibold">
+                <td class="border text-center">
+                  <span class="badge badge-sm badge-primary">{{ selectedResources.length }}</span>
+                </td>
                 <td colspan="4" class="border text-right">Total recursos:</td>
                 <td class="border text-right">${{ resources.reduce((s, r) => s + parseFloat(r.cost || 0), 0).toFixed(2) }}</td>
                 <td colspan="2" class="border text-center">{{ resources.length }} recursos</td>
