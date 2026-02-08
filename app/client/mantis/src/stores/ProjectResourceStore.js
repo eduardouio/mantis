@@ -60,10 +60,16 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                         project_id: appConfig.idProject,
                         resource_id: resource.resource_id,
                         detailed_description: resource.detailed_description,
-                        cost: resource.cost || 0,
                         operation_start_date: resource.operation_start_date,
                         frequency_type: resource.frequency_type || 'MONTH',
                         physical_equipment_code: physicalEquipmentCode
+                    }
+                    
+                    // Si es un servicio, enviar maintenance_cost; si es equipo, enviar cost
+                    if (isService) {
+                        baseData.maintenance_cost = resource.maintenance_cost || 0
+                    } else {
+                        baseData.cost = resource.cost || 0
                     }
                     
                     // Solo enviar los datos del intervalo correspondiente al tipo seleccionado
