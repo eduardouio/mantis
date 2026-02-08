@@ -125,11 +125,19 @@ const handleResourceSelected = () => {
     formData.value.detailed_description = resource.display_name
     formData.value.type_resource = resource.type_equipment === 'SERVIC' ? 'SERVICIO' : 'EQUIPO'
     
-    // Configurar valores por defecto de intervalos
-    formData.value.frequency_type = 'MONTH'
-    formData.value.interval_days = 3
-    formData.value.weekdays = []
-    formData.value.monthdays = []
+    // Para equipos, configurar siempre MONTH
+    if (formData.value.type_resource === 'EQUIPO') {
+      formData.value.frequency_type = 'MONTH'
+      formData.value.interval_days = 0
+      formData.value.weekdays = []
+      formData.value.monthdays = []
+    } else {
+      // Para servicios, valores por defecto
+      formData.value.frequency_type = 'MONTH'
+      formData.value.interval_days = 3
+      formData.value.weekdays = []
+      formData.value.monthdays = []
+    }
   }
 }
 
@@ -158,6 +166,22 @@ watch(() => formData.value.operation_start_date, (startDate) => {
     const calculatedDays = calculateMonthDaysFromStartDate(startDate)
     if (calculatedDays.length > 0) {
       formData.value.monthdays = calculatedDays
+    }
+  }
+})
+
+// Watch para asegurar que cuando se cambia a EQUIPO, se configure MONTH y calcule los días
+watch(() => formData.value.type_resource, (newType) => {
+  if (newType === 'EQUIPO') {
+    formData.value.frequency_type = 'MONTH'
+    formData.value.interval_days = 0
+    formData.value.weekdays = []
+    // Recalcular días si ya hay fecha de inicio
+    if (formData.value.operation_start_date) {
+      const calculatedDays = calculateMonthDaysFromStartDate(formData.value.operation_start_date)
+      if (calculatedDays.length > 0) {
+        formData.value.monthdays = calculatedDays
+      }
     }
   }
 })

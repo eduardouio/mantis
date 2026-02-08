@@ -55,15 +55,28 @@
       }
     }
     
+    // Calcular días del mes automáticamente para equipos
+    let calculatedMonthdays = []
+    const startDate = projectStore.project?.start_date
+    if (!isService && startDate) {
+      const start = new Date(startDate)
+      const startDay = start.getDate()
+      const lastDayOfMonth = new Date(start.getFullYear(), start.getMonth() + 1, 0).getDate()
+      
+      for (let day = startDay; day <= lastDayOfMonth; day++) {
+        calculatedMonthdays.push(day)
+      }
+    }
+    
     const newProjectResource = {
       resource: resource,
       resource_id: resource.id,
       resource_display_name: resource.display_name,
       detailed_description: resource.display_name,
-      frequency_type: 'DAY',
+      frequency_type: isService ? 'DAY' : 'MONTH',
       interval_days: isService ? 3 : 0,
       weekdays: [],
-      monthdays: [],
+      monthdays: isService ? [] : calculatedMonthdays,
       cost: 0,
       maintenance_cost: 0,
       operation_start_date: projectStore.project?.start_date || null,
