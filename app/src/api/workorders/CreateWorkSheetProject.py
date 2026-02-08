@@ -147,12 +147,8 @@ class CreateWorkSheetProjectAPI(View):
             except (InvalidOperation, TypeError, ValueError):
                 unit_price = Decimal("0")
 
-            # Extraer equipment del código del recurso (ej: PSL-BT-001 -> BT)
-            equipment = ""
-            if resource_item.code:
-                code_parts = resource_item.code.split("-")
-                if len(code_parts) > 1:
-                    equipment = code_parts[1]
+            # Obtener descripción legible del tipo de equipo
+            equipment = resource_item.get_type_equipment_display() or ""
 
             # item_unity: SERVICIO -> DIAS, EQUIPO -> UNIDAD
             type_resource = detail_data.get("type_resource", "")
