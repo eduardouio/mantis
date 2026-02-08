@@ -28,8 +28,6 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
     }),
     actions: {
         async fetchResourcesProject() {
-            console.log("Fetching project resources")
-
             try {
                 const response = await fetch(appConfig.URLResourcesProject, {
                     method: "GET",
@@ -47,7 +45,9 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
         },
         async addResourcesToProject(resources) {
             try {
-                const cleanResources = resources.map(resource => {
+                const cleanResources = []
+                
+                resources.forEach(resource => {
                     // Determinar el código del equipo físico
                     // Si es un servicio, usar el valor seleccionado (si no hay, usar 0)
                     // Si es un equipo, usar su propio ID
@@ -81,7 +81,37 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                             break
                     }
                     
-                    return baseData
+                    // Agregar el registro del equipo
+                    cleanResources.push(baseData)
+                    
+                    // Si incluye mantenimiento y NO es un servicio, agregar un segundo registro para el mantenimiento
+                    if (resource.include_maintenance && !isService) {
+                        const maintenanceData = {
+                            project_id: appConfig.idProject,
+                            resource_id: resource.resource_id,
+                            detailed_description: `Mantenimiento - ${resource.detailed_description}`,
+                            maintenance_cost: resource.maintenance_cost || 0,  // Usar maintenance_cost para que el backend lo identifique
+                            operation_start_date: resource.operation_start_date,
+                            frequency_type: resource.maintenance_frequency_type || 'DAY',
+                            physical_equipment_code: resource.resource_id
+                        }
+                        
+                        // Agregar datos de frecuencia según el tipo de mantenimiento
+                        switch (resource.maintenance_frequency_type) {
+                            case 'DAY':
+                                const maintIntervalDays = parseInt(resource.maintenance_interval_days)
+                                maintenanceData.interval_days = isNaN(maintIntervalDays) || maintIntervalDays < 1 ? 1 : maintIntervalDays
+                                break
+                            case 'WEEK':
+                                maintenanceData.weekdays = resource.maintenance_weekdays || []
+                                break
+                            case 'MONTH':
+                                maintenanceData.monthdays = resource.maintenance_monthdays || []
+                                break
+                        }
+                        
+                        cleanResources.push(maintenanceData)
+                    }
                 })
 
                 const response = await fetch(appConfig.URLAddResourceToProject, {
