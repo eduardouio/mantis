@@ -5,7 +5,7 @@ import json
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
 
-from projects.models import Project, SheetProject, SheetProjectDetail
+from projects.models import Project, SheetProject, SheetProjectDetail, ProjectResourceItem
 from equipment.models.ResourceItem import ResourceItem
 
 
@@ -147,11 +147,38 @@ class CreateWorkSheetProjectAPI(View):
             except (InvalidOperation, TypeError, ValueError):
                 unit_price = Decimal("0")
 
-            # Obtener descripción legible del tipo de equipo
-            equipment = resource_item.get_type_equipment_display() or ""
-
             # item_unity: SERVICIO -> DIAS, EQUIPO -> UNIDAD
             type_resource = detail_data.get("type_resource", "")
+            
+            # Buscar el ProjectResourceItem para obtener el physical_equipment_code
+            physical_equipment_code = None
+            try:
+                project_resource = ProjectResourceItem.objects.filter(
+                    project_id=project.id,
+                    resource_item_id=resource_item_id,
+                    type_resource=type_resource,
+                    is_deleted=False
+                ).first()
+                if project_resource:
+                    physical_equipment_code = project_resource.physical_equipment_code
+            except Exception:
+                pass
+            
+            # Obtener descripción legible del tipo de equipo
+            equipment = ""
+            if physical_equipment_code and physical_equipment_code != 0:
+                # Si tiene equipo físico asociado, obtener su tipo legible
+                try:
+                    physical_equipment = ResourceItem.objects.get(id=physical_equipment_code, is_active=True)
+                    equipment = physical_equipment.get_type_equipment_display() or ""
+                except ResourceItem.DoesNotExist:
+                    equipment = detail_data.get("detailed_description", "")
+            else:
+                # Si no tiene equipo físico, usar descripción o tipo del recurso actual
+                if type_resource == "SERVICIO":
+                    equipment = detail_data.get("detailed_description", "")
+                else:
+                    equipment = resource_item.get_type_equipment_display() or ""
             item_unity = "DIAS" if type_resource == "SERVICIO" else "UNIDAD"
 
             detail = SheetProjectDetail(
