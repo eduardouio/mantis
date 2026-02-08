@@ -130,17 +130,11 @@ class CreateWorkSheetProjectAPI(View):
         # Procesar los detalles (recursos seleccionados)
         details = data.get("details", [])
         created_details = []
-        seen_resource_items = set()
 
         for detail_data in details:
             resource_item_id = detail_data.get("resource_item_id")
             if not resource_item_id:
                 continue
-
-            # Evitar duplicados por unique_together (sheet_project, resource_item)
-            if resource_item_id in seen_resource_items:
-                continue
-            seen_resource_items.add(resource_item_id)
 
             try:
                 resource_item = ResourceItem.objects.get(id=resource_item_id, is_active=True)
