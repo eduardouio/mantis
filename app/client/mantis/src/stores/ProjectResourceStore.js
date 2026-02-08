@@ -63,26 +63,23 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                         cost: resource.cost || 0,
                         maintenance_cost: resource.maintenance_cost || 0,
                         operation_start_date: resource.operation_start_date,
-                        include_maintenance: resource.include_maintenance,
-                        frequency_type: resource.include_maintenance ? (resource.frequency_type || 'DAY') : null,
+                        frequency_type: resource.frequency_type || 'MONTH',
                         physical_equipment_code: physicalEquipmentCode
                     }
                     
                     // Solo enviar los datos del intervalo correspondiente al tipo seleccionado
-                    if (resource.include_maintenance) {
-                        switch (resource.frequency_type) {
-                            case 'DAY':
-                                // Usar el valor del usuario, convertir a número entero
-                                const intervalDays = parseInt(resource.interval_days)
-                                baseData.interval_days = isNaN(intervalDays) || intervalDays < 1 ? 1 : intervalDays
-                                break
-                            case 'WEEK':
-                                baseData.weekdays = resource.weekdays || []
-                                break
-                            case 'MONTH':
-                                baseData.monthdays = resource.monthdays || []
-                                break
-                        }
+                    switch (resource.frequency_type) {
+                        case 'DAY':
+                            // Usar el valor del usuario, convertir a número entero
+                            const intervalDays = parseInt(resource.interval_days)
+                            baseData.interval_days = isNaN(intervalDays) || intervalDays < 1 ? 1 : intervalDays
+                            break
+                        case 'WEEK':
+                            baseData.weekdays = resource.weekdays || []
+                            break
+                        case 'MONTH':
+                            baseData.monthdays = resource.monthdays || []
+                            break
                     }
                     
                     return baseData
