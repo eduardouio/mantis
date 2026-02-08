@@ -86,7 +86,25 @@ const handleDeleteResource = async (resource) => {
           </template>
           <template v-else>
             <tr v-for="resource in projectResources" :key="resource.id" :class="{ 'text-red-500 font-bold bg-red-100': isZeroCost(resource.cost) }">
-              <td class="p-2 border border-gray-300">{{ resource.id }}</td>
+              <td class="p-2 border border-gray-300">
+                <div class="flex items-center justify-between">
+                  <span 
+                    v-if="resource.is_active" 
+                    class="badge badge-success badge-sm gap-1" 
+                    title="Recurso activo"
+                  >
+                    <i class="las la-check-circle"></i>
+                  </span>
+                  <span 
+                    v-else 
+                    class="badge badge-error badge-sm gap-1" 
+                    title="Recurso inactivo"
+                  >
+                    <i class="las la-times-circle"></i>
+                  </span>
+                  <span class="font-mono">{{ resource.id }}</span>
+                </div>
+              </td>
               <td class="p-2 border border-gray-300 text-center">
                 {{ resource.type_resource }}
               </td>
@@ -113,7 +131,11 @@ const handleDeleteResource = async (resource) => {
                 <div class="flex gap-2 justify-end">
                 <button 
                   class="btn btn-xs border-blue-500 text-teal-500 bg-white" 
-                  title="Editar"
+                  :title="!resource.is_active ? 'No se puede editar: el recurso está inactivo' : 'Editar'"
+                  :disabled="!resource.is_active"
+                  :class="{ 
+                    'opacity-50 cursor-not-allowed': !resource.is_active
+                  }"
                   @click="handleEditResource(resource)"
                 >
                   <i class="las la-edit"></i>
@@ -121,10 +143,10 @@ const handleDeleteResource = async (resource) => {
                 </button>
                 <button 
                   class="btn btn-xs border-red-500 text-red-500 bg-white" 
-                  :title="!resource.is_deleteable ? 'No se puede eliminar: el recurso está en uso en una o más cadenas de custodia' : (confirmDeleteId === resource.id ? 'Haz clic nuevamente para confirmar' : 'Eliminar recurso')"
-                  :disabled="!resource.is_deleteable"
+                  :title="!resource.is_active ? 'No se puede eliminar: el recurso está inactivo' : (!resource.is_deleteable ? 'No se puede eliminar: el recurso está en uso en una o más cadenas de custodia' : (confirmDeleteId === resource.id ? 'Haz clic nuevamente para confirmar' : 'Eliminar recurso'))"
+                  :disabled="!resource.is_deleteable || !resource.is_active"
                   :class="{ 
-                    'opacity-50 cursor-not-allowed': !resource.is_deleteable,
+                    'opacity-50 cursor-not-allowed': !resource.is_deleteable || !resource.is_active,
                     'bg-red-500 text-black': confirmDeleteId === resource.id
                   }"
                   @click="handleDeleteResource(resource)"
