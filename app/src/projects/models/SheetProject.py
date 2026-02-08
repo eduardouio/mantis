@@ -1,4 +1,4 @@
-from projects.models.Project import Project
+from projects.models.Project import Project, ProjectResourceItem
 from django.db import models
 from common.BaseModel import BaseModel
 from common.validators import validate_pdf_file
@@ -194,6 +194,12 @@ class SheetProjectDetail(BaseModel):
     resource_item = models.ForeignKey(
         ResourceItem,
         on_delete=models.PROTECT
+    )
+    project_resource_item = models.ForeignKey(
+        ProjectResourceItem,
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
     )
     equipment = models.CharField(
         "Equipo BT LV OT etc",
