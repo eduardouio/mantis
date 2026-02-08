@@ -146,6 +146,15 @@ onMounted(async () => {
         invoice_reference: existingSheet.invoice_reference || '',
         notes: existingSheet.notes || ''
       });
+      // Cargar estadísticas de la planilla existente
+      stats.value = {
+        total_gallons: existingSheet.total_gallons || 0,
+        total_barrels: existingSheet.total_barrels || 0,
+        total_cubic_meters: existingSheet.total_cubic_meters || 0,
+        subtotal: existingSheet.subtotal || 0,
+        tax_amount: existingSheet.tax_amount || 0,
+        total: existingSheet.total || 0
+      };
     } else {
       errorMessage.value = 'Planilla no encontrada';
     }
@@ -154,11 +163,37 @@ onMounted(async () => {
     sheetProjectStore.initializeNewSheetProject(project.value);
   }
   
-  // Seleccionar automáticamente todos los recursos activos (solo en modo creación)
-  if (!isEditMode.value) {
+  if (isEditMode.value) {
+    // Modo edición: pre-seleccionar los recursos que ya están en la planilla
+    const existingSheet = sheetProjectStore.getSheetProjectById(sheetId.value);
+    if (existingSheet && existingSheet.details) {
+      // Construir mapa: project_resource_item.id -> detail.id (para saber el id del detalle)
+      // Usamos un array porque puede haber varios detalles con el mismo project_resource_item.id
+      const detailMap = {};
+      for (const detail of existingSheet.details) {
+        const prId = detail.project_resource_item?.id;
+        if (prId) {
+          if (!detailMap[prId]) detailMap[prId] = [];
+          detailMap[prId].push(detail.id);
+        }
+      }
+      
+      // Marcar como seleccionados y asignar detail_id
+      for (const resource of resources.value.filter(r => r.is_active)) {
+        if (detailMap[resource.id] && detailMap[resource.id].length > 0) {
+          resource.is_selected = true;
+          resource.detail_id = detailMap[resource.id].shift(); // tomar el primer id disponible
+        } else {
+          resource.is_selected = false;
+          resource.detail_id = 0; // nuevo si se selecciona después
+        }
+      }
+    }
+  } else {
+    // Seleccionar automáticamente todos los recursos activos (solo en modo creación)
     resources.value
       .filter(r => r.is_active)
-      .forEach(r => { r.is_selected = true; });
+      .forEach(r => { r.is_selected = true; r.detail_id = 0; });
   }
 });
 
@@ -180,7 +215,7 @@ const handleSubmit = async () => {
       throw new Error('El tipo de servicio es requerido');
     }
     
-    if (!isEditMode.value && selectedResources.value.length === 0) {
+    if (selectedResources.value.length === 0) {
       throw new Error('Debes seleccionar al menos un recurso para la planilla');
     }
     
@@ -237,8 +272,8 @@ const handleSubmit = async () => {
     
     let resultId;
     if (isEditMode.value) {
-      // Actualizar planilla existente
-      await sheetProjectStore.updateSheetProject(payload);
+      // Actualizar planilla existente con los recursos seleccionados
+      await sheetProjectStore.updateSheetProject(payload, selectedResources.value);
       resultId = payload.id;
       successMessage.value = 'Planilla actualizada exitosamente';
     } else {

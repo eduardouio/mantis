@@ -104,9 +104,10 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 if (sheetProject.contact_phone_reference) payload.contact_phone_reference = sheetProject.contact_phone_reference;
                 if (sheetProject.final_disposition_reference) payload.final_disposition_reference = sheetProject.final_disposition_reference;
                 
-                // Agregar detalles de recursos seleccionados
+                // Agregar detalles de recursos seleccionados (detail_id = 0 para nuevos)
                 if (selectedResources && selectedResources.length > 0) {
                     payload.details = selectedResources.map(resource => ({
+                        detail_id: 0,
                         project_resource_id: resource.id,
                         resource_item_id: resource.resource_item_id,
                         detailed_description: resource.detailed_description,
@@ -151,10 +152,11 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
         /**
          * Actualizar una planilla existente
          */
-        async updateSheetProject(sheetProject) {
+        async updateSheetProject(sheetProject, selectedResources = []) {
             this.loading = true;
             this.error = null;
             console.log("Updating sheet project:", sheetProject);
+            console.log("Selected resources for update:", selectedResources);
             
             try {
                 const payload = {
@@ -171,6 +173,24 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 if (sheetProject.client_po_reference) payload.client_po_reference = sheetProject.client_po_reference;
                 if (sheetProject.final_disposition_reference) payload.final_disposition_reference = sheetProject.final_disposition_reference;
                 if (sheetProject.invoice_reference) payload.invoice_reference = sheetProject.invoice_reference;
+                
+                // Agregar detalles de recursos seleccionados (detail_id > 0 = existente, 0 = nuevo)
+                if (selectedResources && selectedResources.length > 0) {
+                    payload.details = selectedResources.map(resource => ({
+                        detail_id: resource.detail_id || 0,
+                        project_resource_id: resource.id,
+                        resource_item_id: resource.resource_item_id,
+                        resource_item_code: resource.resource_item_code,
+                        resource_item_name: resource.resource_item_name,
+                        detailed_description: resource.detailed_description,
+                        cost: resource.cost,
+                        type_resource: resource.type_resource,
+                        frequency_type: resource.frequency_type,
+                        interval_days: resource.interval_days,
+                        weekdays: resource.weekdays,
+                        monthdays: resource.monthdays,
+                    }));
+                }
                 
                 const response = await fetch(appConfig.URLUpdateSheetProject, {
                     method: "PUT",
