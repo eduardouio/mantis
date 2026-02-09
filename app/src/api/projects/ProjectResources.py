@@ -40,6 +40,9 @@ class ProjectResources(View):
             "weekdays": project_resource.weekdays,
             "monthdays": project_resource.monthdays,
             "operation_start_date": project_resource.operation_start_date.isoformat(),
+            "operation_end_date": project_resource.operation_end_date.isoformat()
+            if project_resource.operation_end_date
+            else None,
             "is_active": project_resource.is_active,
             "is_selected": False,
             "type_resource": project_resource.type_resource,

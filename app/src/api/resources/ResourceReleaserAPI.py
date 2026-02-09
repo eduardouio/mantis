@@ -58,35 +58,31 @@ class ResourceReleaserAPI(View):
                 project_resource.is_active = False
                 project_resource.save()
 
+                equipment_id = project_resource.resource_item.id
+                related_codes = {equipment_id}
                 physical_code = project_resource.physical_equipment_code
                 if physical_code and physical_code > 0:
-                    related_services = ProjectResourceItem.objects.filter(
-                        project=project_resource.project,
-                        type_resource="SERVICIO",
-                        physical_equipment_code=physical_code,
-                        is_active=True,
-                    )
+                    related_codes.add(physical_code)
 
-                    released_services = []
-                    for service in related_services:
-                        service.is_active = False
-                        service.save()
-                        released_services.append(service.id)
+                related_services = ProjectResourceItem.objects.filter(
+                    project=project_resource.project,
+                    type_resource="SERVICIO",
+                    physical_equipment_code__in=list(related_codes),
+                    is_active=True,
+                )
 
-                    return JsonResponse(
-                        {
-                            "message": "Equipo liberado correctamente.",
-                            "data": self._serialize(project_resource),
-                            "related_services_released": released_services,
-                            "related_services_count": len(released_services),
-                        },
-                        status=200,
-                    )
+                released_services = []
+                for service in related_services:
+                    service.is_active = False
+                    service.save()
+                    released_services.append(service.id)
 
                 return JsonResponse(
                     {
                         "message": "Equipo liberado correctamente.",
                         "data": self._serialize(project_resource),
+                        "related_services_released": released_services,
+                        "related_services_count": len(released_services),
                     },
                     status=200,
                 )
