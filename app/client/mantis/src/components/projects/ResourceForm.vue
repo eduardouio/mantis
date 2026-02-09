@@ -288,26 +288,6 @@ const submitForm = async () => {
 }
 
 const handleReleaseResource = () => {
-  // Validar que existan ambas fechas
-  if (!formData.value.operation_start_date) {
-    errorMessage.value = 'Debe establecer la fecha de inicio de operaciones para liberar el recurso'
-    return
-  }
-  
-  if (!formData.value.operation_end_date) {
-    errorMessage.value = 'Debe establecer la fecha de fin de operaciones para liberar el recurso'
-    return
-  }
-  
-  // Validar que la fecha de fin sea mayor que la fecha de inicio
-  const startDate = new Date(formData.value.operation_start_date)
-  const endDate = new Date(formData.value.operation_end_date)
-  
-  if (endDate <= startDate) {
-    errorMessage.value = 'La fecha de fin de operaciones debe ser mayor que la fecha de inicio'
-    return
-  }
-  
   // Si ya está en paso de confirmación, proceder con la liberación
   if (releaseConfirmationStep.value) {
     confirmRelease()
@@ -589,7 +569,7 @@ onMounted(() => {
       <div class="flex justify-between items-center pt-4">
         <div>
           <button 
-            v-if="isEditMode && !formData.is_retired"
+            v-if="isEditMode && !formData.is_retired && formData.operation_end_date"
             type="button" 
             :class="releaseConfirmationStep ? 'btn btn-error btn-sm' : 'btn btn-warning btn-sm'"
             @click="handleReleaseResource"

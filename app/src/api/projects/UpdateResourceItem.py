@@ -32,7 +32,8 @@ class UpdateResourceItemAPI(View):
                 status=400,
             )
 
-        project_resource.cost = data.get("cost", 0.00)
+        if "cost" in data:
+            project_resource.cost = data.get("cost", 0.00)
 
         # Validación y asignación según tipo de frecuencia
         frequency_type = data.get("frequency_type", "DAY")
