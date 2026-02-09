@@ -73,6 +73,8 @@ class UpdateResourceItemAPI(View):
             "detailed_description", project_resource.detailed_description
         )
         project_resource.operation_start_date = data.get("operation_start_date")
+        if "operation_end_date" in data:
+            project_resource.operation_end_date = data.get("operation_end_date")
 
         # Actualizar servicio relacionado si existe (Vinculación por descripción)
         if project_resource.type_resource == "EQUIPO":
@@ -94,6 +96,9 @@ class UpdateResourceItemAPI(View):
                     related_service.monthdays = project_resource.monthdays
                     related_service.operation_start_date = (
                         project_resource.operation_start_date
+                    )
+                    related_service.operation_end_date = (
+                        project_resource.operation_end_date
                     )
                     related_service.save()
 
@@ -150,6 +155,7 @@ class UpdateResourceItemAPI(View):
             "weekdays": project_resource.weekdays,
             "monthdays": project_resource.monthdays,
             "operation_start_date": format_date(project_resource.operation_start_date),
+            "operation_end_date": format_date(project_resource.operation_end_date),
             "is_active": project_resource.is_active,
             "type_resource": project_resource.type_resource,
             "is_retired": project_resource.is_retired,

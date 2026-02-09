@@ -78,13 +78,14 @@ const handleDeleteResource = async (resource) => {
             <th class="p-2 border border-gray-100 text-center">Costo</th>
             <th class="p-2 border border-gray-100 text-center">Frecuencia</th>
             <th class="p-2 border border-gray-100 text-center">Fecha Inicio</th>
+            <th class="p-2 border border-gray-100 text-center">Fecha Fin</th>
             <th class="p-2 border border-gray-100 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <template v-if="projectResources.length === 0">
             <tr>
-              <td colspan="8" class="text-center text-gray-500 py-8">
+              <td colspan="9" class="text-center text-gray-500 py-8">
                 <i class="las la-inbox text-4xl"></i>
                 <p>No hay recursos asignados a este proyecto</p>
               </td>
@@ -133,6 +134,9 @@ const handleDeleteResource = async (resource) => {
                 </span>
               </td>
               <td class="p-2 border border-gray-300 text-end font-mono">{{ formatDate(resource.operation_start_date) }}</td>
+              <td class="p-2 border border-gray-300 text-end font-mono">
+                {{ resource.operation_end_date ? formatDate(resource.operation_end_date) : 'Indefinido' }}
+              </td>
               <td class="p-2 border border-gray-300 text-end">
                 <div class="flex gap-2 justify-end">
                 <button 
