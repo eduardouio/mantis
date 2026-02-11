@@ -41,6 +41,18 @@ class CustomUserModel(AbstractUser):
         default='TECNICO',
         max_length=20
     )
+    siganture_name = models.CharField(
+        'Nombre Firmante',
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    siganture_role = models.CharField(
+        'Rol Firmante',
+        blank=True,
+        null=True,
+        default=None
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
