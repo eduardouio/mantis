@@ -13,7 +13,7 @@ from common.LoggerApp import log_info, log_warning, log_error
 @method_decorator(csrf_protect, name='dispatch')
 class ChangePassUpdtView(LoginRequiredMixin, View):
     """Vista para cambio de contraseña por AJAX"""
-    login_url = 'accounts:login'
+    login_url = 'login'
 
     def post(self, request, *args, **kwargs):
         """Procesa el cambio de contraseña"""

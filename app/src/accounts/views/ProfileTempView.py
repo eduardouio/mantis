@@ -5,7 +5,7 @@ from common.LoggerApp import log_info
 
 class ProfileTempView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/profile.html'
-    login_url = 'accounts:login'
+    login_url = 'login'
 
     def get_context_data(self, **kwargs):
         log_info(

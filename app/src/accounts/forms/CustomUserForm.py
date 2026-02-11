@@ -12,7 +12,7 @@ class CustomUserForm(forms.ModelForm):
     
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'picture', 'notes']
+        fields = ['first_name', 'last_name', 'email', 'picture', 'notes', 'siganture_name', 'siganture_role']
         widgets = {
             'first_name': forms.TextInput(attrs={
                 'class': 'input input-bordered w-full',
@@ -36,6 +36,14 @@ class CustomUserForm(forms.ModelForm):
                 'rows': 4,
                 'placeholder': 'Notas adicionales sobre tu perfil...'
             }),
+            'siganture_name': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': 'Nombre para firmar documentos'
+            }),
+            'siganture_role': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': 'Rol para firmar documentos'
+            }),
         }
         labels = {
             'first_name': 'Nombre',
@@ -43,6 +51,8 @@ class CustomUserForm(forms.ModelForm):
             'email': 'Correo Electrónico',
             'picture': 'Foto de Perfil',
             'notes': 'Notas',
+            'siganture_name': 'Nombre Firmante',
+            'siganture_role': 'Rol Firmante',
         }
         help_texts = {
             'email': 'Este correo es tu identificador único en el sistema.',

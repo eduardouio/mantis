@@ -14,8 +14,8 @@ class ProfileUpdtView(LoginRequiredMixin, UpdateView):
     model = User
     form_class = CustomUserForm
     template_name = 'forms/profile_update.html'
-    login_url = 'accounts:login'
-    success_url = reverse_lazy('accounts:profile')
+    login_url = 'login'
+    success_url = reverse_lazy('profile')
 
     def get_object(self, queryset=None):
         """Retorna el usuario actual"""

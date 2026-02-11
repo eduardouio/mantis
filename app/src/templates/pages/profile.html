@@ -72,6 +72,16 @@
                                     <label class="text-sm font-medium text-gray-600 dark:text-gray-300">Correo Electrónico</label>
                                     <p class="text-base">{{ user.email }}</p>
                                 </div>
+                                
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600 dark:text-gray-300">Nombre Firmante</label>
+                                    <p class="text-base">{{ user.siganture_name|default:"No especificado" }}</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="text-sm font-medium text-gray-600 dark:text-gray-300">Rol Firmante</label>
+                                    <p class="text-base">{{ user.siganture_role|default:"No especificado" }}</p>
+                                </div>
                             </div>
                         </div>
                         
