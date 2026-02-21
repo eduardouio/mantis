@@ -32,7 +32,11 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
                 });
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || "Failed to create custody chain");
+                    const errorMessage =
+                        errorData?.message ||
+                        errorData?.error ||
+                        `Failed to create custody chain (HTTP ${response.status})`;
+                    throw new Error(errorMessage);
                 }
                 const data = await response.json();
                 
@@ -103,7 +107,11 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
                 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    throw new Error(errorData.message || "Failed to update custody chain");
+                    const errorMessage =
+                        errorData?.message ||
+                        errorData?.error ||
+                        `Failed to update custody chain (HTTP ${response.status})`;
+                    throw new Error(errorMessage);
                 }
                 
                 const data = await response.json();
