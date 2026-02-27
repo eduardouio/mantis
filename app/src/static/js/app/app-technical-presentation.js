@@ -274,4 +274,119 @@
 	state.passes = state.passes || []; state.vaccines = state.vaccines || [];
 	refreshPassBloqueOptions(null);
 	renderPassList(); renderVaccines();
+
+	// ---- FILE UPLOAD via /api/load_files/ ----
+	const UPLOAD_API = '/api/load_files/';
+	const globalMsg = document.getElementById('uploadGlobalMsg');
+
+	function showGlobalMsg(msg, ok=true){
+		if(!globalMsg) return;
+		globalMsg.textContent = msg;
+		globalMsg.className = ok
+			? 'mb-4 p-3 rounded-lg text-sm bg-green-50 text-green-700 border border-green-200'
+			: 'mb-4 p-3 rounded-lg text-sm bg-red-50 text-red-700 border border-red-200';
+		globalMsg.classList.remove('hidden');
+		setTimeout(()=> globalMsg.classList.add('hidden'), 4000);
+	}
+
+	function setRowLoading(row, loading){
+		const btns = row.querySelectorAll('.btn');
+		btns.forEach(b => { b.disabled = loading; if(loading) b.classList.add('opacity-50'); else b.classList.remove('opacity-50'); });
+	}
+
+	function rebuildRowButtons(row, fileUrl, fileName){
+		const actionsDiv = row.querySelector('.flex.items-center.gap-1');
+		if(!actionsDiv) return;
+		actionsDiv.innerHTML = '';
+
+		if(fileUrl){
+			// Botón descargar
+			const link = document.createElement('a');
+			link.href = fileUrl; link.target = '_blank';
+			link.className = 'btn btn-xs btn-primary'; link.title = 'Descargar';
+			link.innerHTML = '<i class="las la-download"></i>';
+			actionsDiv.appendChild(link);
+
+			// Botón eliminar
+			const delBtn = document.createElement('button');
+			delBtn.type = 'button';
+			delBtn.className = 'btn btn-xs btn-error btn-file-delete'; delBtn.title = 'Eliminar archivo';
+			delBtn.innerHTML = '<i class="las la-trash"></i>';
+			actionsDiv.appendChild(delBtn);
+		}
+
+		// Botón subir (siempre)
+		const label = document.createElement('label');
+		label.className = 'btn btn-xs btn-success btn-file-upload'; label.title = 'Subir archivo';
+		label.innerHTML = '<i class="las la-upload"></i><input type="file" accept=".pdf" class="hidden file-input-hidden">';
+		actionsDiv.appendChild(label);
+
+		// Re-bind events en esta fila
+		bindRowEvents(row);
+	}
+
+	async function uploadFile(row, file){
+		const modelType = row.dataset.modelType;
+		const objectId = row.dataset.objectId;
+		const fieldName = row.dataset.fieldName;
+
+		const formData = new FormData();
+		formData.append('model_type', modelType);
+		formData.append('object_id', objectId);
+		formData.append('field_name', fieldName);
+		formData.append('file', file);
+
+		setRowLoading(row, true);
+		try {
+			const resp = await fetch(UPLOAD_API, { method: 'POST', body: formData, credentials: 'same-origin' });
+			const data = await resp.json();
+			if(!resp.ok || !data.success) throw new Error(data.error || 'Error al subir');
+			showGlobalMsg('Archivo subido correctamente');
+			rebuildRowButtons(row, data.data.file_url, data.data.file_name);
+		} catch(err){
+			showGlobalMsg(err.message, false);
+		} finally {
+			setRowLoading(row, false);
+		}
+	}
+
+	async function deleteFile(row){
+		const modelType = row.dataset.modelType;
+		const objectId = row.dataset.objectId;
+		const fieldName = row.dataset.fieldName;
+
+		if(!confirm('¿Eliminar este archivo?')) return;
+
+		setRowLoading(row, true);
+		try {
+			const url = `${UPLOAD_API}?model_type=${modelType}&object_id=${objectId}&field_name=${fieldName}`;
+			const resp = await fetch(url, { method: 'DELETE', credentials: 'same-origin' });
+			const data = await resp.json();
+			if(!resp.ok || !data.success) throw new Error(data.error || 'Error al eliminar');
+			showGlobalMsg('Archivo eliminado correctamente');
+			rebuildRowButtons(row, null, null);
+		} catch(err){
+			showGlobalMsg(err.message, false);
+		} finally {
+			setRowLoading(row, false);
+		}
+	}
+
+	function bindRowEvents(row){
+		// Upload
+		const fileInput = row.querySelector('.file-input-hidden');
+		if(fileInput && !fileInput.dataset.bound){
+			fileInput.addEventListener('change', function(){ if(this.files[0]) uploadFile(row, this.files[0]); this.value = ''; });
+			fileInput.dataset.bound = '1';
+		}
+		// Delete
+		const delBtn = row.querySelector('.btn-file-delete');
+		if(delBtn && !delBtn.dataset.bound){
+			delBtn.addEventListener('click', function(){ deleteFile(row); });
+			delBtn.dataset.bound = '1';
+		}
+	}
+
+	// Bind all file-upload rows on init
+	document.querySelectorAll('.file-upload-row').forEach(row => bindRowEvents(row));
 })();

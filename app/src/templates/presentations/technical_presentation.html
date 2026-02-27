@@ -512,6 +512,9 @@
     <input type="radio" name="my_tabs_6" class="tab" aria-label="Documentos Adjuntos" />
     <div class="tab-content bg-base-100 border-base-300 p-6">
       <h3 class="text-md font-semibold text-blue-500 mb-4">Documentos Adjuntos</h3>
+
+      <!-- Mensaje global de estado de upload -->
+      <div id="uploadGlobalMsg" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Documentos del Técnico -->
@@ -522,48 +525,72 @@
           </h4>
           <div class="space-y-2">
             <!-- Cédula -->
-            <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+            <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                 data-model-type="technical" data-object-id="{{ technical.id }}" data-field-name="dni_file">
               <div class="flex items-center gap-2">
                 <i class="las la-id-card text-blue-600"></i>
                 <span class="text-sm">Cédula de Identidad</span>
               </div>
-              {% if technical.dni_file %}
-                <a href="{{ technical.dni_file.url }}" target="_blank" class="btn btn-xs btn-primary">
-                  <i class="las la-download"></i> Descargar
-                </a>
-              {% else %}
-                <span class="text-xs text-gray-400">No disponible</span>
-              {% endif %}
+              <div class="flex items-center gap-1">
+                {% if technical.dni_file %}
+                  <a href="{{ technical.dni_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
+                    <i class="las la-download"></i>
+                  </a>
+                  <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                    <i class="las la-trash"></i>
+                  </button>
+                {% endif %}
+                <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                  <i class="las la-upload"></i>
+                  <input type="file" accept=".pdf" class="hidden file-input-hidden">
+                </label>
+              </div>
             </div>
             
             <!-- Licencia -->
-            <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+            <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                 data-model-type="technical" data-object-id="{{ technical.id }}" data-field-name="license_file">
               <div class="flex items-center gap-2">
                 <i class="las la-id-card text-blue-600"></i>
                 <span class="text-sm">Licencia de Conducir</span>
               </div>
-              {% if technical.license_file %}
-                <a href="{{ technical.license_file.url }}" target="_blank" class="btn btn-xs btn-primary">
-                  <i class="las la-download"></i> Descargar
-                </a>
-              {% else %}
-                <span class="text-xs text-gray-400">No disponible</span>
-              {% endif %}
+              <div class="flex items-center gap-1">
+                {% if technical.license_file %}
+                  <a href="{{ technical.license_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
+                    <i class="las la-download"></i>
+                  </a>
+                  <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                    <i class="las la-trash"></i>
+                  </button>
+                {% endif %}
+                <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                  <i class="las la-upload"></i>
+                  <input type="file" accept=".pdf" class="hidden file-input-hidden">
+                </label>
+              </div>
             </div>
             
             <!-- Certificado de Vacunación General -->
-            <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+            <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                 data-model-type="technical" data-object-id="{{ technical.id }}" data-field-name="vaccine_certificate_file">
               <div class="flex items-center gap-2">
                 <i class="las la-syringe text-blue-600"></i>
                 <span class="text-sm">Certificado de Vacunación</span>
               </div>
-              {% if technical.vaccine_certificate_file %}
-                <a href="{{ technical.vaccine_certificate_file.url }}" target="_blank" class="btn btn-xs btn-primary">
-                  <i class="las la-download"></i> Descargar
-                </a>
-              {% else %}
-                <span class="text-xs text-gray-400">No disponible</span>
-              {% endif %}
+              <div class="flex items-center gap-1">
+                {% if technical.vaccine_certificate_file %}
+                  <a href="{{ technical.vaccine_certificate_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
+                    <i class="las la-download"></i>
+                  </a>
+                  <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                    <i class="las la-trash"></i>
+                  </button>
+                {% endif %}
+                <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                  <i class="las la-upload"></i>
+                  <input type="file" accept=".pdf" class="hidden file-input-hidden">
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -577,7 +604,8 @@
           <div class="space-y-2 max-h-64 overflow-y-auto">
             {% if pass_technical %}
               {% for pass in pass_technical %}
-                <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+                <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                     data-model-type="pass_technical" data-object-id="{{ pass.id }}" data-field-name="pass_file">
                   <div class="flex-1">
                     <div class="flex items-center gap-2">
                       <i class="las la-building text-green-600"></i>
@@ -587,13 +615,20 @@
                       Vence: {{ pass.fecha_caducidad|date:"d/m/Y" }}
                     </div>
                   </div>
-                  {% if pass.pass_file %}
-                    <a href="{{ pass.pass_file.url }}" target="_blank" class="btn btn-xs btn-primary">
-                      <i class="las la-download"></i> Descargar
-                    </a>
-                  {% else %}
-                    <span class="text-xs text-gray-400">No disponible</span>
-                  {% endif %}
+                  <div class="flex items-center gap-1">
+                    {% if pass.pass_file %}
+                      <a href="{{ pass.pass_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
+                        <i class="las la-download"></i>
+                      </a>
+                      <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                        <i class="las la-trash"></i>
+                      </button>
+                    {% endif %}
+                    <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                      <i class="las la-upload"></i>
+                      <input type="file" accept=".pdf" class="hidden file-input-hidden">
+                    </label>
+                  </div>
                 </div>
               {% endfor %}
             {% else %}
@@ -611,7 +646,8 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto">
             {% if vaccination_records %}
               {% for vaccine in vaccination_records %}
-                <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+                <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                     data-model-type="vaccination_record" data-object-id="{{ vaccine.id }}" data-field-name="vaccine_file">
                   <div class="flex-1">
                     <div class="flex items-center gap-2">
                       <i class="las la-vial text-purple-600"></i>
@@ -624,13 +660,20 @@
                       {% endif %}
                     </div>
                   </div>
-                  {% if vaccine.vaccine_file %}
-                    <a href="{{ vaccine.vaccine_file.url }}" target="_blank" class="btn btn-xs btn-primary">
-                      <i class="las la-download"></i> Descargar
-                    </a>
-                  {% else %}
-                    <span class="text-xs text-gray-400">No disponible</span>
-                  {% endif %}
+                  <div class="flex items-center gap-1">
+                    {% if vaccine.vaccine_file %}
+                      <a href="{{ vaccine.vaccine_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
+                        <i class="las la-download"></i>
+                      </a>
+                      <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                        <i class="las la-trash"></i>
+                      </button>
+                    {% endif %}
+                    <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                      <i class="las la-upload"></i>
+                      <input type="file" accept=".pdf" class="hidden file-input-hidden">
+                    </label>
+                  </div>
                 </div>
               {% endfor %}
             {% else %}
