@@ -36,6 +36,11 @@ class CustomUserModelAdmin(UserAdmin):
                 'first_name', 'last_name', 'picture', 'notes'
             )
         }),
+        ('Información de Firma', {
+            'fields': (
+                'siganture_name', 'siganture_role'
+            )
+        }),
         ('Estado de Cuenta', {
             'fields': (
                 'is_confirmed_mail', 'date_joined', 'last_login'
