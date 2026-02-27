@@ -165,9 +165,14 @@
       ? `<a href="${node.detail_url}" class="text-blue-500 hover:text-blue-700 ml-1" title="Ver ficha" onclick="event.stopPropagation()"><i class="las la-external-link-alt text-sm"></i></a>`
       : '';
 
+    // Link a documentos del proyecto (solo para nodos raíz en tab proyectos)
+    const docsLink = (activeTab === 'projects' && !node.type)
+      ? `<a href="/documentos/proyecto/${node.id}/" class="text-indigo-500 hover:text-indigo-700 ml-1" title="Ver documentos del proyecto" onclick="event.stopPropagation()"><i class="las la-folder-open text-sm"></i></a>`
+      : '';
+
     return `${chevron} <i class="${icon} text-lg"></i>
             <span class="text-sm font-medium">${node.label}</span>
-            ${detailLink} ${badges}`;
+            ${detailLink} ${docsLink} ${badges}`;
   }
 
   function countChildFiles(node, cb) {
