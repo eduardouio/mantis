@@ -40,7 +40,7 @@ from api.workorders.RegenerateEquipmentCodes import RegenerateEquipmentCodesAPI
 from api.resources.ResourceReleaserAPI import ResourceReleaserAPI
 from api.workorders.CreateWorkSheetProject import CreateWorkSheetProjectAPI
 from api.workorders.UpdateSheetProject import UpdateSheetProjectAPI
-from api.load_files import LoadFilesApiView, ModelFileFieldsApiView
+from api.load_files import LoadFilesApiView, ModelFileFieldsApiView, DocumentTreeApiView
 
 urlpatterns = [
     # vehicles
@@ -83,4 +83,5 @@ urlpatterns = [
     # load_files - API centralizada de archivos
     path('load_files/', LoadFilesApiView.as_view(), name='api_load_files'),
     path('load_files/fields/', ModelFileFieldsApiView.as_view(), name='api_load_files_fields'),
+    path('load_files/tree/', DocumentTreeApiView.as_view(), name='api_load_files_tree'),
 ]
