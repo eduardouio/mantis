@@ -169,12 +169,12 @@ class DocumentTreeApiView(View):
 
     # ── Equipos ──────────────────────────────────────────────────────
     def _build_equipment(self):
-        items = ResourceItem.objects.filter(is_active=True).order_by('resource_name')
+        items = ResourceItem.objects.filter(is_active=True).order_by('name')
         result = []
         for item in items:
             result.append({
                 'id': item.pk,
-                'label': f'{item.resource_name} ({item.resource_code})',
+                'label': f'{item.name} ({item.code})',
                 'detail_url': f'/equipos/{item.pk}/',
                 'files': _build_file_fields(item, ['resource_image', 'resource_image_2'], 'resource_item'),
             })
