@@ -501,6 +501,9 @@
     <input type="radio" name="my_tabs_6" class="tab" aria-label="Documentos Adjuntos" />
     <div class="tab-content bg-base-100 border-base-300 p-6">
       <h3 class="text-md font-semibold text-blue-500 mb-4">Documentos Adjuntos</h3>
+
+      <!-- Mensaje global de estado de upload -->
+      <div id="uploadGlobalMsg" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Documentos del Vehículo -->
@@ -510,60 +513,96 @@
             Documentos del Vehículo
           </h4>
           <div class="space-y-2">
-            <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+            <!-- Imagen del Vehículo -->
+            <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                 data-model-type="vehicle" data-object-id="{{ vehicle.id }}" data-field-name="vehicle_image">
               <div class="flex items-center gap-2">
                 <i class="las la-image text-lg text-purple-500"></i>
                 <span class="text-sm font-medium">Imagen del Vehículo</span>
               </div>
-              {% if vehicle.vehicle_image %}
-                <a href="{{ vehicle.vehicle_image.url }}" target="_blank" class="btn btn-xs btn-info">
-                  <i class="las la-eye"></i> Ver
-                </a>
-              {% else %}
-                <span class="badge badge-ghost badge-sm">No disponible</span>
-              {% endif %}
+              <div class="flex items-center gap-1">
+                {% if vehicle.vehicle_image %}
+                  <a href="{{ vehicle.vehicle_image.url }}" target="_blank" class="btn btn-xs btn-info" title="Ver">
+                    <i class="las la-eye"></i>
+                  </a>
+                  <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                    <i class="las la-trash"></i>
+                  </button>
+                {% endif %}
+                <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                  <i class="las la-upload"></i>
+                  <input type="file" accept="image/*" class="hidden file-input-hidden">
+                </label>
+              </div>
             </div>
             
-            <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+            <!-- Póliza de Seguro -->
+            <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                 data-model-type="vehicle" data-object-id="{{ vehicle.id }}" data-field-name="poliza_file">
               <div class="flex items-center gap-2">
                 <i class="las la-file-pdf text-lg text-red-500"></i>
                 <span class="text-sm font-medium">Póliza de Seguro</span>
               </div>
-              {% if vehicle.poliza_file %}
-                <a href="{{ vehicle.poliza_file.url }}" target="_blank" class="btn btn-xs btn-error">
-                  <i class="las la-file-pdf"></i> PDF
-                </a>
-              {% else %}
-                <span class="badge badge-ghost badge-sm">No disponible</span>
-              {% endif %}
+              <div class="flex items-center gap-1">
+                {% if vehicle.poliza_file %}
+                  <a href="{{ vehicle.poliza_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
+                    <i class="las la-download"></i>
+                  </a>
+                  <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                    <i class="las la-trash"></i>
+                  </button>
+                {% endif %}
+                <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                  <i class="las la-upload"></i>
+                  <input type="file" accept=".pdf" class="hidden file-input-hidden">
+                </label>
+              </div>
             </div>
             
-            <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+            <!-- Matrícula -->
+            <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                 data-model-type="vehicle" data-object-id="{{ vehicle.id }}" data-field-name="matricula_file">
               <div class="flex items-center gap-2">
                 <i class="las la-file-pdf text-lg text-red-500"></i>
                 <span class="text-sm font-medium">Matrícula</span>
               </div>
-              {% if vehicle.matricula_file %}
-                <a href="{{ vehicle.matricula_file.url }}" target="_blank" class="btn btn-xs btn-error">
-                  <i class="las la-file-pdf"></i> PDF
-                </a>
-              {% else %}
-                <span class="badge badge-ghost badge-sm">No disponible</span>
-              {% endif %}
+              <div class="flex items-center gap-1">
+                {% if vehicle.matricula_file %}
+                  <a href="{{ vehicle.matricula_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
+                    <i class="las la-download"></i>
+                  </a>
+                  <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                    <i class="las la-trash"></i>
+                  </button>
+                {% endif %}
+                <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                  <i class="las la-upload"></i>
+                  <input type="file" accept=".pdf" class="hidden file-input-hidden">
+                </label>
+              </div>
             </div>
             
-            <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+            <!-- Revisión Técnica -->
+            <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                 data-model-type="vehicle" data-object-id="{{ vehicle.id }}" data-field-name="rev_tec_file">
               <div class="flex items-center gap-2">
                 <i class="las la-file-pdf text-lg text-red-500"></i>
                 <span class="text-sm font-medium">Revisión Técnica</span>
               </div>
-              {% if vehicle.rev_tec_file %}
-                <a href="{{ vehicle.rev_tec_file.url }}" target="_blank" class="btn btn-xs btn-error">
-                  <i class="las la-file-pdf"></i> PDF
-                </a>
-              {% else %}
-                <span class="badge badge-ghost badge-sm">No disponible</span>
-              {% endif %}
+              <div class="flex items-center gap-1">
+                {% if vehicle.rev_tec_file %}
+                  <a href="{{ vehicle.rev_tec_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
+                    <i class="las la-download"></i>
+                  </a>
+                  <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                    <i class="las la-trash"></i>
+                  </button>
+                {% endif %}
+                <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                  <i class="las la-upload"></i>
+                  <input type="file" accept=".pdf" class="hidden file-input-hidden">
+                </label>
+              </div>
             </div>
           </div>
         </div>
@@ -577,23 +616,31 @@
           <div class="space-y-2 max-h-[300px] overflow-y-auto">
             {% if passes %}
               {% for pass in passes %}
-                <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+                <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                     data-model-type="pass_vehicle" data-object-id="{{ pass.id }}" data-field-name="pass_file">
                   <div class="flex-1">
                     <div class="flex items-center gap-2">
-                      <i class="las la-file-pdf text-lg text-red-500"></i>
+                      <i class="las la-building text-green-600"></i>
                       <span class="text-sm font-medium">{{ pass.bloque }}</span>
                     </div>
                     <div class="text-xs text-gray-500 mt-1">
                       Vencimiento: {{ pass.fecha_caducidad|date:"d/m/Y"|default:"N/A" }}
                     </div>
                   </div>
-                  {% if pass.pass_file %}
-                    <a href="{{ pass.pass_file.url }}" target="_blank" class="btn btn-xs btn-error">
-                      <i class="las la-file-pdf"></i> PDF
-                    </a>
-                  {% else %}
-                    <span class="badge badge-ghost badge-sm">No disponible</span>
-                  {% endif %}
+                  <div class="flex items-center gap-1">
+                    {% if pass.pass_file %}
+                      <a href="{{ pass.pass_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
+                        <i class="las la-download"></i>
+                      </a>
+                      <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                        <i class="las la-trash"></i>
+                      </button>
+                    {% endif %}
+                    <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                      <i class="las la-upload"></i>
+                      <input type="file" accept=".pdf" class="hidden file-input-hidden">
+                    </label>
+                  </div>
                 </div>
               {% endfor %}
             {% else %}
@@ -614,10 +661,11 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[300px] overflow-y-auto">
             {% if certifications %}
               {% for cert in certifications %}
-                <div class="flex items-center justify-between p-2 bg-white rounded border border-gray-200">
+                <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                     data-model-type="certification_vehicle" data-object-id="{{ cert.id }}" data-field-name="certification_file">
                   <div class="flex-1">
                     <div class="flex items-center gap-2">
-                      <i class="las la-file-pdf text-lg text-red-500"></i>
+                      <i class="las la-certificate text-amber-600"></i>
                       <span class="text-sm font-medium">{{ cert.get_name_display }}</span>
                     </div>
                     <div class="text-xs text-gray-500 mt-1">
@@ -627,13 +675,20 @@
                       {% endif %}
                     </div>
                   </div>
-                  {% if cert.certification_file %}
-                    <a href="{{ cert.certification_file.url }}" target="_blank" class="btn btn-xs btn-error">
-                      <i class="las la-file-pdf"></i> PDF
-                    </a>
-                  {% else %}
-                    <span class="badge badge-ghost badge-sm">No disponible</span>
-                  {% endif %}
+                  <div class="flex items-center gap-1">
+                    {% if cert.certification_file %}
+                      <a href="{{ cert.certification_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
+                        <i class="las la-download"></i>
+                      </a>
+                      <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                        <i class="las la-trash"></i>
+                      </button>
+                    {% endif %}
+                    <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
+                      <i class="las la-upload"></i>
+                      <input type="file" accept=".pdf" class="hidden file-input-hidden">
+                    </label>
+                  </div>
                 </div>
               {% endfor %}
             {% else %}
@@ -673,16 +728,6 @@
               <span class="text-gray-600">Certificaciones:</span>
               <span class="badge badge-sm badge-warning">
                 {{ certifications|length }}
-              </span>
-            </div>
-            <div class="flex items-center gap-1">
-              <span class="text-gray-600">Total:</span>
-              <span class="badge badge-sm badge-primary">
-                {% widthratio vehicle.vehicle_image|yesno:"1,0" 1 1 as img_count %}
-                {% widthratio vehicle.poliza_file|yesno:"1,0" 1 1 as poliza_count %}
-                {% widthratio vehicle.matricula_file|yesno:"1,0" 1 1 as matricula_count %}
-                {% widthratio vehicle.rev_tec_file|yesno:"1,0" 1 1 as rev_count %}
-                {{ img_count|add:poliza_count|add:matricula_count|add:rev_count|add:passes|length|add:certifications|length }}
               </span>
             </div>
           </div>
