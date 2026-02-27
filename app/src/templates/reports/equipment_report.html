@@ -137,6 +137,23 @@
             </div>
             {% endif %}
             
+            <!-- Firma del Profesional -->
+            {% if siganture_name %}
+            <div class="section" style="margin-top: 30px;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding-top: 15px;">
+                    <div style="text-align: center;">
+                        <div style="border-top: 2px solid #3e5f6f; margin: 20px 20px 5px 20px;"></div>
+                        <div style="font-size: 8pt; color: #3e5f6f; font-weight: bold;">{{ siganture_name }}</div>
+                        {% if siganture_role %}<div style="font-size: 7pt; color: #3e5f6f;">{{ siganture_role }}</div>{% endif %}
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="border-top: 2px solid #3e5f6f; margin: 20px 20px 5px 20px;"></div>
+                        <div style="font-size: 8pt; color: #3e5f6f; font-weight: bold;">SUPERVISOR</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
             <div class="footer">
                 <div class="footer-content">
                     <span class="footer-logo">PEISOL INGENIERÍA</span>

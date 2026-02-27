@@ -476,7 +476,8 @@
             <div class="signature-section">
                 <div class="signature-box">
                     <div class="signature-line"></div>
-                    <div class="signature-label">INSPECTOR</div>
+                    <div class="signature-label">{{ siganture_name|default:"INSPECTOR" }}</div>
+                    {% if siganture_role %}<div class="signature-label">{{ siganture_role }}</div>{% endif %}
                 </div>
                 <div class="signature-box">
                     <div class="signature-line"></div>

@@ -22,4 +22,9 @@ class EquipmentWasherHandsCheck(TemplateView):
             else 'Sistema'
         )
         
+        # Datos de firma del usuario
+        if self.request.user.is_authenticated:
+            context['siganture_name'] = self.request.user.siganture_name or ''
+            context['siganture_role'] = self.request.user.siganture_role or ''
+        
         return context

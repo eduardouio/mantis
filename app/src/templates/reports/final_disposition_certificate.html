@@ -26,7 +26,7 @@
   /* Header */
   .header-content {
     display: flex;
-    border: 2px solid #0077b6;
+    border: 2px solid #a8d873;
     margin-bottom: 0;
   }
   .header-left {
@@ -45,7 +45,7 @@
     width: 35%;
     display: flex;
     flex-direction: column;
-    border-left: 2px solid #0077b6;
+    border-left: 2px solid #a8d873;
   }
   .header-logo {
     text-align: center;
@@ -63,7 +63,7 @@
   .reference-number {
     font-size: 14px;
     font-weight: bold;
-    color: #0077b6;
+    color: #b10000;
     text-decoration: underline;
   }
   
@@ -111,7 +111,7 @@
     font-size: 10px;
   }
   .details-table th {
-    background-color: #e6f3ff;
+    background-color: #a8d873;
     border: 1px solid #0077b6;
     padding: 6px 4px;
     text-align: center;
@@ -289,8 +289,8 @@
       <div class="signature-line">
         <img src="{% static 'img/signature.png' %}" alt="" style="height: 40px;">
       </div>
-      <p class="signature-name">Ing. Blanca Rueda.</p>
-      <p class="signature-title">Supervisora Ambiental
+      <p class="signature-name">{{ siganture_name|default:"Ing. Blanca Rueda." }}</p>
+      <p class="signature-title">{{ siganture_role|default:"Supervisora Ambiental" }}
         <br> PEISOL S.A.</p>
     </div>
   </div>

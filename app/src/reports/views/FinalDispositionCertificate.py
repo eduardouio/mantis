@@ -75,4 +75,9 @@ class FinalDispositionCertificateView(TemplateView):
             "total_cubic_meters": round(total_cubic_meters, 2),
         })
 
+        # Datos de firma del usuario
+        if self.request.user.is_authenticated:
+            context['siganture_name'] = self.request.user.siganture_name or ''
+            context['siganture_role'] = self.request.user.siganture_role or ''
+
         return context

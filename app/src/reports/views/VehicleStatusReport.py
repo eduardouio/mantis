@@ -131,4 +131,9 @@ class VehicleStatusReport(DetailView):
         # Usuario que genera el reporte
         context['generated_by'] = self.request.user.get_full_name() or self.request.user.email
 
+        # Datos de firma del usuario
+        if self.request.user.is_authenticated:
+            context['siganture_name'] = self.request.user.siganture_name or ''
+            context['siganture_role'] = self.request.user.siganture_role or ''
+
         return context
