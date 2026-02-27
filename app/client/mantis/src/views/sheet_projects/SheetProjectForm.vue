@@ -34,6 +34,7 @@ const stats = ref({
 
 const errorMessage = ref('');
 const successMessage = ref('');
+const resourcesChanged = ref(false);
 
 // Validaciones de fechas
 const periodDatesError = computed(() => {
@@ -92,6 +93,23 @@ const statusOptions = [
 // Solo mostrar recursos activos
 const activeResources = computed(() => resources.value.filter(r => r.is_active));
 
+// IDs de project_resource_item que tienen cadena de custodia en esta planilla
+const resourceIdsWithCustody = computed(() => {
+  if (!isEditMode.value) return new Set();
+  const existingSheet = sheetProjectStore.getSheetProjectById(sheetId.value);
+  if (!existingSheet || !existingSheet.custody_chains) return new Set();
+  const ids = new Set();
+  for (const chain of existingSheet.custody_chains) {
+    for (const detail of (chain.details || [])) {
+      if (detail.project_resource_id) ids.add(detail.project_resource_id);
+    }
+  }
+  return ids;
+});
+
+// Verificar si un recurso tiene cadena de custodia
+const hasCustodyChain = (resource) => resourceIdsWithCustody.value.has(resource.id);
+
 // Recursos seleccionados (is_selected === true)
 const selectedResources = computed(() => activeResources.value.filter(r => r.is_selected));
 
@@ -103,11 +121,23 @@ const allSelected = computed(() => {
 // Métodos de selección usando is_selected del recurso
 const toggleSelectAll = () => {
   const newValue = !allSelected.value;
-  activeResources.value.forEach(r => { r.is_selected = newValue; });
+  activeResources.value.forEach(r => {
+    // No desmarcar recursos con cadena de custodia
+    if (!newValue && hasCustodyChain(r)) return;
+    r.is_selected = newValue;
+  });
+  resourcesChanged.value = true;
 };
 
 const toggleResourceSelection = (resource) => {
+  // Impedir desmarcar si tiene cadena de custodia
+  if (resource.is_selected && hasCustodyChain(resource)) {
+    errorMessage.value = `No se puede desmarcar "${resource.resource_item_code || resource.resource_item_name}" porque tiene cadenas de custodia registradas en esta planilla.`;
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+    return;
+  }
   resource.is_selected = !resource.is_selected;
+  resourcesChanged.value = true;
 };
 
 // Placeholder para adjuntar archivos PDF (implementación futura)
@@ -272,8 +302,9 @@ const handleSubmit = async () => {
     
     let resultId;
     if (isEditMode.value) {
-      // Actualizar planilla existente con los recursos seleccionados
-      await sheetProjectStore.updateSheetProject(payload, selectedResources.value);
+      // Actualizar planilla existente, solo enviar recursos si cambiaron
+      const resourcesToSend = resourcesChanged.value ? selectedResources.value : [];
+      await sheetProjectStore.updateSheetProject(payload, resourcesToSend);
       resultId = payload.id;
       successMessage.value = 'Planilla actualizada exitosamente';
     } else {
@@ -340,7 +371,7 @@ const handleSubmit = async () => {
               <i class="las la-file-pdf text-xl"></i> Adjuntar Cert. Disp. Final
             </button>
             <div class="form-control w-48">
-              <input v-model="formData.series_code" type="text" class="input input-bordered input-sm w-full font-bold text-red-800 font-mono text-[16px]" readonly />
+              <input v-model="formData.series_code" type="text" class="input input-bordered input-sm w-full font-bold text-red-800 font-mono text-[16px]" />
             </div>
           </div>
         </div>
@@ -525,15 +556,21 @@ const handleSubmit = async () => {
               </tr>
               <tr v-for="(resource, index) in activeResources" :key="resource.id">
                 <td class="border text-center">
-                  <input 
-                    type="checkbox" 
-                    class="checkbox checkbox-sm" 
-                    :checked="resource.is_selected"
-                    @change="toggleResourceSelection(resource)"
-                  />
+                  <div class="tooltip" :data-tip="hasCustodyChain(resource) ? 'Tiene cadena de custodia' : ''">
+                    <input 
+                      type="checkbox" 
+                      class="checkbox checkbox-sm" 
+                      :checked="resource.is_selected"
+                      :disabled="hasCustodyChain(resource) && resource.is_selected"
+                      @change="toggleResourceSelection(resource)"
+                    />
+                  </div>
                 </td>
                 <td class="border text-center">{{ index + 1 }}</td>
-                <td class="border">{{ resource.resource_item_code || 'N/A' }}</td>
+                <td class="border">
+                  {{ resource.resource_item_code || 'N/A' }}
+                  <i v-if="hasCustodyChain(resource)" class="las la-link text-warning ml-1" title="Tiene cadena de custodia"></i>
+                </td>
                 <td class="border">{{ resource.resource_item_name || 'N/A' }}</td>
                 <td class="border text-center">
                   <span 

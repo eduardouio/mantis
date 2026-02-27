@@ -219,6 +219,9 @@ class UpdateSheetProjectAPI(View):
         if "final_disposition_reference" in data:
             sheet.final_disposition_reference = data["final_disposition_reference"]
 
+        if "series_code" in data and data["series_code"]:
+            sheet.series_code = data["series_code"]
+
         if "status" in data and data["status"] in ["IN_PROGRESS", "INVOICED", "CANCELLED"]:
             sheet.status = data["status"]
 

@@ -162,7 +162,8 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 const payload = {
                     id: sheetProject.id,
                     period_start: sheetProject.period_start,
-                    service_type: sheetProject.service_type
+                    service_type: sheetProject.service_type,
+                    series_code: sheetProject.series_code || null
                 };
                 
                 // Agregar campos opcionales si existen
