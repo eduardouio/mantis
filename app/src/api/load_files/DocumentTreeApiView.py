@@ -201,7 +201,7 @@ class DocumentTreeApiView(View):
             for sheet in sheets:
                 sheet_node = {
                     'id': sheet.pk,
-                    'label': f'Planilla #{sheet.id} ({sheet.period_start} → {sheet.period_end})',
+                    'label': f'Planilla #{sheet.id} ({sheet.period_start} → {sheet.period_end or "actual"})',
                     'type': 'sheet_project',
                     'files': _build_file_fields(
                         sheet,
