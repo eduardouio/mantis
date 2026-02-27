@@ -6,6 +6,7 @@ import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
 import { UseVehicleStore } from '@/stores/VehicleStore'
 import { UseCustodyChainStore } from '@/stores/CustodyChainStore'
+import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 import Modal from '@/components/common/Modal.vue'
 import TechnicalPresentation from '@/components/resources/TechnicalPresentation.vue'
 import VehiclePresentation from '@/components/resources/VehiclePresentation.vue'
@@ -16,6 +17,7 @@ const projectStore = UseProjectStore()
 const technicalStore = UseTechnicalStore()
 const vehicleStore = UseVehicleStore()
 const custodyChainStore = UseCustodyChainStore()
+const projectResourceStore = UseProjectResourceStore()
 
 const router = useRouter()
 const route = useRoute()
@@ -163,6 +165,7 @@ const loadCustodyChainData = async () => {
 
 onMounted(async () => {
   await projectStore.fetchProjectData()
+  await projectResourceStore.fetchResourcesProject()
   await technicalStore.fetchTechnicalsAvailable()
   await vehicleStore.fetchVehicles()
   
@@ -181,17 +184,25 @@ const activeWorkOrder = computed(() => {
 })
 
 // Recursos tipo SERVICIO desde los detalles de la planilla activa
+// Solo muestra recursos cuyo ProjectResourceItem esté activo en el store de recursos
 const availableResources = computed(() => {
   if (!activeWorkOrder.value || !activeWorkOrder.value.details) return []
   
   return activeWorkOrder.value.details
     .filter(detail => detail.project_resource_item?.type_resource === 'SERVICIO')
+    .filter(detail => {
+      // Verificar si el recurso del proyecto está activo consultando el store de recursos
+      const projectResource = projectResourceStore.resourcesProject.find(
+        r => r.id === detail.project_resource_item.id
+      )
+      return projectResource ? projectResource.is_active : true
+    })
     .map(detail => ({
       id: detail.project_resource_item.id,
       resource_item_code: detail.resource_item_code,
       detailed_description: detail.project_resource_item.detailed_description || detail.detail,
       cost: detail.unit_price || detail.project_resource_item.cost || 0,
-      is_active: detail.metadata?.is_active ?? true,
+      is_active: true,
       type: 'SERVIC',
       selected: selectedResourceIds.value.includes(detail.project_resource_item.id)
     }))

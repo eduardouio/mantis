@@ -134,8 +134,16 @@ class CreateCustodyChainAPI(View):
         for resource_id in resource_ids:
             try:
                 resource = ProjectResourceItem.objects.get(
-                    id=resource_id, project=project, is_active=True
+                    id=resource_id, project=project
                 )
+                if not resource.is_active:
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "error": f"El recurso '{resource.detailed_description}' (ID {resource_id}) está inactivo y no puede ser asignado a una cadena de custodia",
+                        },
+                        status=400,
+                    )
                 valid_resources.append(resource)
             except ProjectResourceItem.DoesNotExist:
                 return JsonResponse(
