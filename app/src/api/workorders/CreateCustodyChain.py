@@ -150,7 +150,7 @@ class CreateCustodyChainAPI(View):
             technical=technical,
             vehicle=vehicle,
             sheet_project=sheet_project,
-            consecutive=CustodyChain.get_next_consecutive(),
+            consecutive=data.get("consecutive") if data.get("consecutive") else CustodyChain.get_next_consecutive(),
             activity_date=data.get("activity_date"),
             issue_date=data.get("issue_date"),
             status=data.get("status", "DRAFT"),
