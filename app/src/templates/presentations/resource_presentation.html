@@ -474,7 +474,122 @@
     </div>
     {% endif %}
 
-    <!-- TAB 3: Metadatos -->
+    <!-- TAB 3: Documentos Adjuntos -->
+    <input type="radio" name="res_tabs" class="tab" aria-label="Documentos Adjuntos" />
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <h3 class="text-md font-semibold text-blue-500 mb-4">Documentos Adjuntos</h3>
+
+      <!-- Mensaje global de estado de upload -->
+      <div id="uploadGlobalMsg" class="hidden mb-4 p-3 rounded-lg text-sm"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Imagen Principal -->
+        <div class="p-4 bg-gray-50 rounded-lg border border-blue-200">
+          <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+            <i class="las la-image text-lg text-blue-600"></i>
+            Imágenes del Equipo
+          </h4>
+          <div class="space-y-2">
+            <!-- Imagen 1 -->
+            <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                 data-model-type="resource_item" data-object-id="{{ equipment.id }}" data-field-name="resource_image">
+              <div class="flex items-center gap-2">
+                <i class="las la-camera text-lg text-purple-500"></i>
+                <span class="text-sm font-medium">Imagen Principal</span>
+              </div>
+              <div class="flex items-center gap-1">
+                {% if equipment.resource_image %}
+                  <a href="{{ equipment.resource_image.url }}" target="_blank" class="btn btn-xs btn-info" title="Ver">
+                    <i class="las la-eye"></i>
+                  </a>
+                  <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                    <i class="las la-trash"></i>
+                  </button>
+                {% endif %}
+                <label class="btn btn-xs btn-success btn-file-upload" title="Subir imagen">
+                  <i class="las la-upload"></i>
+                  <input type="file" accept="image/*" class="hidden file-input-hidden">
+                </label>
+              </div>
+            </div>
+
+            <!-- Imagen 2 -->
+            <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                 data-model-type="resource_item" data-object-id="{{ equipment.id }}" data-field-name="resource_image_2">
+              <div class="flex items-center gap-2">
+                <i class="las la-camera text-lg text-purple-500"></i>
+                <span class="text-sm font-medium">Imagen Secundaria</span>
+              </div>
+              <div class="flex items-center gap-1">
+                {% if equipment.resource_image_2 %}
+                  <a href="{{ equipment.resource_image_2.url }}" target="_blank" class="btn btn-xs btn-info" title="Ver">
+                    <i class="las la-eye"></i>
+                  </a>
+                  <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
+                    <i class="las la-trash"></i>
+                  </button>
+                {% endif %}
+                <label class="btn btn-xs btn-success btn-file-upload" title="Subir imagen">
+                  <i class="las la-upload"></i>
+                  <input type="file" accept="image/*" class="hidden file-input-hidden">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vista previa -->
+        <div class="p-4 bg-gray-50 rounded-lg border border-blue-200">
+          <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
+            <i class="las la-images text-lg text-blue-600"></i>
+            Vista Previa
+          </h4>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="text-center">
+              {% if equipment.resource_image %}
+                <img src="{{ equipment.resource_image.url }}" alt="Imagen principal" class="rounded border border-gray-300 max-h-40 mx-auto object-contain">
+                <p class="text-xs text-gray-500 mt-1">Principal</p>
+              {% else %}
+                <div class="h-40 flex items-center justify-center bg-gray-100 rounded border border-dashed border-gray-300">
+                  <span class="text-xs text-gray-400">Sin imagen</span>
+                </div>
+              {% endif %}
+            </div>
+            <div class="text-center">
+              {% if equipment.resource_image_2 %}
+                <img src="{{ equipment.resource_image_2.url }}" alt="Imagen secundaria" class="rounded border border-gray-300 max-h-40 mx-auto object-contain">
+                <p class="text-xs text-gray-500 mt-1">Secundaria</p>
+              {% else %}
+                <div class="h-40 flex items-center justify-center bg-gray-100 rounded border border-dashed border-gray-300">
+                  <span class="text-xs text-gray-400">Sin imagen</span>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resumen -->
+      <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <i class="las la-info-circle text-lg text-blue-600"></i>
+            <span class="font-medium text-blue-700">Resumen de Documentos</span>
+          </div>
+          <div class="flex gap-4 text-sm">
+            <span class="text-gray-600">
+              Imágenes: 
+              <span class="font-semibold">
+                {% if equipment.resource_image %}1{% else %}0{% endif %} + 
+                {% if equipment.resource_image_2 %}1{% else %}0{% endif %}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Metadatos -->
     <input type="radio" name="res_tabs" class="tab" aria-label="Metadatos" />
     <div class="tab-content bg-base-100 border-base-300 p-6">
       <h3 class="text-md font-semibold text-blue-500 mb-4">Información de Auditoría</h3>

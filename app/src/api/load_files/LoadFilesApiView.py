@@ -14,6 +14,7 @@ from equipment.models.Vehicle import Vehicle
 from projects.models.CustodyChain import CustodyChain
 from projects.models.SheetProject import SheetProject
 from projects.models.ShippingGuide import ShippingGuide
+from equipment.models.ResourceItem import ResourceItem
 
 
 # Registro centralizado: modelo → campos de archivo permitidos
@@ -53,6 +54,10 @@ MODEL_FILE_REGISTRY = {
     'shipping_guide': {
         'model': ShippingGuide,
         'fields': ['shipping_guide_file'],
+    },
+    'resource_item': {
+        'model': ResourceItem,
+        'fields': ['resource_image', 'resource_image_2'],
     },
 }
 
