@@ -126,6 +126,12 @@
                            </ul>
                         </details>
                      </li>
+                     <!-- Documentos -->
+                     <li>
+                        <a class="whitespace-nowrap" href="{% url 'file_manager' %}">
+                           <i class="las la-folder-open mr-2"></i>Documentos
+                        </a>
+                     </li>
                      <li><div class="divider my-1"></div></li>
                      <!-- Usuario para móvil -->
                      <li>
@@ -236,6 +242,13 @@
                            <li><a class="whitespace-nowrap bg-base-100 text-sm" href="{% url 'technicals-status-report' %}"><i class="las la-users mr-2"></i>Técnicos por Estado</a></li>
                         </ul>
                      </details>
+                  </li>
+                  <!-- Documentos -->
+                  <li>
+                     <a class="py-2" href="{% url 'file_manager' %}">
+                        <i class="las la-folder-open inline-block mr-1 text-lg"></i>
+                        <span class="text-sm">Documentos</span>
+                     </a>
                   </li>
                </ul>
             </div>
