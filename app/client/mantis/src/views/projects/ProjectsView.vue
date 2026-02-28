@@ -7,13 +7,35 @@ import Modal from '@/components/common/Modal.vue'
 import ResourceForm from '@/components/projects/ResourceForm.vue'
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
-import { onMounted, computed, ref } from 'vue';
+import { onMounted, computed, ref, watch, nextTick } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { formatDate } from '@/utils/formatters';
+
+const route = useRoute();
+const router = useRouter();
 
 const projectStore = UseProjectStore();
 const projectResourceStore = UseProjectResourceStore();
 const project = computed(() => projectStore.project);
 const isProjectClosed = computed(() => project.value?.is_closed === true);
+
+// ── Persistencia del tab activo ──────────────────────────────
+const TAB_NAMES = ['recursos', 'planillas', 'calendario', 'documentos'];
+const activeTab = ref(0);
+
+// Leer tab desde query param al montar
+const initTab = () => {
+  const tabParam = route.query.tab;
+  if (tabParam) {
+    const idx = TAB_NAMES.indexOf(tabParam);
+    if (idx !== -1) activeTab.value = idx;
+  }
+};
+
+const setActiveTab = (index) => {
+  activeTab.value = index;
+  router.replace({ query: { ...route.query, tab: TAB_NAMES[index] } });
+};
 
 const isModalOpen = ref(false);
 const modalTitle = ref('');
@@ -113,8 +135,17 @@ const getAlertIcon = (type) => {
 };
 
 onMounted(() => {
+  initTab();
   projectStore.fetchProjectData();
   projectResourceStore.fetchResourcesProject();
+});
+
+// Sincronizar si cambia el query param externamente (al navegar back)
+watch(() => route.query.tab, (newTab) => {
+  if (newTab) {
+    const idx = TAB_NAMES.indexOf(newTab);
+    if (idx !== -1) activeTab.value = idx;
+  }
 });
 </script>
 
@@ -198,22 +229,22 @@ onMounted(() => {
 
       <!-- Tabs para organizar el contenido -->
       <div role="tablist" class="tabs tabs-lifted bg-base-100 p-1">
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-amber-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Recursos Asignados" checked />
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-amber-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Recursos Asignados" :checked="activeTab === 0" @change="setActiveTab(0)" />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabResources @edit-resource="openEditResourceModal" />
         </div>
 
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-cyan-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Planillas de Trabajo" />
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-cyan-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Planillas de Trabajo" :checked="activeTab === 1" @change="setActiveTab(1)" />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabSheetProject />
         </div>
 
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-lime-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Calendario Mantenimientos" />
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-lime-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Calendario Mantenimientos" :checked="activeTab === 2" @change="setActiveTab(2)" />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabCalendar />
         </div>
 
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-violet-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Documentos" />
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-violet-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Documentos" :checked="activeTab === 3" @change="setActiveTab(3)" />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabDocuments />
         </div>

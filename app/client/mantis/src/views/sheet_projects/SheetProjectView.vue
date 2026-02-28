@@ -100,7 +100,7 @@ const totalHours = computed(() => {
 });
 
 const goBack = () => {
-  router.push({ name: 'projects-detail' });
+  router.push({ name: 'projects-detail', query: { tab: 'planillas' } });
 };
 
 const viewCustodyChainDetail = (id) => {

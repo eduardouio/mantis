@@ -115,7 +115,7 @@
         list_resources.value,
       )
       successMessage.value = `Se agregaron ${result.added} recurso(s) exitosamente`
-      router.push('/project')
+      router.push({ name: 'projects-detail', query: { tab: 'recursos' } })
 
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -458,7 +458,7 @@
 
         <!-- Botones de Acción -->
         <div class="flex flex-col-reverse sm:flex-row gap-3 sm:justify-end">
-          <RouterLink to="/project" class="btn btn-ghost" :class="{ 'btn-disabled': isSubmitting }">
+          <RouterLink :to="{ name: 'projects-detail', query: { tab: 'recursos' } }" class="btn btn-ghost" :class="{ 'btn-disabled': isSubmitting }">
             Cancelar
           </RouterLink>
           <button 

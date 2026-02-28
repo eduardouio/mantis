@@ -73,7 +73,7 @@ const formatDate = (date) => {
           Cadenas de Custodia - {{ projectStore.projectData?.project?.partner_name }}
         </h1>
         <div class="flex gap-2">
-          <button class="btn btn-secondary btn-sm" @click="router.push({ name: 'project-detail' })">
+          <button class="btn btn-secondary btn-sm" @click="router.push({ name: 'projects-detail', query: { tab: 'planillas' } })">
             <i class="las la-arrow-left"></i>
             Volver
           </button>
@@ -262,7 +262,7 @@ const formatDate = (date) => {
 
         <!-- Footer -->
         <div class="bg-gray-50 p-4 rounded-b-lg flex justify-between gap-2">
-          <button class="btn btn-sm btn-primary" @click="router.push({ name: 'project-detail' })">
+          <button class="btn btn-sm btn-primary" @click="router.push({ name: 'projects-detail', query: { tab: 'planillas' } })">
             <i class="las la-arrow-left"></i>
             Volver
           </button>

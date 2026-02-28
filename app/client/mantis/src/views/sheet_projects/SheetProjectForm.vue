@@ -492,7 +492,7 @@ const handleSubmit = async () => {
     }
     
     setTimeout(() => {
-      router.push({ name: 'projects-detail' });
+      router.push({ name: 'projects-detail', query: { tab: 'planillas' } });
     }, 1500);
   } catch (error) {
     console.error('Error al guardar planilla:', error);
@@ -947,7 +947,7 @@ const handleSubmit = async () => {
           </div>
           <!-- Botones -->
           <div class="flex gap-3">
-            <RouterLink to="/project" class="btn btn-ghost" :class="{ 'btn-disabled': isSubmitting }">
+            <RouterLink :to="{ name: 'projects-detail', query: { tab: 'planillas' } }" class="btn btn-ghost" :class="{ 'btn-disabled': isSubmitting }">
               <i class="las la-times text-lg"></i> Cancelar
             </RouterLink>
             <button v-if="!isFullyLocked && !isProjectClosed" type="submit" class="btn btn-primary" :disabled="isSubmitting">

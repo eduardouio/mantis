@@ -198,12 +198,12 @@ const loadCustodyChainData = async () => {
       }
     } else {
       console.warn('Cadena de custodia no encontrada')
-      router.push({ name: 'projects-detail' })
+      router.push({ name: 'projects-detail', query: { tab: 'planillas' } })
     }
   } catch (error) {
     console.error('Error al cargar cadena de custodia:', error)
     alert('Error al cargar los datos de la cadena de custodia: ' + error.message)
-    router.push({ name: 'projects-detail' })
+    router.push({ name: 'projects-detail', query: { tab: 'planillas' } })
   } finally {
     isLoading.value = false
   }
@@ -363,7 +363,7 @@ const submitForm = async () => {
         if (workOrder) {
           router.push({ name: 'sheet-project-view', params: { id: workOrder.id } })
         } else {
-          router.push({ name: 'projects-detail' })
+          router.push({ name: 'projects-detail', query: { tab: 'planillas' } })
         }
       }
     } else {
@@ -415,7 +415,7 @@ const submitForm = async () => {
         if (workOrder) {
           router.push({ name: 'sheet-project-view', params: { id: workOrder.id } })
         } else {
-          router.push({ name: 'projects-detail' })
+          router.push({ name: 'projects-detail', query: { tab: 'planillas' } })
         }
       }
     }
@@ -445,7 +445,7 @@ const cancelForm = () => {
   if (workOrder) {
     router.push({ name: 'sheet-project-view', params: { id: workOrder.id } })
   } else {
-    router.push({ name: 'projects-detail' })
+    router.push({ name: 'projects-detail', query: { tab: 'planillas' } })
   }
 }
 
