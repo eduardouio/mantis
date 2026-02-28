@@ -703,6 +703,9 @@ const saveEquipmentDays = async (detailId) => {
     
     successMessage.value = `Días de cobro actualizados (${days.length} días)`;
     setTimeout(() => { successMessage.value = ''; }, 3000);
+    
+    // Cerrar el modal después de guardar exitosamente
+    closeCalendarModal();
   } catch (error) {
     errorMessage.value = error.message || 'Error al actualizar los días de cobro';
     setTimeout(() => { errorMessage.value = ''; }, 5000);

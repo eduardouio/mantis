@@ -195,13 +195,21 @@ class WorkSheetBuilder:
                 detail.unit_price = project_resource.cost
                 detail.detail = project_resource.detailed_description or f"ALQUILER DE {resource_item.name} {resource_item.code}"
             
-            # Guardar días del mes en el campo monthdays_apply_cost (solo para servicios)
-            # Para equipos, se calculan según la frecuencia configurada, no se tocan
+            # Guardar días del mes en el campo monthdays_apply_cost
             if project_resource.type_resource == "SERVICIO":
+                # Para servicios, siempre recalcular desde cadenas de custodia
                 detail.monthdays_apply_cost = monthdays_list
             else:
-                # Para equipos también guardamos los días calculados para referencia
-                detail.monthdays_apply_cost = monthdays_list
+                # Para equipos: si ya tiene días configurados manualmente, respetarlos.
+                # Solo asignar los días calculados si es un registro nuevo (recién creado)
+                # o si no tiene días configurados aún.
+                if created or not detail.monthdays_apply_cost:
+                    detail.monthdays_apply_cost = monthdays_list
+                else:
+                    # Ya tiene días manuales, recalcular quantity desde ellos
+                    monthdays_list = detail.monthdays_apply_cost
+                    quantity = len(monthdays_list)
+                    detail.quantity = Decimal(str(quantity))
             
             # Calcular totales de línea
             detail.total_line = detail.quantity * detail.unit_price
