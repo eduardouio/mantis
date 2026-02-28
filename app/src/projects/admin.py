@@ -137,10 +137,10 @@ class ProjectResourceItemAdmin(BaseModelAdmin):
 class SheetProjectAdmin(BaseModelAdmin):
     list_display = (
         'id', 'project', 'issue_date', 'period_start', 'period_end', 'status',
-        'series_code', 'service_type', 'subtotal', 'tax_amount', 'total'
+        'series_code', 'service_type', 'subtotal', 'tax_amount', 'total', 'is_closed'
     )
     list_filter = (
-        'project', 'status', 'period_start', 'period_end', 'issue_date', 'is_active'
+        'project', 'status', 'is_closed', 'period_start', 'period_end', 'issue_date', 'is_active'
     )
     search_fields = (
         'project__partner__name', 'series_code', 'service_type'
@@ -148,7 +148,7 @@ class SheetProjectAdmin(BaseModelAdmin):
     # readonly heredado
     fieldsets = (
         ('Período', {
-            'fields': ('project', 'issue_date', 'period_start', 'period_end', 'status')
+            'fields': ('project', 'issue_date', 'period_start', 'period_end', 'status', 'is_closed')
         }),
         ('Referencias', {
             'fields': (

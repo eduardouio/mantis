@@ -147,6 +147,11 @@ class SheetProject(BaseModel):
         blank=True,
         null=True
     )
+    is_closed = models.BooleanField(
+        'Planilla Cerrada',
+        default=False,
+        help_text='Indica si la planilla está cerrada. Una planilla cerrada no permite modificaciones.'
+    )
 
     class Meta:
         unique_together = ("project", "period_start", "period_end")
