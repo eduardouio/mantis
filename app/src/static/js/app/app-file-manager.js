@@ -29,7 +29,6 @@
       .then(json => {
         if (!json.success) throw new Error(json.error);
         treeData = json.data;
-        updateStats();
         renderTab();
         showLoading(false);
       })
@@ -37,27 +36,6 @@
         showLoading(false);
         showToast('Error al cargar documentos: ' + err.message, 'error');
       });
-  }
-
-  // ── Estadísticas ───────────────────────────────────────────────
-  function updateStats() {
-    let total = 0, loaded = 0;
-    const count = (nodes) => {
-      if (!nodes) return;
-      (Array.isArray(nodes) ? nodes : [nodes]).forEach(n => {
-        if (n.files) n.files.forEach(f => { total++; if (f.has_file) loaded++; });
-        if (n.children) count(n.children);
-      });
-    };
-    Object.values(treeData).forEach(cat => count(cat));
-
-    const pending = total - loaded;
-    const pct = total > 0 ? Math.round((loaded / total) * 100) : 0;
-
-    document.getElementById('statTotal').textContent   = total;
-    document.getElementById('statLoaded').textContent  = loaded;
-    document.getElementById('statPending').textContent = pending;
-    document.getElementById('statPercent').textContent = pct + '%';
   }
 
   // ── Tabs ───────────────────────────────────────────────────────
