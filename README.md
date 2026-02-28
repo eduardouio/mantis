@@ -115,4 +115,4 @@ select * from projects_chaincustodydetail pc where pc.custody_chain_id = 174
 select * from projects_chaincustodydetail pc where pc.custody_chain_id = 42
 
 -- listar migraciones 
-select * from django_migrations dm 
+select * from django_migrations dm ll
