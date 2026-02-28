@@ -26,7 +26,8 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
             total: 0,
             notes: '',
             sheet_project_file: null,
-            certificate_final_disposition_file: null
+            certificate_final_disposition_file: null,
+            invoice_file: null
         },
         loading: false,
         error: null,
@@ -280,7 +281,8 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 total: 0,
                 notes: '',
                 sheet_project_file: null,
-                certificate_final_disposition_file: null
+                certificate_final_disposition_file: null,
+                invoice_file: null
             };
         },
         
@@ -421,7 +423,8 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 total: 0,
                 notes: '',
                 sheet_project_file: null,
-                certificate_final_disposition_file: null
+                certificate_final_disposition_file: null,
+                invoice_file: null
             };
         },
     }

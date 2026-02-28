@@ -161,7 +161,7 @@ class SheetProjectAdmin(BaseModelAdmin):
             'fields': ('total_gallons', 'total_barrels', 'total_cubic_meters', 'subtotal', 'tax_amount', 'total')
         }),
         ('Archivos', {
-            'fields': ('sheet_project_file', 'certificate_final_disposition_file')
+            'fields': ('sheet_project_file', 'certificate_final_disposition_file', 'invoice_file')
         }),
         ('Notas', {
             'fields': ('notes',), 'classes': ('collapse',)

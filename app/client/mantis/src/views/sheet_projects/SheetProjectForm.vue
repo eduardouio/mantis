@@ -47,10 +47,13 @@ const resourcesChanged = ref(false);
 // Estado de archivos PDF
 const sheetFileInput = ref(null);
 const certificateFileInput = ref(null);
+const invoiceFileInput = ref(null);
 const sheetFileInfo = ref(null);
 const certificateFileInfo = ref(null);
+const invoiceFileInfo = ref(null);
 const isUploadingSheet = ref(false);
 const isUploadingCertificate = ref(false);
+const isUploadingInvoice = ref(false);
 
 // Validaciones de fechas
 const periodDatesError = computed(() => {
@@ -249,16 +252,52 @@ const onCertificateFileSelected = async (event) => {
   }
 };
 
+// Subir factura PDF
+const handleAttachInvoiceFile = () => {
+  if (isHeadersLocked.value && invoiceFileInfo.value?.has_file) return;
+  invoiceFileInput.value?.click();
+};
+
+const onInvoiceFileSelected = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.type !== 'application/pdf') {
+    errorMessage.value = 'Solo se permiten archivos PDF para la factura';
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+    return;
+  }
+  if (!isEditMode.value || !sheetId.value) {
+    errorMessage.value = 'Primero debe guardar la planilla antes de adjuntar archivos';
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+    return;
+  }
+  isUploadingInvoice.value = true;
+  try {
+    const result = await sheetProjectStore.uploadSheetFile(sheetId.value, 'invoice_file', file);
+    invoiceFileInfo.value = result;
+    successMessage.value = 'Factura subida correctamente';
+    setTimeout(() => { successMessage.value = ''; }, 3000);
+  } catch (error) {
+    errorMessage.value = error.message || 'Error al subir la factura';
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+  } finally {
+    isUploadingInvoice.value = false;
+    event.target.value = '';
+  }
+};
+
 // Consultar archivos existentes
 const loadFileInfo = async () => {
   if (!isEditMode.value || !sheetId.value) return;
   try {
-    const [sheetInfo, certInfo] = await Promise.all([
+    const [sheetInfo, certInfo, invoiceInfo] = await Promise.all([
       sheetProjectStore.getSheetFileInfo(sheetId.value, 'sheet_project_file'),
-      sheetProjectStore.getSheetFileInfo(sheetId.value, 'certificate_final_disposition_file')
+      sheetProjectStore.getSheetFileInfo(sheetId.value, 'certificate_final_disposition_file'),
+      sheetProjectStore.getSheetFileInfo(sheetId.value, 'invoice_file')
     ]);
     sheetFileInfo.value = sheetInfo;
     certificateFileInfo.value = certInfo;
+    invoiceFileInfo.value = invoiceInfo;
   } catch (error) {
     console.error('Error consultando archivos:', error);
   }
@@ -522,6 +561,8 @@ const handleSubmit = async () => {
             <input type="file" ref="sheetFileInput" accept=".pdf" class="hidden" @change="onSheetFileSelected" />
             <!-- Input oculto para certificado PDF -->
             <input type="file" ref="certificateFileInput" accept=".pdf" class="hidden" @change="onCertificateFileSelected" />
+            <!-- Input oculto para factura PDF -->
+            <input type="file" ref="invoiceFileInput" accept=".pdf" class="hidden" @change="onInvoiceFileSelected" />
 
             <!-- Botón Planilla PDF -->
             <div class="flex items-center gap-1">
@@ -573,6 +614,33 @@ const handleSubmit = async () => {
                 <i class="las la-eye text-lg text-warning"></i>
               </button>
               <span v-if="certificateFileInfo?.has_file" class="badge badge-success badge-sm gap-1">
+                <i class="las la-check-circle"></i> PDF
+              </span>
+            </div>
+
+            <!-- Botón Factura PDF -->
+            <div class="flex items-center gap-1">
+              <button 
+                type="button" 
+                @click="handleAttachInvoiceFile" 
+                class="btn btn-accent btn-sm gap-1"
+                :class="{ 'btn-disabled': !isEditMode || isUploadingInvoice || (isHeadersLocked && invoiceFileInfo?.has_file) }"
+                :disabled="!isEditMode || isUploadingInvoice || (isHeadersLocked && invoiceFileInfo?.has_file)"
+              >
+                <span v-if="isUploadingInvoice" class="loading loading-spinner loading-xs"></span>
+                <i v-else class="las la-file-invoice text-lg"></i>
+                {{ invoiceFileInfo?.has_file ? (isHeadersLocked ? 'Factura (Bloqueado)' : 'Actualizar Factura') : 'Adjuntar Factura' }}
+              </button>
+              <button 
+                v-if="invoiceFileInfo?.has_file" 
+                type="button" 
+                @click="openFile(invoiceFileInfo)" 
+                class="btn btn-ghost btn-sm btn-circle"
+                title="Ver factura PDF"
+              >
+                <i class="las la-eye text-lg text-accent"></i>
+              </button>
+              <span v-if="invoiceFileInfo?.has_file" class="badge badge-success badge-sm gap-1">
                 <i class="las la-check-circle"></i> PDF
               </span>
             </div>

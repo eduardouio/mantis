@@ -88,6 +88,7 @@ class ProjectDocumentTreeApiView(View):
             sheet_files = [
                 _build_file_entry(sheet, 'sheet_project_file', 'sheet_project'),
                 _build_file_entry(sheet, 'certificate_final_disposition_file', 'sheet_project'),
+                _build_file_entry(sheet, 'invoice_file', 'sheet_project'),
             ]
 
             sheet_node = {
@@ -205,6 +206,7 @@ class ProjectDocumentMergeApiView(View):
             for sheet in sheets_qs:
                 self._add_if_exists(paths, sheet, 'sheet_project_file')
                 self._add_if_exists(paths, sheet, 'certificate_final_disposition_file')
+                self._add_if_exists(paths, sheet, 'invoice_file')
 
         if scope in ('all', 'custody_chains'):
             for sheet in sheets_qs:

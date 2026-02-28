@@ -66,6 +66,7 @@ FIELD_LABELS = {
     'custody_chain_file': 'Archivo Cadena de Custodia',
     'sheet_project_file': 'Archivo de Planilla',
     'certificate_final_disposition_file': 'Certificado Disposición Final',
+    'invoice_file': 'Archivo de Factura',
     'shipping_guide_file': 'Guía de Remisión',
     'resource_image': 'Imagen del Equipo',
     'resource_image_2': 'Imagen del Equipo 2',
@@ -205,7 +206,7 @@ class DocumentTreeApiView(View):
                     'type': 'sheet_project',
                     'files': _build_file_fields(
                         sheet,
-                        ['sheet_project_file', 'certificate_final_disposition_file'],
+                        ['sheet_project_file', 'certificate_final_disposition_file', 'invoice_file'],
                         'sheet_project',
                     ),
                     'children': [],
