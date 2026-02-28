@@ -37,24 +37,26 @@ onMounted(async () => {
 
 const filteredResources = computed(() => {
   let resources = availableResources.value;
-  
-  // Filtrar solo recursos disponibles (available === true)
-  resources = resources.filter(resource => resource.available === true);
-  
-  // Filtrar recursos ya seleccionados
+
+  // Filtrar recursos ya seleccionados (solo los disponibles que ya fueron elegidos)
   if (props.excludeIds.length > 0) {
     resources = resources.filter(resource => !props.excludeIds.includes(resource.id));
   }
-  
+
   // Filtrar por búsqueda
-  if (!searchQuery.value) {
-    return resources;
+  if (searchQuery.value) {
+    resources = resources.filter((resource) =>
+      (resource.display_name || resource.title || '')
+        .toLowerCase()
+        .includes(searchQuery.value.toLowerCase())
+    );
   }
-  return resources.filter((resource) =>
-    (resource.display_name || resource.title || '')
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase())
-  );
+
+  // Ordenar: disponibles primero, ocupados después
+  return [...resources].sort((a, b) => {
+    if (a.available === b.available) return 0;
+    return a.available ? -1 : 1;
+  });
 });
 
 const handleInput = () => {
@@ -92,13 +94,32 @@ const handleBlur = () => {
       v-if="showDropdown && filteredResources.length > 0"
       class="absolute z-10 w-full mt-1 bg-base-100 shadow-lg rounded-lg max-h-60 overflow-auto top-full"
     >
-      <ul class="menu">
+      <ul class="menu p-0">
         <li
           v-for="resource in filteredResources"
           :key="resource.id"
-          @mousedown="selectResource(resource)"
+          @mousedown="resource.available ? selectResource(resource) : null"
         >
-          <a class="hover:bg-base-200">{{ resource.display_name || resource.title }}</a>
+          <a
+            class="flex items-center justify-between gap-2 py-2 px-3"
+            :class="resource.available ? 'hover:bg-base-200 cursor-pointer' : 'opacity-60 cursor-default bg-red-50'"
+          >
+            <span>{{ resource.display_name || resource.title }}</span>
+            <span v-if="resource.available" class="badge badge-sm badge-success">Disponible</span>
+            <span v-else class="flex items-center gap-1">
+              <span class="badge badge-sm badge-error">Ocupado</span>
+              <a
+                v-if="resource.assigned_project"
+                :href="resource.assigned_project.url"
+                class="link link-primary text-xs font-semibold"
+                @mousedown.stop
+                target="_blank"
+              >
+                {{ resource.assigned_project.partner_name }}
+                <span v-if="resource.assigned_project.location">- {{ resource.assigned_project.location }}</span>
+              </a>
+            </span>
+          </a>
         </li>
       </ul>
     </div>
