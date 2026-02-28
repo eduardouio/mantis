@@ -159,7 +159,18 @@ class LoadFilesApiView(View):
 
             # Asignar el nuevo archivo y guardar
             setattr(instance, field_name, uploaded_file)
-            instance.save(update_fields=[field_name])
+            update_fields = [field_name]
+
+            # Lógica especial para factura: actualizar referencia y estado
+            if model_type == 'sheet_project' and field_name == 'invoice_file':
+                invoice_reference = request.POST.get('invoice_reference', '').strip()
+                if invoice_reference:
+                    instance.invoice_reference = invoice_reference
+                    update_fields.append('invoice_reference')
+                instance.status = 'INVOICED'
+                update_fields.append('status')
+
+            instance.save(update_fields=update_fields)
 
             new_field = getattr(instance, field_name)
             return JsonResponse({

@@ -176,6 +176,13 @@
             Cargar Factura PDF
         </h3>
         <p class="text-sm text-gray-500 mb-3" id="invoiceModalLabel"></p>
+        <div class="form-control w-full mb-3">
+            <label class="label">
+                <span class="label-text font-semibold">Referencia de Factura <span class="text-error">*</span></span>
+            </label>
+            <input type="text" id="invoiceReferenceInput" maxlength="50"
+                   class="input input-bordered w-full" placeholder="Ej: FAC-2026-001" />
+        </div>
         <input type="file" id="invoiceFileInput" accept=".pdf"
                class="file-input file-input-bordered file-input-md w-full" />
         <div id="invoiceUploadProgress" class="hidden mt-3">
@@ -194,17 +201,7 @@
     </div>
     <form method="dialog" class="modal-backdrop"><button>close</button></form>
 </dialog>
-    .table-responsive {
-        overflow-x: auto;
-    }
-    .table thead th {
-        vertical-align: middle;
-        white-space: nowrap;
-    }
-    .table tbody td {
-        vertical-align: middle;
-    }
-</style>
+
 
 <script>
     // Datos de planillas desde el contexto Django
@@ -429,6 +426,7 @@
         const modal = document.getElementById('invoiceUploadModal');
         document.getElementById('invoiceModalLabel').textContent = 'Planilla: ' + seriesCode;
         document.getElementById('invoiceFileInput').value = '';
+        document.getElementById('invoiceReferenceInput').value = '';
         document.getElementById('invoiceUploadMsg').classList.add('hidden');
         document.getElementById('invoiceUploadProgress').classList.add('hidden');
         document.getElementById('invoiceUploadBtn').disabled = false;
@@ -440,6 +438,12 @@
     function submitInvoiceUpload() {
         const fileInput = document.getElementById('invoiceFileInput');
         const file = fileInput.files[0];
+        const invoiceReference = document.getElementById('invoiceReferenceInput').value.trim();
+
+        if (!invoiceReference) {
+            showInvoiceMsg('Debe ingresar la referencia de factura', 'alert-warning');
+            return;
+        }
         if (!file) {
             showInvoiceMsg('Seleccione un archivo PDF', 'alert-warning');
             return;
@@ -454,6 +458,7 @@
         formData.append('model_type', 'sheet_project');
         formData.append('object_id', currentInvoiceSheetId);
         formData.append('field_name', 'invoice_file');
+        formData.append('invoice_reference', invoiceReference);
 
         document.getElementById('invoiceUploadProgress').classList.remove('hidden');
         document.getElementById('invoiceUploadBtn').disabled = true;

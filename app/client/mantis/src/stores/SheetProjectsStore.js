@@ -287,18 +287,26 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
         },
         
         /**
-         * Subir archivo de planilla o certificado de disposición final
+         * Subir archivo de planilla, certificado o factura
          * @param {number} sheetId - ID de la planilla
-         * @param {string} fieldName - 'sheet_project_file' o 'certificate_final_disposition_file'
+         * @param {string} fieldName - 'sheet_project_file', 'certificate_final_disposition_file' o 'invoice_file'
          * @param {File} file - Archivo a subir
+         * @param {Object} extraData - Datos adicionales (ej: { invoice_reference: '...' })
          */
-        async uploadSheetFile(sheetId, fieldName, file) {
+        async uploadSheetFile(sheetId, fieldName, file, extraData = {}) {
             try {
                 const formData = new FormData();
                 formData.append('model_type', 'sheet_project');
                 formData.append('object_id', sheetId);
                 formData.append('field_name', fieldName);
                 formData.append('file', file);
+
+                // Agregar datos adicionales (ej: invoice_reference)
+                for (const [key, value] of Object.entries(extraData)) {
+                    if (value !== null && value !== undefined) {
+                        formData.append(key, value);
+                    }
+                }
 
                 const response = await fetch(appConfig.URLLoadFiles, {
                     method: 'POST',

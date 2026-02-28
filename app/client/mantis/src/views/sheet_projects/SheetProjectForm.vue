@@ -54,6 +54,8 @@ const invoiceFileInfo = ref(null);
 const isUploadingSheet = ref(false);
 const isUploadingCertificate = ref(false);
 const isUploadingInvoice = ref(false);
+const showInvoiceModal = ref(false);
+const invoiceReference = ref('');
 
 // Validaciones de fechas
 const periodDatesError = computed(() => {
@@ -255,7 +257,13 @@ const onCertificateFileSelected = async (event) => {
 // Subir factura PDF
 const handleAttachInvoiceFile = () => {
   if (isHeadersLocked.value && invoiceFileInfo.value?.has_file) return;
-  invoiceFileInput.value?.click();
+  if (!isEditMode.value || !sheetId.value) {
+    errorMessage.value = 'Primero debe guardar la planilla antes de adjuntar archivos';
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+    return;
+  }
+  invoiceReference.value = formData.value.invoice_reference || '';
+  showInvoiceModal.value = true;
 };
 
 const onInvoiceFileSelected = async (event) => {
@@ -266,17 +274,22 @@ const onInvoiceFileSelected = async (event) => {
     setTimeout(() => { errorMessage.value = ''; }, 4000);
     return;
   }
-  if (!isEditMode.value || !sheetId.value) {
-    errorMessage.value = 'Primero debe guardar la planilla antes de adjuntar archivos';
+  if (!invoiceReference.value.trim()) {
+    errorMessage.value = 'Debe ingresar la referencia de factura';
     setTimeout(() => { errorMessage.value = ''; }, 4000);
     return;
   }
   isUploadingInvoice.value = true;
   try {
-    const result = await sheetProjectStore.uploadSheetFile(sheetId.value, 'invoice_file', file);
+    const result = await sheetProjectStore.uploadSheetFile(
+      sheetId.value, 'invoice_file', file, { invoice_reference: invoiceReference.value.trim() }
+    );
     invoiceFileInfo.value = result;
-    successMessage.value = 'Factura subida correctamente';
-    setTimeout(() => { successMessage.value = ''; }, 3000);
+    formData.value.invoice_reference = invoiceReference.value.trim();
+    formData.value.status = 'INVOICED';
+    successMessage.value = 'Factura subida correctamente. Estado cambiado a FACTURADO.';
+    showInvoiceModal.value = false;
+    setTimeout(() => { successMessage.value = ''; }, 4000);
   } catch (error) {
     errorMessage.value = error.message || 'Error al subir la factura';
     setTimeout(() => { errorMessage.value = ''; }, 4000);
@@ -561,8 +574,6 @@ const handleSubmit = async () => {
             <input type="file" ref="sheetFileInput" accept=".pdf" class="hidden" @change="onSheetFileSelected" />
             <!-- Input oculto para certificado PDF -->
             <input type="file" ref="certificateFileInput" accept=".pdf" class="hidden" @change="onCertificateFileSelected" />
-            <!-- Input oculto para factura PDF -->
-            <input type="file" ref="invoiceFileInput" accept=".pdf" class="hidden" @change="onInvoiceFileSelected" />
 
             <!-- Botón Planilla PDF -->
             <div class="flex items-center gap-1">
@@ -936,4 +947,31 @@ const handleSubmit = async () => {
       </div>
     </form>
   </div>
+
+  <!-- Modal para cargar factura -->
+  <dialog class="modal" :class="{ 'modal-open': showInvoiceModal }">
+    <div class="modal-box max-w-lg">
+      <h3 class="font-bold text-xl flex items-center gap-2 mb-4">
+        <i class="las la-file-invoice text-accent"></i>
+        Cargar Factura PDF
+      </h3>
+      <div class="form-control w-full mb-3">
+        <label class="label">
+          <span class="label-text font-semibold">Referencia de Factura <span class="text-error">*</span></span>
+        </label>
+        <input type="text" v-model="invoiceReference" maxlength="50"
+               class="input input-bordered w-full" placeholder="Ej: FAC-2026-001" />
+      </div>
+      <input type="file" ref="invoiceFileInput" accept=".pdf"
+             class="file-input file-input-bordered file-input-md w-full" @change="onInvoiceFileSelected" />
+      <div v-if="isUploadingInvoice" class="mt-3">
+        <progress class="progress progress-primary w-full"></progress>
+        <p class="text-sm text-gray-500 mt-1">Subiendo factura...</p>
+      </div>
+      <div class="modal-action">
+        <button class="btn" @click="showInvoiceModal = false" :disabled="isUploadingInvoice">Cancelar</button>
+      </div>
+    </div>
+    <div class="modal-backdrop" @click="showInvoiceModal = false"></div>
+  </dialog>
 </template>
