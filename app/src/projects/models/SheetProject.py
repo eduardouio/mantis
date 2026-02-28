@@ -245,6 +245,12 @@ class SheetProjectDetail(BaseModel):
         default=None,
         help_text='Lista de días del mes. Ej: [1, 15, 28]'
     )
+    is_closed = models.BooleanField(
+        'Planilla cerrada',
+        blank=True,
+        null=True,
+        defaul=False
+    )
 
     class Meta:
         verbose_name = "Detalle de Planilla de Proyecto"
