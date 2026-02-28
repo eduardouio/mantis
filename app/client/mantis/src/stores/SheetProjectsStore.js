@@ -285,6 +285,117 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
         },
         
         /**
+         * Subir archivo de planilla o certificado de disposición final
+         * @param {number} sheetId - ID de la planilla
+         * @param {string} fieldName - 'sheet_project_file' o 'certificate_final_disposition_file'
+         * @param {File} file - Archivo a subir
+         */
+        async uploadSheetFile(sheetId, fieldName, file) {
+            try {
+                const formData = new FormData();
+                formData.append('model_type', 'sheet_project');
+                formData.append('object_id', sheetId);
+                formData.append('field_name', fieldName);
+                formData.append('file', file);
+
+                const response = await fetch(appConfig.URLLoadFiles, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': appConfig.csrfToken
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error al subir el archivo');
+                }
+
+                // Actualizar el store con la info del archivo
+                this.newSheetProject[fieldName] = data.data.file_url;
+
+                // Refrescar datos del proyecto
+                const projectStore = UseProjectStore();
+                await projectStore.refreshCurrentProject();
+
+                return data.data;
+            } catch (error) {
+                console.error(`Error uploading ${fieldName}:`, error);
+                throw error;
+            }
+        },
+
+        /**
+         * Consultar información de un archivo de la planilla
+         * @param {number} sheetId - ID de la planilla
+         * @param {string} fieldName - 'sheet_project_file' o 'certificate_final_disposition_file'
+         */
+        async getSheetFileInfo(sheetId, fieldName) {
+            try {
+                const params = new URLSearchParams({
+                    model_type: 'sheet_project',
+                    object_id: sheetId,
+                    field_name: fieldName
+                });
+
+                const response = await fetch(`${appConfig.URLLoadFiles}?${params}`, {
+                    method: 'GET',
+                    headers: appConfig.headers
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error al consultar el archivo');
+                }
+
+                return data.data;
+            } catch (error) {
+                console.error(`Error getting file info for ${fieldName}:`, error);
+                throw error;
+            }
+        },
+
+        /**
+         * Eliminar archivo de la planilla
+         * @param {number} sheetId - ID de la planilla
+         * @param {string} fieldName - 'sheet_project_file' o 'certificate_final_disposition_file'
+         */
+        async deleteSheetFile(sheetId, fieldName) {
+            try {
+                const params = new URLSearchParams({
+                    model_type: 'sheet_project',
+                    object_id: sheetId,
+                    field_name: fieldName
+                });
+
+                const response = await fetch(`${appConfig.URLLoadFiles}?${params}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': appConfig.csrfToken
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error al eliminar el archivo');
+                }
+
+                this.newSheetProject[fieldName] = null;
+
+                const projectStore = UseProjectStore();
+                await projectStore.refreshCurrentProject();
+
+                return data.data;
+            } catch (error) {
+                console.error(`Error deleting ${fieldName}:`, error);
+                throw error;
+            }
+        },
+
+        /**
          * Resetear el formulario de nueva planilla
          */
         resetNewSheetProject() {

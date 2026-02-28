@@ -3,6 +3,7 @@ import { RouterLink, useRouter, useRoute } from 'vue-router';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
+import { appConfig } from '@/AppConfig';
 import { onMounted, computed, ref } from 'vue';
 
 const router = useRouter();
@@ -35,6 +36,14 @@ const stats = ref({
 const errorMessage = ref('');
 const successMessage = ref('');
 const resourcesChanged = ref(false);
+
+// Estado de archivos PDF
+const sheetFileInput = ref(null);
+const certificateFileInput = ref(null);
+const sheetFileInfo = ref(null);
+const certificateFileInfo = ref(null);
+const isUploadingSheet = ref(false);
+const isUploadingCertificate = ref(false);
 
 // Validaciones de fechas
 const periodDatesError = computed(() => {
@@ -140,15 +149,92 @@ const toggleResourceSelection = (resource) => {
   resourcesChanged.value = true;
 };
 
-// Placeholder para adjuntar archivos PDF (implementación futura)
+// Subir archivo de planilla PDF
 const handleAttachSheetFile = () => {
-  // TODO: Implementar subida de archivo de planilla
-  console.log('Adjuntar archivo de planilla');
+  sheetFileInput.value?.click();
 };
 
+const onSheetFileSelected = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.type !== 'application/pdf') {
+    errorMessage.value = 'Solo se permiten archivos PDF para la planilla';
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+    return;
+  }
+  if (!isEditMode.value || !sheetId.value) {
+    errorMessage.value = 'Primero debe guardar la planilla antes de adjuntar archivos';
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+    return;
+  }
+  isUploadingSheet.value = true;
+  try {
+    const result = await sheetProjectStore.uploadSheetFile(sheetId.value, 'sheet_project_file', file);
+    sheetFileInfo.value = result;
+    successMessage.value = 'Archivo de planilla subido correctamente';
+    setTimeout(() => { successMessage.value = ''; }, 3000);
+  } catch (error) {
+    errorMessage.value = error.message || 'Error al subir el archivo de planilla';
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+  } finally {
+    isUploadingSheet.value = false;
+    event.target.value = '';
+  }
+};
+
+// Subir certificado de disposición final
 const handleAttachCertificateFile = () => {
-  // TODO: Implementar subida de certificado de disposición final
-  console.log('Adjuntar certificado de disposición final');
+  certificateFileInput.value?.click();
+};
+
+const onCertificateFileSelected = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.type !== 'application/pdf') {
+    errorMessage.value = 'Solo se permiten archivos PDF para el certificado';
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+    return;
+  }
+  if (!isEditMode.value || !sheetId.value) {
+    errorMessage.value = 'Primero debe guardar la planilla antes de adjuntar archivos';
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+    return;
+  }
+  isUploadingCertificate.value = true;
+  try {
+    const result = await sheetProjectStore.uploadSheetFile(sheetId.value, 'certificate_final_disposition_file', file);
+    certificateFileInfo.value = result;
+    successMessage.value = 'Certificado de disposición final subido correctamente';
+    setTimeout(() => { successMessage.value = ''; }, 3000);
+  } catch (error) {
+    errorMessage.value = error.message || 'Error al subir el certificado';
+    setTimeout(() => { errorMessage.value = ''; }, 4000);
+  } finally {
+    isUploadingCertificate.value = false;
+    event.target.value = '';
+  }
+};
+
+// Consultar archivos existentes
+const loadFileInfo = async () => {
+  if (!isEditMode.value || !sheetId.value) return;
+  try {
+    const [sheetInfo, certInfo] = await Promise.all([
+      sheetProjectStore.getSheetFileInfo(sheetId.value, 'sheet_project_file'),
+      sheetProjectStore.getSheetFileInfo(sheetId.value, 'certificate_final_disposition_file')
+    ]);
+    sheetFileInfo.value = sheetInfo;
+    certificateFileInfo.value = certInfo;
+  } catch (error) {
+    console.error('Error consultando archivos:', error);
+  }
+};
+
+// Abrir archivo en nueva pestaña
+const openFile = (fileInfo) => {
+  if (fileInfo?.file_url) {
+    window.open(appConfig.apiBaseUrl + fileInfo.file_url, '_blank');
+  }
 };
 
 onMounted(async () => {
@@ -225,6 +311,9 @@ onMounted(async () => {
       .filter(r => r.is_active)
       .forEach(r => { r.is_selected = true; r.detail_id = 0; });
   }
+
+  // Cargar información de archivos existentes (solo en modo edición)
+  await loadFileInfo();
 });
 
 const handleSubmit = async () => {
@@ -364,12 +453,65 @@ const handleSubmit = async () => {
             </div>
           </div>
           <div class="flex gap-2 items-center">
-            <button type="button" @click="handleAttachSheetFile" class="btn btn-info gap-2">
-              <i class="las la-file-pdf text-xl"></i> Adjuntar Planilla PDF
-            </button>
-            <button type="button" @click="handleAttachCertificateFile" class="btn btn-warning gap-2">
-              <i class="las la-file-pdf text-xl"></i> Adjuntar Cert. Disp. Final
-            </button>
+            <!-- Input oculto para planilla PDF -->
+            <input type="file" ref="sheetFileInput" accept=".pdf" class="hidden" @change="onSheetFileSelected" />
+            <!-- Input oculto para certificado PDF -->
+            <input type="file" ref="certificateFileInput" accept=".pdf" class="hidden" @change="onCertificateFileSelected" />
+
+            <!-- Botón Planilla PDF -->
+            <div class="flex items-center gap-1">
+              <button 
+                type="button" 
+                @click="handleAttachSheetFile" 
+                class="btn btn-info btn-sm gap-1"
+                :class="{ 'btn-disabled': !isEditMode || isUploadingSheet }"
+                :disabled="!isEditMode || isUploadingSheet"
+              >
+                <span v-if="isUploadingSheet" class="loading loading-spinner loading-xs"></span>
+                <i v-else class="las la-file-pdf text-lg"></i>
+                {{ sheetFileInfo?.has_file ? 'Actualizar Planilla' : 'Adjuntar Planilla' }}
+              </button>
+              <button 
+                v-if="sheetFileInfo?.has_file" 
+                type="button" 
+                @click="openFile(sheetFileInfo)" 
+                class="btn btn-ghost btn-sm btn-circle"
+                title="Ver planilla PDF"
+              >
+                <i class="las la-eye text-lg text-info"></i>
+              </button>
+              <span v-if="sheetFileInfo?.has_file" class="badge badge-success badge-sm gap-1">
+                <i class="las la-check-circle"></i> PDF
+              </span>
+            </div>
+
+            <!-- Botón Certificado Disposición Final -->
+            <div class="flex items-center gap-1">
+              <button 
+                type="button" 
+                @click="handleAttachCertificateFile" 
+                class="btn btn-warning btn-sm gap-1"
+                :class="{ 'btn-disabled': !isEditMode || isUploadingCertificate }"
+                :disabled="!isEditMode || isUploadingCertificate"
+              >
+                <span v-if="isUploadingCertificate" class="loading loading-spinner loading-xs"></span>
+                <i v-else class="las la-file-pdf text-lg"></i>
+                {{ certificateFileInfo?.has_file ? 'Actualizar Cert.' : 'Adjuntar Cert.' }}
+              </button>
+              <button 
+                v-if="certificateFileInfo?.has_file" 
+                type="button" 
+                @click="openFile(certificateFileInfo)" 
+                class="btn btn-ghost btn-sm btn-circle"
+                title="Ver certificado de disposición final"
+              >
+                <i class="las la-eye text-lg text-warning"></i>
+              </button>
+              <span v-if="certificateFileInfo?.has_file" class="badge badge-success badge-sm gap-1">
+                <i class="las la-check-circle"></i> PDF
+              </span>
+            </div>
+
             <div class="form-control w-48">
               <input v-model="formData.series_code" type="text" class="input input-bordered input-sm w-full font-bold text-red-800 font-mono text-[16px]" />
             </div>

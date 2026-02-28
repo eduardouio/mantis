@@ -30,4 +30,5 @@ export const appConfig = {
     "PDFCertFinalDisposition" : apiBaseUrl + "/reports/final-disposition/${id}/",
     "URLWorkSheetReport": apiBaseUrl + "/reports/worksheet/${id}/",
     "URLReleaseResource": apiBaseUrl + "/api/projects/resources/release/",
+    "URLLoadFiles": apiBaseUrl + "/api/load_files/",
 }
