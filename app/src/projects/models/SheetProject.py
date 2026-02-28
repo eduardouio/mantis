@@ -148,6 +148,13 @@ class SheetProject(BaseModel):
         blank=True,
         null=True
     )
+    invoice_file = models.FileField(
+        upload_to='projects/invoices/',
+        verbose_name='Archivo de Factura',
+        validators=[validate_pdf_file],
+        blank=True,
+        null=True
+    )
     is_closed = models.BooleanField(
         'Planilla Cerrada',
         default=False,
