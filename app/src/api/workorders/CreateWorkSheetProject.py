@@ -102,7 +102,7 @@ class CreateWorkSheetProjectAPI(View):
 
         # Determinar status: usar el del JSON o por defecto IN_PROGRESS
         status = data.get("status", "IN_PROGRESS")
-        if status not in ("IN_PROGRESS", "INVOICED", "CANCELLED"):
+        if status not in ("IN_PROGRESS", "LIQUIDATED", "INVOICED", "CANCELLED"):
             status = "IN_PROGRESS"
 
         issue_date = self._parse_date(data.get("issue_date"))

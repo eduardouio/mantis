@@ -166,15 +166,18 @@ class UpdateSheetProjectAPI(View):
                 status=400
             )
 
-        # Validar que no esté facturada
-        if sheet.status == "INVOICED":
+        # Validar que no esté facturada o cancelada
+        if sheet.status in ("INVOICED", "CANCELLED"):
             return JsonResponse(
                 {
                     "success": False,
-                    "error": "No se puede actualizar una hoja de trabajo facturada"
+                    "error": "No se puede actualizar una hoja de trabajo en estado " + sheet.get_status_display()
                 },
                 status=400
             )
+
+        # Si está LIQUIDATED, solo se permiten modificar cabeceras (no detalles)
+        is_liquidated = sheet.status == "LIQUIDATED"
 
         # Actualizar campos permitidos
         if "period_start" in data:
@@ -232,7 +235,7 @@ class UpdateSheetProjectAPI(View):
         if "series_code" in data and data["series_code"]:
             sheet.series_code = data["series_code"]
 
-        if "status" in data and data["status"] in ["IN_PROGRESS", "INVOICED", "CANCELLED"]:
+        if "status" in data and data["status"] in ["IN_PROGRESS", "LIQUIDATED", "INVOICED", "CANCELLED"]:
             sheet.status = data["status"]
 
         sheet.save()
@@ -240,6 +243,15 @@ class UpdateSheetProjectAPI(View):
         # Procesar detalles si vienen en el payload
         details_result = []
         if "details" in data:
+            # Si está LIQUIDATED, no se permiten cambios en detalles
+            if is_liquidated:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "No se pueden modificar los recursos/detalles de una planilla liquidada. Solo se permiten cambios en las cabeceras."
+                    },
+                    status=400
+                )
             result = self._process_details(sheet, data.get("details", []))
             if result.get("error"):
                 return JsonResponse(

@@ -81,6 +81,16 @@ class CustodyChainEditAPI(View):
                 status=400,
             )
 
+        # Validar que la planilla no esté en estado que bloquea edición de cadenas
+        if instance.sheet_project and instance.sheet_project.status in ("LIQUIDATED", "INVOICED", "CANCELLED"):
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": f"No se puede modificar una cadena de custodia de una planilla en estado {instance.sheet_project.get_status_display()}."
+                },
+                status=400,
+            )
+
         def parse_date(value):
             if not value:
                 return None

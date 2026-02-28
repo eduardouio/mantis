@@ -31,6 +31,23 @@ const isSheetClosed = computed(() => {
   return sheetProject.value?.is_closed === true;
 });
 
+// Verificar si las cadenas de custodia están bloqueadas (LIQUIDATED, INVOICED, CANCELLED o is_closed)
+const isCustodyLocked = computed(() => {
+  if (isSheetClosed.value) return true;
+  const status = sheetProject.value?.status;
+  return ['LIQUIDATED', 'INVOICED', 'CANCELLED'].includes(status);
+});
+
+// Mensaje descriptivo del bloqueo
+const lockMessage = computed(() => {
+  if (isSheetClosed.value) return 'PLANILLA CERRADA - SOLO LECTURA';
+  const status = sheetProject.value?.status;
+  if (status === 'LIQUIDATED') return 'PLANILLA LIQUIDADA - CADENAS BLOQUEADAS';
+  if (status === 'INVOICED') return 'PLANILLA FACTURADA - SOLO LECTURA';
+  if (status === 'CANCELLED') return 'PLANILLA CANCELADA - SOLO LECTURA';
+  return '';
+});
+
 const formatDate = (date) => {
   if (!date) return 'N/A';
   return new Intl.DateTimeFormat('es-EC', {
@@ -49,8 +66,9 @@ const formatTime = (time) => {
 const getStatusBadge = (status) => {
   const statusConfig = {
     'IN_PROGRESS': { text: 'EN EJECUCIÓN', class: 'badge-success' },
+    'LIQUIDATED': { text: 'LIQUIDADO', class: 'badge-warning' },
     'INVOICED': { text: 'FACTURADO', class: 'badge-info' },
-    'CANCELLED': { text: 'CANCELADO', class: 'badge-warning' }
+    'CANCELLED': { text: 'CANCELADO', class: 'badge-error' }
   };
   return statusConfig[status] || { text: status, class: 'badge-ghost' };
 };
@@ -129,18 +147,11 @@ onMounted(async () => {
             Nueva Cadena de Custodia
           </button>
           <div 
-            v-else-if="isSheetClosed"
+            v-else-if="isCustodyLocked"
             class="text-orange-700 badge bg-orange-100 px-4 py-3"
           >
             <i class="las la-lock"></i>
-            PLANILLA CERRADA - SOLO LECTURA
-          </div>
-          <div 
-            v-else 
-            class="text-orange-700 badge bg-orange-100 px-4 py-3"
-          >
-            <i class="las la-exclamation-triangle"></i>
-            PLANILLA CERRADA - NO SE PUEDEN AGREGAR CADENAS
+            {{ lockMessage }}
           </div>
           <button @click="goBack" class="btn btn-outline btn-sm">
             <i class="las la-arrow-left"></i>
@@ -299,11 +310,11 @@ onMounted(async () => {
                       PDF
                     </button>
                     <button 
-                      @click="cc.status === 'DRAFT' && !isSheetClosed ? router.push({ name: 'custody-chain-form', params: { id: cc.id } }) : null"
+                      @click="cc.status === 'DRAFT' && !isCustodyLocked ? router.push({ name: 'custody-chain-form', params: { id: cc.id } }) : null"
                       class="btn btn-xs border-orange-500 text-orange-500 bg-white"
-                      :class="{ 'btn-disabled opacity-50 cursor-not-allowed': cc.status !== 'DRAFT' || isSheetClosed }"
-                      :title="isSheetClosed ? 'No se puede editar - planilla cerrada' : (cc.status === 'DRAFT' ? 'Editar cadena' : 'No se puede editar una cadena cerrada')"
-                      :disabled="cc.status !== 'DRAFT' || isSheetClosed"
+                      :class="{ 'btn-disabled opacity-50 cursor-not-allowed': cc.status !== 'DRAFT' || isCustodyLocked }"
+                      :title="isCustodyLocked ? 'No se puede editar - ' + lockMessage : (cc.status === 'DRAFT' ? 'Editar cadena' : 'No se puede editar una cadena cerrada')"
+                      :disabled="cc.status !== 'DRAFT' || isCustodyLocked"
                     >
                       <i class="las la-edit"></i>
                       EDITAR

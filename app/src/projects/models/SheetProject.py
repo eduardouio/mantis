@@ -34,6 +34,7 @@ class SheetProject(BaseModel):
         max_length=50,
         choices=(
             ("IN_PROGRESS", "EN EJECUCIÓN"),
+            ("LIQUIDATED", "LIQUIDADO"),
             ("INVOICED", "FACTURADO"),
             ("CANCELLED", "CANCELADO"),
         ),

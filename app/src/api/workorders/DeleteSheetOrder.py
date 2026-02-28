@@ -33,9 +33,9 @@ class DeleteSheetOrderAPI(View):
                 {"success": False, "error": "Hoja de trabajo no encontrada"}, status=404
             )
 
-        if sheet.status == "INVOICED":
+        if sheet.status in ("INVOICED", "CANCELLED", "LIQUIDATED"):
             return JsonResponse(
-                {"success": False, "error": "No se puede eliminar una hoja facturada"},
+                {"success": False, "error": f"No se puede eliminar una hoja en estado {sheet.get_status_display()}"},
                 status=400,
             )
 

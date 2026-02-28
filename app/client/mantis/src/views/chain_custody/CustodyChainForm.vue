@@ -96,9 +96,41 @@ const isSheetClosed = computed(() => {
   return sheet?.is_closed === true
 })
 
+// Computed para verificar si la planilla padre tiene estado que bloquea cadenas
+const isSheetStatusLocked = computed(() => {
+  let sheet = null
+  if (!isEditMode.value) {
+    sheet = activeWorkOrder.value
+  } else {
+    const sheetId = custodyChain.value.sheet_project
+    if (sheetId) sheet = projectStore.getWorkOrderById(sheetId)
+  }
+  if (!sheet) return false
+  return ['LIQUIDATED', 'INVOICED', 'CANCELLED'].includes(sheet.status)
+})
+
 // Computed para verificar si se puede editar
 const canEdit = computed(() => {
-  return !isChainClosed.value && !isSheetClosed.value
+  return !isChainClosed.value && !isSheetClosed.value && !isSheetStatusLocked.value
+})
+
+// Mensaje de bloqueo de la planilla
+const sheetLockMessage = computed(() => {
+  let sheet = null
+  if (!isEditMode.value) {
+    sheet = activeWorkOrder.value
+  } else {
+    const sheetId = custodyChain.value.sheet_project
+    if (sheetId) sheet = projectStore.getWorkOrderById(sheetId)
+  }
+  if (!sheet) return ''
+  if (sheet.is_closed) return 'La planilla está cerrada'
+  const statusMessages = {
+    'LIQUIDATED': 'La planilla está liquidada',
+    'INVOICED': 'La planilla está facturada',
+    'CANCELLED': 'La planilla está cancelada'
+  }
+  return statusMessages[sheet.status] || ''
 })
 
 const loadCustodyChainData = async () => {
@@ -578,7 +610,7 @@ const currentStatusBadge = computed(() => {
             {{ isEditMode ? `${!canEdit ? 'Ver' : 'Editar'} Cadena de Custodia #${custodyChainId}` : 'Nueva Cadena de Custodia' }}
           </h2>
           <p class="text-sm text-gray-600 mt-1">
-            {{ !canEdit ? (isSheetClosed ? 'La planilla de esta cadena está cerrada y no permite modificaciones' : 'Esta cadena de custodia está cerrada y no puede ser modificada') : (isEditMode ? 'Modifique los datos de la cadena de custodia' : 'Complete los datos para crear una nueva cadena de custodia') }}
+            {{ !canEdit ? (isSheetClosed || isSheetStatusLocked ? sheetLockMessage + ' - No se permiten modificaciones' : 'Esta cadena de custodia está cerrada y no puede ser modificada') : (isEditMode ? 'Modifique los datos de la cadena de custodia' : 'Complete los datos para crear una nueva cadena de custodia') }}
           </p>
         </div>
         <div class="flex items-center gap-3">
@@ -628,7 +660,7 @@ const currentStatusBadge = computed(() => {
         </div>
         <div v-else-if="!canEdit" class="flex items-center gap-2 text-sm text-red-600">
           <i class="las la-lock text-lg"></i>
-          <span>{{ isSheetClosed ? 'La planilla está <strong>CERRADA</strong>.' : 'La cadena está <strong>CERRADA</strong>.' }} No se pueden realizar modificaciones.</span>
+          <span>{{ isSheetClosed || isSheetStatusLocked ? sheetLockMessage + '. No se permiten modificaciones.' : 'La cadena está <strong>CERRADA</strong>. No se pueden realizar modificaciones.' }}</span>
         </div>
         <div v-else class="flex items-center gap-2 text-sm text-green-600">
           <i class="las la-check-circle text-lg"></i>

@@ -41,12 +41,12 @@ class UpdateSheetOrderAPI(View):
                 {"success": False, "error": "Hoja de trabajo no encontrada"}, status=404
             )
 
-        # Validar que no esté facturada
-        if sheet.status == "INVOICED":
+        # Validar que no esté facturada o cancelada
+        if sheet.status in ("INVOICED", "CANCELLED"):
             return JsonResponse(
                 {
                     "success": False,
-                    "error": "No se puede modificar una hoja facturada",
+                    "error": "No se puede modificar una hoja en estado " + sheet.get_status_display(),
                 },
                 status=400,
             )
@@ -134,7 +134,7 @@ class UpdateSheetOrderAPI(View):
 
         # Actualizar estado si se proporciona
         if "status" in data:
-            valid_statuses = ["IN_PROGRESS", "INVOICED", "CANCELLED"]
+            valid_statuses = ["IN_PROGRESS", "LIQUIDATED", "INVOICED", "CANCELLED"]
             if data["status"] not in valid_statuses:
                 return JsonResponse(
                     {

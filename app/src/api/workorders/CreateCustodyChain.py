@@ -130,6 +130,25 @@ class CreateCustodyChainAPI(View):
                 status=400,
             )
 
+        # Validar que la planilla permita crear cadenas de custodia
+        if sheet_project.status in ("LIQUIDATED", "INVOICED", "CANCELLED"):
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": f"No se pueden crear cadenas de custodia en una planilla en estado {sheet_project.get_status_display()}",
+                },
+                status=400,
+            )
+
+        if sheet_project.is_closed:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "No se pueden crear cadenas de custodia en una planilla cerrada",
+                },
+                status=400,
+            )
+
         valid_resources = []
         for resource_id in resource_ids:
             try:
