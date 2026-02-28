@@ -71,6 +71,16 @@ class CustodyChainEditAPI(View):
                 status=404,
             )
 
+        # Validar que la planilla asociada no esté cerrada
+        if instance.sheet_project and instance.sheet_project.is_closed:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "No se puede modificar una cadena de custodia de una planilla cerrada."
+                },
+                status=400,
+            )
+
         def parse_date(value):
             if not value:
                 return None

@@ -156,6 +156,16 @@ class UpdateSheetProjectAPI(View):
                 status=404
             )
 
+        # Validar que no esté cerrada
+        if sheet.is_closed:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "No se puede actualizar una planilla cerrada"
+                },
+                status=400
+            )
+
         # Validar que no esté facturada
         if sheet.status == "INVOICED":
             return JsonResponse(

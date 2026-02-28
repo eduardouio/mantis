@@ -196,6 +196,7 @@ class AllInfoProjectAPI(View):
                     "period_start": serialize_date(sheet.period_start),
                     "period_end": serialize_date(sheet.period_end),
                     "status": sheet.status,
+                    "is_closed": sheet.is_closed,
                     "service_type": sheet.service_type,
                     "total_gallons": sheet.total_gallons,
                     "total_barrels": sheet.total_barrels,
