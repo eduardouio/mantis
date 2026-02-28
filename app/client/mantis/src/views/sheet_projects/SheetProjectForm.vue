@@ -1187,14 +1187,17 @@ watch(selectedEquipmentResources, () => {
             </div>
           </div>
           <!-- Botones -->
-          <div class="flex gap-3">
+          <div class="flex items-center gap-3">
+            <span v-if="isEditMode && selectedEquipmentResources.length > 0" class="text-xs text-gray-400 italic">
+              <i class="las la-info-circle"></i> Los días de equipo se guardan desde el ícono <i class="las la-calendar-alt text-primary"></i> en la tabla.
+            </span>
             <RouterLink :to="{ name: 'projects-detail', query: { tab: 'planillas' } }" class="btn btn-ghost" :class="{ 'btn-disabled': isSubmitting }">
-              <i class="las la-times text-lg"></i> Cancelar
+              <i class="las la-arrow-left text-lg"></i> Volver
             </RouterLink>
             <button v-if="!isFullyLocked && !isProjectClosed" type="submit" class="btn btn-primary" :disabled="isSubmitting">
               <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
               <i v-else class="las la-save text-lg"></i>
-              {{ isSubmitting ? (isEditMode ? 'Actualizando...' : 'Creando...') : (isEditMode ? 'Actualizar Planilla' : 'Crear Planilla') }}
+              {{ isSubmitting ? (isEditMode ? 'Guardando...' : 'Creando...') : (isEditMode ? 'Guardar Cambios' : 'Crear Planilla') }}
             </button>
           </div>
         </div>
