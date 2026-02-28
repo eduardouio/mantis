@@ -426,7 +426,15 @@
                 <tr>
                     <td>{{ item.item_number }}</td>
                     <td class="col-equipo">{{ item.equipment_name }}</td>
-                    <td class="col-detalle">{{ item.detail }}</td>
+                    <td class="col-detalle">
+                        {{ item.detail }}
+                        {% if item.type_resource == "EQUIPO" and item.days_range_text %}
+                        <br><span style="font-size:6px; color:#555;">Días: {{ item.days_range_text }}</span>
+                        {% endif %}
+                        {% if item.type_resource == "EQUIPO" and item.effective_start %}
+                        <br><span style="font-size:6px; color:#888;">{{ item.effective_start|date:"d/m/Y" }} - {{ item.effective_end|date:"d/m/Y" }}</span>
+                        {% endif %}
+                    </td>
                     <td class="col-cantidad">{{ item.quantity }}</td>
                     <td>{{ item.unit }}</td>
                     {% for day_val in item.days %}<td>{{ day_val }}</td>{% endfor %}

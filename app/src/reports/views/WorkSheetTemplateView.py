@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from projects.models.SheetProject import SheetProject, SheetProjectDetail
 from calendar import monthrange
 from common.WorkSheetBuilder import WorkSheetBuilder
+from datetime import date
 
 
 EQUIPMENT_SHORT_NAMES = {
@@ -28,6 +29,24 @@ class WorkSheetTemplateView(TemplateView):
         if type_code and type_code in EQUIPMENT_SHORT_NAMES:
             return EQUIPMENT_SHORT_NAMES[type_code]
         return resource_item.name if hasattr(resource_item, "name") else "EQUIPO"
+
+    def _days_to_ranges(self, days_list):
+        """Convierte una lista de días [1,2,3,5,6,10] en rangos '1-3, 5-6, 10'."""
+        if not days_list:
+            return ""
+        sorted_days = sorted(set(days_list))
+        ranges = []
+        start = sorted_days[0]
+        end = sorted_days[0]
+        for d in sorted_days[1:]:
+            if d == end + 1:
+                end = d
+            else:
+                ranges.append(f"{start}-{end}" if start != end else str(start))
+                start = d
+                end = d
+        ranges.append(f"{start}-{end}" if start != end else str(start))
+        return ", ".join(ranges)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -88,7 +107,7 @@ class WorkSheetTemplateView(TemplateView):
         sheet_details = SheetProjectDetail.objects.filter(
             sheet_project=sheet_project,
             is_active=True
-        ).select_related("resource_item").order_by("id")
+        ).select_related("resource_item", "project_resource_item").order_by("id")
 
         for sheet_detail in sheet_details:
             resource_item = sheet_detail.resource_item
@@ -104,6 +123,32 @@ class WorkSheetTemplateView(TemplateView):
             equipment_name = self.get_short_equipment_name(resource_item)
             detail_text = sheet_detail.detail or f"ALQUILER DE {resource_item.name} {resource_item.code}"
             
+            # Determinar tipo de recurso desde project_resource_item
+            pri = sheet_detail.project_resource_item
+            type_resource = pri.type_resource if pri else "EQUIPO"
+            
+            # Para equipos, calcular fechas efectivas y rangos de días
+            effective_start = None
+            effective_end = None
+            days_range_text = ""
+            
+            if type_resource == "EQUIPO" and pri and period_start and period_end:
+                # Fecha efectiva de inicio
+                op_start = pri.operation_start_date
+                effective_start = max(period_start, op_start) if op_start else period_start
+                
+                # Fecha efectiva de fin
+                if pri.is_retired and pri.retirement_date:
+                    resource_end = pri.retirement_date
+                elif pri.operation_end_date:
+                    resource_end = pri.operation_end_date
+                else:
+                    resource_end = period_end
+                effective_end = min(period_end, resource_end)
+                
+                # Convertir los días seleccionados en texto de rangos
+                days_range_text = self._days_to_ranges(monthdays)
+            
             item_number += 1
             
             items_list.append(
@@ -116,7 +161,10 @@ class WorkSheetTemplateView(TemplateView):
                     "days": days_list,
                     "unit_price": sheet_detail.unit_price,
                     "total_cost": sheet_detail.total_line,
-                    "type_resource": "EQUIPO",  # Esto puede ajustarse según necesidad
+                    "type_resource": type_resource,
+                    "effective_start": effective_start,
+                    "effective_end": effective_end,
+                    "days_range_text": days_range_text,
                 }
             )
 
