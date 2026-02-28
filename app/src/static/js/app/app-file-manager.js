@@ -77,9 +77,9 @@
     const nodes = treeData[activeTab];
     if (!nodes || nodes.length === 0) {
       container.innerHTML = `
-        <div class="flex flex-col items-center justify-center py-16 text-gray-400">
-          <i class="las la-folder-open text-5xl mb-2"></i>
-          <p class="text-sm">No hay registros en esta categoría</p>
+        <div class="flex flex-col items-center justify-center py-20 text-gray-400">
+          <i class="las la-folder-open text-7xl mb-3"></i>
+          <p class="text-base">No hay registros en esta categoría</p>
         </div>`;
       return;
     }
@@ -162,16 +162,16 @@
 
     // Link a la vista correspondiente
     const detailLink = node.detail_url
-      ? `<a href="${node.detail_url}" class="text-blue-500 hover:text-blue-700 ml-1" title="Ver ficha" onclick="event.stopPropagation()"><i class="las la-external-link-alt text-sm"></i></a>`
+      ? `<a href="${node.detail_url}" class="text-blue-500 hover:text-blue-700 ml-2" title="Ver ficha" onclick="event.stopPropagation()"><i class="las la-external-link-alt text-base"></i></a>`
       : '';
 
     // Link a documentos del proyecto (solo para nodos raíz en tab proyectos)
     const docsLink = (activeTab === 'projects' && !node.type)
-      ? `<a href="/documentos/proyecto/${node.id}/" class="text-indigo-500 hover:text-indigo-700 ml-1" title="Ver documentos del proyecto" onclick="event.stopPropagation()"><i class="las la-folder-open text-sm"></i></a>`
+      ? `<a href="/documentos/proyecto/${node.id}/" class="text-indigo-500 hover:text-indigo-700 ml-2" title="Ver documentos del proyecto" onclick="event.stopPropagation()"><i class="las la-folder-open text-base"></i></a>`
       : '';
 
-    return `${chevron} <i class="${icon} text-lg"></i>
-            <span class="text-sm font-medium">${node.label}</span>
+    return `${chevron} <i class="${icon} text-2xl"></i>
+            <span class="text-base font-medium">${node.label}</span>
             ${detailLink} ${docsLink} ${badges}`;
   }
 
@@ -218,11 +218,11 @@
       const tdStatus = document.createElement('td');
       tdStatus.className = 'w-48';
       if (f.has_file) {
-        tdStatus.innerHTML = `<span class="text-green-600 text-xs flex items-center gap-1">
+        tdStatus.innerHTML = `<span class="text-green-600 text-sm flex items-center gap-1">
           <i class="las la-check-circle"></i> ${f.file_name}
         </span>`;
       } else {
-        tdStatus.innerHTML = `<span class="text-red-400 text-xs flex items-center gap-1">
+        tdStatus.innerHTML = `<span class="text-red-400 text-sm flex items-center gap-1">
           <i class="las la-times-circle"></i> Sin archivo
         </span>`;
       }
@@ -247,7 +247,7 @@
     let html = '';
 
     // Subir / Reemplazar
-    html += `<button class="btn btn-xs btn-success btn-outline mr-1"
+    html += `<button class="btn btn-sm btn-success btn-outline mr-1"
                title="${f.has_file ? 'Reemplazar' : 'Subir'}"
                onclick="openUploadModal('${mt}', ${oid}, '${fn}', '${escapeHtml(f.field_label)}')">
                <i class="las ${f.has_file ? 'la-sync-alt' : 'la-upload'}"></i>
@@ -256,11 +256,11 @@
     if (f.has_file) {
       // Descargar
       html += `<a href="${f.file_url}" target="_blank" download
-                 class="btn btn-xs btn-info btn-outline mr-1" title="Descargar">
+                 class="btn btn-sm btn-info btn-outline mr-1" title="Descargar">
                  <i class="las la-download"></i>
                </a>`;
       // Eliminar
-      html += `<button class="btn btn-xs btn-error btn-outline"
+      html += `<button class="btn btn-sm btn-error btn-outline"
                  title="Eliminar"
                  onclick="deleteFileAction('${mt}', ${oid}, '${fn}', '${escapeHtml(f.field_label)}')">
                  <i class="las la-trash"></i>
@@ -402,7 +402,7 @@
   function showUploadMsg(msg, type) {
     const el = document.getElementById('uploadMsg');
     const cls = type === 'error' ? 'alert-error' : type === 'success' ? 'alert-success' : 'alert-warning';
-    el.innerHTML = `<div class="alert ${cls} text-sm py-1 px-2">${msg}</div>`;
+    el.innerHTML = `<div class="alert ${cls} text-base py-2 px-3">${msg}</div>`;
     el.classList.remove('hidden');
   }
 

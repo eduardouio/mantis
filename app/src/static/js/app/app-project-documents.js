@@ -52,9 +52,9 @@
 
     if (!treeData || (!treeData.sheets.length && !treeData.shipping_guides.length)) {
       container.innerHTML = `
-        <div class="flex flex-col items-center justify-center py-16 text-gray-400">
-          <i class="las la-folder-open text-5xl mb-2"></i>
-          <p class="text-sm">No hay documentos registrados para este proyecto</p>
+        <div class="flex flex-col items-center justify-center py-20 text-gray-400">
+          <i class="las la-folder-open text-7xl mb-3"></i>
+          <p class="text-base">No hay documentos registrados para este proyecto</p>
         </div>`;
       return;
     }
@@ -133,7 +133,7 @@
 
     // Botón de merge solo cadenas de esta planilla
     const mergeBtn = chainCount > 0
-      ? `<button class="btn btn-xs btn-outline btn-secondary ml-2"
+      ? `<button class="btn btn-sm btn-outline btn-secondary ml-2"
            title="Merge PDF de cadenas de esta planilla"
            onclick="event.stopPropagation(); downloadMerge('custody_chains', ${sheet.id})">
            <i class="las la-object-group mr-1"></i>Merge Cadenas
@@ -142,9 +142,9 @@
 
     toggle.innerHTML = `
       <i class="las la-angle-right doc-chevron"></i>
-      <i class="las la-file-invoice text-indigo-500 text-lg"></i>
-      <span class="text-sm font-medium">${sheet.label}</span>
-      <span class="text-xs text-gray-400 ml-1">${sheet.period}</span>
+      <i class="las la-file-invoice text-indigo-500 text-2xl"></i>
+      <span class="text-base font-medium">${sheet.label}</span>
+      <span class="text-sm text-gray-400 ml-1">${sheet.period}</span>
       <span class="badge-sm ${sheetLoaded === sheetTotal ? 'badge-ok' : 'badge-miss'}">
         <i class="las ${sheetLoaded === sheetTotal ? 'la-check-circle' : 'la-exclamation-circle'}"></i>
         ${sheetLoaded}/${sheetTotal}
@@ -163,10 +163,10 @@
     // Cadenas de custodia
     if (chainCount > 0) {
       const chainsHeader = document.createElement('div');
-      chainsHeader.className = 'doc-toggle text-xs font-semibold text-gray-500 ml-4 mt-1';
+      chainsHeader.className = 'doc-toggle text-sm font-semibold text-gray-500 ml-4 mt-2';
       chainsHeader.innerHTML = `
         <i class="las la-angle-right doc-chevron"></i>
-        <i class="las la-link text-cyan-600"></i>
+        <i class="las la-link text-cyan-600 text-xl"></i>
         <span>Cadenas de Custodia (${chainCount})</span>`;
 
       const chainsBody = document.createElement('div');
@@ -211,13 +211,13 @@
       row.style.paddingLeft = '1.5rem';
 
       row.innerHTML = `
-        <i class="${iconClass} text-base"></i>
+        <i class="${iconClass} text-lg"></i>
         <span class="file-label">
           <span class="font-medium">${node.label}</span>
-          <span class="text-xs text-gray-400 ml-1">${node.date || ''}</span>
+          <span class="text-sm text-gray-400 ml-1">${node.date || ''}</span>
           ${f.has_file
-            ? `<span class="text-green-600 text-xs ml-2"><i class="las la-check-circle"></i> ${f.file_name}</span>`
-            : `<span class="text-red-400 text-xs ml-2"><i class="las la-times-circle"></i> Sin archivo</span>`
+            ? `<span class="text-green-600 text-sm ml-2"><i class="las la-check-circle"></i> ${f.file_name}</span>`
+            : `<span class="text-red-400 text-sm ml-2"><i class="las la-times-circle"></i> Sin archivo</span>`
           }
         </span>
         ${buildActionButtons(f)}`;
@@ -229,9 +229,9 @@
       toggle.className = 'doc-toggle';
       toggle.innerHTML = `
         <i class="las la-angle-right doc-chevron"></i>
-        <i class="${iconClass} text-lg"></i>
-        <span class="text-sm font-medium">${node.label}</span>
-        <span class="text-xs text-gray-400 ml-1">${node.date || ''}</span>`;
+        <i class="${iconClass} text-2xl"></i>
+        <span class="text-base font-medium">${node.label}</span>
+        <span class="text-sm text-gray-400 ml-1">${node.date || ''}</span>`;
 
       const children = document.createElement('div');
       children.className = 'doc-children';
@@ -260,8 +260,8 @@
       <span class="file-label">
         <span class="font-medium">${f.field_label}</span>
         ${f.has_file
-          ? `<span class="text-green-600 text-xs ml-2"><i class="las la-check-circle"></i> ${f.file_name}</span>`
-          : `<span class="text-red-400 text-xs ml-2"><i class="las la-times-circle"></i> Sin archivo</span>`
+          ? `<span class="text-green-600 text-sm ml-2"><i class="las la-check-circle"></i> ${f.file_name}</span>`
+          : `<span class="text-red-400 text-sm ml-2"><i class="las la-times-circle"></i> Sin archivo</span>`
         }
       </span>
       ${buildActionButtons(f)}`;
@@ -275,7 +275,7 @@
     let html = '';
 
     // Subir / Reemplazar
-    html += `<button class="btn btn-xs btn-success btn-outline"
+    html += `<button class="btn btn-sm btn-success btn-outline"
                title="${f.has_file ? 'Reemplazar' : 'Subir'}"
                onclick="event.stopPropagation(); openUploadModal('${mt}', ${oid}, '${fn}', '${esc(f.field_label)}')">
                <i class="las ${f.has_file ? 'la-sync-alt' : 'la-upload'}"></i>
@@ -284,12 +284,12 @@
     if (f.has_file) {
       // Descargar
       html += ` <a href="${f.file_url}" target="_blank" download
-                   class="btn btn-xs btn-info btn-outline" title="Descargar"
+                   class="btn btn-sm btn-info btn-outline" title="Descargar"
                    onclick="event.stopPropagation()">
                    <i class="las la-download"></i>
                  </a>`;
       // Eliminar
-      html += ` <button class="btn btn-xs btn-error btn-outline"
+      html += ` <button class="btn btn-sm btn-error btn-outline"
                    title="Eliminar"
                    onclick="event.stopPropagation(); deleteFileAction('${mt}', ${oid}, '${fn}', '${esc(f.field_label)}')">
                    <i class="las la-trash"></i>

@@ -4,7 +4,7 @@
 {% block style %}
 <style>
   /* ── Árbol de documentos ──────────────────────────────────────── */
-  .tree-node { margin-left: 1.25rem; }
+  .tree-node { margin-left: 1.85rem; }
   .tree-root > .tree-node { margin-left: 0; }
 
   .tree-toggle {
@@ -12,8 +12,8 @@
     user-select: none;
     display: flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem 0.5rem;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
     border-radius: 0.375rem;
     transition: background 150ms;
   }
@@ -24,9 +24,9 @@
 
   .tree-chevron {
     transition: transform 200ms;
-    font-size: 0.85rem;
+    font-size: 1.25rem;
     color: #888;
-    width: 1rem;
+    width: 1.5rem;
     text-align: center;
   }
   .tree-chevron.rotated { transform: rotate(90deg); }
@@ -35,21 +35,21 @@
   .file-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.2rem;
-    font-size: 0.7rem;
-    padding: 0.1rem 0.4rem;
-    border-radius: 0.25rem;
+    gap: 0.25rem;
+    font-size: 1rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 0.375rem;
   }
   .file-badge.has-file   { background: #d1fae5; color: #065f46; }
   .file-badge.no-file    { background: #fee2e2; color: #991b1b; }
 
-  /* Tabla de archivos compacta */
-  .file-table { width: 100%; border-collapse: collapse; margin-top: 0.25rem; }
-  .file-table td { padding: 0.25rem 0.5rem; font-size: 0.8rem; border-bottom: 1px solid #e5e7eb; }
+  /* Tabla de archivos */
+  .file-table { width: 100%; border-collapse: collapse; margin-top: 0.35rem; }
+  .file-table td { padding: 0.4rem 0.75rem; font-size: 1.05rem; border-bottom: 1px solid #e5e7eb; }
   .file-table tr:last-child td { border-bottom: none; }
 
   /* sidebar stats */
-  .stat-card { border-left: 3px solid; padding: 0.5rem 0.75rem; border-radius: 0.25rem; }
+  .stat-card { border-left: 4px solid; padding: 0.75rem 1.1rem; border-radius: 0.375rem; }
 
   /* búsqueda highlight */
   .search-highlight {
@@ -72,10 +72,21 @@
   }
 
   /* Tabs activos */
+  .fm-tab {
+    font-size: 1.05rem;
+    font-weight: 500;
+    padding: 0.85rem 1.5rem;
+    transition: all 200ms;
+    border-bottom: 3px solid transparent;
+  }
+  .fm-tab:hover {
+    background: oklch(var(--b2));
+  }
   .fm-tab.tab-active {
-    border-bottom: 2px solid oklch(var(--p));
+    border-bottom: 4px solid oklch(var(--p));
     color: oklch(var(--p));
-    font-weight: 600;
+    font-weight: 700;
+    background: oklch(var(--p) / 0.06);
   }
 </style>
 {% endblock %}
@@ -84,49 +95,49 @@
 <div class="w-[95%] mx-auto py-4" id="fileManagerApp">
 
   <!-- ── Header ──────────────────────────────────────────────── -->
-  <div class="bg-white rounded-lg shadow-md p-3 mb-3 border border-gray-200">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-      <div class="flex items-center gap-2">
-        <i class="las la-folder-open text-2xl text-blue-500"></i>
-        <h1 class="text-lg font-bold text-gray-800">Gestor de Documentos</h1>
+  <div class="bg-white rounded-lg shadow-md p-5 mb-4 border border-gray-200">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+      <div class="flex items-center gap-3">
+        <i class="las la-folder-open text-4xl text-blue-500"></i>
+        <h1 class="text-2xl font-bold text-gray-800">Gestor de Documentos</h1>
       </div>
       <div class="flex gap-2 items-center w-full md:w-auto">
-        <div class="relative flex-1 md:w-72">
-          <i class="las la-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <div class="relative flex-1 md:w-96">
+          <i class="las la-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-lg"></i>
           <input type="text" id="searchInput" placeholder="Buscar por nombre, cédula, placa..."
-                 class="input input-bordered input-sm w-full pl-9" />
+                 class="input input-bordered input-md w-full pl-10" />
         </div>
-        <button class="btn btn-sm btn-outline" onclick="collapseAll()">
-          <i class="las la-compress-arrows-alt"></i>
+        <button class="btn btn-md btn-outline" onclick="collapseAll()">
+          <i class="las la-compress-arrows-alt text-lg"></i>
         </button>
-        <button class="btn btn-sm btn-outline" onclick="expandAll()">
-          <i class="las la-expand-arrows-alt"></i>
+        <button class="btn btn-md btn-outline" onclick="expandAll()">
+          <i class="las la-expand-arrows-alt text-lg"></i>
         </button>
       </div>
     </div>
   </div>
 
   <!-- ── Estadísticas ────────────────────────────────────────── -->
-  <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-3">
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
     <div class="stat-card bg-blue-50 border-blue-500">
-      <div class="text-xs text-blue-600 font-semibold">Total Archivos</div>
-      <div class="text-xl font-bold text-blue-700" id="statTotal">-</div>
+      <div class="text-sm text-blue-600 font-semibold">Total Archivos</div>
+      <div class="text-2xl font-bold text-blue-700" id="statTotal">-</div>
     </div>
     <div class="stat-card bg-green-50 border-green-500">
-      <div class="text-xs text-green-600 font-semibold">Cargados</div>
-      <div class="text-xl font-bold text-green-700" id="statLoaded">-</div>
+      <div class="text-sm text-green-600 font-semibold">Cargados</div>
+      <div class="text-2xl font-bold text-green-700" id="statLoaded">-</div>
     </div>
     <div class="stat-card bg-red-50 border-red-500">
-      <div class="text-xs text-red-600 font-semibold">Pendientes</div>
-      <div class="text-xl font-bold text-red-700" id="statPending">-</div>
+      <div class="text-sm text-red-600 font-semibold">Pendientes</div>
+      <div class="text-2xl font-bold text-red-700" id="statPending">-</div>
     </div>
     <div class="stat-card bg-purple-50 border-purple-500">
-      <div class="text-xs text-purple-600 font-semibold">% Completado</div>
-      <div class="text-xl font-bold text-purple-700" id="statPercent">-</div>
+      <div class="text-sm text-purple-600 font-semibold">% Completado</div>
+      <div class="text-2xl font-bold text-purple-700" id="statPercent">-</div>
     </div>
     <div class="stat-card bg-amber-50 border-amber-500">
-      <div class="text-xs text-amber-600 font-semibold">Categorías</div>
-      <div class="text-xl font-bold text-amber-700">4</div>
+      <div class="text-sm text-amber-600 font-semibold">Categorías</div>
+      <div class="text-2xl font-bold text-amber-700">4</div>
     </div>
   </div>
 
@@ -134,23 +145,23 @@
   <div class="bg-white rounded-lg shadow-md border border-gray-200">
     <div class="border-b border-gray-200">
       <div class="flex overflow-x-auto">
-        <button class="fm-tab tab tab-active px-4 py-2 text-sm" data-tab="technicals" onclick="switchTab('technicals')">
-          <i class="las la-users mr-1"></i> Técnicos
+        <button class="fm-tab tab-active" data-tab="technicals" onclick="switchTab('technicals')">
+          <i class="las la-users mr-1 text-xl"></i> Técnicos
         </button>
-        <button class="fm-tab tab px-4 py-2 text-sm" data-tab="vehicles" onclick="switchTab('vehicles')">
-          <i class="las la-truck mr-1"></i> Vehículos
+        <button class="fm-tab" data-tab="vehicles" onclick="switchTab('vehicles')">
+          <i class="las la-truck mr-1 text-xl"></i> Vehículos
         </button>
-        <button class="fm-tab tab px-4 py-2 text-sm" data-tab="equipment" onclick="switchTab('equipment')">
-          <i class="las la-desktop mr-1"></i> Equipos
+        <button class="fm-tab" data-tab="equipment" onclick="switchTab('equipment')">
+          <i class="las la-desktop mr-1 text-xl"></i> Equipos
         </button>
-        <button class="fm-tab tab px-4 py-2 text-sm" data-tab="projects" onclick="switchTab('projects')">
-          <i class="las la-project-diagram mr-1"></i> Proyectos
+        <button class="fm-tab" data-tab="projects" onclick="switchTab('projects')">
+          <i class="las la-project-diagram mr-1 text-xl"></i> Proyectos
         </button>
       </div>
     </div>
 
     <!-- ── Área del árbol ──────────────────────────────────── -->
-    <div class="p-3 min-h-[400px]" id="treeContainer">
+    <div class="p-5 min-h-[500px]" id="treeContainer">
       <!-- Skeleton loading -->
       <div id="loadingSkeleton" class="space-y-3">
         <div class="skeleton-line w-3/4" style="height:1.2rem"></div>
@@ -168,15 +179,15 @@
 
 <!-- ── Modal de carga ────────────────────────────────────────── -->
 <dialog id="uploadModal" class="modal">
-  <div class="modal-box max-w-md">
-    <h3 class="font-bold text-lg flex items-center gap-2 mb-4">
-      <i class="las la-cloud-upload-alt text-blue-500"></i>
+  <div class="modal-box max-w-lg">
+    <h3 class="font-bold text-xl flex items-center gap-2 mb-4">
+      <i class="las la-cloud-upload-alt text-blue-500 text-2xl"></i>
       Subir Archivo
     </h3>
     <div id="uploadModalBody">
-      <p class="text-sm text-gray-600 mb-1" id="uploadLabel"></p>
-      <p class="text-xs text-gray-400 mb-3" id="uploadContext"></p>
-      <input type="file" id="uploadFileInput" class="file-input file-input-bordered file-input-sm w-full" />
+      <p class="text-base text-gray-600 mb-1" id="uploadLabel"></p>
+      <p class="text-sm text-gray-400 mb-3" id="uploadContext"></p>
+      <input type="file" id="uploadFileInput" class="file-input file-input-bordered file-input-md w-full" />
       <div id="uploadProgressContainer" class="hidden mt-3">
         <progress class="progress progress-primary w-full" id="uploadProgress"></progress>
         <p class="text-xs text-gray-500 mt-1">Subiendo archivo...</p>
@@ -184,8 +195,8 @@
       <div id="uploadMsg" class="mt-2 hidden"></div>
     </div>
     <div class="modal-action">
-      <button class="btn btn-sm" onclick="closeUploadModal()">Cancelar</button>
-      <button class="btn btn-sm btn-primary" id="uploadConfirmBtn" onclick="confirmUpload()">
+      <button class="btn btn-md" onclick="closeUploadModal()">Cancelar</button>
+      <button class="btn btn-md btn-primary" id="uploadConfirmBtn" onclick="confirmUpload()">
         <i class="las la-upload mr-1"></i> Subir
       </button>
     </div>

@@ -3,7 +3,7 @@
 
 {% block style %}
 <style>
-  .doc-tree { margin-left: 1.25rem; }
+  .doc-tree { margin-left: 1.85rem; }
   .doc-tree-root > .doc-tree { margin-left: 0; }
 
   .doc-toggle {
@@ -11,8 +11,8 @@
     user-select: none;
     display: flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.3rem 0.6rem;
+    gap: 0.5rem;
+    padding: 0.45rem 0.9rem;
     border-radius: 0.375rem;
     transition: background 150ms;
   }
@@ -23,9 +23,9 @@
 
   .doc-chevron {
     transition: transform 200ms;
-    font-size: 0.85rem;
+    font-size: 1.25rem;
     color: #888;
-    width: 1rem;
+    width: 1.5rem;
     text-align: center;
   }
   .doc-chevron.rotated { transform: rotate(90deg); }
@@ -33,9 +33,9 @@
   .file-row {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.3rem 0.6rem 0.3rem 2.2rem;
-    font-size: 0.82rem;
+    gap: 0.75rem;
+    padding: 0.45rem 0.9rem 0.45rem 3.3rem;
+    font-size: 1.05rem;
     border-bottom: 1px solid #f3f4f6;
   }
   .file-row:last-child { border-bottom: none; }
@@ -44,14 +44,14 @@
   .badge-ok   { background: #d1fae5; color: #065f46; }
   .badge-miss { background: #fee2e2; color: #991b1b; }
   .badge-sm {
-    display: inline-flex; align-items: center; gap: 0.15rem;
-    font-size: 0.7rem; padding: 0.1rem 0.4rem; border-radius: 0.25rem;
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    font-size: 0.95rem; padding: 0.15rem 0.6rem; border-radius: 0.375rem;
   }
 
   .stat-card {
-    border-left: 3px solid;
-    padding: 0.5rem 0.75rem;
-    border-radius: 0.25rem;
+    border-left: 4px solid;
+    padding: 0.75rem 1.1rem;
+    border-radius: 0.375rem;
   }
 
   .skeleton-line {
@@ -71,28 +71,28 @@
 <div class="w-[95%] mx-auto py-4" id="projectDocsApp">
 
   <!-- ── Header ───────────────────────────────────────────── -->
-  <div class="bg-white rounded-lg shadow-md p-3 mb-3 border border-gray-200">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-      <div class="flex items-center gap-2">
-        <i class="las la-project-diagram text-2xl text-blue-500"></i>
+  <div class="bg-white rounded-lg shadow-md p-5 mb-4 border border-gray-200">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+      <div class="flex items-center gap-3">
+        <i class="las la-project-diagram text-4xl text-blue-500"></i>
         <div>
-          <h1 class="text-lg font-bold text-gray-800">Documentos del Proyecto</h1>
-          <p class="text-sm text-gray-500">{{ project_name }}</p>
+          <h1 class="text-2xl font-bold text-gray-800">Documentos del Proyecto</h1>
+          <p class="text-base text-gray-500">{{ project_name }}</p>
         </div>
       </div>
       <div class="flex gap-2 flex-wrap">
-        <a href="{% url 'file_manager' %}" class="btn btn-sm btn-outline">
+        <a href="{% url 'file_manager' %}" class="btn btn-md btn-outline">
           <i class="las la-arrow-left mr-1"></i> Gestor General
         </a>
-        <a href="/projects/{{ project_id }}/" class="btn btn-sm btn-outline">
+        <a href="/projects/{{ project_id }}/" class="btn btn-md btn-outline">
           <i class="las la-eye mr-1"></i> Ver Proyecto
         </a>
         <div class="dropdown dropdown-end">
-          <label tabindex="0" class="btn btn-sm btn-primary">
-            <i class="las la-file-pdf mr-1"></i> Descargar Merge
+          <label tabindex="0" class="btn btn-md btn-primary">
+            <i class="las la-file-pdf mr-1 text-lg"></i> Descargar Merge
             <i class="las la-angle-down ml-1"></i>
           </label>
-          <ul tabindex="0" class="dropdown-content z-[100] menu menu-sm shadow bg-base-100 rounded-box w-56 border mt-1">
+          <ul tabindex="0" class="dropdown-content z-[100] menu menu-md shadow bg-base-100 rounded-box w-64 border mt-1">
             <li><a onclick="downloadMerge('all')">
               <i class="las la-layer-group mr-1"></i> Todo el Proyecto
             </a></li>
@@ -112,37 +112,37 @@
   </div>
 
   <!-- ── Estadísticas ─────────────────────────────────────── -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
     <div class="stat-card bg-blue-50 border-blue-500">
-      <div class="text-xs text-blue-600 font-semibold">Total Archivos</div>
-      <div class="text-xl font-bold text-blue-700" id="statTotal">-</div>
+      <div class="text-sm text-blue-600 font-semibold">Total Archivos</div>
+      <div class="text-2xl font-bold text-blue-700" id="statTotal">-</div>
     </div>
     <div class="stat-card bg-green-50 border-green-500">
-      <div class="text-xs text-green-600 font-semibold">Cargados</div>
-      <div class="text-xl font-bold text-green-700" id="statLoaded">-</div>
+      <div class="text-sm text-green-600 font-semibold">Cargados</div>
+      <div class="text-2xl font-bold text-green-700" id="statLoaded">-</div>
     </div>
     <div class="stat-card bg-red-50 border-red-500">
-      <div class="text-xs text-red-600 font-semibold">Pendientes</div>
-      <div class="text-xl font-bold text-red-700" id="statPending">-</div>
+      <div class="text-sm text-red-600 font-semibold">Pendientes</div>
+      <div class="text-2xl font-bold text-red-700" id="statPending">-</div>
     </div>
     <div class="stat-card bg-purple-50 border-purple-500">
-      <div class="text-xs text-purple-600 font-semibold">% Completado</div>
-      <div class="text-xl font-bold text-purple-700" id="statPercent">-</div>
+      <div class="text-sm text-purple-600 font-semibold">% Completado</div>
+      <div class="text-2xl font-bold text-purple-700" id="statPercent">-</div>
     </div>
   </div>
 
   <!-- ── Botonera de control ──────────────────────────────── -->
-  <div class="flex gap-2 mb-3">
-    <button class="btn btn-xs btn-outline" onclick="expandAllDoc()">
+  <div class="flex gap-2 mb-4">
+    <button class="btn btn-sm btn-outline" onclick="expandAllDoc()">
       <i class="las la-expand-arrows-alt mr-1"></i> Expandir todo
     </button>
-    <button class="btn btn-xs btn-outline" onclick="collapseAllDoc()">
+    <button class="btn btn-sm btn-outline" onclick="collapseAllDoc()">
       <i class="las la-compress-arrows-alt mr-1"></i> Colapsar todo
     </button>
   </div>
 
-  <!-- ── Árbol de documentos ──────────────────────────────── -->
-  <div class="bg-white rounded-lg shadow-md border border-gray-200 p-3 min-h-[400px]">
+  <!-- ── Árbol de documentos ────────────────────────────────── -->
+  <div class="bg-white rounded-lg shadow-md border border-gray-200 p-5 min-h-[500px]">
     <div id="loadingSkeleton" class="space-y-3">
       <div class="skeleton-line w-3/4" style="height:1.2rem"></div>
       <div class="skeleton-line w-1/2 ml-5" style="height:1rem"></div>
@@ -157,23 +157,23 @@
 
 <!-- ── Modal upload ───────────────────────────────────────── -->
 <dialog id="uploadModal" class="modal">
-  <div class="modal-box max-w-md">
-    <h3 class="font-bold text-lg flex items-center gap-2 mb-4">
-      <i class="las la-cloud-upload-alt text-blue-500"></i>
+  <div class="modal-box max-w-lg">
+    <h3 class="font-bold text-xl flex items-center gap-2 mb-4">
+      <i class="las la-cloud-upload-alt text-blue-500 text-2xl"></i>
       Subir Archivo
     </h3>
-    <p class="text-sm text-gray-600 mb-1" id="uploadLabel"></p>
-    <p class="text-xs text-gray-400 mb-3" id="uploadContext"></p>
+    <p class="text-base text-gray-600 mb-1" id="uploadLabel"></p>
+    <p class="text-sm text-gray-400 mb-3" id="uploadContext"></p>
     <input type="file" id="uploadFileInput" accept=".pdf"
-           class="file-input file-input-bordered file-input-sm w-full" />
+           class="file-input file-input-bordered file-input-md w-full" />
     <div id="uploadProgress" class="hidden mt-3">
       <progress class="progress progress-primary w-full"></progress>
       <p class="text-xs text-gray-500 mt-1">Subiendo archivo…</p>
     </div>
     <div id="uploadMsg" class="mt-2 hidden"></div>
     <div class="modal-action">
-      <button class="btn btn-sm" onclick="closeUploadModal()">Cancelar</button>
-      <button class="btn btn-sm btn-primary" id="uploadConfirmBtn" onclick="confirmUpload()">
+      <button class="btn btn-md" onclick="closeUploadModal()">Cancelar</button>
+      <button class="btn btn-md btn-primary" id="uploadConfirmBtn" onclick="confirmUpload()">
         <i class="las la-upload mr-1"></i> Subir
       </button>
     </div>
