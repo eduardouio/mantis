@@ -4,7 +4,7 @@ import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
 import { appConfig } from '@/AppConfig';
-import { onMounted, computed, ref } from 'vue';
+import { onMounted, computed, ref, watch } from 'vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -501,6 +501,181 @@ const handleSubmit = async () => {
     isSubmitting.value = false;
   }
 };
+
+// ===== CALENDARIO DE DÍAS PARA EQUIPOS =====
+
+// Recurso equipo expandido para mostrar calendario
+const expandedEquipmentId = ref(null);
+
+// Estado local de monthdays_apply_cost por detail_id
+const equipmentDaysMap = ref({});
+
+// Equipos seleccionados (solo tipo EQUIPO) con su detalle de planilla
+const selectedEquipmentResources = computed(() => {
+  if (!isEditMode.value) return [];
+  const existingSheet = sheetProjectStore.getSheetProjectById(sheetId.value);
+  if (!existingSheet || !existingSheet.details) return [];
+  
+  return existingSheet.details
+    .filter(d => d.project_resource_item?.type_resource === 'EQUIPO')
+    .map(d => ({
+      detail_id: d.id,
+      resource_item_code: d.resource_item_code,
+      resource_item_name: d.resource_item_name,
+      equipment: d.equipment,
+      detail: d.detail,
+      unit_price: d.unit_price,
+      quantity: d.quantity,
+      total_line: d.total_line,
+      monthdays_apply_cost: d.monthdays_apply_cost || [],
+      operation_start_date: d.project_resource_item?.operation_start_date,
+      operation_end_date: d.project_resource_item?.operation_end_date,
+      is_retired: d.project_resource_item?.is_retired,
+      retirement_date: d.project_resource_item?.retirement_date,
+    }));
+});
+
+// Generar los días del período de la planilla para un equipo considerando entradas/salidas
+const getDaysInPeriod = computed(() => {
+  if (!formData.value.period_start || !formData.value.period_end) return [];
+  
+  const start = new Date(formData.value.period_start + 'T00:00:00');
+  const end = new Date(formData.value.period_end + 'T00:00:00');
+  const days = [];
+  
+  const current = new Date(start);
+  while (current <= end) {
+    days.push(current.getDate());
+    current.setDate(current.getDate() + 1);
+  }
+  
+  return days;
+});
+
+// Verificar si un día está dentro del rango efectivo del equipo
+const isDayInEquipmentRange = (equipment, day) => {
+  if (!formData.value.period_start || !formData.value.period_end) return false;
+  
+  const periodStart = new Date(formData.value.period_start + 'T00:00:00');
+  const periodEnd = new Date(formData.value.period_end + 'T00:00:00');
+  
+  // Construir fecha real del día dentro del mes del período
+  const dayDate = new Date(periodStart.getFullYear(), periodStart.getMonth(), day);
+  
+  // Fecha efectiva de inicio del equipo
+  let effectiveStart = periodStart;
+  if (equipment.operation_start_date) {
+    const opStart = new Date(equipment.operation_start_date + 'T00:00:00');
+    if (opStart > effectiveStart) effectiveStart = opStart;
+  }
+  
+  // Fecha efectiva de fin del equipo
+  let effectiveEnd = periodEnd;
+  if (equipment.is_retired && equipment.retirement_date) {
+    const retDate = new Date(equipment.retirement_date + 'T00:00:00');
+    if (retDate < effectiveEnd) effectiveEnd = retDate;
+  } else if (equipment.operation_end_date) {
+    const opEnd = new Date(equipment.operation_end_date + 'T00:00:00');
+    if (opEnd < effectiveEnd) effectiveEnd = opEnd;
+  }
+  
+  return dayDate >= effectiveStart && dayDate <= effectiveEnd;
+};
+
+// Obtener los días seleccionados para un detalle 
+const getSelectedDays = (detailId) => {
+  return equipmentDaysMap.value[detailId] || [];
+};
+
+// Toggle un día para un detalle de equipo
+const toggleEquipmentDay = (detailId, day) => {
+  if (isDetailsLocked.value) return;
+  
+  if (!equipmentDaysMap.value[detailId]) {
+    equipmentDaysMap.value[detailId] = [];
+  }
+  
+  const days = equipmentDaysMap.value[detailId];
+  const index = days.indexOf(day);
+  
+  if (index === -1) {
+    days.push(day);
+  } else {
+    days.splice(index, 1);
+  }
+  
+  // Ordenar
+  equipmentDaysMap.value[detailId] = [...days].sort((a, b) => a - b);
+};
+
+// Contar los días válidos (dentro del rango) para un equipo
+const countValidDays = (equipment) => {
+  return getDaysInPeriod.value.filter(d => isDayInEquipmentRange(equipment, d)).length;
+};
+
+// Seleccionar/deseleccionar todos los días válidos de un equipo
+const toggleAllEquipmentDays = (equipment) => {
+  if (isDetailsLocked.value) return;
+  
+  const currentDays = getSelectedDays(equipment.detail_id);
+  const validDays = getDaysInPeriod.value.filter(d => isDayInEquipmentRange(equipment, d));
+  
+  if (currentDays.length === validDays.length) {
+    // Deseleccionar todos
+    equipmentDaysMap.value[equipment.detail_id] = [];
+  } else {
+    // Seleccionar todos los válidos
+    equipmentDaysMap.value[equipment.detail_id] = [...validDays];
+  }
+};
+
+// Expandir/contraer calendario de un equipo
+const toggleEquipmentCalendar = (detailId) => {
+  expandedEquipmentId.value = expandedEquipmentId.value === detailId ? null : detailId;
+};
+
+// Guardar los días de un detalle de equipo
+const isSavingDays = ref(false);
+const savingDetailId = ref(null);
+
+const saveEquipmentDays = async (detailId) => {
+  isSavingDays.value = true;
+  savingDetailId.value = detailId;
+  errorMessage.value = '';
+  
+  try {
+    const days = getSelectedDays(detailId);
+    const result = await sheetProjectStore.updateSheetDetailDays(detailId, days);
+    
+    // Actualizar estadísticas locales con los nuevos totales
+    if (result?.sheet_totals) {
+      stats.value.subtotal = result.sheet_totals.subtotal;
+      stats.value.tax_amount = result.sheet_totals.tax_amount;
+      stats.value.total = result.sheet_totals.total;
+    }
+    
+    successMessage.value = `Días de cobro actualizados (${days.length} días)`;
+    setTimeout(() => { successMessage.value = ''; }, 3000);
+  } catch (error) {
+    errorMessage.value = error.message || 'Error al actualizar los días de cobro';
+    setTimeout(() => { errorMessage.value = ''; }, 5000);
+  } finally {
+    isSavingDays.value = false;
+    savingDetailId.value = null;
+  }
+};
+
+// Inicializar el mapa de días cuando se cargan los datos de la planilla
+const initializeEquipmentDays = () => {
+  for (const eq of selectedEquipmentResources.value) {
+    equipmentDaysMap.value[eq.detail_id] = [...(eq.monthdays_apply_cost || [])];
+  }
+};
+
+// Watch para re-inicializar cuando cambian los detalles de la planilla
+watch(selectedEquipmentResources, () => {
+  initializeEquipmentDays();
+}, { immediate: true });
 </script>
 
 <template>
@@ -907,6 +1082,142 @@ const handleSubmit = async () => {
               </tr>
             </tfoot>
           </table>
+        </div>
+
+        <!-- ===== CALENDARIO DE DÍAS DE ALQUILER PARA EQUIPOS ===== -->
+        <div v-if="isEditMode && selectedEquipmentResources.length > 0" class="mt-6">
+          <div class="divider">
+            <i class="las la-calendar text-xl"></i> Días de Cobro de Alquiler (Equipos)
+          </div>
+
+          <div class="alert alert-info mb-4">
+            <i class="las la-info-circle text-xl"></i>
+            <div>
+              <p class="text-sm">
+                Seleccione los días del período que se cobrarán por alquiler de cada equipo.
+                Los días fuera del rango de operación del equipo (entrada/salida) están deshabilitados.
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div 
+              v-for="equipment in selectedEquipmentResources" 
+              :key="equipment.detail_id"
+              class="border rounded-lg overflow-hidden"
+              :class="expandedEquipmentId === equipment.detail_id ? 'border-primary' : 'border-gray-200'"
+            >
+              <!-- Cabecera del equipo (clickeable para expandir) -->
+              <div 
+                class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
+                :class="expandedEquipmentId === equipment.detail_id ? 'bg-primary/5' : 'bg-gray-50'"
+                @click="toggleEquipmentCalendar(equipment.detail_id)"
+              >
+                <div class="flex items-center gap-3">
+                  <i 
+                    class="las text-lg transition-transform"
+                    :class="expandedEquipmentId === equipment.detail_id ? 'la-chevron-down text-primary' : 'la-chevron-right text-gray-400'"
+                  ></i>
+                  <span class="badge badge-primary badge-sm">EQUIPO</span>
+                  <span class="font-semibold text-gray-800">{{ equipment.resource_item_code }}</span>
+                  <span class="text-gray-500 text-sm">{{ equipment.resource_item_name }}</span>
+                  <span class="text-gray-400 text-xs">{{ equipment.detail }}</span>
+                </div>
+                <div class="flex items-center gap-4 text-sm">
+                  <div>
+                    <span class="text-gray-500">Días:</span>
+                    <span class="font-bold text-primary ml-1">{{ getSelectedDays(equipment.detail_id).length }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">Precio:</span>
+                    <span class="font-semibold ml-1">${{ parseFloat(equipment.unit_price || 0).toFixed(2) }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-500">Total:</span>
+                    <span class="font-bold text-green-700 ml-1">
+                      ${{ (getSelectedDays(equipment.detail_id).length * parseFloat(equipment.unit_price || 0)).toFixed(2) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Calendario expandido -->
+              <div v-if="expandedEquipmentId === equipment.detail_id" class="p-4 border-t">
+                <!-- Info de fechas del equipo -->
+                <div class="flex items-center gap-4 mb-3 text-xs text-gray-500">
+                  <span>
+                    <i class="las la-sign-in-alt text-green-600"></i>
+                    Entrada: <strong>{{ equipment.operation_start_date ? new Date(equipment.operation_start_date + 'T00:00:00').toLocaleDateString('es-EC') : 'N/A' }}</strong>
+                  </span>
+                  <span v-if="equipment.is_retired && equipment.retirement_date">
+                    <i class="las la-sign-out-alt text-red-600"></i>
+                    Retiro: <strong class="text-red-600">{{ new Date(equipment.retirement_date + 'T00:00:00').toLocaleDateString('es-EC') }}</strong>
+                  </span>
+                  <span v-else-if="equipment.operation_end_date">
+                    <i class="las la-sign-out-alt text-orange-600"></i>
+                    Fin Op.: <strong>{{ new Date(equipment.operation_end_date + 'T00:00:00').toLocaleDateString('es-EC') }}</strong>
+                  </span>
+                  <span v-else>
+                    <i class="las la-infinity text-blue-500"></i>
+                    Sin fecha de retiro (todo el período)
+                  </span>
+                </div>
+
+                <!-- Botones de acción -->
+                <div class="flex items-center gap-2 mb-3">
+                  <button 
+                    type="button" 
+                    class="btn btn-outline btn-xs"
+                    :disabled="isDetailsLocked"
+                    @click.stop="toggleAllEquipmentDays(equipment)"
+                  >
+                    <i class="las la-check-double"></i>
+                    {{ getSelectedDays(equipment.detail_id).length === countValidDays(equipment) ? 'Deseleccionar todos' : 'Seleccionar todos' }}
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn btn-primary btn-xs"
+                    :disabled="isDetailsLocked || isSavingDays"
+                    @click.stop="saveEquipmentDays(equipment.detail_id)"
+                  >
+                    <span v-if="isSavingDays && savingDetailId === equipment.detail_id" class="loading loading-spinner loading-xs"></span>
+                    <i v-else class="las la-save"></i>
+                    Guardar días
+                  </button>
+                </div>
+
+                <!-- Grid de días del mes -->
+                <div class="grid grid-cols-7 sm:grid-cols-10 md:grid-cols-16 gap-1">
+                  <button
+                    v-for="day in getDaysInPeriod"
+                    :key="day"
+                    type="button"
+                    class="btn btn-sm w-10 h-10 p-0 text-xs font-semibold"
+                    :class="{
+                      'btn-primary': getSelectedDays(equipment.detail_id).includes(day) && isDayInEquipmentRange(equipment, day),
+                      'btn-outline': !getSelectedDays(equipment.detail_id).includes(day) && isDayInEquipmentRange(equipment, day),
+                      'btn-disabled bg-gray-100 text-gray-300 cursor-not-allowed': !isDayInEquipmentRange(equipment, day)
+                    }"
+                    :disabled="isDetailsLocked || !isDayInEquipmentRange(equipment, day)"
+                    @click.stop="isDayInEquipmentRange(equipment, day) ? toggleEquipmentDay(equipment.detail_id, day) : null"
+                  >
+                    {{ day }}
+                  </button>
+                </div>
+
+                <!-- Resumen -->
+                <div class="mt-3 flex items-center justify-between text-sm">
+                  <span class="text-gray-500">
+                    <i class="las la-calendar-check text-primary"></i>
+                    {{ getSelectedDays(equipment.detail_id).length }} día(s) seleccionado(s)
+                  </span>
+                  <span class="font-semibold text-green-700">
+                    Total: ${{ (getSelectedDays(equipment.detail_id).length * parseFloat(equipment.unit_price || 0)).toFixed(2) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="divider">Notas Adicionales</div>

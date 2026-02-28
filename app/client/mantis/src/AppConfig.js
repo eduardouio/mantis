@@ -22,6 +22,7 @@ export const appConfig = {
     "URLSheetProjects": apiBaseUrl + "/api/workorders/sheets/project/" + idProject + "/",
     "URLAddSheetProject": apiBaseUrl + "/api/workorders/sheets/create/",
     "URLUpdateSheetProject": apiBaseUrl + "/api/workorders/sheets/update/",
+    "URLUpdateSheetDetailDays": apiBaseUrl + "/api/workorders/sheets/detail/${detailId}/days/",
     "URLAddResourceToProject": apiBaseUrl + "/api/projects/resources/add/",
     "URLCreateCustodyChain": apiBaseUrl + "/api/workorders/custody_chain/create/",
     "URLCustodyChainDetail": apiBaseUrl + "/api/workorders/custody_chain/detail/${id}/",

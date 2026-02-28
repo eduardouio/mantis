@@ -31,7 +31,15 @@ class WorkSheetBuilder:
         
     def calculate_rental_days(self, project_resource):
         """
-        Calcula los días de alquiler de un equipo según su configuración de frecuencia.
+        Calcula los días de alquiler de un equipo según su configuración de frecuencia,
+        considerando las fechas de entrada (operation_start_date) y salida
+        (retirement_date / operation_end_date) del recurso en el proyecto.
+        
+        Reglas:
+        - La fecha efectiva de inicio es el mayor entre period_start y operation_start_date.
+        - La fecha efectiva de fin es el menor entre period_end y la fecha de retiro
+          (retirement_date si is_retired, sino operation_end_date). Si no hay fecha de
+          retiro/fin, se usa period_end (el equipo estuvo todo el período).
         
         Args:
             project_resource: Instancia de ProjectResourceItem
@@ -45,11 +53,20 @@ class WorkSheetBuilder:
             return days_count
             
         op_start = project_resource.operation_start_date
-        op_end = project_resource.operation_end_date
         
-        # Determinar rango efectivo
+        # Determinar la fecha de salida del equipo:
+        # Si fue retirado (is_retired=True) y tiene retirement_date, usar esa fecha.
+        # Si no fue retirado pero tiene operation_end_date, usarla.
+        # Si no tiene ninguna, el equipo estuvo todo el período.
+        resource_end = None
+        if project_resource.is_retired and project_resource.retirement_date:
+            resource_end = project_resource.retirement_date
+        elif project_resource.operation_end_date:
+            resource_end = project_resource.operation_end_date
+        
+        # Determinar rango efectivo dentro del período de la planilla
         effective_start = max(self.period_start, op_start) if op_start else self.period_start
-        effective_end = min(self.period_end, op_end) if op_end else self.period_end
+        effective_end = min(self.period_end, resource_end) if resource_end else self.period_end
         
         if effective_start > effective_end:
             return days_count
@@ -132,15 +149,21 @@ class WorkSheetBuilder:
         """
         details = []
         
-        # Obtener todos los recursos activos del proyecto
+        # Obtener todos los recursos activos del proyecto.
+        # Incluimos equipos retirados porque podrían haber estado activos
+        # durante parte del período de la planilla (se calcula con retirement_date).
         project_resources = ProjectResourceItem.objects.filter(
             project=self.project,
             is_active=True,
-            is_retired=False
         ).select_related("resource_item").order_by("type_resource", "id")
         
         for project_resource in project_resources:
             resource_item = project_resource.resource_item
+            
+            # Si el equipo fue retirado antes del inicio del período, omitirlo
+            if project_resource.is_retired and project_resource.retirement_date:
+                if project_resource.retirement_date < self.period_start:
+                    continue
             
             # Calcular días según tipo de recurso
             if project_resource.type_resource == "EQUIPO":

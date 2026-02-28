@@ -435,5 +435,43 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 invoice_file: null
             };
         },
+
+        /**
+         * Actualizar los días de cobro de alquiler de un detalle de planilla (equipos)
+         * @param {number} detailId - ID del SheetProjectDetail
+         * @param {Array<number>} monthdays - Lista de días del mes [1, 2, 3, ...]
+         * @returns {Object} Datos actualizados del detalle y totales
+         */
+        async updateSheetDetailDays(detailId, monthdays) {
+            this.loading = true;
+            this.error = null;
+
+            try {
+                const url = appConfig.URLUpdateSheetDetailDays.replace('${detailId}', detailId);
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: appConfig.headers,
+                    body: JSON.stringify({ monthdays_apply_cost: monthdays })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || `HTTP error! status: ${response.status}`);
+                }
+
+                // Refrescar datos del proyecto para actualizar totales
+                const projectStore = UseProjectStore();
+                await projectStore.refreshCurrentProject();
+
+                return data.data;
+            } catch (error) {
+                console.error('Error updating sheet detail days:', error);
+                this.error = error.message;
+                throw error;
+            } finally {
+                this.loading = false;
+            }
+        },
     }
 });
