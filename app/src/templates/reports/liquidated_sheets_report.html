@@ -88,11 +88,6 @@
                                         {% else %}
                                             <i class="las la-certificate text-danger" title="Sin Certificado PDF"></i>
                                         {% endif %}
-                                        {% if item.has_invoice_pdf %}
-                                            <i class="las la-file-invoice text-success" title="Factura PDF cargada"></i>
-                                        {% else %}
-                                            <i class="las la-file-invoice text-danger" title="Sin Factura PDF"></i>
-                                        {% endif %}
                                     </td>
                                     <td class="text-center no-export">
                                         <button class="btn btn-xs btn-info"
@@ -104,18 +99,6 @@
                                            class="btn btn-xs btn-success" title="Descargar Planilla PDF">
                                             <i class="las la-download"></i>
                                         </a>
-                                        {% endif %}
-                                        {% if item.has_invoice_pdf %}
-                                        <a href="{{ item.invoice_pdf_url }}" target="_blank"
-                                           class="btn btn-xs btn-accent" title="Descargar Factura PDF">
-                                            <i class="las la-file-invoice"></i>
-                                        </a>
-                                        {% else %}
-                                        <button class="btn btn-xs btn-outline btn-accent"
-                                                onclick="openInvoiceUpload({{ item.sheet.id }}, '{{ item.series_code|escapejs }}')"
-                                                title="Cargar Factura PDF">
-                                            <i class="las la-upload"></i> Factura
-                                        </button>
                                         {% endif %}
                                         {% if item.chains_with_pdf > 0 and item.project_id %}
                                         <a href="/api/load_files/project/{{ item.project_id }}/merge/?scope=custody_chains&sheet_id={{ item.sheet.id }}"
@@ -168,40 +151,18 @@
     </form>
 </dialog>
 
-<!-- Modal para cargar factura PDF -->
-<dialog id="invoiceUploadModal" class="modal">
-    <div class="modal-box max-w-lg">
-        <h3 class="font-bold text-xl flex items-center gap-2 mb-4" id="invoiceModalTitle">
-            <i class="las la-file-invoice"></i>
-            Cargar Factura PDF
-        </h3>
-        <p class="text-sm text-gray-500 mb-3" id="invoiceModalLabel"></p>
-        <div class="form-control w-full mb-3">
-            <label class="label">
-                <span class="label-text font-semibold">Referencia de Factura <span class="text-error">*</span></span>
-            </label>
-            <input type="text" id="invoiceReferenceInput" maxlength="50"
-                   class="input input-bordered w-full" placeholder="Ej: FAC-2026-001" />
-        </div>
-        <input type="file" id="invoiceFileInput" accept=".pdf"
-               class="file-input file-input-bordered file-input-md w-full" />
-        <div id="invoiceUploadProgress" class="hidden mt-3">
-            <progress class="progress progress-primary w-full"></progress>
-            <p class="text-sm text-gray-500 mt-1">Subiendo archivo...</p>
-        </div>
-        <div id="invoiceUploadMsg" class="mt-2 hidden"></div>
-        <div class="modal-action">
-            <button class="btn btn-primary" id="invoiceUploadBtn" onclick="submitInvoiceUpload()">
-                <i class="las la-upload"></i> Subir Factura
-            </button>
-            <form method="dialog">
-                <button class="btn">Cancelar</button>
-            </form>
-        </div>
-    </div>
-    <form method="dialog" class="modal-backdrop"><button>close</button></form>
-</dialog>
-
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .table thead th {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    .table tbody td {
+        vertical-align: middle;
+    }
+</style>
 
 <script>
     // Datos de planillas desde el contexto Django
@@ -223,8 +184,6 @@
             sheet_pdf_url: "{{ item.sheet_pdf_url|default:''|escapejs }}",
             has_certificate_pdf: {{ item.has_certificate_pdf|yesno:"true,false" }},
             certificate_pdf_url: "{{ item.certificate_pdf_url|default:''|escapejs }}",
-            has_invoice_pdf: {{ item.has_invoice_pdf|yesno:"true,false" }},
-            invoice_pdf_url: "{{ item.invoice_pdf_url|default:''|escapejs }}",
             project_id: {{ item.project_id|default:"null" }},
             custody_chains: [
                 {% for chain in item.custody_chains %}
@@ -307,9 +266,6 @@
         }
         if (data.has_certificate_pdf) {
             html += '<a href="' + data.certificate_pdf_url + '" target="_blank" class="btn btn-sm btn-info"><i class="las la-certificate"></i> Certificado Disposicion Final</a>';
-        }
-        if (data.has_invoice_pdf) {
-            html += '<a href="' + data.invoice_pdf_url + '" target="_blank" class="btn btn-sm btn-accent"><i class="las la-file-invoice"></i> Descargar Factura</a>';
         }
         if (data.custody_chains.some(c => c.has_pdf) && data.project_id) {
             html += '<a href="/api/load_files/project/' + data.project_id + '/merge/?scope=custody_chains&sheet_id=' + sheetId + '" target="_blank" class="btn btn-sm btn-warning"><i class="las la-object-group"></i> Unir Todas las Cadenas</a>';
@@ -417,88 +373,5 @@
             });
         }
     });
-
-    // ── Carga de factura PDF ─────────────────────────────────
-    let currentInvoiceSheetId = null;
-
-    function openInvoiceUpload(sheetId, seriesCode) {
-        currentInvoiceSheetId = sheetId;
-        const modal = document.getElementById('invoiceUploadModal');
-        document.getElementById('invoiceModalLabel').textContent = 'Planilla: ' + seriesCode;
-        document.getElementById('invoiceFileInput').value = '';
-        document.getElementById('invoiceReferenceInput').value = '';
-        document.getElementById('invoiceUploadMsg').classList.add('hidden');
-        document.getElementById('invoiceUploadProgress').classList.add('hidden');
-        document.getElementById('invoiceUploadBtn').disabled = false;
-        modal.showModal();
-    }
-    // Exponer al scope global
-    window.openInvoiceUpload = openInvoiceUpload;
-
-    function submitInvoiceUpload() {
-        const fileInput = document.getElementById('invoiceFileInput');
-        const file = fileInput.files[0];
-        const invoiceReference = document.getElementById('invoiceReferenceInput').value.trim();
-
-        if (!invoiceReference) {
-            showInvoiceMsg('Debe ingresar la referencia de factura', 'alert-warning');
-            return;
-        }
-        if (!file) {
-            showInvoiceMsg('Seleccione un archivo PDF', 'alert-warning');
-            return;
-        }
-        if (file.type !== 'application/pdf') {
-            showInvoiceMsg('Solo se permiten archivos PDF', 'alert-error');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('model_type', 'sheet_project');
-        formData.append('object_id', currentInvoiceSheetId);
-        formData.append('field_name', 'invoice_file');
-        formData.append('invoice_reference', invoiceReference);
-
-        document.getElementById('invoiceUploadProgress').classList.remove('hidden');
-        document.getElementById('invoiceUploadBtn').disabled = true;
-
-        fetch('/api/load_files/', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': getCsrfToken(),
-            }
-        })
-        .then(r => r.json())
-        .then(data => {
-            document.getElementById('invoiceUploadProgress').classList.add('hidden');
-            if (data.success) {
-                showInvoiceMsg('Factura subida correctamente. Recargando...', 'alert-success');
-                setTimeout(() => location.reload(), 1500);
-            } else {
-                showInvoiceMsg(data.error || 'Error al subir', 'alert-error');
-                document.getElementById('invoiceUploadBtn').disabled = false;
-            }
-        })
-        .catch(err => {
-            document.getElementById('invoiceUploadProgress').classList.add('hidden');
-            showInvoiceMsg('Error de conexión: ' + err.message, 'alert-error');
-            document.getElementById('invoiceUploadBtn').disabled = false;
-        });
-    }
-    window.submitInvoiceUpload = submitInvoiceUpload;
-
-    function showInvoiceMsg(text, cls) {
-        const el = document.getElementById('invoiceUploadMsg');
-        el.className = 'mt-2 alert ' + cls;
-        el.textContent = text;
-        el.classList.remove('hidden');
-    }
-
-    function getCsrfToken() {
-        const cookie = document.cookie.split(';').find(c => c.trim().startsWith('csrftoken='));
-        return cookie ? cookie.split('=')[1] : '';
-    }
 </script>
 {% endblock %}

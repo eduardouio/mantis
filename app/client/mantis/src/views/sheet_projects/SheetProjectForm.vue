@@ -6,6 +6,7 @@ import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
 import { appConfig } from '@/AppConfig';
 import { onMounted, computed, ref, watch } from 'vue';
 
+
 const router = useRouter();
 const route = useRoute();
 const sheetProjectStore = UseSheetProjectsStore();
@@ -587,8 +588,11 @@ const getSelectedDays = (detailId) => {
   return equipmentDaysMap.value[detailId] || [];
 };
 
-// Toggle un día para un detalle de equipo
-const toggleEquipmentDay = (detailId, day) => {
+// Último día clickeado por detalle (para Shift+Click de rango)
+const lastClickedDay = ref({});
+
+// Toggle un día para un detalle de equipo (soporta Shift+Click para rango)
+const toggleEquipmentDay = (detailId, day, event, equipment) => {
   if (isDetailsLocked.value) return;
   
   if (!equipmentDaysMap.value[detailId]) {
@@ -596,13 +600,32 @@ const toggleEquipmentDay = (detailId, day) => {
   }
   
   const days = equipmentDaysMap.value[detailId];
-  const index = days.indexOf(day);
   
-  if (index === -1) {
-    days.push(day);
+  // Shift+Click: seleccionar rango desde el último día clickeado
+  if (event && event.shiftKey && lastClickedDay.value[detailId] !== undefined) {
+    const from = Math.min(lastClickedDay.value[detailId], day);
+    const to = Math.max(lastClickedDay.value[detailId], day);
+    
+    for (let d = from; d <= to; d++) {
+      // Solo agregar días válidos que estén en el período y en el rango del equipo
+      if (getDaysInPeriod.value.includes(d) && (!equipment || isDayInEquipmentRange(equipment, d))) {
+        if (!days.includes(d)) {
+          days.push(d);
+        }
+      }
+    }
   } else {
-    days.splice(index, 1);
+    // Click normal: toggle individual
+    const index = days.indexOf(day);
+    if (index === -1) {
+      days.push(day);
+    } else {
+      days.splice(index, 1);
+    }
   }
+  
+  // Guardar último día clickeado
+  lastClickedDay.value[detailId] = day;
   
   // Ordenar
   equipmentDaysMap.value[detailId] = [...days].sort((a, b) => a - b);
@@ -632,6 +655,30 @@ const toggleAllEquipmentDays = (equipment) => {
 // Expandir/contraer calendario de un equipo
 const toggleEquipmentCalendar = (detailId) => {
   expandedEquipmentId.value = expandedEquipmentId.value === detailId ? null : detailId;
+};
+
+// ===== MODAL DE CALENDARIO =====
+const showCalendarModal = ref(false);
+const calendarModalEquipment = ref(null);
+
+// Abrir modal de calendario para un equipo
+const openCalendarModal = (equipment) => {
+  calendarModalEquipment.value = equipment;
+  expandedEquipmentId.value = equipment.detail_id;
+  showCalendarModal.value = true;
+};
+
+// Cerrar modal
+const closeCalendarModal = () => {
+  showCalendarModal.value = false;
+  calendarModalEquipment.value = null;
+};
+
+// Buscar el detalle de equipamiento correspondiente a un recurso de la tabla
+const getEquipmentDetailForResource = (resource) => {
+  return selectedEquipmentResources.value.find(
+    eq => eq.resource_item_code === resource.resource_item_code
+  ) || null;
 };
 
 // Guardar los días de un detalle de equipo
@@ -1023,11 +1070,12 @@ watch(selectedEquipmentResources, () => {
                 <th class="border">Costo</th>
                 <th class="border">Fecha Inicio</th>
                 <th class="border">Estado</th>
+                <th v-if="isEditMode && selectedEquipmentResources.length > 0" class="border">Días</th>
               </tr>
             </thead>
             <tbody>
               <tr v-if="activeResources.length === 0">
-                <td colspan="8" class="text-center py-4 text-gray-500">
+                <td :colspan="isEditMode && selectedEquipmentResources.length > 0 ? 9 : 8" class="text-center py-4 text-gray-500">
                   No hay recursos activos asignados al proyecto
                 </td>
               </tr>
@@ -1069,6 +1117,19 @@ watch(selectedEquipmentResources, () => {
                     {{ resource.is_active ? 'Activo' : 'Inactivo' }}
                   </span>
                 </td>
+                <td v-if="isEditMode && selectedEquipmentResources.length > 0" class="border text-center">
+                  <button
+                    v-if="resource.type_resource === 'EQUIPO' && resource.is_selected && getEquipmentDetailForResource(resource)"
+                    type="button"
+                    class="btn btn-ghost btn-xs text-primary hover:bg-primary/10"
+                    @click.stop="openCalendarModal(getEquipmentDetailForResource(resource))"
+                    title="Configurar días de cobro"
+                  >
+                    <i class="las la-calendar-alt text-lg"></i>
+                    <span class="text-xs ml-1">{{ getSelectedDays(getEquipmentDetailForResource(resource).detail_id).length }}d</span>
+                  </button>
+                  <span v-else class="text-gray-300">—</span>
+                </td>
               </tr>
             </tbody>
             <tfoot v-if="activeResources.length > 0">
@@ -1078,147 +1139,13 @@ watch(selectedEquipmentResources, () => {
                 </td>
                 <td colspan="4" class="border text-right">Total recursos seleccionados:</td>
                 <td class="border text-right">${{ selectedResources.reduce((s, r) => s + parseFloat(r.cost || 0), 0).toFixed(2) }}</td>
-                <td colspan="2" class="border text-center">{{ activeResources.length }} activos</td>
+                <td :colspan="isEditMode && selectedEquipmentResources.length > 0 ? 3 : 2" class="border text-center">{{ activeResources.length }} activos</td>
               </tr>
             </tfoot>
           </table>
         </div>
 
-        <!-- ===== CALENDARIO DE DÍAS DE ALQUILER PARA EQUIPOS ===== -->
-        <div v-if="isEditMode && selectedEquipmentResources.length > 0" class="mt-6">
-          <div class="divider">
-            <i class="las la-calendar text-xl"></i> Días de Cobro de Alquiler (Equipos)
-          </div>
-
-          <div class="alert alert-info mb-4">
-            <i class="las la-info-circle text-xl"></i>
-            <div>
-              <p class="text-sm">
-                Seleccione los días del período que se cobrarán por alquiler de cada equipo.
-                Los días fuera del rango de operación del equipo (entrada/salida) están deshabilitados.
-              </p>
-            </div>
-          </div>
-
-          <div class="space-y-3">
-            <div 
-              v-for="equipment in selectedEquipmentResources" 
-              :key="equipment.detail_id"
-              class="border rounded-lg overflow-hidden"
-              :class="expandedEquipmentId === equipment.detail_id ? 'border-primary' : 'border-gray-200'"
-            >
-              <!-- Cabecera del equipo (clickeable para expandir) -->
-              <div 
-                class="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
-                :class="expandedEquipmentId === equipment.detail_id ? 'bg-primary/5' : 'bg-gray-50'"
-                @click="toggleEquipmentCalendar(equipment.detail_id)"
-              >
-                <div class="flex items-center gap-3">
-                  <i 
-                    class="las text-lg transition-transform"
-                    :class="expandedEquipmentId === equipment.detail_id ? 'la-chevron-down text-primary' : 'la-chevron-right text-gray-400'"
-                  ></i>
-                  <span class="badge badge-primary badge-sm">EQUIPO</span>
-                  <span class="font-semibold text-gray-800">{{ equipment.resource_item_code }}</span>
-                  <span class="text-gray-500 text-sm">{{ equipment.resource_item_name }}</span>
-                  <span class="text-gray-400 text-xs">{{ equipment.detail }}</span>
-                </div>
-                <div class="flex items-center gap-4 text-sm">
-                  <div>
-                    <span class="text-gray-500">Días:</span>
-                    <span class="font-bold text-primary ml-1">{{ getSelectedDays(equipment.detail_id).length }}</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-500">Precio:</span>
-                    <span class="font-semibold ml-1">${{ parseFloat(equipment.unit_price || 0).toFixed(2) }}</span>
-                  </div>
-                  <div>
-                    <span class="text-gray-500">Total:</span>
-                    <span class="font-bold text-green-700 ml-1">
-                      ${{ (getSelectedDays(equipment.detail_id).length * parseFloat(equipment.unit_price || 0)).toFixed(2) }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Calendario expandido -->
-              <div v-if="expandedEquipmentId === equipment.detail_id" class="p-4 border-t">
-                <!-- Info de fechas del equipo -->
-                <div class="flex items-center gap-4 mb-3 text-xs text-gray-500">
-                  <span>
-                    <i class="las la-sign-in-alt text-green-600"></i>
-                    Entrada: <strong>{{ equipment.operation_start_date ? new Date(equipment.operation_start_date + 'T00:00:00').toLocaleDateString('es-EC') : 'N/A' }}</strong>
-                  </span>
-                  <span v-if="equipment.is_retired && equipment.retirement_date">
-                    <i class="las la-sign-out-alt text-red-600"></i>
-                    Retiro: <strong class="text-red-600">{{ new Date(equipment.retirement_date + 'T00:00:00').toLocaleDateString('es-EC') }}</strong>
-                  </span>
-                  <span v-else-if="equipment.operation_end_date">
-                    <i class="las la-sign-out-alt text-orange-600"></i>
-                    Fin Op.: <strong>{{ new Date(equipment.operation_end_date + 'T00:00:00').toLocaleDateString('es-EC') }}</strong>
-                  </span>
-                  <span v-else>
-                    <i class="las la-infinity text-blue-500"></i>
-                    Sin fecha de retiro (todo el período)
-                  </span>
-                </div>
-
-                <!-- Botones de acción -->
-                <div class="flex items-center gap-2 mb-3">
-                  <button 
-                    type="button" 
-                    class="btn btn-outline btn-xs"
-                    :disabled="isDetailsLocked"
-                    @click.stop="toggleAllEquipmentDays(equipment)"
-                  >
-                    <i class="las la-check-double"></i>
-                    {{ getSelectedDays(equipment.detail_id).length === countValidDays(equipment) ? 'Deseleccionar todos' : 'Seleccionar todos' }}
-                  </button>
-                  <button 
-                    type="button" 
-                    class="btn btn-primary btn-xs"
-                    :disabled="isDetailsLocked || isSavingDays"
-                    @click.stop="saveEquipmentDays(equipment.detail_id)"
-                  >
-                    <span v-if="isSavingDays && savingDetailId === equipment.detail_id" class="loading loading-spinner loading-xs"></span>
-                    <i v-else class="las la-save"></i>
-                    Guardar días
-                  </button>
-                </div>
-
-                <!-- Grid de días del mes -->
-                <div class="grid grid-cols-7 sm:grid-cols-10 md:grid-cols-16 gap-1">
-                  <button
-                    v-for="day in getDaysInPeriod"
-                    :key="day"
-                    type="button"
-                    class="btn btn-sm w-10 h-10 p-0 text-xs font-semibold"
-                    :class="{
-                      'btn-primary': getSelectedDays(equipment.detail_id).includes(day) && isDayInEquipmentRange(equipment, day),
-                      'btn-outline': !getSelectedDays(equipment.detail_id).includes(day) && isDayInEquipmentRange(equipment, day),
-                      'btn-disabled bg-gray-100 text-gray-300 cursor-not-allowed': !isDayInEquipmentRange(equipment, day)
-                    }"
-                    :disabled="isDetailsLocked || !isDayInEquipmentRange(equipment, day)"
-                    @click.stop="isDayInEquipmentRange(equipment, day) ? toggleEquipmentDay(equipment.detail_id, day) : null"
-                  >
-                    {{ day }}
-                  </button>
-                </div>
-
-                <!-- Resumen -->
-                <div class="mt-3 flex items-center justify-between text-sm">
-                  <span class="text-gray-500">
-                    <i class="las la-calendar-check text-primary"></i>
-                    {{ getSelectedDays(equipment.detail_id).length }} día(s) seleccionado(s)
-                  </span>
-                  <span class="font-semibold text-green-700">
-                    Total: ${{ (getSelectedDays(equipment.detail_id).length * parseFloat(equipment.unit_price || 0)).toFixed(2) }}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- Calendario inline eliminado - ahora es un modal popup -->
 
         <div class="divider">Notas Adicionales</div>
 
@@ -1298,5 +1225,131 @@ watch(selectedEquipmentResources, () => {
       </div>
     </div>
     <div class="modal-backdrop" @click="showInvoiceModal = false"></div>
+  </dialog>
+
+  <!-- Modal de Calendario de Días de Cobro -->
+  <dialog class="modal" :class="{ 'modal-open': showCalendarModal }">
+    <div class="modal-box max-w-2xl">
+      <template v-if="calendarModalEquipment">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-bold text-lg flex items-center gap-2">
+            <i class="las la-calendar-alt text-primary text-2xl"></i>
+            Días de Cobro
+          </h3>
+          <button class="btn btn-sm btn-ghost btn-circle" @click="closeCalendarModal">
+            <i class="las la-times text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Info del equipo -->
+        <div class="bg-base-200 rounded-lg p-3 mb-4">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="badge badge-primary badge-sm">EQUIPO</span>
+            <span class="font-semibold">{{ calendarModalEquipment.resource_item_code }}</span>
+            <span class="text-gray-500 text-sm">{{ calendarModalEquipment.resource_item_name }}</span>
+          </div>
+          <div class="text-xs text-gray-500">{{ calendarModalEquipment.detail }}</div>
+          <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
+            <span>
+              <i class="las la-sign-in-alt text-green-600"></i>
+              Entrada: <strong>{{ calendarModalEquipment.operation_start_date ? new Date(calendarModalEquipment.operation_start_date + 'T00:00:00').toLocaleDateString('es-EC') : 'N/A' }}</strong>
+            </span>
+            <span v-if="calendarModalEquipment.is_retired && calendarModalEquipment.retirement_date">
+              <i class="las la-sign-out-alt text-red-600"></i>
+              Retiro: <strong class="text-red-600">{{ new Date(calendarModalEquipment.retirement_date + 'T00:00:00').toLocaleDateString('es-EC') }}</strong>
+            </span>
+            <span v-else-if="calendarModalEquipment.operation_end_date">
+              <i class="las la-sign-out-alt text-orange-600"></i>
+              Fin Op.: <strong>{{ new Date(calendarModalEquipment.operation_end_date + 'T00:00:00').toLocaleDateString('es-EC') }}</strong>
+            </span>
+            <span v-else>
+              <i class="las la-infinity text-blue-500"></i>
+              Sin fecha de retiro (todo el período)
+            </span>
+          </div>
+        </div>
+
+        <!-- Estadísticas rápidas -->
+        <div class="grid grid-cols-3 gap-3 mb-4">
+          <div class="bg-white border rounded-lg p-2 text-center">
+            <div class="text-xs text-gray-500">Días seleccionados</div>
+            <div class="text-xl font-bold text-primary">{{ getSelectedDays(calendarModalEquipment.detail_id).length }}</div>
+          </div>
+          <div class="bg-white border rounded-lg p-2 text-center">
+            <div class="text-xs text-gray-500">Precio/día</div>
+            <div class="text-xl font-bold">${{ parseFloat(calendarModalEquipment.unit_price || 0).toFixed(2) }}</div>
+          </div>
+          <div class="bg-white border rounded-lg p-2 text-center">
+            <div class="text-xs text-gray-500">Total</div>
+            <div class="text-xl font-bold text-green-700">
+              ${{ (getSelectedDays(calendarModalEquipment.detail_id).length * parseFloat(calendarModalEquipment.unit_price || 0)).toFixed(2) }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Instrucciones -->
+        <div class="text-xs text-gray-400 mb-2 flex items-center gap-1">
+          <i class="las la-info-circle"></i>
+          Click para seleccionar/deseleccionar. <strong>Shift+Click</strong> para seleccionar un rango.
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="flex items-center gap-2 mb-3">
+          <button 
+            type="button" 
+            class="btn btn-outline btn-xs"
+            :disabled="isDetailsLocked"
+            @click.stop="toggleAllEquipmentDays(calendarModalEquipment)"
+          >
+            <i class="las la-check-double"></i>
+            {{ getSelectedDays(calendarModalEquipment.detail_id).length === countValidDays(calendarModalEquipment) ? 'Deseleccionar todos' : 'Seleccionar todos' }}
+          </button>
+        </div>
+
+        <!-- Grid de días -->
+        <div class="grid grid-cols-7 sm:grid-cols-8 gap-1.5">
+          <button
+            v-for="day in getDaysInPeriod"
+            :key="day"
+            type="button"
+            class="btn btn-sm w-full h-10 p-0 text-sm font-semibold"
+            :class="{
+              'btn-primary': getSelectedDays(calendarModalEquipment.detail_id).includes(day) && isDayInEquipmentRange(calendarModalEquipment, day),
+              'btn-outline': !getSelectedDays(calendarModalEquipment.detail_id).includes(day) && isDayInEquipmentRange(calendarModalEquipment, day),
+              'btn-disabled bg-gray-100 text-gray-300 cursor-not-allowed': !isDayInEquipmentRange(calendarModalEquipment, day)
+            }"
+            :disabled="isDetailsLocked || !isDayInEquipmentRange(calendarModalEquipment, day)"
+            @click.stop="isDayInEquipmentRange(calendarModalEquipment, day) ? toggleEquipmentDay(calendarModalEquipment.detail_id, day, $event, calendarModalEquipment) : null"
+          >
+            {{ day }}
+          </button>
+        </div>
+
+        <!-- Footer del modal -->
+        <div class="modal-action mt-4">
+          <div class="flex items-center justify-between w-full">
+            <span class="text-sm text-gray-500">
+              <i class="las la-calendar-check text-primary"></i>
+              {{ getSelectedDays(calendarModalEquipment.detail_id).length }} día(s) seleccionado(s)
+            </span>
+            <div class="flex gap-2">
+              <button class="btn btn-ghost btn-sm" @click="closeCalendarModal">Cancelar</button>
+              <button 
+                type="button" 
+                class="btn btn-primary btn-sm"
+                :disabled="isDetailsLocked || isSavingDays"
+                @click.stop="saveEquipmentDays(calendarModalEquipment.detail_id)"
+              >
+                <span v-if="isSavingDays && savingDetailId === calendarModalEquipment.detail_id" class="loading loading-spinner loading-xs"></span>
+                <i v-else class="las la-save"></i>
+                Guardar días
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+    <div class="modal-backdrop" @click="closeCalendarModal"></div>
   </dialog>
 </template>

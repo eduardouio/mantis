@@ -63,10 +63,6 @@ class LiquidatedSheetsReportView(TemplateView):
                 sheet.certificate_final_disposition_file
                 and sheet.certificate_final_disposition_file.name
             )
-            has_invoice_pdf = bool(
-                sheet.invoice_file
-                and sheet.invoice_file.name
-            )
 
             all_pdfs_loaded = (
                 has_sheet_pdf
@@ -101,10 +97,6 @@ class LiquidatedSheetsReportView(TemplateView):
                 'has_certificate_pdf': has_certificate_pdf,
                 'certificate_pdf_url': (
                     sheet.certificate_final_disposition_file.url if has_certificate_pdf else None
-                ),
-                'has_invoice_pdf': has_invoice_pdf,
-                'invoice_pdf_url': (
-                    sheet.invoice_file.url if has_invoice_pdf else None
                 ),
                 'custody_chains': custody_chains_list,
                 'chains_total': chains_total,
