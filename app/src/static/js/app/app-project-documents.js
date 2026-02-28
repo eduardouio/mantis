@@ -25,7 +25,6 @@
       .then(json => {
         if (!json.success) throw new Error(json.error);
         treeData = json.data;
-        updateStats(treeData.stats);
         renderTree();
         showLoading(false);
       })
@@ -33,16 +32,6 @@
         showLoading(false);
         showToast('Error al cargar: ' + err.message, 'error');
       });
-  }
-
-  // ── Stats ──────────────────────────────────────────────────────
-  function updateStats(s) {
-    const pending = s.total - s.loaded;
-    const pct = s.total > 0 ? Math.round((s.loaded / s.total) * 100) : 0;
-    document.getElementById('statTotal').textContent   = s.total;
-    document.getElementById('statLoaded').textContent  = s.loaded;
-    document.getElementById('statPending').textContent = pending;
-    document.getElementById('statPercent').textContent = pct + '%';
   }
 
   // ── Render ─────────────────────────────────────────────────────

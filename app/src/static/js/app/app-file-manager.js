@@ -171,8 +171,8 @@
       : '';
 
     return `${chevron} <i class="${icon} text-2xl"></i>
-            <span class="text-base font-medium">${node.label}</span>
-            ${detailLink} ${docsLink} ${badges}`;
+            <span class="text-base font-medium flex-1">${node.label} ${detailLink} ${docsLink}</span>
+            ${badges}`;
   }
 
   function countChildFiles(node, cb) {
