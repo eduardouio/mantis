@@ -5,10 +5,15 @@ y para generar merges de PDFs.
 GET  /api/load_files/project/<project_id>/tree/  → árbol de documentos del proyecto
 GET  /api/load_files/project/<project_id>/merge/  → descarga merge PDF completo
 GET  /api/load_files/project/<project_id>/merge/?scope=custody_chains&sheet_id=XX  → merge solo cadenas
+POST /api/load_files/project/<project_id>/bulk_custody/  → carga masiva de cadenas de custodia
 """
 
 import io
+import json
 import os
+
+from django.conf import settings
+from django.core.files.base import ContentFile
 from django.http import JsonResponse, HttpResponse, Http404
 from django.views import View
 from django.utils.decorators import method_decorator
@@ -248,3 +253,166 @@ class ProjectDocumentMergeApiView(View):
         buffer = io.BytesIO()
         writer.write(buffer)
         return buffer.getvalue()
+
+
+# ═══════════════════════════════════════════════════════════════════════
+#  Carga masiva de cadenas de custodia
+# ═══════════════════════════════════════════════════════════════════════
+
+@method_decorator(csrf_exempt, name='dispatch')
+class BulkCustodyUploadApiView(View):
+    """
+    POST /api/load_files/project/<project_id>/bulk_custody/
+
+    Recibe un PDF donde cada página corresponde a una cadena de custodia
+    seleccionada. Divide el PDF en páginas individuales y las asocia
+    a las cadenas en el orden indicado.
+
+    Body (multipart/form-data):
+        file       – Archivo PDF con N páginas
+        chain_ids  – JSON array con los IDs de cadenas seleccionadas (en orden)
+
+    Validaciones:
+        - El PDF debe tener exactamente la misma cantidad de páginas
+          que cadenas seleccionadas.
+        - Todas las cadenas deben pertenecer al proyecto indicado.
+    """
+
+    def post(self, request, project_id):
+        try:
+            project = get_object_or_404(Project, pk=project_id)
+
+            # ── Validar archivo ──────────────────────────────────
+            pdf_file = request.FILES.get('file')
+            if not pdf_file:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No se recibió ningún archivo PDF.',
+                }, status=400)
+
+            if not pdf_file.name.lower().endswith('.pdf'):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'El archivo debe ser un PDF.',
+                }, status=400)
+
+            # ── Validar chain_ids ────────────────────────────────
+            raw_ids = request.POST.get('chain_ids', '[]')
+            try:
+                chain_ids = json.loads(raw_ids)
+                if not isinstance(chain_ids, list) or len(chain_ids) == 0:
+                    raise ValueError
+                chain_ids = [int(cid) for cid in chain_ids]
+            except (json.JSONDecodeError, ValueError, TypeError):
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Debe seleccionar al menos una cadena de custodia.',
+                }, status=400)
+
+            # ── Verificar que las cadenas pertenecen al proyecto ─
+            chains = CustodyChain.objects.filter(
+                pk__in=chain_ids,
+                sheet_project__project=project,
+                is_active=True,
+            )
+
+            found_ids = set(chains.values_list('pk', flat=True))
+            missing = [cid for cid in chain_ids if cid not in found_ids]
+            if missing:
+                return JsonResponse({
+                    'success': False,
+                    'error': f'Las siguientes cadenas no pertenecen al proyecto o no existen: {missing}',
+                }, status=400)
+
+            # ── Leer el PDF y contar páginas ─────────────────────
+            try:
+                reader = PdfReader(pdf_file)
+            except Exception:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'El archivo no es un PDF válido o está corrupto.',
+                }, status=400)
+
+            num_pages = len(reader.pages)
+            num_chains = len(chain_ids)
+
+            if num_pages != num_chains:
+                return JsonResponse({
+                    'success': False,
+                    'error': (
+                        f'El PDF tiene {num_pages} página(s) pero se seleccionaron '
+                        f'{num_chains} cadena(s) de custodia. '
+                        f'Deben coincidir exactamente.'
+                    ),
+                }, status=400)
+
+            # ── Obtener nombre del proyecto para el nombre del archivo
+            partner_name = (
+                project.partner.name if project.partner
+                else f'Proyecto_{project.pk}'
+            )
+            safe_project = partner_name.replace(' ', '_')[:40]
+
+            # ── Mapear chain_id → instancia preservando orden ────
+            chain_map = {c.pk: c for c in chains}
+            ordered_chains = [chain_map[cid] for cid in chain_ids]
+
+            # ── Dividir y guardar ────────────────────────────────
+            saved = []
+            errors = []
+
+            for idx, chain in enumerate(ordered_chains):
+                try:
+                    # Extraer una sola página
+                    writer = PdfWriter()
+                    writer.add_page(reader.pages[idx])
+
+                    buf = io.BytesIO()
+                    writer.write(buf)
+                    page_bytes = buf.getvalue()
+
+                    # Nombre: CadenaCustodia_<consecutivo>_<proyecto>.pdf
+                    consecutive = chain.consecutive or str(chain.pk)
+                    filename = f'CadenaCustodia_{consecutive}_{safe_project}.pdf'
+
+                    # Guardar usando el FileField del modelo
+                    chain.custody_chain_file.save(
+                        filename,
+                        ContentFile(page_bytes),
+                        save=True,
+                    )
+
+                    saved.append({
+                        'chain_id': chain.pk,
+                        'consecutive': chain.consecutive,
+                        'page': idx + 1,
+                        'filename': filename,
+                    })
+                except Exception as e:
+                    errors.append({
+                        'chain_id': chain.pk,
+                        'consecutive': chain.consecutive,
+                        'page': idx + 1,
+                        'error': str(e),
+                    })
+
+            return JsonResponse({
+                'success': len(errors) == 0,
+                'saved': len(saved),
+                'errors_count': len(errors),
+                'details': saved,
+                'errors': errors,
+                'message': (
+                    f'Se asignaron {len(saved)} archivo(s) correctamente.'
+                    + (f' {len(errors)} error(es).' if errors else '')
+                ),
+            })
+
+        except Http404:
+            return JsonResponse({
+                'success': False, 'error': 'Proyecto no encontrado.'
+            }, status=404)
+        except Exception as e:
+            return JsonResponse({
+                'success': False, 'error': str(e)
+            }, status=500)

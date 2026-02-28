@@ -140,6 +140,15 @@
          </button>`
       : '';
 
+    // Botón de carga masiva de cadenas
+    const bulkBtn = chainCount > 0
+      ? `<button class="btn btn-sm btn-outline btn-accent ml-1"
+           title="Carga masiva: subir un PDF con todas las cadenas"
+           onclick="event.stopPropagation(); openBulkCustodyModal(${sheet.id})">
+           <i class="las la-file-import mr-1"></i>Carga Masiva
+         </button>`
+      : '';
+
     toggle.innerHTML = `
       <i class="las la-angle-right doc-chevron"></i>
       <i class="las la-file-invoice text-indigo-500 text-2xl"></i>
@@ -152,7 +161,8 @@
       ${chainCount > 0 ? `<span class="badge-sm ${chainLoaded === chainCount ? 'badge-ok' : 'badge-miss'}" style="margin-left:2px">
         <i class="las la-link"></i> ${chainLoaded}/${chainCount} cadenas
       </span>` : ''}
-      ${mergeBtn}`;
+      ${mergeBtn}
+      ${bulkBtn}`;
 
     const children = document.createElement('div');
     children.className = 'doc-children';
@@ -454,5 +464,249 @@
       });
     }
     return v;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  //  Carga Masiva de Cadenas de Custodia
+  // ═══════════════════════════════════════════════════════════════
+
+  const API_BULK = `/api/load_files/project/${PROJECT_ID}/bulk_custody/`;
+  let bulkSheetId     = null;
+  let bulkChains      = [];   // [{id, consecutive, label, date}]
+  let bulkSelectedIds = [];   // IDs seleccionados en orden
+
+  /**
+   * Abre el modal de carga masiva para una planilla.
+   * Recupera las cadenas de la planilla del treeData en memoria.
+   */
+  window.openBulkCustodyModal = function (sheetId) {
+    bulkSheetId = sheetId;
+    bulkChains  = [];
+    bulkSelectedIds = [];
+
+    // Buscar la planilla y sus cadenas en treeData
+    const sheet = treeData.sheets.find(s => s.id === sheetId);
+    if (!sheet || !sheet.custody_chains.length) {
+      showToast('No hay cadenas de custodia en esta planilla.', 'error');
+      return;
+    }
+
+    document.getElementById('bulkSheetLabel').textContent =
+      `${sheet.label} — ${sheet.period}`;
+
+    bulkChains = sheet.custody_chains.map((c, idx) => ({
+      id: c.id,
+      consecutive: c.label,
+      date: c.date || '',
+      index: idx,
+      hasFile: c.files.some(f => f.has_file),
+    }));
+
+    renderBulkChainList();
+    resetBulkUI();
+    document.getElementById('bulkCustodyModal').showModal();
+  };
+
+  /** Renderiza el listado con checkboxes */
+  function renderBulkChainList() {
+    const container = document.getElementById('bulkChainList');
+    container.innerHTML = '';
+
+    bulkChains.forEach((chain, idx) => {
+      const row = document.createElement('label');
+      row.className = 'flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 cursor-pointer';
+      row.innerHTML = `
+        <input type="checkbox" class="checkbox checkbox-sm checkbox-primary bulk-chain-cb"
+               data-chain-id="${chain.id}" data-index="${idx}"
+               onchange="bulkSelectionChanged()" />
+        <span class="text-sm font-medium flex-1">
+          <span class="font-semibold">${idx + 1}.</span>
+          ${chain.consecutive}
+          <span class="text-gray-400 ml-1">${chain.date}</span>
+        </span>
+        ${chain.hasFile
+          ? '<span class="badge badge-sm badge-success gap-1"><i class="las la-check-circle"></i> Cargado</span>'
+          : '<span class="badge badge-sm badge-error gap-1"><i class="las la-times-circle"></i> Pendiente</span>'
+        }`;
+      container.appendChild(row);
+    });
+  }
+
+  /** Actualiza el conteo y habilita/deshabilita el botón */
+  window.bulkSelectionChanged = function () {
+    const checked = document.querySelectorAll('.bulk-chain-cb:checked');
+    bulkSelectedIds = Array.from(checked).map(cb => parseInt(cb.dataset.chainId));
+    document.getElementById('bulkSelectedCount').textContent = bulkSelectedIds.length;
+    validateBulkReady();
+  };
+
+  // ── Selección rápida ──────────────────────────────────────
+  window.bulkSelectAll = function () {
+    document.querySelectorAll('.bulk-chain-cb').forEach(cb => cb.checked = true);
+    bulkSelectionChanged();
+  };
+
+  window.bulkSelectNone = function () {
+    document.querySelectorAll('.bulk-chain-cb').forEach(cb => cb.checked = false);
+    bulkSelectionChanged();
+  };
+
+  window.bulkSelectEvens = function () {
+    document.querySelectorAll('.bulk-chain-cb').forEach((cb, i) => cb.checked = (i % 2 === 1)); // posiciones pares (2,4,6…)
+    bulkSelectionChanged();
+  };
+
+  window.bulkSelectOdds = function () {
+    document.querySelectorAll('.bulk-chain-cb').forEach((cb, i) => cb.checked = (i % 2 === 0)); // posiciones impares (1,3,5…)
+    bulkSelectionChanged();
+  };
+
+  // ── Validar archivo seleccionado ──────────────────────────
+  window.bulkFileSelected = function () {
+    const fileInput = document.getElementById('bulkFileInput');
+    const infoDiv   = document.getElementById('bulkFileInfo');
+
+    if (!fileInput.files.length) {
+      infoDiv.classList.add('hidden');
+      validateBulkReady();
+      return;
+    }
+
+    const file = fileInput.files[0];
+    document.getElementById('bulkFileName').textContent = file.name;
+
+    // Leer el PDF para contar páginas en el cliente
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const data = new Uint8Array(e.target.result);
+      const pageCount = countPDFPages(data);
+      document.getElementById('bulkPageCount').textContent = pageCount;
+      infoDiv.classList.remove('hidden');
+      infoDiv.dataset.pages = pageCount;
+      validateBulkReady();
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  /**
+   * Cuenta páginas de un PDF de forma básica buscando /Type /Page
+   * (sin dependencias externas). Es una aproximación.
+   */
+  function countPDFPages(data) {
+    // Buscar en el PDF la cantidad de /Page entries
+    // Método simple: buscar /Type /Page o /Type/Page
+    const text = new TextDecoder('latin1').decode(data);
+    const matches = text.match(/\/Type\s*\/Page(?!s)/g);
+    return matches ? matches.length : 0;
+  }
+
+  /** Valida si todo está listo para el envío */
+  function validateBulkReady() {
+    const btn = document.getElementById('bulkConfirmBtn');
+    const msgDiv = document.getElementById('bulkMsg');
+    const fileInput = document.getElementById('bulkFileInput');
+    const infoDiv = document.getElementById('bulkFileInfo');
+
+    const numSelected = bulkSelectedIds.length;
+    const hasFile = fileInput.files.length > 0;
+    const numPages = parseInt(infoDiv.dataset.pages || '0');
+
+    // Resetear mensajes
+    msgDiv.classList.add('hidden');
+
+    if (numSelected === 0 || !hasFile) {
+      btn.disabled = true;
+      return;
+    }
+
+    if (numPages > 0 && numPages !== numSelected) {
+      msgDiv.innerHTML = `
+        <div class="alert alert-error text-sm py-2">
+          <i class="las la-exclamation-triangle text-lg"></i>
+          <span>El PDF tiene <strong>${numPages}</strong> página(s) pero se seleccionaron
+          <strong>${numSelected}</strong> cadena(s). Deben coincidir exactamente.</span>
+        </div>`;
+      msgDiv.classList.remove('hidden');
+      btn.disabled = true;
+      return;
+    }
+
+    btn.disabled = false;
+  }
+
+  /** Confirma y envía la carga masiva al backend */
+  window.confirmBulkUpload = function () {
+    const fileInput = document.getElementById('bulkFileInput');
+    if (!fileInput.files.length || bulkSelectedIds.length === 0) return;
+
+    const fd = new FormData();
+    fd.append('file', fileInput.files[0]);
+    fd.append('chain_ids', JSON.stringify(bulkSelectedIds));
+
+    document.getElementById('bulkConfirmBtn').disabled = true;
+    document.getElementById('bulkProgress').classList.remove('hidden');
+    document.getElementById('bulkMsg').classList.add('hidden');
+    document.getElementById('bulkResult').classList.add('hidden');
+
+    fetch(API_BULK, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': CSRF },
+      body: fd,
+    })
+      .then(r => r.json())
+      .then(json => {
+        document.getElementById('bulkProgress').classList.add('hidden');
+
+        if (json.success) {
+          document.getElementById('bulkResultText').textContent = json.message;
+          document.getElementById('bulkResult').classList.remove('hidden');
+          showToast(json.message, 'success');
+
+          // Refrescar el árbol después de un momento
+          setTimeout(() => {
+            closeBulkModal();
+            fetchTree();
+          }, 1500);
+        } else {
+          const errorMsg = json.error || 'Error desconocido';
+          document.getElementById('bulkMsg').innerHTML = `
+            <div class="alert alert-error text-sm py-2">
+              <i class="las la-exclamation-triangle text-lg"></i>
+              <span>${errorMsg}</span>
+            </div>`;
+          document.getElementById('bulkMsg').classList.remove('hidden');
+          document.getElementById('bulkConfirmBtn').disabled = false;
+        }
+      })
+      .catch(err => {
+        document.getElementById('bulkProgress').classList.add('hidden');
+        document.getElementById('bulkMsg').innerHTML = `
+          <div class="alert alert-error text-sm py-2">
+            <i class="las la-exclamation-triangle text-lg"></i>
+            <span>Error: ${err.message}</span>
+          </div>`;
+        document.getElementById('bulkMsg').classList.remove('hidden');
+        document.getElementById('bulkConfirmBtn').disabled = false;
+      });
+  };
+
+  /** Cerrar el modal */
+  window.closeBulkModal = function () {
+    document.getElementById('bulkCustodyModal').close();
+    bulkSheetId = null;
+    bulkChains = [];
+    bulkSelectedIds = [];
+  };
+
+  /** Reset UI del modal */
+  function resetBulkUI() {
+    document.getElementById('bulkFileInput').value = '';
+    document.getElementById('bulkFileInfo').classList.add('hidden');
+    document.getElementById('bulkFileInfo').dataset.pages = '0';
+    document.getElementById('bulkMsg').classList.add('hidden');
+    document.getElementById('bulkProgress').classList.add('hidden');
+    document.getElementById('bulkResult').classList.add('hidden');
+    document.getElementById('bulkConfirmBtn').disabled = true;
+    document.getElementById('bulkSelectedCount').textContent = '0';
   }
 })();

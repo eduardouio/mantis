@@ -181,6 +181,84 @@
   <form method="dialog" class="modal-backdrop"><button>close</button></form>
 </dialog>
 
+<!-- ── Modal Carga Masiva de Cadenas ──────────────────────── -->
+<dialog id="bulkCustodyModal" class="modal">
+  <div class="modal-box max-w-2xl">
+    <h3 class="font-bold text-xl flex items-center gap-2 mb-2">
+      <i class="las la-file-import text-indigo-500 text-2xl"></i>
+      Carga Masiva de Cadenas de Custodia
+    </h3>
+    <p class="text-sm text-gray-500 mb-3" id="bulkSheetLabel"></p>
+
+    <!-- Paso 1: Seleccionar cadenas -->
+    <div id="bulkStep1">
+      <div class="flex items-center justify-between mb-2">
+        <p class="text-base font-semibold text-gray-700">
+          Seleccione las cadenas a las que desea asignar archivos:
+        </p>
+        <div class="flex gap-1">
+          <button class="btn btn-xs btn-outline" onclick="bulkSelectAll()" title="Seleccionar todas">
+            <i class="las la-check-double mr-1"></i> Todas
+          </button>
+          <button class="btn btn-xs btn-outline" onclick="bulkSelectNone()" title="Deseleccionar todas">
+            <i class="las la-times mr-1"></i> Ninguna
+          </button>
+          <button class="btn btn-xs btn-outline" onclick="bulkSelectEvens()" title="Seleccionar pares">
+            Pares
+          </button>
+          <button class="btn btn-xs btn-outline" onclick="bulkSelectOdds()" title="Seleccionar impares">
+            Impares
+          </button>
+        </div>
+      </div>
+      <div id="bulkChainList" class="max-h-64 overflow-y-auto border rounded-lg p-2 space-y-1 bg-gray-50">
+        <!-- Se llena dinámicamente -->
+      </div>
+      <p class="text-sm text-gray-500 mt-2">
+        <i class="las la-info-circle"></i>
+        Seleccionadas: <strong id="bulkSelectedCount">0</strong> cadenas.
+        El PDF debe tener exactamente esa cantidad de páginas (una por cadena, en el mismo orden).
+      </p>
+    </div>
+
+    <!-- Paso 2: Subir PDF -->
+    <div id="bulkStep2" class="mt-4">
+      <p class="text-base font-semibold text-gray-700 mb-2">Seleccione el archivo PDF:</p>
+      <input type="file" id="bulkFileInput" accept=".pdf"
+             class="file-input file-input-bordered file-input-md w-full"
+             onchange="bulkFileSelected()" />
+      <div id="bulkFileInfo" class="hidden mt-2 text-sm text-gray-600">
+        <i class="las la-file-pdf text-red-400"></i>
+        <span id="bulkFileName"></span> —
+        <span id="bulkPageCount"></span> página(s)
+      </div>
+    </div>
+
+    <!-- Mensajes -->
+    <div id="bulkMsg" class="mt-3 hidden"></div>
+    <div id="bulkProgress" class="hidden mt-3">
+      <progress class="progress progress-primary w-full"></progress>
+      <p class="text-xs text-gray-500 mt-1">Procesando y subiendo archivos…</p>
+    </div>
+
+    <!-- Resultado -->
+    <div id="bulkResult" class="hidden mt-3">
+      <div class="alert alert-success text-sm">
+        <i class="las la-check-circle text-lg"></i>
+        <span id="bulkResultText"></span>
+      </div>
+    </div>
+
+    <div class="modal-action">
+      <button class="btn btn-md" onclick="closeBulkModal()">Cancelar</button>
+      <button class="btn btn-md btn-primary" id="bulkConfirmBtn" onclick="confirmBulkUpload()" disabled>
+        <i class="las la-file-import mr-1"></i> Subir y Asignar
+      </button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop"><button>close</button></form>
+</dialog>
+
 <!-- ── Toast ──────────────────────────────────────────────── -->
 <div id="pdToast" class="toast toast-top toast-end hidden z-50">
   <div class="alert" id="pdToastContent">

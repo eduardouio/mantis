@@ -1,3 +1,3 @@
 from .LoadFilesApiView import LoadFilesApiView, ModelFileFieldsApiView
 from .DocumentTreeApiView import DocumentTreeApiView
-from .ProjectDocumentsApiView import ProjectDocumentTreeApiView, ProjectDocumentMergeApiView
+from .ProjectDocumentsApiView import ProjectDocumentTreeApiView, ProjectDocumentMergeApiView, BulkCustodyUploadApiView

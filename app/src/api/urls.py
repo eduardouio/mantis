@@ -41,7 +41,7 @@ from api.resources.ResourceReleaserAPI import ResourceReleaserAPI
 from api.workorders.CreateWorkSheetProject import CreateWorkSheetProjectAPI
 from api.workorders.UpdateSheetProject import UpdateSheetProjectAPI
 from api.load_files import LoadFilesApiView, ModelFileFieldsApiView, DocumentTreeApiView
-from api.load_files import ProjectDocumentTreeApiView, ProjectDocumentMergeApiView
+from api.load_files import ProjectDocumentTreeApiView, ProjectDocumentMergeApiView, BulkCustodyUploadApiView
 
 urlpatterns = [
     # vehicles
@@ -87,4 +87,5 @@ urlpatterns = [
     path('load_files/tree/', DocumentTreeApiView.as_view(), name='api_load_files_tree'),
     path('load_files/project/<int:project_id>/tree/', ProjectDocumentTreeApiView.as_view(), name='api_project_document_tree'),
     path('load_files/project/<int:project_id>/merge/', ProjectDocumentMergeApiView.as_view(), name='api_project_document_merge'),
+    path('load_files/project/<int:project_id>/bulk_custody/', BulkCustodyUploadApiView.as_view(), name='api_bulk_custody_upload'),
 ]
