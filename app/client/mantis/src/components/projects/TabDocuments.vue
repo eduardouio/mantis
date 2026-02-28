@@ -284,25 +284,25 @@ function downloadMerge(scope = 'all', sheetId = null) {
 <template>
   <div class="space-y-3">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-2">
-      <h2 class="font-semibold text-gray-800 flex items-center gap-2">
-        <i class="las la-folder-open text-blue-600"></i>
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="text-xl font-semibold text-gray-800 flex items-center gap-3">
+        <i class="las la-folder-open text-blue-600 text-3xl"></i>
         Documentos del Proyecto
       </h2>
       <div class="flex gap-2">
-        <button class="btn btn-xs btn-outline" @click="expandAll" title="Expandir todo">
-          <i class="las la-expand-arrows-alt"></i>
+        <button class="btn btn-sm btn-outline" @click="expandAll" title="Expandir todo">
+          <i class="las la-expand-arrows-alt text-lg"></i>
         </button>
-        <button class="btn btn-xs btn-outline" @click="collapseAll" title="Colapsar todo">
-          <i class="las la-compress-arrows-alt"></i>
+        <button class="btn btn-sm btn-outline" @click="collapseAll" title="Colapsar todo">
+          <i class="las la-compress-arrows-alt text-lg"></i>
         </button>
         <button
           v-if="statsLoaded > 0"
-          class="btn btn-xs btn-primary"
+          class="btn btn-sm btn-primary"
           @click="downloadMerge('all')"
           title="Descargar todos los documentos en un solo PDF"
         >
-          <i class="las la-file-pdf mr-1"></i> Descargar Todo
+          <i class="las la-file-pdf mr-1 text-lg"></i> Descargar Todo
         </button>
       </div>
     </div>
@@ -316,7 +316,7 @@ function downloadMerge(scope = 'all', sheetId = null) {
           :max="statsTotal"
         ></progress>
       </div>
-      <span class="text-xs font-semibold text-gray-600 whitespace-nowrap">
+      <span class="text-sm font-semibold text-gray-600 whitespace-nowrap">
         {{ statsLoaded }}/{{ statsTotal }} archivos
         <span class="text-primary">({{ statsPercent }}%)</span>
       </span>
@@ -328,8 +328,8 @@ function downloadMerge(scope = 'all', sheetId = null) {
     </div>
 
     <!-- Error -->
-    <div v-else-if="errorMsg" class="alert alert-error text-sm">
-      <i class="las la-exclamation-circle text-lg"></i>
+    <div v-else-if="errorMsg" class="alert alert-error text-base">
+      <i class="las la-exclamation-circle text-2xl"></i>
       {{ errorMsg }}
     </div>
 
@@ -340,47 +340,47 @@ function downloadMerge(scope = 'all', sheetId = null) {
       <div v-for="(sheet, si) in treeData.sheets" :key="'s'+si" class="border border-gray-200 rounded-lg mb-2">
         <!-- Encabezado de planilla -->
         <div
-          class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-base-200 rounded-t-lg"
+          class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-base-200 rounded-t-lg"
           @click="toggleNode('sheet-'+si)"
         >
           <i
-            class="las text-gray-500 transition-transform duration-200"
+            class="las text-gray-500 transition-transform duration-200 text-xl"
             :class="isExpanded('sheet-'+si) ? 'la-angle-down' : 'la-angle-right'"
           ></i>
-          <i class="las la-file-invoice text-blue-500"></i>
-          <span class="font-medium text-sm flex-1">{{ sheet.label }}</span>
-          <span class="text-xs text-gray-400">{{ sheet.period }}</span>
+          <i class="las la-file-invoice text-blue-500 text-2xl"></i>
+          <span class="font-medium text-base flex-1">{{ sheet.label }}</span>
+          <span class="text-sm text-gray-400">{{ sheet.period }}</span>
 
           <!-- Badge de archivos de la planilla -->
           <span
-            class="badge badge-xs"
+            class="badge badge-sm"
             :class="sheet.files.filter(f => f.has_file).length === sheet.files.length ? 'badge-success' : 'badge-warning'"
           >
             {{ sheet.files.filter(f => f.has_file).length }}/{{ sheet.files.length }}
           </span>
 
           <!-- Badge cadenas -->
-          <span class="badge badge-xs badge-info" v-if="sheet.custody_chains.length">
+          <span class="badge badge-sm badge-info" v-if="sheet.custody_chains.length">
             {{ sheet.custody_chains.filter(c => c.files.some(f => f.has_file)).length }}/{{ sheet.custody_chains.length }} cadenas
           </span>
 
           <!-- Botón carga masiva -->
           <button
             v-if="sheet.custody_chains.length > 0"
-            class="btn btn-xs btn-accent"
+            class="btn btn-sm btn-accent"
             @click.stop="openBulkModal(sheet)"
             title="Carga masiva de cadenas de custodia"
           >
-            <i class="las la-cloud-upload-alt mr-1"></i> Masiva
+            <i class="las la-cloud-upload-alt mr-1 text-lg"></i> Masiva
           </button>
 
           <!-- Botón merge de la planilla -->
           <button
-            class="btn btn-xs btn-ghost"
+            class="btn btn-sm btn-ghost"
             @click.stop="downloadMerge('all', sheet.id)"
             title="Descargar documentos de esta planilla"
           >
-            <i class="las la-download"></i>
+            <i class="las la-download text-lg"></i>
           </button>
         </div>
 
@@ -390,54 +390,54 @@ function downloadMerge(scope = 'all', sheetId = null) {
           <div
             v-for="file in sheet.files"
             :key="file.field_name"
-            class="flex items-center gap-2 py-1 pl-5 text-sm border-b border-gray-100 last:border-0"
+            class="flex items-center gap-3 py-2 pl-6 text-base border-b border-gray-100 last:border-0"
           >
             <i
-              class="las text-base"
+              class="las text-xl"
               :class="file.has_file ? 'la-check-circle text-success' : 'la-times-circle text-error'"
             ></i>
             <span class="flex-1">{{ file.field_label }}</span>
             <template v-if="file.has_file">
-              <a :href="file.file_url" target="_blank" class="btn btn-xs btn-ghost text-blue-500" title="Ver archivo">
-                <i class="las la-eye"></i>
+              <a :href="file.file_url" target="_blank" class="btn btn-sm btn-ghost text-blue-500" title="Ver archivo">
+                <i class="las la-eye text-lg"></i>
               </a>
-              <button class="btn btn-xs btn-ghost text-error" @click="deleteFile(file)" title="Eliminar">
-                <i class="las la-trash"></i>
+              <button class="btn btn-sm btn-ghost text-error" @click="deleteFile(file)" title="Eliminar">
+                <i class="las la-trash text-lg"></i>
               </button>
             </template>
-            <button class="btn btn-xs btn-primary btn-outline" @click="openUpload(file)" :title="file.has_file ? 'Reemplazar' : 'Subir'">
-              <i class="las la-upload"></i>
+            <button class="btn btn-sm btn-primary btn-outline" @click="openUpload(file)" :title="file.has_file ? 'Reemplazar' : 'Subir'">
+              <i class="las la-upload text-lg"></i>
             </button>
           </div>
 
           <!-- Cadenas de custodia -->
-          <div v-if="sheet.custody_chains.length > 0" class="mt-2">
-            <div class="text-xs font-semibold text-gray-500 mb-1 pl-5 flex items-center gap-1">
-              <i class="las la-link"></i> Cadenas de Custodia
+          <div v-if="sheet.custody_chains.length > 0" class="mt-3">
+            <div class="text-sm font-semibold text-gray-500 mb-2 pl-6 flex items-center gap-2">
+              <i class="las la-link text-lg"></i> Cadenas de Custodia
             </div>
             <div
               v-for="(chain, ci) in sheet.custody_chains"
               :key="'c'+ci"
-              class="flex items-center gap-2 py-1 pl-8 text-sm border-b border-gray-50 last:border-0"
+              class="flex items-center gap-3 py-2 pl-10 text-base border-b border-gray-50 last:border-0"
             >
               <i
-                class="las text-base"
+                class="las text-xl"
                 :class="chain.files[0]?.has_file ? 'la-check-circle text-success' : 'la-times-circle text-error'"
               ></i>
-              <span class="flex-1 text-xs">
+              <span class="flex-1 text-sm">
                 {{ chain.label }}
                 <span class="text-gray-400 ml-1">{{ chain.date }}</span>
               </span>
               <template v-if="chain.files[0]?.has_file">
-                <a :href="chain.files[0].file_url" target="_blank" class="btn btn-xs btn-ghost text-blue-500" title="Ver">
-                  <i class="las la-eye"></i>
+                <a :href="chain.files[0].file_url" target="_blank" class="btn btn-sm btn-ghost text-blue-500" title="Ver">
+                  <i class="las la-eye text-lg"></i>
                 </a>
-                <button class="btn btn-xs btn-ghost text-error" @click="deleteFile(chain.files[0])" title="Eliminar">
-                  <i class="las la-trash"></i>
+                <button class="btn btn-sm btn-ghost text-error" @click="deleteFile(chain.files[0])" title="Eliminar">
+                  <i class="las la-trash text-lg"></i>
                 </button>
               </template>
-              <button class="btn btn-xs btn-primary btn-outline" @click="openUpload(chain.files[0])" :title="chain.files[0]?.has_file ? 'Reemplazar' : 'Subir'">
-                <i class="las la-upload"></i>
+              <button class="btn btn-sm btn-primary btn-outline" @click="openUpload(chain.files[0])" :title="chain.files[0]?.has_file ? 'Reemplazar' : 'Subir'">
+                <i class="las la-upload text-lg"></i>
               </button>
             </div>
           </div>
@@ -447,52 +447,52 @@ function downloadMerge(scope = 'all', sheetId = null) {
       <!-- ── Guías de remisión ──────────────────────────────── -->
       <div v-if="treeData.shipping_guides.length > 0" class="border border-gray-200 rounded-lg">
         <div
-          class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-base-200 rounded-t-lg"
+          class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-base-200 rounded-t-lg"
           @click="toggleNode('guides')"
         >
           <i
-            class="las text-gray-500 transition-transform duration-200"
+            class="las text-gray-500 transition-transform duration-200 text-xl"
             :class="isExpanded('guides') ? 'la-angle-down' : 'la-angle-right'"
           ></i>
-          <i class="las la-truck text-amber-500"></i>
-          <span class="font-medium text-sm flex-1">Guías de Remisión</span>
+          <i class="las la-truck text-amber-500 text-2xl"></i>
+          <span class="font-medium text-base flex-1">Guías de Remisión</span>
           <span
-            class="badge badge-xs"
+            class="badge badge-sm"
             :class="treeData.shipping_guides.filter(g => g.files.some(f => f.has_file)).length === treeData.shipping_guides.length ? 'badge-success' : 'badge-warning'"
           >
             {{ treeData.shipping_guides.filter(g => g.files.some(f => f.has_file)).length }}/{{ treeData.shipping_guides.length }}
           </span>
         </div>
-        <div v-if="isExpanded('guides')" class="px-4 pb-3">
+        <div v-if="isExpanded('guides')" class="px-5 pb-4">
           <div
             v-for="guide in treeData.shipping_guides"
             :key="guide.id"
-            class="flex items-center gap-2 py-1 pl-5 text-sm border-b border-gray-100 last:border-0"
+            class="flex items-center gap-3 py-2 pl-6 text-base border-b border-gray-100 last:border-0"
           >
             <i
-              class="las text-base"
+              class="las text-xl"
               :class="guide.files[0]?.has_file ? 'la-check-circle text-success' : 'la-times-circle text-error'"
             ></i>
-            <span class="flex-1">{{ guide.label }} <span class="text-gray-400 text-xs">{{ guide.date }}</span></span>
+            <span class="flex-1">{{ guide.label }} <span class="text-gray-400 text-sm">{{ guide.date }}</span></span>
             <template v-if="guide.files[0]?.has_file">
-              <a :href="guide.files[0].file_url" target="_blank" class="btn btn-xs btn-ghost text-blue-500" title="Ver">
-                <i class="las la-eye"></i>
+              <a :href="guide.files[0].file_url" target="_blank" class="btn btn-sm btn-ghost text-blue-500" title="Ver">
+                <i class="las la-eye text-lg"></i>
               </a>
-              <button class="btn btn-xs btn-ghost text-error" @click="deleteFile(guide.files[0])" title="Eliminar">
-                <i class="las la-trash"></i>
+              <button class="btn btn-sm btn-ghost text-error" @click="deleteFile(guide.files[0])" title="Eliminar">
+                <i class="las la-trash text-lg"></i>
               </button>
             </template>
-            <button class="btn btn-xs btn-primary btn-outline" @click="openUpload(guide.files[0])" :title="guide.files[0]?.has_file ? 'Reemplazar' : 'Subir'">
-              <i class="las la-upload"></i>
+            <button class="btn btn-sm btn-primary btn-outline" @click="openUpload(guide.files[0])" :title="guide.files[0]?.has_file ? 'Reemplazar' : 'Subir'">
+              <i class="las la-upload text-lg"></i>
             </button>
           </div>
         </div>
       </div>
 
       <!-- Vacío -->
-      <div v-if="treeData.sheets.length === 0 && treeData.shipping_guides.length === 0" class="text-center text-gray-400 py-8">
-        <i class="las la-folder-open text-4xl"></i>
-        <p class="mt-2">No hay documentos registrados para este proyecto</p>
+      <div v-if="treeData.sheets.length === 0 && treeData.shipping_guides.length === 0" class="text-center text-gray-400 py-10">
+        <i class="las la-folder-open text-6xl"></i>
+        <p class="mt-3 text-lg">No hay documentos registrados para este proyecto</p>
       </div>
     </div>
 
@@ -500,41 +500,41 @@ function downloadMerge(scope = 'all', sheetId = null) {
     <!--  Modal: Upload Individual                              -->
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="modal" :class="{ 'modal-open': uploadModal }">
-      <div class="modal-box max-w-md">
-        <h3 class="font-bold text-lg flex items-center gap-2 mb-4">
-          <i class="las la-cloud-upload-alt text-blue-500 text-xl"></i>
+      <div class="modal-box max-w-lg">
+        <h3 class="font-bold text-xl flex items-center gap-3 mb-5">
+          <i class="las la-cloud-upload-alt text-blue-500 text-3xl"></i>
           Subir Archivo
         </h3>
         <div v-if="uploadTarget">
-          <p class="text-sm text-gray-600 mb-1">
+          <p class="text-base text-gray-600 mb-2">
             <strong>{{ uploadTarget.label }}</strong>
           </p>
-          <p v-if="uploadTarget.current_file" class="text-xs text-gray-400 mb-3">
+          <p v-if="uploadTarget.current_file" class="text-sm text-gray-400 mb-4">
             Archivo actual: {{ uploadTarget.current_file }} (se reemplazará)
           </p>
           <input
             type="file"
-            class="file-input file-input-bordered file-input-sm w-full"
+            class="file-input file-input-bordered file-input-md w-full"
             @change="onUploadFileChange"
           />
           <!-- Progreso -->
-          <div v-if="uploading" class="mt-3">
+          <div v-if="uploading" class="mt-4">
             <progress class="progress progress-primary w-full"></progress>
-            <p class="text-xs text-gray-500 mt-1">Subiendo...</p>
+            <p class="text-sm text-gray-500 mt-1">Subiendo...</p>
           </div>
           <!-- Mensaje -->
-          <div v-if="uploadMsg" class="mt-2 text-sm" :class="uploadMsgType === 'success' ? 'text-success' : 'text-error'">
+          <div v-if="uploadMsg" class="mt-3 text-base" :class="uploadMsgType === 'success' ? 'text-success' : 'text-error'">
             {{ uploadMsg }}
           </div>
         </div>
         <div class="modal-action">
-          <button class="btn btn-sm" @click="closeUploadModal">Cancelar</button>
+          <button class="btn btn-md" @click="closeUploadModal">Cancelar</button>
           <button
-            class="btn btn-sm btn-primary"
+            class="btn btn-md btn-primary"
             :disabled="!uploadFile || uploading"
             @click="confirmUpload"
           >
-            <i class="las la-upload mr-1"></i> Subir
+            <i class="las la-upload mr-1 text-lg"></i> Subir
           </button>
         </div>
       </div>
@@ -545,58 +545,58 @@ function downloadMerge(scope = 'all', sheetId = null) {
     <!--  Modal: Carga Masiva                                   -->
     <!-- ═══════════════════════════════════════════════════════ -->
     <div class="modal" :class="{ 'modal-open': bulkModal }">
-      <div class="modal-box max-w-2xl">
-        <h3 class="font-bold text-lg flex items-center gap-2 mb-4">
-          <i class="las la-layer-group text-accent text-xl"></i>
+      <div class="modal-box max-w-3xl">
+        <h3 class="font-bold text-xl flex items-center gap-3 mb-5">
+          <i class="las la-layer-group text-accent text-3xl"></i>
           Carga Masiva — {{ bulkSheetLabel }}
         </h3>
 
         <!-- Selección de cadenas -->
-        <div class="mb-3">
-          <p class="text-sm font-semibold mb-2">Seleccione las cadenas de custodia:</p>
-          <div class="flex gap-2 mb-2">
-            <button class="btn btn-xs btn-outline" @click="bulkSelectAll">Todas</button>
-            <button class="btn btn-xs btn-outline" @click="bulkSelectNone">Ninguna</button>
-            <button class="btn btn-xs btn-outline" @click="bulkSelectEvens">Pares</button>
-            <button class="btn btn-xs btn-outline" @click="bulkSelectOdds">Impares</button>
+        <div class="mb-4">
+          <p class="text-base font-semibold mb-3">Seleccione las cadenas de custodia:</p>
+          <div class="flex gap-3 mb-3">
+            <button class="btn btn-sm btn-outline" @click="bulkSelectAll">Todas</button>
+            <button class="btn btn-sm btn-outline" @click="bulkSelectNone">Ninguna</button>
+            <button class="btn btn-sm btn-outline" @click="bulkSelectEvens">Pares</button>
+            <button class="btn btn-sm btn-outline" @click="bulkSelectOdds">Impares</button>
           </div>
-          <div class="max-h-48 overflow-y-auto border rounded-lg p-2 space-y-1">
+          <div class="max-h-64 overflow-y-auto border rounded-lg p-3 space-y-1">
             <label
               v-for="(chain, i) in bulkChains"
               :key="chain.id"
-              class="flex items-center gap-2 py-1 px-2 rounded cursor-pointer hover:bg-base-200 text-sm"
+              class="flex items-center gap-3 py-2 px-3 rounded cursor-pointer hover:bg-base-200 text-base"
             >
               <input
                 type="checkbox"
-                class="checkbox checkbox-xs checkbox-primary"
+                class="checkbox checkbox-sm checkbox-primary"
                 :value="chain.id"
                 v-model="bulkSelectedIds"
               />
-              <span class="font-mono text-xs text-gray-500">{{ i + 1 }}.</span>
+              <span class="font-mono text-sm text-gray-500">{{ i + 1 }}.</span>
               <span>{{ chain.label }}</span>
-              <span class="text-xs text-gray-400">{{ chain.date }}</span>
+              <span class="text-sm text-gray-400">{{ chain.date }}</span>
               <i
                 v-if="chain.files[0]?.has_file"
-                class="las la-check-circle text-success text-sm ml-auto"
+                class="las la-check-circle text-success text-lg ml-auto"
                 title="Ya tiene archivo"
               ></i>
             </label>
           </div>
-          <p class="text-xs text-gray-500 mt-1">
+          <p class="text-sm text-gray-500 mt-2">
             {{ bulkSelectedIds.length }} cadena(s) seleccionada(s)
           </p>
         </div>
 
         <!-- File input -->
-        <div class="mb-3">
-          <p class="text-sm font-semibold mb-1">Archivo PDF (una página por cadena):</p>
+        <div class="mb-4">
+          <p class="text-base font-semibold mb-2">Archivo PDF (una página por cadena):</p>
           <input
             type="file"
             accept=".pdf"
-            class="file-input file-input-bordered file-input-sm w-full"
+            class="file-input file-input-bordered file-input-md w-full"
             @change="onBulkFileChange"
           />
-          <div v-if="bulkFile" class="mt-1 text-xs">
+          <div v-if="bulkFile" class="mt-2 text-sm">
             <span v-if="bulkPageCount > 0">
               Páginas detectadas:
               <strong :class="bulkPageCount === bulkSelectedIds.length ? 'text-success' : 'text-error'">
@@ -612,24 +612,24 @@ function downloadMerge(scope = 'all', sheetId = null) {
         </div>
 
         <!-- Progreso -->
-        <div v-if="bulkUploading" class="mb-3">
+        <div v-if="bulkUploading" class="mb-4">
           <progress class="progress progress-accent w-full"></progress>
-          <p class="text-xs text-gray-500 mt-1">Procesando carga masiva...</p>
+          <p class="text-sm text-gray-500 mt-1">Procesando carga masiva...</p>
         </div>
 
         <!-- Mensaje -->
-        <div v-if="bulkMsg" class="mb-3 text-sm" :class="bulkMsgType === 'success' ? 'text-success' : 'text-error'">
+        <div v-if="bulkMsg" class="mb-4 text-base" :class="bulkMsgType === 'success' ? 'text-success' : 'text-error'">
           {{ bulkMsg }}
         </div>
 
         <div class="modal-action">
-          <button class="btn btn-sm" @click="closeBulkModal">Cancelar</button>
+          <button class="btn btn-md" @click="closeBulkModal">Cancelar</button>
           <button
-            class="btn btn-sm btn-accent"
+            class="btn btn-md btn-accent"
             :disabled="!bulkIsValid || bulkUploading"
             @click="confirmBulkUpload"
           >
-            <i class="las la-cloud-upload-alt mr-1"></i>
+            <i class="las la-cloud-upload-alt mr-1 text-lg"></i>
             Subir {{ bulkSelectedIds.length }} archivo(s)
           </button>
         </div>

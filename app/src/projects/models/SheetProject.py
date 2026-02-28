@@ -247,9 +247,7 @@ class SheetProjectDetail(BaseModel):
     )
     is_closed = models.BooleanField(
         'Planilla cerrada',
-        blank=True,
-        null=True,
-        defaul=False
+        default=False
     )
 
     class Meta:
