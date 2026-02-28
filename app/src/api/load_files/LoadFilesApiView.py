@@ -128,6 +128,27 @@ class LoadFilesApiView(View):
             config, instance = _get_model_and_instance(model_type, object_id)
             _validate_field(config, field_name, model_type)
 
+            # Validar planilla cerrada: solo se pueden agregar archivos nuevos, no reemplazar ni eliminar
+            if model_type == 'sheet_project' and hasattr(instance, 'is_closed') and instance.is_closed:
+                old_field = getattr(instance, field_name)
+                if old_field and old_field.name:
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'No se puede modificar archivos de una planilla cerrada. '
+                                 'Solo se pueden agregar archivos en campos vacíos.',
+                    }, status=400)
+
+            # Validar cadena de custodia con planilla cerrada
+            if model_type == 'custody_chain' and hasattr(instance, 'sheet_project'):
+                if instance.sheet_project and instance.sheet_project.is_closed:
+                    old_field = getattr(instance, field_name)
+                    if old_field and old_field.name:
+                        return JsonResponse({
+                            'success': False,
+                            'error': 'No se puede modificar archivos de una cadena de custodia '
+                                     'con planilla cerrada. Solo se pueden agregar archivos en campos vacíos.',
+                        }, status=400)
+
             # Eliminar archivo anterior si existe
             old_field = getattr(instance, field_name)
             if old_field and old_field.name:
@@ -174,6 +195,21 @@ class LoadFilesApiView(View):
 
             config, instance = _get_model_and_instance(model_type, object_id)
             _validate_field(config, field_name, model_type)
+
+            # Validar planilla cerrada: no se pueden eliminar archivos
+            if model_type == 'sheet_project' and hasattr(instance, 'is_closed') and instance.is_closed:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No se puede eliminar archivos de una planilla cerrada.',
+                }, status=400)
+
+            # Validar cadena de custodia con planilla cerrada
+            if model_type == 'custody_chain' and hasattr(instance, 'sheet_project'):
+                if instance.sheet_project and instance.sheet_project.is_closed:
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'No se puede eliminar archivos de una cadena de custodia con planilla cerrada.',
+                    }, status=400)
 
             file_field = getattr(instance, field_name)
             if not file_field or not file_field.name:
