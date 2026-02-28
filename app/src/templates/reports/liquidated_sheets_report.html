@@ -1,0 +1,377 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Planillas Liquidadas{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="las la-file-invoice-dollar me-2"></i>
+                        Planillas Liquidadas
+                    </h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- Estadisticas -->
+                    <div class="flex align-items-center py-3 bg-light rounded mb-4">
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Total Planillas</h5>
+                            <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Monto Total</h5>
+                            <h2 class="text-info mb-0">${{ stats.total_amount_display }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">PDFs Completos</h5>
+                            <h2 class="text-success mb-0">{{ stats.with_all_pdfs }}</h2>
+                        </div>
+                        <div class="text-center px-3">
+                            <h5 class="text-muted mb-1">PDFs Pendientes</h5>
+                            <h2 class="text-warning mb-0">{{ stats.missing_pdfs }}</h2>
+                        </div>
+                    </div>
+
+                    <!-- Tabla -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped" id="liquidatedSheetsTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Serie</th>
+                                    <th>Cliente</th>
+                                    <th>Campamento</th>
+                                    <th>Tipo Servicio</th>
+                                    <th>Periodo</th>
+                                    <th>Total</th>
+                                    <th>Cadenas</th>
+                                    <th>Archivos</th>
+                                    <th class="no-export">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in all_sheets %}
+                                <tr>
+                                    <td><strong>{{ item.series_code }}</strong></td>
+                                    <td>{{ item.partner_name }}</td>
+                                    <td>{{ item.project_location|default:"-" }}</td>
+                                    <td>
+                                        <span class="badge badge-outline badge-sm">
+                                            {{ item.service_type }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small>
+                                            {{ item.period_start|date:"d/m/Y" }} -
+                                            {{ item.period_end|date:"d/m/Y"|default:"actual" }}
+                                        </small>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong>${{ item.total|floatformat:2 }}</strong>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge {% if item.chains_with_pdf == item.chains_total and item.chains_total > 0 %}badge-success{% elif item.chains_total == 0 %}badge-ghost{% else %}badge-warning{% endif %}">
+                                            {{ item.chains_with_pdf }}/{{ item.chains_total }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if item.has_sheet_pdf %}
+                                            <i class="las la-file-pdf text-success" title="Planilla PDF cargada"></i>
+                                        {% else %}
+                                            <i class="las la-file-pdf text-danger" title="Sin Planilla PDF"></i>
+                                        {% endif %}
+                                        {% if item.has_certificate_pdf %}
+                                            <i class="las la-certificate text-success" title="Certificado PDF cargado"></i>
+                                        {% else %}
+                                            <i class="las la-certificate text-danger" title="Sin Certificado PDF"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center no-export">
+                                        <button class="btn btn-xs btn-info"
+                                                onclick="openSheetDetail({{ item.sheet.id }})">
+                                            <i class="las la-eye"></i> Ver
+                                        </button>
+                                        {% if item.has_sheet_pdf %}
+                                        <a href="{{ item.sheet_pdf_url }}" target="_blank"
+                                           class="btn btn-xs btn-success" title="Descargar Planilla PDF">
+                                            <i class="las la-download"></i>
+                                        </a>
+                                        {% endif %}
+                                        {% if item.chains_with_pdf > 0 and item.project_id %}
+                                        <a href="/api/load_files/project/{{ item.project_id }}/merge/?scope=custody_chains&sheet_id={{ item.sheet.id }}"
+                                           class="btn btn-xs btn-warning" title="Unir Cadenas de Custodia en PDF"
+                                           target="_blank">
+                                            <i class="las la-object-group"></i> Unir
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center">
+                                        <div class="alert alert-info mb-0">
+                                            <i class="las la-info-circle me-2"></i>
+                                            No hay planillas liquidadas.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal DaisyUI para detalle de planilla -->
+<dialog id="sheetDetailModal" class="modal">
+    <div class="modal-box w-11/12 max-w-5xl">
+        <h3 class="font-bold text-lg mb-4" id="modalTitle">
+            <i class="las la-file-invoice-dollar"></i>
+            Detalle de Planilla
+        </h3>
+        <div id="modalContent">
+            <div class="flex justify-center py-8">
+                <span class="loading loading-spinner loading-lg"></span>
+            </div>
+        </div>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Cerrar</button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .table thead th {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    .table tbody td {
+        vertical-align: middle;
+    }
+</style>
+
+<script>
+    // Datos de planillas desde el contexto Django
+    const sheetsData = {
+        {% for item in all_sheets %}
+        {{ item.sheet.id }}: {
+            series_code: "{{ item.series_code|escapejs }}",
+            partner_name: "{{ item.partner_name|escapejs }}",
+            project_location: "{{ item.project_location|default:'-'|escapejs }}",
+            service_type: "{{ item.service_type|escapejs }}",
+            period_start: "{{ item.period_start|date:'d/m/Y'|default:'-' }}",
+            period_end: "{{ item.period_end|date:'d/m/Y'|default:'actual' }}",
+            issue_date: "{{ item.issue_date|date:'d/m/Y'|default:'-' }}",
+            subtotal: "{{ item.subtotal|floatformat:2 }}",
+            tax_amount: "{{ item.tax_amount|floatformat:2 }}",
+            total: "{{ item.total|floatformat:2 }}",
+            is_closed: {{ item.is_closed|yesno:"true,false" }},
+            has_sheet_pdf: {{ item.has_sheet_pdf|yesno:"true,false" }},
+            sheet_pdf_url: "{{ item.sheet_pdf_url|default:''|escapejs }}",
+            has_certificate_pdf: {{ item.has_certificate_pdf|yesno:"true,false" }},
+            certificate_pdf_url: "{{ item.certificate_pdf_url|default:''|escapejs }}",
+            project_id: {{ item.project_id|default:"null" }},
+            custody_chains: [
+                {% for chain in item.custody_chains %}
+                {
+                    id: {{ chain.id }},
+                    consecutive: "{{ chain.consecutive|default:'-'|escapejs }}",
+                    activity_date: "{{ chain.activity_date|date:'d/m/Y'|default:'-' }}",
+                    location: "{{ chain.location|default:'-'|escapejs }}",
+                    status_display: "{{ chain.status_display|escapejs }}",
+                    total_gallons: "{{ chain.total_gallons }}",
+                    total_barrels: "{{ chain.total_barrels }}",
+                    total_cubic_meters: "{{ chain.total_cubic_meters }}",
+                    has_pdf: {{ chain.has_pdf|yesno:"true,false" }},
+                    pdf_url: "{{ chain.pdf_url|default:''|escapejs }}",
+                },
+                {% endfor %}
+            ],
+        },
+        {% endfor %}
+    };
+
+    function openSheetDetail(sheetId) {
+        const modal = document.getElementById('sheetDetailModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const data = sheetsData[sheetId];
+
+        if (!data) return;
+
+        modalTitle.innerHTML = '<i class="las la-file-invoice-dollar"></i> ' + data.series_code + ' - ' + data.partner_name;
+
+        let html = `
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <p class="text-sm text-gray-500">Cliente</p>
+                    <p class="font-bold">${data.partner_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Campamento</p>
+                    <p class="font-bold">${data.project_location}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Tipo de Servicio</p>
+                    <p class="font-bold">${data.service_type}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Periodo</p>
+                    <p class="font-bold">${data.period_start} - ${data.period_end}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Fecha de Emision</p>
+                    <p class="font-bold">${data.issue_date}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Estado Planilla</p>
+                    <p class="font-bold">${data.is_closed ? '<span class="badge badge-error badge-sm">CERRADA</span>' : '<span class="badge badge-warning badge-sm">ABIERTA</span>'}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-base-200 p-3 rounded">
+                <div>
+                    <p class="text-sm text-gray-500">Subtotal</p>
+                    <p class="font-bold text-lg">$${data.subtotal}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">IVA (15%)</p>
+                    <p class="font-bold text-lg">$${data.tax_amount}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Total</p>
+                    <p class="font-bold text-lg text-primary">$${data.total}</p>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mb-4 flex-wrap">
+        `;
+
+        if (data.has_sheet_pdf) {
+            html += '<a href="' + data.sheet_pdf_url + '" target="_blank" class="btn btn-sm btn-success"><i class="las la-file-pdf"></i> Descargar Planilla</a>';
+        }
+        if (data.has_certificate_pdf) {
+            html += '<a href="' + data.certificate_pdf_url + '" target="_blank" class="btn btn-sm btn-info"><i class="las la-certificate"></i> Certificado Disposicion Final</a>';
+        }
+        if (data.custody_chains.some(c => c.has_pdf) && data.project_id) {
+            html += '<a href="/api/load_files/project/' + data.project_id + '/merge/?scope=custody_chains&sheet_id=' + sheetId + '" target="_blank" class="btn btn-sm btn-warning"><i class="las la-object-group"></i> Unir Todas las Cadenas</a>';
+        }
+
+        html += '</div>';
+
+        // Tabla de cadenas de custodia
+        if (data.custody_chains.length > 0) {
+            html += `
+                <h4 class="font-bold text-md mb-2">
+                    <i class="las la-link"></i> Cadenas de Custodia (${data.custody_chains.length})
+                </h4>
+                <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                    <table class="table table-compact table-zebra w-full">
+                        <thead>
+                            <tr>
+                                <th>Consecutivo</th>
+                                <th>Fecha</th>
+                                <th>Ubicacion</th>
+                                <th>Estado</th>
+                                <th>Galones</th>
+                                <th>Barriles</th>
+                                <th>m3</th>
+                                <th>PDF</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            data.custody_chains.forEach(function(chain) {
+                html += '<tr>';
+                html += '<td><strong>' + chain.consecutive + '</strong></td>';
+                html += '<td>' + chain.activity_date + '</td>';
+                html += '<td>' + chain.location + '</td>';
+                html += '<td>' + chain.status_display + '</td>';
+                html += '<td class="text-right">' + chain.total_gallons + '</td>';
+                html += '<td class="text-right">' + chain.total_barrels + '</td>';
+                html += '<td class="text-right">' + chain.total_cubic_meters + '</td>';
+                html += '<td class="text-center">';
+                if (chain.has_pdf) {
+                    html += '<a href="' + chain.pdf_url + '" target="_blank" class="btn btn-xs btn-success" title="Descargar PDF"><i class="las la-download"></i></a>';
+                } else {
+                    html += '<span class="text-error" title="Sin PDF"><i class="las la-times-circle"></i></span>';
+                }
+                html += '</td>';
+                html += '</tr>';
+            });
+            html += '</tbody></table></div>';
+        } else {
+            html += '<div class="alert alert-info"><i class="las la-info-circle"></i> Sin cadenas de custodia asociadas.</div>';
+        }
+
+        modalContent.innerHTML = html;
+        modal.showModal();
+    }
+
+    // Inicializar DataTables
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof $.fn.DataTable !== 'undefined') {
+            $('#liquidatedSheetsTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                },
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: '<i class="las la-file-excel"></i> Excel',
+                        className: 'btn btn-success btn-sm',
+                        title: 'Planillas Liquidadas',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="las la-file-csv"></i> CSV',
+                        className: 'btn btn-info btn-sm',
+                        title: 'Planillas Liquidadas',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="las la-file-pdf"></i> PDF',
+                        className: 'btn btn-danger btn-sm',
+                        title: 'Planillas Liquidadas',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    }
+                ],
+                pageLength: 25,
+                lengthMenu: [
+                    [25, 50, 100, -1],
+                    ['25', '50', '100', 'Todos']
+                ],
+                order: [[0, 'asc']],
+                columnDefs: [
+                    { orderable: false, targets: 8 }
+                ]
+            });
+        }
+    });
+</script>
+{% endblock %}

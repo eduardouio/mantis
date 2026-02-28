@@ -29,6 +29,7 @@ from reports.views.PDFWorkSheet import PDFWorkSheet
 from reports.views.FinalDispositionCertificate import FinalDispositionCertificateView
 from reports.views.PDFFinalDispositionCertificateView import PDFFinalDispositionCertificateView
 from reports.views.ShippingGuideReportView import ShippingGuideReportView
+from reports.views.LiquidatedSheetsReport import LiquidatedSheetsReportView
 
 
 urlpatterns = [
@@ -42,6 +43,7 @@ urlpatterns = [
     path('reports/equipment-status/', ResourcesByStatusView.as_view(), name='equipment-status-report'),
     path('reports/technicals-status/', TechnicalByStatusView.as_view(), name='technicals-status-report'),
     path('reports/vehicles-status/', VehiclesByStatusView.as_view(), name='vehicles-status-report'),
+    path('reports/liquidated-sheets/', LiquidatedSheetsReportView.as_view(), name='liquidated-sheets-report'),
     path('reports/template-worksheet/<int:id>/', WorkSheetTemplateView.as_view(), name='worksheet-template'),
     path('reports/template-final-disposition/<int:id>/', FinalDispositionCertificateView.as_view(), name='final-disposition-certificate'),
 	path('reports/template-shipping-guide/<int:id>/', ShippingGuideReportView.as_view(), name='shipping-guide-report'),
