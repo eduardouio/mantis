@@ -721,7 +721,7 @@ const currentStatusBadge = computed(() => {
               <select 
                 id="technical"
                 v-model.number="custodyChain.technical"
-                :disabled="isChainClosed"
+                :disabled="!canEdit"
                 required
                 class="select select-bordered w-full flex-1"
                 :class="{ 'select-error': technicalValidation.hasErrors, 'select-warning': technicalValidation.hasWarnings && !technicalValidation.hasErrors }"
@@ -760,7 +760,7 @@ const currentStatusBadge = computed(() => {
               <select 
                 id="vehicle"
                 v-model.number="custodyChain.vehicle"
-                :disabled="isChainClosed"
+                :disabled="!canEdit"
                 required
                 class="select select-bordered w-full flex-1"
                 :class="{ 'select-error': vehicleValidation.hasErrors, 'select-warning': vehicleValidation.hasWarnings && !vehicleValidation.hasErrors }"
@@ -791,7 +791,7 @@ const currentStatusBadge = computed(() => {
               type="text"
               id="consecutive"
               v-model="custodyChain.consecutive"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               placeholder="Se generará automáticamente"
               class="input input-bordered w-full"
               maxlength="7"
@@ -807,7 +807,7 @@ const currentStatusBadge = computed(() => {
               type="date"
               id="activity_date"
               v-model="custodyChain.activity_date"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               required
               class="input input-bordered w-full"
             />
@@ -822,7 +822,7 @@ const currentStatusBadge = computed(() => {
               type="text"
               id="location"
               v-model="custodyChain.location"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               placeholder="Ej: Bloque 31"
               class="input input-bordered w-full"
             />
@@ -837,7 +837,7 @@ const currentStatusBadge = computed(() => {
               type="date"
               id="issue_date"
               v-model="custodyChain.issue_date"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -851,7 +851,7 @@ const currentStatusBadge = computed(() => {
               type="time"
               id="start_time"
               v-model="custodyChain.start_time"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
               :class="{ 'input-error': !timeValidation.isValid }"
             />
@@ -866,7 +866,7 @@ const currentStatusBadge = computed(() => {
               type="time"
               id="end_time"
               v-model="custodyChain.end_time"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
               :class="{ 'input-error': !timeValidation.isValid }"
             />
@@ -901,7 +901,7 @@ const currentStatusBadge = computed(() => {
             <select 
               id="have_logistic"
               v-model="custodyChain.have_logistic"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               required
               class="select select-bordered w-full"
             >
@@ -926,7 +926,7 @@ const currentStatusBadge = computed(() => {
               type="text"
               id="driver_name"
               v-model="custodyChain.driver_name"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               placeholder="Nombre completo"
               class="input input-bordered w-full"
             />
@@ -940,7 +940,7 @@ const currentStatusBadge = computed(() => {
               type="text"
               id="dni_driver"
               v-model="custodyChain.dni_driver"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               placeholder="Número de identificación"
               maxlength="15"
               class="input input-bordered w-full"
@@ -955,7 +955,7 @@ const currentStatusBadge = computed(() => {
               type="text"
               id="driver_position"
               v-model="custodyChain.driver_position"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               placeholder="Ej: Conductor"
               class="input input-bordered w-full"
             />
@@ -969,7 +969,7 @@ const currentStatusBadge = computed(() => {
               type="date"
               id="driver_date"
               v-model="custodyChain.driver_date"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -989,7 +989,7 @@ const currentStatusBadge = computed(() => {
               type="text"
               id="contact_name"
               v-model="custodyChain.contact_name"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               placeholder="Nombre completo"
               class="input input-bordered w-full"
             />
@@ -1003,7 +1003,7 @@ const currentStatusBadge = computed(() => {
               type="text"
               id="dni_contact"
               v-model="custodyChain.dni_contact"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               placeholder="Número de identificación"
               maxlength="15"
               class="input input-bordered w-full"
@@ -1018,7 +1018,7 @@ const currentStatusBadge = computed(() => {
               type="text"
               id="contact_position"
               v-model="custodyChain.contact_position"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               placeholder="Ej: Maquinista"
               class="input input-bordered w-full"
             />
@@ -1032,7 +1032,7 @@ const currentStatusBadge = computed(() => {
               type="date"
               id="date_contact"
               v-model="custodyChain.date_contact"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -1051,7 +1051,7 @@ const currentStatusBadge = computed(() => {
             <thead>
               <tr class="bg-gray-500 text-white">
                 <th class="border border-gray-300 w-24 text-center">
-                  <input type="checkbox" class="checkbox checkbox-sm" :disabled="isChainClosed" />
+                  <input type="checkbox" class="checkbox checkbox-sm" :disabled="!canEdit" />
                 </th>
                 <th class="border border-gray-300">#</th>
                 <th class="border border-gray-300">Código</th>
@@ -1124,7 +1124,7 @@ const currentStatusBadge = computed(() => {
               <input 
                 type="checkbox" 
                 v-model="custodyChain.black_water"
-                :disabled="isChainClosed"
+                :disabled="!canEdit"
                 class="checkbox checkbox-primary"
               />
               <span class="label-text font-medium">Aguas Negras</span>
@@ -1136,7 +1136,7 @@ const currentStatusBadge = computed(() => {
               <input 
                 type="checkbox" 
                 v-model="custodyChain.grey_water"
-                :disabled="isChainClosed"
+                :disabled="!canEdit"
                 class="checkbox checkbox-primary"
               />
               <span class="label-text font-medium">Aguas Grises</span>
@@ -1148,7 +1148,7 @@ const currentStatusBadge = computed(() => {
               <input 
                 type="checkbox" 
                 v-model="custodyChain.clean_water"
-                :disabled="isChainClosed"
+                :disabled="!canEdit"
                 class="checkbox checkbox-primary"
               />
               <span class="label-text font-medium">Aguas Limpias</span>
@@ -1160,7 +1160,7 @@ const currentStatusBadge = computed(() => {
               <input 
                 type="checkbox" 
                 v-model="custodyChain.activated_sludge"
-                :disabled="isChainClosed"
+                :disabled="!canEdit"
                 class="checkbox checkbox-primary"
               />
               <span class="label-text font-medium">Lodos Activados</span>
@@ -1172,7 +1172,7 @@ const currentStatusBadge = computed(() => {
               <input 
                 type="checkbox" 
                 v-model="custodyChain.treated_wastewater"
-                :disabled="isChainClosed"
+                :disabled="!canEdit"
                 class="checkbox checkbox-primary"
               />
               <span class="label-text font-medium">Aguas Residuales Tratadas</span>
@@ -1184,7 +1184,7 @@ const currentStatusBadge = computed(() => {
               <input 
                 type="checkbox" 
                 v-model="custodyChain.organic_grease"
-                :disabled="isChainClosed"
+                :disabled="!canEdit"
                 class="checkbox checkbox-primary"
               />
               <span class="label-text font-medium">Grasa Orgánica</span>
@@ -1210,7 +1210,7 @@ const currentStatusBadge = computed(() => {
               id="total_gallons"
               v-model.number="custodyChain.total_gallons"
               @input="handleGallonsInput"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               min="0"
               step="0.01"
               class="input input-bordered w-full"
@@ -1227,7 +1227,7 @@ const currentStatusBadge = computed(() => {
               id="total_barrels"
               v-model.number="custodyChain.total_barrels"
               @input="handleBarrelsInput"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               min="0"
               step="0.01"
               class="input input-bordered w-full"
@@ -1244,7 +1244,7 @@ const currentStatusBadge = computed(() => {
               id="total_cubic_meters"
               v-model.number="custodyChain.total_cubic_meters"
               @input="handleCubicMetersInput"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               min="0"
               step="0.01"
               class="input input-bordered w-full"
@@ -1262,7 +1262,7 @@ const currentStatusBadge = computed(() => {
           <textarea 
             id="notes"
             v-model="custodyChain.notes"
-            :disabled="isChainClosed"
+            :disabled="!canEdit"
             rows="4"
             placeholder="Observaciones o notas adicionales..."
             class="textarea textarea-bordered w-full"

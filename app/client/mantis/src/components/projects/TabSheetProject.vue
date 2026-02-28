@@ -146,12 +146,17 @@ const viewCustodyChains = (sheetId) => {
               <td class="p-2 border border-gray-300">{{ sheet.id }}</td>
               <td class="p-2 border border-gray-300 font-mono">{{ sheet.series_code }}</td>
               <td class="p-2 border border-gray-300">
-                <span 
-                  class="badge px-3 py-1 rounded text-xs font-medium"
-                  :class="getStatusBadge(sheet.status).class"
-                >
-                  {{ getStatusBadge(sheet.status).text }}
-                </span>
+                <div class="flex items-center gap-1">
+                  <span 
+                    class="badge px-3 py-1 rounded text-xs font-medium"
+                    :class="getStatusBadge(sheet.status).class"
+                  >
+                    {{ getStatusBadge(sheet.status).text }}
+                  </span>
+                  <span v-if="sheet.is_closed" class="badge badge-error badge-sm gap-1" title="Planilla cerrada">
+                    <i class="las la-lock text-xs"></i> CERRADA
+                  </span>
+                </div>
               </td>
               <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.issue_date) }}</td>
               <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.period_start) }}</td>
@@ -172,11 +177,12 @@ const viewCustodyChains = (sheetId) => {
                 <div class="flex gap-2 justify-end">
                   <button 
                     @click="editSheet(sheet)"
-                    class="btn btn-xs border-blue-500 text-teal-500 bg-white" 
-                    title="Editar planilla"
+                    class="btn btn-xs border-blue-500 bg-white" 
+                    :class="sheet.is_closed ? 'text-gray-500' : 'text-teal-500'"
+                    :title="sheet.is_closed ? 'Ver planilla (cerrada)' : 'Editar planilla'"
                   >
-                    <i class="las la-edit"></i>
-                    EDITAR
+                    <i class="las" :class="sheet.is_closed ? 'la-eye' : 'la-edit'"></i>
+                    {{ sheet.is_closed ? 'VER' : 'EDITAR' }}
                   </button>
                   <button
                     @click="viewCustodyChains(sheet.id)"
