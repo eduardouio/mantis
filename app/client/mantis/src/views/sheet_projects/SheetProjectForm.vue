@@ -20,6 +20,13 @@ const resources = computed(() => projectResourceStore.resourcesProject || []);
 const sheetId = ref(route.params.id ? parseInt(route.params.id) : null);
 const isEditMode = computed(() => sheetId.value !== null);
 
+// Verificar si la planilla está cerrada (is_closed)
+const isSheetClosed = computed(() => {
+  if (!isEditMode.value) return false;
+  const existingSheet = sheetProjectStore.getSheetProjectById(sheetId.value);
+  return existingSheet?.is_closed === true;
+});
+
 // Usar el store como fuente de datos
 const formData = computed(() => sheetProjectStore.newSheetProject);
 
@@ -151,6 +158,7 @@ const toggleResourceSelection = (resource) => {
 
 // Subir archivo de planilla PDF
 const handleAttachSheetFile = () => {
+  if (isSheetClosed.value && sheetFileInfo.value?.has_file) return;
   sheetFileInput.value?.click();
 };
 
@@ -184,6 +192,7 @@ const onSheetFileSelected = async (event) => {
 
 // Subir certificado de disposición final
 const handleAttachCertificateFile = () => {
+  if (isSheetClosed.value && certificateFileInfo.value?.has_file) return;
   certificateFileInput.value?.click();
 };
 
@@ -436,6 +445,17 @@ const handleSubmit = async () => {
     <form @submit.prevent="handleSubmit" class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg">
       <div class="card-body">
 
+        <!-- ===== BANNER PLANILLA CERRADA ===== -->
+        <div v-if="isSheetClosed" class="alert alert-warning shadow-lg mb-4">
+          <div class="flex items-center gap-2">
+            <i class="las la-lock text-2xl"></i>
+            <div>
+              <h3 class="font-bold">Planilla Cerrada</h3>
+              <p class="text-sm">Esta planilla está cerrada y no permite modificaciones. Solo se pueden agregar archivos pendientes.</p>
+            </div>
+          </div>
+        </div>
+
         <!-- ===== ENCABEZADO: Título + Botones PDF + Código Serie ===== -->
         <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-200">
           <div>
@@ -464,12 +484,12 @@ const handleSubmit = async () => {
                 type="button" 
                 @click="handleAttachSheetFile" 
                 class="btn btn-info btn-sm gap-1"
-                :class="{ 'btn-disabled': !isEditMode || isUploadingSheet }"
-                :disabled="!isEditMode || isUploadingSheet"
+                :class="{ 'btn-disabled': !isEditMode || isUploadingSheet || (isSheetClosed && sheetFileInfo?.has_file) }"
+                :disabled="!isEditMode || isUploadingSheet || (isSheetClosed && sheetFileInfo?.has_file)"
               >
                 <span v-if="isUploadingSheet" class="loading loading-spinner loading-xs"></span>
                 <i v-else class="las la-file-pdf text-lg"></i>
-                {{ sheetFileInfo?.has_file ? 'Actualizar Planilla' : 'Adjuntar Planilla' }}
+                {{ sheetFileInfo?.has_file ? (isSheetClosed ? 'Planilla (Bloqueado)' : 'Actualizar Planilla') : 'Adjuntar Planilla' }}
               </button>
               <button 
                 v-if="sheetFileInfo?.has_file" 
@@ -491,12 +511,12 @@ const handleSubmit = async () => {
                 type="button" 
                 @click="handleAttachCertificateFile" 
                 class="btn btn-warning btn-sm gap-1"
-                :class="{ 'btn-disabled': !isEditMode || isUploadingCertificate }"
-                :disabled="!isEditMode || isUploadingCertificate"
+                :class="{ 'btn-disabled': !isEditMode || isUploadingCertificate || (isSheetClosed && certificateFileInfo?.has_file) }"
+                :disabled="!isEditMode || isUploadingCertificate || (isSheetClosed && certificateFileInfo?.has_file)"
               >
                 <span v-if="isUploadingCertificate" class="loading loading-spinner loading-xs"></span>
                 <i v-else class="las la-file-pdf text-lg"></i>
-                {{ certificateFileInfo?.has_file ? 'Actualizar Cert.' : 'Adjuntar Cert.' }}
+                {{ certificateFileInfo?.has_file ? (isSheetClosed ? 'Cert. (Bloqueado)' : 'Actualizar Cert.') : 'Adjuntar Cert.' }}
               </button>
               <button 
                 v-if="certificateFileInfo?.has_file" 
@@ -513,7 +533,7 @@ const handleSubmit = async () => {
             </div>
 
             <div class="form-control w-48">
-              <input v-model="formData.series_code" type="text" class="input input-bordered input-sm w-full font-bold text-red-800 font-mono text-[16px]" />
+              <input v-model="formData.series_code" type="text" class="input input-bordered input-sm w-full font-bold text-red-800 font-mono text-[16px]" :disabled="isSheetClosed" />
             </div>
           </div>
         </div>
@@ -560,7 +580,7 @@ const handleSubmit = async () => {
             <label class="label">
               <span class="label-text font-semibold">Fecha Emisión</span>
             </label>
-            <input v-model="formData.issue_date" type="date" class="input input-bordered w-full" />
+            <input v-model="formData.issue_date" type="date" class="input input-bordered w-full" :disabled="isSheetClosed" />
           </div>
           <div class="form-control w-full">
             <label class="label">
@@ -572,6 +592,7 @@ const handleSubmit = async () => {
               class="input input-bordered w-full" 
               :class="{ 'input-error': !formData.period_start || periodDatesError }" 
               required 
+              :disabled="isSheetClosed"
             />
             <label v-if="periodDatesError && formData.period_start" class="label">
               <span class="label-text-alt text-error">{{ periodDatesError }}</span>
@@ -587,6 +608,7 @@ const handleSubmit = async () => {
               class="input input-bordered w-full" 
               :class="{ 'input-error': !formData.period_end || periodDatesError }" 
               required 
+              :disabled="isSheetClosed"
             />
             <label v-if="periodDatesError && formData.period_end" class="label">
               <span class="label-text-alt text-error">{{ periodDatesError }}</span>
@@ -596,7 +618,7 @@ const handleSubmit = async () => {
             <label class="label">
               <span class="label-text font-semibold">Estado</span>
             </label>
-            <select v-model="formData.status" class="select select-bordered w-full">
+            <select v-model="formData.status" class="select select-bordered w-full" :disabled="isSheetClosed">
               <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
             </select>
           </div>
@@ -610,7 +632,7 @@ const handleSubmit = async () => {
             <label class="label">
               <span class="label-text font-semibold">Tipo Servicio *</span>
             </label>
-            <select v-model="formData.service_type" class="select select-bordered w-full" required>
+            <select v-model="formData.service_type" class="select select-bordered w-full" required :disabled="isSheetClosed">
               <option v-for="opt in serviceTypeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
             </select>
           </div>
@@ -618,19 +640,19 @@ const handleSubmit = async () => {
             <label class="label">
               <span class="label-text font-semibold">Contacto</span>
             </label>
-            <input v-model="formData.contact_reference" type="text" class="input input-bordered w-full" placeholder="Nombre contacto" />
+            <input v-model="formData.contact_reference" type="text" class="input input-bordered w-full" placeholder="Nombre contacto" :disabled="isSheetClosed" />
           </div>
           <div class="form-control w-full">
             <label class="label">
               <span class="label-text font-semibold">Teléfono</span>
             </label>
-            <input v-model="formData.contact_phone_reference" type="text" class="input input-bordered w-full" placeholder="+593..." />
+            <input v-model="formData.contact_phone_reference" type="text" class="input input-bordered w-full" placeholder="+593..." :disabled="isSheetClosed" />
           </div>
           <div class="form-control w-full">
             <label class="label">
               <span class="label-text font-semibold">PO Cliente</span>
             </label>
-            <input v-model="formData.client_po_reference" type="text" class="input input-bordered w-full" placeholder="PO-2026-001" />
+            <input v-model="formData.client_po_reference" type="text" class="input input-bordered w-full" placeholder="PO-2026-001" :disabled="isSheetClosed" />
           </div>
         </div>
 
@@ -642,13 +664,13 @@ const handleSubmit = async () => {
             <label class="label">
               <span class="label-text font-semibold">Ref. Factura</span>
             </label>
-            <input v-model="formData.invoice_reference" type="text" class="input input-bordered w-full" placeholder="FAC-2026-001" />
+            <input v-model="formData.invoice_reference" type="text" class="input input-bordered w-full" placeholder="FAC-2026-001" :disabled="isSheetClosed" />
           </div>
           <div class="form-control w-full md:col-span-3">
             <label class="label">
               <span class="label-text font-semibold">Disposición Final</span>
             </label>
-            <input v-model="formData.final_disposition_reference" type="text" class="input input-bordered w-full" placeholder="Planta de Tratamiento" />
+            <input v-model="formData.final_disposition_reference" type="text" class="input input-bordered w-full" placeholder="Planta de Tratamiento" :disabled="isSheetClosed" />
           </div>
         </div>
 
@@ -703,8 +725,8 @@ const handleSubmit = async () => {
                       type="checkbox" 
                       class="checkbox checkbox-sm" 
                       :checked="resource.is_selected"
-                      :disabled="hasCustodyChain(resource) && resource.is_selected"
-                      @change="toggleResourceSelection(resource)"
+                      :disabled="isSheetClosed || (hasCustodyChain(resource) && resource.is_selected)"
+                      @change="isSheetClosed ? null : toggleResourceSelection(resource)"
                     />
                   </div>
                 </td>
@@ -762,6 +784,7 @@ const handleSubmit = async () => {
             class="textarea textarea-bordered w-full h-24" 
             placeholder="Ingrese notas adicionales sobre la planilla..."
             maxlength="500"
+            :disabled="isSheetClosed"
           ></textarea>
         </div>
 
@@ -789,7 +812,7 @@ const handleSubmit = async () => {
             <RouterLink to="/project" class="btn btn-ghost" :class="{ 'btn-disabled': isSubmitting }">
               <i class="las la-times text-lg"></i> Cancelar
             </RouterLink>
-            <button type="submit" class="btn btn-primary" :disabled="isSubmitting">
+            <button v-if="!isSheetClosed" type="submit" class="btn btn-primary" :disabled="isSubmitting">
               <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
               <i v-else class="las la-save text-lg"></i>
               {{ isSubmitting ? (isEditMode ? 'Actualizando...' : 'Creando...') : (isEditMode ? 'Actualizar Planilla' : 'Crear Planilla') }}

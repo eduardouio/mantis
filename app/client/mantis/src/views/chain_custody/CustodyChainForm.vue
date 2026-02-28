@@ -83,9 +83,22 @@ const isChainClosed = computed(() => {
   return originalStatus.value === 'CLOSE'
 })
 
+// Computed para verificar si la planilla padre está cerrada
+const isSheetClosed = computed(() => {
+  if (!isEditMode.value) {
+    // En modo creación, verificar la planilla activa
+    return activeWorkOrder.value?.is_closed === true
+  }
+  // En modo edición, buscar la planilla de la cadena
+  const sheetId = custodyChain.value.sheet_project
+  if (!sheetId) return false
+  const sheet = projectStore.getWorkOrderById(sheetId)
+  return sheet?.is_closed === true
+})
+
 // Computed para verificar si se puede editar
 const canEdit = computed(() => {
-  return !isChainClosed.value
+  return !isChainClosed.value && !isSheetClosed.value
 })
 
 const loadCustodyChainData = async () => {
@@ -562,10 +575,10 @@ const currentStatusBadge = computed(() => {
         <div>
           <h2 class="text-xl font-semibold text-gray-800">
             <i class="las la-link text-blue-600"></i>
-            {{ isEditMode ? `${isChainClosed ? 'Ver' : 'Editar'} Cadena de Custodia #${custodyChainId}` : 'Nueva Cadena de Custodia' }}
+            {{ isEditMode ? `${!canEdit ? 'Ver' : 'Editar'} Cadena de Custodia #${custodyChainId}` : 'Nueva Cadena de Custodia' }}
           </h2>
           <p class="text-sm text-gray-600 mt-1">
-            {{ isChainClosed ? 'Esta cadena de custodia está cerrada y no puede ser modificada' : (isEditMode ? 'Modifique los datos de la cadena de custodia' : 'Complete los datos para crear una nueva cadena de custodia') }}
+            {{ !canEdit ? (isSheetClosed ? 'La planilla de esta cadena está cerrada y no permite modificaciones' : 'Esta cadena de custodia está cerrada y no puede ser modificada') : (isEditMode ? 'Modifique los datos de la cadena de custodia' : 'Complete los datos para crear una nueva cadena de custodia') }}
           </p>
         </div>
         <div class="flex items-center gap-3">
@@ -576,7 +589,7 @@ const currentStatusBadge = computed(() => {
             </label>
             <select 
               v-model="custodyChain.status"
-              :disabled="isChainClosed"
+              :disabled="!canEdit"
               class="select select-bordered select-sm"
               :class="{
                 'select-warning': custodyChain.status === 'DRAFT',
@@ -609,13 +622,13 @@ const currentStatusBadge = computed(() => {
       
       <!-- Mensaje informativo sobre el estado -->
       <div v-if="isEditMode" class="mt-3 pt-3 border-t border-gray-200">
-        <div v-if="!isChainClosed && custodyChain.status === 'DRAFT'" class="flex items-center gap-2 text-sm text-amber-600">
+        <div v-if="!canEdit && custodyChain.status === 'DRAFT'" class="flex items-center gap-2 text-sm text-amber-600">
           <i class="las la-info-circle text-lg"></i>
           <span>La cadena de custodia está en estado <strong>BORRADOR</strong> y puede ser modificada libremente.</span>
         </div>
-        <div v-else-if="isChainClosed" class="flex items-center gap-2 text-sm text-red-600">
+        <div v-else-if="!canEdit" class="flex items-center gap-2 text-sm text-red-600">
           <i class="las la-lock text-lg"></i>
-          <span>La cadena de custodia está <strong>CERRADA</strong>. No se pueden realizar modificaciones.</span>
+          <span>{{ isSheetClosed ? 'La planilla está <strong>CERRADA</strong>.' : 'La cadena está <strong>CERRADA</strong>.' }} No se pueden realizar modificaciones.</span>
         </div>
         <div v-else class="flex items-center gap-2 text-sm text-green-600">
           <i class="las la-check-circle text-lg"></i>
@@ -1261,10 +1274,10 @@ const currentStatusBadge = computed(() => {
       <div class="flex gap-3 justify-end mt-6">
         <button type="button" class="btn btn-outline" @click="cancelForm" :disabled="isLoading">
           <i class="las la-times"></i>
-          {{ isChainClosed ? 'Cerrar' : 'Cancelar' }}
+          {{ !canEdit ? 'Cerrar' : 'Cancelar' }}
         </button>
         <button 
-          v-if="!isChainClosed"
+          v-if="canEdit"
           type="submit" 
           class="btn btn-primary" 
           :disabled="isLoading"
