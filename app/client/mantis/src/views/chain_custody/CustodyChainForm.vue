@@ -111,7 +111,8 @@ const isSheetStatusLocked = computed(() => {
 
 // Computed para verificar si se puede editar
 const canEdit = computed(() => {
-  return !isChainClosed.value && !isSheetClosed.value && !isSheetStatusLocked.value
+  const projectClosed = projectStore.project?.is_closed === true
+  return !isChainClosed.value && !isSheetClosed.value && !isSheetStatusLocked.value && !projectClosed
 })
 
 // Mensaje de bloqueo de la planilla

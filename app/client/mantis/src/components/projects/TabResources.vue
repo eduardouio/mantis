@@ -10,6 +10,8 @@ const emit = defineEmits(['edit-resource'])
 const projectResourceStore = UseProjectResourceStore()
 const projectStore = UseProjectStore()
 
+const isProjectClosed = computed(() => projectStore.project?.is_closed === true)
+
 // Computed property que devuelve todos los recursos ordenados (primero equipos, luego servicios)
 const projectResources = computed(() => {
   return [...projectResourceStore.resourcesProject].sort((a, b) => {
@@ -60,10 +62,13 @@ const handleDeleteResource = async (resource) => {
         <i class="las la-tools text-blue-600"></i>
         Recursos Asignados
       </h2>
-      <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'resource-form' }">
+      <RouterLink v-if="!isProjectClosed" class="btn btn-primary btn-sm" :to="{ name: 'resource-form' }">
         <i class="las la-plus"></i>
         Asignar Recursos
       </RouterLink>
+      <span v-else class="badge badge-error gap-1">
+        <i class="las la-lock"></i> Proyecto Cerrado
+      </span>
     </div>
     
     <div class="overflow-x-auto">
@@ -125,10 +130,10 @@ const handleDeleteResource = async (resource) => {
                 <div class="flex gap-2 justify-end">
                 <button
                   class="btn btn-xs btn-ghost border border-base-300"
-                  :title="resource.is_retired ? 'No se puede editar: el recurso está retirado' : 'Editar'"
-                  :disabled="resource.is_retired"
+                  :title="isProjectClosed ? 'Proyecto cerrado' : (resource.is_retired ? 'No se puede editar: el recurso está retirado' : 'Editar')"
+                  :disabled="resource.is_retired || isProjectClosed"
                   :class="{
-                    'opacity-50 cursor-not-allowed': resource.is_retired
+                    'opacity-50 cursor-not-allowed': resource.is_retired || isProjectClosed
                   }"
                   @click="handleEditResource(resource)"
                 >
@@ -137,10 +142,10 @@ const handleDeleteResource = async (resource) => {
                 </button>
                 <button
                   class="btn btn-xs btn-ghost border border-base-300 text-red-500"
-                  :title="resource.is_retired ? 'No se puede eliminar: el recurso está retirado' : (isResourceInSheet(resource.id) ? 'No se puede eliminar: el recurso está asignado a una planilla de trabajo' : (confirmDeleteId === resource.id ? 'Haz clic nuevamente para confirmar' : 'Eliminar recurso'))"
-                  :disabled="isResourceInSheet(resource.id) || resource.is_retired"
+                  :title="isProjectClosed ? 'Proyecto cerrado' : (resource.is_retired ? 'No se puede eliminar: el recurso está retirado' : (isResourceInSheet(resource.id) ? 'No se puede eliminar: el recurso está asignado a una planilla de trabajo' : (confirmDeleteId === resource.id ? 'Haz clic nuevamente para confirmar' : 'Eliminar recurso')))"
+                  :disabled="isResourceInSheet(resource.id) || resource.is_retired || isProjectClosed"
                   :class="{
-                    'opacity-50 cursor-not-allowed': isResourceInSheet(resource.id) || resource.is_retired,
+                    'opacity-50 cursor-not-allowed': isResourceInSheet(resource.id) || resource.is_retired || isProjectClosed,
                     'bg-base-300': confirmDeleteId === resource.id
                   }"
                   @click="handleDeleteResource(resource)"

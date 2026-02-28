@@ -14,6 +14,7 @@ const workOrders = computed(() => projectStore.workOrders || []);
 const hasInProgressSheet = computed(() => {
   return workOrders.value.some(wo => wo.status === 'IN_PROGRESS');
 });
+const isProjectClosed = computed(() => projectStore.project?.is_closed === true);
 
 // Calcular totales para cada work order desde sus cadenas de custodia
 const enrichedWorkOrders = computed(() => {
@@ -100,13 +101,16 @@ const viewCustodyChains = (sheetId) => {
         Planillas del Proyecto
       </h2>
       <button
-        v-if="!hasInProgressSheet"
+        v-if="!hasInProgressSheet && !isProjectClosed"
         @click="openSheetFormModal"
         class="btn btn-primary btn-sm"
       >
         <i class="las la-plus"></i>
         Crear Nueva Planilla
       </button>
+      <div v-else-if="isProjectClosed" class="badge badge-error gap-1">
+        <i class="las la-lock"></i> Proyecto Cerrado
+      </div>
       <div v-else class="text-amber-700 badge bg-yellow-100">
         <i class="las la-exclamation-triangle"></i>
         PLANILLA EN EJECUCIÓN

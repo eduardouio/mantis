@@ -33,6 +33,7 @@ const isSheetClosed = computed(() => {
 
 // Verificar si las cadenas de custodia están bloqueadas (LIQUIDATED, INVOICED, CANCELLED o is_closed)
 const isCustodyLocked = computed(() => {
+  if (project.value?.is_closed) return true;
   if (isSheetClosed.value) return true;
   const status = sheetProject.value?.status;
   return ['LIQUIDATED', 'INVOICED', 'CANCELLED'].includes(status);
@@ -40,6 +41,7 @@ const isCustodyLocked = computed(() => {
 
 // Mensaje descriptivo del bloqueo
 const lockMessage = computed(() => {
+  if (project.value?.is_closed) return 'PROYECTO CERRADO - SOLO LECTURA';
   if (isSheetClosed.value) return 'PLANILLA CERRADA - SOLO LECTURA';
   const status = sheetProject.value?.status;
   if (status === 'LIQUIDATED') return 'PLANILLA LIQUIDADA - CADENAS BLOQUEADAS';

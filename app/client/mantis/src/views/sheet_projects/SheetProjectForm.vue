@@ -27,6 +27,9 @@ const isSheetClosed = computed(() => {
   return existingSheet?.is_closed === true;
 });
 
+// Verificar si el proyecto está cerrado
+const isProjectClosed = computed(() => project.value?.is_closed === true);
+
 // Usar el store como fuente de datos
 const formData = computed(() => sheetProjectStore.newSheetProject);
 
@@ -128,12 +131,12 @@ const isLiquidated = computed(() => {
 
 // Cualquier estado que no sea IN_PROGRESS bloquea los detalles/recursos
 const isDetailsLocked = computed(() => {
-  return isSheetClosed.value || isLiquidated.value || isFullyLocked.value;
+  return isProjectClosed.value || isSheetClosed.value || isLiquidated.value || isFullyLocked.value;
 });
 
 // Verificar si se puede editar cabeceras
 const isHeadersLocked = computed(() => {
-  return isSheetClosed.value || isFullyLocked.value;
+  return isProjectClosed.value || isSheetClosed.value || isFullyLocked.value;
 });
 
 // Solo mostrar recursos activos
@@ -522,8 +525,19 @@ const handleSubmit = async () => {
     <form @submit.prevent="handleSubmit" class="card bg-base-100 shadow-xl border border-gray-200 rounded-lg">
       <div class="card-body">
 
+        <!-- ===== BANNER PROYECTO CERRADO ===== -->
+        <div v-if="isProjectClosed" class="alert alert-error shadow-lg mb-4">
+          <div class="flex items-center gap-2">
+            <i class="las la-lock text-2xl"></i>
+            <div>
+              <h3 class="font-bold">Proyecto Cerrado</h3>
+              <p class="text-sm">El proyecto está cerrado. No se permiten modificaciones en ninguna planilla.</p>
+            </div>
+          </div>
+        </div>
+
         <!-- ===== BANNER PLANILLA CERRADA ===== -->
-        <div v-if="isFullyLocked" class="alert alert-error shadow-lg mb-4">
+        <div v-else-if="isFullyLocked" class="alert alert-error shadow-lg mb-4">
           <div class="flex items-center gap-2">
             <i class="las la-ban text-2xl"></i>
             <div>
@@ -936,7 +950,7 @@ const handleSubmit = async () => {
             <RouterLink to="/project" class="btn btn-ghost" :class="{ 'btn-disabled': isSubmitting }">
               <i class="las la-times text-lg"></i> Cancelar
             </RouterLink>
-            <button v-if="!isFullyLocked" type="submit" class="btn btn-primary" :disabled="isSubmitting">
+            <button v-if="!isFullyLocked && !isProjectClosed" type="submit" class="btn btn-primary" :disabled="isSubmitting">
               <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
               <i v-else class="las la-save text-lg"></i>
               {{ isSubmitting ? (isEditMode ? 'Actualizando...' : 'Creando...') : (isEditMode ? 'Actualizar Planilla' : 'Crear Planilla') }}

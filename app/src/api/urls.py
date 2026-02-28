@@ -20,6 +20,7 @@ from api.projects import (
     DeleteResourceProjectAPI,
     ResourcesAvailableAPI,
 )
+from api.projects.CloseProjectAPI import CloseProjectAPI
 
 from api.workorders import (
     GetAllSheetProjectAPI,
@@ -68,6 +69,7 @@ urlpatterns = [
 	path('projects/resources/release/', ResourceReleaserAPI.as_view(), name='api_release_resource_project'),
     path('projects/<int:project_id>/resources/', ProjectResources.as_view(), name='api_project_resources'),
     path('projects/all-info/<int:project_id>/', AllInfoProjectAPI.as_view(), name='api_all_info_project'),
+    path('projects/<int:project_id>/close/', CloseProjectAPI.as_view(), name='api_close_project'),
     
     # workorders
     path('workorders/sheets/project/<int:project_id>/', GetAllSheetProjectAPI.as_view(), name='api_get_all_sheets'),

@@ -208,5 +208,48 @@ export const UseProjectStore = defineStore("projectStore", {
         async refreshCurrentProject() {
             await this.fetchProjectData();
         },
+
+        /**
+         * Validar si el proyecto puede cerrarse.
+         * Retorna { can_close, alerts, message }
+         */
+        async validateCloseProject() {
+            try {
+                const response = await fetch(appConfig.URLCloseProject, {
+                    method: "GET",
+                    headers: appConfig.headers,
+                });
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error("Error validating close project:", error);
+                throw error;
+            }
+        },
+
+        /**
+         * Cerrar el proyecto actual.
+         * Libera todos los equipos y marca el proyecto como cerrado.
+         */
+        async closeProject() {
+            try {
+                const response = await fetch(appConfig.URLCloseProject, {
+                    method: "POST",
+                    headers: appConfig.headers,
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    this.project.is_closed = true;
+                    // Recargar datos completos para reflejar los cambios
+                    await this.fetchProjectData();
+                }
+
+                return data;
+            } catch (error) {
+                console.error("Error closing project:", error);
+                throw error;
+            }
+        },
     }
 });

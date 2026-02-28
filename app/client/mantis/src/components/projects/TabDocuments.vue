@@ -5,6 +5,7 @@ import { UseProjectStore } from '@/stores/ProjectStore'
 
 const projectStore = UseProjectStore()
 const project = computed(() => projectStore.project)
+const isProjectClosed = computed(() => project.value?.is_closed === true)
 
 // ── Estado del árbol ─────────────────────────────────────────
 const treeData = ref(null)
@@ -401,11 +402,11 @@ function downloadMerge(scope = 'all', sheetId = null) {
               <a :href="file.file_url" target="_blank" class="btn btn-sm btn-ghost text-blue-500" title="Ver archivo">
                 <i class="las la-eye text-lg"></i>
               </a>
-              <button class="btn btn-sm btn-ghost text-error" @click="deleteFile(file)" title="Eliminar">
+              <button class="btn btn-sm btn-ghost text-error" @click="deleteFile(file)" title="Eliminar" :disabled="isProjectClosed" :class="{ 'opacity-50 cursor-not-allowed': isProjectClosed }">
                 <i class="las la-trash text-lg"></i>
               </button>
             </template>
-            <button class="btn btn-sm btn-primary btn-outline" @click="openUpload(file)" :title="file.has_file ? 'Reemplazar' : 'Subir'">
+            <button class="btn btn-sm btn-primary btn-outline" @click="openUpload(file)" :title="file.has_file ? 'Reemplazar' : 'Subir'" :disabled="isProjectClosed && file.has_file" :class="{ 'opacity-50 cursor-not-allowed': isProjectClosed && file.has_file }">
               <i class="las la-upload text-lg"></i>
             </button>
           </div>
@@ -432,11 +433,11 @@ function downloadMerge(scope = 'all', sheetId = null) {
                 <a :href="chain.files[0].file_url" target="_blank" class="btn btn-sm btn-ghost text-blue-500" title="Ver">
                   <i class="las la-eye text-lg"></i>
                 </a>
-                <button class="btn btn-sm btn-ghost text-error" @click="deleteFile(chain.files[0])" title="Eliminar">
+                <button class="btn btn-sm btn-ghost text-error" @click="deleteFile(chain.files[0])" title="Eliminar" :disabled="isProjectClosed" :class="{ 'opacity-50 cursor-not-allowed': isProjectClosed }">
                   <i class="las la-trash text-lg"></i>
                 </button>
               </template>
-              <button class="btn btn-sm btn-primary btn-outline" @click="openUpload(chain.files[0])" :title="chain.files[0]?.has_file ? 'Reemplazar' : 'Subir'">
+              <button class="btn btn-sm btn-primary btn-outline" @click="openUpload(chain.files[0])" :title="chain.files[0]?.has_file ? 'Reemplazar' : 'Subir'" :disabled="isProjectClosed && chain.files[0]?.has_file" :class="{ 'opacity-50 cursor-not-allowed': isProjectClosed && chain.files[0]?.has_file }">
                 <i class="las la-upload text-lg"></i>
               </button>
             </div>
@@ -478,11 +479,11 @@ function downloadMerge(scope = 'all', sheetId = null) {
               <a :href="guide.files[0].file_url" target="_blank" class="btn btn-sm btn-ghost text-blue-500" title="Ver">
                 <i class="las la-eye text-lg"></i>
               </a>
-              <button class="btn btn-sm btn-ghost text-error" @click="deleteFile(guide.files[0])" title="Eliminar">
+              <button class="btn btn-sm btn-ghost text-error" @click="deleteFile(guide.files[0])" title="Eliminar" :disabled="isProjectClosed" :class="{ 'opacity-50 cursor-not-allowed': isProjectClosed }">
                 <i class="las la-trash text-lg"></i>
               </button>
             </template>
-            <button class="btn btn-sm btn-primary btn-outline" @click="openUpload(guide.files[0])" :title="guide.files[0]?.has_file ? 'Reemplazar' : 'Subir'">
+            <button class="btn btn-sm btn-primary btn-outline" @click="openUpload(guide.files[0])" :title="guide.files[0]?.has_file ? 'Reemplazar' : 'Subir'" :disabled="isProjectClosed && guide.files[0]?.has_file" :class="{ 'opacity-50 cursor-not-allowed': isProjectClosed && guide.files[0]?.has_file }">
               <i class="las la-upload text-lg"></i>
             </button>
           </div>

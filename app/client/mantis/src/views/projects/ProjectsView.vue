@@ -13,11 +13,21 @@ import { formatDate } from '@/utils/formatters';
 const projectStore = UseProjectStore();
 const projectResourceStore = UseProjectResourceStore();
 const project = computed(() => projectStore.project);
+const isProjectClosed = computed(() => project.value?.is_closed === true);
 
 const isModalOpen = ref(false);
 const modalTitle = ref('');
 const currentModalComponent = ref(null);
 const selectedResourceForEdit = ref(null);
+
+// Estado para el modal de cerrar proyecto
+const showCloseProjectModal = ref(false);
+const closeProjectAlerts = ref([]);
+const canCloseProject = ref(false);
+const isValidatingClose = ref(false);
+const isClosingProject = ref(false);
+const closeResultMessage = ref('');
+const closeResultType = ref('');
 
 const openEditResourceModal = (resource) => {
   modalTitle.value = 'Editar Recurso del Proyecto';
@@ -33,8 +43,77 @@ const closeModal = () => {
   selectedResourceForEdit.value = null;
 };
 
+// ── Cerrar proyecto ──────────────────────────────────────────
+const openCloseProjectModal = async () => {
+  showCloseProjectModal.value = true;
+  closeProjectAlerts.value = [];
+  canCloseProject.value = false;
+  closeResultMessage.value = '';
+  closeResultType.value = '';
+  isValidatingClose.value = true;
+
+  try {
+    const result = await projectStore.validateCloseProject();
+    closeProjectAlerts.value = result.alerts || [];
+    canCloseProject.value = result.can_close === true;
+  } catch (error) {
+    closeProjectAlerts.value = [{
+      type: 'error',
+      message: 'Error al validar el cierre del proyecto: ' + error.message,
+    }];
+    canCloseProject.value = false;
+  } finally {
+    isValidatingClose.value = false;
+  }
+};
+
+const confirmCloseProject = async () => {
+  isClosingProject.value = true;
+  closeResultMessage.value = '';
+
+  try {
+    const result = await projectStore.closeProject();
+    if (result.success) {
+      closeResultMessage.value = result.message;
+      closeResultType.value = 'success';
+      // Recargar recursos para reflejar liberaciones
+      await projectResourceStore.fetchResourcesProject();
+    } else {
+      closeResultMessage.value = result.message || result.error || 'Error desconocido';
+      closeResultType.value = 'error';
+    }
+  } catch (error) {
+    closeResultMessage.value = 'Error al cerrar el proyecto: ' + error.message;
+    closeResultType.value = 'error';
+  } finally {
+    isClosingProject.value = false;
+  }
+};
+
+const closeCloseProjectModal = () => {
+  showCloseProjectModal.value = false;
+};
+
+const getAlertClass = (type) => {
+  const classes = {
+    error: 'alert-error',
+    warning: 'alert-warning',
+    info: 'alert-info',
+  };
+  return classes[type] || 'alert-info';
+};
+
+const getAlertIcon = (type) => {
+  const icons = {
+    error: 'la-times-circle',
+    warning: 'la-exclamation-triangle',
+    info: 'la-info-circle',
+  };
+  return icons[type] || 'la-info-circle';
+};
+
 onMounted(() => {
-  projectStore.fetchProjectData(); // Esto ya carga todo: proyecto, work_orders y custody_chains
+  projectStore.fetchProjectData();
   projectResourceStore.fetchResourcesProject();
 });
 </script>
@@ -47,12 +126,22 @@ onMounted(() => {
           Ficha de Proyecto #{{ project?.id || 'N/A' }}
         </h1>
         <div class="flex items-center gap-3">
-          <!-- Botón para agregar recurso -->
+          <!-- Estado del proyecto -->
           <div class="text-gray-500">
             <span class="badge" :class="!project?.is_closed ? 'badge-success' : 'badge-error'">
               {{ !project?.is_closed ? 'Abierto' : 'Cerrado' }}
             </span>
           </div>
+          <!-- Botón cerrar proyecto -->
+          <button
+            v-if="!isProjectClosed"
+            @click="openCloseProjectModal"
+            class="btn btn-error btn-sm"
+            title="Cerrar proyecto"
+          >
+            <i class="las la-lock"></i>
+            Cerrar Proyecto
+          </button>
         </div>
       </div>
 
@@ -151,6 +240,70 @@ onMounted(() => {
         :resource="selectedResourceForEdit"
         @close="closeModal"
       />
+    </Modal>
+
+    <!-- Modal Cerrar Proyecto -->
+    <Modal
+      :is-open="showCloseProjectModal"
+      title="Cerrar Proyecto"
+      size="lg"
+      @close="closeCloseProjectModal"
+    >
+      <div class="space-y-4">
+        <!-- Cargando validación -->
+        <div v-if="isValidatingClose" class="flex items-center justify-center py-8">
+          <span class="loading loading-spinner loading-lg text-primary"></span>
+          <span class="ml-3 text-gray-500">Validando proyecto...</span>
+        </div>
+
+        <!-- Alertas de validación -->
+        <template v-else>
+          <div v-for="(alert, index) in closeProjectAlerts" :key="index"
+            class="alert shadow-sm"
+            :class="getAlertClass(alert.type)"
+          >
+            <div class="flex items-start gap-2 w-full">
+              <i class="las text-xl mt-0.5" :class="getAlertIcon(alert.type)"></i>
+              <div class="flex-1">
+                <p class="text-sm">{{ alert.message }}</p>
+                <a v-if="alert.link" :href="alert.link"
+                  class="text-xs underline font-semibold mt-1 inline-block"
+                >
+                  {{ alert.link_text || 'Ver detalle' }}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resultado del cierre -->
+          <div v-if="closeResultMessage"
+            class="alert shadow-sm"
+            :class="closeResultType === 'success' ? 'alert-success' : 'alert-error'"
+          >
+            <div class="flex items-center gap-2">
+              <i class="las text-xl" :class="closeResultType === 'success' ? 'la-check-circle' : 'la-times-circle'"></i>
+              <p class="text-sm font-semibold">{{ closeResultMessage }}</p>
+            </div>
+          </div>
+
+          <!-- Botones -->
+          <div class="flex justify-end gap-3 pt-2 border-t">
+            <button @click="closeCloseProjectModal" class="btn btn-ghost btn-sm">
+              {{ closeResultType === 'success' ? 'Cerrar' : 'Cancelar' }}
+            </button>
+            <button
+              v-if="canCloseProject && closeResultType !== 'success'"
+              @click="confirmCloseProject"
+              class="btn btn-error btn-sm"
+              :disabled="isClosingProject"
+            >
+              <span v-if="isClosingProject" class="loading loading-spinner loading-sm"></span>
+              <i v-else class="las la-lock"></i>
+              {{ isClosingProject ? 'Cerrando...' : 'Confirmar Cierre' }}
+            </button>
+          </div>
+        </template>
+      </div>
     </Modal>
   </div>
 </template>
