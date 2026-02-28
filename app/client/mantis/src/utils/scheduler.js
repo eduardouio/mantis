@@ -6,18 +6,38 @@
 /**
  * Genera fechas de mantenimiento según frequency_type
  * @param {Object} resource - Recurso con configuración de frecuencia
- * @param {Date} startDate - Fecha de inicio
- * @param {Date} endDate - Fecha de fin
+ * @param {Date} operationStart - Fecha original de inicio de operaciones del recurso
+ * @param {Date} startDate - Fecha de inicio del rango visible (ej: primer día del mes)
+ * @param {Date} endDate - Fecha de fin del rango visible
  * @returns {Date[]} Array de fechas de mantenimiento
  */
-function generateMaintenanceDates(resource, startDate, endDate) {
+function generateMaintenanceDates(resource, operationStart, startDate, endDate) {
   const dates = [];
   const { frequency_type, interval_days, weekdays, monthdays } = resource;
   
   if (frequency_type === 'DAY') {
     // Intervalo de días (interval_days = 0 significa diario)
     const interval = interval_days === 0 ? 1 : interval_days;
-    let currentDate = new Date(startDate);
+    
+    // Calcular la próxima fecha de mantenimiento alineada con operation_start_date
+    // Se calcula cuántos intervalos completos han pasado desde el inicio hasta startDate
+    let currentDate;
+    if (operationStart >= startDate) {
+      // El recurso inicia después del rango visible, empezar desde su fecha de inicio
+      currentDate = new Date(operationStart);
+    } else {
+      // Alinear: encontrar el último mantenimiento antes o en startDate
+      const diffTime = startDate.getTime() - operationStart.getTime();
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const intervalsPassed = Math.floor(diffDays / interval);
+      currentDate = new Date(operationStart);
+      currentDate.setDate(currentDate.getDate() + intervalsPassed * interval);
+      
+      // Si quedó antes del rango visible, avanzar un intervalo más
+      if (currentDate < startDate) {
+        currentDate.setDate(currentDate.getDate() + interval);
+      }
+    }
     
     while (currentDate <= endDate) {
       dates.push(new Date(currentDate));
@@ -96,10 +116,29 @@ export function generateMaintenanceSchedule(resources, daysAhead = 90, fromDate 
     const [year, month, day] = resource.operation_start_date.split('-').map(Number);
     const operationStart = new Date(year, month - 1, day);
     
-    // Usar la fecha más reciente entre operation_start_date y today
+    // Si el recurso tiene fecha de fin de operación y ya pasó, no procesar
+    if (resource.operation_end_date) {
+      const [ey, em, ed] = resource.operation_end_date.split('-').map(Number);
+      const operationEnd = new Date(ey, em - 1, ed);
+      if (operationEnd < today) {
+        return;
+      }
+    }
+
+    // El rango visible es [today, futureDate], pero el recurso puede haber iniciado antes
     const startDate = operationStart > today ? operationStart : today;
     
-    const maintenanceDates = generateMaintenanceDates(resource, startDate, futureDate);
+    // Si el recurso tiene fecha de fin, limitar el rango
+    let effectiveEndDate = futureDate;
+    if (resource.operation_end_date) {
+      const [ey, em, ed] = resource.operation_end_date.split('-').map(Number);
+      const operationEnd = new Date(ey, em - 1, ed);
+      if (operationEnd < futureDate) {
+        effectiveEndDate = operationEnd;
+      }
+    }
+    
+    const maintenanceDates = generateMaintenanceDates(resource, operationStart, startDate, effectiveEndDate);
     
     maintenanceDates.forEach(maintenanceDate => {
       maintenanceSchedule.push({
