@@ -12,18 +12,18 @@ class UpdateResourceItemAPI(View):
     def put(self, request):
         """Actualizar un recurso de un proyecto."""
         data = json.loads(request.body)
-        project_resource = ProjectResourceItem.get_by_id(data.get("id"))
+        project_resource = ProjectResourceItem.get_ignore_deleted(data.get("id"))
         if not project_resource:
             return JsonResponse(
                 {
-                    "error": "Recurso del proyecto no encontrado, o se encuentra inactivo."
+                    "error": "Recurso del proyecto no encontrado."
                 },
-                status=500,
+                status=404,
             )
 
-        if not project_resource.is_active:
+        if project_resource.is_retired:
             return JsonResponse(
-                {"error": "No se puede actualizar un recurso inactivo."}, status=400
+                {"error": "No se puede actualizar un recurso retirado."}, status=400
             )
 
         if not project_resource.project.is_active:
@@ -85,7 +85,7 @@ class UpdateResourceItemAPI(View):
                     project=project_resource.project,
                     type_resource="SERVICIO",
                     detailed_description=f"MANTENIMIENTO {project_resource.resource_item.name}",
-                    is_active=True,
+                    is_retired=False,
                 ).first()
 
                 if related_service:

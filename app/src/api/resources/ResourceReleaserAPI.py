@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.views import View
+from django.utils import timezone
 import json
 
 from projects.models.Project import ProjectResourceItem
@@ -19,21 +20,24 @@ class ResourceReleaserAPI(View):
                     {"error": "ID del recurso es requerido."}, status=400
                 )
 
-            project_resource = ProjectResourceItem.get_by_id(project_resource_id)
+            project_resource = ProjectResourceItem.get_ignore_deleted(project_resource_id)
             if not project_resource:
                 return JsonResponse(
                     {"error": "Recurso del proyecto no encontrado."}, status=404
                 )
 
-            if not project_resource.is_active:
+            if project_resource.is_retired:
                 return JsonResponse(
-                    {"error": "El recurso ya se encuentra liberado (inactivo)."},
+                    {"error": "El recurso ya se encuentra retirado."},
                     status=400,
                 )
 
+            today = timezone.now().date()
+
             if project_resource.type_resource == "SERVICIO":
 
-                project_resource.is_active = False
+                project_resource.is_retired = True
+                project_resource.retirement_date = today
                 project_resource.save()
 
                 return JsonResponse(
@@ -55,7 +59,8 @@ class ResourceReleaserAPI(View):
                 resource_item.stst_status_disponibility = "DISPONIBLE"
                 resource_item.save()
 
-                project_resource.is_active = False
+                project_resource.is_retired = True
+                project_resource.retirement_date = today
                 project_resource.save()
 
                 equipment_id = project_resource.resource_item.id
@@ -68,12 +73,13 @@ class ResourceReleaserAPI(View):
                     project=project_resource.project,
                     type_resource="SERVICIO",
                     physical_equipment_code__in=list(related_codes),
-                    is_active=True,
+                    is_retired=False,
                 )
 
                 released_services = []
                 for service in related_services:
-                    service.is_active = False
+                    service.is_retired = True
+                    service.retirement_date = today
                     service.save()
                     released_services.append(service.id)
 

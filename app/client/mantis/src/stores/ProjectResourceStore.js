@@ -199,19 +199,29 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                     headers: appConfig.headers,
                     body: JSON.stringify({ id: id_project_resource })
                 })
-                
+
                 const responseData = await response.json()
-                
+
                 if (!response.ok) {
                     throw new Error(responseData.error || "Failed to release project resource")
                 }
-                
-                // Actualizar el recurso en el store marcándolo como inactivo
+
+                // Actualizar el recurso en el store marcándolo como retirado
                 const index = this.resourcesProject.findIndex(r => r.id === id_project_resource)
                 if (index !== -1) {
-                    this.resourcesProject[index].is_active = false
+                    this.resourcesProject[index].is_retired = true
                 }
-                
+
+                // Si se liberaron servicios relacionados, marcarlos también
+                if (responseData.related_services_released) {
+                    responseData.related_services_released.forEach(serviceId => {
+                        const sIndex = this.resourcesProject.findIndex(r => r.id === serviceId)
+                        if (sIndex !== -1) {
+                            this.resourcesProject[sIndex].is_retired = true
+                        }
+                    })
+                }
+
                 return responseData
             } catch (error) {
                 console.error("Error releasing project resource:", error)

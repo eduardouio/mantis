@@ -14,7 +14,7 @@ const projectStore = UseProjectStore()
 const projectResources = computed(() => {
   return [...projectResourceStore.resourcesProject].sort((a, b) => {
     // Primero: activos arriba, retirados al final
-    if (a.is_active !== b.is_active) return a.is_active ? -1 : 1
+    if (a.is_retired !== b.is_retired) return a.is_retired ? 1 : -1
 
     // Primero ordenar por tipo: EQUIPO antes que SERVICIO
     if (a.type_resource === 'EQUIPO' && b.type_resource === 'SERVICIO') return -1
@@ -100,7 +100,7 @@ const handleDeleteResource = async (resource) => {
               </td>
               <td class="p-2 border border-gray-300">
                 <div class="flex items-center gap-2">
-                    <span v-if="resource.is_active" class="badge badge-success badge-sm w-24 justify-center">ACTIVO</span>
+                    <span v-if="!resource.is_retired" class="badge badge-success badge-sm w-24 justify-center">ACTIVO</span>
                     <span v-else class="badge badge-error badge-sm w-24 justify-center">RETIRADO</span>
                     <span v-if="isResourceInSheet(resource.id)" class="badge badge-info badge-sm" title="Este recurso está asignado a una planilla de trabajo">EN USO</span>
                     {{ resource.resource_item_code }}
@@ -123,24 +123,24 @@ const handleDeleteResource = async (resource) => {
               </td>
               <td class="p-2 border border-gray-300 text-end">
                 <div class="flex gap-2 justify-end">
-                <button 
-                  class="btn btn-xs btn-ghost border border-base-300" 
-                  :title="!resource.is_active ? 'No se puede editar: el recurso está inactivo' : 'Editar'"
-                  :disabled="!resource.is_active"
-                  :class="{ 
-                    'opacity-50 cursor-not-allowed': !resource.is_active
+                <button
+                  class="btn btn-xs btn-ghost border border-base-300"
+                  :title="resource.is_retired ? 'No se puede editar: el recurso está retirado' : 'Editar'"
+                  :disabled="resource.is_retired"
+                  :class="{
+                    'opacity-50 cursor-not-allowed': resource.is_retired
                   }"
                   @click="handleEditResource(resource)"
                 >
                   <i class="las la-edit"></i>
                   EDITAR
                 </button>
-                <button 
-                  class="btn btn-xs btn-ghost border border-base-300 text-red-500" 
-                  :title="!resource.is_active ? 'No se puede eliminar: el recurso está inactivo' : (isResourceInSheet(resource.id) ? 'No se puede eliminar: el recurso está asignado a una planilla de trabajo' : (confirmDeleteId === resource.id ? 'Haz clic nuevamente para confirmar' : 'Eliminar recurso'))"
-                  :disabled="isResourceInSheet(resource.id) || !resource.is_active"
-                  :class="{ 
-                    'opacity-50 cursor-not-allowed': isResourceInSheet(resource.id) || !resource.is_active,
+                <button
+                  class="btn btn-xs btn-ghost border border-base-300 text-red-500"
+                  :title="resource.is_retired ? 'No se puede eliminar: el recurso está retirado' : (isResourceInSheet(resource.id) ? 'No se puede eliminar: el recurso está asignado a una planilla de trabajo' : (confirmDeleteId === resource.id ? 'Haz clic nuevamente para confirmar' : 'Eliminar recurso'))"
+                  :disabled="isResourceInSheet(resource.id) || resource.is_retired"
+                  :class="{
+                    'opacity-50 cursor-not-allowed': isResourceInSheet(resource.id) || resource.is_retired,
                     'bg-base-300': confirmDeleteId === resource.id
                   }"
                   @click="handleDeleteResource(resource)"
