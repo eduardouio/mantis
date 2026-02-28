@@ -2,6 +2,7 @@
 import TabResources from '@/components/projects/TabResources.vue'
 import TabSheetProject from '@/components/projects/TabSheetProject.vue'
 import TabCalendar from '@/components/projects/TabCalendar.vue'
+import TabDocuments from '@/components/projects/TabDocuments.vue'
 import Modal from '@/components/common/Modal.vue'
 import ResourceForm from '@/components/projects/ResourceForm.vue'
 import { UseProjectStore } from '@/stores/ProjectStore';
@@ -121,6 +122,11 @@ onMounted(() => {
         <input type="radio" name="project_tabs" role="tab" class="tab bg-lime-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Calendario Mantenimientos" />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabCalendar />
+        </div>
+
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-violet-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Documentos" />
+        <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
+          <TabDocuments />
         </div>
       </div>
       <!-- Botones con sombra (estilo cadena de custodia) -->

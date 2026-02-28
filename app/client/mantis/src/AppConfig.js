@@ -31,4 +31,7 @@ export const appConfig = {
     "URLWorkSheetReport": apiBaseUrl + "/reports/worksheet/${id}/",
     "URLReleaseResource": apiBaseUrl + "/api/projects/resources/release/",
     "URLLoadFiles": apiBaseUrl + "/api/load_files/",
+    "URLProjectDocTree": apiBaseUrl + "/api/load_files/project/" + idProject + "/tree/",
+    "URLProjectDocMerge": apiBaseUrl + "/api/load_files/project/" + idProject + "/merge/",
+    "URLProjectBulkCustody": apiBaseUrl + "/api/load_files/project/" + idProject + "/bulk_custody/",
 }
