@@ -109,6 +109,17 @@ class ShippingGuide(BaseModel):
 		blank=True,
 		null=True
 	)
+	reason_transport = models.TextField(
+		'Motivo del Transporte',
+		blank=True,
+		null=True,
+		choices=(
+			('USE_IN_PROJECT', 'UTILIZACIÓN EN PROYECTO'),
+			('RENT', 'ALQUILER'),
+			('DEVOLUTION', 'DEVOLUCIÓN'),
+			('SALE', 'VENTA'),
+		)
+	)
 	status = models.CharField(
 		'Estado de la Guía',
 		max_length=20,
