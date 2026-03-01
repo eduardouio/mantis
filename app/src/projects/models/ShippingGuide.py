@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Max
 from projects.models.Project import Project
 from equipment.models.ResourceItem import ResourceItem
 from common.BaseModel import BaseModel
@@ -15,8 +16,9 @@ class ShippingGuide(BaseModel):
 	)
 	guide_number = models.PositiveBigIntegerField(
 		'Número de Guía',
-		default=0,
-		unique=True
+		unique=True,
+		blank=True,
+		null=True
 	)
 	issue_date = models.DateField(
 		'Fecha de Emisión'
@@ -75,10 +77,6 @@ class ShippingGuide(BaseModel):
 		blank=True,
 		null=True
 	)
-	project = models.ForeignKey(
-		Project,
-		on_delete=models.PROTECT,
-	)
 	contact_name = models.CharField(
 		'Nombre de Contacto en el Proyecto',
 		max_length=255,
@@ -114,6 +112,14 @@ class ShippingGuide(BaseModel):
 	class Meta:
 		verbose_name = 'Guía de Envío'
 		verbose_name_plural = 'Guías de Envío'
+
+	def save(self, *args, **kwargs):
+		if not self.guide_number:
+			max_number = ShippingGuide.objects.aggregate(
+				max_num=Max('guide_number')
+			)['max_num'] or 0
+			self.guide_number = max_number + 1
+		super().save(*args, **kwargs)
 
 	def __str__(self):
 		return f'Guía de Envío {self.guide_number} - Proyecto {self.project.id}'
