@@ -138,6 +138,7 @@ class ShippingGuideCreateUpdateAPI(View):
             recibed_by=data.get('recibed_by'),
             recibed_ci=data.get('recibed_ci'),
             notes=data.get('notes'),
+            reason_transport=data.get('reason_transport'),
         )
 
         # Si se proporciona guide_number, validar unicidad
@@ -269,7 +270,7 @@ class ShippingGuideCreateUpdateAPI(View):
             'origin_place', 'destination_place', 'carrier_name',
             'carrier_ci', 'vehicle_plate', 'dispatcher_name',
             'dispatcher_ci', 'contact_name', 'contact_phone',
-            'recibed_by', 'recibed_ci', 'notes',
+            'recibed_by', 'recibed_ci', 'notes', 'reason_transport',
         ]
         for field in optional_fields:
             if field in data:
@@ -369,6 +370,8 @@ class ShippingGuideCreateUpdateAPI(View):
             'recibed_by': guide.recibed_by,
             'recibed_ci': guide.recibed_ci,
             'notes': guide.notes,
+            'reason_transport': guide.reason_transport,
+            'reason_transport_display': guide.get_reason_transport_display() if guide.reason_transport else None,
             'status': guide.status,
             'status_display': guide.get_status_display(),
             'shipping_guide_file': guide.shipping_guide_file.url if guide.shipping_guide_file else None,

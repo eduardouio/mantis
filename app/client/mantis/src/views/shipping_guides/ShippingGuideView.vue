@@ -159,6 +159,13 @@ const statusClass = (status) => {
                 {{ formatDate(guide.issue_date) }}
               </span>
             </div>
+            <!-- Motivo del Transporte -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Motivo:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                {{ guide.reason_transport_display || 'N/A' }}
+              </span>
+            </div>
             <!-- Transporte -->
             <div class="flex items-center gap-2">
               <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Transporte:</span>

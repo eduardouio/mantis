@@ -49,6 +49,7 @@ const guide = ref({
   contact_phone: '',
   recibed_by: '',
   recibed_ci: '',
+  reason_transport: '',
   notes: '',
 })
 
@@ -117,6 +118,7 @@ const loadGuideData = async () => {
         contact_phone: data.contact_phone || '',
         recibed_by: data.recibed_by || '',
         recibed_ci: data.recibed_ci || '',
+        reason_transport: data.reason_transport || '',
         notes: data.notes || '',
       }
 
@@ -446,6 +448,25 @@ const deleteGuideFile = async () => {
               :disabled="!canEdit"
               class="input input-bordered w-full"
             />
+          </div>
+
+          <!-- Motivo del Transporte -->
+          <div class="form-control w-full">
+            <label class="label" for="reason_transport">
+              <span class="label-text font-medium">Motivo del Transporte</span>
+            </label>
+            <select
+              id="reason_transport"
+              v-model="guide.reason_transport"
+              :disabled="!canEdit"
+              class="select select-bordered w-full"
+            >
+              <option value="">Seleccione un motivo (opcional)</option>
+              <option value="USE_IN_PROJECT">UTILIZACIÓN EN PROYECTO</option>
+              <option value="RENT">ALQUILER</option>
+              <option value="DEVOLUTION">DEVOLUCIÓN</option>
+              <option value="SALE">VENTA</option>
+            </select>
           </div>
 
           <!-- Vehículo -->
