@@ -384,7 +384,7 @@ class ShippingGuideAdmin(BaseModelAdmin):
         ('Guía', {
             'fields': (
                 'project', 'guide_number', 'issue_date', 'start_date', 'end_date',
-                'origin_place', 'destination_place', 'is_active'
+                'origin_place', 'destination_place', 'shipping_guide_file', 'is_active'
             )
         }),
         ('Transporte', {

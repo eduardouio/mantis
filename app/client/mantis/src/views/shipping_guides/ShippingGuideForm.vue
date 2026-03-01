@@ -123,6 +123,12 @@ const loadGuideData = async () => {
       // Cargar estado
       guideStatus.value = data.status || 'DRAFT'
 
+      // Cargar archivo PDF si existe
+      if (data.shipping_guide_file) {
+        shippingGuideFileUrl.value = data.shipping_guide_file
+        shippingGuideFileName.value = data.shipping_guide_file.split('/').pop()
+      }
+
       // Cargar detalles
       details.value = (data.details || []).map(d => ({
         id_resource_item: d.id_resource_item || null,
@@ -235,6 +241,81 @@ const submitForm = async () => {
 
 const cancelForm = () => {
   router.push({ name: 'shipping-guide-list' })
+}
+
+// ── Upload de archivo PDF de guía ────────────────────────────
+const shippingGuideFileUrl = ref(null)
+const shippingGuideFileName = ref(null)
+const uploadingFile = ref(false)
+const uploadFileMsg = ref('')
+const uploadFileMsgType = ref('')
+
+const onFileChange = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+  if (file.type !== 'application/pdf') {
+    uploadFileMsg.value = 'Solo se permiten archivos PDF'
+    uploadFileMsgType.value = 'error'
+    return
+  }
+
+  uploadingFile.value = true
+  uploadFileMsg.value = ''
+
+  const fd = new FormData()
+  fd.append('file', file)
+  fd.append('model_type', 'shipping_guide')
+  fd.append('object_id', guideId.value)
+  fd.append('field_name', 'shipping_guide_file')
+
+  try {
+    const res = await fetch(appConfig.URLLoadFiles, {
+      method: 'POST',
+      body: fd,
+    })
+    const data = await res.json()
+    if (data.success) {
+      shippingGuideFileUrl.value = data.data.file_url
+      shippingGuideFileName.value = data.data.file_name
+      uploadFileMsg.value = 'Archivo subido correctamente'
+      uploadFileMsgType.value = 'success'
+    } else {
+      uploadFileMsg.value = data.error || 'Error al subir el archivo'
+      uploadFileMsgType.value = 'error'
+    }
+  } catch (err) {
+    uploadFileMsg.value = 'Error de conexión: ' + err.message
+    uploadFileMsgType.value = 'error'
+  } finally {
+    uploadingFile.value = false
+  }
+}
+
+const deleteGuideFile = async () => {
+  if (!confirm('¿Eliminar el archivo PDF de esta guía?')) return
+  try {
+    const params = new URLSearchParams({
+      model_type: 'shipping_guide',
+      object_id: guideId.value,
+      field_name: 'shipping_guide_file',
+    })
+    const res = await fetch(`${appConfig.URLLoadFiles}?${params}`, {
+      method: 'DELETE',
+    })
+    const data = await res.json()
+    if (data.success) {
+      shippingGuideFileUrl.value = null
+      shippingGuideFileName.value = null
+      uploadFileMsg.value = 'Archivo eliminado'
+      uploadFileMsgType.value = 'success'
+    } else {
+      uploadFileMsg.value = data.error || 'Error al eliminar'
+      uploadFileMsgType.value = 'error'
+    }
+  } catch (err) {
+    uploadFileMsg.value = 'Error: ' + err.message
+    uploadFileMsgType.value = 'error'
+  }
 }
 </script>
 
@@ -716,6 +797,57 @@ const cancelForm = () => {
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- Archivo PDF de la Guía -->
+      <div v-if="isEditMode" class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">
+          <i class="las la-file-pdf text-red-500"></i>
+          Archivo PDF de la Guía
+        </h6>
+
+        <!-- Archivo actual -->
+        <div v-if="shippingGuideFileUrl" class="flex items-center gap-3 mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <i class="las la-check-circle text-success text-2xl"></i>
+          <span class="flex-1 text-sm">
+            <strong>Archivo cargado:</strong> {{ shippingGuideFileName }}
+          </span>
+          <a :href="shippingGuideFileUrl" target="_blank" class="btn btn-sm btn-ghost text-blue-500" title="Ver PDF">
+            <i class="las la-eye text-lg"></i> Ver
+          </a>
+          <button
+            v-if="canEdit"
+            type="button"
+            class="btn btn-sm btn-ghost text-error"
+            @click="deleteGuideFile"
+            title="Eliminar archivo"
+          >
+            <i class="las la-trash text-lg"></i> Eliminar
+          </button>
+        </div>
+
+        <!-- Sin archivo -->
+        <div v-else class="flex items-center gap-3 mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <i class="las la-exclamation-circle text-warning text-2xl"></i>
+          <span class="text-sm text-gray-600">No se ha cargado un archivo PDF para esta guía.</span>
+        </div>
+
+        <!-- Input de subida -->
+        <div v-if="canEdit" class="flex items-center gap-3">
+          <input
+            type="file"
+            accept=".pdf,application/pdf"
+            class="file-input file-input-bordered file-input-sm flex-1"
+            @change="onFileChange"
+            :disabled="uploadingFile"
+          />
+          <span v-if="uploadingFile" class="loading loading-spinner loading-sm text-primary"></span>
+        </div>
+
+        <!-- Mensaje -->
+        <div v-if="uploadFileMsg" class="mt-2 text-sm" :class="uploadFileMsgType === 'success' ? 'text-success' : 'text-error'">
+          {{ uploadFileMsg }}
         </div>
       </div>
 

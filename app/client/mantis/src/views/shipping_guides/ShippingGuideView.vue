@@ -222,6 +222,32 @@ const statusClass = (status) => {
           </div>
         </div>
 
+        <!-- Archivo PDF -->
+        <div v-if="guide.shipping_guide_file" class="p-4 border-b border-b-gray-200">
+          <div class="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <i class="las la-file-pdf text-red-500 text-2xl"></i>
+            <span class="flex-1 font-medium text-sm text-gray-700">Archivo PDF de la Guía</span>
+            <a
+              :href="guide.shipping_guide_file"
+              target="_blank"
+              class="btn btn-sm btn-primary"
+              title="Ver PDF"
+            >
+              <i class="las la-eye"></i>
+              Ver PDF
+            </a>
+            <a
+              :href="guide.shipping_guide_file"
+              download
+              class="btn btn-sm btn-outline btn-primary"
+              title="Descargar PDF"
+            >
+              <i class="las la-download"></i>
+              Descargar
+            </a>
+          </div>
+        </div>
+
         <!-- Detalle de ítems -->
         <div class="p-4 border-b border-b-gray-200">
           <h3 class="font-semibold text-gray-700 mb-3">Detalle de Ítems ({{ guide.details?.length || 0 }} ítems)</h3>
