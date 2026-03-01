@@ -371,10 +371,10 @@ class FinalDispositionCertificateDetailAdmin(BaseModelAdmin):
 class ShippingGuideAdmin(BaseModelAdmin):
     list_display = (
         'id', 'guide_number', 'project', 'issue_date', 'start_date', 'end_date',
-        'carrier_name', 'vehicle_plate'
+        'carrier_name', 'vehicle_plate', 'status'
     )
     list_filter = (
-        'project', 'issue_date', 'start_date', 'end_date', 'is_active'
+        'project', 'status', 'issue_date', 'start_date', 'end_date', 'is_active'
     )
     search_fields = (
         'guide_number', 'project__partner__name', 'carrier_name',
@@ -383,7 +383,7 @@ class ShippingGuideAdmin(BaseModelAdmin):
     fieldsets = (
         ('Guía', {
             'fields': (
-                'project', 'guide_number', 'issue_date', 'start_date', 'end_date',
+                'project', 'guide_number', 'status', 'issue_date', 'start_date', 'end_date',
                 'origin_place', 'destination_place', 'shipping_guide_file', 'is_active'
             )
         }),
