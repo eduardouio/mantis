@@ -193,9 +193,9 @@ const statusClass = (status) => {
               </span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Días / Horas:</span>
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Días / Costo:</span>
               <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
-                {{ sheet.total_days || 0 }} días / {{ sheet.total_hours || 0 }} hrs
+                {{ sheet.total_days || 0 }} días
               </span>
             </div>
           </div>
@@ -204,15 +204,38 @@ const statusClass = (status) => {
         <div class="p-2 border-b bg-gray-50 border-b-gray-200">
           <div class="grid grid-cols-4 gap-4">
             <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Costo Hora:</span>
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Costo Día:</span>
               <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
-                {{ sheet.cost_hour || 0 }}
+                ${{ sheet.cost_day || 0 }}
               </span>
             </div>
             <div class="flex items-center gap-2">
               <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Costo Total:</span>
               <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
-                {{ sheet.total_cost || 0 }}
+                ${{ sheet.cost_total || 0 }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Costo Logístico:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                ${{ sheet.cost_logistics || 0 }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="sheet.sheet_project_maintenance_concept || sheet.sheet_project_logistics_concept" class="p-2 border-b bg-gray-50 border-b-gray-200">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-40">Concepto Mant.:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                {{ sheet.sheet_project_maintenance_concept || 'N/A' }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-40">Concepto Logístico:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                {{ sheet.sheet_project_logistics_concept || 'N/A' }}
               </span>
             </div>
           </div>

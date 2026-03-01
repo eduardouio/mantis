@@ -47,9 +47,11 @@ const sheet = ref({
   start_date: new Date().toISOString().split('T')[0],
   end_date: '',
   total_days: 0,
-  total_hours: 0,
-  cost_hour: 0,
-  total_cost: 0,
+  cost_day: 0,
+  cost_total: 0,
+  sheet_project_maintenance_concept: 'SERVICIO TÉCNICO ESPECIALIZADO',
+  sheet_project_logistics_concept: '',
+  cost_logistics: 0,
   maintenance_description: '',
   fault_description: '',
   possible_causes: '',
@@ -94,9 +96,11 @@ const loadSheetData = async () => {
         start_date: data.start_date ? data.start_date.substring(0, 10) : '',
         end_date: data.end_date ? data.end_date.substring(0, 10) : '',
         total_days: data.total_days || 0,
-        total_hours: data.total_hours || 0,
-        cost_hour: data.cost_hour || 0,
-        total_cost: data.total_cost || 0,
+        cost_day: data.cost_day || 0,
+        cost_total: data.cost_total || 0,
+        sheet_project_maintenance_concept: data.sheet_project_maintenance_concept || 'SERVICIO TÉCNICO ESPECIALIZADO',
+        sheet_project_logistics_concept: data.sheet_project_logistics_concept || '',
+        cost_logistics: data.cost_logistics || 0,
         maintenance_description: data.maintenance_description || '',
         fault_description: data.fault_description || '',
         possible_causes: data.possible_causes || '',
@@ -455,28 +459,14 @@ const deleteMaintenanceFile = async () => {
             />
           </div>
 
-          <!-- Total Horas -->
+          <!-- Costo Día -->
           <div class="form-control w-full">
             <label class="label">
-              <span class="label-text font-medium">Total Horas</span>
+              <span class="label-text font-medium">Costo Día</span>
             </label>
             <input
               type="number"
-              v-model.number="sheet.total_hours"
-              min="0"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <!-- Costo Hora -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-medium">Costo Hora</span>
-            </label>
-            <input
-              type="number"
-              v-model.number="sheet.cost_hour"
+              v-model.number="sheet.cost_day"
               min="0"
               step="0.01"
               :disabled="!canEdit"
@@ -491,7 +481,57 @@ const deleteMaintenanceFile = async () => {
             </label>
             <input
               type="number"
-              v-model.number="sheet.total_cost"
+              v-model.number="sheet.cost_total"
+              min="0"
+              step="0.01"
+              :disabled="!canEdit"
+              class="input input-bordered w-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Conceptos de Planilla -->
+      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Conceptos de Planilla</h6>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Concepto de Mantenimiento -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium">Concepto de Mantenimiento</span>
+            </label>
+            <input
+              type="text"
+              v-model="sheet.sheet_project_maintenance_concept"
+              placeholder="Ej: SERVICIO TÉCNICO ESPECIALIZADO"
+              :disabled="!canEdit"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <!-- Concepto Logístico -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium">Concepto Logístico</span>
+            </label>
+            <input
+              type="text"
+              v-model="sheet.sheet_project_logistics_concept"
+              placeholder="Concepto logístico (opcional)"
+              :disabled="!canEdit"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <!-- Costo Logístico -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium">Costo Logístico</span>
+            </label>
+            <input
+              type="number"
+              v-model.number="sheet.cost_logistics"
               min="0"
               step="0.01"
               :disabled="!canEdit"
