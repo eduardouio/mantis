@@ -3,6 +3,7 @@ import TabResources from '@/components/projects/TabResources.vue'
 import TabSheetProject from '@/components/projects/TabSheetProject.vue'
 import TabCalendar from '@/components/projects/TabCalendar.vue'
 import TabDocuments from '@/components/projects/TabDocuments.vue'
+import TabShippingGuides from '@/components/projects/TabShippingGuides.vue'
 import Modal from '@/components/common/Modal.vue'
 import ResourceForm from '@/components/projects/ResourceForm.vue'
 import { UseProjectStore } from '@/stores/ProjectStore';
@@ -20,7 +21,7 @@ const project = computed(() => projectStore.project);
 const isProjectClosed = computed(() => project.value?.is_closed === true);
 
 // ── Persistencia del tab activo ──────────────────────────────
-const TAB_NAMES = ['recursos', 'planillas', 'calendario', 'documentos'];
+const TAB_NAMES = ['recursos', 'planillas', 'calendario', 'documentos', 'guias'];
 const activeTab = ref(0);
 
 // Leer tab desde query param al montar
@@ -247,6 +248,11 @@ watch(() => route.query.tab, (newTab) => {
         <input type="radio" name="project_tabs" role="tab" class="tab bg-violet-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Documentos" :checked="activeTab === 3" @change="setActiveTab(3)" />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabDocuments />
+        </div>
+
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-teal-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Guías de Remisión" :checked="activeTab === 4" @change="setActiveTab(4)" />
+        <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
+          <TabShippingGuides />
         </div>
       </div>
       <!-- Botones con sombra (estilo cadena de custodia) -->

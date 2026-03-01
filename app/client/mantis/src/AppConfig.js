@@ -36,4 +36,7 @@ export const appConfig = {
     "URLProjectDocMerge": apiBaseUrl + "/api/load_files/project/" + idProject + "/merge/",
     "URLProjectBulkCustody": apiBaseUrl + "/api/load_files/project/" + idProject + "/bulk_custody/",
     "URLCloseProject": apiBaseUrl + "/api/projects/" + idProject + "/close/",
+    "URLShippingGuides": apiBaseUrl + "/api/shipping/guides/",
+    "URLShippingGuideDetail": apiBaseUrl + "/api/shipping/guides/${id}/",
+    "URLShippingGuideDelete": apiBaseUrl + "/api/shipping/guides/${id}/delete/",
 }

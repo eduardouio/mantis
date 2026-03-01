@@ -5,6 +5,8 @@ import CustodyChainView from '@/views/chain_custody/CustodyChainView.vue'
 import CustodyChainForm from '@/views/chain_custody/CustodyChainForm.vue'
 import SheetProjectView from '@/views/sheet_projects/SheetProjectView.vue'
 import SheetProjectForm from '@/views/sheet_projects/SheetProjectForm.vue'
+import ShippingGuideView from '@/views/shipping_guides/ShippingGuideView.vue'
+import ShippingGuideForm from '@/views/shipping_guides/ShippingGuideForm.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -42,6 +44,16 @@ const router = createRouter({
       path: '/work-sheet/form/:id?',
       name: 'sheet-project-form',
       component: SheetProjectForm,
+    },
+    {
+      path: '/shipping-guides',
+      name: 'shipping-guide-list',
+      component: ShippingGuideView,
+    },
+    {
+      path: '/shipping-guides/form/:id?',
+      name: 'shipping-guide-form',
+      component: ShippingGuideForm,
     },
   ]
 })
