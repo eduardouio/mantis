@@ -111,8 +111,22 @@ class SheetMaintenance(BaseModel):
 		blank=True,
 		null=True
 	)
-
-    # --- Secciones descriptivas ---
+    cost_hour = models.DecimalField(
+		'Costo Hora',
+		max_digits=10,
+		decimal_places=2,
+		default=0,
+		blank=True,
+		null=True
+	)
+    total_cost = models.DecimalField(
+		'Costo Total',
+		max_digits=10,
+		decimal_places=2,
+		default=0,
+		blank=True,
+		null=True
+	)
     maintenance_description = models.TextField(
         'Descripción del Mantenimiento',
         blank=True,
@@ -183,4 +197,4 @@ class SheetMaintenance(BaseModel):
         verbose_name_plural = 'Hojas de Mantenimiento'
 
     def __str__(self):
-        return f'Hoja de Mantenimiento N° {self.sheet_number} - Proyecto {self.project.id}'
+        return f'Hoja de Mantenimiento N° {self.sheet_number} - Hoja de Proyecto {self.id_sheet_project.id}'

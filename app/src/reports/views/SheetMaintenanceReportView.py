@@ -11,7 +11,7 @@ class SheetMaintenanceReportView(TemplateView):
 		sheet_id = kwargs.get("id")
 		sheet = get_object_or_404(
 			SheetMaintenance.objects.select_related(
-				'project__partner',
+				'id_sheet_project__project__partner',
 				'responsible_technical',
 				'resource_item',
 			),
