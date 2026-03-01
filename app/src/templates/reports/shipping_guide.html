@@ -157,6 +157,7 @@
 		</style>
 	</head>
 	<body>
+		{% load l10n %}
 		<div class="page">
 			<div class="header">
 				<div class="header-title">GUIA DE REMISION DE EQUIPOS / MATERIALES</div>
@@ -165,26 +166,26 @@
 				</div>
 			</div>
 
-			<div class="guide-number">GUIA DE REMISION NO. <strong>0000000</strong></div>
+			<div class="guide-number">GUIA DE REMISION NO. <strong>{{ guide.guide_number|stringformat:"07d" }}</strong></div>
 
 			<div class="section">
 				<div class="section-title">DATOS DE ORIGEN</div>
 				<table class="tight no-top">
 					<tr>
-						<td><span class="label">FECHA INICIO DEL TRASLADO:</span></td>
-						<td><span class="label">FECHA FINALIZACION DEL TRASLADO:</span></td>
+						<td><span class="label">FECHA INICIO DEL TRASLADO:</span> {{ guide.start_date|date:"d/m/Y"|default:"" }}</td>
+						<td><span class="label">FECHA FINALIZACION DEL TRASLADO:</span> {{ guide.end_date|date:"d/m/Y"|default:"" }}</td>
 					</tr>
 					<tr>
-						<td><span class="label">LUGAR DE ORIGEN:</span></td>
-						<td><span class="label">TRANSPORTISTA:</span></td>
+						<td><span class="label">LUGAR DE ORIGEN:</span> {{ guide.origin_place|default:"" }}</td>
+						<td><span class="label">TRANSPORTISTA:</span> {{ guide.carrier_name|default:"" }}</td>
 					</tr>
 					<tr>
-						<td><span class="label">CONDUCTOR:</span></td>
-						<td><span class="label">PLACA:</span></td>
+						<td><span class="label">CONDUCTOR:</span> {{ guide.carrier_ci|default:"" }}</td>
+						<td><span class="label">PLACA:</span> {{ guide.vehicle_plate|default:"" }}</td>
 					</tr>
 					<tr>
-						<td><span class="label">DESPACHADO POR:</span></td>
-						<td><span class="label">PROYECTO:</span></td>
+						<td><span class="label">DESPACHADO POR:</span> {{ guide.dispatcher_name|default:"" }}</td>
+						<td><span class="label">PROYECTO:</span> {{ guide.project }}</td>
 					</tr>
 				</table>
 			</div>
@@ -192,10 +193,10 @@
 			<div class="section">
 				<div class="section-title">MOTIVO DEL TRASLADO</div>
 				<div class="motivo-grid">
-					<div class="motivo-item">UTILIZACION EN PROYECTOS <span class="circle"></span></div>
-					<div class="motivo-item">DEVOLUCION <span class="circle"></span></div>
-					<div class="motivo-item">ALQUILER <span class="circle"></span></div>
-					<div class="motivo-item">VENTA <span class="circle"></span></div>
+					<div class="motivo-item">UTILIZACION EN PROYECTOS <span class="circle" {% if guide.reason_transport == "USE_IN_PROJECT" %}style="background:#1f1f1f"{% endif %}></span></div>
+					<div class="motivo-item">DEVOLUCION <span class="circle" {% if guide.reason_transport == "DEVOLUTION" %}style="background:#1f1f1f"{% endif %}></span></div>
+					<div class="motivo-item">ALQUILER <span class="circle" {% if guide.reason_transport == "RENT" %}style="background:#1f1f1f"{% endif %}></span></div>
+					<div class="motivo-item">VENTA <span class="circle" {% if guide.reason_transport == "SALE" %}style="background:#1f1f1f"{% endif %}></span></div>
 				</div>
 			</div>
 
@@ -203,12 +204,12 @@
 				<div class="section-title">DATOS DE DESTINO</div>
 				<table class="tight no-top">
 					<tr>
-						<td><span class="label">CLIENTE:</span></td>
-						<td><span class="label">CONTACTO:</span></td>
+						<td><span class="label">CLIENTE:</span> {{ guide.project.partner.name|default:"" }}</td>
+						<td><span class="label">CONTACTO:</span> {{ guide.contact_name|default:"" }}</td>
 					</tr>
 					<tr>
-						<td><span class="label">PUNTO DE LLEGADA:</span></td>
-						<td><span class="label">TELEFONO:</span></td>
+						<td><span class="label">PUNTO DE LLEGADA:</span> {{ guide.destination_place|default:"" }}</td>
+						<td><span class="label">TELEFONO:</span> {{ guide.contact_phone|default:"" }}</td>
 					</tr>
 				</table>
 			</div>
@@ -224,12 +225,17 @@
 						</tr>
 					</thead>
 					<tbody>
+						{% for detail in details %}
+						<tr>
+							<td>{{ forloop.counter }}</td>
+							<td>{{ detail.quantity }}</td>
+							<td>{{ detail.unit }}</td>
+							<td>{{ detail.description }}</td>
+						</tr>
+						{% endfor %}
+						{% for _ in empty_rows %}
 						<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-						<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-						<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-						<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-						<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
-						<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>
@@ -237,18 +243,18 @@
 			<div class="section">
 				<table class="signatures no-top">
 					<tr>
-						<td><div class="label">DESPACHADO POR:</div></td>
-						<td><div class="label">C.I.:</div></td>
+						<td><div class="label">DESPACHADO POR:</div> {{ guide.dispatcher_name|default:"" }}</td>
+						<td><div class="label">C.I.:</div> {{ guide.dispatcher_ci|default:"" }}</td>
 						<td><div class="label">FIRMA:</div></td>
 					</tr>
 					<tr>
-						<td><div class="label">TRANSPORTADO POR:</div></td>
-						<td><div class="label">C.I.:</div></td>
+						<td><div class="label">TRANSPORTADO POR:</div> {{ guide.carrier_name|default:"" }}</td>
+						<td><div class="label">C.I.:</div> {{ guide.carrier_ci|default:"" }}</td>
 						<td><div class="label">FIRMA:</div></td>
 					</tr>
 					<tr>
-						<td><div class="label">RECIBIDO POR:</div></td>
-						<td><div class="label">C.I.:</div></td>
+						<td><div class="label">RECIBIDO POR:</div> {{ guide.recibed_by|default:"" }}</td>
+						<td><div class="label">C.I.:</div> {{ guide.recibed_ci|default:"" }}</td>
 						<td><div class="label">FIRMA:</div></td>
 					</tr>
 					<tr>
