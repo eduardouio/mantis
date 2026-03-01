@@ -299,8 +299,9 @@ const calculateDuration = () => {
     const startMinutes = parseInt(start[0]) * 60 + parseInt(start[1])
     const endMinutes = parseInt(end[0]) * 60 + parseInt(end[1])
     
-    const duration = endMinutes - startMinutes
-    custodyChain.value.time_duration = duration > 0 ? duration : 0
+    const durationMinutes = endMinutes - startMinutes
+    const durationHours = durationMinutes / 60
+    custodyChain.value.time_duration = durationHours > 0 ? parseFloat(durationHours.toFixed(2)) : 0
   }
 }
 
@@ -914,7 +915,7 @@ const currentStatusBadge = computed(() => {
           <!-- Duración -->
           <div class="form-control w-full">
             <label class="label" for="time_duration">
-              <span class="label-text font-medium">Duración (Minutos)</span>
+              <span class="label-text font-medium">Duración (Horas)</span>
             </label>
             <input 
               type="number"
