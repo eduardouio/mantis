@@ -6,7 +6,7 @@ from decimal import Decimal, InvalidOperation
 from datetime import datetime
 
 from projects.models import Project, SheetProject, SheetProjectDetail, ProjectResourceItem
-from projects.models.CustodyChain import ChainCustodyDetail
+from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
 from equipment.models.ResourceItem import ResourceItem
 
 
@@ -235,8 +235,18 @@ class UpdateSheetProjectAPI(View):
         if "series_code" in data and data["series_code"]:
             sheet.series_code = data["series_code"]
 
-        if "status" in data and data["status"] in ["IN_PROGRESS", "LIQUIDATED", "INVOICED", "CANCELLED"]:
-            sheet.status = data["status"]
+        new_status = data.get("status")
+        if new_status and new_status in ["IN_PROGRESS", "LIQUIDATED", "INVOICED", "CANCELLED"]:
+            old_status = sheet.status
+            sheet.status = new_status
+
+            # Al liquidar la planilla, cerrar todas las cadenas de custodia en DRAFT
+            if new_status == "LIQUIDATED" and old_status != "LIQUIDATED":
+                CustodyChain.objects.filter(
+                    sheet_project=sheet,
+                    status="DRAFT",
+                    is_active=True,
+                ).update(status="CLOSE")
 
         sheet.save()
 
