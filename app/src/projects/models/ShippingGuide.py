@@ -120,6 +120,36 @@ class ShippingGuide(BaseModel):
 			('SALE', 'VENTA'),
 		)
 	)
+	cost_transport = models.DecimalField(
+		'Costo del Transporte',
+		max_digits=10,
+		decimal_places=2,
+		default=0,
+		blank=True,
+		null=True
+	)
+	sheet_project_logistics_concept = models.CharField(
+        'Concepto Logístico',
+        max_length=255,
+        blank=True,
+        null=True,
+        default=None
+    )
+	cost_stowage = models.DecimalField(
+		'Costo de Estiba',
+		max_digits=10,
+		decimal_places=2,
+		default=0,
+		blank=True,
+		null=True
+	)
+	sheet_project_stowage_concept = models.CharField(
+        'Concepto de Estiba',
+        max_length=255,
+        blank=True,
+        null=True,
+        default=None
+    )
 	status = models.CharField(
 		'Estado de la Guía',
 		max_length=20,

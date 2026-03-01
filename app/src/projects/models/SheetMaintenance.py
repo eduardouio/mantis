@@ -113,7 +113,7 @@ class SheetMaintenance(BaseModel):
 		blank=True,
 		null=True
 	)
-    total_cost = models.DecimalField(
+    cost_total = models.DecimalField(
 		'Costo Total',
 		max_digits=10,
 		decimal_places=2,
@@ -121,13 +121,14 @@ class SheetMaintenance(BaseModel):
 		blank=True,
 		null=True
 	)
-    sheet_project_concept = models.CharField(
+    sheet_project_maintenance_concept = models.CharField(
         'Concepto de Hoja de Proyecto',
         max_length=255,
         blank=True,
-        null=True
+        null=True,
+        default="SERVICIO TÉCNICO ESPECIALIZADO"
     )
-    logistics_concept = models.CharField(
+    sheet_project_logistics_concept = models.CharField(
         'Concepto Logístico',
         max_length=255,
         blank=True,
