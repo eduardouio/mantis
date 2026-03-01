@@ -22,6 +22,11 @@ const sheetId = computed(() => {
   return isNaN(id) ? 0 : id
 })
 
+// ID de la planilla padre (desde query en modo creación, o desde datos cargados en edición)
+const sheetProjectId = computed(() => {
+  return parseInt(route.query.sheet_id) || sheet.value.id_sheet_project || 0
+})
+
 const isEditMode = computed(() => sheetId.value > 0)
 const isProjectClosed = computed(() => projectStore.project?.is_closed === true)
 
@@ -31,7 +36,7 @@ const canEdit = computed(() => sheetStatus.value === 'DRAFT')
 
 // Datos del formulario
 const sheet = ref({
-  project_id: appConfig.idProject,
+  id_sheet_project: parseInt(route.query.sheet_id) || null,
   responsible_technical_id: null,
   requested_by: '',
   rig: '',
@@ -43,6 +48,8 @@ const sheet = ref({
   end_date: '',
   total_days: 0,
   total_hours: 0,
+  cost_hour: 0,
+  total_cost: 0,
   maintenance_description: '',
   fault_description: '',
   possible_causes: '',
@@ -76,7 +83,7 @@ const loadSheetData = async () => {
     if (data) {
       sheet.value = {
         id: data.id,
-        project_id: data.project_id,
+        id_sheet_project: data.id_sheet_project,
         responsible_technical_id: data.responsible_technical_id || null,
         requested_by: data.requested_by || '',
         rig: data.rig || '',
@@ -88,6 +95,8 @@ const loadSheetData = async () => {
         end_date: data.end_date ? data.end_date.substring(0, 10) : '',
         total_days: data.total_days || 0,
         total_hours: data.total_hours || 0,
+        cost_hour: data.cost_hour || 0,
+        total_cost: data.total_cost || 0,
         maintenance_description: data.maintenance_description || '',
         fault_description: data.fault_description || '',
         possible_causes: data.possible_causes || '',
@@ -109,12 +118,12 @@ const loadSheetData = async () => {
       }
     } else {
       alert('Hoja de mantenimiento no encontrada')
-      router.push({ name: 'maintenance-sheet-list' })
+      goBackToSheet()
     }
   } catch (error) {
     console.error('Error al cargar hoja:', error)
     alert('Error al cargar los datos: ' + error.message)
-    router.push({ name: 'maintenance-sheet-list' })
+    goBackToSheet()
   } finally {
     isLoading.value = false
   }
@@ -146,7 +155,7 @@ const submitForm = async () => {
 
     const payload = {
       ...sheet.value,
-      project_id: appConfig.idProject,
+      id_sheet_project: sheetProjectId.value,
       responsible_technical_id: sheet.value.responsible_technical_id || null,
       resource_item_id: sheet.value.resource_item_id || null,
     }
@@ -158,7 +167,7 @@ const submitForm = async () => {
       await maintenanceStore.createSheet(payload)
     }
 
-    router.push({ name: 'maintenance-sheet-list' })
+    goBackToSheet()
   } catch (error) {
     console.error('Error al guardar:', error)
     alert('Error al ' + (isEditMode.value ? 'actualizar' : 'crear') + ' la hoja: ' + error.message)
@@ -168,7 +177,16 @@ const submitForm = async () => {
 }
 
 const cancelForm = () => {
-  router.push({ name: 'maintenance-sheet-list' })
+  goBackToSheet()
+}
+
+const goBackToSheet = () => {
+  const spId = sheetProjectId.value
+  if (spId) {
+    router.push({ name: 'sheet-project-view', params: { id: spId } })
+  } else {
+    router.push({ name: 'projects-detail', query: { tab: 'planillas' } })
+  }
 }
 
 // ── Upload de archivo PDF ──
@@ -446,6 +464,36 @@ const deleteMaintenanceFile = async () => {
               type="number"
               v-model.number="sheet.total_hours"
               min="0"
+              :disabled="!canEdit"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <!-- Costo Hora -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium">Costo Hora</span>
+            </label>
+            <input
+              type="number"
+              v-model.number="sheet.cost_hour"
+              min="0"
+              step="0.01"
+              :disabled="!canEdit"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <!-- Costo Total -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium">Costo Total</span>
+            </label>
+            <input
+              type="number"
+              v-model.number="sheet.total_cost"
+              min="0"
+              step="0.01"
               :disabled="!canEdit"
               class="input input-bordered w-full"
             />

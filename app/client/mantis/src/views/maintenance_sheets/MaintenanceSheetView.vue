@@ -26,14 +26,6 @@ const goBack = () => {
   router.push({ name: 'projects-detail', query: { tab: 'planillas' } })
 }
 
-const createSheet = () => {
-  router.push({ name: 'maintenance-sheet-form' })
-}
-
-const editSheet = (sheet) => {
-  router.push({ name: 'maintenance-sheet-form', params: { id: sheet.id } })
-}
-
 // ── Confirmaciones ──
 const confirmDelete = ref(null)
 const confirmStatusChange = ref(null)
@@ -204,6 +196,23 @@ const statusClass = (status) => {
               <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Días / Horas:</span>
               <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
                 {{ sheet.total_days || 0 }} días / {{ sheet.total_hours || 0 }} hrs
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-2 border-b bg-gray-50 border-b-gray-200">
+          <div class="grid grid-cols-4 gap-4">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Costo Hora:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                {{ sheet.cost_hour || 0 }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Costo Total:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                {{ sheet.total_cost || 0 }}
               </span>
             </div>
           </div>
