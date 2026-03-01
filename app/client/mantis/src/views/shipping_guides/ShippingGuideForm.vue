@@ -114,6 +114,7 @@ const loadGuideData = async () => {
 
       // Cargar detalles
       details.value = (data.details || []).map(d => ({
+        id_resource_item: d.id_resource_item || null,
         description: d.description,
         quantity: d.quantity,
         unit: parseFloat(d.unit) || 0,
@@ -156,8 +157,11 @@ onMounted(async () => {
 
 // Agregar recurso del proyecto como ítem de la guía
 const addResourceAsDetail = (resource) => {
+  // Descripción: CÓDIGO / TIPO DE EQUIPO (ej: PSL-BT-185 / BATERIA SANITARIA HOMBRE)
+  const description = `${resource.resource_item_code} / ${resource.resource_item_name}`
   details.value.push({
-    description: resource.detailed_description || resource.resource_item_name || `Recurso #${resource.id}`,
+    id_resource_item: resource.resource_item_id,
+    description,
     quantity: 1,
     unit: parseFloat(resource.cost) || 1.00,
   })
@@ -193,6 +197,7 @@ const submitForm = async () => {
       ...guide.value,
       project_id: appConfig.idProject,
       details: details.value.map(d => ({
+        id_resource_item: d.id_resource_item || null,
         description: d.description,
         quantity: d.quantity,
         unit: d.unit,

@@ -3,6 +3,7 @@ from django.db.models import Max
 from projects.models.Project import Project
 from equipment.models.ResourceItem import ResourceItem
 from common.BaseModel import BaseModel
+from common.validators import validate_pdf_file
 
 
 class ShippingGuide(BaseModel):
@@ -104,7 +105,7 @@ class ShippingGuide(BaseModel):
 	shipping_guide_file = models.FileField(
 		upload_to='projects/shipping_guides/',
 		verbose_name='Archivo de Guía de Envío',
-		validators=[],
+		validators=[validate_pdf_file],
 		blank=True,
 		null=True
 	)
@@ -113,10 +114,17 @@ class ShippingGuide(BaseModel):
 		max_length=20,
 		choices=(
 			('DRAFT', 'BORRADOR'),
-			('COMPLETED', 'COMPLETADA'),
-			('CANCEL', 'CANCELADA'),
+			('CLOSED', 'CERRADA'),
+			('VOID', 'ANULADA'),
 		),
 		default='DRAFT'
+	)
+	file_shipping_guide = models.FileField(
+		upload_to='projects/shipping_guides/',
+		verbose_name='Archivo de Guía de Envío',
+		validators=[validate_pdf_file],
+		blank=True,
+		null=True
 	)
 
 	class Meta:

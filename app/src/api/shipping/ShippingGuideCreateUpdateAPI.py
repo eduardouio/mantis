@@ -8,6 +8,7 @@ from datetime import datetime
 
 from projects.models.ShippingGuide import ShippingGuide, ShippingGuideDetail
 from projects.models.Project import Project
+from equipment.models.ResourceItem import ResourceItem
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -224,8 +225,19 @@ class ShippingGuideCreateUpdateAPI(View):
         for detail_data in details:
             if not detail_data.get('description') or not detail_data.get('quantity'):
                 continue
+
+            # Buscar el recurso si se proporciona id_resource_item
+            resource_item = None
+            resource_item_id = detail_data.get('id_resource_item')
+            if resource_item_id:
+                try:
+                    resource_item = ResourceItem.objects.get(id=resource_item_id)
+                except ResourceItem.DoesNotExist:
+                    resource_item = None
+
             instances.append(ShippingGuideDetail(
                 shipping_guide=guide,
+                id_resource_item=resource_item,
                 description=detail_data['description'],
                 quantity=detail_data['quantity'],
                 unit=detail_data.get('unit', 0),
@@ -247,7 +259,7 @@ class ShippingGuideCreateUpdateAPI(View):
         """Serializa una guía de remisión a diccionario."""
         details = ShippingGuideDetail.objects.filter(
             shipping_guide=guide
-        ).values('id', 'description', 'quantity', 'unit')
+        ).select_related('id_resource_item')
 
         return {
             'id': guide.id,
@@ -271,5 +283,13 @@ class ShippingGuideCreateUpdateAPI(View):
             'notes': guide.notes,
             'shipping_guide_file': guide.shipping_guide_file.url if guide.shipping_guide_file else None,
             'created_at': guide.created_at.isoformat() if guide.created_at else None,
-            'details': list(details),
+            'details': [{
+                'id': d.id,
+                'id_resource_item': d.id_resource_item_id,
+                'resource_item_code': d.id_resource_item.code if d.id_resource_item else None,
+                'resource_item_name': d.id_resource_item.name if d.id_resource_item else None,
+                'description': d.description,
+                'quantity': d.quantity,
+                'unit': float(d.unit),
+            } for d in details],
         }
