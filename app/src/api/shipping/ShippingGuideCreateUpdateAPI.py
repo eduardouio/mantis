@@ -139,6 +139,10 @@ class ShippingGuideCreateUpdateAPI(View):
             recibed_ci=data.get('recibed_ci'),
             notes=data.get('notes'),
             reason_transport=data.get('reason_transport'),
+            cost_transport=data.get('cost_transport', 0),
+            sheet_project_logistics_concept=data.get('sheet_project_logistics_concept'),
+            cost_stowage=data.get('cost_stowage', 0),
+            sheet_project_stowage_concept=data.get('sheet_project_stowage_concept'),
         )
 
         # Si se proporciona guide_number, validar unicidad
@@ -271,10 +275,17 @@ class ShippingGuideCreateUpdateAPI(View):
             'carrier_ci', 'vehicle_plate', 'dispatcher_name',
             'dispatcher_ci', 'contact_name', 'contact_phone',
             'recibed_by', 'recibed_ci', 'notes', 'reason_transport',
+            'sheet_project_logistics_concept', 'sheet_project_stowage_concept',
         ]
         for field in optional_fields:
             if field in data:
                 setattr(guide, field, data[field])
+
+        # Campos decimales
+        decimal_fields = ['cost_transport', 'cost_stowage']
+        for field in decimal_fields:
+            if field in data:
+                setattr(guide, field, data[field] or 0)
 
         # Actualizar guide_number si se proporciona, validando unicidad
         if 'guide_number' in data and data['guide_number']:
@@ -372,6 +383,10 @@ class ShippingGuideCreateUpdateAPI(View):
             'notes': guide.notes,
             'reason_transport': guide.reason_transport,
             'reason_transport_display': guide.get_reason_transport_display() if guide.reason_transport else None,
+            'cost_transport': float(guide.cost_transport) if guide.cost_transport else 0,
+            'sheet_project_logistics_concept': guide.sheet_project_logistics_concept,
+            'cost_stowage': float(guide.cost_stowage) if guide.cost_stowage else 0,
+            'sheet_project_stowage_concept': guide.sheet_project_stowage_concept,
             'status': guide.status,
             'status_display': guide.get_status_display(),
             'shipping_guide_file': guide.shipping_guide_file.url if guide.shipping_guide_file else None,

@@ -217,9 +217,11 @@ class SheetMaintenanceCreateUpdateAPI(View):
             location=data.get('location'),
             maintenance_type=data.get('maintenance_type', 'PREVENTIVO'),
             total_days=data.get('total_days', 0),
-            total_hours=data.get('total_hours', 0),
-            cost_hour=data.get('cost_hour', 0),
-            total_cost=data.get('total_cost', 0),
+            cost_day=data.get('cost_day', 0),
+            cost_total=data.get('cost_total', 0),
+            sheet_project_maintenance_concept=data.get('sheet_project_maintenance_concept', 'SERVICIO TÉCNICO ESPECIALIZADO'),
+            sheet_project_logistics_concept=data.get('sheet_project_logistics_concept'),
+            cost_logistics=data.get('cost_logistics', 0),
             maintenance_description=data.get('maintenance_description'),
             fault_description=data.get('fault_description'),
             possible_causes=data.get('possible_causes'),
@@ -319,17 +321,19 @@ class SheetMaintenanceCreateUpdateAPI(View):
             'replaced_parts', 'observations',
             'performed_by', 'performed_by_position',
             'approved_by', 'approved_by_position', 'notes',
+            'sheet_project_maintenance_concept',
+            'sheet_project_logistics_concept',
         ]
         for field in text_fields:
             if field in data:
                 setattr(sheet, field, data[field])
 
-        int_fields = ['total_days', 'total_hours']
+        int_fields = ['total_days']
         for field in int_fields:
             if field in data:
                 setattr(sheet, field, data[field] or 0)
 
-        decimal_fields = ['cost_hour', 'total_cost']
+        decimal_fields = ['cost_day', 'cost_total', 'cost_logistics']
         for field in decimal_fields:
             if field in data:
                 setattr(sheet, field, data[field] or 0)
@@ -377,9 +381,11 @@ class SheetMaintenanceCreateUpdateAPI(View):
             'start_date': sheet.start_date.isoformat() if sheet.start_date else None,
             'end_date': sheet.end_date.isoformat() if sheet.end_date else None,
             'total_days': sheet.total_days,
-            'total_hours': sheet.total_hours,
-            'cost_hour': float(sheet.cost_hour) if sheet.cost_hour else 0,
-            'total_cost': float(sheet.total_cost) if sheet.total_cost else 0,
+            'cost_day': float(sheet.cost_day) if sheet.cost_day else 0,
+            'cost_total': float(sheet.cost_total) if sheet.cost_total else 0,
+            'sheet_project_maintenance_concept': sheet.sheet_project_maintenance_concept,
+            'sheet_project_logistics_concept': sheet.sheet_project_logistics_concept,
+            'cost_logistics': float(sheet.cost_logistics) if sheet.cost_logistics else 0,
             'maintenance_description': sheet.maintenance_description,
             'fault_description': sheet.fault_description,
             'possible_causes': sheet.possible_causes,
