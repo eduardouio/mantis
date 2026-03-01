@@ -9,11 +9,11 @@ export const UseMaintenanceSheetStore = defineStore("maintenanceSheetStore", {
         error: null,
     }),
     actions: {
-        async fetchSheetsByProject() {
+        async fetchSheetsBySheetProject(sheetProjectId) {
             this.loading = true
             this.error = null
             try {
-                const url = appConfig.URLMaintenanceSheets + "?project_id=" + appConfig.idProject
+                const url = appConfig.URLMaintenanceSheets + "?sheet_project_id=" + sheetProjectId
                 const response = await fetch(url, {
                     method: "GET",
                     headers: appConfig.headers,

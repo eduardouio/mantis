@@ -7,7 +7,6 @@ import SheetProjectView from '@/views/sheet_projects/SheetProjectView.vue'
 import SheetProjectForm from '@/views/sheet_projects/SheetProjectForm.vue'
 import ShippingGuideView from '@/views/shipping_guides/ShippingGuideView.vue'
 import ShippingGuideForm from '@/views/shipping_guides/ShippingGuideForm.vue'
-import MaintenanceSheetView from '@/views/maintenance_sheets/MaintenanceSheetView.vue'
 import MaintenanceSheetForm from '@/views/maintenance_sheets/MaintenanceSheetForm.vue'
 
 const router = createRouter({
@@ -56,11 +55,6 @@ const router = createRouter({
       path: '/shipping-guides/form/:id?',
       name: 'shipping-guide-form',
       component: ShippingGuideForm,
-    },
-    {
-      path: '/maintenance-sheets',
-      name: 'maintenance-sheet-list',
-      component: MaintenanceSheetView,
     },
     {
       path: '/maintenance-sheets/form/:id?',
