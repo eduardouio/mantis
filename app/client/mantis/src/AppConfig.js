@@ -39,6 +39,9 @@ export const appConfig = {
     "URLShippingGuides": apiBaseUrl + "/api/shipping/guides/",
     "URLShippingGuideDetail": apiBaseUrl + "/api/shipping/guides/${id}/",
     "URLShippingGuideDelete": apiBaseUrl + "/api/shipping/guides/${id}/delete/",
-    "URLShippingGuideDownload": apiBaseUrl + "/reports/shipping-guide/${id}/"
-    ,
+    "URLShippingGuideDownload": apiBaseUrl + "/reports/shipping-guide/${id}/",
+    "URLMaintenanceSheets": apiBaseUrl + "/api/maintenance/sheets/",
+    "URLMaintenanceSheetDetail": apiBaseUrl + "/api/maintenance/sheets/${id}/",
+    "URLMaintenanceSheetDelete": apiBaseUrl + "/api/maintenance/sheets/${id}/delete/",
+    "URLMaintenanceSheetDownload": apiBaseUrl + "/reports/sheet-maintenance/${id}/",
 }
