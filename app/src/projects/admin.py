@@ -10,7 +10,8 @@ from projects.models import (
     FinalDispositionCertificate,
     FinalDispositionCertificateDetail,
     ShippingGuide,
-    ShippingGuideDetail
+    ShippingGuideDetail,
+    SheetMaintenance
 )
 from projects.models.SheetProject import SheetProjectDetail
 
@@ -367,11 +368,73 @@ class FinalDispositionCertificateDetailAdmin(BaseModelAdmin):
     )
 
 
+@admin.register(SheetMaintenance)
+class SheetMaintenanceAdmin(BaseModelAdmin):
+    list_display = (
+        'id', 'sheet_number', 'id_sheet_project', 'status', 'maintenance_type',
+        'responsible_technical', 'resource_item', 'start_date', 'end_date',
+        'total_days', 'cost_day', 'cost_total'
+    )
+    list_filter = (
+        'status', 'maintenance_type', 'start_date', 'end_date', 'is_active'
+    )
+    search_fields = (
+        'sheet_number', 'requested_by', 'rig', 'code', 'location',
+        'performed_by', 'approved_by'
+    )
+    fieldsets = (
+        ('Hoja de Mantenimiento', {
+            'fields': (
+                'id_sheet_project', 'sheet_number', 'status',
+                'responsible_technical', 'requested_by', 'rig',
+                'resource_item', 'code', 'location',
+                'maintenance_type', 'is_active'
+            )
+        }),
+        ('Fechas y Costos', {
+            'fields': (
+                'start_date', 'end_date', 'total_days',
+                'cost_day', 'cost_total'
+            )
+        }),
+        ('Conceptos de Planilla', {
+            'fields': (
+                'sheet_project_maintenance_concept',
+                'sheet_project_logistics_concept', 'cost_logistics'
+            )
+        }),
+        ('Descripción del Mantenimiento', {
+            'fields': (
+                'maintenance_description', 'fault_description',
+                'possible_causes', 'replaced_parts', 'observations'
+            ), 'classes': ('collapse',)
+        }),
+        ('Responsables', {
+            'fields': (
+                'performed_by', 'performed_by_position',
+                'approved_by', 'approved_by_position'
+            ), 'classes': ('collapse',)
+        }),
+        ('Archivo', {
+            'fields': ('maintenance_file',), 'classes': ('collapse',)
+        }),
+        ('Notas', {
+            'fields': ('notes',), 'classes': ('collapse',)
+        }),
+        ('Auditoría', {
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+            ), 'classes': ('collapse',)
+        })
+    )
+
+
 @admin.register(ShippingGuide)
 class ShippingGuideAdmin(BaseModelAdmin):
     list_display = (
         'id', 'guide_number', 'project', 'issue_date', 'start_date', 'end_date',
-        'carrier_name', 'vehicle_plate', 'reason_transport', 'status'
+        'carrier_name', 'vehicle_plate', 'reason_transport', 'cost_transport',
+        'cost_stowage', 'status'
     )
     list_filter = (
         'project', 'status', 'reason_transport', 'issue_date', 'start_date', 'end_date', 'is_active'
@@ -394,6 +457,12 @@ class ShippingGuideAdmin(BaseModelAdmin):
                 'dispatcher_name', 'dispatcher_ci'
             )
         }),
+        ('Costos y Conceptos', {
+            'fields': (
+                'cost_transport', 'sheet_project_logistics_concept',
+                'cost_stowage', 'sheet_project_stowage_concept'
+            )
+        }),
         ('Contacto y Recepción', {
             'fields': (
                 'contact_name', 'contact_phone', 'recibed_by', 'recibed_ci'
@@ -413,7 +482,7 @@ class ShippingGuideAdmin(BaseModelAdmin):
 @admin.register(ShippingGuideDetail)
 class ShippingGuideDetailAdmin(BaseModelAdmin):
     list_display = (
-        'id', 'shipping_guide', 'description', 'quantity', 'unit'
+        'id', 'shipping_guide', 'id_resource_item', 'description', 'quantity', 'unit'
     )
     list_filter = (
         'shipping_guide', 'is_active'
@@ -424,7 +493,7 @@ class ShippingGuideDetailAdmin(BaseModelAdmin):
     fieldsets = (
         ('Detalle', {
             'fields': (
-                'shipping_guide', 'description', 'quantity', 'unit', 'is_active'
+                'shipping_guide', 'id_resource_item', 'description', 'quantity', 'unit', 'is_active'
             )
         }),
         ('Notas', {
