@@ -22,6 +22,10 @@
     margin: 0 auto;
     border-collapse: collapse;
     page-break-inside: avoid;
+    page-break-after: always;
+  }
+  .container:last-child {
+    page-break-after: avoid;
   }
   table {
     width: 100%;
@@ -112,7 +116,7 @@
 </style>
 </head>
 <body>
-
+{% for pg in pages %}
 <div class="container">
   <div class="header-content">
     <div class="header-text" style="height: 34px;">
@@ -189,8 +193,7 @@
       </tr>
     </thead>
     <tbody>
-        {% for detail in custody_details %}
-        {% if forloop.counter <= 9 %}
+        {% for detail in pg.details %}
         <tr>
           <td class="grid-cell">{{ detail.equipment|default:"" }}</td>
           <td class="grid-cell" style="background-color: #f7f7f7;">{{ detail.code_equipment|default:"" }}</td>
@@ -209,22 +212,22 @@
           <td class="grid-cell"></td>
           <td class="grid-cell"></td>
           <td class="grid-cell"></td>
-          {% if forloop.counter == 1 %}<td>BAÑOS</td><td>BT</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUAS NEGRAS</td><td>{% if custody_chain.black_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 2 %}<td>LAVAMANOS</td><td>LV</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUAS GRISES</td><td>{% if custody_chain.grey_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 3 %}<td>URINARIO</td><td>UR</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUA LIMPIA</td><td>{% if custody_chain.clean_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 4 %}<td>BIODIGESTOR</td><td>BG</td><td colspan="2" style="text-align: right; font-size: 8px;">LODOS ACTIVADOS</td><td>{% if custody_chain.activated_sludge %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 5 %}<td>TRAMPA DE GRASA</td><td>TG</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUA RESIDUAL TRATADA</td><td>{% if custody_chain.treated_wastewater %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 6 %}<td>ESTACIÓN DE BOMBEO</td><td>EB</td><td colspan="2" style="text-align: right; font-size: 8px;">GRASA ORGÁNICA</td><td>{% if custody_chain.organic_grease %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 7 %}<td>PLANTA DE AGUA RESIDUAL</td><td>PTAR</td><td colspan="3" style="background-color: #f8fff2;"><strong>PESO Y/O VOLUMEN</strong></td>{% endif %}
-          {% if forloop.counter == 8 %}<td>PLANTA DE AGUA POTABLE</td><td>PTAP</td><td style="background-color: #f8fff2; width: 40px;"><strong>Galón</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>m3</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>Barril</strong></td>{% endif %}
-          {% if forloop.counter == 9 %}<td>OTROS</td><td>OT</td><td>{% if custody_chain.total_gallons and custody_chain.total_gallons > 0 %}{{ custody_chain.total_gallons }}{% endif %}</td><td>{% if custody_chain.total_cubic_meters and custody_chain.total_cubic_meters > 0 %}{{ custody_chain.total_cubic_meters }}{% endif %}</td><td>{% if custody_chain.total_barrels and custody_chain.total_barrels > 0 %}{{ custody_chain.total_barrels }}{% endif %}</td>{% endif %}
+          {% if pg.is_first and forloop.counter == 1 %}<td>BAÑOS</td><td>BT</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUAS NEGRAS</td><td>{% if custody_chain.black_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif pg.is_first and forloop.counter == 2 %}<td>LAVAMANOS</td><td>LV</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUAS GRISES</td><td>{% if custody_chain.grey_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif pg.is_first and forloop.counter == 3 %}<td>URINARIO</td><td>UR</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUA LIMPIA</td><td>{% if custody_chain.clean_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif pg.is_first and forloop.counter == 4 %}<td>BIODIGESTOR</td><td>BG</td><td colspan="2" style="text-align: right; font-size: 8px;">LODOS ACTIVADOS</td><td>{% if custody_chain.activated_sludge %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif pg.is_first and forloop.counter == 5 %}<td>TRAMPA DE GRASA</td><td>TG</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUA RESIDUAL TRATADA</td><td>{% if custody_chain.treated_wastewater %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif pg.is_first and forloop.counter == 6 %}<td>ESTACIÓN DE BOMBEO</td><td>EB</td><td colspan="2" style="text-align: right; font-size: 8px;">GRASA ORGÁNICA</td><td>{% if custody_chain.organic_grease %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif pg.is_first and forloop.counter == 7 %}<td>PLANTA DE AGUA RESIDUAL</td><td>PTAR</td><td colspan="3" style="background-color: #f8fff2;"><strong>PESO Y/O VOLUMEN</strong></td>
+          {% elif pg.is_first and forloop.counter == 8 %}<td>PLANTA DE AGUA POTABLE</td><td>PTAP</td><td style="background-color: #f8fff2; width: 40px;"><strong>Galón</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>m3</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>Barril</strong></td>
+          {% elif pg.is_first and forloop.counter == 9 %}<td>OTROS</td><td>OT</td><td>{% if custody_chain.total_gallons and custody_chain.total_gallons > 0 %}{{ custody_chain.total_gallons }}{% endif %}</td><td>{% if custody_chain.total_cubic_meters and custody_chain.total_cubic_meters > 0 %}{{ custody_chain.total_cubic_meters }}{% endif %}</td><td>{% if custody_chain.total_barrels and custody_chain.total_barrels > 0 %}{{ custody_chain.total_barrels }}{% endif %}</td>
+          {% else %}<td></td><td></td><td></td><td></td><td></td>
+          {% endif %}
         </tr>
-        {% endif %}
         {% endfor %}
-        
-        <!-- Llenar filas vacías hasta completar 9 -->
-        {% for i in "012345678"|make_list %}
-        {% if forloop.counter > custody_details|length %}
+
+        <!-- Llenar filas vacías hasta completar 10 -->
+        {% for _ in pg.empty_rows %}
         <tr>
           <td class="grid-cell"></td>
           <td class="grid-cell" style="background-color: #f7f7f7;"></td>
@@ -243,17 +246,21 @@
           <td class="grid-cell"></td>
           <td class="grid-cell"></td>
           <td class="grid-cell"></td>
-          {% if forloop.counter == 1 and custody_details|length == 0 %}<td>BAÑOS</td><td>BT</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUAS NEGRAS</td><td>{% if custody_chain.black_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 2 and custody_details|length <= 1 %}<td>LAVAMANOS</td><td>LV</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUAS GRISES</td><td>{% if custody_chain.grey_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 3 and custody_details|length <= 2 %}<td>URINARIO</td><td>UR</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUA LIMPIA</td><td>{% if custody_chain.clean_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 4 and custody_details|length <= 3 %}<td>BIODIGESTOR</td><td>BG</td><td colspan="2" style="text-align: right; font-size: 8px;">LODOS ACTIVADOS</td><td>{% if custody_chain.activated_sludge %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 5 and custody_details|length <= 4 %}<td>TRAMPA DE GRASA</td><td>TG</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUA RESIDUAL TRATADA</td><td>{% if custody_chain.treated_wastewater %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 6 and custody_details|length <= 5 %}<td>ESTACIÓN DE BOMBEO</td><td>EB</td><td colspan="2" style="text-align: right; font-size: 8px;">GRASA ORGÁNICA</td><td>{% if custody_chain.organic_grease %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>{% endif %}
-          {% if forloop.counter == 7 and custody_details|length <= 6 %}<td>PLANTA DE AGUA RESIDUAL</td><td>PTAR</td><td colspan="3" style="background-color: #f8fff2; font-weight: bold;">PESO Y/O VOLUMEN</td>{% endif %}
-          {% if forloop.counter == 8 and custody_details|length <= 7 %}<td>PLANTA DE AGUA POTABLE</td><td>PTAP</td><td style="background-color: #f8fff2; width: 40px;"><strong>Galón</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>m3</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>Barril</strong></td>{% endif %}
-          {% if forloop.counter == 9 and custody_details|length <= 8 %}<td>OTROS</td><td>OT</td><td>{% if custody_chain.total_gallons and custody_chain.total_gallons > 0 %}{{ custody_chain.total_gallons }}{% endif %}</td><td>{% if custody_chain.total_cubic_meters and custody_chain.total_cubic_meters > 0 %}{{ custody_chain.total_cubic_meters }}{% endif %}</td><td>{% if custody_chain.total_barrels and custody_chain.total_barrels > 0 %}{{ custody_chain.total_barrels }}{% endif %}</td>{% endif %}
+          {% if pg.is_first %}{% with row_pos=pg.detail_count|add:forloop.counter %}
+          {% if row_pos == 1 %}<td>BAÑOS</td><td>BT</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUAS NEGRAS</td><td>{% if custody_chain.black_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif row_pos == 2 %}<td>LAVAMANOS</td><td>LV</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUAS GRISES</td><td>{% if custody_chain.grey_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif row_pos == 3 %}<td>URINARIO</td><td>UR</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUA LIMPIA</td><td>{% if custody_chain.clean_water %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif row_pos == 4 %}<td>BIODIGESTOR</td><td>BG</td><td colspan="2" style="text-align: right; font-size: 8px;">LODOS ACTIVADOS</td><td>{% if custody_chain.activated_sludge %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif row_pos == 5 %}<td>TRAMPA DE GRASA</td><td>TG</td><td colspan="2" style="text-align: right; font-size: 8px;">AGUA RESIDUAL TRATADA</td><td>{% if custody_chain.treated_wastewater %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif row_pos == 6 %}<td>ESTACIÓN DE BOMBEO</td><td>EB</td><td colspan="2" style="text-align: right; font-size: 8px;">GRASA ORGÁNICA</td><td>{% if custody_chain.organic_grease %}<strong style="font-size: 14px;">X</strong>{% endif %}</td>
+          {% elif row_pos == 7 %}<td>PLANTA DE AGUA RESIDUAL</td><td>PTAR</td><td colspan="3" style="background-color: #f8fff2;"><strong>PESO Y/O VOLUMEN</strong></td>
+          {% elif row_pos == 8 %}<td>PLANTA DE AGUA POTABLE</td><td>PTAP</td><td style="background-color: #f8fff2; width: 40px;"><strong>Galón</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>m3</strong></td><td style="background-color: #f8fff2; width: 40px;"><strong>Barril</strong></td>
+          {% elif row_pos == 9 %}<td>OTROS</td><td>OT</td><td>{% if custody_chain.total_gallons and custody_chain.total_gallons > 0 %}{{ custody_chain.total_gallons }}{% endif %}</td><td>{% if custody_chain.total_cubic_meters and custody_chain.total_cubic_meters > 0 %}{{ custody_chain.total_cubic_meters }}{% endif %}</td><td>{% if custody_chain.total_barrels and custody_chain.total_barrels > 0 %}{{ custody_chain.total_barrels }}{% endif %}</td>
+          {% else %}<td></td><td></td><td></td><td></td><td></td>
+          {% endif %}{% endwith %}
+          {% else %}<td></td><td></td><td></td><td></td><td></td>
+          {% endif %}
         </tr>
-        {% endif %}
         {% endfor %}
     </tbody>
   </table>
@@ -396,9 +403,11 @@
   {% endif %}
 <div style="display: flex; justify-content: space-between; gap: 3px;">
 <span>PSL-GO-BS-F-002 08 JULIO 2024</span>
+<span>pagina {{ pg.page_number }} de {{ total_pages }}</span>
 <span>VERSION: 01</span>
 </div>
 </div>
+{% endfor %}
 
 </body>
 </html>
