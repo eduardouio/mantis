@@ -91,10 +91,10 @@ class SheetMaintenance(BaseModel):
         ),
         default='PREVENTIVO'
     )
-    start_date = models.DateTimeField(
+    start_date = models.DateField(
         'Fecha de Inicio'
     )
-    end_date = models.DateTimeField(
+    end_date = models.DateField(
         'Fecha de Finalización',
         blank=True,
         null=True
@@ -105,14 +105,8 @@ class SheetMaintenance(BaseModel):
         blank=True,
         null=True
     )
-    total_hours = models.PositiveIntegerField(
-        'Total Horas',
-		default=0,
-		blank=True,
-		null=True
-	)
-    cost_hour = models.DecimalField(
-		'Costo Hora',
+    cost_day = models.DecimalField(
+		'Costo Día',
 		max_digits=10,
 		decimal_places=2,
 		default=0,
