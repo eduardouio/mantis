@@ -378,6 +378,8 @@ class ShippingGuideCreateUpdateAPI(View):
                 'id_resource_item': d.id_resource_item_id,
                 'resource_item_code': d.id_resource_item.code if d.id_resource_item else None,
                 'resource_item_name': d.id_resource_item.name if d.id_resource_item else None,
+                'type_equipment': d.id_resource_item.type_equipment if d.id_resource_item else None,
+                'type_equipment_display': d.id_resource_item.get_type_equipment_display() if d.id_resource_item and d.id_resource_item.type_equipment else None,
                 'description': d.description,
                 'quantity': d.quantity,
                 'unit': float(d.unit),

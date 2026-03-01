@@ -169,7 +169,8 @@ onMounted(async () => {
 // Agregar recurso del proyecto como ítem de la guía
 const addResourceAsDetail = (resource) => {
   // Descripción: CÓDIGO / TIPO DE EQUIPO (ej: PSL-BT-185 / BATERIA SANITARIA HOMBRE)
-  const description = `${resource.resource_item_code} / ${resource.resource_item_name}`
+  const equipType = resource.type_equipment_display || resource.resource_item_name || ''
+  const description = `${resource.resource_item_code} / ${equipType}`
   details.value.push({
     id_resource_item: resource.resource_item_id,
     description,
@@ -572,10 +573,10 @@ const cancelForm = () => {
               <tbody>
                 <tr v-for="(resource, idx) in availableResources" :key="resource.id" class="hover:bg-teal-50">
                   <td class="border border-gray-300">{{ idx + 1 }}</td>
-                  <td class="border border-gray-300">{{ resource.detailed_description || resource.resource_item_name }}</td>
+                  <td class="border border-gray-300">{{ resource.resource_item_code }} / {{ resource.type_equipment_display || resource.resource_item_name }}</td>
                   <td class="border border-gray-300">
-                    <span class="badge badge-sm" :class="resource.type_resource === 'EQUIPO' ? 'badge-info' : 'badge-warning'">
-                      {{ resource.type_resource }}
+                    <span class="badge badge-sm badge-info">
+                      {{ resource.type_equipment_display || resource.type_resource }}
                     </span>
                   </td>
                   <td class="border border-gray-300 text-right font-mono">${{ parseFloat(resource.cost || 0).toFixed(2) }}</td>

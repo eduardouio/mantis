@@ -30,6 +30,7 @@ class ProjectResources(View):
             "id": project_resource.id,
             "project_id": project_resource.project.id,
             "type": project_resource.resource_item.type_equipment,
+            "type_equipment_display": project_resource.resource_item.get_type_equipment_display() if project_resource.resource_item.type_equipment else None,
             "resource_item_id": project_resource.resource_item.id,
             "resource_item_code": project_resource.resource_item.code,
             "resource_item_name": project_resource.resource_item.name,
