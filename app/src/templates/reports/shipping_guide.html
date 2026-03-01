@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 	<head>
@@ -52,21 +53,26 @@
 
 			.header-right {
 				text-align: right;
+				display: flex;
+				align-items: center;
+				gap: 12px;
 			}
 
-			.company {
-				font-size: 14px;
-				font-weight: 700;
+			.header-logo img {
+				max-height: 45px;
+				width: auto;
 			}
 
 			.guide-number {
 				margin-top: 6px;
 				font-size: 12px;
+				text-align: right;
 			}
 
 			.guide-number strong {
 				color: #b52626;
 				font-size: 14px;
+				font-family: 'Courier New', Courier, monospace;
 			}
 
 			.section {
@@ -107,30 +113,44 @@
 
 			.motivo-grid {
 				display: grid;
-				grid-template-columns: repeat(4, 1fr);
+				grid-template-columns: repeat(2, 1fr);
+				grid-template-rows: repeat(2, 1fr);
 			}
 
 			.motivo-item {
 				border-right: 1px solid var(--line-soft);
+				border-bottom: 1px solid var(--line-soft);
 				padding: 8px 10px;
 				display: flex;
 				align-items: center;
 				justify-content: space-between;
-				min-height: 30px;
+				min-height: 36px;
 				font-size: 12px;
 			}
 
-			.motivo-item:last-child {
+			.motivo-item:nth-child(2n) {
 				border-right: 0;
 			}
 
-			.circle {
-				width: 10px;
-				height: 10px;
+			.motivo-item:nth-child(n+3) {
+				border-bottom: 0;
+			}
+
+			.check-box {
+				width: 22px;
+				height: 80%;
+				min-height: 22px;
 				border: 1px solid var(--line);
-				border-radius: 50%;
-				display: inline-block;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
 				margin-left: 8px;
+				flex-shrink: 0;
+			}
+
+			.check-box svg {
+				width: 80%;
+				height: 80%;
 			}
 
 			.items th {
@@ -171,7 +191,9 @@
 			<div class="header">
 				<div class="header-title">GUIA DE REMISION DE EQUIPOS / MATERIALES</div>
 				<div class="header-right">
-					<div class="company">PEISOL</div>
+					<div class="header-logo">
+						<img src="{% static 'img/logo.png' %}" alt="PEISOL">
+					</div>
 				</div>
 			</div>
 
@@ -202,10 +224,10 @@
 			<div class="section">
 				<div class="section-title">MOTIVO DEL TRASLADO</div>
 				<div class="motivo-grid">
-					<div class="motivo-item">UTILIZACION EN PROYECTOS <span class="circle" {% if guide.reason_transport == "USE_IN_PROJECT" %}style="background:#1f1f1f"{% endif %}></span></div>
-					<div class="motivo-item">DEVOLUCION <span class="circle" {% if guide.reason_transport == "DEVOLUTION" %}style="background:#1f1f1f"{% endif %}></span></div>
-					<div class="motivo-item">ALQUILER <span class="circle" {% if guide.reason_transport == "RENT" %}style="background:#1f1f1f"{% endif %}></span></div>
-					<div class="motivo-item">VENTA <span class="circle" {% if guide.reason_transport == "SALE" %}style="background:#1f1f1f"{% endif %}></span></div>
+					<div class="motivo-item">UTILIZACION EN PROYECTOS <span class="check-box">{% if guide.reason_transport == "USE_IN_PROJECT" %}<svg viewBox="0 0 24 24" fill="none" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>{% endif %}</span></div>
+					<div class="motivo-item">DEVOLUCION <span class="check-box">{% if guide.reason_transport == "DEVOLUTION" %}<svg viewBox="0 0 24 24" fill="none" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>{% endif %}</span></div>
+					<div class="motivo-item">ALQUILER <span class="check-box">{% if guide.reason_transport == "RENT" %}<svg viewBox="0 0 24 24" fill="none" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>{% endif %}</span></div>
+					<div class="motivo-item">VENTA <span class="check-box">{% if guide.reason_transport == "SALE" %}<svg viewBox="0 0 24 24" fill="none" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>{% endif %}</span></div>
 				</div>
 			</div>
 

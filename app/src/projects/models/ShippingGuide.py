@@ -171,10 +171,12 @@ class ShippingGuideDetail(BaseModel):
 	quantity = models.PositiveIntegerField(
 		'Cantidad'
 	)
-	unit = models.DecimalField(
+	unit = models.CharField(
 		'Unidad',
-		max_digits=10,
-		decimal_places=2
+		max_length=50,
+		blank=True,
+		null=True,
+		default=None
 	)
 
 	class Meta:
