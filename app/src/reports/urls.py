@@ -31,6 +31,8 @@ from reports.views.PDFFinalDispositionCertificateView import PDFFinalDisposition
 from reports.views.ShippingGuideReportView import ShippingGuideReportView
 from reports.views.PDFShippingGuideView import PDFShippingGuideView
 from reports.views.LiquidatedSheetsReport import LiquidatedSheetsReportView
+from reports.views.SheetMaintenanceReportView import SheetMaintenanceReportView
+from reports.views.PDFSheetMaintenance import PDFSheetMaintenance
 
 
 urlpatterns = [
@@ -48,6 +50,7 @@ urlpatterns = [
     path('reports/template-worksheet/<int:id>/', WorkSheetTemplateView.as_view(), name='worksheet-template'),
     path('reports/template-final-disposition/<int:id>/', FinalDispositionCertificateView.as_view(), name='final-disposition-certificate'),
 	path('reports/template-shipping-guide/<int:id>/', ShippingGuideReportView.as_view(), name='shipping-guide-report'),
+	path('reports/template-sheet-maintenance/<int:id>/', SheetMaintenanceReportView.as_view(), name='sheet-maintenance-report'),
 
     # Equipment Checklists Templates
     path('reports/template-equipment-bateries/<int:equipment_id>/', EquipmentBateriesCheckList.as_view(), name='equipment-bateries-checklist'),
@@ -66,6 +69,7 @@ urlpatterns = [
     path('reports/vehicle-status/<int:pk>/', PDFVehicleStatusReport.as_view(), name='vehicle-status-pdf'),
     path('reports/worksheet/<int:id>/', PDFWorkSheet.as_view(), name='worksheet-pdf'),
     path('reports/shipping-guide/<int:id>/', PDFShippingGuideView.as_view(), name='shipping-guide-pdf'),
+    path('reports/sheet-maintenance/<int:id>/', PDFSheetMaintenance.as_view(), name='sheet-maintenance-pdf'),
     
     # Equipment Checklists PDF
     path('reports/equipment-bateries/<int:equipment_id>/', PDFBateriesCheckList.as_view(), name='equipment-bateries-pdf'),
