@@ -138,5 +138,36 @@ export const UseShippingGuideStore = defineStore("shippingGuideStore", {
                 this.loading = false
             }
         },
+
+        async changeStatus(guideId, newStatus) {
+            this.loading = true
+            this.error = null
+            try {
+                const response = await fetch(appConfig.URLShippingGuides, {
+                    method: "PATCH",
+                    headers: appConfig.headers,
+                    body: JSON.stringify({ id: guideId, status: newStatus }),
+                })
+                if (!response.ok) {
+                    const errorData = await response.json()
+                    throw new Error(errorData?.error || `Error al cambiar estado (HTTP ${response.status})`)
+                }
+                const data = await response.json()
+
+                // Actualizar en la lista local
+                const index = this.shippingGuides.findIndex(g => g.id === guideId)
+                if (index !== -1) {
+                    this.shippingGuides[index] = data.data
+                }
+
+                return data.data
+            } catch (error) {
+                console.error("Error changing shipping guide status:", error)
+                this.error = error.message
+                throw error
+            } finally {
+                this.loading = false
+            }
+        },
     },
 })

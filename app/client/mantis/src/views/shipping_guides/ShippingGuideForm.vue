@@ -25,9 +25,16 @@ const guideId = computed(() => {
 const isEditMode = computed(() => guideId.value > 0)
 const isProjectClosed = computed(() => projectStore.project?.is_closed === true)
 
+// Estado de la guía
+const guideStatus = ref('DRAFT')
+
+// Determina si la guía es editable (solo en BORRADOR)
+const canEdit = computed(() => guideStatus.value === 'DRAFT')
+
 // Datos del formulario
 const guide = ref({
   project_id: appConfig.idProject,
+  guide_number: null,
   issue_date: new Date().toISOString().split('T')[0],
   start_date: '',
   end_date: '',
@@ -95,6 +102,7 @@ const loadGuideData = async () => {
       guide.value = {
         id: data.id,
         project_id: data.project_id,
+        guide_number: data.guide_number || null,
         issue_date: data.issue_date || '',
         start_date: data.start_date || '',
         end_date: data.end_date || '',
@@ -111,6 +119,9 @@ const loadGuideData = async () => {
         recibed_ci: data.recibed_ci || '',
         notes: data.notes || '',
       }
+
+      // Cargar estado
+      guideStatus.value = data.status || 'DRAFT'
 
       // Cargar detalles
       details.value = (data.details || []).map(d => ({
@@ -196,6 +207,7 @@ const submitForm = async () => {
     const payload = {
       ...guide.value,
       project_id: appConfig.idProject,
+      guide_number: guide.value.guide_number || null,
       details: details.value.map(d => ({
         id_resource_item: d.id_resource_item || null,
         description: d.description,
@@ -239,15 +251,43 @@ const cancelForm = () => {
             {{ isEditMode ? 'Modifique los datos de la guía de remisión' : 'Complete los datos para generar una nueva guía de remisión' }}
           </p>
         </div>
-        <div>
+        <div class="flex items-center gap-3">
           <span class="badge badge-lg badge-primary">
             Proyecto #{{ appConfig.idProject }}
           </span>
+          <span v-if="isEditMode" class="badge badge-lg" :class="{
+            'badge-warning': guideStatus === 'DRAFT',
+            'badge-success': guideStatus === 'CLOSED',
+            'badge-error': guideStatus === 'VOID'
+          }">
+            {{ guideStatus === 'DRAFT' ? 'BORRADOR' : guideStatus === 'CLOSED' ? 'CERRADA' : 'ANULADA' }}
+          </span>
+          <div class="form-control">
+            <div class="flex items-center gap-1">
+              <span class="text-xs text-gray-500 font-medium">Guía Nro.</span>
+              <input
+                v-model.number="guide.guide_number"
+                type="number"
+                min="1"
+                :disabled="!canEdit"
+                class="input input-bordered input-sm w-32 font-bold text-red-800 font-mono text-[16px] text-center"
+                placeholder="Auto"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <form @submit.prevent="submitForm" class="space-y-6">
+      <!-- Alerta de solo lectura -->
+      <div v-if="isEditMode && !canEdit" class="alert alert-warning shadow-sm mb-4">
+        <i class="las la-lock text-xl"></i>
+        <span>
+          Esta guía está en estado <strong>{{ guideStatus === 'CLOSED' ? 'CERRADA' : 'ANULADA' }}</strong> y no permite modificaciones.
+        </span>
+      </div>
+
       <!-- Información General -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información General</h6>
@@ -263,6 +303,7 @@ const cancelForm = () => {
               id="issue_date"
               v-model="guide.issue_date"
               required
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -276,6 +317,7 @@ const cancelForm = () => {
               type="date"
               id="start_date"
               v-model="guide.start_date"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -289,6 +331,7 @@ const cancelForm = () => {
               type="date"
               id="end_date"
               v-model="guide.end_date"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -303,6 +346,7 @@ const cancelForm = () => {
               id="origin_place"
               v-model="guide.origin_place"
               placeholder="Ej: Quito, Bodega Central"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -317,6 +361,7 @@ const cancelForm = () => {
               id="destination_place"
               v-model="guide.destination_place"
               placeholder="Ej: Campamento Norte"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -329,6 +374,7 @@ const cancelForm = () => {
             <select
               id="vehicle_select"
               v-model.number="selectedVehicleId"
+              :disabled="!canEdit"
               class="select select-bordered w-full"
             >
               <option :value="null">Seleccione un vehículo (opcional)</option>
@@ -354,6 +400,7 @@ const cancelForm = () => {
               id="carrier_name"
               v-model="guide.carrier_name"
               placeholder="Nombre completo"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -368,6 +415,7 @@ const cancelForm = () => {
               v-model="guide.carrier_ci"
               placeholder="Número de identificación"
               maxlength="20"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -382,6 +430,7 @@ const cancelForm = () => {
               v-model="guide.vehicle_plate"
               placeholder="Ej: ABC-1234"
               maxlength="20"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -402,6 +451,7 @@ const cancelForm = () => {
               id="dispatcher_name"
               v-model="guide.dispatcher_name"
               placeholder="Nombre completo"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -416,6 +466,7 @@ const cancelForm = () => {
               v-model="guide.dispatcher_ci"
               placeholder="Número de identificación"
               maxlength="20"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -436,6 +487,7 @@ const cancelForm = () => {
               id="contact_name"
               v-model="guide.contact_name"
               placeholder="Nombre completo"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -450,6 +502,7 @@ const cancelForm = () => {
               v-model="guide.contact_phone"
               placeholder="Teléfono"
               maxlength="15"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -470,6 +523,7 @@ const cancelForm = () => {
               id="recibed_by"
               v-model="guide.recibed_by"
               placeholder="Nombre de quien recibe"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -484,6 +538,7 @@ const cancelForm = () => {
               v-model="guide.recibed_ci"
               placeholder="Número de identificación"
               maxlength="20"
+              :disabled="!canEdit"
               class="input input-bordered w-full"
             />
           </div>
@@ -498,7 +553,7 @@ const cancelForm = () => {
         </h6>
 
         <!-- Agregar desde recursos del proyecto -->
-        <div class="mb-4">
+        <div v-if="canEdit" class="mb-4">
           <h6 class="text-sm font-semibold text-gray-600 mb-2">
             <i class="las la-toolbox text-teal-500"></i>
             Agregar desde Equipos del Proyecto
@@ -546,7 +601,7 @@ const cancelForm = () => {
         </div>
 
         <!-- Agregar ítem manual -->
-        <div class="mb-4 p-3 bg-gray-50 rounded border border-gray-200">
+        <div v-if="canEdit" class="mb-4 p-3 bg-gray-50 rounded border border-gray-200">
           <h6 class="text-sm font-semibold text-gray-600 mb-2">
             <i class="las la-pen text-teal-500"></i>
             Agregar Ítem Manual
@@ -608,7 +663,7 @@ const cancelForm = () => {
                 <th class="border border-gray-300">Descripción</th>
                 <th class="border border-gray-300 w-24 text-center">Cantidad</th>
                 <th class="border border-gray-300 w-28 text-right">Unidad</th>
-                <th class="border border-gray-300 w-20 text-center">Acción</th>
+                <th v-if="canEdit" class="border border-gray-300 w-20 text-center">Acción</th>
               </tr>
             </thead>
             <tbody>
@@ -618,6 +673,7 @@ const cancelForm = () => {
                   <input
                     type="text"
                     v-model="detail.description"
+                    :disabled="!canEdit"
                     class="input input-bordered input-sm w-full"
                   />
                 </td>
@@ -626,6 +682,7 @@ const cancelForm = () => {
                     type="number"
                     v-model.number="detail.quantity"
                     min="1"
+                    :disabled="!canEdit"
                     class="input input-bordered input-sm w-full text-center"
                   />
                 </td>
@@ -635,10 +692,11 @@ const cancelForm = () => {
                     v-model.number="detail.unit"
                     min="0"
                     step="0.01"
+                    :disabled="!canEdit"
                     class="input input-bordered input-sm w-full text-right"
                   />
                 </td>
-                <td class="border border-gray-300 text-center">
+                <td v-if="canEdit" class="border border-gray-300 text-center">
                   <button
                     type="button"
                     class="btn btn-xs btn-error"
@@ -670,6 +728,7 @@ const cancelForm = () => {
             v-model="guide.notes"
             rows="3"
             placeholder="Observaciones o notas adicionales..."
+            :disabled="!canEdit"
             class="textarea textarea-bordered w-full"
           ></textarea>
         </div>
@@ -679,9 +738,10 @@ const cancelForm = () => {
       <div class="flex gap-3 justify-end mt-6">
         <button type="button" class="btn btn-outline" @click="cancelForm" :disabled="isLoading">
           <i class="las la-times"></i>
-          Cancelar
+          Volver
         </button>
         <button
+          v-if="canEdit"
           type="submit"
           class="btn btn-primary"
           :disabled="isLoading || isProjectClosed"

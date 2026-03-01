@@ -34,6 +34,7 @@ const editGuide = (guide) => {
 }
 
 const confirmDelete = ref(null)
+const confirmStatusChange = ref(null)
 
 const askDelete = (guide) => {
   confirmDelete.value = guide
@@ -51,6 +52,42 @@ const executeDelete = async () => {
   } catch (error) {
     alert('Error al eliminar la guía: ' + error.message)
   }
+}
+
+// Cambio de estado
+const askStatusChange = (guide, newStatus) => {
+  confirmStatusChange.value = { guide, newStatus }
+}
+
+const cancelStatusChange = () => {
+  confirmStatusChange.value = null
+}
+
+const executeStatusChange = async () => {
+  if (!confirmStatusChange.value) return
+  try {
+    await shippingGuideStore.changeStatus(
+      confirmStatusChange.value.guide.id,
+      confirmStatusChange.value.newStatus
+    )
+    confirmStatusChange.value = null
+  } catch (error) {
+    alert('Error al cambiar estado: ' + error.message)
+  }
+}
+
+const statusLabel = (status) => {
+  const labels = { DRAFT: 'BORRADOR', CLOSED: 'CERRADA', VOID: 'ANULADA' }
+  return labels[status] || status
+}
+
+const statusClass = (status) => {
+  const classes = {
+    DRAFT: 'badge-warning',
+    CLOSED: 'badge-success',
+    VOID: 'badge-error'
+  }
+  return classes[status] || 'badge-ghost'
 }
 </script>
 
@@ -97,6 +134,9 @@ const executeDelete = async () => {
                 </h2>
                 <span class="badge text-teal-500 font-semibold bg-white px-3 py-1">
                   {{ projectStore.projectData?.project?.cardinal_point || 'N/A' }}
+                </span>
+                <span class="badge font-semibold px-3 py-1" :class="statusClass(guide.status)">
+                  {{ statusLabel(guide.status) }}
                 </span>
               </div>
             </div>
@@ -225,19 +265,40 @@ const executeDelete = async () => {
             Volver
           </button>
           <div class="flex gap-2">
+            <!-- Cerrar guía (solo desde BORRADOR) -->
             <button
+              v-if="guide.status === 'DRAFT'"
+              class="btn btn-sm btn-success"
+              @click="askStatusChange(guide, 'CLOSED')"
+            >
+              <i class="las la-check-circle"></i>
+              Cerrar Guía
+            </button>
+            <!-- Editar (solo en BORRADOR) -->
+            <button
+              v-if="guide.status === 'DRAFT'"
               class="btn btn-sm btn-primary"
               @click="editGuide(guide)"
             >
               <i class="las la-edit"></i>
               Editar
             </button>
+            <!-- Anular (desde BORRADOR o CERRADA) -->
             <button
-              v-if="!isProjectClosed"
+              v-if="guide.status === 'DRAFT' || guide.status === 'CLOSED'"
               class="btn btn-sm bg-red-600 text-white"
+              @click="askStatusChange(guide, 'VOID')"
+            >
+              <i class="las la-ban"></i>
+              Anular
+            </button>
+            <!-- Eliminar (solo en BORRADOR) -->
+            <button
+              v-if="guide.status === 'DRAFT' && !isProjectClosed"
+              class="btn btn-sm btn-outline btn-error"
               @click="askDelete(guide)"
             >
-              <i class="las la-times-circle"></i>
+              <i class="las la-trash"></i>
               Eliminar
             </button>
           </div>
@@ -280,6 +341,40 @@ const executeDelete = async () => {
         </div>
       </div>
       <div class="modal-backdrop" @click="cancelDelete"></div>
+    </div>
+
+    <!-- Modal Confirmar Cambio de Estado -->
+    <div v-if="confirmStatusChange" class="modal modal-open">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">
+          {{ confirmStatusChange.newStatus === 'CLOSED' ? 'Cerrar Guía de Remisión' : 'Anular Guía de Remisión' }}
+        </h3>
+        <p class="py-4">
+          <template v-if="confirmStatusChange.newStatus === 'CLOSED'">
+            ¿Está seguro de <strong>cerrar</strong> la Guía de Remisión
+            <strong>#{{ confirmStatusChange.guide.guide_number }}</strong>?
+            <br/>
+            <span class="text-warning font-semibold">Una vez cerrada, solo podrá ser anulada.</span>
+          </template>
+          <template v-else>
+            ¿Está seguro de <strong>anular</strong> la Guía de Remisión
+            <strong>#{{ confirmStatusChange.guide.guide_number }}</strong>?
+            <br/>
+            <span class="text-error font-semibold">Esta acción es irreversible. La guía no podrá ser editada ni revertida.</span>
+          </template>
+        </p>
+        <div class="modal-action">
+          <button class="btn btn-ghost" @click="cancelStatusChange">Cancelar</button>
+          <button
+            class="btn"
+            :class="confirmStatusChange.newStatus === 'CLOSED' ? 'btn-success' : 'btn-error'"
+            @click="executeStatusChange"
+          >
+            {{ confirmStatusChange.newStatus === 'CLOSED' ? 'Cerrar' : 'Anular' }}
+          </button>
+        </div>
+      </div>
+      <div class="modal-backdrop" @click="cancelStatusChange"></div>
     </div>
   </div>
 </template>
