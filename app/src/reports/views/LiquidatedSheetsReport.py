@@ -7,12 +7,13 @@ from common.AppLoggin import loggin_event
 class LiquidatedSheetsReportView(TemplateView):
     template_name = "reports/liquidated_sheets_report.html"
 
+    STATUS_CHOICES = dict(SheetProject._meta.get_field('status').choices)
+
     def get_context_data(self, **kwargs):
-        loggin_event("Generando reporte de planillas liquidadas")
+        loggin_event("Generando reporte de planillas por estado")
         context = super().get_context_data(**kwargs)
 
         sheets = SheetProject.objects.filter(
-            status='LIQUIDATED',
             is_active=True,
             is_deleted=False,
         ).select_related(
@@ -27,6 +28,12 @@ class LiquidatedSheetsReportView(TemplateView):
             'total_amount': 0,
             'with_all_pdfs': 0,
             'missing_pdfs': 0,
+            'by_status': {
+                'IN_PROGRESS': {'count': 0, 'amount': 0, 'label': 'En Ejecución'},
+                'LIQUIDATED': {'count': 0, 'amount': 0, 'label': 'Liquidado'},
+                'INVOICED': {'count': 0, 'amount': 0, 'label': 'Facturado'},
+                'CANCELLED': {'count': 0, 'amount': 0, 'label': 'Cancelado'},
+            },
         }
 
         for sheet in sheets:
@@ -77,6 +84,11 @@ class LiquidatedSheetsReportView(TemplateView):
             stats['total'] += 1
             stats['total_amount'] += float(sheet.total or 0)
 
+            status_key = sheet.status
+            if status_key in stats['by_status']:
+                stats['by_status'][status_key]['count'] += 1
+                stats['by_status'][status_key]['amount'] += float(sheet.total or 0)
+
             sheet_data = {
                 'sheet': sheet,
                 'project': sheet.project,
@@ -85,6 +97,8 @@ class LiquidatedSheetsReportView(TemplateView):
                 'project_id': sheet.project.id if sheet.project else None,
                 'series_code': sheet.series_code,
                 'service_type': sheet.get_service_type_display(),
+                'status': sheet.status,
+                'status_display': dict(SheetProject._meta.get_field('status').choices).get(sheet.status, sheet.status),
                 'period_start': sheet.period_start,
                 'period_end': sheet.period_end,
                 'issue_date': sheet.issue_date,
@@ -107,6 +121,8 @@ class LiquidatedSheetsReportView(TemplateView):
             all_sheets_list.append(sheet_data)
 
         stats['total_amount_display'] = f"{stats['total_amount']:,.2f}"
+        for key in stats['by_status']:
+            stats['by_status'][key]['amount_display'] = f"{stats['by_status'][key]['amount']:,.2f}"
 
         context.update({
             'all_sheets': all_sheets_list,

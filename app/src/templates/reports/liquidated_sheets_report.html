@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %}
 {% load static %}
 
-{% block title %}Planillas Liquidadas{% endblock %}
+{% block title %}Reporte de Planillas{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-4">
@@ -11,13 +11,13 @@
                 <div class="card-header bg-primary text-white">
                     <h3 class="mb-0">
                         <i class="las la-file-invoice-dollar me-2"></i>
-                        Planillas Liquidadas
+                        Reporte de Planillas por Estado
                     </h3>
                 </div>
                 <div class="card-body">
 
-                    <!-- Estadisticas -->
-                    <div class="flex align-items-center py-3 bg-light rounded mb-4">
+                    <!-- Estadisticas Generales -->
+                    <div class="flex align-items-center py-3 bg-light rounded mb-3">
                         <div class="text-center px-3 border-end">
                             <h5 class="text-muted mb-1">Total Planillas</h5>
                             <h2 class="text-primary mb-0">{{ stats.total }}</h2>
@@ -36,6 +36,25 @@
                         </div>
                     </div>
 
+                    <!-- Estadisticas por Estado -->
+                    <div class="flex align-items-center py-3 bg-base-200 rounded mb-4 gap-2 flex-wrap justify-center">
+                        {% for status_key, status_data in stats.by_status.items %}
+                        <button class="btn btn-sm status-filter-btn {% if status_key == 'IN_PROGRESS' %}btn-info{% elif status_key == 'LIQUIDATED' %}btn-success{% elif status_key == 'INVOICED' %}btn-primary{% elif status_key == 'CANCELLED' %}btn-error{% endif %} {% if status_key == 'active' %}btn-active{% endif %}"
+                                data-status="{{ status_key }}"
+                                onclick="filterByStatus('{{ status_key }}')">
+                            {{ status_data.label }}
+                            <span class="badge badge-ghost ml-1">{{ status_data.count }}</span>
+                            <span class="text-xs ml-1">${{ status_data.amount_display }}</span>
+                        </button>
+                        {% endfor %}
+                        <button class="btn btn-sm btn-outline btn-active"
+                                data-status="ALL"
+                                onclick="filterByStatus('ALL')">
+                            Todas
+                            <span class="badge badge-ghost ml-1">{{ stats.total }}</span>
+                        </button>
+                    </div>
+
                     <!-- Tabla -->
                     <div class="table-responsive">
                         <table class="table table-hover table-striped" id="liquidatedSheetsTable">
@@ -45,6 +64,7 @@
                                     <th>Cliente</th>
                                     <th>Campamento</th>
                                     <th>Tipo Servicio</th>
+                                    <th>Estado</th>
                                     <th>Periodo</th>
                                     <th>Total</th>
                                     <th>Cadenas</th>
@@ -54,13 +74,23 @@
                             </thead>
                             <tbody>
                                 {% for item in all_sheets %}
-                                <tr>
+                                <tr data-status="{{ item.status }}">
                                     <td><strong>{{ item.series_code }}</strong></td>
                                     <td>{{ item.partner_name }}</td>
                                     <td>{{ item.project_location|default:"-" }}</td>
                                     <td>
                                         <span class="badge badge-outline badge-sm">
                                             {{ item.service_type }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm
+                                            {% if item.status == 'IN_PROGRESS' %}badge-info
+                                            {% elif item.status == 'LIQUIDATED' %}badge-success
+                                            {% elif item.status == 'INVOICED' %}badge-primary
+                                            {% elif item.status == 'CANCELLED' %}badge-error
+                                            {% endif %}">
+                                            {{ item.status_display }}
                                         </span>
                                     </td>
                                     <td>
@@ -94,12 +124,10 @@
                                                 onclick="openSheetDetail({{ item.sheet.id }})">
                                             <i class="las la-eye"></i> Ver
                                         </button>
-                                        {% if item.has_sheet_pdf %}
-                                        <a href="{{ item.sheet_pdf_url }}" target="_blank"
+                                        <a href="/reports/worksheet/{{ item.sheet.id }}/" target="_blank"
                                            class="btn btn-xs btn-success" title="Descargar Planilla PDF">
                                             <i class="las la-download"></i>
                                         </a>
-                                        {% endif %}
                                         {% if item.chains_with_pdf > 0 and item.project_id %}
                                         <a href="/api/load_files/project/{{ item.project_id }}/merge/?scope=custody_chains&sheet_id={{ item.sheet.id }}"
                                            class="btn btn-xs btn-warning" title="Unir Cadenas de Custodia en PDF"
@@ -111,10 +139,10 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="9" class="text-center">
+                                    <td colspan="10" class="text-center">
                                         <div class="alert alert-info mb-0">
                                             <i class="las la-info-circle me-2"></i>
-                                            No hay planillas liquidadas.
+                                            No hay planillas registradas.
                                         </div>
                                     </td>
                                 </tr>
@@ -162,6 +190,10 @@
     .table tbody td {
         vertical-align: middle;
     }
+    .status-filter-btn.active-filter {
+        outline: 3px solid currentColor;
+        outline-offset: 2px;
+    }
 </style>
 
 <script>
@@ -173,6 +205,8 @@
             partner_name: "{{ item.partner_name|escapejs }}",
             project_location: "{{ item.project_location|default:'-'|escapejs }}",
             service_type: "{{ item.service_type|escapejs }}",
+            status: "{{ item.status|escapejs }}",
+            status_display: "{{ item.status_display|escapejs }}",
             period_start: "{{ item.period_start|date:'d/m/Y'|default:'-' }}",
             period_end: "{{ item.period_end|date:'d/m/Y'|default:'actual' }}",
             issue_date: "{{ item.issue_date|date:'d/m/Y'|default:'-' }}",
@@ -185,6 +219,7 @@
             has_certificate_pdf: {{ item.has_certificate_pdf|yesno:"true,false" }},
             certificate_pdf_url: "{{ item.certificate_pdf_url|default:''|escapejs }}",
             project_id: {{ item.project_id|default:"null" }},
+            sheet_id: {{ item.sheet.id }},
             custody_chains: [
                 {% for chain in item.custody_chains %}
                 {
@@ -205,6 +240,30 @@
         {% endfor %}
     };
 
+    // Filtro por estado
+    let currentFilter = 'ALL';
+
+    function filterByStatus(status) {
+        currentFilter = status;
+        const rows = document.querySelectorAll('#liquidatedSheetsTable tbody tr[data-status]');
+        rows.forEach(function(row) {
+            if (status === 'ALL' || row.getAttribute('data-status') === status) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Actualizar botones activos
+        document.querySelectorAll('.status-filter-btn').forEach(function(btn) {
+            btn.classList.remove('active-filter', 'btn-active');
+        });
+        const activeBtn = document.querySelector('.status-filter-btn[data-status="' + status + '"]');
+        if (activeBtn) {
+            activeBtn.classList.add('active-filter', 'btn-active');
+        }
+    }
+
     function openSheetDetail(sheetId) {
         const modal = document.getElementById('sheetDetailModal');
         const modalTitle = document.getElementById('modalTitle');
@@ -214,6 +273,12 @@
         if (!data) return;
 
         modalTitle.innerHTML = '<i class="las la-file-invoice-dollar"></i> ' + data.series_code + ' - ' + data.partner_name;
+
+        let statusBadgeClass = 'badge-ghost';
+        if (data.status === 'IN_PROGRESS') statusBadgeClass = 'badge-info';
+        else if (data.status === 'LIQUIDATED') statusBadgeClass = 'badge-success';
+        else if (data.status === 'INVOICED') statusBadgeClass = 'badge-primary';
+        else if (data.status === 'CANCELLED') statusBadgeClass = 'badge-error';
 
         let html = `
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -238,8 +303,8 @@
                     <p class="font-bold">${data.issue_date}</p>
                 </div>
                 <div>
-                    <p class="text-sm text-gray-500">Estado Planilla</p>
-                    <p class="font-bold">${data.is_closed ? '<span class="badge badge-error badge-sm">CERRADA</span>' : '<span class="badge badge-warning badge-sm">ABIERTA</span>'}</p>
+                    <p class="text-sm text-gray-500">Estado</p>
+                    <p class="font-bold"><span class="badge ${statusBadgeClass} badge-sm">${data.status_display}</span></p>
                 </div>
             </div>
 
@@ -261,14 +326,17 @@
             <div class="flex gap-2 mb-4 flex-wrap">
         `;
 
+        // Enlace para generar PDF de planilla (siempre disponible)
+        html += '<a href="/reports/worksheet/' + data.sheet_id + '/" target="_blank" class="btn btn-sm btn-success"><i class="las la-file-pdf"></i> Generar PDF Planilla</a>';
+
         if (data.has_sheet_pdf) {
-            html += '<a href="' + data.sheet_pdf_url + '" target="_blank" class="btn btn-sm btn-success"><i class="las la-file-pdf"></i> Descargar Planilla</a>';
+            html += '<a href="' + data.sheet_pdf_url + '" target="_blank" class="btn btn-sm btn-outline btn-success"><i class="las la-download"></i> Descargar Planilla Cargada</a>';
         }
         if (data.has_certificate_pdf) {
             html += '<a href="' + data.certificate_pdf_url + '" target="_blank" class="btn btn-sm btn-info"><i class="las la-certificate"></i> Certificado Disposicion Final</a>';
         }
         if (data.custody_chains.some(c => c.has_pdf) && data.project_id) {
-            html += '<a href="/api/load_files/project/' + data.project_id + '/merge/?scope=custody_chains&sheet_id=' + sheetId + '" target="_blank" class="btn btn-sm btn-warning"><i class="las la-object-group"></i> Unir Todas las Cadenas</a>';
+            html += '<a href="/api/load_files/project/' + data.project_id + '/merge/?scope=custody_chains&sheet_id=' + data.sheet_id + '" target="_blank" class="btn btn-sm btn-warning"><i class="las la-object-group"></i> Unir Todas las Cadenas</a>';
         }
 
         html += '</div>';
@@ -335,7 +403,7 @@
                         extend: 'excel',
                         text: '<i class="las la-file-excel"></i> Excel',
                         className: 'btn btn-success btn-sm',
-                        title: 'Planillas Liquidadas',
+                        title: 'Reporte de Planillas',
                         exportOptions: {
                             columns: ':not(.no-export)'
                         }
@@ -344,7 +412,7 @@
                         extend: 'csv',
                         text: '<i class="las la-file-csv"></i> CSV',
                         className: 'btn btn-info btn-sm',
-                        title: 'Planillas Liquidadas',
+                        title: 'Reporte de Planillas',
                         exportOptions: {
                             columns: ':not(.no-export)'
                         }
@@ -353,7 +421,7 @@
                         extend: 'pdf',
                         text: '<i class="las la-file-pdf"></i> PDF',
                         className: 'btn btn-danger btn-sm',
-                        title: 'Planillas Liquidadas',
+                        title: 'Reporte de Planillas',
                         orientation: 'landscape',
                         pageSize: 'LEGAL',
                         exportOptions: {
@@ -368,10 +436,13 @@
                 ],
                 order: [[0, 'asc']],
                 columnDefs: [
-                    { orderable: false, targets: 8 }
+                    { orderable: false, targets: 9 }
                 ]
             });
         }
+
+        // Activar filtro "Todas" por defecto
+        filterByStatus('ALL');
     });
 </script>
 {% endblock %}
