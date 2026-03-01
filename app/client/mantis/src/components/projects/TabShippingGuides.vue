@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseShippingGuideStore } from '@/stores/ShippingGuideStore'
 import { appConfig } from '@/AppConfig'
+import { useTableFilter } from '@/composables/useTableFilter'
+import TableControls from '@/components/common/TableControls.vue'
 
 const router = useRouter()
 const projectStore = UseProjectStore()
@@ -11,6 +13,12 @@ const shippingGuideStore = UseShippingGuideStore()
 
 const isProjectClosed = computed(() => projectStore.project?.is_closed === true)
 const guides = computed(() => shippingGuideStore.shippingGuides || [])
+
+// Tabla con filtrado, búsqueda y paginación
+const tableFilter = useTableFilter(guides, {
+  searchFields: ['guide_number', 'origin_place', 'destination_place', 'carrier_name', 'vehicle_plate'],
+  pageSize: 10
+})
 
 onMounted(async () => {
   await shippingGuideStore.fetchGuidesByProject()
@@ -68,6 +76,8 @@ const editGuide = (guide) => {
       </div>
     </div>
 
+    <TableControls :tableFilter="tableFilter" position="top" searchPlaceholder="Buscar guía..." />
+
     <div class="overflow-x-auto">
       <table class="table table-zebra w-full">
         <thead>
@@ -99,8 +109,16 @@ const editGuide = (guide) => {
               </td>
             </tr>
           </template>
+          <template v-else-if="tableFilter.paginatedData.value.length === 0">
+            <tr>
+              <td colspan="8" class="text-center text-gray-500 py-8">
+                <i class="las la-search text-4xl"></i>
+                <p>No se encontraron resultados para "{{ tableFilter.searchQuery.value }}"</p>
+              </td>
+            </tr>
+          </template>
           <template v-else>
-            <tr v-for="guide in guides" :key="guide.id">
+            <tr v-for="guide in tableFilter.paginatedData.value" :key="guide.id">
               <td class="p-2 border border-gray-300 font-mono font-bold text-center">
                 {{ guide.guide_number }}
               </td>
@@ -138,5 +156,7 @@ const editGuide = (guide) => {
         </tbody>
       </table>
     </div>
+
+    <TableControls :tableFilter="tableFilter" position="bottom" />
   </div>
 </template>

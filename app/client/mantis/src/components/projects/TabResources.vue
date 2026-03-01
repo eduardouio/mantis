@@ -4,6 +4,8 @@ import { RouterLink } from 'vue-router'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { formatCurrency, formatDate, formatNumber } from '@/utils/formatters'
+import { useTableFilter } from '@/composables/useTableFilter'
+import TableControls from '@/components/common/TableControls.vue'
 
 const emit = defineEmits(['edit-resource'])
 
@@ -26,6 +28,12 @@ const projectResources = computed(() => {
 
 const selectedResources= []
 const confirmDeleteId = ref(null)
+
+// Tabla con filtrado, búsqueda y paginación
+const tableFilter = useTableFilter(projectResources, {
+  searchFields: ['type_resource', 'resource_item_code', 'detailed_description', 'frequency_type'],
+  pageSize: 10
+})
 
 const isResourceInSheet = (resourceId) => {
   return projectStore.isResourceInSheet(resourceId)
@@ -66,6 +74,8 @@ const handleDeleteResource = async (resource) => {
       </RouterLink>
     </div>
     
+    <TableControls :tableFilter="tableFilter" position="top" searchPlaceholder="Buscar recurso..." />
+
     <div class="overflow-x-auto">
       <table class="table table-zebra w-full">
         <thead>
@@ -90,8 +100,16 @@ const handleDeleteResource = async (resource) => {
               </td>
             </tr>
           </template>
+          <template v-else-if="tableFilter.paginatedData.value.length === 0">
+            <tr>
+              <td colspan="9" class="text-center text-gray-500 py-8">
+                <i class="las la-search text-4xl"></i>
+                <p>No se encontraron resultados para "{{ tableFilter.searchQuery.value }}"</p>
+              </td>
+            </tr>
+          </template>
           <template v-else>
-            <tr v-for="resource in projectResources" :key="resource.id">
+            <tr v-for="resource in tableFilter.paginatedData.value" :key="resource.id">
               <td class="p-2 border border-gray-300">
                 <span class="font-mono">{{ resource.id }}</span>
               </td>
@@ -155,6 +173,8 @@ const handleDeleteResource = async (resource) => {
         </tbody>
       </table>
     </div>
+
+    <TableControls :tableFilter="tableFilter" position="bottom" />
 
     <!-- Resumen de recursos -->
     <div class="stats shadow w-full">

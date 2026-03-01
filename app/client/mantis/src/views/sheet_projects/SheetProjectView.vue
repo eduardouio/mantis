@@ -5,6 +5,8 @@ import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { UseMaintenanceSheetStore } from '@/stores/MaintenanceSheetStore';
 import { appConfig } from '@/AppConfig';
+import { useTableFilter } from '@/composables/useTableFilter';
+import TableControls from '@/components/common/TableControls.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -30,6 +32,23 @@ const custodyChains = computed(() => {
 
 // Hojas de mantenimiento de la planilla
 const maintenanceSheets = computed(() => maintenanceStore.sheets || []);
+
+// Tabla con filtrado para cadenas de custodia
+const custodyTableFilter = useTableFilter(custodyChains, {
+  searchFields: ['consecutive', 'status', 'location', 'activity_date'],
+  searchTransform: (cc) => [
+    cc.consecutive, cc.status, cc.location, cc.activity_date,
+    cc.technical?.first_name, cc.technical?.last_name,
+    cc.vehicle?.no_plate, cc.vehicle?.brand
+  ].filter(Boolean).join(' '),
+  pageSize: 10
+});
+
+// Tabla con filtrado para hojas de mantenimiento
+const maintenanceTableFilter = useTableFilter(maintenanceSheets, {
+  searchFields: ['sheet_number', 'status', 'maintenance_type', 'resource_item_name', 'responsible_technical_name'],
+  pageSize: 10
+});
 
 // Verificar si la planilla está cerrada
 const isSheetClosed = computed(() => {
@@ -266,6 +285,8 @@ onMounted(async () => {
         Listado de Cadenas de Custodia ({{ custodyChains.length }})
       </h2>
 
+      <TableControls :tableFilter="custodyTableFilter" position="top" searchPlaceholder="Buscar cadena de custodia..." />
+
       <div class="overflow-x-auto">
         <table class="table table-zebra w-full">
           <thead>
@@ -296,8 +317,16 @@ onMounted(async () => {
                 </td>
               </tr>
             </template>
+            <template v-else-if="custodyTableFilter.paginatedData.value.length === 0">
+              <tr>
+                <td colspan="15" class="text-center text-gray-500 py-8">
+                  <i class="las la-search text-4xl"></i>
+                  <p>No se encontraron resultados para "{{ custodyTableFilter.searchQuery.value }}"</p>
+                </td>
+              </tr>
+            </template>
             <template v-else>
-              <tr v-for="cc in custodyChains" :key="cc.id">
+              <tr v-for="cc in custodyTableFilter.paginatedData.value" :key="cc.id">
                 <td class="p-2 border border-gray-300 text-center">{{ cc.id }}</td>
                 <td class="p-2 border border-gray-300 font-mono">{{ cc.consecutive }}</td>
                 <td class="p-2 border border-gray-300 text-center">
@@ -375,6 +404,8 @@ onMounted(async () => {
           </tfoot>
         </table>
       </div>
+
+      <TableControls :tableFilter="custodyTableFilter" position="bottom" />
     </div>
 
     <!-- ══════════════════════════════════════════════════════ -->
@@ -395,6 +426,8 @@ onMounted(async () => {
           Nueva Hoja de Mantenimiento
         </button>
       </div>
+
+      <TableControls :tableFilter="maintenanceTableFilter" position="top" searchPlaceholder="Buscar hoja de mantenimiento..." />
 
       <div class="overflow-x-auto">
         <table class="table table-zebra w-full">
@@ -424,8 +457,16 @@ onMounted(async () => {
                 </td>
               </tr>
             </template>
+            <template v-else-if="maintenanceTableFilter.paginatedData.value.length === 0">
+              <tr>
+                <td colspan="13" class="text-center text-gray-500 py-8">
+                  <i class="las la-search text-4xl"></i>
+                  <p>No se encontraron resultados para "{{ maintenanceTableFilter.searchQuery.value }}"</p>
+                </td>
+              </tr>
+            </template>
             <template v-else>
-              <tr v-for="ms in maintenanceSheets" :key="ms.id">
+              <tr v-for="ms in maintenanceTableFilter.paginatedData.value" :key="ms.id">
                 <td class="p-2 border border-gray-300 text-center">{{ ms.id }}</td>
                 <td class="p-2 border border-gray-300 font-mono font-bold text-center">{{ ms.sheet_number }}</td>
                 <td class="p-2 border border-gray-300 text-center">
@@ -479,6 +520,8 @@ onMounted(async () => {
           </tbody>
         </table>
       </div>
+
+      <TableControls :tableFilter="maintenanceTableFilter" position="bottom" />
     </div>
 
     <!-- Estadísticas Resumen -->

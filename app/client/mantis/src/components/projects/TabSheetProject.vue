@@ -4,6 +4,8 @@ import { useRouter } from 'vue-router';
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { appConfig } from '@/AppConfig';
+import { useTableFilter } from '@/composables/useTableFilter';
+import TableControls from '@/components/common/TableControls.vue';
 
 const router = useRouter();
 const projectStore = UseProjectStore();
@@ -34,6 +36,12 @@ const enrichedWorkOrders = computed(() => {
       custody_chains_count: custodyChains.length
     };
   });
+});
+
+// Tabla con filtrado, búsqueda y paginación
+const tableFilter = useTableFilter(enrichedWorkOrders, {
+  searchFields: ['series_code', 'status', 'contact_reference', 'service_type'],
+  pageSize: 10
 });
 
 const formatCurrency = (value) => {
@@ -117,6 +125,8 @@ const viewCustodyChains = (sheetId) => {
       </div>
     </div>
     
+    <TableControls :tableFilter="tableFilter" position="top" searchPlaceholder="Buscar planilla..." />
+
     <div class="overflow-x-auto">
       <table class="table table-zebra w-full">
         <thead>
@@ -145,8 +155,16 @@ const viewCustodyChains = (sheetId) => {
               </td>
             </tr>
           </template>
+          <template v-else-if="tableFilter.paginatedData.value.length === 0">
+            <tr>
+              <td colspan="13" class="text-center text-gray-500 py-8">
+                <i class="las la-search text-4xl"></i>
+                <p>No se encontraron resultados para "{{ tableFilter.searchQuery.value }}"</p>
+              </td>
+            </tr>
+          </template>
           <template v-else>
-            <tr v-for="sheet in enrichedWorkOrders" :key="sheet.id">
+            <tr v-for="sheet in tableFilter.paginatedData.value" :key="sheet.id">
               <td class="p-2 border border-gray-300">{{ sheet.id }}</td>
               <td class="p-2 border border-gray-300 font-mono">{{ sheet.series_code }}</td>
               <td class="p-2 border border-gray-300">
@@ -221,5 +239,7 @@ const viewCustodyChains = (sheetId) => {
         </tbody>
       </table>
     </div>
+
+    <TableControls :tableFilter="tableFilter" position="bottom" />
   </div>
 </template>
