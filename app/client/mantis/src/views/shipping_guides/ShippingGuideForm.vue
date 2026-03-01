@@ -60,7 +60,7 @@ const details = ref([])
 const newDetail = ref({
   description: '',
   quantity: 1,
-  unit: 1.00,
+  unit: '',
 })
 
 // Recursos del proyecto disponibles para agregar (solo equipos físicos, sin importar si están activos)
@@ -136,7 +136,7 @@ const loadGuideData = async () => {
         id_resource_item: d.id_resource_item || null,
         description: d.description,
         quantity: d.quantity,
-        unit: parseFloat(d.unit) || 0,
+        unit: d.unit || '',
       }))
 
       // Buscar vehículo por placa
@@ -183,7 +183,7 @@ const addResourceAsDetail = (resource) => {
     id_resource_item: resource.resource_item_id,
     description,
     quantity: 1,
-    unit: parseFloat(resource.cost) || 1.00,
+    unit: '',
   })
 }
 
@@ -193,9 +193,9 @@ const addManualDetail = () => {
   details.value.push({
     description: newDetail.value.description,
     quantity: newDetail.value.quantity || 1,
-    unit: newDetail.value.unit || 1.00,
+    unit: newDetail.value.unit || '',
   })
-  newDetail.value = { description: '', quantity: 1, unit: 1.00 }
+  newDetail.value = { description: '', quantity: 1, unit: '' }
 }
 
 // Remover ítem
@@ -738,10 +738,9 @@ const deleteGuideFile = async () => {
                 <span class="label-text text-xs">Unidad</span>
               </label>
               <input
-                type="number"
-                v-model.number="newDetail.unit"
-                min="0"
-                step="0.01"
+                type="text"
+                v-model="newDetail.unit"
+                placeholder="Ej: UND, KG, M3"
                 class="input input-bordered input-sm w-full"
               />
             </div>
@@ -791,12 +790,11 @@ const deleteGuideFile = async () => {
                 </td>
                 <td class="border border-gray-300">
                   <input
-                    type="number"
-                    v-model.number="detail.unit"
-                    min="0"
-                    step="0.01"
+                    type="text"
+                    v-model="detail.unit"
+                    placeholder="Ej: UND, KG, M3"
                     :disabled="!canEdit"
-                    class="input input-bordered input-sm w-full text-right"
+                    class="input input-bordered input-sm w-full"
                   />
                 </td>
                 <td v-if="canEdit" class="border border-gray-300 text-center">

@@ -329,7 +329,7 @@ class ShippingGuideCreateUpdateAPI(View):
                 id_resource_item=resource_item,
                 description=detail_data['description'],
                 quantity=detail_data['quantity'],
-                unit=detail_data.get('unit', 0),
+                unit=detail_data.get('unit', ''),
             ))
 
         if instances:
@@ -385,6 +385,6 @@ class ShippingGuideCreateUpdateAPI(View):
                 'type_equipment_display': d.id_resource_item.get_type_equipment_display() if d.id_resource_item and d.id_resource_item.type_equipment else None,
                 'description': d.description,
                 'quantity': d.quantity,
-                'unit': float(d.unit),
+                'unit': d.unit or '',
             } for d in details],
         }

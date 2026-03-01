@@ -274,7 +274,7 @@ const statusClass = (status) => {
                   <td class="border border-gray-300 p-2 text-center">{{ index + 1 }}</td>
                   <td class="border border-gray-300 p-2">{{ detail.description }}</td>
                   <td class="border border-gray-300 p-2 text-center">{{ detail.quantity }}</td>
-                  <td class="border border-gray-300 p-2 text-right font-mono">{{ parseFloat(detail.unit).toFixed(2) }}</td>
+                  <td class="border border-gray-300 p-2 text-center">{{ detail.unit || '' }}</td>
                 </tr>
                 <tr v-if="!guide.details || guide.details.length === 0">
                   <td colspan="4" class="text-center py-4 text-gray-500">
