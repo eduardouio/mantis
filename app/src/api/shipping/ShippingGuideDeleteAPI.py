@@ -13,11 +13,19 @@ class ShippingGuideDeleteAPI(View):
     """API para eliminar (borrado lógico) una guía de remisión."""
 
     def delete(self, request, pk):
-        """Marca una guía de remisión como eliminada."""
+        """Marca una guía de remisión como eliminada. Solo guías en BORRADOR."""
         try:
             guide = get_object_or_404(
                 ShippingGuide, id=pk, is_deleted=False
             )
+
+            # Solo se pueden eliminar guías en estado BORRADOR
+            if guide.status != 'DRAFT':
+                return JsonResponse({
+                    'success': False,
+                    'error': f'No se puede eliminar una guía en estado {guide.get_status_display()}. Solo guías en BORRADOR pueden eliminarse.'
+                }, status=400)
+
             guide.is_deleted = True
             guide.is_active = False
             guide.save()

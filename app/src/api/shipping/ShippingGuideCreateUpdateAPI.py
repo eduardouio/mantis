@@ -139,6 +139,17 @@ class ShippingGuideCreateUpdateAPI(View):
             recibed_ci=data.get('recibed_ci'),
             notes=data.get('notes'),
         )
+
+        # Si se proporciona guide_number, validar unicidad
+        guide_number = data.get('guide_number')
+        if guide_number:
+            if ShippingGuide.objects.filter(guide_number=guide_number).exists():
+                return JsonResponse({
+                    'success': False,
+                    'error': f'El número de guía {guide_number} ya existe. Ingrese un número diferente.'
+                }, status=400)
+            guide.guide_number = guide_number
+
         guide.save()
 
         # Crear detalles si se proporcionan
@@ -151,6 +162,63 @@ class ShippingGuideCreateUpdateAPI(View):
             'data': self._serialize_guide(guide)
         }, status=201)
 
+    def patch(self, request):
+        """Cambiar el estado de una guía de remisión."""
+        try:
+            data = json.loads(request.body)
+            guide_id = data.get('id')
+            new_status = data.get('status')
+
+            if not guide_id or not new_status:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Los campos id y status son requeridos'
+                }, status=400)
+
+            guide = ShippingGuide.objects.filter(
+                id=guide_id, is_deleted=False
+            ).first()
+
+            if not guide:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Guía de remisión no encontrada'
+                }, status=404)
+
+            # Validar transiciones de estado
+            valid_transitions = {
+                'DRAFT': ['CLOSED', 'VOID'],
+                'CLOSED': ['VOID'],
+                'VOID': [],
+            }
+
+            allowed = valid_transitions.get(guide.status, [])
+            if new_status not in allowed:
+                return JsonResponse({
+                    'success': False,
+                    'error': f'No se puede cambiar de {guide.get_status_display()} a {new_status}. '
+                             f'Transiciones permitidas: {allowed}'
+                }, status=400)
+
+            guide.status = new_status
+            guide.save()
+
+            return JsonResponse({
+                'success': True,
+                'message': f'Estado de la guía actualizado a {guide.get_status_display()}',
+                'data': self._serialize_guide(guide)
+            })
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'success': False,
+                'error': 'JSON inválido'
+            }, status=400)
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+
     def _update_guide(self, data, guide_id):
         """Actualiza una guía de remisión existente y sus detalles."""
         guide = ShippingGuide.objects.filter(
@@ -162,6 +230,13 @@ class ShippingGuideCreateUpdateAPI(View):
                 'success': False,
                 'error': 'Guía de remisión no encontrada'
             }, status=404)
+
+        # Solo se pueden editar guías en estado BORRADOR
+        if guide.status != 'DRAFT':
+            return JsonResponse({
+                'success': False,
+                'error': f'No se puede editar una guía en estado {guide.get_status_display()}. Solo guías en BORRADOR son editables.'
+            }, status=400)
 
         # Actualizar proyecto si se proporciona
         if 'project_id' in data:
@@ -199,6 +274,19 @@ class ShippingGuideCreateUpdateAPI(View):
         for field in optional_fields:
             if field in data:
                 setattr(guide, field, data[field])
+
+        # Actualizar guide_number si se proporciona, validando unicidad
+        if 'guide_number' in data and data['guide_number']:
+            new_guide_number = data['guide_number']
+            if new_guide_number != guide.guide_number:
+                if ShippingGuide.objects.filter(
+                    guide_number=new_guide_number
+                ).exclude(id=guide.id).exists():
+                    return JsonResponse({
+                        'success': False,
+                        'error': f'El número de guía {new_guide_number} ya existe. Ingrese un número diferente.'
+                    }, status=400)
+                guide.guide_number = new_guide_number
 
         guide.save()
 
@@ -281,6 +369,8 @@ class ShippingGuideCreateUpdateAPI(View):
             'recibed_by': guide.recibed_by,
             'recibed_ci': guide.recibed_ci,
             'notes': guide.notes,
+            'status': guide.status,
+            'status_display': guide.get_status_display(),
             'shipping_guide_file': guide.shipping_guide_file.url if guide.shipping_guide_file else None,
             'created_at': guide.created_at.isoformat() if guide.created_at else None,
             'details': [{
