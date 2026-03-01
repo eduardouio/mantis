@@ -50,6 +50,10 @@ const guide = ref({
   recibed_by: '',
   recibed_ci: '',
   reason_transport: '',
+  cost_transport: 0,
+  sheet_project_logistics_concept: '',
+  cost_stowage: 0,
+  sheet_project_stowage_concept: '',
   notes: '',
 })
 
@@ -119,6 +123,10 @@ const loadGuideData = async () => {
         recibed_by: data.recibed_by || '',
         recibed_ci: data.recibed_ci || '',
         reason_transport: data.reason_transport || '',
+        cost_transport: data.cost_transport || 0,
+        sheet_project_logistics_concept: data.sheet_project_logistics_concept || '',
+        cost_stowage: data.cost_stowage || 0,
+        sheet_project_stowage_concept: data.sheet_project_stowage_concept || '',
         notes: data.notes || '',
       }
 
@@ -641,6 +649,75 @@ const deleteGuideFile = async () => {
               v-model="guide.recibed_ci"
               placeholder="Número de identificación"
               maxlength="20"
+              :disabled="!canEdit"
+              class="input input-bordered w-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Costos y Conceptos -->
+      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Costos y Conceptos</h6>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Costo del Transporte -->
+          <div class="form-control w-full">
+            <label class="label" for="cost_transport">
+              <span class="label-text font-medium">Costo del Transporte</span>
+            </label>
+            <input
+              type="number"
+              id="cost_transport"
+              v-model.number="guide.cost_transport"
+              min="0"
+              step="0.01"
+              :disabled="!canEdit"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <!-- Concepto Logístico -->
+          <div class="form-control w-full">
+            <label class="label" for="sheet_project_logistics_concept">
+              <span class="label-text font-medium">Concepto Logístico</span>
+            </label>
+            <input
+              type="text"
+              id="sheet_project_logistics_concept"
+              v-model="guide.sheet_project_logistics_concept"
+              placeholder="Concepto logístico (opcional)"
+              :disabled="!canEdit"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <!-- Costo de Estiba -->
+          <div class="form-control w-full">
+            <label class="label" for="cost_stowage">
+              <span class="label-text font-medium">Costo de Estiba</span>
+            </label>
+            <input
+              type="number"
+              id="cost_stowage"
+              v-model.number="guide.cost_stowage"
+              min="0"
+              step="0.01"
+              :disabled="!canEdit"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <!-- Concepto de Estiba -->
+          <div class="form-control w-full">
+            <label class="label" for="sheet_project_stowage_concept">
+              <span class="label-text font-medium">Concepto de Estiba</span>
+            </label>
+            <input
+              type="text"
+              id="sheet_project_stowage_concept"
+              v-model="guide.sheet_project_stowage_concept"
+              placeholder="Concepto de estiba (opcional)"
               :disabled="!canEdit"
               class="input input-bordered w-full"
             />

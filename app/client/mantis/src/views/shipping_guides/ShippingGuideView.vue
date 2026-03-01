@@ -230,6 +230,36 @@ const statusClass = (status) => {
           </div>
         </div>
 
+        <!-- Costos y Conceptos -->
+        <div class="p-2 border-b bg-gray-50 border-b-gray-200">
+          <div class="grid grid-cols-4 gap-4">
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-32">Costo Transporte:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                ${{ guide.cost_transport || 0 }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-32">Concepto Logístico:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                {{ guide.sheet_project_logistics_concept || 'N/A' }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-32">Costo Estiba:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                ${{ guide.cost_stowage || 0 }}
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-32">Concepto Estiba:</span>
+              <span class="text-sm text-gray-800 font-semibold border rounded p-1 border-gray-300 flex-1">
+                {{ guide.sheet_project_stowage_concept || 'N/A' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
         <!-- Archivo PDF -->
         <div v-if="guide.shipping_guide_file" class="p-4 border-b border-b-gray-200">
           <div class="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
