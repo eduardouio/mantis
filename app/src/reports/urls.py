@@ -31,6 +31,7 @@ from reports.views.PDFFinalDispositionCertificateView import PDFFinalDisposition
 from reports.views.ShippingGuideReportView import ShippingGuideReportView
 from reports.views.PDFShippingGuideView import PDFShippingGuideView
 from reports.views.LiquidatedSheetsReport import LiquidatedSheetsReportView
+from reports.views.CustodyChainsReport import CustodyChainsReportView
 from reports.views.SheetMaintenanceReportView import SheetMaintenanceReportView
 from reports.views.PDFSheetMaintenance import PDFSheetMaintenance
 
@@ -47,6 +48,7 @@ urlpatterns = [
     path('reports/technicals-status/', TechnicalByStatusView.as_view(), name='technicals-status-report'),
     path('reports/vehicles-status/', VehiclesByStatusView.as_view(), name='vehicles-status-report'),
     path('reports/liquidated-sheets/', LiquidatedSheetsReportView.as_view(), name='liquidated-sheets-report'),
+    path('reports/custody-chains/', CustodyChainsReportView.as_view(), name='custody-chains-report'),
     path('reports/template-worksheet/<int:id>/', WorkSheetTemplateView.as_view(), name='worksheet-template'),
     path('reports/template-final-disposition/<int:id>/', FinalDispositionCertificateView.as_view(), name='final-disposition-certificate'),
 	path('reports/template-shipping-guide/<int:id>/', ShippingGuideReportView.as_view(), name='shipping-guide-report'),
