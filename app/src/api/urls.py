@@ -45,6 +45,7 @@ from api.workorders.UpdateSheetDetailDays import UpdateSheetDetailDaysAPI
 from api.load_files import LoadFilesApiView, ModelFileFieldsApiView, DocumentTreeApiView
 from api.load_files import ProjectDocumentTreeApiView, ProjectDocumentMergeApiView, BulkCustodyUploadApiView
 from api.shipping import ShippingGuideCreateUpdateAPI, ShippingGuideDeleteAPI
+from api.maintenance import SheetMaintenanceCreateUpdateAPI, SheetMaintenanceDeleteAPI
 
 urlpatterns = [
     # vehicles
@@ -98,4 +99,9 @@ urlpatterns = [
     path('shipping/guides/', ShippingGuideCreateUpdateAPI.as_view(), name='api_shipping_guide_create_update'),
     path('shipping/guides/<int:guide_id>/', ShippingGuideCreateUpdateAPI.as_view(), name='api_shipping_guide_detail'),
     path('shipping/guides/<int:pk>/delete/', ShippingGuideDeleteAPI.as_view(), name='api_shipping_guide_delete'),
+
+    # maintenance sheets
+    path('maintenance/sheets/', SheetMaintenanceCreateUpdateAPI.as_view(), name='api_maintenance_sheet_create_update'),
+    path('maintenance/sheets/<int:sheet_id>/', SheetMaintenanceCreateUpdateAPI.as_view(), name='api_maintenance_sheet_detail'),
+    path('maintenance/sheets/<int:pk>/delete/', SheetMaintenanceDeleteAPI.as_view(), name='api_maintenance_sheet_delete'),
 ]
