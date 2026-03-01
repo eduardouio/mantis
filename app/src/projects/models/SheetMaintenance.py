@@ -38,7 +38,7 @@ class SheetMaintenance(BaseModel):
         max_length=20,
         choices=(
             ('DRAFT', 'BORRADOR'),
-            ('CLOSED', 'CERRADO'),
+            ('CLOSED', 'EN PLANILLA'),
             ('VOID', 'ANULADO'),
         ),
         default='DRAFT'
@@ -121,6 +121,27 @@ class SheetMaintenance(BaseModel):
 		blank=True,
 		null=True
 	)
+    sheet_project_concept = models.CharField(
+        'Concepto de Hoja de Proyecto',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    logistics_concept = models.CharField(
+        'Concepto Logístico',
+        max_length=255,
+        blank=True,
+        null=True,
+        default=None
+    )
+    cost_logistics = models.DecimalField(
+        'Costo Logístico',
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        blank=True,
+        null=True
+    )
     maintenance_description = models.TextField(
         'Descripción del Mantenimiento',
         blank=True,
@@ -177,7 +198,6 @@ class SheetMaintenance(BaseModel):
         blank=True,
         null=True
     )
-
     def save(self, *args, **kwargs):
         if not self.sheet_number:
             max_number = SheetMaintenance.objects.aggregate(
