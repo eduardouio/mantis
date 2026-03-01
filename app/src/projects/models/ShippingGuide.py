@@ -108,6 +108,16 @@ class ShippingGuide(BaseModel):
 		blank=True,
 		null=True
 	)
+	status = models.CharField(
+		'Estado de la Guía',
+		max_length=20,
+		choices=(
+			('DRAFT', 'BORRADOR'),
+			('COMPLETED', 'COMPLETADA'),
+			('CANCEL', 'CANCELADA'),
+		),
+		default='DRAFT'
+	)
 
 	class Meta:
 		verbose_name = 'Guía de Envío'
