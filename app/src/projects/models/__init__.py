@@ -24,6 +24,10 @@ from .ShippingGuide import (
 	
 )
 
+from .SheetMaintenance import (
+    SheetMaintenance
+)
+
 __all__ = [
     'Partner',
     'Project',
@@ -35,5 +39,6 @@ __all__ = [
     'FinalDispositionCertificate',
     'FinalDispositionCertificateDetail',
 	'ShippingGuide',
-	'ShippingGuideDetail'
+	'ShippingGuideDetail',
+    'SheetMaintenance'
 ]
