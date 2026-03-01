@@ -1,6 +1,9 @@
+import math
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from projects.models.ShippingGuide import ShippingGuide, ShippingGuideDetail
+
+ROWS_PER_PAGE = 11
 
 
 class ShippingGuideReportView(TemplateView):
@@ -13,16 +16,27 @@ class ShippingGuideReportView(TemplateView):
 			ShippingGuide.objects.select_related('project__partner'),
 			pk=shipping_guide_id
 		)
-		details = ShippingGuideDetail.objects.filter(
-			shipping_guide=guide
-		).select_related('id_resource_item').order_by('id')
+		details = list(
+			ShippingGuideDetail.objects.filter(
+				shipping_guide=guide
+			).select_related('id_resource_item').order_by('id')
+		)
 
-		# Rellenar filas vacías para mantener el formato del reporte
-		details_list = list(details)
-		min_rows = 11
-		empty_rows = max(0, min_rows - len(details_list))
+		# Paginar detalles en bloques de 11
+		total_pages = max(1, math.ceil(len(details) / ROWS_PER_PAGE))
+		pages = []
+		for i in range(total_pages):
+			start = i * ROWS_PER_PAGE
+			chunk = details[start:start + ROWS_PER_PAGE]
+			empty_rows = ROWS_PER_PAGE - len(chunk)
+			pages.append({
+				'details': chunk,
+				'empty_rows': range(empty_rows),
+				'page_number': i + 1,
+				'item_offset': start,
+			})
 
 		context["guide"] = guide
-		context["details"] = details_list
-		context["empty_rows"] = range(empty_rows)
+		context["pages"] = pages
+		context["total_pages"] = total_pages
 		return context

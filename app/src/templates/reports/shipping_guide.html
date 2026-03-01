@@ -29,6 +29,11 @@
 				min-height: 297mm;
 				padding: 18mm 14mm;
 				margin: 0 auto;
+				page-break-after: always;
+			}
+
+			.page:last-child {
+				page-break-after: avoid;
 			}
 
 			.header {
@@ -149,15 +154,19 @@
 				margin-right: 4px;
 			}
 
-			.footer-note {
-				font-size: 10px;
+			.footer {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
 				margin-top: 8px;
+				font-size: 10px;
 				color: #5f5f5f;
 			}
 		</style>
 	</head>
 	<body>
 		{% load l10n %}
+		{% for pg in pages %}
 		<div class="page">
 			<div class="header">
 				<div class="header-title">GUIA DE REMISION DE EQUIPOS / MATERIALES</div>
@@ -225,15 +234,15 @@
 						</tr>
 					</thead>
 					<tbody>
-						{% for detail in details %}
+						{% for detail in pg.details %}
 						<tr>
-							<td>{{ forloop.counter }}</td>
+							<td>{{ pg.item_offset|add:forloop.counter }}</td>
 							<td>{{ detail.quantity }}</td>
 							<td>{{ detail.unit }}</td>
 							<td>{{ detail.description }}</td>
 						</tr>
 						{% endfor %}
-						{% for _ in empty_rows %}
+						{% for _ in pg.empty_rows %}
 						<tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
 						{% endfor %}
 					</tbody>
@@ -263,9 +272,12 @@
 				</table>
 			</div>
 
-			<div class="footer-note">PSL-CO-BS-F-002 | 10 MAYO 2017</div>
-			pagina {{ page_number }} de {{ total_pages }}
-			<div class="footer-note">Revsion 00</div>
+			<div class="footer">
+				<span>PSL-CO-BS-F-002 | 10 MAYO 2017</span>
+				<span>pagina {{ pg.page_number }} de {{ total_pages }}</span>
+				<span>Revision 00</span>
+			</div>
 		</div>
+		{% endfor %}
 	</body>
 </html>
