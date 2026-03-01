@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 
 from projects.models.SheetMaintenance import SheetMaintenance
-from projects.models.Project import Project
+from projects.models.SheetProject import SheetProject
 from equipment.models.ResourceItem import ResourceItem
 from accounts.models.Technical import Technical
 
@@ -28,19 +28,19 @@ class SheetMaintenanceCreateUpdateAPI(View):
                     'data': self._serialize(sheet)
                 })
 
-            # Listar por proyecto
-            project_id = request.GET.get('project_id')
-            if not project_id:
+            # Listar por hoja de proyecto (sheet_project)
+            sheet_project_id = request.GET.get('sheet_project_id')
+            if not sheet_project_id:
                 return JsonResponse({
                     'success': False,
-                    'error': 'El parámetro project_id es requerido'
+                    'error': 'El parámetro sheet_project_id es requerido'
                 }, status=400)
 
             sheets = SheetMaintenance.objects.filter(
-                project_id=project_id,
+                id_sheet_project_id=sheet_project_id,
                 is_deleted=False
             ).select_related(
-                'project__partner',
+                'id_sheet_project__project__partner',
                 'responsible_technical',
                 'resource_item',
             ).order_by('-sheet_number')
@@ -156,7 +156,7 @@ class SheetMaintenanceCreateUpdateAPI(View):
     # ── helpers privados ──────────────────────────────────────────────
 
     def _create(self, data):
-        required_fields = ['project_id', 'start_date']
+        required_fields = ['id_sheet_project', 'start_date']
         for field in required_fields:
             if field not in data or not data[field]:
                 return JsonResponse({
@@ -164,11 +164,12 @@ class SheetMaintenanceCreateUpdateAPI(View):
                     'error': f'El campo {field} es requerido'
                 }, status=400)
 
-        project = Project.get_by_id(data['project_id'])
-        if not project:
+        try:
+            sheet_project = SheetProject.objects.get(pk=data['id_sheet_project'])
+        except SheetProject.DoesNotExist:
             return JsonResponse({
                 'success': False,
-                'error': 'Proyecto no encontrado'
+                'error': 'Hoja de proyecto no encontrada'
             }, status=404)
 
         start_date = self._parse_datetime(data['start_date'])
@@ -205,7 +206,7 @@ class SheetMaintenanceCreateUpdateAPI(View):
                 }, status=404)
 
         sheet = SheetMaintenance(
-            project=project,
+            id_sheet_project=sheet_project,
             start_date=start_date,
             end_date=end_date,
             responsible_technical=responsible_technical,
@@ -217,6 +218,8 @@ class SheetMaintenanceCreateUpdateAPI(View):
             maintenance_type=data.get('maintenance_type', 'PREVENTIVO'),
             total_days=data.get('total_days', 0),
             total_hours=data.get('total_hours', 0),
+            cost_hour=data.get('cost_hour', 0),
+            total_cost=data.get('total_cost', 0),
             maintenance_description=data.get('maintenance_description'),
             fault_description=data.get('fault_description'),
             possible_causes=data.get('possible_causes'),
@@ -256,15 +259,16 @@ class SheetMaintenanceCreateUpdateAPI(View):
                 )
             }, status=400)
 
-        # Proyecto
-        if 'project_id' in data:
-            project = Project.get_by_id(data['project_id'])
-            if not project:
+        # Hoja de proyecto
+        if 'id_sheet_project' in data:
+            try:
+                sheet_project = SheetProject.objects.get(pk=data['id_sheet_project'])
+            except SheetProject.DoesNotExist:
                 return JsonResponse({
                     'success': False,
-                    'error': 'Proyecto no encontrado'
+                    'error': 'Hoja de proyecto no encontrada'
                 }, status=404)
-            sheet.project = project
+            sheet.id_sheet_project = sheet_project
 
         # Fechas
         if 'start_date' in data:
@@ -325,6 +329,11 @@ class SheetMaintenanceCreateUpdateAPI(View):
             if field in data:
                 setattr(sheet, field, data[field] or 0)
 
+        decimal_fields = ['cost_hour', 'total_cost']
+        for field in decimal_fields:
+            if field in data:
+                setattr(sheet, field, data[field] or 0)
+
         sheet.save()
 
         return JsonResponse({
@@ -347,14 +356,14 @@ class SheetMaintenanceCreateUpdateAPI(View):
     def _serialize(self, sheet):
         return {
             'id': sheet.id,
-            'project_id': sheet.project_id,
-            'project_name': str(sheet.project),
+            'id_sheet_project': sheet.id_sheet_project_id,
+            'sheet_project_series': getattr(sheet.id_sheet_project, 'series_code', '') if sheet.id_sheet_project else '',
             'sheet_number': sheet.sheet_number,
             'status': sheet.status,
             'status_display': sheet.get_status_display(),
             'responsible_technical_id': sheet.responsible_technical_id,
             'responsible_technical_name': (
-                f'{sheet.responsible_technical.name} {getattr(sheet.responsible_technical, "last_name", "")}'.strip()
+                f'{sheet.responsible_technical.first_name} {sheet.responsible_technical.last_name}'.strip()
                 if sheet.responsible_technical else None
             ),
             'requested_by': sheet.requested_by,
@@ -369,6 +378,8 @@ class SheetMaintenanceCreateUpdateAPI(View):
             'end_date': sheet.end_date.isoformat() if sheet.end_date else None,
             'total_days': sheet.total_days,
             'total_hours': sheet.total_hours,
+            'cost_hour': float(sheet.cost_hour) if sheet.cost_hour else 0,
+            'total_cost': float(sheet.total_cost) if sheet.total_cost else 0,
             'maintenance_description': sheet.maintenance_description,
             'fault_description': sheet.fault_description,
             'possible_causes': sheet.possible_causes,

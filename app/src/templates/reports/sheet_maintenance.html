@@ -213,7 +213,7 @@
 					<tr>
 						<td style="width:40%;">
 							<span class="label">COMPAÑÍA:</span>
-							<span class="value">{{ sheet.project.partner.name|default:"" }}</span>
+							<span class="value">{{ sheet.id_sheet_project.project.partner.name|default:"" }}</span>
 						</td>
 						<td style="width:30%;">
 							<span class="label">RIG:</span>
@@ -278,6 +278,20 @@
 						<td>
 							<span class="label">TOTAL DÍAS:</span>
 							<span class="value">{{ sheet.total_days|default:"" }}</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span class="label">TOTAL HORAS:</span>
+							<span class="value">{{ sheet.total_hours|default:"" }}</span>
+						</td>
+						<td>
+							<span class="label">COSTO HORA:</span>
+							<span class="value">{{ sheet.cost_hour|default:"" }}</span>
+						</td>
+						<td>
+							<span class="label">COSTO TOTAL:</span>
+							<span class="value">{{ sheet.total_cost|default:"" }}</span>
 						</td>
 					</tr>
 				</table>
