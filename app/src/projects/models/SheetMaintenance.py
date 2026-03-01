@@ -12,8 +12,8 @@ from django.db import models
 from django.db.models import Max
 from common.BaseModel import BaseModel
 from common.validators import validate_pdf_file
-from projects.models.Project import Project
 from equipment.models import ResourceItem
+from projects.models.SheetProject import SheetProject
 from accounts.models.Technical import Technical
 
 
@@ -21,10 +21,10 @@ class SheetMaintenance(BaseModel):
     id = models.AutoField(
         primary_key=True
     )
-    project = models.ForeignKey(
-        Project,
+    id_sheet_project = models.ForeignKey(
+        SheetProject,
         on_delete=models.PROTECT,
-        verbose_name='Proyecto'
+        verbose_name='Hoja de Proyecto'
     )
     sheet_number = models.PositiveBigIntegerField(
         'Número de Hoja',
