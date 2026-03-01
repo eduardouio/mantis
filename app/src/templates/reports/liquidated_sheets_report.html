@@ -128,13 +128,11 @@
                                            class="btn btn-xs btn-success" title="Descargar Planilla PDF">
                                             <i class="las la-download"></i>
                                         </a>
-                                        {% if item.chains_with_pdf > 0 and item.project_id %}
-                                        <a href="/api/load_files/project/{{ item.project_id }}/merge/?scope=custody_chains&sheet_id={{ item.sheet.id }}"
-                                           class="btn btn-xs btn-warning" title="Unir Cadenas de Custodia en PDF"
+                                        <a href="/api/load_files/sheet/{{ item.sheet.id }}/merge-generated/"
+                                           class="btn btn-xs btn-primary" title="Descargar todos los documentos en un PDF"
                                            target="_blank">
-                                            <i class="las la-object-group"></i> Unir
+                                            <i class="las la-file-archive"></i> Merge
                                         </a>
-                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% empty %}
@@ -325,6 +323,9 @@
 
             <div class="flex gap-2 mb-4 flex-wrap">
         `;
+
+        // Merge de todos los documentos
+        html += '<a href="/api/load_files/sheet/' + data.sheet_id + '/merge-generated/" target="_blank" class="btn btn-sm btn-primary"><i class="las la-file-archive"></i> Descargar Merge Completo</a>';
 
         // Enlace para generar PDF de planilla (siempre disponible)
         html += '<a href="/reports/worksheet/' + data.sheet_id + '/" target="_blank" class="btn btn-sm btn-success"><i class="las la-file-pdf"></i> Generar PDF Planilla</a>';

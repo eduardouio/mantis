@@ -44,6 +44,7 @@ from api.workorders.UpdateSheetProject import UpdateSheetProjectAPI
 from api.workorders.UpdateSheetDetailDays import UpdateSheetDetailDaysAPI
 from api.load_files import LoadFilesApiView, ModelFileFieldsApiView, DocumentTreeApiView
 from api.load_files import ProjectDocumentTreeApiView, ProjectDocumentMergeApiView, BulkCustodyUploadApiView
+from api.load_files.SheetMergeGeneratedApiView import SheetMergeGeneratedApiView
 from api.shipping import ShippingGuideCreateUpdateAPI, ShippingGuideDeleteAPI
 from api.maintenance import SheetMaintenanceCreateUpdateAPI, SheetMaintenanceDeleteAPI
 
@@ -94,6 +95,7 @@ urlpatterns = [
     path('load_files/project/<int:project_id>/tree/', ProjectDocumentTreeApiView.as_view(), name='api_project_document_tree'),
     path('load_files/project/<int:project_id>/merge/', ProjectDocumentMergeApiView.as_view(), name='api_project_document_merge'),
     path('load_files/project/<int:project_id>/bulk_custody/', BulkCustodyUploadApiView.as_view(), name='api_bulk_custody_upload'),
+    path('load_files/sheet/<int:sheet_id>/merge-generated/', SheetMergeGeneratedApiView.as_view(), name='api_sheet_merge_generated'),
 
     # shipping guides
     path('shipping/guides/', ShippingGuideCreateUpdateAPI.as_view(), name='api_shipping_guide_create_update'),

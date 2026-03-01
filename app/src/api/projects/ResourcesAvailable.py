@@ -15,7 +15,7 @@ class ResourcesAvailableAPI(View):
 
     def get(self, request):
         """Obtener lista completa de equipos activos (no servicios)."""
-        filters = Q(is_active=True) & ~Q(type_equipment='SERVIC')
+        filters = Q(is_active=True)
         resources = ResourceItem.objects.filter(filters).order_by(
             "type_equipment", "code"
         )
@@ -45,12 +45,13 @@ class ResourcesAvailableAPI(View):
         """Serializar ResourceItem a JSON."""
         display_name = f"{resource.name} - {resource.get_type_equipment_display()}"
 
-        # Determinar si el recurso está disponible
-        is_available = resource.stst_status_disponibility == "DISPONIBLE"
+        # Los servicios siempre se muestran como disponibles
+        is_service = resource.type_equipment == "SERVIC"
+        is_available = is_service or resource.stst_status_disponibility == "DISPONIBLE"
 
-        # Info del proyecto asignado (si está ocupado)
+        # Info del proyecto asignado (si está ocupado, no aplica a servicios)
         assigned_project = None
-        if not is_available and resource.stst_current_project_id:
+        if not is_service and not is_available and resource.stst_current_project_id:
             project = projects_map.get(resource.stst_current_project_id)
             if project:
                 assigned_project = {
