@@ -29,6 +29,7 @@ from reports.views.PDFWorkSheet import PDFWorkSheet
 from reports.views.FinalDispositionCertificate import FinalDispositionCertificateView
 from reports.views.PDFFinalDispositionCertificateView import PDFFinalDispositionCertificateView
 from reports.views.ShippingGuideReportView import ShippingGuideReportView
+from reports.views.PDFShippingGuideView import PDFShippingGuideView
 from reports.views.LiquidatedSheetsReport import LiquidatedSheetsReportView
 
 
@@ -64,6 +65,7 @@ urlpatterns = [
     path('reports/equipment-info/<int:equipment_id>/', PDFEquipmentInfoReport.as_view(), name='equipment-info-pdf'),
     path('reports/vehicle-status/<int:pk>/', PDFVehicleStatusReport.as_view(), name='vehicle-status-pdf'),
     path('reports/worksheet/<int:id>/', PDFWorkSheet.as_view(), name='worksheet-pdf'),
+    path('reports/shipping-guide/<int:id>/', PDFShippingGuideView.as_view(), name='shipping-guide-pdf'),
     
     # Equipment Checklists PDF
     path('reports/equipment-bateries/<int:equipment_id>/', PDFBateriesCheckList.as_view(), name='equipment-bateries-pdf'),
