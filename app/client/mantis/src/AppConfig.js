@@ -39,4 +39,6 @@ export const appConfig = {
     "URLShippingGuides": apiBaseUrl + "/api/shipping/guides/",
     "URLShippingGuideDetail": apiBaseUrl + "/api/shipping/guides/${id}/",
     "URLShippingGuideDelete": apiBaseUrl + "/api/shipping/guides/${id}/delete/",
+    "URLShippingGuideDownload": apiBaseUrl + "/reports/shipping-guide/${id}/"
+    ,
 }

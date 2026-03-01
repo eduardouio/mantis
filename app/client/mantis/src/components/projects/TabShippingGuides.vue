@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseShippingGuideStore } from '@/stores/ShippingGuideStore'
+import { appConfig } from '@/AppConfig'
 
 const router = useRouter()
 const projectStore = UseProjectStore()
@@ -113,6 +114,15 @@ const editGuide = (guide) => {
               </td>
               <td class="p-2 border border-gray-300 text-end">
                 <div class="flex gap-2 justify-end">
+                  <a
+                    :href="appConfig.URLShippingGuideDownload.replace('${id}', guide.id)"
+                    target="_blank"
+                    class="btn btn-xs btn-outline btn-accent"
+                    title="Descargar PDF"
+                  >
+                    <i class="las la-file-pdf"></i>
+                    PDF
+                  </a>
                   <button
                     @click="editGuide(guide)"
                     class="btn btn-xs border-teal-500 text-teal-500 bg-white"

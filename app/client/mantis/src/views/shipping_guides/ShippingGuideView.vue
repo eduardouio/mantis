@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseShippingGuideStore } from '@/stores/ShippingGuideStore'
+import { appConfig } from '@/AppConfig'
 
 const projectStore = UseProjectStore()
 const shippingGuideStore = UseShippingGuideStore()
@@ -298,6 +299,16 @@ const statusClass = (status) => {
             Volver
           </button>
           <div class="flex gap-2">
+            <!-- Descargar PDF -->
+            <a
+              :href="appConfig.URLShippingGuideDownload.replace('${id}', guide.id)"
+              target="_blank"
+              class="btn btn-sm btn-outline btn-accent"
+              title="Descargar PDF de Guía de Remisión"
+            >
+              <i class="las la-file-pdf"></i>
+              Descargar PDF
+            </a>
             <!-- Cerrar guía (solo desde BORRADOR) -->
             <button
               v-if="guide.status === 'DRAFT'"
