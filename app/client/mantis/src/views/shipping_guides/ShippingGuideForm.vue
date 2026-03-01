@@ -55,10 +55,10 @@ const newDetail = ref({
   unit: 1.00,
 })
 
-// Recursos del proyecto disponibles para agregar
+// Recursos del proyecto disponibles para agregar (solo equipos físicos, sin importar si están activos)
 const availableResources = computed(() => {
   return projectResourceStore.resourcesProject.filter(r => 
-    r.is_active && !r.is_deleted && !r.is_retired
+    !r.is_deleted && r.type_resource === 'EQUIPO'
   )
 })
 

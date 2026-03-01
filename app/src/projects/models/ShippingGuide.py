@@ -135,6 +135,13 @@ class ShippingGuideDetail(BaseModel):
 		on_delete=models.CASCADE,
 		verbose_name='guía de envío'
 	)
+	id_resource_item = models.ForeignKey(
+		ResourceItem,
+		on_delete=models.PROTECT,
+		verbose_name='ID del Recurso del Proyecto',
+		blank=True,
+		null=True
+	)
 	description = models.CharField(
 		'Descripción del Ítem',
 		max_length=255
