@@ -41,6 +41,7 @@
 			.header-table {
 				width: 100%;
 				border-collapse: collapse;
+				border: 1px solid var(--line-soft);
 			}
 
 			.header-table td {
@@ -81,6 +82,7 @@
 			.section {
 				margin-top: 8px;
 				border: 1px solid var(--line-soft);
+				overflow: hidden;
 			}
 
 			.section-title {
@@ -89,6 +91,7 @@
 				font-weight: 700;
 				padding: 5px 8px;
 				border-bottom: 1px solid var(--line-soft);
+				border-right: 1px solid var(--line-soft);
 				text-align: center;
 				letter-spacing: 0.5px;
 			}
@@ -165,6 +168,7 @@
 				font-size: 11px;
 				white-space: pre-wrap;
 				word-wrap: break-word;
+				border-right: 1px solid var(--line-soft);
 			}
 
 			.text-area-sm {
@@ -173,6 +177,11 @@
 				font-size: 11px;
 				white-space: pre-wrap;
 				word-wrap: break-word;
+				border-right: 1px solid var(--line-soft);
+			}
+
+			.section > table {
+				border-right: 1px solid var(--line-soft);
 			}
 
 			.lined-table td {

@@ -40,12 +40,17 @@
 			.header-table {
 				width: 100%;
 				border-collapse: collapse;
+				border: 1px solid var(--line-soft);
 			}
 
 			.header-table td {
 				border: 1px solid var(--line-soft);
 				padding: 8px 12px;
 				vertical-align: middle;
+			}
+
+			.header-table tr td:last-child {
+				border-right: 1px solid var(--line-soft) !important;
 			}
 
 			.header-title {
@@ -87,6 +92,7 @@
 				font-weight: 700;
 				padding: 6px 8px;
 				border-bottom: 1px solid var(--line);
+				border-right: 1px solid var(--line);
 				text-align: center;
 			}
 
@@ -117,6 +123,7 @@
 				display: grid;
 				grid-template-columns: repeat(2, 1fr);
 				grid-template-rows: repeat(2, 1fr);
+				border-right: 1px solid var(--line-soft);
 			}
 
 			.motivo-item {
