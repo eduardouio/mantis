@@ -5,9 +5,14 @@ Genera un informe HTML detallado con las diferencias encontradas.
 
 Uso:
     pip install mysql-connector-python
-    python docs/compare_databases.py
+
+    python docs/compare_databases.py --validate-all
+    python docs/compare_databases.py --validate-tables
+    python docs/compare_databases.py --validate-data --table nombre_de_la_tabla
 """
 
+import argparse
+import hashlib
 import mysql.connector
 from datetime import datetime
 
@@ -19,7 +24,7 @@ SOURCE_DB = {
     "host": "127.0.0.1",
     "port": 3306,
     "user": "root",
-    "password": "12Cs5003$$!!",
+    "password": "",
     "database": "mantis_origen",
 }
 
@@ -27,7 +32,7 @@ TARGET_DB = {
     "host": "127.0.0.1",
     "port": 3306,
     "user": "root",
-    "password": "12Cs5003$$!!",
+    "password": "",
     "database": "mantis_destino",
 }
 
@@ -108,7 +113,7 @@ def get_indexes(cursor, database, table):
     return cursor.fetchall()
 
 
-def extract_db_info(config):
+def extract_db_info(config, only_tables=False):
     conn = get_connection(config)
     cursor = conn.cursor()
     db = config["database"]
@@ -121,11 +126,12 @@ def extract_db_info(config):
     foreign_keys = {}
     indexes = {}
 
-    for table in tables:
-        columns[table] = get_columns(cursor, db, table)
-        primary_keys[table] = get_primary_keys(cursor, db, table)
-        foreign_keys[table] = get_foreign_keys(cursor, db, table)
-        indexes[table] = get_indexes(cursor, db, table)
+    if not only_tables:
+        for table in tables:
+            columns[table] = get_columns(cursor, db, table)
+            primary_keys[table] = get_primary_keys(cursor, db, table)
+            foreign_keys[table] = get_foreign_keys(cursor, db, table)
+            indexes[table] = get_indexes(cursor, db, table)
 
     cursor.close()
     conn.close()
@@ -138,6 +144,123 @@ def extract_db_info(config):
         "foreign_keys": foreign_keys,
         "indexes": indexes,
     }
+
+
+def extract_table_data(config, table):
+    """Extrae los datos completos de una tabla para comparacion fila a fila."""
+    conn = get_connection(config)
+    cursor = conn.cursor()
+    db = config["database"]
+
+    # Obtener columnas ordenadas
+    cursor.execute(
+        "SELECT COLUMN_NAME FROM information_schema.COLUMNS "
+        "WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s "
+        "ORDER BY ORDINAL_POSITION",
+        (db, table),
+    )
+    col_names = [row[0] for row in cursor.fetchall()]
+
+    # Obtener clave primaria para ordenar
+    pk_cols = get_primary_keys(cursor, db, table)
+    order_by = ", ".join(f"`{c}`" for c in pk_cols) if pk_cols else f"`{col_names[0]}`"
+
+    # Obtener total de registros
+    cursor.execute(f"SELECT COUNT(*) FROM `{table}`")
+    total = cursor.fetchone()[0]
+
+    # Obtener todos los registros ordenados por PK
+    cols_select = ", ".join(f"`{c}`" for c in col_names)
+    cursor.execute(f"SELECT {cols_select} FROM `{table}` ORDER BY {order_by}")
+    rows = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return {
+        "columns": col_names,
+        "pk_columns": pk_cols,
+        "rows": rows,
+        "total": total,
+    }
+
+
+def compare_table_data(source_data, target_data, table_name, source_name, target_name):
+    """Compara los datos fila a fila de una tabla entre origen y destino."""
+    result = {
+        "table": table_name,
+        "source_total": source_data["total"],
+        "target_total": target_data["total"],
+        "columns_match": source_data["columns"] == target_data["columns"],
+        "source_columns": source_data["columns"],
+        "target_columns": target_data["columns"],
+        "missing_in_target": [],
+        "missing_in_source": [],
+        "different_rows": [],
+        "identical_rows": 0,
+    }
+
+    if not result["columns_match"]:
+        return result
+
+    # Crear hash de cada fila para comparacion rapida
+    pk_cols = source_data["pk_columns"]
+    col_names = source_data["columns"]
+
+    if pk_cols:
+        pk_indexes = [col_names.index(pk) for pk in pk_cols]
+    else:
+        pk_indexes = [0]
+
+    def row_pk(row):
+        return tuple(row[i] for i in pk_indexes)
+
+    def row_hash(row):
+        return hashlib.md5(str(row).encode()).hexdigest()
+
+    # Indexar filas por PK
+    src_by_pk = {}
+    for row in source_data["rows"]:
+        pk = row_pk(row)
+        src_by_pk[pk] = row
+
+    tgt_by_pk = {}
+    for row in target_data["rows"]:
+        pk = row_pk(row)
+        tgt_by_pk[pk] = row
+
+    src_keys = set(src_by_pk.keys())
+    tgt_keys = set(tgt_by_pk.keys())
+
+    # Filas solo en origen
+    for pk in sorted(src_keys - tgt_keys):
+        pk_display = dict(zip(pk_cols or [col_names[0]], pk))
+        result["missing_in_target"].append(pk_display)
+
+    # Filas solo en destino
+    for pk in sorted(tgt_keys - src_keys):
+        pk_display = dict(zip(pk_cols or [col_names[0]], pk))
+        result["missing_in_source"].append(pk_display)
+
+    # Filas en ambas: comparar contenido
+    for pk in sorted(src_keys & tgt_keys):
+        src_row = src_by_pk[pk]
+        tgt_row = tgt_by_pk[pk]
+        if row_hash(src_row) != row_hash(tgt_row):
+            diffs = []
+            for i, col in enumerate(col_names):
+                if src_row[i] != tgt_row[i]:
+                    diffs.append({
+                        "column": col,
+                        "source_value": str(src_row[i]),
+                        "target_value": str(tgt_row[i]),
+                    })
+            pk_display = dict(zip(pk_cols or [col_names[0]], pk))
+            result["different_rows"].append({"pk": pk_display, "diffs": diffs})
+        else:
+            result["identical_rows"] += 1
+
+    return result
 
 
 def compare(source, target, source_name, target_name):
@@ -181,6 +304,10 @@ def compare(source, target, source_name, target_name):
         tgt_count = target["row_counts"][table]
         if src_count != tgt_count:
             row_diffs.append((table, src_count, tgt_count))
+
+        # Si solo se pidio validar tablas, saltar estructura detallada
+        if not source["columns"]:
+            continue
 
         # Columnas
         src_cols = {c[0]: c for c in source["columns"][table]}
@@ -262,7 +389,64 @@ def compare(source, target, source_name, target_name):
     }
 
 
-def generate_html(result, source_name, target_name):
+# ============================================================
+# GENERACION DE HTML
+# ============================================================
+
+HTML_STYLE = """
+<style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background: #f5f5f5; color: #333; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+    h2 { color: #2c3e50; margin-top: 30px; border-left: 4px solid #3498db; padding-left: 10px; }
+    h3 { color: #34495e; }
+    .summary { background: white; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .info { color: #7f8c8d; margin: 5px 0; }
+    table { border-collapse: collapse; width: 100%; margin: 15px 0; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    th { background: #2c3e50; color: white; padding: 12px 15px; text-align: left; }
+    td { padding: 10px 15px; border-bottom: 1px solid #ecf0f1; }
+    tr:hover { background: #f8f9fa; }
+    .ok { color: #27ae60; font-weight: bold; }
+    .error { color: #e74c3c; font-weight: bold; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+    .badge-ok { background: #d4edda; color: #155724; }
+    .badge-error { background: #f8d7da; color: #721c24; }
+    .section { background: white; border-radius: 8px; padding: 20px; margin: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .match { background-color: #d4edda; }
+    .mismatch { background-color: #f8d7da; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0; }
+    .stat-card { background: white; border-radius: 8px; padding: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .stat-number { font-size: 32px; font-weight: bold; }
+    .stat-label { color: #7f8c8d; font-size: 14px; }
+</style>
+"""
+
+
+def html_header(title, source_name, target_name, subtitle=""):
+    status_line = f'<p class="info">{subtitle}</p>' if subtitle else ""
+    return f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>{title}</title>
+{HTML_STYLE}
+</head>
+<body>
+<div class="container">
+<h1>{title}</h1>
+<div class="summary">
+    <p class="info">Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+    <p class="info">Origen: <strong>{source_name}</strong></p>
+    <p class="info">Destino: <strong>{target_name}</strong></p>
+    {status_line}
+</div>
+"""
+
+
+HTML_FOOTER = "</div></body></html>"
+
+
+def generate_html_validate_all(result, source_name, target_name):
     total_errors = (
         len(result["issues"])
         + len(result["row_diffs"])
@@ -274,45 +458,11 @@ def generate_html(result, source_name, target_name):
     status = "CORRECTO" if total_errors == 0 else f"{total_errors} DIFERENCIAS"
     status_color = "#27ae60" if total_errors == 0 else "#e74c3c"
 
-    html = f"""<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Comparacion de Bases de Datos</title>
-<style>
-    body {{ font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background: #f5f5f5; color: #333; }}
-    .container {{ max-width: 1200px; margin: 0 auto; }}
-    h1 {{ color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }}
-    h2 {{ color: #2c3e50; margin-top: 30px; border-left: 4px solid #3498db; padding-left: 10px; }}
-    .summary {{ background: white; border-radius: 8px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
-    .status {{ font-size: 24px; font-weight: bold; color: {status_color}; }}
-    .info {{ color: #7f8c8d; margin: 5px 0; }}
-    table {{ border-collapse: collapse; width: 100%; margin: 15px 0; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
-    th {{ background: #2c3e50; color: white; padding: 12px 15px; text-align: left; }}
-    td {{ padding: 10px 15px; border-bottom: 1px solid #ecf0f1; }}
-    tr:hover {{ background: #f8f9fa; }}
-    .ok {{ color: #27ae60; font-weight: bold; }}
-    .error {{ color: #e74c3c; font-weight: bold; }}
-    .warning {{ color: #f39c12; font-weight: bold; }}
-    .badge {{ display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }}
-    .badge-ok {{ background: #d4edda; color: #155724; }}
-    .badge-error {{ background: #f8d7da; color: #721c24; }}
-    .section {{ background: white; border-radius: 8px; padding: 20px; margin: 15px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
-    .match {{ background-color: #d4edda; }}
-    .mismatch {{ background-color: #f8d7da; }}
-</style>
-</head>
-<body>
-<div class="container">
-<h1>Informe de Comparacion de Bases de Datos</h1>
-
-<div class="summary">
-    <p class="info">Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
-    <p class="info">Origen: <strong>{source_name}</strong></p>
-    <p class="info">Destino: <strong>{target_name}</strong></p>
-    <p class="status">{status}</p>
-</div>
-"""
+    html = html_header(
+        "Informe Completo de Comparacion de Bases de Datos",
+        source_name, target_name,
+        f'<span style="font-size:24px;font-weight:bold;color:{status_color}">{status}</span>',
+    )
 
     # Resumen general
     html += '<div class="section"><h2>Resumen General</h2><ul>'
@@ -378,12 +528,136 @@ def generate_html(result, source_name, target_name):
         html += '<p class="ok">&#10004; La estructura de todas las tablas es identica (columnas, claves primarias, claves foraneas e indices).</p>'
         html += "</div>"
 
-    html += "</div></body></html>"
+    html += HTML_FOOTER
     return html
 
 
-def main():
-    print(f"Conectando a origen: {SOURCE_DB['host']}:{SOURCE_DB['port']}/{SOURCE_DB['database']}")
+def generate_html_validate_tables(result, source_name, target_name):
+    total_issues = len(result["issues"]) + len(result["row_diffs"])
+    status = "CORRECTO" if total_issues == 0 else f"{total_issues} DIFERENCIAS"
+    status_color = "#27ae60" if total_issues == 0 else "#e74c3c"
+
+    html = html_header(
+        "Validacion de Tablas",
+        source_name, target_name,
+        f'<span style="font-size:24px;font-weight:bold;color:{status_color}">{status}</span>',
+    )
+
+    html += '<div class="section"><h2>Resumen</h2><ul>'
+    for item in result["ok_items"]:
+        html += f'<li class="ok">&#10004; {item}</li>'
+    for item in result["issues"]:
+        html += f'<li class="error">&#10008; {item}</li>'
+    html += "</ul></div>"
+
+    html += '<div class="section"><h2>Registros por Tabla</h2>'
+    html += "<table><tr><th>Tabla</th><th>Origen</th><th>Destino</th><th>Estado</th></tr>"
+    for table in result["common_tables"]:
+        src_c = result["source_counts"].get(table, 0)
+        tgt_c = result["target_counts"].get(table, 0)
+        match = src_c == tgt_c
+        row_class = "match" if match else "mismatch"
+        badge = '<span class="badge badge-ok">OK</span>' if match else f'<span class="badge badge-error">DIF: {tgt_c - src_c:+d}</span>'
+        html += f'<tr class="{row_class}"><td>{table}</td><td>{src_c:,}</td><td>{tgt_c:,}</td><td>{badge}</td></tr>'
+    html += "</table></div>"
+
+    html += HTML_FOOTER
+    return html
+
+
+def generate_html_validate_data(data_result, source_name, target_name):
+    table_name = data_result["table"]
+    total_issues = (
+        len(data_result["missing_in_target"])
+        + len(data_result["missing_in_source"])
+        + len(data_result["different_rows"])
+    )
+    status = "IDENTICA" if total_issues == 0 else f"{total_issues} DIFERENCIAS"
+    status_color = "#27ae60" if total_issues == 0 else "#e74c3c"
+
+    html = html_header(
+        f"Validacion de Datos: {table_name}",
+        source_name, target_name,
+        f'<span style="font-size:24px;font-weight:bold;color:{status_color}">{status}</span>',
+    )
+
+    # Estadisticas
+    html += '<div class="stats-grid">'
+    html += f'<div class="stat-card"><div class="stat-number">{data_result["source_total"]:,}</div><div class="stat-label">Registros en Origen</div></div>'
+    html += f'<div class="stat-card"><div class="stat-number">{data_result["target_total"]:,}</div><div class="stat-label">Registros en Destino</div></div>'
+    html += f'<div class="stat-card"><div class="stat-number ok">{data_result["identical_rows"]:,}</div><div class="stat-label">Filas Identicas</div></div>'
+    html += f'<div class="stat-card"><div class="stat-number error">{total_issues}</div><div class="stat-label">Diferencias</div></div>'
+    html += "</div>"
+
+    # Verificar columnas
+    if not data_result["columns_match"]:
+        html += '<div class="section"><h2>Columnas NO coinciden</h2>'
+        html += f'<p>Origen: {", ".join(data_result["source_columns"])}</p>'
+        html += f'<p>Destino: {", ".join(data_result["target_columns"])}</p>'
+        html += "</div>"
+        html += HTML_FOOTER
+        return html
+
+    # Filas faltantes en destino
+    if data_result["missing_in_target"]:
+        html += f'<div class="section"><h2>Filas solo en Origen ({len(data_result["missing_in_target"])})</h2>'
+        html += "<table><tr><th>Clave Primaria</th></tr>"
+        for pk in data_result["missing_in_target"][:100]:
+            pk_str = ", ".join(f"{k}={v}" for k, v in pk.items())
+            html += f'<tr class="mismatch"><td>{pk_str}</td></tr>'
+        if len(data_result["missing_in_target"]) > 100:
+            html += f'<tr><td>... y {len(data_result["missing_in_target"]) - 100} mas</td></tr>'
+        html += "</table></div>"
+
+    # Filas faltantes en origen
+    if data_result["missing_in_source"]:
+        html += f'<div class="section"><h2>Filas solo en Destino ({len(data_result["missing_in_source"])})</h2>'
+        html += "<table><tr><th>Clave Primaria</th></tr>"
+        for pk in data_result["missing_in_source"][:100]:
+            pk_str = ", ".join(f"{k}={v}" for k, v in pk.items())
+            html += f'<tr class="mismatch"><td>{pk_str}</td></tr>'
+        if len(data_result["missing_in_source"]) > 100:
+            html += f'<tr><td>... y {len(data_result["missing_in_source"]) - 100} mas</td></tr>'
+        html += "</table></div>"
+
+    # Filas con diferencias
+    if data_result["different_rows"]:
+        html += f'<div class="section"><h2>Filas con Datos Diferentes ({len(data_result["different_rows"])})</h2>'
+        html += "<table><tr><th>Clave Primaria</th><th>Columna</th><th>Origen</th><th>Destino</th></tr>"
+        shown = 0
+        for row_diff in data_result["different_rows"]:
+            if shown >= 200:
+                break
+            pk_str = ", ".join(f"{k}={v}" for k, v in row_diff["pk"].items())
+            for diff in row_diff["diffs"]:
+                src_val = diff["source_value"][:80]
+                tgt_val = diff["target_value"][:80]
+                html += f'<tr class="mismatch"><td>{pk_str}</td><td>{diff["column"]}</td><td>{src_val}</td><td>{tgt_val}</td></tr>'
+                shown += 1
+        if len(data_result["different_rows"]) > 200:
+            html += f'<tr><td colspan="4">... y mas filas con diferencias</td></tr>'
+        html += "</table></div>"
+
+    # Todo ok
+    if total_issues == 0:
+        html += '<div class="section">'
+        html += f'<p class="ok">&#10004; Los datos de la tabla <strong>{table_name}</strong> son identicos en ambas bases de datos ({data_result["identical_rows"]:,} filas verificadas).</p>'
+        html += "</div>"
+
+    html += HTML_FOOTER
+    return html
+
+
+# ============================================================
+# COMANDOS PRINCIPALES
+# ============================================================
+
+def cmd_validate_all():
+    print("=" * 60)
+    print("  VALIDACION COMPLETA")
+    print("=" * 60)
+
+    print(f"\nConectando a origen: {SOURCE_DB['host']}:{SOURCE_DB['port']}/{SOURCE_DB['database']}")
     source = extract_db_info(SOURCE_DB)
     print(f"  -> {len(source['tables'])} tablas encontradas")
 
@@ -391,16 +665,14 @@ def main():
     target = extract_db_info(TARGET_DB)
     print(f"  -> {len(target['tables'])} tablas encontradas")
 
-    print("Comparando...")
+    print("Comparando estructura completa...")
     source_label = f"{SOURCE_DB['host']}/{SOURCE_DB['database']}"
     target_label = f"{TARGET_DB['host']}/{TARGET_DB['database']}"
     result = compare(source, target, source_label, target_label)
 
-    html = generate_html(result, source_label, target_label)
+    html = generate_html_validate_all(result, source_label, target_label)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(html)
-
-    print(f"\nInforme generado: {OUTPUT_FILE}")
 
     total_errors = (
         len(result["issues"])
@@ -410,10 +682,152 @@ def main():
         + len(result["fk_diffs"])
         + len(result["index_diffs"])
     )
+
+    print(f"\nInforme generado: {OUTPUT_FILE}")
     if total_errors == 0:
         print("RESULTADO: Las bases de datos son identicas.")
     else:
         print(f"RESULTADO: Se encontraron {total_errors} diferencias. Revisa el informe HTML.")
+
+
+def cmd_validate_tables():
+    print("=" * 60)
+    print("  VALIDACION DE TABLAS")
+    print("=" * 60)
+
+    print(f"\nConectando a origen: {SOURCE_DB['host']}:{SOURCE_DB['port']}/{SOURCE_DB['database']}")
+    source = extract_db_info(SOURCE_DB, only_tables=True)
+    print(f"  -> {len(source['tables'])} tablas encontradas")
+
+    print(f"Conectando a destino: {TARGET_DB['host']}:{TARGET_DB['port']}/{TARGET_DB['database']}")
+    target = extract_db_info(TARGET_DB, only_tables=True)
+    print(f"  -> {len(target['tables'])} tablas encontradas")
+
+    print("Comparando tablas y registros...")
+    source_label = f"{SOURCE_DB['host']}/{SOURCE_DB['database']}"
+    target_label = f"{TARGET_DB['host']}/{TARGET_DB['database']}"
+    result = compare(source, target, source_label, target_label)
+
+    html = generate_html_validate_tables(result, source_label, target_label)
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        f.write(html)
+
+    print(f"\nInforme generado: {OUTPUT_FILE}")
+    if not result["issues"] and not result["row_diffs"]:
+        print("RESULTADO: Tablas y conteos identicos.")
+    else:
+        print(f"RESULTADO: Se encontraron diferencias. Revisa el informe HTML.")
+
+
+def cmd_validate_data(table_name):
+    print("=" * 60)
+    print(f"  VALIDACION DE DATOS: {table_name}")
+    print("=" * 60)
+
+    source_label = f"{SOURCE_DB['host']}/{SOURCE_DB['database']}"
+    target_label = f"{TARGET_DB['host']}/{TARGET_DB['database']}"
+
+    # Verificar que la tabla existe en ambas BD
+    print(f"\nConectando a origen...")
+    src_conn = get_connection(SOURCE_DB)
+    src_cursor = src_conn.cursor()
+    src_tables = get_tables(src_cursor, SOURCE_DB["database"])
+    src_cursor.close()
+    src_conn.close()
+
+    print(f"Conectando a destino...")
+    tgt_conn = get_connection(TARGET_DB)
+    tgt_cursor = tgt_conn.cursor()
+    tgt_tables = get_tables(tgt_cursor, TARGET_DB["database"])
+    tgt_cursor.close()
+    tgt_conn.close()
+
+    if table_name not in src_tables:
+        print(f"ERROR: La tabla '{table_name}' no existe en {source_label}")
+        return
+    if table_name not in tgt_tables:
+        print(f"ERROR: La tabla '{table_name}' no existe en {target_label}")
+        return
+
+    print(f"Extrayendo datos de '{table_name}' en origen...")
+    source_data = extract_table_data(SOURCE_DB, table_name)
+    print(f"  -> {source_data['total']:,} registros")
+
+    print(f"Extrayendo datos de '{table_name}' en destino...")
+    target_data = extract_table_data(TARGET_DB, table_name)
+    print(f"  -> {target_data['total']:,} registros")
+
+    print("Comparando fila a fila...")
+    data_result = compare_table_data(source_data, target_data, table_name, source_label, target_label)
+
+    html = generate_html_validate_data(data_result, source_label, target_label)
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        f.write(html)
+
+    total_issues = (
+        len(data_result["missing_in_target"])
+        + len(data_result["missing_in_source"])
+        + len(data_result["different_rows"])
+    )
+
+    print(f"\nInforme generado: {OUTPUT_FILE}")
+    print(f"  Filas identicas: {data_result['identical_rows']:,}")
+    print(f"  Solo en origen:  {len(data_result['missing_in_target'])}")
+    print(f"  Solo en destino: {len(data_result['missing_in_source'])}")
+    print(f"  Diferentes:      {len(data_result['different_rows'])}")
+
+    if total_issues == 0:
+        print(f"RESULTADO: La tabla '{table_name}' es identica en ambas bases de datos.")
+    else:
+        print(f"RESULTADO: Se encontraron {total_issues} diferencias. Revisa el informe HTML.")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Comparar dos bases de datos MySQL y generar informe HTML.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Ejemplos:
+  python docs/compare_databases.py --validate-all
+  python docs/compare_databases.py --validate-tables
+  python docs/compare_databases.py --validate-data --table auth_user
+        """,
+    )
+
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        "--validate-all",
+        action="store_true",
+        help="Validacion completa: tablas, estructura, columnas, claves, indices y conteo de registros",
+    )
+    group.add_argument(
+        "--validate-tables",
+        action="store_true",
+        help="Solo validar nombres de tablas y conteo de registros",
+    )
+    group.add_argument(
+        "--validate-data",
+        action="store_true",
+        help="Comparar datos fila a fila de una tabla especifica (requiere --table)",
+    )
+
+    parser.add_argument(
+        "--table",
+        type=str,
+        help="Nombre de la tabla a comparar (solo con --validate-data)",
+    )
+
+    args = parser.parse_args()
+
+    if args.validate_data and not args.table:
+        parser.error("--validate-data requiere --table nombre_de_la_tabla")
+
+    if args.validate_all:
+        cmd_validate_all()
+    elif args.validate_tables:
+        cmd_validate_tables()
+    elif args.validate_data:
+        cmd_validate_data(args.table)
 
 
 if __name__ == "__main__":
