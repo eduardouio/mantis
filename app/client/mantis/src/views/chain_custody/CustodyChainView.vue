@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
 import { UseVehicleStore } from '@/stores/VehicleStore'
+import { appConfig } from '@/AppConfig'
 import Modal from '@/components/common/Modal.vue'
 import TechnicalPresentation from '@/components/resources/TechnicalPresentation.vue'
 import VehiclePresentation from '@/components/resources/VehiclePresentation.vue'
@@ -60,6 +61,11 @@ const formatTime = (time) => {
 const formatDate = (date) => {
   if (!date) return 'N/A'
   return new Date(date).toLocaleDateString('es-ES')
+}
+
+const viewCustodyChainPDF = (id) => {
+  const pdfUrl = appConfig.PDFCustodyChainReport.replace('${id}', id)
+  window.open(pdfUrl, '_blank')
 }
 </script>
 
@@ -274,10 +280,15 @@ const formatDate = (date) => {
               <i class="las la-edit"></i>
               Editar
             </button>
-            <button class="btn btn-sm btn-primary">
-              <i class="las la-print"></i>
-              Imprimir
-            </button>
+            <a
+              :href="appConfig.PDFCustodyChainReport.replace('${id}', chain.id)"
+              target="_blank"
+              class="btn btn-sm btn-outline btn-accent"
+              title="Descargar PDF de Cadena de Custodia"
+            >
+              <i class="las la-file-pdf"></i>
+              Descargar PDF
+            </a>
             <button class="btn btn-sm bg-red-600 text-white">
               <i class="las la-times-circle"></i>
               Anular
