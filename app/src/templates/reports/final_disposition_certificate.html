@@ -236,7 +236,7 @@
       </div>
       <div class="client-row">
         <span class="client-label">PROYECTO:</span>
-        <span class="client-value">{{ project.name|default:"" }}{% if project.location %} / {{ project.location }}{% endif %}</span>
+        <span class="client-value">{% if project.location %} {{ project.location }}{% endif %}</span>
       </div>
     </div>
     
