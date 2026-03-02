@@ -12,6 +12,7 @@ Orden de los documentos:
 
 import io
 import os
+from concurrent.futures import ThreadPoolExecutor
 
 from django.conf import settings
 from django.http import JsonResponse, HttpResponse, Http404
@@ -60,19 +61,77 @@ def _add_pdf_bytes_to_writer(writer, pdf_bytes):
         writer.add_page(p)
 
 
-def _add_file_to_writer(writer, file_field):
-    """Agrega un archivo FileField al PdfWriter si existe."""
-    if file_field and file_field.name:
+def _add_file_to_writer(writer, file_path):
+    """Agrega un archivo PDF al PdfWriter si existe en disco."""
+    if file_path and os.path.isfile(file_path):
         try:
-            path = file_field.path
-            if os.path.isfile(path):
-                reader = PdfReader(path)
-                for p in reader.pages:
-                    writer.add_page(p)
-                return True
+            reader = PdfReader(file_path)
+            for p in reader.pages:
+                writer.add_page(p)
+            return True
         except Exception:
             pass
     return False
+
+
+def _generate_merge_in_thread(cookies, sheet_id, sheet_series_code,
+                               invoice_path, chain_ids):
+    """
+    Ejecuta toda la generación de PDFs con Playwright en un hilo separado.
+    Esto evita el error 'You cannot call this from an async context'.
+    Retorna los bytes del PDF combinado o None.
+    """
+    writer = PdfWriter()
+    docs_added = 0
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(ignore_https_errors=True)
+        if cookies:
+            context.add_cookies(cookies)
+        page = context.new_page()
+
+        # 1. Planilla de cantidades (generada, landscape)
+        try:
+            url = f"{settings.BASE_URL}{reverse('worksheet-template', kwargs={'id': sheet_id})}"
+            pdf_bytes = _render_url_to_pdf(page, url, landscape=True)
+            _add_pdf_bytes_to_writer(writer, pdf_bytes)
+            docs_added += 1
+        except Exception:
+            pass
+
+        # 2. Certificado de disposición final (generado, portrait)
+        try:
+            url = f"{settings.BASE_URL}{reverse('final-disposition-certificate', kwargs={'id': sheet_id})}"
+            margin = {"top": "1cm", "right": "1cm", "bottom": "1cm", "left": "1cm"}
+            pdf_bytes = _render_url_to_pdf(page, url, landscape=False, margin=margin)
+            _add_pdf_bytes_to_writer(writer, pdf_bytes)
+            docs_added += 1
+        except Exception:
+            pass
+
+        # 3. Factura de venta (archivo adjunto)
+        if _add_file_to_writer(writer, invoice_path):
+            docs_added += 1
+
+        # 4. Cadenas de custodia (generadas)
+        for chain_id in chain_ids:
+            try:
+                url = f"{settings.BASE_URL}{reverse('custody-chain-report', kwargs={'id_custody_chain': chain_id})}"
+                pdf_bytes = _render_url_to_pdf(page, url)
+                _add_pdf_bytes_to_writer(writer, pdf_bytes)
+                docs_added += 1
+            except Exception:
+                continue
+
+        browser.close()
+
+    if docs_added == 0:
+        return None
+
+    buffer = io.BytesIO()
+    writer.write(buffer)
+    return buffer.getvalue()
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -96,65 +155,41 @@ class SheetMergeGeneratedApiView(View):
             )
 
             cookies = _get_cookies(request)
-            writer = PdfWriter()
-            docs_added = 0
 
-            with sync_playwright() as p:
-                browser = p.chromium.launch(headless=True)
-                context = browser.new_context(ignore_https_errors=True)
-                if cookies:
-                    context.add_cookies(cookies)
-                page = context.new_page()
-
-                # 1. Planilla de cantidades (generada, landscape)
+            # Obtener la ruta de la factura si existe
+            invoice_path = None
+            if sheet.invoice_file and sheet.invoice_file.name:
                 try:
-                    url = f"{settings.BASE_URL}{reverse('worksheet-template', kwargs={'id': sheet.id})}"
-                    pdf_bytes = _render_url_to_pdf(page, url, landscape=True)
-                    _add_pdf_bytes_to_writer(writer, pdf_bytes)
-                    docs_added += 1
+                    invoice_path = sheet.invoice_file.path
                 except Exception:
                     pass
 
-                # 2. Certificado de disposición final (generado, portrait)
-                try:
-                    url = f"{settings.BASE_URL}{reverse('final-disposition-certificate', kwargs={'id': sheet.id})}"
-                    margin = {"top": "1cm", "right": "1cm", "bottom": "1cm", "left": "1cm"}
-                    pdf_bytes = _render_url_to_pdf(page, url, landscape=False, margin=margin)
-                    _add_pdf_bytes_to_writer(writer, pdf_bytes)
-                    docs_added += 1
-                except Exception:
-                    pass
-
-                # 3. Factura de venta (archivo adjunto)
-                if _add_file_to_writer(writer, sheet.invoice_file):
-                    docs_added += 1
-
-                # 4. Cadenas de custodia (generadas)
-                chains = CustodyChain.objects.filter(
+            # Obtener IDs de cadenas de custodia
+            chain_ids = list(
+                CustodyChain.objects.filter(
                     sheet_project=sheet,
                     is_active=True,
-                ).order_by('activity_date', 'consecutive')
+                ).order_by('activity_date', 'consecutive').values_list('id', flat=True)
+            )
 
-                for chain in chains:
-                    try:
-                        url = f"{settings.BASE_URL}{reverse('custody-chain-report', kwargs={'id_custody_chain': chain.id})}"
-                        pdf_bytes = _render_url_to_pdf(page, url)
-                        _add_pdf_bytes_to_writer(writer, pdf_bytes)
-                        docs_added += 1
-                    except Exception:
-                        continue
+            # Ejecutar Playwright en un hilo separado para evitar
+            # conflicto con el event loop async de Django
+            with ThreadPoolExecutor(max_workers=1) as executor:
+                future = executor.submit(
+                    _generate_merge_in_thread,
+                    cookies,
+                    sheet.id,
+                    sheet.series_code,
+                    invoice_path,
+                    chain_ids,
+                )
+                merged_bytes = future.result(timeout=120)
 
-                browser.close()
-
-            if docs_added == 0:
+            if merged_bytes is None:
                 return JsonResponse({
                     'success': False,
                     'error': 'No se pudo generar ningún documento para esta planilla.',
                 }, status=404)
-
-            buffer = io.BytesIO()
-            writer.write(buffer)
-            merged_bytes = buffer.getvalue()
 
             partner_name = sheet.project.partner.name if sheet.project and sheet.project.partner else f'Proyecto_{sheet.project_id}'
             safe_name = partner_name.replace(' ', '_')[:40]

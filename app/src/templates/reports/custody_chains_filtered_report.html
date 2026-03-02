@@ -1,0 +1,699 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Reporte de Cadenas de Custodia{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="las la-link me-2"></i>
+                        Reporte de Cadenas de Custodia
+                        {% if has_filters %}
+                        <span class="badge badge-warning badge-sm ml-2">Filtros activos</span>
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- Panel de Filtros -->
+                    <div class="collapse mb-4" id="filtersPanel">
+                        <div class="bg-base-200 p-4 rounded-lg border border-base-300">
+                            <form method="GET" action="" id="filtersForm">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    
+                                    <!-- Cliente -->
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text font-semibold">
+                                                <i class="las la-building"></i> Cliente
+                                            </span>
+                                        </label>
+                                        <select name="partner_id" class="select select-bordered select-sm w-full" 
+                                                id="filterPartner" onchange="onPartnerChange()">
+                                            <option value="">-- Todos --</option>
+                                            {% for partner in partners %}
+                                            <option value="{{ partner.id }}" 
+                                                {% if current_filters.partner_id == partner.id|stringformat:"d" %}selected{% endif %}>
+                                                {{ partner.name }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <!-- Proyecto -->
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text font-semibold">
+                                                <i class="las la-project-diagram"></i> Proyecto
+                                            </span>
+                                        </label>
+                                        <select name="project_id" class="select select-bordered select-sm w-full" id="filterProject">
+                                            <option value="">-- Todos --</option>
+                                            {% for proj in projects %}
+                                            <option value="{{ proj.id }}" data-partner="{{ proj.partner_id }}"
+                                                {% if current_filters.project_id == proj.id|stringformat:"d" %}selected{% endif %}>
+                                                #{{ proj.id }} - {{ proj.partner.name }} ({{ proj.location|default:"-" }})
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <!-- Serie de Planilla -->
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text font-semibold">
+                                                <i class="las la-barcode"></i> Serie Planilla
+                                            </span>
+                                        </label>
+                                        <input type="text" name="series_code" 
+                                               class="input input-bordered input-sm w-full"
+                                               placeholder="Ej: PSL-PS-2026-0001"
+                                               value="{{ current_filters.series_code }}">
+                                    </div>
+
+                                    <!-- Estado -->
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text font-semibold">
+                                                <i class="las la-flag"></i> Estado
+                                            </span>
+                                        </label>
+                                        <select name="status" class="select select-bordered select-sm w-full">
+                                            <option value="">-- Todos --</option>
+                                            <option value="DRAFT" {% if current_filters.status == 'DRAFT' %}selected{% endif %}>
+                                                Borrador
+                                            </option>
+                                            <option value="CLOSE" {% if current_filters.status == 'CLOSE' %}selected{% endif %}>
+                                                Cerrado
+                                            </option>
+                                            <option value="CANCELLED" {% if current_filters.status == 'CANCELLED' %}selected{% endif %}>
+                                                Cancelado
+                                            </option>
+                                            <option value="INVOICE" {% if current_filters.status == 'INVOICE' %}selected{% endif %}>
+                                                Facturado
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Fecha Desde -->
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text font-semibold">
+                                                <i class="las la-calendar"></i> Fecha Desde
+                                            </span>
+                                        </label>
+                                        <input type="date" name="date_from" 
+                                               class="input input-bordered input-sm w-full"
+                                               value="{{ current_filters.date_from }}">
+                                    </div>
+
+                                    <!-- Fecha Hasta -->
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text font-semibold">
+                                                <i class="las la-calendar-check"></i> Fecha Hasta
+                                            </span>
+                                        </label>
+                                        <input type="date" name="date_to" 
+                                               class="input input-bordered input-sm w-full"
+                                               value="{{ current_filters.date_to }}">
+                                    </div>
+
+                                    <!-- Tipo de Agua -->
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text font-semibold">
+                                                <i class="las la-tint"></i> Tipo de Agua
+                                            </span>
+                                        </label>
+                                        <select name="water_type" class="select select-bordered select-sm w-full">
+                                            <option value="">-- Todos --</option>
+                                            <option value="black_water" {% if current_filters.water_type == 'black_water' %}selected{% endif %}>
+                                                Aguas Negras
+                                            </option>
+                                            <option value="grey_water" {% if current_filters.water_type == 'grey_water' %}selected{% endif %}>
+                                                Aguas Grises
+                                            </option>
+                                            <option value="clean_water" {% if current_filters.water_type == 'clean_water' %}selected{% endif %}>
+                                                Aguas Limpias
+                                            </option>
+                                            <option value="activated_sludge" {% if current_filters.water_type == 'activated_sludge' %}selected{% endif %}>
+                                                Lodos Activados
+                                            </option>
+                                            <option value="treated_wastewater" {% if current_filters.water_type == 'treated_wastewater' %}selected{% endif %}>
+                                                Aguas Tratadas
+                                            </option>
+                                            <option value="organic_grease" {% if current_filters.water_type == 'organic_grease' %}selected{% endif %}>
+                                                Grasa Orgánica
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Tiene PDF -->
+                                    <div class="form-control">
+                                        <label class="label">
+                                            <span class="label-text font-semibold">
+                                                <i class="las la-file-pdf"></i> PDF
+                                            </span>
+                                        </label>
+                                        <select name="has_pdf" class="select select-bordered select-sm w-full">
+                                            <option value="">-- Todos --</option>
+                                            <option value="yes" {% if current_filters.has_pdf == 'yes' %}selected{% endif %}>
+                                                Con PDF
+                                            </option>
+                                            <option value="no" {% if current_filters.has_pdf == 'no' %}selected{% endif %}>
+                                                Sin PDF
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-end gap-2 mt-4">
+                                    <a href="{% url 'custody-chains-filtered-report' %}" class="btn btn-outline btn-sm">
+                                        <i class="las la-times"></i> Limpiar Filtros
+                                    </a>
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="las la-search"></i> Aplicar Filtros
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Botón para mostrar/ocultar filtros -->
+                    <div class="flex justify-between items-center mb-3">
+                        <button class="btn btn-sm btn-outline" type="button" 
+                                onclick="toggleFilters()">
+                            <i class="las la-filter"></i> 
+                            <span id="filterToggleText">Mostrar Filtros</span>
+                            {% if has_filters %}
+                            <span class="badge badge-warning badge-xs">!</span>
+                            {% endif %}
+                        </button>
+                        <div class="text-sm text-gray-500">
+                            Mostrando <strong>{{ stats.total }}</strong> cadenas de custodia
+                        </div>
+                    </div>
+
+                    <!-- Estadísticas Generales -->
+                    <div class="flex flex-wrap align-items-center py-3 bg-light rounded mb-3 gap-2 justify-center">
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Total Cadenas</h5>
+                            <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Galones</h5>
+                            <h2 class="text-info mb-0">{{ stats.total_gallons_display }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Barriles</h5>
+                            <h2 class="text-info mb-0">{{ stats.total_barrels_display }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">m&sup3;</h5>
+                            <h2 class="text-info mb-0">{{ stats.total_cubic_meters_display }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Horas Total</h5>
+                            <h2 class="text-success mb-0">{{ stats.total_hours_display }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Con PDF</h5>
+                            <h2 class="text-success mb-0">{{ stats.with_pdf }}</h2>
+                        </div>
+                        <div class="text-center px-3">
+                            <h5 class="text-muted mb-1">Sin PDF</h5>
+                            <h2 class="text-warning mb-0">{{ stats.without_pdf }}</h2>
+                        </div>
+                    </div>
+
+                    <!-- Estadísticas por Estado -->
+                    <div class="flex align-items-center py-3 bg-base-200 rounded mb-3 gap-2 flex-wrap justify-center">
+                        {% for status_key, status_data in stats.by_status.items %}
+                        <button class="btn btn-sm status-filter-btn {% if status_key == 'DRAFT' %}btn-warning{% elif status_key == 'CLOSE' %}btn-success{% elif status_key == 'CANCELLED' %}btn-error{% elif status_key == 'INVOICE' %}btn-primary{% endif %}"
+                                data-status="{{ status_key }}"
+                                onclick="filterByStatus('{{ status_key }}')">
+                            {{ status_data.label }}
+                            <span class="badge badge-ghost ml-1">{{ status_data.count }}</span>
+                        </button>
+                        {% endfor %}
+                        <button class="btn btn-sm btn-outline btn-active"
+                                data-status="ALL"
+                                onclick="filterByStatus('ALL')">
+                            Todas
+                            <span class="badge badge-ghost ml-1">{{ stats.total }}</span>
+                        </button>
+                    </div>
+
+                    <!-- Estadísticas por Tipo de Agua -->
+                    <div class="flex align-items-center py-2 bg-base-100 rounded mb-4 gap-2 flex-wrap justify-center">
+                        <span class="text-sm font-semibold text-gray-500 mr-2">
+                            <i class="las la-tint"></i> Tipos de Agua:
+                        </span>
+                        {% for wt_key, wt_data in stats.by_water_type.items %}
+                        {% if wt_data.count > 0 %}
+                        <span class="badge badge-outline badge-sm">
+                            {{ wt_data.label }}
+                            <span class="ml-1 font-bold">{{ wt_data.count }}</span>
+                        </span>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <!-- Tabla -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped" id="custodyChainsFilteredTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Consecutivo</th>
+                                    <th>Fecha</th>
+                                    <th>Planilla</th>
+                                    <th>Cliente</th>
+                                    <th>Campamento</th>
+                                    <th>Técnico</th>
+                                    <th>Vehículo</th>
+                                    <th>Estado</th>
+                                    <th>Galones</th>
+                                    <th>Barriles</th>
+                                    <th>m&sup3;</th>
+                                    <th>Tipo Agua</th>
+                                    <th>Equipos</th>
+                                    <th>PDF</th>
+                                    <th class="no-export">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in all_chains %}
+                                <tr data-status="{{ item.status }}">
+                                    <td><strong>{{ item.consecutive }}</strong></td>
+                                    <td>
+                                        <small>{{ item.activity_date|date:"d/m/Y" }}</small>
+                                    </td>
+                                    <td>
+                                        <small>{{ item.series_code }}</small>
+                                    </td>
+                                    <td>{{ item.partner_name }}</td>
+                                    <td>{{ item.project_location }}</td>
+                                    <td>
+                                        <small>{{ item.technical_name }}</small>
+                                    </td>
+                                    <td>
+                                        <small>{{ item.vehicle_plate }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm
+                                            {% if item.status == 'DRAFT' %}badge-warning
+                                            {% elif item.status == 'CLOSE' %}badge-success
+                                            {% elif item.status == 'CANCELLED' %}badge-error
+                                            {% elif item.status == 'INVOICE' %}badge-primary
+                                            {% endif %}">
+                                            {{ item.status_display }}
+                                        </span>
+                                    </td>
+                                    <td class="text-right">{{ item.total_gallons|floatformat:2 }}</td>
+                                    <td class="text-right">{{ item.total_barrels|floatformat:2 }}</td>
+                                    <td class="text-right">{{ item.total_cubic_meters|floatformat:2 }}</td>
+                                    <td>
+                                        <small>{{ item.water_types }}</small>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge badge-ghost badge-sm">{{ item.details_count }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if item.has_pdf %}
+                                            <i class="las la-file-pdf text-success" title="PDF cargado"></i>
+                                        {% else %}
+                                            <i class="las la-file-pdf text-danger" title="Sin PDF"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center no-export">
+                                        <div class="flex gap-1 justify-center">
+                                            <button class="btn btn-xs btn-info"
+                                                    onclick="openChainDetail({{ item.chain.id }})"
+                                                    title="Ver detalle">
+                                                <i class="las la-eye"></i>
+                                            </button>
+                                            <a href="/reports/custody-chain/{{ item.chain.id }}/" target="_blank"
+                                               class="btn btn-xs btn-success" title="Generar PDF">
+                                                <i class="las la-download"></i>
+                                            </a>
+                                            {% if item.has_pdf %}
+                                            <a href="{{ item.pdf_url }}" target="_blank"
+                                               class="btn btn-xs btn-outline btn-primary" title="PDF cargado">
+                                                <i class="las la-file-pdf"></i>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="15" class="text-center">
+                                        <div class="alert alert-info mb-0">
+                                            <i class="las la-info-circle me-2"></i>
+                                            No hay cadenas de custodia que coincidan con los filtros seleccionados.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal detalle -->
+<dialog id="chainDetailModal" class="modal">
+    <div class="modal-box w-11/12 max-w-5xl">
+        <h3 class="font-bold text-lg mb-4" id="modalTitle">
+            <i class="las la-link"></i>
+            Detalle de Cadena de Custodia
+        </h3>
+        <div id="modalContent">
+            <div class="flex justify-center py-8">
+                <span class="loading loading-spinner loading-lg"></span>
+            </div>
+        </div>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Cerrar</button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .table thead th {
+        vertical-align: middle;
+        white-space: nowrap;
+        font-size: 11px;
+    }
+    .table tbody td {
+        vertical-align: middle;
+        font-size: 12px;
+    }
+    .status-filter-btn.active-filter {
+        outline: 3px solid currentColor;
+        outline-offset: 2px;
+    }
+    #filtersPanel {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+    }
+    #filtersPanel.show {
+        max-height: 500px;
+    }
+</style>
+
+<script>
+    // Datos de cadenas para el modal
+    const chainsData = {
+        {% for item in all_chains %}
+        {{ item.chain.id }}: {
+            consecutive: "{{ item.consecutive|escapejs }}",
+            activity_date: "{{ item.activity_date|date:'d/m/Y'|default:'-' }}",
+            location: "{{ item.location|escapejs }}",
+            status: "{{ item.status|escapejs }}",
+            status_display: "{{ item.status_display|escapejs }}",
+            series_code: "{{ item.series_code|escapejs }}",
+            sheet_id: {{ item.sheet_id|default:"null" }},
+            partner_name: "{{ item.partner_name|escapejs }}",
+            project_location: "{{ item.project_location|escapejs }}",
+            technical_name: "{{ item.technical_name|escapejs }}",
+            vehicle_plate: "{{ item.vehicle_plate|escapejs }}",
+            start_time: "{{ item.start_time|time:'H:i'|default:'-' }}",
+            end_time: "{{ item.end_time|time:'H:i'|default:'-' }}",
+            time_duration: "{{ item.time_duration|default:'-' }}",
+            time_duration_hours: "{{ item.time_duration_hours|default:'-' }}",
+            total_gallons: "{{ item.total_gallons|floatformat:2 }}",
+            total_barrels: "{{ item.total_barrels|floatformat:2 }}",
+            total_cubic_meters: "{{ item.total_cubic_meters|floatformat:2 }}",
+            have_logistic: "{{ item.have_logistic|escapejs }}",
+            water_types: "{{ item.water_types|escapejs }}",
+            details_count: {{ item.details_count }},
+            contact_name: "{{ item.contact_name|escapejs }}",
+            driver_name: "{{ item.driver_name|escapejs }}",
+            has_pdf: {{ item.has_pdf|yesno:"true,false" }},
+            pdf_url: "{{ item.pdf_url|default:''|escapejs }}",
+            chain_id: {{ item.chain.id }},
+        },
+        {% endfor %}
+    };
+
+    // Toggle del panel de filtros
+    function toggleFilters() {
+        const panel = document.getElementById('filtersPanel');
+        const text = document.getElementById('filterToggleText');
+        panel.classList.toggle('show');
+        if (panel.classList.contains('show')) {
+            text.textContent = 'Ocultar Filtros';
+        } else {
+            text.textContent = 'Mostrar Filtros';
+        }
+    }
+
+    // Mostrar filtros si hay filtros activos
+    {% if has_filters %}
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleFilters();
+    });
+    {% endif %}
+
+    // Filtrar proyectos cuando cambia el cliente
+    function onPartnerChange() {
+        const partnerId = document.getElementById('filterPartner').value;
+        const projectSelect = document.getElementById('filterProject');
+        const options = projectSelect.querySelectorAll('option[data-partner]');
+
+        options.forEach(function(option) {
+            if (!partnerId || option.getAttribute('data-partner') === partnerId) {
+                option.style.display = '';
+            } else {
+                option.style.display = 'none';
+                if (option.selected) {
+                    option.selected = false;
+                    projectSelect.value = '';
+                }
+            }
+        });
+    }
+
+    // Filtro rápido por estado en la tabla
+    let currentFilter = 'ALL';
+
+    function filterByStatus(status) {
+        currentFilter = status;
+        const rows = document.querySelectorAll('#custodyChainsFilteredTable tbody tr[data-status]');
+        rows.forEach(function(row) {
+            if (status === 'ALL' || row.getAttribute('data-status') === status) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        document.querySelectorAll('.status-filter-btn').forEach(function(btn) {
+            btn.classList.remove('active-filter', 'btn-active');
+        });
+        const activeBtn = document.querySelector('.status-filter-btn[data-status="' + status + '"]');
+        if (activeBtn) {
+            activeBtn.classList.add('active-filter', 'btn-active');
+        }
+    }
+
+    // Modal de detalle
+    function openChainDetail(chainId) {
+        const modal = document.getElementById('chainDetailModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const data = chainsData[chainId];
+
+        if (!data) return;
+
+        modalTitle.innerHTML = '<i class="las la-link"></i> Cadena #' + data.consecutive + ' - ' + data.partner_name;
+
+        let statusBadgeClass = 'badge-ghost';
+        if (data.status === 'DRAFT') statusBadgeClass = 'badge-warning';
+        else if (data.status === 'CLOSE') statusBadgeClass = 'badge-success';
+        else if (data.status === 'CANCELLED') statusBadgeClass = 'badge-error';
+        else if (data.status === 'INVOICE') statusBadgeClass = 'badge-primary';
+
+        let html = `
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <p class="text-sm text-gray-500">Consecutivo</p>
+                    <p class="font-bold">${data.consecutive}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Fecha de Actividad</p>
+                    <p class="font-bold">${data.activity_date}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Estado</p>
+                    <p class="font-bold"><span class="badge ${statusBadgeClass} badge-sm">${data.status_display}</span></p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Cliente</p>
+                    <p class="font-bold">${data.partner_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Campamento</p>
+                    <p class="font-bold">${data.project_location}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Ubicación</p>
+                    <p class="font-bold">${data.location}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Planilla</p>
+                    <p class="font-bold">${data.series_code}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Técnico</p>
+                    <p class="font-bold">${data.technical_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Vehículo</p>
+                    <p class="font-bold">${data.vehicle_plate}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 bg-base-200 p-3 rounded">
+                <div>
+                    <p class="text-sm text-gray-500">Hora Inicio</p>
+                    <p class="font-bold">${data.start_time}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Hora Salida</p>
+                    <p class="font-bold">${data.end_time}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Duración (min)</p>
+                    <p class="font-bold">${data.time_duration}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Logística</p>
+                    <p class="font-bold">${data.have_logistic}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-base-200 p-3 rounded">
+                <div>
+                    <p class="text-sm text-gray-500">Galones</p>
+                    <p class="font-bold text-lg">${data.total_gallons}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Barriles</p>
+                    <p class="font-bold text-lg">${data.total_barrels}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Metros Cúbicos</p>
+                    <p class="font-bold text-lg">${data.total_cubic_meters}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <p class="text-sm text-gray-500">Tipos de Agua</p>
+                    <p class="font-bold">${data.water_types}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Contacto</p>
+                    <p class="font-bold">${data.contact_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Transportista</p>
+                    <p class="font-bold">${data.driver_name}</p>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mb-4 flex-wrap">
+                <a href="/reports/custody-chain/${data.chain_id}/" target="_blank" class="btn btn-sm btn-success">
+                    <i class="las la-file-pdf"></i> Generar PDF
+                </a>
+        `;
+
+        if (data.has_pdf) {
+            html += `<a href="${data.pdf_url}" target="_blank" class="btn btn-sm btn-outline btn-success">
+                <i class="las la-download"></i> Descargar PDF Cargado
+            </a>`;
+        }
+
+        html += '</div>';
+
+        modalContent.innerHTML = html;
+        modal.showModal();
+    }
+
+    // Inicializar DataTables
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar filtro de proyectos por cliente
+        onPartnerChange();
+
+        if (typeof $.fn.DataTable !== 'undefined') {
+            $('#custodyChainsFilteredTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                },
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: '<i class="las la-file-excel"></i> Excel',
+                        className: 'btn btn-success btn-sm',
+                        title: 'Reporte Cadenas de Custodia',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="las la-file-csv"></i> CSV',
+                        className: 'btn btn-info btn-sm',
+                        title: 'Reporte Cadenas de Custodia',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="las la-file-pdf"></i> PDF',
+                        className: 'btn btn-danger btn-sm',
+                        title: 'Reporte Cadenas de Custodia',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    }
+                ],
+                pageLength: 25,
+                lengthMenu: [
+                    [25, 50, 100, -1],
+                    ['25', '50', '100', 'Todos']
+                ],
+                order: [[1, 'desc']],
+                columnDefs: [
+                    { orderable: false, targets: 14 }
+                ]
+            });
+        }
+
+        filterByStatus('ALL');
+    });
+</script>
+{% endblock %}
