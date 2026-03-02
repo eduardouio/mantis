@@ -1,0 +1,506 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Reporte de Guías de Remisión{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="las la-shipping-fast me-2"></i>
+                        Reporte de Guías de Remisión
+                    </h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- Estadísticas Generales -->
+                    <div class="flex align-items-center py-3 bg-light rounded mb-3">
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Total Guías</h5>
+                            <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Costo Transporte</h5>
+                            <h2 class="text-info mb-0">${{ stats.total_cost_transport_display }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Costo Estiba</h5>
+                            <h2 class="text-info mb-0">${{ stats.total_cost_stowage_display }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Con PDF</h5>
+                            <h2 class="text-success mb-0">{{ stats.with_pdf }}</h2>
+                        </div>
+                        <div class="text-center px-3">
+                            <h5 class="text-muted mb-1">Sin PDF</h5>
+                            <h2 class="text-warning mb-0">{{ stats.without_pdf }}</h2>
+                        </div>
+                    </div>
+
+                    <!-- Filtros por Estado -->
+                    <div class="flex align-items-center py-3 bg-base-200 rounded mb-4 gap-2 flex-wrap justify-center">
+                        {% for status_key, status_data in stats.by_status.items %}
+                        <button class="btn btn-sm status-filter-btn {% if status_key == 'DRAFT' %}btn-warning{% elif status_key == 'CLOSED' %}btn-success{% elif status_key == 'VOID' %}btn-error{% endif %}"
+                                data-status="{{ status_key }}"
+                                onclick="filterByStatus('{{ status_key }}')">
+                            {{ status_data.label }}
+                            <span class="badge badge-ghost ml-1">{{ status_data.count }}</span>
+                        </button>
+                        {% endfor %}
+                        <span class="mx-2 text-gray-400">|</span>
+                        {% for type_key, type_data in stats.by_type.items %}
+                        <button class="btn btn-sm type-filter-btn {% if type_key == 'EXIT' %}btn-info{% elif type_key == 'IN' %}btn-accent{% elif type_key == 'TRANSFER' %}btn-secondary{% endif %}"
+                                data-type="{{ type_key }}"
+                                onclick="filterByType('{{ type_key }}')">
+                            {{ type_data.label }}
+                            <span class="badge badge-ghost ml-1">{{ type_data.count }}</span>
+                        </button>
+                        {% endfor %}
+                        <span class="mx-2 text-gray-400">|</span>
+                        <button class="btn btn-sm btn-outline btn-active"
+                                data-status="ALL"
+                                onclick="filterByStatus('ALL')">
+                            Todas
+                            <span class="badge badge-ghost ml-1">{{ stats.total }}</span>
+                        </button>
+                    </div>
+
+                    <!-- Tabla -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped" id="shippingGuidesTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Nº Guía</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha Emisión</th>
+                                    <th>Cliente</th>
+                                    <th>Origen</th>
+                                    <th>Destino</th>
+                                    <th>Estado</th>
+                                    <th>Motivo</th>
+                                    <th>Ítems</th>
+                                    <th>Archivos</th>
+                                    <th class="no-export">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in all_guides %}
+                                <tr data-status="{{ item.status }}" data-type="{{ item.type_shipping_guide }}">
+                                    <td><strong>{{ item.guide_number_display }}</strong></td>
+                                    <td>
+                                        <span class="badge badge-sm
+                                            {% if item.type_shipping_guide == 'EXIT' %}badge-info
+                                            {% elif item.type_shipping_guide == 'IN' %}badge-accent
+                                            {% elif item.type_shipping_guide == 'TRANSFER' %}badge-secondary
+                                            {% endif %}">
+                                            {{ item.type_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small>{{ item.issue_date|date:"d/m/Y" }}</small>
+                                    </td>
+                                    <td>{{ item.partner_name }}</td>
+                                    <td><small>{{ item.origin_place }}</small></td>
+                                    <td><small>{{ item.destination_place }}</small></td>
+                                    <td>
+                                        <span class="badge badge-sm
+                                            {% if item.status == 'DRAFT' %}badge-warning
+                                            {% elif item.status == 'CLOSED' %}badge-success
+                                            {% elif item.status == 'VOID' %}badge-error
+                                            {% endif %}">
+                                            {{ item.status_display }}
+                                        </span>
+                                    </td>
+                                    <td><small>{{ item.reason_display }}</small></td>
+                                    <td class="text-center">
+                                        <span class="badge badge-ghost badge-sm">{{ item.details_count }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if item.has_pdf %}
+                                            <i class="las la-file-pdf text-success" title="PDF adjunto cargado"></i>
+                                        {% else %}
+                                            <i class="las la-file-pdf text-danger" title="Sin PDF adjunto"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center no-export">
+                                        <button class="btn btn-xs btn-info"
+                                                onclick="openGuideDetail({{ item.guide.id }})">
+                                            <i class="las la-eye"></i>
+                                        </button>
+                                        <a href="/reports/shipping-guide/{{ item.guide.id }}/" target="_blank"
+                                           class="btn btn-xs btn-success" title="Generar PDF del reporte">
+                                            <i class="las la-download"></i>
+                                        </a>
+                                        {% if item.has_pdf %}
+                                        <a href="{{ item.pdf_url }}" target="_blank"
+                                           class="btn btn-xs btn-accent" title="Descargar adjunto">
+                                            <i class="las la-file-pdf"></i>
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="11" class="text-center">
+                                        <div class="alert alert-info mb-0">
+                                            <i class="las la-info-circle me-2"></i>
+                                            No hay guías de remisión registradas.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal detalle -->
+<dialog id="guideDetailModal" class="modal">
+    <div class="modal-box w-11/12 max-w-5xl">
+        <h3 class="font-bold text-lg mb-4" id="modalTitle">
+            <i class="las la-shipping-fast"></i>
+            Detalle de Guía de Remisión
+        </h3>
+        <div id="modalContent">
+            <div class="flex justify-center py-8">
+                <span class="loading loading-spinner loading-lg"></span>
+            </div>
+        </div>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Cerrar</button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .table thead th {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    .table tbody td {
+        vertical-align: middle;
+    }
+    .status-filter-btn.active-filter,
+    .type-filter-btn.active-filter {
+        outline: 3px solid currentColor;
+        outline-offset: 2px;
+    }
+</style>
+
+<script>
+    const guidesData = {
+        {% for item in all_guides %}
+        {{ item.guide.id }}: {
+            guide_id: {{ item.guide.id }},
+            guide_number: "{{ item.guide_number_display|escapejs }}",
+            type_display: "{{ item.type_display|escapejs }}",
+            type_shipping_guide: "{{ item.type_shipping_guide|escapejs }}",
+            issue_date: "{{ item.issue_date|date:'d/m/Y'|default:'-' }}",
+            start_date: "{{ item.start_date|date:'d/m/Y'|default:'-' }}",
+            end_date: "{{ item.end_date|date:'d/m/Y'|default:'-' }}",
+            origin_place: "{{ item.origin_place|escapejs }}",
+            destination_place: "{{ item.destination_place|escapejs }}",
+            carrier_name: "{{ item.carrier_name|escapejs }}",
+            carrier_ci: "{{ item.carrier_ci|escapejs }}",
+            vehicle_plate: "{{ item.vehicle_plate|escapejs }}",
+            dispatcher_name: "{{ item.dispatcher_name|escapejs }}",
+            dispatcher_ci: "{{ item.dispatcher_ci|escapejs }}",
+            contact_name: "{{ item.contact_name|escapejs }}",
+            contact_phone: "{{ item.contact_phone|escapejs }}",
+            recibed_by: "{{ item.recibed_by|escapejs }}",
+            recibed_ci: "{{ item.recibed_ci|escapejs }}",
+            reason_display: "{{ item.reason_display|escapejs }}",
+            cost_transport: "{{ item.cost_transport|floatformat:2 }}",
+            cost_stowage: "{{ item.cost_stowage|floatformat:2 }}",
+            status: "{{ item.status|escapejs }}",
+            status_display: "{{ item.status_display|escapejs }}",
+            partner_name: "{{ item.partner_name|escapejs }}",
+            project_id: {{ item.project_id|default:"null" }},
+            project_location: "{{ item.project_location|escapejs }}",
+            details_count: {{ item.details_count }},
+            notes: "{{ item.notes|escapejs }}",
+            has_pdf: {{ item.has_pdf|yesno:"true,false" }},
+            pdf_url: "{{ item.pdf_url|default:''|escapejs }}",
+        },
+        {% endfor %}
+    };
+
+    let currentFilter = 'ALL';
+    let currentTypeFilter = 'ALL';
+
+    function filterByStatus(status) {
+        currentFilter = status;
+        currentTypeFilter = 'ALL';
+        applyFilters();
+
+        document.querySelectorAll('.status-filter-btn, .btn[data-status]').forEach(function(btn) {
+            btn.classList.remove('active-filter', 'btn-active');
+        });
+        document.querySelectorAll('.type-filter-btn').forEach(function(btn) {
+            btn.classList.remove('active-filter', 'btn-active');
+        });
+        const activeBtn = document.querySelector('[data-status="' + status + '"]');
+        if (activeBtn) {
+            activeBtn.classList.add('active-filter', 'btn-active');
+        }
+    }
+
+    function filterByType(type) {
+        currentTypeFilter = type;
+        currentFilter = 'ALL';
+        applyFilters();
+
+        document.querySelectorAll('.status-filter-btn, .btn[data-status]').forEach(function(btn) {
+            btn.classList.remove('active-filter', 'btn-active');
+        });
+        document.querySelectorAll('.type-filter-btn').forEach(function(btn) {
+            btn.classList.remove('active-filter', 'btn-active');
+        });
+        const activeBtn = document.querySelector('.type-filter-btn[data-type="' + type + '"]');
+        if (activeBtn) {
+            activeBtn.classList.add('active-filter', 'btn-active');
+        }
+    }
+
+    function applyFilters() {
+        const rows = document.querySelectorAll('#shippingGuidesTable tbody tr[data-status]');
+        rows.forEach(function(row) {
+            const rowStatus = row.getAttribute('data-status');
+            const rowType = row.getAttribute('data-type');
+            let show = true;
+
+            if (currentFilter !== 'ALL') {
+                show = show && (rowStatus === currentFilter);
+            }
+            if (currentTypeFilter !== 'ALL') {
+                show = show && (rowType === currentTypeFilter);
+            }
+
+            row.style.display = show ? '' : 'none';
+        });
+    }
+
+    function openGuideDetail(guideId) {
+        const modal = document.getElementById('guideDetailModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const data = guidesData[guideId];
+
+        if (!data) return;
+
+        modalTitle.innerHTML = '<i class="las la-shipping-fast"></i> Guía Nº ' + data.guide_number + ' - ' + data.partner_name;
+
+        let statusBadgeClass = 'badge-ghost';
+        if (data.status === 'DRAFT') statusBadgeClass = 'badge-warning';
+        else if (data.status === 'CLOSED') statusBadgeClass = 'badge-success';
+        else if (data.status === 'VOID') statusBadgeClass = 'badge-error';
+
+        let typeBadgeClass = 'badge-ghost';
+        if (data.type_shipping_guide === 'EXIT') typeBadgeClass = 'badge-info';
+        else if (data.type_shipping_guide === 'IN') typeBadgeClass = 'badge-accent';
+        else if (data.type_shipping_guide === 'TRANSFER') typeBadgeClass = 'badge-secondary';
+
+        let html = `
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <p class="text-sm text-gray-500">Nº de Guía</p>
+                    <p class="font-bold">${data.guide_number}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Tipo de Guía</p>
+                    <p class="font-bold"><span class="badge ${typeBadgeClass} badge-sm">${data.type_display}</span></p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Estado</p>
+                    <p class="font-bold"><span class="badge ${statusBadgeClass} badge-sm">${data.status_display}</span></p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Fecha de Emisión</p>
+                    <p class="font-bold">${data.issue_date}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Cliente</p>
+                    <p class="font-bold">${data.partner_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Motivo del Traslado</p>
+                    <p class="font-bold">${data.reason_display}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-base-200 p-3 rounded">
+                <div>
+                    <p class="text-sm text-gray-500">Fecha Inicio Traslado</p>
+                    <p class="font-bold">${data.start_date}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Fecha Fin Traslado</p>
+                    <p class="font-bold">${data.end_date}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Lugar de Origen</p>
+                    <p class="font-bold">${data.origin_place}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Lugar de Destino</p>
+                    <p class="font-bold">${data.destination_place}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <p class="text-sm text-gray-500">Transportista</p>
+                    <p class="font-bold">${data.carrier_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">C.I. Transportista</p>
+                    <p class="font-bold">${data.carrier_ci}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Placa del Vehículo</p>
+                    <p class="font-bold">${data.vehicle_plate}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Despachado por</p>
+                    <p class="font-bold">${data.dispatcher_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">C.I. Despachador</p>
+                    <p class="font-bold">${data.dispatcher_ci}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Contacto en Proyecto</p>
+                    <p class="font-bold">${data.contact_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Teléfono Contacto</p>
+                    <p class="font-bold">${data.contact_phone}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Recibido por</p>
+                    <p class="font-bold">${data.recibed_by}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">C.I. Receptor</p>
+                    <p class="font-bold">${data.recibed_ci}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-base-200 p-3 rounded">
+                <div>
+                    <p class="text-sm text-gray-500">Costo Transporte</p>
+                    <p class="font-bold text-lg">$${data.cost_transport}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Costo Estiba</p>
+                    <p class="font-bold text-lg">$${data.cost_stowage}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Ítems en Guía</p>
+                    <p class="font-bold text-lg">${data.details_count}</p>
+                </div>
+            </div>
+        `;
+
+        if (data.notes) {
+            html += `
+            <div class="mb-4 bg-base-200 p-3 rounded">
+                <p class="text-sm text-gray-500">Observaciones</p>
+                <p class="font-bold">${data.notes}</p>
+            </div>
+            `;
+        }
+
+        html += '<div class="flex gap-2 mb-4 flex-wrap">';
+
+        html += `<a href="/reports/shipping-guide/${data.guide_id}/" target="_blank" class="btn btn-sm btn-success">
+            <i class="las la-file-pdf"></i> Generar PDF del Reporte
+        </a>`;
+
+        if (data.project_id) {
+            html += `<a href="/projects/${data.project_id}/" class="btn btn-sm btn-primary">
+                <i class="las la-project-diagram"></i> Ver Proyecto
+            </a>`;
+        }
+
+        if (data.has_pdf) {
+            html += `<a href="${data.pdf_url}" target="_blank" class="btn btn-sm btn-outline btn-accent">
+                <i class="las la-download"></i> Descargar Adjunto
+            </a>`;
+        }
+
+        html += '</div>';
+
+        modalContent.innerHTML = html;
+        modal.showModal();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof $.fn.DataTable !== 'undefined') {
+            $('#shippingGuidesTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                },
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: '<i class="las la-file-excel"></i> Excel',
+                        className: 'btn btn-success btn-sm',
+                        title: 'Guías de Remisión',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="las la-file-csv"></i> CSV',
+                        className: 'btn btn-info btn-sm',
+                        title: 'Guías de Remisión',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="las la-file-pdf"></i> PDF',
+                        className: 'btn btn-danger btn-sm',
+                        title: 'Guías de Remisión',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    }
+                ],
+                pageLength: 25,
+                lengthMenu: [
+                    [25, 50, 100, -1],
+                    ['25', '50', '100', 'Todos']
+                ],
+                order: [[0, 'desc']],
+                columnDefs: [
+                    { orderable: false, targets: 10 }
+                ]
+            });
+        }
+
+        filterByStatus('ALL');
+    });
+</script>
+{% endblock %}
