@@ -15,6 +15,16 @@ class ShippingGuide(BaseModel):
 		on_delete=models.PROTECT,
 		verbose_name='proyecto'
 	)
+	type_shipping_guide = models.CharField(
+		'Tipo de Guía',
+		max_length=50,
+		choices=(
+			('EXIT', 'SALIDA A PROYECTO'),
+			('IN', 'ENTRADA A BASE'),
+			('TRANSFER', 'TRANSFERENCIA ENTRE PROYECTOS'),
+		),
+		default='EXIT'
+	)
 	guide_number = models.PositiveBigIntegerField(
 		'Número de Guía',
 		unique=True,
