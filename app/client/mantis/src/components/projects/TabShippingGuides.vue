@@ -16,7 +16,7 @@ const guides = computed(() => shippingGuideStore.shippingGuides || [])
 
 // Tabla con filtrado, búsqueda y paginación
 const tableFilter = useTableFilter(guides, {
-  searchFields: ['guide_number', 'origin_place', 'destination_place', 'carrier_name', 'vehicle_plate'],
+  searchFields: ['guide_number', 'type_shipping_guide_display', 'origin_place', 'destination_place', 'carrier_name', 'vehicle_plate'],
   pageSize: 10
 })
 
@@ -83,6 +83,7 @@ const editGuide = (guide) => {
         <thead>
           <tr class="bg-gray-500 text-white">
             <th class="p-2 border border-gray-100 text-center">Nro. Guía</th>
+            <th class="p-2 border border-gray-100 text-center">Tipo</th>
             <th class="p-2 border border-gray-100 text-center">Fecha Emisión</th>
             <th class="p-2 border border-gray-100 text-center">Origen</th>
             <th class="p-2 border border-gray-100 text-center">Destino</th>
@@ -95,7 +96,7 @@ const editGuide = (guide) => {
         <tbody>
           <template v-if="guides.length === 0">
             <tr>
-              <td colspan="8" class="text-center text-gray-500 py-8">
+              <td colspan="9" class="text-center text-gray-500 py-8">
                 <i class="las la-inbox text-4xl"></i>
                 <p>No hay guías de remisión registradas para este proyecto</p>
                 <button
@@ -111,7 +112,7 @@ const editGuide = (guide) => {
           </template>
           <template v-else-if="tableFilter.paginatedData.value.length === 0">
             <tr>
-              <td colspan="8" class="text-center text-gray-500 py-8">
+              <td colspan="9" class="text-center text-gray-500 py-8">
                 <i class="las la-search text-4xl"></i>
                 <p>No se encontraron resultados para "{{ tableFilter.searchQuery.value }}"</p>
               </td>
@@ -121,6 +122,15 @@ const editGuide = (guide) => {
             <tr v-for="guide in tableFilter.paginatedData.value" :key="guide.id">
               <td class="p-2 border border-gray-300 font-mono font-bold text-center">
                 {{ guide.guide_number }}
+              </td>
+              <td class="p-2 border border-gray-300 text-center">
+                <span class="badge badge-sm" :class="{
+                  'badge-info': guide.type_shipping_guide === 'EXIT',
+                  'badge-success': guide.type_shipping_guide === 'IN',
+                  'badge-warning': guide.type_shipping_guide === 'TRANSFER'
+                }">
+                  {{ guide.type_shipping_guide_display || guide.type_shipping_guide || 'N/A' }}
+                </span>
               </td>
               <td class="p-2 border border-gray-300 text-center">{{ formatDate(guide.issue_date) }}</td>
               <td class="p-2 border border-gray-300">{{ guide.origin_place || 'N/A' }}</td>

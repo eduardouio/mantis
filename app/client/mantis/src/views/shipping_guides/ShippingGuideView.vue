@@ -153,6 +153,17 @@ const statusClass = (status) => {
         <!-- Información General -->
         <div class="p-2">
           <div class="grid grid-cols-4 gap-4">
+            <!-- Tipo de Guía -->
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Tipo:</span>
+              <span class="text-sm font-semibold border rounded p-1 border-gray-300 flex-1" :class="{
+                'text-blue-700 bg-blue-50': guide.type_shipping_guide === 'EXIT',
+                'text-green-700 bg-green-50': guide.type_shipping_guide === 'IN',
+                'text-orange-700 bg-orange-50': guide.type_shipping_guide === 'TRANSFER'
+              }">
+                {{ guide.type_shipping_guide_display || guide.type_shipping_guide || 'N/A' }}
+              </span>
+            </div>
             <!-- Fecha de Emisión -->
             <div class="flex items-center gap-2">
               <span class="text-sm text-gray-600 font-medium whitespace-nowrap w-28">Emisión:</span>

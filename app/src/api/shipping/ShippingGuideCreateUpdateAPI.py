@@ -123,6 +123,7 @@ class ShippingGuideCreateUpdateAPI(View):
         # Crear la guía (el consecutivo se asigna automáticamente en save)
         guide = ShippingGuide(
             project=project,
+            type_shipping_guide=data.get('type_shipping_guide', 'EXIT'),
             issue_date=issue_date,
             start_date=start_date,
             end_date=end_date,
@@ -271,7 +272,7 @@ class ShippingGuideCreateUpdateAPI(View):
 
         # Actualizar campos de texto opcionales
         optional_fields = [
-            'origin_place', 'destination_place', 'carrier_name',
+            'type_shipping_guide', 'origin_place', 'destination_place', 'carrier_name',
             'carrier_ci', 'vehicle_plate', 'dispatcher_name',
             'dispatcher_ci', 'contact_name', 'contact_phone',
             'recibed_by', 'recibed_ci', 'notes', 'reason_transport',
@@ -365,6 +366,8 @@ class ShippingGuideCreateUpdateAPI(View):
             'id': guide.id,
             'project_id': guide.project_id,
             'project_name': str(guide.project),
+            'type_shipping_guide': guide.type_shipping_guide,
+            'type_shipping_guide_display': guide.get_type_shipping_guide_display(),
             'guide_number': guide.guide_number,
             'issue_date': guide.issue_date.isoformat() if guide.issue_date else None,
             'start_date': guide.start_date.isoformat() if guide.start_date else None,

@@ -34,6 +34,7 @@ const canEdit = computed(() => guideStatus.value === 'DRAFT')
 // Datos del formulario
 const guide = ref({
   project_id: appConfig.idProject,
+  type_shipping_guide: 'EXIT',
   guide_number: null,
   issue_date: new Date().toISOString().split('T')[0],
   start_date: '',
@@ -107,6 +108,7 @@ const loadGuideData = async () => {
       guide.value = {
         id: data.id,
         project_id: data.project_id,
+        type_shipping_guide: data.type_shipping_guide || 'EXIT',
         guide_number: data.guide_number || null,
         issue_date: data.issue_date || '',
         start_date: data.start_date || '',
@@ -385,6 +387,23 @@ const deleteGuideFile = async () => {
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información General</h6>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Tipo de Guía -->
+          <div class="form-control w-full">
+            <label class="label" for="type_shipping_guide">
+              <span class="label-text font-medium">Tipo de Guía *</span>
+            </label>
+            <select
+              id="type_shipping_guide"
+              v-model="guide.type_shipping_guide"
+              :disabled="!canEdit"
+              class="select select-bordered w-full"
+            >
+              <option value="EXIT">SALIDA A PROYECTO</option>
+              <option value="IN">ENTRADA A BASE</option>
+              <option value="TRANSFER">TRANSFERENCIA ENTRE PROYECTOS</option>
+            </select>
+          </div>
+
           <!-- Fecha de Emisión -->
           <div class="form-control w-full">
             <label class="label" for="issue_date">

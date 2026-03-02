@@ -432,12 +432,12 @@ class SheetMaintenanceAdmin(BaseModelAdmin):
 @admin.register(ShippingGuide)
 class ShippingGuideAdmin(BaseModelAdmin):
     list_display = (
-        'id', 'guide_number', 'project', 'issue_date', 'start_date', 'end_date',
+        'id', 'guide_number', 'project', 'type_shipping_guide', 'issue_date', 'start_date', 'end_date',
         'carrier_name', 'vehicle_plate', 'reason_transport', 'cost_transport',
         'cost_stowage', 'status'
     )
     list_filter = (
-        'project', 'status', 'reason_transport', 'issue_date', 'start_date', 'end_date', 'is_active'
+        'project', 'status', 'type_shipping_guide', 'reason_transport', 'issue_date', 'start_date', 'end_date', 'is_active'
     )
     search_fields = (
         'guide_number', 'project__partner__name', 'carrier_name',
@@ -446,7 +446,7 @@ class ShippingGuideAdmin(BaseModelAdmin):
     fieldsets = (
         ('Guía', {
             'fields': (
-                'project', 'guide_number', 'status', 'reason_transport',
+                'project', 'guide_number', 'type_shipping_guide', 'status', 'reason_transport',
                 'issue_date', 'start_date', 'end_date',
                 'origin_place', 'destination_place', 'shipping_guide_file', 'is_active'
             )
