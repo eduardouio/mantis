@@ -7,7 +7,6 @@
     <title>Reporte de Equipo - {{ equipment.code }}</title>
     <link rel="stylesheet" href="{% static 'css/line-awesome.min.css' %}">
     <style>
-        /* ...existing code from equipment_bateries.html... */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; font-size: 8pt; line-height: 1.2; color: #333; background-color: #f5f5f5; }
         .page-wrapper { width: 100%; max-width: 21cm; margin: 0 auto; background-color: white; border: 1px solid #9cb536; }
@@ -39,6 +38,14 @@
         .footer { margin-top: 15px; padding-top: 10px; border-top: 2px solid #9cb536; }
         .footer-content { display: flex; justify-content: space-between; align-items: center; font-size: 7pt; color: #666; }
         .footer-logo { font-weight: bold; color: #3e5f6f; }
+        /* Foto tipo ID Card */
+        .info-with-photo { display: flex; gap: 12px; align-items: flex-start; }
+        .info-with-photo .info-content { flex: 1; min-width: 0; }
+        .equipment-photo { flex: 0 0 140px; width: 140px; height: 160px; border: 2px solid #3e5f6f; border-radius: 4px; overflow: hidden; background-color: #f0f5e8; display: flex; align-items: center; justify-content: center; }
+        .equipment-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .equipment-photo .placeholder-icon { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9cb536; }
+        .equipment-photo .placeholder-icon svg { width: 60px; height: 60px; opacity: 0.6; }
+        .equipment-photo .placeholder-icon span { font-size: 7pt; color: #999; margin-top: 4px; }
         @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; background-color: white; } .no-print { display: none; } .page-wrapper { border: none; } }
     </style>
 </head>
@@ -57,16 +64,34 @@
                 <div class="logo-section"></div>
             </div>
             
-            <!-- Información Común -->
+            <!-- Información Común con Foto -->
             <div class="section">
                 <div class="section-title">INFORMACIÓN GENERAL</div>
-                <div class="info-grid">
-                    {% for field in common_fields %}
-                    <div class="info-item">
-                        <span class="info-label">{{ field.label }}:</span>
-                        <span class="info-value">{{ field.value|default:"No especificado" }}</span>
+                <div class="info-with-photo">
+                    <div class="info-content">
+                        <div class="info-grid">
+                            {% for field in common_fields %}
+                            <div class="info-item">
+                                <span class="info-label">{{ field.label }}:</span>
+                                <span class="info-value">{{ field.value|default:"No especificado" }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                    {% endfor %}
+                    <div class="equipment-photo">
+                        {% if equipment.resource_image %}
+                            <img src="{{ equipment.resource_image.url }}" alt="Foto {{ equipment.code }}">
+                        {% else %}
+                            <div class="placeholder-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                                <span>Sin imagen</span>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             

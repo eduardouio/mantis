@@ -39,6 +39,15 @@
         .footer { margin-top: 15px; padding-top: 10px; border-top: 2px solid #9cb536; }
         .footer-content { display: flex; justify-content: space-between; align-items: center; font-size: 7pt; color: #666; }
         .footer-logo { font-weight: bold; color: #3e5f6f; }
+        .id-card { display: flex; width: 300px; height: 200px; border: 2px solid #9cb536; border-radius: 8px; overflow: hidden; background: white; margin-left: auto; margin-bottom: 12px; }
+        .id-card-photo { flex: 0 0 120px; height: 100%; overflow: hidden; background: #f0f0f0; display: flex; align-items: center; justify-content: center; }
+        .id-card-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .id-card-photo .no-photo { color: #999; font-size: 7pt; text-align: center; }
+        .id-card-info { flex: 1; padding: 10px; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+        .id-card-info .id-plate { font-size: 12pt; font-weight: bold; color: #3e5f6f; letter-spacing: 1px; }
+        .id-card-info .id-field { font-size: 7pt; color: #555; }
+        .id-card-info .id-value { font-size: 8pt; color: #333; font-weight: 600; }
+        .id-card-info .id-status { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 7pt; font-weight: bold; background-color: #9cb536; color: white; margin-top: 4px; }
         @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; background-color: white; } .no-print { display: none; } .page-wrapper { border: none; } }
     </style>
 </head>
@@ -56,7 +65,28 @@
                 </div>
                 <div class="logo-section"></div>
             </div>
-            
+
+            <!-- ID Card del Vehículo -->
+            <div class="id-card">
+                <div class="id-card-photo">
+                    {% if vehicle_image_url %}
+                        <img src="{{ vehicle_image_url }}" alt="Imagen del Vehículo">
+                    {% else %}
+                        <div class="no-photo">Sin imagen</div>
+                    {% endif %}
+                </div>
+                <div class="id-card-info">
+                    <div class="id-plate">{{ vehicle.no_plate }}</div>
+                    <div class="id-field">Tipo</div>
+                    <div class="id-value">{{ vehicle.get_type_vehicle_display }}</div>
+                    <div class="id-field">Marca / Modelo</div>
+                    <div class="id-value">{{ vehicle.brand }} {{ vehicle.model }}</div>
+                    <div class="id-field">Año</div>
+                    <div class="id-value">{{ vehicle.year }}</div>
+                    <div class="id-status">{{ vehicle.get_status_vehicle_display }}</div>
+                </div>
+            </div>
+
             <!-- Información General -->
             <div class="section">
                 <div class="section-title">INFORMACIÓN GENERAL</div>
