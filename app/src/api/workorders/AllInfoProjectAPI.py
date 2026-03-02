@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views import View
 from projects.models.SheetProject import SheetProject, SheetProjectDetail
 from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
+from projects.models.SheetMaintenance import SheetMaintenance
 from projects.models.Project import Project
 from datetime import date, datetime
 
@@ -213,6 +214,11 @@ class AllInfoProjectAPI(View):
                     "details_count": len(sheet_details_data),
                     "custody_chains": custody_chains_data,
                     "custody_chains_count": len(custody_chains_data),
+                    "maintenance_sheets_count": SheetMaintenance.objects.filter(
+                        id_sheet_project=sheet,
+                        is_active=True,
+                        is_deleted=False
+                    ).count(),
                     "metadata": get_base_metadata(sheet),
                 }
                 work_orders.append(work_order_data)

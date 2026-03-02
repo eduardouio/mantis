@@ -245,14 +245,14 @@ watch(() => route.query.tab, (newTab) => {
           <TabCalendar />
         </div>
 
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-violet-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Documentos" :checked="activeTab === 3" @change="setActiveTab(3)" />
-        <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
-          <TabDocuments />
-        </div>
-
-        <input type="radio" name="project_tabs" role="tab" class="tab bg-teal-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Guías de Remisión" :checked="activeTab === 4" @change="setActiveTab(4)" />
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-teal-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Guías de Remisión" :checked="activeTab === 3" @change="setActiveTab(3)" />
         <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
           <TabShippingGuides />
+        </div>
+
+        <input type="radio" name="project_tabs" role="tab" class="tab bg-violet-500 text-white font-semibold border-s-gray-50 border-s-2" aria-label="Documentos" :checked="activeTab === 4" @change="setActiveTab(4)" />
+        <div role="tabpanel" class="tab-content bg-base-100 rounded-box p-4">
+          <TabDocuments />
         </div>
       </div>
       <!-- Botones con sombra (estilo cadena de custodia) -->

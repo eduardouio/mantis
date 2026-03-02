@@ -136,13 +136,15 @@ const viewCustodyChains = (sheetId) => {
             <th class="p-2 border border-gray-100 text-center">Período Inicio</th>
             <th class="p-2 border border-gray-100 text-center">Período Fin</th>
             <th class="p-2 border border-gray-100 text-center">Contacto Ref.</th>
+            <th class="p-2 border border-gray-100 text-center">CDC</th>
+            <th class="p-2 border border-gray-100 text-center">MNT</th>
             <th class="p-2 border border-gray-100 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <template v-if="enrichedWorkOrders.length === 0">
             <tr>
-              <td colspan="6" class="text-center text-gray-500 py-8">
+              <td colspan="8" class="text-center text-gray-500 py-8">
                 <i class="las la-inbox text-4xl"></i>
                 <p>No hay planillas registradas para este proyecto</p>
               </td>
@@ -150,7 +152,7 @@ const viewCustodyChains = (sheetId) => {
           </template>
           <template v-else-if="tableFilter.paginatedData.value.length === 0">
             <tr>
-              <td colspan="6" class="text-center text-gray-500 py-8">
+              <td colspan="8" class="text-center text-gray-500 py-8">
                 <i class="las la-search text-4xl"></i>
                 <p>No se encontraron resultados para "{{ tableFilter.searchQuery.value }}"</p>
               </td>
@@ -192,6 +194,12 @@ const viewCustodyChains = (sheetId) => {
               <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.period_start) }}</td>
               <td class="p-2 border border-gray-300 text-end">{{ sheet.period_end ? formatDate(sheet.period_end) : '--' }}</td>
               <td class="p-2 border border-gray-300">{{ sheet.contact_reference || 'N/A' }}</td>
+              <td class="p-2 border border-gray-300 text-center">
+                <span class="badge badge-info badge-sm">{{ sheet.custody_chains_count || 0 }}</span>
+              </td>
+              <td class="p-2 border border-gray-300 text-center">
+                <span class="badge badge-warning badge-sm">{{ sheet.maintenance_sheets_count || 0 }}</span>
+              </td>
               <td class="p-2 border border-gray-300 text-end">
                 <div class="flex gap-2 justify-end">
                   <a
