@@ -41,7 +41,6 @@
 				width: 100%;
 				border-collapse: separate;
 				border-spacing: 0;
-				border: 1px solid var(--line-soft);
 			}
 
 			.header-table td {
@@ -50,8 +49,8 @@
 				vertical-align: middle;
 			}
 
-			.header-table tr td:last-child {
-				border-right: 1px solid var(--line-soft) !important;
+			.header-table td + td {
+				border-left: none;
 			}
 
 			.header-title {
@@ -94,7 +93,6 @@
 				font-weight: 700;
 				padding: 6px 8px;
 				border-bottom: 1px solid var(--line);
-				border-right: 1px solid var(--line);
 				text-align: center;
 			}
 
@@ -114,6 +112,24 @@
 			.no-top td,
 			.no-top th {
 				border-top: 0;
+			}
+
+			/* Evitar bordes dobles donde las celdas tocan el borde de .section */
+			.section > table td:first-child,
+			.section > table th:first-child {
+				border-left: 0;
+			}
+
+			.section > table td:last-child,
+			.section > table th:last-child {
+				border-right: 0;
+			}
+
+			.section > table > tr:last-child > td,
+			.section > table > tr:last-child > th,
+			.section > table > tbody:last-child > tr:last-child > td,
+			.section > table > tbody:last-child > tr:last-child > th {
+				border-bottom: 0;
 			}
 
 			.tight td,
