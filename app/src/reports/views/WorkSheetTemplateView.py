@@ -125,7 +125,12 @@ class WorkSheetTemplateView(TemplateView):
             
             # Determinar tipo de recurso desde project_resource_item
             pri = sheet_detail.project_resource_item
-            type_resource = pri.type_resource if pri else "EQUIPO"
+            if sheet_detail.reference_document == 'SheetMaintenance':
+                type_resource = "MANTENIMIENTO"
+            elif sheet_detail.reference_document == 'ShippingGuide':
+                type_resource = "GUIA_ENVIO"
+            else:
+                type_resource = pri.type_resource if pri else "EQUIPO"
             
             # Para equipos, calcular fechas efectivas y rangos de días
             effective_start = None

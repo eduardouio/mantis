@@ -1,5 +1,7 @@
 from projects.models.SheetProject import SheetProject, SheetProjectDetail
 from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
+from projects.models.SheetMaintenance import SheetMaintenance
+from projects.models.ShippingGuide import ShippingGuide, ShippingGuideDetail
 from projects.models.Project import ProjectResourceItem
 from decimal import Decimal
 from datetime import timedelta
@@ -13,6 +15,8 @@ class WorkSheetBuilder:
     Se encarga de:
     - Calcular días de alquiler de equipos según frecuencia configurada
     - Calcular días de servicio basándose en cadenas de custodia
+    - Incluir líneas de hojas de mantenimiento (costo técnico y logístico)
+    - Incluir líneas de guías de envío (transporte y estiba)
     - Crear/actualizar detalles de la planilla (SheetProjectDetail)
     - Actualizar totales en la cabecera (SheetProject)
     """
@@ -186,6 +190,8 @@ class WorkSheetBuilder:
                     'unit_price': project_resource.cost,
                     'quantity': Decimal(str(quantity)),
                     'detail': project_resource.detailed_description or f"ALQUILER DE {resource_item.name} {resource_item.code}",
+                    'reference_document': 'ResourceItem',
+                    'id_reference_document': project_resource.id,
                 }
             )
             
@@ -194,6 +200,8 @@ class WorkSheetBuilder:
                 detail.quantity = Decimal(str(quantity))
                 detail.unit_price = project_resource.cost
                 detail.detail = project_resource.detailed_description or f"ALQUILER DE {resource_item.name} {resource_item.code}"
+                detail.reference_document = 'ResourceItem'
+                detail.id_reference_document = project_resource.id
             
             # Guardar días del mes en el campo monthdays_apply_cost
             if project_resource.type_resource == "SERVICIO":
@@ -218,7 +226,166 @@ class WorkSheetBuilder:
             details.append(detail)
             
         return details
-    
+
+    def build_maintenance_details(self):
+        """
+        Construye los detalles de la planilla para hojas de mantenimiento.
+
+        Cada hoja de mantenimiento puede generar hasta 2 líneas:
+        - Línea de mantenimiento (si cost_total > 0)
+        - Línea de logística (si cost_logistics > 0)
+
+        Si alguno de los rubros es cero, esa línea no se incluye.
+
+        Returns:
+            list: Lista de instancias SheetProjectDetail creadas
+        """
+        details = []
+
+        # Eliminar detalles previos de mantenimiento para recalcular
+        SheetProjectDetail.objects.filter(
+            sheet_project=self.sheet_project,
+            reference_document='SheetMaintenance'
+        ).delete()
+
+        # Obtener hojas de mantenimiento activas asociadas a esta planilla
+        maintenance_sheets = SheetMaintenance.objects.filter(
+            id_sheet_project=self.sheet_project,
+            is_active=True,
+        ).exclude(status='VOID')
+
+        for maintenance in maintenance_sheets:
+            resource_item = maintenance.resource_item
+            if not resource_item:
+                continue
+
+            # Fecha del documento para marcar en el calendario
+            doc_date = maintenance.start_date
+            monthdays = [doc_date.day] if doc_date else []
+
+            # Línea de costo de mantenimiento
+            if maintenance.cost_total and maintenance.cost_total > 0:
+                detail = SheetProjectDetail.objects.create(
+                    sheet_project=self.sheet_project,
+                    resource_item=resource_item,
+                    project_resource_item=None,
+                    reference_document='SheetMaintenance',
+                    id_reference_document=maintenance.id,
+                    item_unity='UNIDAD',
+                    unit_price=maintenance.cost_total,
+                    quantity=Decimal('1'),
+                    detail=maintenance.sheet_project_maintenance_concept or "SERVICIO TÉCNICO ESPECIALIZADO",
+                    monthdays_apply_cost=monthdays,
+                    total_line=maintenance.cost_total * Decimal('1'),
+                )
+                details.append(detail)
+
+            # Línea de costo logístico
+            if maintenance.cost_logistics and maintenance.cost_logistics > 0:
+                detail = SheetProjectDetail.objects.create(
+                    sheet_project=self.sheet_project,
+                    resource_item=resource_item,
+                    project_resource_item=None,
+                    reference_document='SheetMaintenance',
+                    id_reference_document=maintenance.id,
+                    item_unity='UNIDAD',
+                    unit_price=maintenance.cost_logistics,
+                    quantity=Decimal('1'),
+                    detail=maintenance.sheet_project_logistics_concept or "LOGÍSTICA",
+                    monthdays_apply_cost=monthdays,
+                    total_line=maintenance.cost_logistics * Decimal('1'),
+                )
+                details.append(detail)
+
+        return details
+
+    def build_shipping_guide_details(self):
+        """
+        Construye los detalles de la planilla para guías de envío.
+
+        Cada guía de envío puede generar hasta 2 líneas:
+        - Línea de transporte (si cost_transport > 0)
+        - Línea de estiba (si cost_stowage > 0)
+
+        Si alguno de los rubros es cero, esa línea no se incluye.
+        La fecha del documento es issue_date. El resource_item se toma
+        del primer detalle de la guía.
+
+        Returns:
+            list: Lista de instancias SheetProjectDetail creadas
+        """
+        details = []
+
+        # Eliminar detalles previos de guías de envío para recalcular
+        SheetProjectDetail.objects.filter(
+            sheet_project=self.sheet_project,
+            reference_document='ShippingGuide'
+        ).delete()
+
+        if not self.period_start or not self.period_end:
+            return details
+
+        # Obtener guías de envío activas del proyecto dentro del período
+        shipping_guides = ShippingGuide.objects.filter(
+            project=self.project,
+            is_active=True,
+            issue_date__gte=self.period_start,
+            issue_date__lte=self.period_end,
+        ).exclude(status='VOID')
+
+        for guide in shipping_guides:
+            # Obtener el resource_item del primer detalle de la guía
+            first_detail = ShippingGuideDetail.objects.filter(
+                shipping_guide=guide,
+                is_active=True,
+                id_resource_item__isnull=False
+            ).select_related('id_resource_item').first()
+
+            if not first_detail or not first_detail.id_resource_item:
+                continue
+
+            resource_item = first_detail.id_resource_item
+
+            # Fecha del documento para marcar en el calendario
+            doc_date = guide.issue_date
+            monthdays = [doc_date.day] if doc_date else []
+
+            # Línea de costo de transporte
+            if guide.cost_transport and guide.cost_transport > 0:
+                detail = SheetProjectDetail.objects.create(
+                    sheet_project=self.sheet_project,
+                    resource_item=resource_item,
+                    project_resource_item=None,
+                    reference_document='ShippingGuide',
+                    id_reference_document=guide.id,
+                    item_unity='UNIDAD',
+                    unit_price=guide.cost_transport,
+                    quantity=Decimal('1'),
+                    detail=guide.sheet_project_logistics_concept or "TRANSPORTE",
+                    monthdays_apply_cost=monthdays,
+                    total_line=guide.cost_transport * Decimal('1'),
+                )
+                details.append(detail)
+
+            # Línea de costo de estiba
+            if guide.cost_stowage and guide.cost_stowage > 0:
+                detail = SheetProjectDetail.objects.create(
+                    sheet_project=self.sheet_project,
+                    resource_item=resource_item,
+                    project_resource_item=None,
+                    reference_document='ShippingGuide',
+                    id_reference_document=guide.id,
+                    item_unity='UNIDAD',
+                    unit_price=guide.cost_stowage,
+                    quantity=Decimal('1'),
+                    detail=guide.sheet_project_stowage_concept or "ESTIBA",
+                    monthdays_apply_cost=monthdays,
+                    total_line=guide.cost_stowage * Decimal('1'),
+                )
+                details.append(detail)
+
+        return details
+
     def calculate_totals(self):
         """
         Calcula y actualiza los totales en la cabecera de la planilla.
@@ -284,10 +451,12 @@ class WorkSheetBuilder:
             dict: Diccionario con información del resultado
         """
         details = self.build_details()
+        maintenance_details = self.build_maintenance_details()
+        shipping_details = self.build_shipping_guide_details()
         totals = self.calculate_totals()
         
         return {
             'sheet_project': self.sheet_project,
-            'details_count': len(details),
+            'details_count': len(details) + len(maintenance_details) + len(shipping_details),
             'totals': totals,
         }
