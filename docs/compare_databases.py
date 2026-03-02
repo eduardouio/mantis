@@ -7,11 +7,15 @@ Uso:
     pip install mysql-connector-python
 
     python docs/compare_databases.py --validate-all
+    python docs/compare_databases.py --validate-all --password mi_clave
     python docs/compare_databases.py --validate-tables
     python docs/compare_databases.py --validate-data --table nombre_de_la_tabla
+
+    Si no se pasa --password, se solicita de forma interactiva (oculto).
 """
 
 import argparse
+import getpass
 import hashlib
 import mysql.connector
 from datetime import datetime
@@ -24,7 +28,6 @@ SOURCE_DB = {
     "host": "127.0.0.1",
     "port": 3306,
     "user": "root",
-    "password": "",
     "database": "mantis_origen",
 }
 
@@ -32,7 +35,6 @@ TARGET_DB = {
     "host": "127.0.0.1",
     "port": 3306,
     "user": "root",
-    "password": "",
     "database": "mantis_destino",
 }
 
@@ -816,11 +818,25 @@ Ejemplos:
         type=str,
         help="Nombre de la tabla a comparar (solo con --validate-data)",
     )
+    parser.add_argument(
+        "--password", "-p",
+        type=str,
+        default=None,
+        help="Password de MySQL. Si no se proporciona, se solicita de forma interactiva",
+    )
 
     args = parser.parse_args()
 
     if args.validate_data and not args.table:
         parser.error("--validate-data requiere --table nombre_de_la_tabla")
+
+    # Obtener password
+    password = args.password
+    if password is None:
+        password = getpass.getpass("Password de MySQL: ")
+
+    SOURCE_DB["password"] = password
+    TARGET_DB["password"] = password
 
     if args.validate_all:
         cmd_validate_all()
