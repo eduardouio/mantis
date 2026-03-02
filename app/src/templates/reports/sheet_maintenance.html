@@ -38,12 +38,15 @@
 			}
 
 			/* ── Header ─────────────────────────── */
-			.header {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
+			.header-table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+
+			.header-table td {
 				border: 1px solid var(--line-soft);
-				padding: 10px 14px;
+				padding: 14px 14px;
+				vertical-align: middle;
 			}
 
 			.header-title {
@@ -53,18 +56,8 @@
 				color: #1a5276;
 			}
 
-			.header-separator {
-				width: 2px;
-				align-self: stretch;
-				background-color: #1a5276;
-				margin: 0 14px;
-			}
-
-			.header-right {
+			.header-logo {
 				text-align: right;
-				display: flex;
-				align-items: center;
-				gap: 12px;
 			}
 
 			.header-logo img {
@@ -202,15 +195,16 @@
 	<body>
 		<div class="page">
 			<!-- ═══ HEADER ═══ -->
-			<div class="header">
-				<div class="header-title">HOJA DE MANTENIMIENTO</div>
-				<div class="header-right">
-					<div class="header-separator"></div>
-					<div class="header-logo">
+			<table class="header-table">
+				<tr>
+					<td>
+						<span class="header-title">HOJA DE MANTENIMIENTO</span>
+					</td>
+					<td class="header-logo" style="width: 120px;">
 						<img src="{% static 'img/logo.png' %}" alt="PEISOL" />
-					</div>
-				</div>
-			</div>
+					</td>
+				</tr>
+			</table>
 
 			<div class="sheet-number">
 				N° <strong>{{ sheet.sheet_number|stringformat:"06d" }}</strong>
