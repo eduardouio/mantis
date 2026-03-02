@@ -1,4 +1,5 @@
 from django.views.generic import DetailView
+from django.conf import settings
 from equipment.models import Vehicle, PassVehicle, CertificationVehicle
 from common.VehicleIssuesCheck import VehicleIssuesCheck
 from datetime import date
@@ -127,6 +128,12 @@ class VehicleStatusReport(DetailView):
             certifications_data.append(cert_data)
         
         context['certifications'] = certifications_data
+
+        # Imagen del vehículo (URL absoluta para Playwright)
+        if vehicle.vehicle_image and vehicle.vehicle_image.name:
+            context['vehicle_image_url'] = f"{settings.BASE_URL}{vehicle.vehicle_image.url}"
+        else:
+            context['vehicle_image_url'] = None
 
         # Usuario que genera el reporte
         context['generated_by'] = self.request.user.get_full_name() or self.request.user.email
