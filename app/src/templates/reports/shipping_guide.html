@@ -257,18 +257,18 @@
 				<table class="items no-top">
 					<thead>
 						<tr>
-							<th>ITEM</th>
-							<th>CANTIDAD</th>
-							<th>UNIDAD</th>
+							<th style="width: 6%;">ITEM</th>
+							<th style="width: 15%;">CANTIDAD</th>
+							<th style="width: 15%;">UNIDAD</th>
 							<th>DESCRIPCION</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for detail in pg.details %}
 						<tr>
-							<td>{{ pg.item_offset|add:forloop.counter }}</td>
-							<td>{{ detail.quantity }}</td>
-							<td>{{ detail.unit }}</td>
+							<td style="text-align: center;">{{ pg.item_offset|add:forloop.counter }}</td>
+							<td style="text-align: center;">{{ detail.quantity }}</td>
+							<td style="text-align: center;">{{ detail.unit }}</td>
 							<td>{{ detail.description }}</td>
 						</tr>
 						{% endfor %}
