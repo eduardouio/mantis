@@ -7,6 +7,8 @@ from datetime import datetime
 
 from projects.models import Project, SheetProject, SheetProjectDetail, ProjectResourceItem
 from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
+from projects.models.SheetMaintenance import SheetMaintenance
+from projects.models.ShippingGuide import ShippingGuide
 from equipment.models.ResourceItem import ResourceItem
 
 
@@ -247,6 +249,22 @@ class UpdateSheetProjectAPI(View):
                     status="DRAFT",
                     is_active=True,
                 ).update(status="CLOSE")
+
+                # Cerrar hojas de mantenimiento en DRAFT
+                SheetMaintenance.objects.filter(
+                    id_sheet_project=sheet,
+                    status="DRAFT",
+                    is_active=True,
+                ).update(status="CLOSED")
+
+                # Cerrar guías de envío en DRAFT
+                ShippingGuide.objects.filter(
+                    project=sheet.project,
+                    status="DRAFT",
+                    is_active=True,
+                    issue_date__gte=sheet.period_start,
+                    issue_date__lte=sheet.period_end,
+                ).update(status="CLOSED")
 
         sheet.save()
 
