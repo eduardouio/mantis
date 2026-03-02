@@ -128,6 +128,12 @@
                            </ul>
                         </details>
                      </li>
+                     <!-- Proyectos -->
+                     <li>
+                        <a class="whitespace-nowrap" href="{% url 'project_list' %}">
+                           <i class="las la-project-diagram mr-2"></i>Proyectos
+                        </a>
+                     </li>
                      <!-- Documentos -->
                      <li>
                         <a class="whitespace-nowrap" href="{% url 'file_manager' %}">
@@ -246,6 +252,13 @@
                            <li><a class="whitespace-nowrap bg-base-100 text-sm" href="{% url 'custody-chains-report' %}"><i class="las la-file-invoice mr-2"></i>Cadenas de Custodia</a></li>
                         </ul>
                      </details>
+                  </li>
+                  <!-- Proyectos -->
+                  <li>
+                     <a class="py-2" href="{% url 'project_list' %}">
+                        <i class="las la-project-diagram inline-block mr-1 text-lg"></i>
+                        <span class="text-sm">Proyectos</span>
+                     </a>
                   </li>
                   <!-- Documentos -->
                   <li>
