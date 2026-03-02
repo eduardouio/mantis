@@ -1,0 +1,529 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Reporte de Hojas de Mantenimiento{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="las la-tools me-2"></i>
+                        Reporte de Hojas de Mantenimiento
+                    </h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- Estadísticas Generales -->
+                    <div class="flex align-items-center py-3 bg-light rounded mb-3">
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Total Hojas</h5>
+                            <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Costo Total</h5>
+                            <h2 class="text-info mb-0">${{ stats.total_cost_display }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Costo Logística</h5>
+                            <h2 class="text-info mb-0">${{ stats.total_cost_logistics_display }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Total Días</h5>
+                            <h2 class="text-info mb-0">{{ stats.total_days }}</h2>
+                        </div>
+                        <div class="text-center px-3 border-end">
+                            <h5 class="text-muted mb-1">Con PDF</h5>
+                            <h2 class="text-success mb-0">{{ stats.with_pdf }}</h2>
+                        </div>
+                        <div class="text-center px-3">
+                            <h5 class="text-muted mb-1">Sin PDF</h5>
+                            <h2 class="text-warning mb-0">{{ stats.without_pdf }}</h2>
+                        </div>
+                    </div>
+
+                    <!-- Filtros por Estado y Tipo -->
+                    <div class="flex align-items-center py-3 bg-base-200 rounded mb-4 gap-2 flex-wrap justify-center">
+                        {% for status_key, status_data in stats.by_status.items %}
+                        <button class="btn btn-sm status-filter-btn {% if status_key == 'DRAFT' %}btn-warning{% elif status_key == 'CLOSED' %}btn-success{% elif status_key == 'VOID' %}btn-error{% endif %}"
+                                data-status="{{ status_key }}"
+                                onclick="filterByStatus('{{ status_key }}')">
+                            {{ status_data.label }}
+                            <span class="badge badge-ghost ml-1">{{ status_data.count }}</span>
+                        </button>
+                        {% endfor %}
+                        <span class="mx-2 text-gray-400">|</span>
+                        {% for type_key, type_data in stats.by_type.items %}
+                        <button class="btn btn-sm type-filter-btn {% if type_key == 'PREVENTIVO' %}btn-info{% elif type_key == 'CORRECTIVO' %}btn-accent{% endif %}"
+                                data-type="{{ type_key }}"
+                                onclick="filterByType('{{ type_key }}')">
+                            {{ type_data.label }}
+                            <span class="badge badge-ghost ml-1">{{ type_data.count }}</span>
+                        </button>
+                        {% endfor %}
+                        <span class="mx-2 text-gray-400">|</span>
+                        <button class="btn btn-sm btn-outline btn-active"
+                                data-status="ALL"
+                                onclick="filterByStatus('ALL')">
+                            Todas
+                            <span class="badge badge-ghost ml-1">{{ stats.total }}</span>
+                        </button>
+                    </div>
+
+                    <!-- Tabla -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped" id="maintenanceSheetsTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Nº Hoja</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Cliente</th>
+                                    <th>Planilla</th>
+                                    <th>Equipo</th>
+                                    <th>Ubicación</th>
+                                    <th>Estado</th>
+                                    <th>Días</th>
+                                    <th>Costo Total</th>
+                                    <th>Archivos</th>
+                                    <th class="no-export">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in all_sheets %}
+                                <tr data-status="{{ item.status }}" data-type="{{ item.maintenance_type }}">
+                                    <td><strong>{{ item.sheet_number_display }}</strong></td>
+                                    <td>
+                                        <span class="badge badge-sm
+                                            {% if item.maintenance_type == 'PREVENTIVO' %}badge-info
+                                            {% elif item.maintenance_type == 'CORRECTIVO' %}badge-accent
+                                            {% endif %}">
+                                            {{ item.type_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small>{{ item.start_date|date:"d/m/Y" }}</small>
+                                    </td>
+                                    <td>{{ item.partner_name }}</td>
+                                    <td><small>{{ item.series_code }}</small></td>
+                                    <td><small>{{ item.equipment_name }}</small></td>
+                                    <td><small>{{ item.location }}</small></td>
+                                    <td>
+                                        <span class="badge badge-sm
+                                            {% if item.status == 'DRAFT' %}badge-warning
+                                            {% elif item.status == 'CLOSED' %}badge-success
+                                            {% elif item.status == 'VOID' %}badge-error
+                                            {% endif %}">
+                                            {{ item.status_display }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">{{ item.total_days }}</td>
+                                    <td class="text-right">
+                                        <strong>${{ item.cost_total|floatformat:2 }}</strong>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if item.has_pdf %}
+                                            <i class="las la-file-pdf text-success" title="PDF adjunto cargado"></i>
+                                        {% else %}
+                                            <i class="las la-file-pdf text-danger" title="Sin PDF adjunto"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center no-export">
+                                        <button class="btn btn-xs btn-info"
+                                                onclick="openSheetDetail({{ item.sheet.id }})">
+                                            <i class="las la-eye"></i>
+                                        </button>
+                                        <a href="/reports/sheet-maintenance/{{ item.sheet.id }}/" target="_blank"
+                                           class="btn btn-xs btn-success" title="Generar PDF del reporte">
+                                            <i class="las la-download"></i>
+                                        </a>
+                                        {% if item.has_pdf %}
+                                        <a href="{{ item.pdf_url }}" target="_blank"
+                                           class="btn btn-xs btn-accent" title="Descargar adjunto">
+                                            <i class="las la-file-pdf"></i>
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="12" class="text-center">
+                                        <div class="alert alert-info mb-0">
+                                            <i class="las la-info-circle me-2"></i>
+                                            No hay hojas de mantenimiento registradas.
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal detalle -->
+<dialog id="sheetDetailModal" class="modal">
+    <div class="modal-box w-11/12 max-w-5xl">
+        <h3 class="font-bold text-lg mb-4" id="modalTitle">
+            <i class="las la-tools"></i>
+            Detalle de Hoja de Mantenimiento
+        </h3>
+        <div id="modalContent">
+            <div class="flex justify-center py-8">
+                <span class="loading loading-spinner loading-lg"></span>
+            </div>
+        </div>
+        <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Cerrar</button>
+            </form>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+    .table thead th {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    .table tbody td {
+        vertical-align: middle;
+    }
+    .status-filter-btn.active-filter,
+    .type-filter-btn.active-filter {
+        outline: 3px solid currentColor;
+        outline-offset: 2px;
+    }
+</style>
+
+<script>
+    const sheetsData = {
+        {% for item in all_sheets %}
+        {{ item.sheet.id }}: {
+            sheet_id: {{ item.sheet.id }},
+            sheet_number: "{{ item.sheet_number_display|escapejs }}",
+            maintenance_type: "{{ item.maintenance_type|escapejs }}",
+            type_display: "{{ item.type_display|escapejs }}",
+            start_date: "{{ item.start_date|date:'d/m/Y'|default:'-' }}",
+            end_date: "{{ item.end_date|date:'d/m/Y'|default:'-' }}",
+            total_days: {{ item.total_days }},
+            cost_day: "{{ item.cost_day|floatformat:2 }}",
+            cost_total: "{{ item.cost_total|floatformat:2 }}",
+            cost_logistics: "{{ item.cost_logistics|floatformat:2 }}",
+            location: "{{ item.location|escapejs }}",
+            rig: "{{ item.rig|escapejs }}",
+            code: "{{ item.code|escapejs }}",
+            equipment_name: "{{ item.equipment_name|escapejs }}",
+            technical_name: "{{ item.technical_name|escapejs }}",
+            requested_by: "{{ item.requested_by|escapejs }}",
+            performed_by: "{{ item.performed_by|escapejs }}",
+            approved_by: "{{ item.approved_by|escapejs }}",
+            maintenance_description: "{{ item.maintenance_description|escapejs }}",
+            fault_description: "{{ item.fault_description|escapejs }}",
+            observations: "{{ item.observations|escapejs }}",
+            status: "{{ item.status|escapejs }}",
+            status_display: "{{ item.status_display|escapejs }}",
+            partner_name: "{{ item.partner_name|escapejs }}",
+            project_id: {{ item.project_id|default:"null" }},
+            project_location: "{{ item.project_location|escapejs }}",
+            series_code: "{{ item.series_code|escapejs }}",
+            sheet_project_id: {{ item.sheet_project_id|default:"null" }},
+            notes: "{{ item.notes|escapejs }}",
+            has_pdf: {{ item.has_pdf|yesno:"true,false" }},
+            pdf_url: "{{ item.pdf_url|default:''|escapejs }}",
+        },
+        {% endfor %}
+    };
+
+    let currentFilter = 'ALL';
+    let currentTypeFilter = 'ALL';
+
+    function filterByStatus(status) {
+        currentFilter = status;
+        currentTypeFilter = 'ALL';
+        applyFilters();
+
+        document.querySelectorAll('.status-filter-btn, .btn[data-status]').forEach(function(btn) {
+            btn.classList.remove('active-filter', 'btn-active');
+        });
+        document.querySelectorAll('.type-filter-btn').forEach(function(btn) {
+            btn.classList.remove('active-filter', 'btn-active');
+        });
+        const activeBtn = document.querySelector('[data-status="' + status + '"]');
+        if (activeBtn) {
+            activeBtn.classList.add('active-filter', 'btn-active');
+        }
+    }
+
+    function filterByType(type) {
+        currentTypeFilter = type;
+        currentFilter = 'ALL';
+        applyFilters();
+
+        document.querySelectorAll('.status-filter-btn, .btn[data-status]').forEach(function(btn) {
+            btn.classList.remove('active-filter', 'btn-active');
+        });
+        document.querySelectorAll('.type-filter-btn').forEach(function(btn) {
+            btn.classList.remove('active-filter', 'btn-active');
+        });
+        const activeBtn = document.querySelector('.type-filter-btn[data-type="' + type + '"]');
+        if (activeBtn) {
+            activeBtn.classList.add('active-filter', 'btn-active');
+        }
+    }
+
+    function applyFilters() {
+        const rows = document.querySelectorAll('#maintenanceSheetsTable tbody tr[data-status]');
+        rows.forEach(function(row) {
+            const rowStatus = row.getAttribute('data-status');
+            const rowType = row.getAttribute('data-type');
+            let show = true;
+
+            if (currentFilter !== 'ALL') {
+                show = show && (rowStatus === currentFilter);
+            }
+            if (currentTypeFilter !== 'ALL') {
+                show = show && (rowType === currentTypeFilter);
+            }
+
+            row.style.display = show ? '' : 'none';
+        });
+    }
+
+    function openSheetDetail(sheetId) {
+        const modal = document.getElementById('sheetDetailModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalContent = document.getElementById('modalContent');
+        const data = sheetsData[sheetId];
+
+        if (!data) return;
+
+        modalTitle.innerHTML = '<i class="las la-tools"></i> Hoja Nº ' + data.sheet_number + ' - ' + data.partner_name;
+
+        let statusBadgeClass = 'badge-ghost';
+        if (data.status === 'DRAFT') statusBadgeClass = 'badge-warning';
+        else if (data.status === 'CLOSED') statusBadgeClass = 'badge-success';
+        else if (data.status === 'VOID') statusBadgeClass = 'badge-error';
+
+        let typeBadgeClass = 'badge-ghost';
+        if (data.maintenance_type === 'PREVENTIVO') typeBadgeClass = 'badge-info';
+        else if (data.maintenance_type === 'CORRECTIVO') typeBadgeClass = 'badge-accent';
+
+        let html = `
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <p class="text-sm text-gray-500">Nº de Hoja</p>
+                    <p class="font-bold">${data.sheet_number}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Tipo de Mantenimiento</p>
+                    <p class="font-bold"><span class="badge ${typeBadgeClass} badge-sm">${data.type_display}</span></p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Estado</p>
+                    <p class="font-bold"><span class="badge ${statusBadgeClass} badge-sm">${data.status_display}</span></p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Cliente</p>
+                    <p class="font-bold">${data.partner_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Planilla</p>
+                    <p class="font-bold">${data.series_code}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Ubicación del Proyecto</p>
+                    <p class="font-bold">${data.project_location}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-base-200 p-3 rounded">
+                <div>
+                    <p class="text-sm text-gray-500">Fecha Inicio</p>
+                    <p class="font-bold">${data.start_date}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Fecha Fin</p>
+                    <p class="font-bold">${data.end_date}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Total Días</p>
+                    <p class="font-bold">${data.total_days}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                    <p class="text-sm text-gray-500">Equipo</p>
+                    <p class="font-bold">${data.equipment_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Código</p>
+                    <p class="font-bold">${data.code}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">RIG</p>
+                    <p class="font-bold">${data.rig}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Ubicación</p>
+                    <p class="font-bold">${data.location}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Técnico Responsable</p>
+                    <p class="font-bold">${data.technical_name}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Solicitado Por</p>
+                    <p class="font-bold">${data.requested_by}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-base-200 p-3 rounded">
+                <div>
+                    <p class="text-sm text-gray-500">Costo por Día</p>
+                    <p class="font-bold text-lg">$${data.cost_day}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Costo Total</p>
+                    <p class="font-bold text-lg text-primary">$${data.cost_total}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Costo Logístico</p>
+                    <p class="font-bold text-lg">$${data.cost_logistics}</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <p class="text-sm text-gray-500">Realizado Por</p>
+                    <p class="font-bold">${data.performed_by}</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Aprobado Por</p>
+                    <p class="font-bold">${data.approved_by}</p>
+                </div>
+            </div>
+        `;
+
+        if (data.maintenance_description) {
+            html += `
+            <div class="mb-3 bg-base-200 p-3 rounded">
+                <p class="text-sm text-gray-500">Descripción del Mantenimiento</p>
+                <p class="font-bold">${data.maintenance_description}</p>
+            </div>`;
+        }
+
+        if (data.fault_description) {
+            html += `
+            <div class="mb-3 bg-base-200 p-3 rounded">
+                <p class="text-sm text-gray-500">Descripción de la Falla</p>
+                <p class="font-bold">${data.fault_description}</p>
+            </div>`;
+        }
+
+        if (data.observations) {
+            html += `
+            <div class="mb-3 bg-base-200 p-3 rounded">
+                <p class="text-sm text-gray-500">Observaciones y Recomendaciones</p>
+                <p class="font-bold">${data.observations}</p>
+            </div>`;
+        }
+
+        if (data.notes) {
+            html += `
+            <div class="mb-3 bg-base-200 p-3 rounded">
+                <p class="text-sm text-gray-500">Notas</p>
+                <p class="font-bold">${data.notes}</p>
+            </div>`;
+        }
+
+        html += '<div class="flex gap-2 mb-4 flex-wrap">';
+
+        html += `<a href="/reports/sheet-maintenance/${data.sheet_id}/" target="_blank" class="btn btn-sm btn-success">
+            <i class="las la-file-pdf"></i> Generar PDF del Reporte
+        </a>`;
+
+        if (data.project_id) {
+            html += `<a href="/projects/${data.project_id}/" class="btn btn-sm btn-primary">
+                <i class="las la-project-diagram"></i> Ver Proyecto
+            </a>`;
+        }
+
+        if (data.has_pdf) {
+            html += `<a href="${data.pdf_url}" target="_blank" class="btn btn-sm btn-outline btn-accent">
+                <i class="las la-download"></i> Descargar Adjunto
+            </a>`;
+        }
+
+        html += '</div>';
+
+        modalContent.innerHTML = html;
+        modal.showModal();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof $.fn.DataTable !== 'undefined') {
+            $('#maintenanceSheetsTable').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                },
+                dom: 'Blfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        text: '<i class="las la-file-excel"></i> Excel',
+                        className: 'btn btn-success btn-sm',
+                        title: 'Hojas de Mantenimiento',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'csv',
+                        text: '<i class="las la-file-csv"></i> CSV',
+                        className: 'btn btn-info btn-sm',
+                        title: 'Hojas de Mantenimiento',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    },
+                    {
+                        extend: 'pdf',
+                        text: '<i class="las la-file-pdf"></i> PDF',
+                        className: 'btn btn-danger btn-sm',
+                        title: 'Hojas de Mantenimiento',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: ':not(.no-export)'
+                        }
+                    }
+                ],
+                pageLength: 25,
+                lengthMenu: [
+                    [25, 50, 100, -1],
+                    ['25', '50', '100', 'Todos']
+                ],
+                order: [[0, 'desc']],
+                columnDefs: [
+                    { orderable: false, targets: 11 }
+                ]
+            });
+        }
+
+        filterByStatus('ALL');
+    });
+</script>
+{% endblock %}

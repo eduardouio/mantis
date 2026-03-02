@@ -34,6 +34,7 @@ from reports.views.LiquidatedSheetsReport import LiquidatedSheetsReportView
 from reports.views.CustodyChainsReport import CustodyChainsReportView
 from reports.views.CustodyChainsFilteredReport import CustodyChainsFilteredReportView
 from reports.views.ShippingGuidesReport import ShippingGuidesReportView
+from reports.views.SheetMaintenancesReport import SheetMaintenancesReportView
 from reports.views.SheetMaintenanceReportView import SheetMaintenanceReportView
 from reports.views.PDFSheetMaintenance import PDFSheetMaintenance
 
@@ -53,6 +54,7 @@ urlpatterns = [
     path('reports/custody-chains/', CustodyChainsReportView.as_view(), name='custody-chains-report'),
     path('reports/custody-chains-filtered/', CustodyChainsFilteredReportView.as_view(), name='custody-chains-filtered-report'),
     path('reports/shipping-guides/', ShippingGuidesReportView.as_view(), name='shipping-guides-report'),
+    path('reports/maintenance-sheets/', SheetMaintenancesReportView.as_view(), name='maintenance-sheets-report'),
     path('reports/template-worksheet/<int:id>/', WorkSheetTemplateView.as_view(), name='worksheet-template'),
     path('reports/template-final-disposition/<int:id>/', FinalDispositionCertificateView.as_view(), name='final-disposition-certificate'),
 	path('reports/template-shipping-guide/<int:id>/', ShippingGuideReportView.as_view(), name='shipping-guide-report'),
