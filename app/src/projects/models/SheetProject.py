@@ -208,6 +208,24 @@ class SheetProjectDetail(BaseModel):
         ResourceItem,
         on_delete=models.PROTECT
     )
+    reference_document = models.CharField(
+        'Documento de Referencia',
+        max_length=50,
+        choices=(
+            ('ShippingGuide', 'Guía de Envío'), # cuando la referencia es una guía de envío,
+            ('CustodyChain', 'Cadena de Custodia'), # cuando la referencia es una cadena de custodia,
+            ('SheetMaintenance', 'Hoja de Mantenimiento'), # cuando la referencia es una hoja de mantenimiento,
+            ('ResourceItem', 'Ítem de Recurso'), # cuando es un alquiler se registra la referencia del ítem de recurso de poyecto
+        ),
+        blank=True,
+        null=True
+    )
+    id_reference_document = models.PositiveIntegerField(
+        'ID del Documento de Referencia',
+        blank=True,
+        null=True,
+        default=0
+    )
     project_resource_item = models.ForeignKey(
         ProjectResourceItem,
         on_delete=models.PROTECT,
