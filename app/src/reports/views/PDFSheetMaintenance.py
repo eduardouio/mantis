@@ -24,10 +24,10 @@ class PDFSheetMaintenance(View):
 				format="A4",
 				landscape=False,
 				margin={
-					"top": "1cm",
-					"right": "1cm",
-					"bottom": "1cm",
-					"left": "1cm",
+					"top": "0",
+					"right": "0",
+					"bottom": "0",
+					"left": "0",
 				},
 				print_background=True,
 			)

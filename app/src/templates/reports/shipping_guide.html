@@ -14,6 +14,11 @@
 				--text: #1f1f1f;
 			}
 
+			@page {
+				size: A4 portrait;
+				margin: 0;
+			}
+
 			* {
 				box-sizing: border-box;
 			}
@@ -22,13 +27,14 @@
 				font-family: Arial, Helvetica, sans-serif;
 				color: var(--text);
 				margin: 0;
+				padding: 0;
 				background: #ffffff;
 			}
 
 			.page {
 				width: 100%;
 				min-height: 277mm;
-				padding: 0;
+				padding: 1cm;
 				margin: 0 auto;
 				page-break-after: always;
 			}
@@ -39,18 +45,13 @@
 
 			.header-table {
 				width: 100%;
-				border-collapse: separate;
-				border-spacing: 0;
+				border-collapse: collapse;
 			}
 
 			.header-table td {
 				border: 1px solid var(--line-soft);
 				padding: 8px 12px;
 				vertical-align: middle;
-			}
-
-			.header-table td + td {
-				border-left: none;
 			}
 
 			.header-title {
@@ -84,7 +85,6 @@
 
 			.section {
 				margin-top: 10px;
-				border: 1px solid var(--line);
 			}
 
 			.section-title {
@@ -92,7 +92,7 @@
 				font-size: 12px;
 				font-weight: 700;
 				padding: 6px 8px;
-				border-bottom: 1px solid var(--line);
+				border: 1px solid var(--line-soft);
 				text-align: center;
 			}
 
@@ -114,24 +114,6 @@
 				border-top: 0;
 			}
 
-			/* Evitar bordes dobles donde las celdas tocan el borde de .section */
-			.section > table td:first-child,
-			.section > table th:first-child {
-				border-left: 0;
-			}
-
-			.section > table td:last-child,
-			.section > table th:last-child {
-				border-right: 0;
-			}
-
-			.section > table > tr:last-child > td,
-			.section > table > tr:last-child > th,
-			.section > table > tbody:last-child > tr:last-child > td,
-			.section > table > tbody:last-child > tr:last-child > th {
-				border-bottom: 0;
-			}
-
 			.tight td,
 			.tight th {
 				padding: 5px 6px;
@@ -141,7 +123,9 @@
 				display: grid;
 				grid-template-columns: repeat(2, 1fr);
 				grid-template-rows: repeat(2, 1fr);
+				border-left: 1px solid var(--line-soft);
 				border-right: 1px solid var(--line-soft);
+				border-bottom: 1px solid var(--line-soft);
 			}
 
 			.motivo-item {
@@ -276,7 +260,7 @@
 			</div>
 
 			<div class="section">
-				<table class="items no-top">
+				<table class="items">
 					<thead>
 						<tr>
 							<th style="width: 6%;">ITEM</th>
@@ -302,7 +286,7 @@
 			</div>
 
 			<div class="section">
-				<table class="signatures no-top">
+				<table class="signatures">
 					<tr>
 						<td><div class="label">DESPACHADO POR:</div> {{ guide.dispatcher_name|default:"" }}</td>
 						<td><div class="label">C.I.:</div> {{ guide.dispatcher_ci|default:"" }}</td>
