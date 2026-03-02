@@ -131,25 +131,18 @@ const viewCustodyChains = (sheetId) => {
       <table class="table table-zebra w-full">
         <thead>
           <tr class="bg-gray-500 text-white">
-            <th class="p-2 border border-gray-100 text-center">#</th>
             <th class="p-2 border border-gray-100 text-center">Serie</th>
             <th class="p-2 border border-gray-100 text-center">Estado</th>
-            <th class="p-2 border border-gray-100 text-center">Fecha Emisión</th>
             <th class="p-2 border border-gray-100 text-center">Período Inicio</th>
             <th class="p-2 border border-gray-100 text-center">Período Fin</th>
             <th class="p-2 border border-gray-100 text-center">Contacto Ref.</th>
-            <th class="p-2 border border-gray-100 text-center">Teléfono</th>
-            <th class="p-2 border border-gray-100 text-center">Tipo Servicio</th>
-            <th class="p-2 border border-gray-100 text-center">Galones</th>
-            <th class="p-2 border border-gray-100 text-center">Barriles</th>
-            <th class="p-2 border border-gray-100 text-center">M³</th>
             <th class="p-2 border border-gray-100 text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
           <template v-if="enrichedWorkOrders.length === 0">
             <tr>
-              <td colspan="13" class="text-center text-gray-500 py-8">
+              <td colspan="6" class="text-center text-gray-500 py-8">
                 <i class="las la-inbox text-4xl"></i>
                 <p>No hay planillas registradas para este proyecto</p>
               </td>
@@ -157,7 +150,7 @@ const viewCustodyChains = (sheetId) => {
           </template>
           <template v-else-if="tableFilter.paginatedData.value.length === 0">
             <tr>
-              <td colspan="13" class="text-center text-gray-500 py-8">
+              <td colspan="6" class="text-center text-gray-500 py-8">
                 <i class="las la-search text-4xl"></i>
                 <p>No se encontraron resultados para "{{ tableFilter.searchQuery.value }}"</p>
               </td>
@@ -165,8 +158,24 @@ const viewCustodyChains = (sheetId) => {
           </template>
           <template v-else>
             <tr v-for="sheet in tableFilter.paginatedData.value" :key="sheet.id">
-              <td class="p-2 border border-gray-300">{{ sheet.id }}</td>
-              <td class="p-2 border border-gray-300 font-mono">{{ sheet.series_code }}</td>
+              <td class="p-2 border border-gray-300">
+                <div class="flex items-center gap-2">
+                  <button
+                    @click="editSheet(sheet)"
+                    class="btn btn-xs btn-ghost p-0 min-h-0 h-auto"
+                    :title="sheet.is_closed ? 'Ver planilla (cerrada)' : 'Editar planilla'"
+                  >
+                    <i class="las text-lg" :class="sheet.is_closed ? 'la-eye text-gray-500' : 'la-edit text-blue-500'"></i>
+                  </button>
+                  <a
+                    class="font-mono text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+                    @click="viewCustodyChains(sheet.id)"
+                    :title="'Ver detalle de planilla ' + sheet.series_code"
+                  >
+                    {{ sheet.series_code }}
+                  </a>
+                </div>
+              </td>
               <td class="p-2 border border-gray-300">
                 <div class="flex items-center gap-1">
                   <span 
@@ -180,40 +189,11 @@ const viewCustodyChains = (sheetId) => {
                   </span>
                 </div>
               </td>
-              <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.issue_date) }}</td>
               <td class="p-2 border border-gray-300 text-end">{{ formatDate(sheet.period_start) }}</td>
               <td class="p-2 border border-gray-300 text-end">{{ sheet.period_end ? formatDate(sheet.period_end) : '--' }}</td>
               <td class="p-2 border border-gray-300">{{ sheet.contact_reference || 'N/A' }}</td>
-              <td class="p-2 border border-gray-300">{{ sheet.contact_phone_reference || 'N/A' }}</td>
-              <td class="p-2 border border-gray-300">{{ sheet.service_type }}</td>
-              <td class="p-2 border border-gray-300 text-right font-mono">
-                {{ parseFloat(sheet.calculated_total_gallons || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
-              </td>
-              <td class="p-2 border border-gray-300 text-right font-mono">
-                {{ parseFloat(sheet.calculated_total_barrels || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
-              </td>
-              <td class="p-2 border border-gray-300 text-right font-mono">
-                {{ parseFloat(sheet.calculated_total_cubic_meters || 0).toFixed(2) }}
-              </td>
               <td class="p-2 border border-gray-300 text-end">
                 <div class="flex gap-2 justify-end">
-                  <button 
-                    @click="editSheet(sheet)"
-                    class="btn btn-xs border-blue-500 bg-white" 
-                    :class="sheet.is_closed ? 'text-gray-500' : 'text-teal-500'"
-                    :title="sheet.is_closed ? 'Ver planilla (cerrada)' : 'Editar planilla'"
-                  >
-                    <i class="las" :class="sheet.is_closed ? 'la-eye' : 'la-edit'"></i>
-                    {{ sheet.is_closed ? 'VER' : 'EDITAR' }}
-                  </button>
-                  <button
-                    @click="viewCustodyChains(sheet.id)"
-                    class="btn btn-xs border-purple-500 text-purple-500 bg-white"
-                    title="Ver cadenas de custodia"
-                  >
-                    <i class="las la-link"></i>
-                    C. CUSTODIA ({{ sheet.custody_chains_count }})
-                  </button>
                   <a
                     :href="appConfig.URLWorkSheetReport.replace('${id}', sheet.id)"
                     target="_blank"
@@ -221,16 +201,7 @@ const viewCustodyChains = (sheetId) => {
                     title="Descargar reporte PDF de la planilla"
                   >
                     <i class="las la-file-pdf"></i>
-                    PLANILLA
-                  </a>
-                  <a
-                    :href="appConfig.PDFCertFinalDisposition.replace('${id}', sheet.id)"
-                    target="_blank"
-                    class="btn btn-xs border-amber-500 text-amber-600 bg-white"
-                    title="Descargar certificado de disposición final"
-                  >
-                    <i class="las la-certificate"></i>
-                    CDF
+                    PDF
                   </a>
                 </div>
               </td>
