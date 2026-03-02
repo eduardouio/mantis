@@ -45,7 +45,7 @@
 
 			.header-table td {
 				border: 1px solid var(--line-soft);
-				padding: 14px 14px;
+				padding: 8px 12px;
 				vertical-align: middle;
 			}
 
@@ -175,6 +175,13 @@
 				word-wrap: break-word;
 			}
 
+			.lined-table td {
+				height: 22px;
+				padding: 4px 8px;
+				font-size: 11px;
+				vertical-align: middle;
+			}
+
 			/* ── Firmas ─────────────────────────── */
 			.signatures td {
 				height: 50px;
@@ -224,8 +231,8 @@
 							<span class="value">{{ sheet.id_sheet_project.project.partner.name|default:"" }}</span>
 						</td>
 						<td style="width:50%;">
-							<span class="label">SOLICITADO POR:</span>
-							<span class="value">{{ sheet.requested_by|default:"" }}</span>
+							<span class="label">RIG:</span>
+							<span class="value">{{ sheet.rig|default:"" }}</span>
 						</td>
 					</tr>
 					<tr>
@@ -238,8 +245,8 @@
 							</span>
 						</td>
 						<td>
-							<span class="label">RIG:</span>
-							<span class="value">{{ sheet.rig|default:"" }}</span>
+							<span class="label">SOLICITADO POR:</span>
+							<span class="value">{{ sheet.requested_by|default:"" }}</span>
 						</td>
 					</tr>
 				</table>
@@ -298,27 +305,21 @@
 							<span class="value">{{ sheet.total_days|default:"" }}</span>
 						</td>
 					</tr>
-					<tr>
-						<td>
-							<span class="label">TOTAL HORAS:</span>
-							<span class="value">{{ sheet.total_hours|default:"" }}</span>
-						</td>
-						<td>
-							<span class="label">COSTO HORA:</span>
-							<span class="value">{{ sheet.cost_hour|default:"" }}</span>
-						</td>
-						<td>
-							<span class="label">COSTO TOTAL:</span>
-							<span class="value">{{ sheet.total_cost|default:"" }}</span>
-						</td>
-					</tr>
 				</table>
 			</div>
 
 			<!-- ═══ DESCRIPCIÓN DEL MANTENIMIENTO ═══ -->
 			<div class="section">
 				<div class="section-title">DESCRIPCION DEL MANTENIMIENTO</div>
-				<div class="text-area">{{ sheet.maintenance_description|default:"" }}</div>
+				<table class="lined-table no-top">
+					<tbody>
+						{% for line in maintenance_lines %}
+							<tr>
+								<td>{{ line }}</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
 			</div>
 
 			<!-- ═══ DESCRIPCIÓN DE LA FALLA / POSIBLES CAUSAS ═══ -->
@@ -331,10 +332,12 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td class="text-area-sm">{{ sheet.fault_description|default:"" }}</td>
-							<td class="text-area-sm">{{ sheet.possible_causes|default:"" }}</td>
-						</tr>
+						{% for fault_line, cause_line in fault_cause_lines %}
+							<tr>
+								<td>{{ fault_line }}</td>
+								<td>{{ cause_line }}</td>
+							</tr>
+						{% endfor %}
 					</tbody>
 				</table>
 			</div>
