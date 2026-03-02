@@ -42,6 +42,7 @@ from api.resources.ResourceReleaserAPI import ResourceReleaserAPI
 from api.workorders.CreateWorkSheetProject import CreateWorkSheetProjectAPI
 from api.workorders.UpdateSheetProject import UpdateSheetProjectAPI
 from api.workorders.UpdateSheetDetailDays import UpdateSheetDetailDaysAPI
+from api.workorders.ReopenSheetProject import ReopenSheetProjectAPI
 from api.load_files import LoadFilesApiView, ModelFileFieldsApiView, DocumentTreeApiView
 from api.load_files import ProjectDocumentTreeApiView, ProjectDocumentMergeApiView, BulkCustodyUploadApiView
 from api.load_files.SheetMergeGeneratedApiView import SheetMergeGeneratedApiView
@@ -81,6 +82,7 @@ urlpatterns = [
     path('workorders/sheets/update/', UpdateSheetProjectAPI.as_view(), name='api_update_sheet'),
     path('workorders/sheets/delete/', DeleteSheetOrderAPI.as_view(), name='api_delete_sheet'),
     path('workorders/sheets/detail/<int:detail_id>/days/', UpdateSheetDetailDaysAPI.as_view(), name='api_update_sheet_detail_days'),
+    path('workorders/sheets/reopen/', ReopenSheetProjectAPI.as_view(), name='api_reopen_sheet'),
 	
     path('workorders/sheets/items/<int:sheet_project_id>/', GetAllSheerProjectItemsAPI.as_view(), name='api_get_all_sheet_project_items'),
     path('workorders/custody_chain/create/', CreateCustodyChainAPI.as_view(), name='api_create_custody_chain'),

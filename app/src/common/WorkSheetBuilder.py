@@ -1,11 +1,10 @@
-from projects.models.SheetProject import SheetProject, SheetProjectDetail
+from projects.models.SheetProject import SheetProjectDetail
 from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
 from projects.models.SheetMaintenance import SheetMaintenance
 from projects.models.ShippingGuide import ShippingGuide, ShippingGuideDetail
 from projects.models.Project import ProjectResourceItem
 from decimal import Decimal
 from datetime import timedelta
-from calendar import monthrange
 
 
 class WorkSheetBuilder:

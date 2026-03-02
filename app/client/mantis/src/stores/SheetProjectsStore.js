@@ -254,6 +254,40 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 this.loading = false;
             }
         },
+
+        /**
+         * Reabrir una planilla liquidada (volver a EN EJECUCIÓN)
+         */
+        async reopenSheetProject(sheetProjectId) {
+            this.loading = true;
+            this.error = null;
+
+            try {
+                const response = await fetch(appConfig.URLReopenSheetProject, {
+                    method: "PUT",
+                    headers: appConfig.headers,
+                    body: JSON.stringify({ id: sheetProjectId }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || `HTTP error! status: ${response.status}`);
+                }
+
+                // Refrescar los datos del proyecto
+                const projectStore = UseProjectStore();
+                await projectStore.refreshCurrentProject();
+
+                return data.data;
+            } catch (error) {
+                console.error("Error reopening sheet project:", error);
+                this.error = error.message;
+                throw error;
+            } finally {
+                this.loading = false;
+            }
+        },
         
         /**
          * Inicializar formulario de nueva planilla con datos del proyecto

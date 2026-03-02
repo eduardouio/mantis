@@ -127,6 +127,16 @@ const goBack = () => {
   router.push({ name: 'projects-detail', query: { tab: 'planillas' } });
 };
 
+const reopenSheet = async () => {
+  if (!confirm('¿Está seguro de reabrir esta planilla? Volverá a estado EN EJECUCIÓN.')) return;
+  try {
+    await sheetProjectsStore.reopenSheetProject(sheetId.value);
+    alert('Planilla reabierta exitosamente');
+  } catch (error) {
+    alert('Error al reabrir la planilla: ' + error.message);
+  }
+};
+
 const viewCustodyChainDetail = (id) => {
   router.push({ 
     name: 'custody-chain-form', 
@@ -210,6 +220,14 @@ onMounted(async () => {
             <i class="las la-lock"></i>
             {{ lockMessage }}
           </div>
+          <button
+            v-if="sheetProject?.status === 'LIQUIDATED' && !isSheetClosed"
+            @click="reopenSheet"
+            class="btn btn-warning btn-sm"
+          >
+            <i class="las la-lock-open"></i>
+            Abrir Planilla
+          </button>
           <button @click="goBack" class="btn btn-outline btn-sm">
             <i class="las la-arrow-left"></i>
             Volver
