@@ -91,6 +91,7 @@ class CustodyChainsReportView(TemplateView):
                 'sheet_id': sheet.id if sheet else None,
                 'partner_name': partner.name if partner else '-',
                 'project_location': project.location if project else '-',
+                'project_id': project.id if project else None,
                 'technical_name': str(chain.technical) if chain.technical else '-',
                 'vehicle_plate': chain.vehicle.no_plate if chain.vehicle else '-',
                 'start_time': chain.start_time,

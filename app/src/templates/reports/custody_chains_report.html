@@ -77,7 +77,7 @@
                                     <th>Barriles</th>
                                     <th>m&sup3;</th>
                                     <th>Tipo Agua</th>
-                                    <th>PDF</th>
+                                    <th>Proyecto</th>
                                     <th class="no-export">Acciones</th>
                                 </tr>
                             </thead>
@@ -110,10 +110,12 @@
                                         <small>{{ item.water_types }}</small>
                                     </td>
                                     <td class="text-center">
-                                        {% if item.has_pdf %}
-                                            <i class="las la-file-pdf text-success" title="PDF cargado"></i>
+                                        {% if item.project_id %}
+                                        <a href="/projects/{{ item.project_id }}/" class="btn btn-xs btn-outline btn-primary" title="Ver ficha del proyecto">
+                                            <i class="las la-project-diagram"></i>
+                                        </a>
                                         {% else %}
-                                            <i class="las la-file-pdf text-danger" title="Sin PDF"></i>
+                                        -
                                         {% endif %}
                                     </td>
                                     <td class="text-center no-export">
@@ -125,6 +127,12 @@
                                            class="btn btn-xs btn-success" title="Generar PDF">
                                             <i class="las la-download"></i>
                                         </a>
+                                        {% if item.has_pdf %}
+                                        <a href="{{ item.pdf_url }}" target="_blank"
+                                           class="btn btn-xs btn-accent" title="Descargar adjunto">
+                                            <i class="las la-file-pdf"></i>
+                                        </a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% empty %}
@@ -199,6 +207,7 @@
             sheet_id: {{ item.sheet_id|default:"null" }},
             partner_name: "{{ item.partner_name|escapejs }}",
             project_location: "{{ item.project_location|escapejs }}",
+            project_id: {{ item.project_id|default:"null" }},
             technical_name: "{{ item.technical_name|escapejs }}",
             vehicle_plate: "{{ item.vehicle_plate|escapejs }}",
             start_time: "{{ item.start_time|time:'H:i'|default:'-' }}",
@@ -350,6 +359,9 @@
                 <a href="/reports/custody-chain/${data.chain_id}/" target="_blank" class="btn btn-sm btn-success">
                     <i class="las la-file-pdf"></i> Generar PDF
                 </a>
+                ${data.project_id ? `<a href="/projects/${data.project_id}/" class="btn btn-sm btn-primary">
+                    <i class="las la-project-diagram"></i> Ver Proyecto
+                </a>` : ''}
         `;
 
         if (data.has_pdf) {
