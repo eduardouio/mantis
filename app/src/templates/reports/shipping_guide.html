@@ -7,8 +7,8 @@
 		<title>GUIA DE REMISION</title>
 		<style>
 			:root {
-				--line: #8a8a8a;
-				--line-soft: #bcbcbc;
+				--line: #1a5276;
+				--line-soft: #2980b9;
 				--shade: #e7efe6;
 				--shade-2: #f1f5f1;
 				--text: #1f1f1f;
@@ -37,29 +37,30 @@
 				page-break-after: avoid;
 			}
 
-			.header {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				border: 1px solid var(--line);
-				padding: 10px 12px;
+			.header-table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+
+			.header-table td {
+				border: 1px solid var(--line-soft);
+				padding: 14px 14px;
+				vertical-align: middle;
 			}
 
 			.header-title {
-				font-size: 12px;
+				font-size: 18px;
 				font-weight: 700;
-				letter-spacing: 0.4px;
+				letter-spacing: 0.5px;
+				color: #1a5276;
 			}
 
-			.header-right {
+			.header-logo {
 				text-align: right;
-				display: flex;
-				align-items: center;
-				gap: 12px;
 			}
 
 			.header-logo img {
-				max-height: 45px;
+				max-height: 60px;
 				width: auto;
 			}
 
@@ -86,6 +87,7 @@
 				font-weight: 700;
 				padding: 6px 8px;
 				border-bottom: 1px solid var(--line);
+				text-align: center;
 			}
 
 			table {
@@ -188,16 +190,18 @@
 		{% load l10n %}
 		{% for pg in pages %}
 		<div class="page">
-			<div class="header">
-				<div class="header-title">GUIA DE REMISION DE EQUIPOS / MATERIALES</div>
-				<div class="header-right">
-					<div class="header-logo">
+			<table class="header-table">
+				<tr>
+					<td>
+						<span class="header-title">GUÍA DE REMISIÓN DE EQUIPOS / MATERIALES</span>
+					</td>
+					<td class="header-logo" style="width: 120px;">
 						<img src="{% static 'img/logo.png' %}" alt="PEISOL">
-					</div>
-				</div>
-			</div>
+					</td>
+				</tr>
+			</table>
 
-			<div class="guide-number">GUIA DE REMISION NO. <strong>{{ guide.guide_number|stringformat:"07d" }}</strong></div>
+			<div class="guide-number">GUÍA DE REMISIÓN NO. <strong>{{ guide.guide_number|stringformat:"07d" }}</strong></div>
 
 			<div class="section">
 				<div class="section-title">TIPO DE GUÍA: {{ guide.get_type_shipping_guide_display }}</div>
@@ -220,7 +224,7 @@
 					</tr>
 					<tr>
 						<td><span class="label">DESPACHADO POR:</span> {{ guide.dispatcher_name|default:"" }}</td>
-						<td><span class="label">PROYECTO:</span> {{ guide.project }}</td>
+						<td><span class="label">PROYECTO:</span> Proyecto {{ guide.project.id }}</td>
 					</tr>
 				</table>
 			</div>
