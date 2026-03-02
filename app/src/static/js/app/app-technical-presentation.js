@@ -84,10 +84,30 @@
 			const remaining = daysRemaining(p.fecha_caducidad);
 			const badge = badgeFromRemaining(remaining);
 			const div = document.createElement('div');
-			div.className = 'p-2 border rounded-lg cursor-pointer hover:bg-blue-50 flex justify-between items-center gap-2';
-			div.innerHTML = `<div><p class="text-sm font-medium">${displayBloque(p.bloque)}</p><p class="text-xs text-gray-500">Caduca: ${fmt(p.fecha_caducidad)} ${badge}</p></div>`;
-			div.addEventListener('click', ()=> loadPass(p.id));
+			div.className = 'file-upload-row p-2 border rounded-lg hover:bg-blue-50 flex justify-between items-center gap-2';
+			div.dataset.modelType = 'pass_technical';
+			div.dataset.objectId = p.id;
+			div.dataset.fieldName = 'pass_file';
+
+			// Info del pase (clickeable para editar)
+			const infoDiv = document.createElement('div');
+			infoDiv.className = 'flex-1 cursor-pointer';
+			infoDiv.innerHTML = `<p class="text-sm font-medium">${displayBloque(p.bloque)}</p><p class="text-xs text-gray-500">Caduca: ${fmt(p.fecha_caducidad)} ${badge}</p>`;
+			infoDiv.addEventListener('click', ()=> loadPass(p.id));
+			div.appendChild(infoDiv);
+
+			// Botones de archivo
+			const actionsDiv = document.createElement('div');
+			actionsDiv.className = 'flex items-center gap-1';
+			if(p.pass_file_url){
+				actionsDiv.innerHTML += `<a href="${p.pass_file_url}" target="_blank" class="btn btn-xs btn-primary" title="Descargar"><i class="las la-download"></i></a>`;
+				actionsDiv.innerHTML += `<button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo"><i class="las la-trash"></i></button>`;
+			}
+			actionsDiv.innerHTML += `<label class="btn btn-xs btn-success btn-file-upload" title="Subir PDF"><i class="las la-upload"></i><input type="file" accept=".pdf" class="hidden file-input-hidden"></label>`;
+			div.appendChild(actionsDiv);
+
 			passList.appendChild(div);
+			bindRowEvents(div);
 		});
 	}
 

@@ -111,4 +111,5 @@ class CreateUpdatePassTechnicalAPI(View):
 			'technical_id': registro.technical.id,
 			'bloque': registro.bloque,
 			'fecha_caducidad': registro.fecha_caducidad.strftime('%Y-%m-%d'),
+			'pass_file_url': registro.pass_file.url if registro.pass_file and registro.pass_file.name else None,
 		}
