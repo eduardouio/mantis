@@ -7,8 +7,8 @@
 		<title>HOJA DE MANTENIMIENTO</title>
 		<style>
 			:root {
-				--line: #8a8a8a;
-				--line-soft: #bcbcbc;
+				--line: #1a5276;
+				--line-soft: #2980b9;
 				--shade: #d6e6f0;
 				--shade-2: #eaf2f8;
 				--text: #1f1f1f;
@@ -42,14 +42,22 @@
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				border: 2px solid var(--line);
+				border: 1px solid var(--line-soft);
 				padding: 10px 14px;
 			}
 
 			.header-title {
-				font-size: 14px;
+				font-size: 22px;
 				font-weight: 700;
 				letter-spacing: 0.5px;
+				color: #1a5276;
+			}
+
+			.header-separator {
+				width: 2px;
+				align-self: stretch;
+				background-color: #1a5276;
+				margin: 0 14px;
 			}
 
 			.header-right {
@@ -60,7 +68,7 @@
 			}
 
 			.header-logo img {
-				max-height: 45px;
+				max-height: 60px;
 				width: auto;
 			}
 
@@ -79,7 +87,7 @@
 			/* ── Secciones ──────────────────────── */
 			.section {
 				margin-top: 8px;
-				border: 1px solid var(--line);
+				border: 1px solid var(--line-soft);
 			}
 
 			.section-title {
@@ -87,7 +95,7 @@
 				font-size: 11px;
 				font-weight: 700;
 				padding: 5px 8px;
-				border-bottom: 1px solid var(--line);
+				border-bottom: 1px solid var(--line-soft);
 				text-align: center;
 				letter-spacing: 0.5px;
 			}
@@ -101,8 +109,9 @@
 
 			td, th {
 				border: 1px solid var(--line-soft);
-				padding: 5px 8px;
-				vertical-align: top;
+				padding: 10px 8px;
+				vertical-align: middle;
+				height: 34px;
 			}
 
 			.no-top td,
@@ -112,14 +121,14 @@
 
 			.tight td,
 			.tight th {
-				padding: 4px 6px;
+				padding: 10px 8px;
 			}
 
 			/* ── Checkbox SVG ───────────────────── */
 			.check-box {
 				width: 18px;
 				height: 18px;
-				border: 1px solid var(--line);
+				border: 1px solid var(--line-soft);
 				display: inline-flex;
 				align-items: center;
 				justify-content: center;
@@ -196,6 +205,7 @@
 			<div class="header">
 				<div class="header-title">HOJA DE MANTENIMIENTO</div>
 				<div class="header-right">
+					<div class="header-separator"></div>
 					<div class="header-logo">
 						<img src="{% static 'img/logo.png' %}" alt="PEISOL" />
 					</div>
@@ -206,26 +216,21 @@
 				N° <strong>{{ sheet.sheet_number|stringformat:"06d" }}</strong>
 			</div>
 
-			<!-- ═══ DATOS GENERALES ═══ -->
+			<!-- ═══ INFORMACIÓN DEL SERVICIO ═══ -->
 			<div class="section">
-				<div class="section-title">DATOS GENERALES DEL MANTENIMIENTO</div>
 				<table class="tight no-top">
 					<tr>
-						<td style="width:40%;">
+						<td style="width:50%;">
 							<span class="label">COMPAÑÍA:</span>
 							<span class="value">{{ sheet.id_sheet_project.project.partner.name|default:"" }}</span>
 						</td>
-						<td style="width:30%;">
-							<span class="label">RIG:</span>
-							<span class="value">{{ sheet.rig|default:"" }}</span>
-						</td>
-						<td style="width:30%;">
+						<td style="width:50%;">
 							<span class="label">SOLICITADO POR:</span>
 							<span class="value">{{ sheet.requested_by|default:"" }}</span>
 						</td>
 					</tr>
 					<tr>
-						<td colspan="3">
+						<td>
 							<span class="label">TÉCNICO RESPONSABLE:</span>
 							<span class="value">
 								{% if sheet.responsible_technical %}
@@ -233,9 +238,20 @@
 								{% endif %}
 							</span>
 						</td>
-					</tr>
-					<tr>
 						<td>
+							<span class="label">RIG:</span>
+							<span class="value">{{ sheet.rig|default:"" }}</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<!-- ═══ DATOS GENERALES ═══ -->
+			<div class="section">
+				<div class="section-title">DATOS GENERALES DEL MANTENIMIENTO</div>
+				<table class="tight no-top">
+					<tr>
+						<td style="width:40%;">
 							<span class="label">EQUIPO:</span>
 							<span class="value">
 								{% if sheet.resource_item %}
@@ -243,28 +259,31 @@
 								{% endif %}
 							</span>
 						</td>
-						<td>
+						<td style="width:30%;">
 							<span class="label">CÓDIGO:</span>
 							<span class="value">{{ sheet.code|default:"" }}</span>
 						</td>
-						<td>
+						<td style="width:30%;">
 							<span class="label">UBICACIÓN:</span>
 							<span class="value">{{ sheet.location|default:"" }}</span>
 						</td>
 					</tr>
 					<tr>
-						<td>
+						<td style="width:40%;">
 							<span class="label">TIPO DE MANTENIMIENTO:</span>
+						</td>
+						<td style="width:30%;">
 							<span class="check-inline">
 								<span class="check-box">{% if sheet.maintenance_type == "PREVENTIVO" %}<svg viewBox="0 0 24 24" fill="none" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>{% endif %}</span>
 								PREVENTIVO
 							</span>
+						</td>
+						<td style="width:30%;">
 							<span class="check-inline">
 								<span class="check-box">{% if sheet.maintenance_type == "CORRECTIVO" %}<svg viewBox="0 0 24 24" fill="none" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>{% endif %}</span>
 								CORRECTIVO
 							</span>
 						</td>
-						<td colspan="2">&nbsp;</td>
 					</tr>
 					<tr>
 						<td>
@@ -308,8 +327,8 @@
 				<table class="desc-fault-table no-top">
 					<thead>
 						<tr>
-							<th class="section-title" style="border-bottom:1px solid var(--line);">DESCRIPCION DE LA FALLA</th>
-							<th class="section-title" style="border-bottom:1px solid var(--line);">POSIBLES CAUSAS</th>
+							<th class="section-title" style="border-bottom:1px solid var(--line-soft);">DESCRIPCION DE LA FALLA</th>
+							<th class="section-title" style="border-bottom:1px solid var(--line-soft);">POSIBLES CAUSAS</th>
 						</tr>
 					</thead>
 					<tbody>
