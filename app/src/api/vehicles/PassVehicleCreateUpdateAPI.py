@@ -130,11 +130,12 @@ class PassVehicleCreateUpdateAPI(View):
                     'vehicle_plate': pass_vehicle.vehicle.no_plate,
                     'bloque': pass_vehicle.bloque,
                     'fecha_caducidad': pass_vehicle.fecha_caducidad.strftime('%Y-%m-%d'),
+                    'pass_file_url': pass_vehicle.pass_file.url if pass_vehicle.pass_file and pass_vehicle.pass_file.name else None,
                     'created_at': pass_vehicle.created_at.isoformat() if pass_vehicle.created_at else None,
                     'updated_at': pass_vehicle.updated_at.isoformat() if pass_vehicle.updated_at else None
                 }
             })
-            
+
         except ValidationError as e:
             return JsonResponse({
                 'success': False,
@@ -161,6 +162,7 @@ class PassVehicleCreateUpdateAPI(View):
                     'vehicle_plate': pass_vehicle.vehicle.no_plate,
                     'bloque': pass_vehicle.bloque,
                     'fecha_caducidad': pass_vehicle.fecha_caducidad.strftime('%Y-%m-%d'),
+                    'pass_file_url': pass_vehicle.pass_file.url if pass_vehicle.pass_file and pass_vehicle.pass_file.name else None,
                     'created_at': pass_vehicle.created_at.isoformat() if pass_vehicle.created_at else None,
                     'updated_at': pass_vehicle.updated_at.isoformat() if pass_vehicle.updated_at else None
                 }
