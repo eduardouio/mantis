@@ -93,6 +93,37 @@ TODO
 -[] Cuando un recurso se asigna se marca como no disponible, no aplica con SERVICIOS
 
 
+## Exportar estructura de la base de datos (solo schema, sin datos)
+
+``` bash
+# Exportar toda la estructura de la BD (tablas, índices, claves, relaciones)
+mysqldump -u USUARIO -p --no-data --routines --triggers BASE_DE_DATOS > estructura.sql
+
+# Ejemplo concreto
+mysqldump -u root -p --no-data --routines --triggers mantis > estructura.sql
+```
+
+``` sql
+-- Ver la estructura de todas las tablas desde el cliente mysql
+SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'mantis';
+
+-- Ver el CREATE TABLE de una tabla específica
+SHOW CREATE TABLE nombre_tabla;
+
+-- Ver todas las claves foráneas de la base de datos
+SELECT
+    TABLE_NAME, COLUMN_NAME, CONSTRAINT_NAME,
+    REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME
+FROM information_schema.KEY_COLUMN_USAGE
+WHERE TABLE_SCHEMA = 'mantis' AND REFERENCED_TABLE_NAME IS NOT NULL;
+
+-- Ver todos los índices de la base de datos
+SELECT TABLE_NAME, INDEX_NAME, COLUMN_NAME, NON_UNIQUE
+FROM information_schema.STATISTICS
+WHERE TABLE_SCHEMA = 'mantis'
+ORDER BY TABLE_NAME, INDEX_NAME;
+```
+
 ``` sql
 -- detalle de proyectos
 select * from projects_project pp where pp.id = 6;
@@ -116,3 +147,5 @@ select * from projects_chaincustodydetail pc where pc.custody_chain_id = 42
 
 -- listar migraciones 
 select * from django_migrations dm ll
+
+
