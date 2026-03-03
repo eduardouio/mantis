@@ -720,43 +720,32 @@ function showDayDetails(dateStr) {
         return;
     }
     
-    // Formatear fecha para el título
+    // Formatear fecha para el título (igual que Vue: selectedDayFormatted)
     const dateObj = new Date(dateStr + 'T00:00:00');
     const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
     const formattedDate = dateObj.toLocaleDateString('es-GT', options);
     
-    title.innerHTML = `<i class="las la-calendar-check text-lime-600"></i> Mantenimientos del ${formattedDate}`;
+    title.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
     
-    // Generar filas de la tabla
+    // Generar filas de la tabla (igual que Vue: Código, Recurso, Descripción, Frecuencia, Costo)
     let html = '';
     let total = 0;
     
     maintenances.forEach(m => {
-        const freqColor = m.frequency_type === 'DAY' ? 'badge-primary' : 
-                         m.frequency_type === 'WEEK' ? 'badge-secondary' : 'badge-accent';
+        // Colores de frecuencia iguales al Vue (getFrequencyBadgeColor)
+        const freqColor = m.frequency_type === 'DAY' ? 'badge-info' : 
+                         m.frequency_type === 'WEEK' ? 'badge-secondary' : 'badge-warning';
         const freqLabel = m.frequency_type === 'DAY' ? 
                          (m.interval_days === 0 ? 'Diario' : `Cada ${m.interval_days} días`) :
                          m.frequency_type === 'WEEK' ? 'Semanal' : 'Mensual';
         
-        // Construir ubicación con cardinal point
-        let ubicacion = m.project_location || '';
-        if (m.project_cardinal) {
-            ubicacion += ubicacion ? ` - ${m.project_cardinal}` : m.project_cardinal;
-        }
-        
         html += `
-            <tr class="hover:bg-gray-50">
-                <td class="text-xs">
-                    <a href="/proyectos/projects/${m.project_id}/" class="font-medium text-blue-600 hover:underline">
-                        <i class="las la-external-link-alt"></i> ${m.project_name}
-                    </a>
-                    <br><span class="text-gray-500">${ubicacion || '-'}</span>
-                </td>
+            <tr class="hover:bg-lime-50">
                 <td class="text-xs">
                     <span class="badge badge-outline badge-sm">${m.code}</span>
-                    <br><span class="text-gray-500 text-xs">${m.description || ''}</span>
                 </td>
                 <td class="text-xs font-medium">${m.name}</td>
+                <td class="text-xs text-gray-600">${m.description || '-'}</td>
                 <td class="text-xs">
                     <span class="badge badge-sm ${freqColor}">${freqLabel}</span>
                 </td>
