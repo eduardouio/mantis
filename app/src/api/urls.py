@@ -50,6 +50,7 @@ from api.load_files.VehicleMergeGeneratedApiView import VehicleMergeGeneratedApi
 from api.load_files.TechnicalMergeGeneratedApiView import TechnicalMergeGeneratedApiView
 from api.shipping import ShippingGuideCreateUpdateAPI, ShippingGuideDeleteAPI
 from api.maintenance import SheetMaintenanceCreateUpdateAPI, SheetMaintenanceDeleteAPI
+from api.calendar import CalendarEventCreateUpdateAPI, CalendarEventDeleteAPI
 
 urlpatterns = [
     # vehicles
@@ -112,4 +113,10 @@ urlpatterns = [
     path('maintenance/sheets/', SheetMaintenanceCreateUpdateAPI.as_view(), name='api_maintenance_sheet_create_update'),
     path('maintenance/sheets/<int:sheet_id>/', SheetMaintenanceCreateUpdateAPI.as_view(), name='api_maintenance_sheet_detail'),
     path('maintenance/sheets/<int:pk>/delete/', SheetMaintenanceDeleteAPI.as_view(), name='api_maintenance_sheet_delete'),
+
+    # calendar events
+    path('calendar/events/', CalendarEventCreateUpdateAPI.as_view(), name='api_calendar_events'),
+    path('calendar/events/<int:event_id>/', CalendarEventCreateUpdateAPI.as_view(), name='api_calendar_event_detail'),
+    path('calendar/events/<int:event_id>/move/', CalendarEventCreateUpdateAPI.as_view(), name='api_calendar_event_move'),
+    path('calendar/events/<int:pk>/delete/', CalendarEventDeleteAPI.as_view(), name='api_calendar_event_delete'),
 ]
