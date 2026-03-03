@@ -134,37 +134,37 @@
         {% endfor %}
       </div>
 
-      <!-- Panel de Detalles del Día (oculto por defecto) -->
-      <div id="day-details-panel" class="hidden bg-white rounded-lg shadow-lg p-4 border-l-4 border-lime-500">
-        <div class="flex items-center justify-between mb-4">
-          <h3 id="day-details-title" class="text-lg font-semibold text-gray-700">
-            <i class="las la-calendar-check text-lime-600"></i>
-            Mantenimientos del día
-          </h3>
-          <button onclick="hideDayDetails()" class="btn btn-circle btn-sm btn-ghost">
-            <i class="las la-times"></i>
-          </button>
-        </div>
-        <div class="overflow-x-auto">
-          <table id="day-details-table" class="table table-sm w-full">
-            <thead>
-              <tr class="bg-gray-50">
-                <th class="text-xs">Proyecto / Ubicación</th>
-                <th class="text-xs">Código</th>
-                <th class="text-xs">Recurso</th>
-                <th class="text-xs">Frecuencia</th>
-                <th class="text-xs text-right">Costo</th>
-              </tr>
-            </thead>
-            <tbody id="day-details-body">
-              <!-- Se llena dinámicamente -->
-            </tbody>
-          </table>
-          <div class="bg-gray-100 font-semibold p-2 text-right border-t">
-            <span class="text-xs">Total del día: </span>
-            <span id="day-details-total" class="text-xs font-bold">Q0.00</span>
+      <!-- Modal de Detalles del Día -->
+      <div id="day-details-modal" class="modal">
+        <div class="modal-box w-11/12 max-w-4xl">
+          <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-blue-300">
+            <h3 id="day-details-title" class="text-lg font-semibold text-gray-700">
+              <i class="las la-calendar-check text-lime-600"></i>
+              Mantenimientos del día
+            </h3>
+            <button onclick="hideDayDetails()" class="btn btn-sm btn-circle btn-ghost">✕</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table id="day-details-table" class="table table-sm w-full">
+              <thead>
+                <tr class="bg-gray-50">
+                  <th class="text-xs">Proyecto / Ubicación</th>
+                  <th class="text-xs">Código</th>
+                  <th class="text-xs">Recurso</th>
+                  <th class="text-xs">Frecuencia</th>
+                  <th class="text-xs text-right">Costo</th>
+                </tr>
+              </thead>
+              <tbody id="day-details-body">
+              </tbody>
+            </table>
+            <div class="bg-gray-100 font-semibold p-2 text-right border-t">
+              <span class="text-xs">Total del día: </span>
+              <span id="day-details-total" class="text-xs font-bold">Q0.00</span>
+            </div>
           </div>
         </div>
+        <div class="modal-backdrop" onclick="hideDayDetails()"></div>
       </div>
 
       {% if calendar.summary.total_maintenances == 0 %}
@@ -703,7 +703,6 @@ const maintenanceByDate = {{ calendar.maintenance_by_date_json|safe }};
 
 // Mostrar detalles del día
 function showDayDetails(dateStr) {
-    const panel = document.getElementById('day-details-panel');
     const title = document.getElementById('day-details-title');
     const tbody = document.getElementById('day-details-body');
     const totalCell = document.getElementById('day-details-total');
@@ -802,13 +801,9 @@ function showDayDetails(dateStr) {
         responsive: true
     });
     
-    // Mostrar panel
-    panel.classList.remove('hidden');
-    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // Mostrar modal
+    document.getElementById('day-details-modal').classList.add('modal-open');
 }
-
-// Variable para almacenar referencia al DataTable
-let dayDetailsDataTable = null;
 
 // Ocultar detalles del día
 function hideDayDetails() {
@@ -816,7 +811,7 @@ function hideDayDetails() {
     if ($.fn.DataTable.isDataTable('#day-details-table')) {
         $('#day-details-table').DataTable().destroy();
     }
-    document.getElementById('day-details-panel').classList.add('hidden');
+    document.getElementById('day-details-modal').classList.remove('modal-open');
 }
 </script>
 {% endblock %}
