@@ -473,7 +473,14 @@ const deleteMaintenanceFile = async () => {
               class="input input-bordered w-full"
             />
           </div>
+        </div>
+      </div>
 
+      <!-- Costos -->
+      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Costos</h6>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <!-- Costo Total -->
           <div class="form-control w-full">
             <label class="label">
@@ -488,14 +495,7 @@ const deleteMaintenanceFile = async () => {
               class="input input-bordered w-full"
             />
           </div>
-        </div>
-      </div>
 
-      <!-- Conceptos de Planilla -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Conceptos de Planilla</h6>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <!-- Concepto de Mantenimiento -->
           <div class="form-control w-full">
             <label class="label">
@@ -505,20 +505,6 @@ const deleteMaintenanceFile = async () => {
               type="text"
               v-model="sheet.sheet_project_maintenance_concept"
               placeholder="Ej: SERVICIO TÉCNICO ESPECIALIZADO"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <!-- Concepto Logístico -->
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-medium">Concepto Logístico</span>
-            </label>
-            <input
-              type="text"
-              v-model="sheet.sheet_project_logistics_concept"
-              placeholder="Concepto logístico (opcional)"
               :disabled="!canEdit"
               class="input input-bordered w-full"
             />
@@ -534,6 +520,20 @@ const deleteMaintenanceFile = async () => {
               v-model.number="sheet.cost_logistics"
               min="0"
               step="0.01"
+              :disabled="!canEdit"
+              class="input input-bordered w-full"
+            />
+          </div>
+
+          <!-- Concepto Logístico -->
+          <div class="form-control w-full">
+            <label class="label">
+              <span class="label-text font-medium">Concepto Logístico</span>
+            </label>
+            <input
+              type="text"
+              v-model="sheet.sheet_project_logistics_concept"
+              placeholder="Concepto logístico (opcional)"
               :disabled="!canEdit"
               class="input input-bordered w-full"
             />
