@@ -16,50 +16,52 @@
                 </div>
                 <div class="card-body">
 
-                    <!-- Estadisticas Generales -->
-                    <div class="flex align-items-center py-3 bg-light rounded mb-3">
-                        <div class="text-center px-3 border-end">
-                            <h5 class="text-muted mb-1">Total Cadenas</h5>
-                            <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+                    <!-- Estadísticas y Filtros -->
+                    <div class="flex align-items-center justify-between py-3 bg-base-200 rounded mb-4 flex-wrap gap-2">
+                        <!-- Estadísticas -->
+                        <div class="flex align-items-center flex-wrap">
+                            <div class="text-center px-3 border-end">
+                                <h5 class="text-muted mb-1">Total Cadenas</h5>
+                                <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+                            </div>
+                            <div class="text-center px-3 border-end">
+                                <h5 class="text-muted mb-1">Galones</h5>
+                                <h2 class="text-info mb-0">{{ stats.total_gallons_display }}</h2>
+                            </div>
+                            <div class="text-center px-3 border-end">
+                                <h5 class="text-muted mb-1">Barriles</h5>
+                                <h2 class="text-info mb-0">{{ stats.total_barrels_display }}</h2>
+                            </div>
+                            <div class="text-center px-3 border-end">
+                                <h5 class="text-muted mb-1">m&sup3;</h5>
+                                <h2 class="text-info mb-0">{{ stats.total_cubic_meters_display }}</h2>
+                            </div>
+                            <div class="text-center px-3 border-end">
+                                <h5 class="text-muted mb-1">Con PDF</h5>
+                                <h2 class="text-success mb-0">{{ stats.with_pdf }}</h2>
+                            </div>
+                            <div class="text-center px-3">
+                                <h5 class="text-muted mb-1">Sin PDF</h5>
+                                <h2 class="text-warning mb-0">{{ stats.without_pdf }}</h2>
+                            </div>
                         </div>
-                        <div class="text-center px-3 border-end">
-                            <h5 class="text-muted mb-1">Galones</h5>
-                            <h2 class="text-info mb-0">{{ stats.total_gallons_display }}</h2>
+                        <!-- Filtros -->
+                        <div class="flex align-items-center gap-2 flex-wrap px-3">
+                            {% for status_key, status_data in stats.by_status.items %}
+                            <button class="btn btn-sm status-filter-btn {% if status_key == 'DRAFT' %}btn-warning{% elif status_key == 'CLOSE' %}btn-success{% elif status_key == 'CANCELLED' %}btn-error{% elif status_key == 'INVOICE' %}btn-primary{% endif %}"
+                                    data-status="{{ status_key }}"
+                                    onclick="filterByStatus('{{ status_key }}')">
+                                {{ status_data.label }}
+                                <span class="badge badge-ghost ml-1">{{ status_data.count }}</span>
+                            </button>
+                            {% endfor %}
+                            <button class="btn btn-sm btn-outline btn-active"
+                                    data-status="ALL"
+                                    onclick="filterByStatus('ALL')">
+                                Todas
+                                <span class="badge badge-ghost ml-1">{{ stats.total }}</span>
+                            </button>
                         </div>
-                        <div class="text-center px-3 border-end">
-                            <h5 class="text-muted mb-1">Barriles</h5>
-                            <h2 class="text-info mb-0">{{ stats.total_barrels_display }}</h2>
-                        </div>
-                        <div class="text-center px-3 border-end">
-                            <h5 class="text-muted mb-1">m&sup3;</h5>
-                            <h2 class="text-info mb-0">{{ stats.total_cubic_meters_display }}</h2>
-                        </div>
-                        <div class="text-center px-3 border-end">
-                            <h5 class="text-muted mb-1">Con PDF</h5>
-                            <h2 class="text-success mb-0">{{ stats.with_pdf }}</h2>
-                        </div>
-                        <div class="text-center px-3">
-                            <h5 class="text-muted mb-1">Sin PDF</h5>
-                            <h2 class="text-warning mb-0">{{ stats.without_pdf }}</h2>
-                        </div>
-                    </div>
-
-                    <!-- Filtros por Estado -->
-                    <div class="flex align-items-center py-3 bg-base-200 rounded mb-4 gap-2 flex-wrap justify-center">
-                        {% for status_key, status_data in stats.by_status.items %}
-                        <button class="btn btn-sm status-filter-btn {% if status_key == 'DRAFT' %}btn-warning{% elif status_key == 'CLOSE' %}btn-success{% elif status_key == 'CANCELLED' %}btn-error{% elif status_key == 'INVOICE' %}btn-primary{% endif %}"
-                                data-status="{{ status_key }}"
-                                onclick="filterByStatus('{{ status_key }}')">
-                            {{ status_data.label }}
-                            <span class="badge badge-ghost ml-1">{{ status_data.count }}</span>
-                        </button>
-                        {% endfor %}
-                        <button class="btn btn-sm btn-outline btn-active"
-                                data-status="ALL"
-                                onclick="filterByStatus('ALL')">
-                            Todas
-                            <span class="badge badge-ghost ml-1">{{ stats.total }}</span>
-                        </button>
                     </div>
 
                     <!-- Tabla -->

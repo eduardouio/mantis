@@ -16,60 +16,62 @@
                 </div>
                 <div class="card-body">
 
-                    <!-- Estadísticas Generales -->
-                    <div class="flex align-items-center py-3 bg-light rounded mb-3">
-                        <div class="text-center px-3 border-end">
-                            <h5 class="text-muted mb-1">Total Hojas</h5>
-                            <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+                    <!-- Estadísticas y Filtros -->
+                    <div class="flex align-items-center justify-between py-3 bg-base-200 rounded mb-4 flex-wrap gap-2">
+                        <!-- Estadísticas -->
+                        <div class="flex align-items-center flex-wrap">
+                            <div class="text-center px-3 border-end">
+                                <h5 class="text-muted mb-1">Total Hojas</h5>
+                                <h2 class="text-primary mb-0">{{ stats.total }}</h2>
+                            </div>
+                            <div class="text-center px-3 border-end">
+                                <h5 class="text-muted mb-1">Costo Total</h5>
+                                <h2 class="text-info mb-0">${{ stats.total_cost_display }}</h2>
+                            </div>
+                            <div class="text-center px-3 border-end">
+                                <h5 class="text-muted mb-1">Costo Logística</h5>
+                                <h2 class="text-info mb-0">${{ stats.total_cost_logistics_display }}</h2>
+                            </div>
+                            <div class="text-center px-3 border-end">
+                                <h5 class="text-muted mb-1">Total Días</h5>
+                                <h2 class="text-info mb-0">{{ stats.total_days }}</h2>
+                            </div>
+                            <div class="text-center px-3 border-end">
+                                <h5 class="text-muted mb-1">Con PDF</h5>
+                                <h2 class="text-success mb-0">{{ stats.with_pdf }}</h2>
+                            </div>
+                            <div class="text-center px-3">
+                                <h5 class="text-muted mb-1">Sin PDF</h5>
+                                <h2 class="text-warning mb-0">{{ stats.without_pdf }}</h2>
+                            </div>
                         </div>
-                        <div class="text-center px-3 border-end">
-                            <h5 class="text-muted mb-1">Costo Total</h5>
-                            <h2 class="text-info mb-0">${{ stats.total_cost_display }}</h2>
+                        <!-- Filtros -->
+                        <div class="flex align-items-center gap-2 flex-wrap px-3">
+                            {% for status_key, status_data in stats.by_status.items %}
+                            <button class="btn btn-sm status-filter-btn {% if status_key == 'DRAFT' %}btn-warning{% elif status_key == 'CLOSED' %}btn-success{% elif status_key == 'VOID' %}btn-error{% endif %}"
+                                    data-status="{{ status_key }}"
+                                    onclick="filterByStatus('{{ status_key }}')">
+                                {{ status_data.label }}
+                                <span class="badge badge-ghost ml-1">{{ status_data.count }}</span>
+                            </button>
+                            {% endfor %}
+                            <span class="mx-2 text-gray-400">|</span>
+                            {% for type_key, type_data in stats.by_type.items %}
+                            <button class="btn btn-sm type-filter-btn {% if type_key == 'PREVENTIVO' %}btn-info{% elif type_key == 'CORRECTIVO' %}btn-accent{% endif %}"
+                                    data-type="{{ type_key }}"
+                                    onclick="filterByType('{{ type_key }}')">
+                                {{ type_data.label }}
+                                <span class="badge badge-ghost ml-1">{{ type_data.count }}</span>
+                            </button>
+                            {% endfor %}
+                            <span class="mx-2 text-gray-400">|</span>
+                            <button class="btn btn-sm btn-outline btn-active"
+                                    data-status="ALL"
+                                    onclick="filterByStatus('ALL')">
+                                Todas
+                                <span class="badge badge-ghost ml-1">{{ stats.total }}</span>
+                            </button>
                         </div>
-                        <div class="text-center px-3 border-end">
-                            <h5 class="text-muted mb-1">Costo Logística</h5>
-                            <h2 class="text-info mb-0">${{ stats.total_cost_logistics_display }}</h2>
-                        </div>
-                        <div class="text-center px-3 border-end">
-                            <h5 class="text-muted mb-1">Total Días</h5>
-                            <h2 class="text-info mb-0">{{ stats.total_days }}</h2>
-                        </div>
-                        <div class="text-center px-3 border-end">
-                            <h5 class="text-muted mb-1">Con PDF</h5>
-                            <h2 class="text-success mb-0">{{ stats.with_pdf }}</h2>
-                        </div>
-                        <div class="text-center px-3">
-                            <h5 class="text-muted mb-1">Sin PDF</h5>
-                            <h2 class="text-warning mb-0">{{ stats.without_pdf }}</h2>
-                        </div>
-                    </div>
-
-                    <!-- Filtros por Estado y Tipo -->
-                    <div class="flex align-items-center py-3 bg-base-200 rounded mb-4 gap-2 flex-wrap justify-center">
-                        {% for status_key, status_data in stats.by_status.items %}
-                        <button class="btn btn-sm status-filter-btn {% if status_key == 'DRAFT' %}btn-warning{% elif status_key == 'CLOSED' %}btn-success{% elif status_key == 'VOID' %}btn-error{% endif %}"
-                                data-status="{{ status_key }}"
-                                onclick="filterByStatus('{{ status_key }}')">
-                            {{ status_data.label }}
-                            <span class="badge badge-ghost ml-1">{{ status_data.count }}</span>
-                        </button>
-                        {% endfor %}
-                        <span class="mx-2 text-gray-400">|</span>
-                        {% for type_key, type_data in stats.by_type.items %}
-                        <button class="btn btn-sm type-filter-btn {% if type_key == 'PREVENTIVO' %}btn-info{% elif type_key == 'CORRECTIVO' %}btn-accent{% endif %}"
-                                data-type="{{ type_key }}"
-                                onclick="filterByType('{{ type_key }}')">
-                            {{ type_data.label }}
-                            <span class="badge badge-ghost ml-1">{{ type_data.count }}</span>
-                        </button>
-                        {% endfor %}
-                        <span class="mx-2 text-gray-400">|</span>
-                        <button class="btn btn-sm btn-outline btn-active"
-                                data-status="ALL"
-                                onclick="filterByStatus('ALL')">
-                            Todas
-                            <span class="badge badge-ghost ml-1">{{ stats.total }}</span>
-                        </button>
                     </div>
 
                     <!-- Tabla -->
