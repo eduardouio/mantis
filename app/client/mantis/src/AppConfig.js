@@ -45,4 +45,8 @@ export const appConfig = {
     "URLMaintenanceSheetDetail": apiBaseUrl + "/api/maintenance/sheets/${id}/",
     "URLMaintenanceSheetDelete": apiBaseUrl + "/api/maintenance/sheets/${id}/delete/",
     "URLMaintenanceSheetDownload": apiBaseUrl + "/reports/sheet-maintenance/${id}/",
+    "URLCalendarEvents": apiBaseUrl + "/api/calendar/events/",
+    "URLCalendarEventDetail": apiBaseUrl + "/api/calendar/events/${id}/",
+    "URLCalendarEventMove": apiBaseUrl + "/api/calendar/events/${id}/move/",
+    "URLCalendarEventDelete": apiBaseUrl + "/api/calendar/events/${id}/delete/",
 }
