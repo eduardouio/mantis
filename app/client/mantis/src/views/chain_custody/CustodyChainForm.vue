@@ -229,6 +229,27 @@ const activeWorkOrder = computed(() => {
   return projectStore.workOrders.find(wo => wo.status === 'IN_PROGRESS') || null
 })
 
+// Rango de fechas de la planilla activa
+const sheetDateMin = computed(() => {
+  if (!isEditMode.value) {
+    return activeWorkOrder.value?.period_start || ''
+  }
+  const sheetId = custodyChain.value.sheet_project
+  if (!sheetId) return ''
+  const sheet = projectStore.getWorkOrderById(sheetId)
+  return sheet?.period_start || ''
+})
+
+const sheetDateMax = computed(() => {
+  if (!isEditMode.value) {
+    return activeWorkOrder.value?.period_end || ''
+  }
+  const sheetId = custodyChain.value.sheet_project
+  if (!sheetId) return ''
+  const sheet = projectStore.getWorkOrderById(sheetId)
+  return sheet?.period_end || ''
+})
+
 // Recursos tipo SERVICIO desde los detalles de la planilla activa
 // Solo muestra recursos cuyo ProjectResourceItem esté activo en el store de recursos
 const availableResources = computed(() => {
@@ -517,9 +538,10 @@ watch(() => custodyChain.value.end_time, () => {
 })
 
 watch(() => custodyChain.value.activity_date, (newActivityDate) => {
-  if (newActivityDate && !isEditMode.value) {
+  if (newActivityDate) {
     custodyChain.value.issue_date = newActivityDate
     custodyChain.value.driver_date = newActivityDate
+    custodyChain.value.date_contact = newActivityDate
   }
 })
 
@@ -837,11 +859,13 @@ const currentStatusBadge = computed(() => {
             <label class="label" for="activity_date">
               <span class="label-text font-medium">Fecha de Actividad *</span>
             </label>
-            <input 
+            <input
               type="date"
               id="activity_date"
               v-model="custodyChain.activity_date"
               :disabled="!canEdit"
+              :min="sheetDateMin"
+              :max="sheetDateMax"
               required
               class="input input-bordered w-full"
             />
@@ -867,11 +891,13 @@ const currentStatusBadge = computed(() => {
             <label class="label" for="issue_date">
               <span class="label-text font-medium">Fecha de Emisión</span>
             </label>
-            <input 
+            <input
               type="date"
               id="issue_date"
               v-model="custodyChain.issue_date"
               :disabled="!canEdit"
+              :min="sheetDateMin"
+              :max="sheetDateMax"
               class="input input-bordered w-full"
             />
           </div>
@@ -999,11 +1025,13 @@ const currentStatusBadge = computed(() => {
             <label class="label" for="driver_date">
               <span class="label-text font-medium">Fecha de Transportista</span>
             </label>
-            <input 
+            <input
               type="date"
               id="driver_date"
               v-model="custodyChain.driver_date"
               :disabled="!canEdit"
+              :min="sheetDateMin"
+              :max="sheetDateMax"
               class="input input-bordered w-full"
             />
           </div>
@@ -1062,11 +1090,13 @@ const currentStatusBadge = computed(() => {
             <label class="label" for="date_contact">
               <span class="label-text font-medium">Fecha de Contacto</span>
             </label>
-            <input 
+            <input
               type="date"
               id="date_contact"
               v-model="custodyChain.date_contact"
               :disabled="!canEdit"
+              :min="sheetDateMin"
+              :max="sheetDateMax"
               class="input input-bordered w-full"
             />
           </div>
