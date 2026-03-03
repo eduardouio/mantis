@@ -11,7 +11,9 @@ from projects.models import (
     FinalDispositionCertificateDetail,
     ShippingGuide,
     ShippingGuideDetail,
-    SheetMaintenance
+    SheetMaintenance,
+    CalendarEvent,
+    CalendarEventDetail
 )
 from projects.models.SheetProject import SheetProjectDetail
 
@@ -417,6 +419,86 @@ class SheetMaintenanceAdmin(BaseModelAdmin):
         }),
         ('Archivo', {
             'fields': ('maintenance_file',), 'classes': ('collapse',)
+        }),
+        ('Notas', {
+            'fields': ('notes',), 'classes': ('collapse',)
+        }),
+        ('Auditoría', {
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+            ), 'classes': ('collapse',)
+        })
+    )
+
+
+class CalendarEventDetailInline(admin.TabularInline):
+    model = CalendarEventDetail
+    extra = 1
+    fields = (
+        'resource_item', 'project_resource_item', 'description',
+        'cost', 'is_completed', 'completed_date'
+    )
+
+
+@admin.register(CalendarEvent)
+class CalendarEventAdmin(BaseModelAdmin):
+    list_display = (
+        'id', 'project', 'title', 'event_type', 'priority', 'status',
+        'start_date', 'end_date', 'responsible_technical'
+    )
+    list_filter = (
+        'project', 'event_type', 'priority', 'status',
+        'start_date', 'is_active'
+    )
+    search_fields = (
+        'title', 'description', 'project__partner__name',
+        'responsible_technical__first_name', 'responsible_technical__last_name'
+    )
+    inlines = [CalendarEventDetailInline]
+    fieldsets = (
+        ('Evento', {
+            'fields': (
+                'project', 'title', 'description',
+                'event_type', 'priority', 'status', 'color'
+            )
+        }),
+        ('Fechas y Horarios', {
+            'fields': (
+                'start_date', 'end_date', 'start_time', 'end_time'
+            )
+        }),
+        ('Responsable', {
+            'fields': ('responsible_technical',)
+        }),
+        ('Notas', {
+            'fields': ('notes',), 'classes': ('collapse',)
+        }),
+        ('Auditoría', {
+            'fields': (
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+            ), 'classes': ('collapse',)
+        })
+    )
+
+
+@admin.register(CalendarEventDetail)
+class CalendarEventDetailAdmin(BaseModelAdmin):
+    list_display = (
+        'id', 'calendar_event', 'resource_item', 'cost',
+        'is_completed', 'completed_date'
+    )
+    list_filter = (
+        'calendar_event', 'is_completed', 'is_active'
+    )
+    search_fields = (
+        'calendar_event__title', 'resource_item__name', 'description'
+    )
+    fieldsets = (
+        ('Detalle', {
+            'fields': (
+                'calendar_event', 'resource_item', 'project_resource_item',
+                'description', 'cost', 'is_completed', 'completed_date', 'is_active'
+            )
         }),
         ('Notas', {
             'fields': ('notes',), 'classes': ('collapse',)
