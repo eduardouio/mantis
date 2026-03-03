@@ -24,6 +24,8 @@ const route = useRoute()
 const isLoading = ref(false)
 const showTechnicalModal = ref(false)
 const showVehicleModal = ref(false)
+const showDuplicateWarning = ref(false)
+const duplicateWarningDetails = ref([])
 
 // Obtener el ID de la cadena de custodia desde la ruta (0 o undefined = crear, >0 = editar)
 const custodyChainId = computed(() => {
@@ -250,6 +252,53 @@ const sheetDateMax = computed(() => {
   return sheet?.period_end || ''
 })
 
+// Detectar cadenas de custodia duplicadas (mismos recursos en la misma fecha)
+const findDuplicateChains = () => {
+  const activityDate = custodyChain.value.activity_date
+  if (!activityDate || selectedResourceIds.value.length === 0) return []
+
+  // Obtener la planilla correspondiente
+  let sheet = null
+  if (!isEditMode.value) {
+    sheet = activeWorkOrder.value
+  } else {
+    const sheetId = custodyChain.value.sheet_project
+    if (sheetId) sheet = projectStore.getWorkOrderById(sheetId)
+  }
+  if (!sheet || !sheet.custody_chains) return []
+
+  const selectedIds = new Set(selectedResourceIds.value)
+  const duplicates = []
+
+  for (const chain of sheet.custody_chains) {
+    // No comparar con la misma cadena en modo edición
+    if (isEditMode.value && chain.id === custodyChainId.value) continue
+
+    // Verificar si la fecha coincide
+    if (chain.activity_date !== activityDate) continue
+
+    // Verificar si comparten recursos
+    const chainResourceIds = (chain.details || []).map(d => d.project_resource?.id || d.project_resource_id)
+    const sharedResources = chainResourceIds.filter(id => selectedIds.has(id))
+
+    if (sharedResources.length > 0) {
+      // Encontrar nombres de los recursos compartidos
+      const resourceNames = sharedResources.map(id => {
+        const res = availableResources.value.find(r => r.id === id)
+        return res ? res.resource_item_code : `ID: ${id}`
+      })
+
+      duplicates.push({
+        chainId: chain.id,
+        consecutive: chain.consecutive || 'Sin consecutivo',
+        sharedResources: resourceNames
+      })
+    }
+  }
+
+  return duplicates
+}
+
 // Recursos tipo SERVICIO desde los detalles de la planilla activa
 // Solo muestra recursos cuyo ProjectResourceItem esté activo en el store de recursos
 const availableResources = computed(() => {
@@ -326,10 +375,32 @@ const calculateDuration = () => {
   }
 }
 
+const checkDuplicatesAndSubmit = () => {
+  if (!custodyChain.value.technical || !custodyChain.value.vehicle || selectedResources.value.length === 0) {
+    alert('Por favor complete los campos requeridos y seleccione al menos un recurso')
+    return
+  }
+
+  const duplicates = findDuplicateChains()
+  if (duplicates.length > 0) {
+    duplicateWarningDetails.value = duplicates
+    showDuplicateWarning.value = true
+    return
+  }
+
+  submitForm()
+}
+
+const confirmDuplicateAndSubmit = () => {
+  showDuplicateWarning.value = false
+  duplicateWarningDetails.value = []
+  submitForm()
+}
+
 const submitForm = async () => {
   try {
     isLoading.value = true
-    
+
     if (!custodyChain.value.technical || !custodyChain.value.vehicle || selectedResources.value.length === 0) {
       alert('Por favor complete los campos requeridos y seleccione al menos un recurso')
       return
@@ -754,7 +825,7 @@ const currentStatusBadge = computed(() => {
       </div>
     </div>
 
-    <form @submit.prevent="submitForm" class="space-y-6">
+    <form @submit.prevent="checkDuplicatesAndSubmit" class="space-y-6">
       <!-- Información General -->
       <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
         <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información General</h6>
@@ -1372,5 +1443,48 @@ const currentStatusBadge = computed(() => {
     >
       <VehiclePresentation v-if="selectedVehicleData" :vehicle="selectedVehicleData" />
     </Modal>
+
+    <!-- Modal de Advertencia de Duplicado -->
+    <div v-if="showDuplicateWarning" class="modal modal-open">
+      <div class="modal-box max-w-lg">
+        <h3 class="font-bold text-lg text-amber-600 flex items-center gap-2">
+          <i class="las la-exclamation-triangle text-2xl"></i>
+          Cadena de Custodia Duplicada
+        </h3>
+        <div class="py-4">
+          <p class="text-sm text-gray-700 mb-3">
+            Ya existen cadenas de custodia con los mismos equipos para la fecha
+            <strong>{{ custodyChain.activity_date }}</strong>:
+          </p>
+          <div class="space-y-2">
+            <div
+              v-for="dup in duplicateWarningDetails"
+              :key="dup.chainId"
+              class="bg-amber-50 border border-amber-200 rounded-lg p-3"
+            >
+              <div class="font-semibold text-sm">
+                Cadena #{{ dup.chainId }} - {{ dup.consecutive }}
+              </div>
+              <div class="text-xs text-gray-600 mt-1">
+                Equipos coincidentes: <span class="font-mono">{{ dup.sharedResources.join(', ') }}</span>
+              </div>
+            </div>
+          </div>
+          <p class="text-sm text-gray-700 mt-4">
+            ¿Desea continuar y crear esta cadena de custodia de todos modos?
+          </p>
+        </div>
+        <div class="modal-action">
+          <button class="btn btn-outline" @click="showDuplicateWarning = false">
+            Cancelar
+          </button>
+          <button class="btn btn-warning" @click="confirmDuplicateAndSubmit">
+            <i class="las la-check"></i>
+            Sí, crear de todos modos
+          </button>
+        </div>
+      </div>
+      <div class="modal-backdrop" @click="showDuplicateWarning = false"></div>
+    </div>
   </div>
 </template>
