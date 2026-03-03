@@ -137,30 +137,37 @@
       <!-- Modal de Detalles del Día -->
       <div id="day-details-modal" class="modal">
         <div class="modal-box w-11/12 max-w-4xl">
-          <div class="flex justify-between items-center mb-4 pb-3 border-b-2 border-slate-300">
-            <h3 id="day-details-title" class="text-sm font-semibold text-gray-600">
-              <i class="las la-wrench"></i>
-              Mantenimientos del día
-            </h3>
+          <!-- Header con título de fecha -->
+          <div class="flex justify-between items-center mb-4">
+            <h3 id="day-details-title" class="font-bold text-lg"></h3>
             <button onclick="hideDayDetails()" class="btn btn-sm btn-circle btn-ghost">✕</button>
           </div>
-          <div class="overflow-x-auto">
-            <table id="day-details-table" class="table table-sm w-full">
-              <thead>
-                <tr class="bg-lime-50">
-                  <th class="text-xs">Proyecto / Ubicación</th>
-                  <th class="text-xs">Código</th>
-                  <th class="text-xs">Recurso</th>
-                  <th class="text-xs">Frecuencia</th>
-                  <th class="text-xs text-right">Costo</th>
-                </tr>
-              </thead>
-              <tbody id="day-details-body">
-              </tbody>
-            </table>
-            <div class="bg-lime-100 font-semibold p-2 text-right border-t">
-              <span class="text-xs">Total del día: </span>
-              <span id="day-details-total" class="text-xs font-bold">Q0.00</span>
+
+          <!-- Sección de mantenimientos planificados -->
+          <div id="day-details-content">
+            <h4 class="text-sm font-semibold text-gray-600 mb-2">
+              <i class="las la-wrench"></i> Mantenimientos Planificados
+            </h4>
+            <div class="overflow-x-auto">
+              <table id="day-details-table" class="table table-sm">
+                <thead>
+                  <tr class="bg-lime-50">
+                    <th class="text-xs">Código</th>
+                    <th class="text-xs">Recurso</th>
+                    <th class="text-xs">Descripción</th>
+                    <th class="text-xs">Frecuencia</th>
+                    <th class="text-xs text-right">Costo</th>
+                  </tr>
+                </thead>
+                <tbody id="day-details-body">
+                </tbody>
+                <tfoot>
+                  <tr class="bg-lime-100 font-semibold">
+                    <td colspan="4" class="text-right text-xs">Total del día:</td>
+                    <td id="day-details-total" class="text-right text-xs">Q0.00</td>
+                  </tr>
+                </tfoot>
+              </table>
             </div>
           </div>
         </div>
