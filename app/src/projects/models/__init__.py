@@ -28,6 +28,11 @@ from .SheetMaintenance import (
     SheetMaintenance
 )
 
+from .CalendarEvent import (
+    CalendarEvent,
+    CalendarEventDetail
+)
+
 __all__ = [
     'Partner',
     'Project',
@@ -40,5 +45,7 @@ __all__ = [
     'FinalDispositionCertificateDetail',
 	'ShippingGuide',
 	'ShippingGuideDetail',
-    'SheetMaintenance'
+    'SheetMaintenance',
+    'CalendarEvent',
+    'CalendarEventDetail'
 ]
