@@ -68,7 +68,7 @@
                                     <th>Periodo</th>
                                     <th>Total</th>
                                     <th>Cadenas</th>
-                                    <th>Archivos</th>
+                                    <th>Proyecto</th>
                                     <th class="no-export">Acciones</th>
                                 </tr>
                             </thead>
@@ -108,15 +108,12 @@
                                         </span>
                                     </td>
                                     <td class="text-center">
-                                        {% if item.has_sheet_pdf %}
-                                            <i class="las la-file-pdf text-success" title="Planilla PDF cargada"></i>
+                                        {% if item.project_id %}
+                                        <a href="/projects/{{ item.project_id }}/" class="btn btn-xs btn-outline btn-primary" title="Ver ficha del proyecto">
+                                            <i class="las la-project-diagram"></i>
+                                        </a>
                                         {% else %}
-                                            <i class="las la-file-pdf text-danger" title="Sin Planilla PDF"></i>
-                                        {% endif %}
-                                        {% if item.has_certificate_pdf %}
-                                            <i class="las la-certificate text-success" title="Certificado PDF cargado"></i>
-                                        {% else %}
-                                            <i class="las la-certificate text-danger" title="Sin Certificado PDF"></i>
+                                        -
                                         {% endif %}
                                     </td>
                                     <td class="text-center no-export">
@@ -216,6 +213,9 @@
             sheet_pdf_url: "{{ item.sheet_pdf_url|default:''|escapejs }}",
             has_certificate_pdf: {{ item.has_certificate_pdf|yesno:"true,false" }},
             certificate_pdf_url: "{{ item.certificate_pdf_url|default:''|escapejs }}",
+            has_invoice_pdf: {{ item.has_invoice_pdf|yesno:"true,false" }},
+            invoice_pdf_url: "{{ item.invoice_pdf_url|default:''|escapejs }}",
+            invoice_reference: "{{ item.invoice_reference|escapejs }}",
             project_id: {{ item.project_id|default:"null" }},
             sheet_id: {{ item.sheet.id }},
             custody_chains: [
@@ -306,6 +306,8 @@
                 </div>
             </div>
 
+            <div class="divider"></div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-base-200 p-3 rounded">
                 <div>
                     <p class="text-sm text-gray-500">Subtotal</p>
@@ -320,6 +322,8 @@
                     <p class="font-bold text-lg text-primary">$${data.total}</p>
                 </div>
             </div>
+
+            <div class="divider"></div>
 
             <div class="flex gap-2 mb-4 flex-wrap">
         `;
@@ -336,11 +340,50 @@
         if (data.has_certificate_pdf) {
             html += '<a href="' + data.certificate_pdf_url + '" target="_blank" class="btn btn-sm btn-info"><i class="las la-certificate"></i> Certificado Disposicion Final</a>';
         }
+        if (data.has_invoice_pdf) {
+            html += '<a href="' + data.invoice_pdf_url + '" target="_blank" class="btn btn-sm btn-outline btn-primary"><i class="las la-file-invoice-dollar"></i> Descargar Factura</a>';
+        }
         if (data.custody_chains.some(c => c.has_pdf) && data.project_id) {
             html += '<a href="/api/load_files/project/' + data.project_id + '/merge/?scope=custody_chains&sheet_id=' + data.sheet_id + '" target="_blank" class="btn btn-sm btn-warning"><i class="las la-object-group"></i> Unir Todas las Cadenas</a>';
         }
 
         html += '</div>';
+
+        // Formulario para cargar factura (solo si está LIQUIDATED y no tiene factura)
+        if (data.status === 'LIQUIDATED' && !data.has_invoice_pdf) {
+            html += `
+            <div class="divider"></div>
+            <div class="bg-base-200 p-4 rounded mb-4">
+                <h4 class="font-bold text-md mb-3">
+                    <i class="las la-file-invoice-dollar"></i> Cargar Factura
+                </h4>
+                <form id="invoiceUploadForm" class="flex flex-col gap-3">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Referencia de Factura</span>
+                        </label>
+                        <input type="text" name="invoice_reference" class="input input-bordered input-sm w-full max-w-xs"
+                               placeholder="Ej: FAC-001-2026" value="${data.invoice_reference}">
+                    </div>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Archivo PDF de la Factura</span>
+                        </label>
+                        <input type="file" name="invoice_file" accept=".pdf"
+                               class="file-input file-input-bordered file-input-sm w-full max-w-xs" required>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="las la-upload"></i> Cargar Factura
+                        </button>
+                        <span id="invoiceUploadStatus" class="ml-2 text-sm"></span>
+                    </div>
+                    <input type="hidden" name="sheet_id" value="${data.sheet_id}">
+                </form>
+            </div>`;
+        }
+
+        html += '<div class="divider"></div>';
 
         // Tabla de cadenas de custodia
         if (data.custody_chains.length > 0) {
@@ -389,6 +432,52 @@
 
         modalContent.innerHTML = html;
         modal.showModal();
+
+        // Bind invoice upload form if present
+        const invoiceForm = document.getElementById('invoiceUploadForm');
+        if (invoiceForm) {
+            invoiceForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData();
+                const fileInput = invoiceForm.querySelector('input[name="invoice_file"]');
+                const referenceInput = invoiceForm.querySelector('input[name="invoice_reference"]');
+                const sheetIdInput = invoiceForm.querySelector('input[name="sheet_id"]');
+                const statusEl = document.getElementById('invoiceUploadStatus');
+
+                if (!fileInput.files.length) {
+                    statusEl.innerHTML = '<span class="text-error">Seleccione un archivo PDF</span>';
+                    return;
+                }
+
+                formData.append('model_type', 'sheet_project');
+                formData.append('object_id', sheetIdInput.value);
+                formData.append('field_name', 'invoice_file');
+                formData.append('file', fileInput.files[0]);
+                if (referenceInput.value) {
+                    formData.append('invoice_reference', referenceInput.value);
+                }
+
+                statusEl.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Cargando...';
+
+                fetch('/api/load_files/', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        statusEl.innerHTML = '<span class="text-success"><i class="las la-check-circle"></i> Factura cargada. El estado cambió a Facturado.</span>';
+                        // Reload page after a short delay to reflect the new status
+                        setTimeout(function() { location.reload(); }, 1500);
+                    } else {
+                        statusEl.innerHTML = '<span class="text-error"><i class="las la-times-circle"></i> ' + (result.error || 'Error al cargar') + '</span>';
+                    }
+                })
+                .catch(function() {
+                    statusEl.innerHTML = '<span class="text-error"><i class="las la-times-circle"></i> Error de conexión</span>';
+                });
+            });
+        }
     }
 
     // Inicializar DataTables

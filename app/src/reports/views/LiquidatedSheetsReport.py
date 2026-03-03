@@ -70,6 +70,7 @@ class LiquidatedSheetsReportView(TemplateView):
                 sheet.certificate_final_disposition_file
                 and sheet.certificate_final_disposition_file.name
             )
+            has_invoice_pdf = bool(sheet.invoice_file and sheet.invoice_file.name)
 
             all_pdfs_loaded = (
                 has_sheet_pdf
@@ -116,6 +117,9 @@ class LiquidatedSheetsReportView(TemplateView):
                 'chains_total': chains_total,
                 'chains_with_pdf': chains_with_pdf,
                 'all_pdfs_loaded': all_pdfs_loaded,
+                'has_invoice_pdf': has_invoice_pdf,
+                'invoice_pdf_url': sheet.invoice_file.url if has_invoice_pdf else None,
+                'invoice_reference': sheet.invoice_reference or '',
             }
 
             all_sheets_list.append(sheet_data)

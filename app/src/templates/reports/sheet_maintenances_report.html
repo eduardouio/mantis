@@ -87,7 +87,7 @@
                                     <th>Estado</th>
                                     <th>Días</th>
                                     <th>Costo Total</th>
-                                    <th>Archivos</th>
+                                    <th>Proyecto</th>
                                     <th class="no-export">Acciones</th>
                                 </tr>
                             </thead>
@@ -124,10 +124,12 @@
                                         <strong>${{ item.cost_total|floatformat:2 }}</strong>
                                     </td>
                                     <td class="text-center">
-                                        {% if item.has_pdf %}
-                                            <i class="las la-file-pdf text-success" title="PDF adjunto cargado"></i>
+                                        {% if item.project_id %}
+                                        <a href="/projects/{{ item.project_id }}/" class="btn btn-xs btn-outline btn-primary" title="Ver ficha del proyecto">
+                                            <i class="las la-project-diagram"></i>
+                                        </a>
                                         {% else %}
-                                            <i class="las la-file-pdf text-danger" title="Sin PDF adjunto"></i>
+                                        -
                                         {% endif %}
                                     </td>
                                     <td class="text-center no-export">
@@ -348,6 +350,8 @@
                 </div>
             </div>
 
+            <div class="divider"></div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-base-200 p-3 rounded">
                 <div>
                     <p class="text-sm text-gray-500">Fecha Inicio</p>
@@ -362,6 +366,8 @@
                     <p class="font-bold">${data.total_days}</p>
                 </div>
             </div>
+
+            <div class="divider"></div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                 <div>
@@ -390,6 +396,8 @@
                 </div>
             </div>
 
+            <div class="divider"></div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-base-200 p-3 rounded">
                 <div>
                     <p class="text-sm text-gray-500">Costo por Día</p>
@@ -405,6 +413,8 @@
                 </div>
             </div>
 
+            <div class="divider"></div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <p class="text-sm text-gray-500">Realizado Por</p>
@@ -419,6 +429,7 @@
 
         if (data.maintenance_description) {
             html += `
+            <div class="divider"></div>
             <div class="mb-3 bg-base-200 p-3 rounded">
                 <p class="text-sm text-gray-500">Descripción del Mantenimiento</p>
                 <p class="font-bold">${data.maintenance_description}</p>
@@ -449,6 +460,7 @@
             </div>`;
         }
 
+        html += '<div class="divider"></div>';
         html += '<div class="flex gap-2 mb-4 flex-wrap">';
 
         html += `<a href="/reports/sheet-maintenance/${data.sheet_id}/" target="_blank" class="btn btn-sm btn-success">
