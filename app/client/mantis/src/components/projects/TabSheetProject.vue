@@ -201,7 +201,33 @@ const viewCustodyChains = (sheetId) => {
                 <span class="badge badge-warning badge-sm">{{ sheet.maintenance_sheets_count || 0 }}</span>
               </td>
               <td class="p-2 border border-gray-300 text-end">
-                <div class="flex gap-2 justify-end">
+                <div class="flex gap-2 justify-end flex-wrap">
+                  <template v-if="sheet.status === 'IN_PROGRESS' && !sheet.is_closed">
+                    <button
+                      @click="router.push({ name: 'custody-chain-form' })"
+                      class="btn btn-xs border-indigo-500 text-indigo-600 bg-white"
+                      title="Crear cadena de custodia"
+                    >
+                      <i class="las la-link"></i>
+                      CDC
+                    </button>
+                    <button
+                      @click="router.push({ name: 'maintenance-sheet-form', query: { sheet_id: sheet.id } })"
+                      class="btn btn-xs border-purple-500 text-purple-600 bg-white"
+                      title="Crear hoja de mantenimiento"
+                    >
+                      <i class="las la-tools"></i>
+                      MNT
+                    </button>
+                    <button
+                      @click="router.push({ name: 'shipping-guide-form' })"
+                      class="btn btn-xs border-teal-500 text-teal-600 bg-white"
+                      title="Crear guía de remisión"
+                    >
+                      <i class="las la-truck"></i>
+                      GDR
+                    </button>
+                  </template>
                   <a
                     :href="appConfig.URLWorkSheetReport.replace('${id}', sheet.id)"
                     target="_blank"
