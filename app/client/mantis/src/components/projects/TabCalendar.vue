@@ -1,11 +1,17 @@
 <script setup>
 import { computed, ref, onMounted, watch } from 'vue';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
+import { UseCalendarEventStore } from '@/stores/CalendarEventStore';
 import { generateMaintenanceSchedule, getMaintenanceSummary } from '@/utils/scheduler';
+import { appConfig } from '@/AppConfig';
 import { storeToRefs } from 'pinia';
+import Modal from '@/components/common/Modal.vue';
+import CalendarEventForm from '@/components/projects/CalendarEventForm.vue';
 
 const projectResourceStore = UseProjectResourceStore();
+const calendarEventStore = UseCalendarEventStore();
 const { resourcesProject } = storeToRefs(projectResourceStore);
+const { events: calendarEvents } = storeToRefs(calendarEventStore);
 
 // Estado de carga
 const isLoading = ref(true);
@@ -14,20 +20,30 @@ const isLoading = ref(true);
 const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
 // Estado para navegación de meses
-const currentMonthOffset = ref(0); // 0 = mes actual, -1 = mes anterior, +1 = mes siguiente
+const currentMonthOffset = ref(0);
 
-// Día seleccionado para ver detalles
+// Modal de detalles del día
+const showDayModal = ref(false);
 const selectedDay = ref(null);
+
+// Modal de evento
+const showEventModal = ref(false);
+const editingEvent = ref(null);
+const defaultEventDate = ref(null);
+
+// Drag and drop
+const draggedEvent = ref(null);
+const dropTargetDate = ref(null);
 
 // Calcular el primer y último día del mes actual
 const currentMonth = computed(() => {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + currentMonthOffset.value;
-  
+
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
-  
+
   return {
     year: firstDay.getFullYear(),
     month: firstDay.getMonth(),
@@ -37,17 +53,17 @@ const currentMonth = computed(() => {
   };
 });
 
-// Generar calendario del mes
+// Generar calendario del mes (planificación automática)
 const maintenanceSchedule = computed(() => {
   if (!resourcesProject.value || resourcesProject.value.length === 0) return [];
-  
+
   const { firstDay, lastDay } = currentMonth.value;
   const daysAhead = Math.ceil((lastDay - firstDay) / (1000 * 60 * 60 * 24)) + 1;
-  
+
   return generateMaintenanceSchedule(resourcesProject.value, daysAhead, firstDay);
 });
 
-// Agrupar mantenimientos por fecha (clave: YYYY-MM-DD)
+// Agrupar mantenimientos por fecha
 const maintenanceByDate = computed(() => {
   const byDate = {};
   maintenanceSchedule.value.forEach(m => {
@@ -59,57 +75,60 @@ const maintenanceByDate = computed(() => {
   return byDate;
 });
 
-// Generar la estructura del calendario (semanas y días)
+// Agrupar eventos confirmados por fecha
+const eventsByDate = computed(() => {
+  return calendarEventStore.eventsByDate;
+});
+
+// Generar la estructura del calendario
 const calendarWeeks = computed(() => {
   const { firstDay, daysInMonth, year, month } = currentMonth.value;
   const weeks = [];
-  
-  // Obtener el día de la semana del primer día (0=Domingo en JS, convertir a 0=Lunes)
+
   let startDayOfWeek = (firstDay.getDay() + 6) % 7;
-  
   let currentWeek = [];
-  
-  // Agregar días vacíos al inicio
+
   for (let i = 0; i < startDayOfWeek; i++) {
     currentWeek.push(null);
   }
-  
-  // Agregar los días del mes
+
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     const maintenances = maintenanceByDate.value[dateStr] || [];
-    
+    const events = eventsByDate.value[dateStr] || [];
+
     currentWeek.push({
       day,
       dateStr,
       maintenances,
+      events,
       isToday: isToday(year, month, day),
-      hasMaintenances: maintenances.length > 0
+      hasMaintenances: maintenances.length > 0,
+      hasEvents: events.length > 0,
+      hasContent: maintenances.length > 0 || events.length > 0
     });
-    
-    // Si es domingo (posición 6), empezar nueva semana
+
     if (currentWeek.length === 7) {
       weeks.push(currentWeek);
       currentWeek = [];
     }
   }
-  
-  // Agregar días vacíos al final si es necesario
+
   if (currentWeek.length > 0) {
     while (currentWeek.length < 7) {
       currentWeek.push(null);
     }
     weeks.push(currentWeek);
   }
-  
+
   return weeks;
 });
 
 // Verificar si una fecha es hoy
 const isToday = (year, month, day) => {
   const today = new Date();
-  return today.getFullYear() === year && 
-         today.getMonth() === month && 
+  return today.getFullYear() === year &&
+         today.getMonth() === month &&
          today.getDate() === day;
 };
 
@@ -117,7 +136,6 @@ const summary = computed(() => {
   return getMaintenanceSummary(maintenanceSchedule.value);
 });
 
-// Información del período actual
 const periodInfo = computed(() => {
   const { firstDay } = currentMonth.value;
   return {
@@ -125,7 +143,7 @@ const periodInfo = computed(() => {
   };
 });
 
-// Navegación
+// ── Navegación ──────────────────────────────────────────────
 const goToPreviousPeriod = () => {
   currentMonthOffset.value -= 1;
   selectedDay.value = null;
@@ -141,14 +159,104 @@ const goToCurrentPeriod = () => {
   selectedDay.value = null;
 };
 
-// Seleccionar un día para ver detalles
+// Seleccionar un día para ver detalles en modal
 const selectDay = (dayInfo) => {
-  if (dayInfo && dayInfo.hasMaintenances) {
-    selectedDay.value = selectedDay.value?.dateStr === dayInfo.dateStr ? null : dayInfo;
+  if (dayInfo && dayInfo.hasContent) {
+    selectedDay.value = dayInfo;
+    showDayModal.value = true;
   }
 };
 
-// Formatear moneda
+const closeDayModal = () => {
+  showDayModal.value = false;
+  selectedDay.value = null;
+};
+
+// Fecha formateada del día seleccionado
+const selectedDayFormatted = computed(() => {
+  if (!selectedDay.value) return '';
+  return new Date(selectedDay.value.dateStr + 'T00:00:00').toLocaleDateString('es-GT', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+});
+
+// ── Modal de Eventos ──────────────────────────────────────────
+const openCreateEvent = (dateStr) => {
+  editingEvent.value = null;
+  defaultEventDate.value = dateStr;
+  showEventModal.value = true;
+};
+
+const openEditEvent = (event) => {
+  editingEvent.value = event;
+  defaultEventDate.value = null;
+  showEventModal.value = true;
+};
+
+const closeEventModal = () => {
+  showEventModal.value = false;
+  editingEvent.value = null;
+  defaultEventDate.value = null;
+};
+
+const onEventSaved = () => {
+  closeEventModal();
+  loadCalendarEvents();
+};
+
+const confirmDeleteEvent = async (event) => {
+  if (!confirm(`¿Eliminar el evento "${event.title}"?`)) return;
+  try {
+    await calendarEventStore.deleteEvent(event.id);
+  } catch (error) {
+    alert('Error al eliminar: ' + error.message);
+  }
+};
+
+// ── Drag and Drop ──────────────────────────────────────────
+const onDragStart = (event, calEvent) => {
+  draggedEvent.value = calEvent;
+  event.dataTransfer.effectAllowed = 'move';
+  event.dataTransfer.setData('text/plain', calEvent.id.toString());
+  event.target.classList.add('opacity-50');
+};
+
+const onDragEnd = (event) => {
+  event.target.classList.remove('opacity-50');
+  draggedEvent.value = null;
+  dropTargetDate.value = null;
+};
+
+const onDragOver = (event, dateStr) => {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'move';
+  dropTargetDate.value = dateStr;
+};
+
+const onDragLeave = () => {
+  dropTargetDate.value = null;
+};
+
+const onDrop = async (event, dateStr) => {
+  event.preventDefault();
+  dropTargetDate.value = null;
+
+  if (!draggedEvent.value) return;
+  if (draggedEvent.value.start_date === dateStr) return;
+
+  try {
+    await calendarEventStore.moveEvent(draggedEvent.value.id, dateStr);
+  } catch (error) {
+    alert('Error al mover evento: ' + error.message);
+  }
+
+  draggedEvent.value = null;
+};
+
+// ── Utilidades ──────────────────────────────────────────────
 const formatCurrency = (value) => {
   return new Intl.NumberFormat('es-GT', {
     style: 'currency',
@@ -156,7 +264,6 @@ const formatCurrency = (value) => {
   }).format(value);
 };
 
-// Obtener color por tipo de frecuencia
 const getFrequencyColor = (frequencyType) => {
   const colors = {
     'DAY': 'bg-blue-500',
@@ -166,7 +273,6 @@ const getFrequencyColor = (frequencyType) => {
   return colors[frequencyType] || 'bg-gray-500';
 };
 
-// Obtener badge color por tipo de frecuencia
 const getFrequencyBadgeColor = (frequencyType) => {
   const colors = {
     'DAY': 'badge-primary',
@@ -176,7 +282,6 @@ const getFrequencyBadgeColor = (frequencyType) => {
   return colors[frequencyType] || 'badge-ghost';
 };
 
-// Obtener etiqueta de frecuencia
 const getFrequencyLabel = (maintenance) => {
   switch (maintenance.frequency_type) {
     case 'DAY':
@@ -190,19 +295,54 @@ const getFrequencyLabel = (maintenance) => {
   }
 };
 
+const getPriorityColor = (priority) => {
+  const colors = {
+    'LOW': 'badge-info',
+    'MEDIUM': 'badge-warning',
+    'HIGH': 'badge-error',
+    'URGENT': 'badge-error'
+  };
+  return colors[priority] || 'badge-ghost';
+};
+
+const getStatusIcon = (status) => {
+  const icons = {
+    'SCHEDULED': 'la-clock',
+    'IN_PROGRESS': 'la-spinner',
+    'COMPLETED': 'la-check-circle',
+    'CANCELLED': 'la-times-circle'
+  };
+  return icons[status] || 'la-calendar';
+};
+
+// ── Carga de datos ──────────────────────────────────────────
+const loadCalendarEvents = async () => {
+  const { year, month } = currentMonth.value;
+  try {
+    await calendarEventStore.fetchEventsByMonth(appConfig.idProject, year, month + 1);
+  } catch (error) {
+    console.error('Error loading calendar events:', error);
+  }
+};
+
 onMounted(async () => {
   if (!resourcesProject.value || resourcesProject.value.length === 0) {
     await projectResourceStore.fetchResourcesProject();
   }
+  await loadCalendarEvents();
   isLoading.value = false;
 });
 
-// Watch para detectar cambios en recursos
 watch(resourcesProject, (newVal) => {
   if (newVal && newVal.length > 0) {
     isLoading.value = false;
   }
 }, { immediate: true });
+
+// Recargar eventos al cambiar de mes
+watch(currentMonthOffset, () => {
+  loadCalendarEvents();
+});
 </script>
 
 <template>
@@ -212,7 +352,7 @@ watch(resourcesProject, (newVal) => {
     <div class="bg-slate-700 rounded-lg p-3 shadow border border-slate-600">
       <div class="flex items-center justify-between">
         <!-- Botón Anterior -->
-        <button 
+        <button
           @click="goToPreviousPeriod"
           class="btn btn-circle btn-sm bg-white text-gray-600 hover:bg-gray-50 border-gray-300"
         >
@@ -224,9 +364,8 @@ watch(resourcesProject, (newVal) => {
           <h2 class="text-white font-bold text-xl capitalize">
             {{ periodInfo.monthYear }}
           </h2>
-          
-          <!-- Botón Hoy (solo si no estamos en el mes actual) -->
-          <button 
+
+          <button
             v-if="currentMonthOffset !== 0"
             @click="goToCurrentPeriod"
             class="btn btn-xs bg-white text-gray-600 hover:bg-gray-50 border-gray-300 mt-2"
@@ -237,7 +376,7 @@ watch(resourcesProject, (newVal) => {
         </div>
 
         <!-- Botón Siguiente -->
-        <button 
+        <button
           @click="goToNextPeriod"
           class="btn btn-circle btn-sm bg-white text-gray-600 hover:bg-gray-50 border-gray-300"
         >
@@ -246,10 +385,14 @@ watch(resourcesProject, (newVal) => {
       </div>
 
       <!-- Resumen Rápido -->
-      <div class="grid grid-cols-3 gap-2 mt-3">
+      <div class="grid grid-cols-4 gap-2 mt-3">
         <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
-          <p class="text-gray-500 text-xs">Mantenimientos</p>
+          <p class="text-gray-500 text-xs">Planificados</p>
           <p class="text-gray-800 font-bold text-2xl">{{ summary.total_maintenances }}</p>
+        </div>
+        <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
+          <p class="text-gray-500 text-xs">Eventos</p>
+          <p class="text-blue-600 font-bold text-2xl">{{ calendarEvents.length }}</p>
         </div>
         <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
           <p class="text-gray-500 text-xs">Recursos</p>
@@ -261,7 +404,7 @@ watch(resourcesProject, (newVal) => {
         </div>
       </div>
 
-      <!-- Leyenda de Frecuencias -->
+      <!-- Leyenda -->
       <div class="flex justify-center gap-3 mt-2 bg-slate-800 text-white rounded-lg py-1.5 px-2">
         <div class="flex items-center gap-1">
           <span class="w-3 h-3 rounded-full bg-blue-500"></span>
@@ -274,6 +417,10 @@ watch(resourcesProject, (newVal) => {
         <div class="flex items-center gap-1">
           <span class="w-3 h-3 rounded-full bg-orange-500"></span>
           <span class="text-white text-xs">Días mes</span>
+        </div>
+        <div class="flex items-center gap-1 border-l border-slate-600 pl-3">
+          <span class="w-3 h-3 rounded bg-emerald-500"></span>
+          <span class="text-white text-xs">Evento confirmado</span>
         </div>
       </div>
     </div>
@@ -294,9 +441,9 @@ watch(resourcesProject, (newVal) => {
     <div v-else class="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-slate-300">
       <!-- Encabezado de días de la semana -->
       <div class="grid grid-cols-7 bg-slate-700">
-        <div 
-          v-for="day in weekDays" 
-          :key="day" 
+        <div
+          v-for="day in weekDays"
+          :key="day"
           class="p-2 text-center text-sm font-semibold text-white border-r border-slate-600 last:border-r-0"
         >
           {{ day }}
@@ -305,48 +452,94 @@ watch(resourcesProject, (newVal) => {
 
       <!-- Semanas del mes -->
       <div v-for="(week, weekIndex) in calendarWeeks" :key="weekIndex" class="grid grid-cols-7 border-t-2 border-slate-300">
-        <div 
-          v-for="(dayInfo, dayIndex) in week" 
+        <div
+          v-for="(dayInfo, dayIndex) in week"
           :key="dayIndex"
-          class="min-h-24 p-1 border-r-2 border-slate-300 last:border-r-0 transition-colors"
+          class="min-h-28 p-1 border-r-2 border-slate-300 last:border-r-0 transition-colors"
           :class="{
             'bg-gray-50': !dayInfo,
-            'bg-lime-50 hover:bg-lime-100 cursor-pointer': dayInfo?.hasMaintenances,
-            'bg-white': dayInfo && !dayInfo.hasMaintenances,
+            'bg-lime-50 hover:bg-lime-100 cursor-pointer': dayInfo?.hasContent,
+            'bg-white': dayInfo && !dayInfo.hasContent,
             'ring-2 ring-lime-500 ring-inset': dayInfo?.isToday,
-            'bg-lime-200': selectedDay?.dateStr === dayInfo?.dateStr
+            'bg-blue-50 ring-2 ring-blue-300 ring-inset': dropTargetDate === dayInfo?.dateStr
           }"
           @click="selectDay(dayInfo)"
+          @dragover="dayInfo && onDragOver($event, dayInfo.dateStr)"
+          @dragleave="onDragLeave"
+          @drop="dayInfo && onDrop($event, dayInfo.dateStr)"
         >
           <template v-if="dayInfo">
-            <!-- Número del día -->
+            <!-- Cabecera del día -->
             <div class="flex items-center justify-between mb-1">
-              <span 
+              <span
                 class="text-sm font-medium"
                 :class="{
                   'text-lime-700': dayInfo.isToday,
-                  'text-gray-700': !dayInfo.isToday && dayInfo.hasMaintenances,
-                  'text-gray-400': !dayInfo.hasMaintenances
+                  'text-gray-700': !dayInfo.isToday && dayInfo.hasContent,
+                  'text-gray-400': !dayInfo.hasContent
                 }"
               >
                 {{ dayInfo.day }}
               </span>
-              <span 
-                v-if="dayInfo.hasMaintenances" 
-                class="badge badge-xs badge-success"
-              >
-                {{ dayInfo.maintenances.length }}
-              </span>
+              <div class="flex items-center gap-1">
+                <span
+                  v-if="dayInfo.hasMaintenances"
+                  class="badge badge-xs badge-success"
+                  :title="`${dayInfo.maintenances.length} planificados`"
+                >
+                  {{ dayInfo.maintenances.length }}
+                </span>
+                <span
+                  v-if="dayInfo.hasEvents"
+                  class="badge badge-xs badge-primary"
+                  :title="`${dayInfo.events.length} eventos`"
+                >
+                  {{ dayInfo.events.length }}
+                </span>
+                <!-- Botón agregar evento -->
+                <button
+                  @click.stop="openCreateEvent(dayInfo.dateStr)"
+                  class="btn btn-circle btn-ghost btn-xs opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity"
+                  :class="{ 'opacity-40': true }"
+                  title="Agregar evento"
+                >
+                  <i class="las la-plus text-xs"></i>
+                </button>
+              </div>
             </div>
 
-            <!-- Indicadores de mantenimientos (máximo 3 visibles) -->
+            <!-- Eventos confirmados (draggables) -->
+            <div v-if="dayInfo.hasEvents" class="space-y-0.5 mb-1">
+              <div
+                v-for="evt in dayInfo.events.slice(0, 2)"
+                :key="'evt-' + evt.id"
+                class="flex items-center gap-1 rounded px-1 py-0.5 cursor-grab active:cursor-grabbing text-white text-xs truncate"
+                :style="{ backgroundColor: evt.color || '#10B981' }"
+                draggable="true"
+                @dragstart="onDragStart($event, evt)"
+                @dragend="onDragEnd"
+                @click.stop="openEditEvent(evt)"
+                :title="evt.title"
+              >
+                <i class="las text-xs" :class="getStatusIcon(evt.status)"></i>
+                <span class="truncate">{{ evt.title }}</span>
+              </div>
+              <div
+                v-if="dayInfo.events.length > 2"
+                class="text-xs text-blue-600 pl-1 font-medium"
+              >
+                +{{ dayInfo.events.length - 2 }} más
+              </div>
+            </div>
+
+            <!-- Indicadores de mantenimientos planificados -->
             <div v-if="dayInfo.hasMaintenances" class="space-y-0.5">
-              <div 
-                v-for="(m, idx) in dayInfo.maintenances.slice(0, 3)" 
-                :key="m.resource_id"
+              <div
+                v-for="m in dayInfo.maintenances.slice(0, 2)"
+                :key="'m-' + m.resource_id"
                 class="flex items-center gap-1"
               >
-                <span 
+                <span
                   class="w-2 h-2 rounded-full flex-shrink-0"
                   :class="getFrequencyColor(m.frequency_type)"
                 ></span>
@@ -354,11 +547,11 @@ watch(resourcesProject, (newVal) => {
                   {{ m.resource_code }}
                 </span>
               </div>
-              <div 
-                v-if="dayInfo.maintenances.length > 3" 
+              <div
+                v-if="dayInfo.maintenances.length > 2"
                 class="text-xs text-gray-500 pl-3"
               >
-                +{{ dayInfo.maintenances.length - 3 }} más
+                +{{ dayInfo.maintenances.length - 2 }} más
               </div>
             </div>
           </template>
@@ -367,81 +560,162 @@ watch(resourcesProject, (newVal) => {
     </div>
 
     <!-- Panel de Detalles del Día Seleccionado -->
-    <div 
-      v-if="selectedDay" 
+    <div
+      v-if="selectedDay"
       class="bg-white rounded-lg shadow-lg p-4 border-l-4 border-lime-500"
     >
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-semibold text-gray-700">
           <i class="las la-calendar-check text-lime-600"></i>
-          Mantenimientos del {{ new Date(selectedDay.dateStr).toLocaleDateString('es-GT', { 
-            weekday: 'long', 
-            day: 'numeric', 
-            month: 'long', 
-            year: 'numeric' 
+          {{ new Date(selectedDay.dateStr).toLocaleDateString('es-GT', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
           }) }}
         </h3>
-        <button 
-          @click="selectedDay = null" 
-          class="btn btn-circle btn-sm btn-ghost"
-        >
-          <i class="las la-times"></i>
-        </button>
+        <div class="flex items-center gap-2">
+          <button
+            @click="openCreateEvent(selectedDay.dateStr)"
+            class="btn btn-sm btn-primary"
+          >
+            <i class="las la-plus"></i> Nuevo Evento
+          </button>
+          <button
+            @click="selectedDay = null"
+            class="btn btn-circle btn-sm btn-ghost"
+          >
+            <i class="las la-times"></i>
+          </button>
+        </div>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="table table-sm">
-          <thead>
-            <tr class="bg-lime-50">
-              <th class="text-xs">Código</th>
-              <th class="text-xs">Recurso</th>
-              <th class="text-xs">Descripción</th>
-              <th class="text-xs">Frecuencia</th>
-              <th class="text-xs text-right">Costo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr 
-              v-for="m in selectedDay.maintenances" 
-              :key="m.resource_id"
-              class="hover:bg-lime-50"
-            >
-              <td class="text-xs">
-                <span class="badge badge-outline badge-sm">{{ m.resource_code }}</span>
-              </td>
-              <td class="text-xs font-medium">{{ m.resource_name }}</td>
-              <td class="text-xs text-gray-600">{{ m.description || '-' }}</td>
-              <td class="text-xs">
-                <span 
-                  class="badge badge-sm" 
-                  :class="getFrequencyBadgeColor(m.frequency_type)"
-                >
-                  {{ getFrequencyLabel(m) }}
+      <!-- Eventos Confirmados -->
+      <div v-if="selectedDay.hasEvents" class="mb-4">
+        <h4 class="text-sm font-semibold text-blue-700 mb-2">
+          <i class="las la-calendar-check"></i> Eventos Confirmados
+        </h4>
+        <div class="space-y-2">
+          <div
+            v-for="evt in selectedDay.events"
+            :key="'detail-evt-' + evt.id"
+            class="flex items-center justify-between p-2 rounded-lg border"
+            :style="{ borderLeftColor: evt.color || '#10B981', borderLeftWidth: '4px' }"
+          >
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <span class="font-medium text-sm">{{ evt.title }}</span>
+                <span class="badge badge-xs" :class="getPriorityColor(evt.priority)">
+                  {{ evt.priority_display }}
                 </span>
-              </td>
-              <td class="text-xs text-right font-semibold">{{ formatCurrency(m.cost) }}</td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr class="bg-lime-100 font-semibold">
-              <td colspan="4" class="text-right text-xs">Total del día:</td>
-              <td class="text-right text-xs">
-                {{ formatCurrency(selectedDay.maintenances.reduce((sum, m) => sum + m.cost, 0)) }}
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+                <span class="badge badge-xs badge-outline">
+                  {{ evt.event_type_display }}
+                </span>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">
+                <span v-if="evt.responsible_technical_name">
+                  <i class="las la-user"></i> {{ evt.responsible_technical_name }}
+                </span>
+                <span v-if="evt.start_time" class="ml-2">
+                  <i class="las la-clock"></i> {{ evt.start_time }}
+                  <span v-if="evt.end_time"> - {{ evt.end_time }}</span>
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <button
+                @click="openEditEvent(evt)"
+                class="btn btn-xs btn-ghost"
+                title="Editar"
+              >
+                <i class="las la-edit"></i>
+              </button>
+              <button
+                @click="confirmDeleteEvent(evt)"
+                class="btn btn-xs btn-ghost text-error"
+                title="Eliminar"
+              >
+                <i class="las la-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mantenimientos Planificados -->
+      <div v-if="selectedDay.hasMaintenances">
+        <h4 class="text-sm font-semibold text-gray-600 mb-2">
+          <i class="las la-wrench"></i> Mantenimientos Planificados
+        </h4>
+        <div class="overflow-x-auto">
+          <table class="table table-sm">
+            <thead>
+              <tr class="bg-lime-50">
+                <th class="text-xs">Código</th>
+                <th class="text-xs">Recurso</th>
+                <th class="text-xs">Descripción</th>
+                <th class="text-xs">Frecuencia</th>
+                <th class="text-xs text-right">Costo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="m in selectedDay.maintenances"
+                :key="'table-' + m.resource_id"
+                class="hover:bg-lime-50"
+              >
+                <td class="text-xs">
+                  <span class="badge badge-outline badge-sm">{{ m.resource_code }}</span>
+                </td>
+                <td class="text-xs font-medium">{{ m.resource_name }}</td>
+                <td class="text-xs text-gray-600">{{ m.description || '-' }}</td>
+                <td class="text-xs">
+                  <span
+                    class="badge badge-sm"
+                    :class="getFrequencyBadgeColor(m.frequency_type)"
+                  >
+                    {{ getFrequencyLabel(m) }}
+                  </span>
+                </td>
+                <td class="text-xs text-right font-semibold">{{ formatCurrency(m.cost) }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="bg-lime-100 font-semibold">
+                <td colspan="4" class="text-right text-xs">Total del día:</td>
+                <td class="text-right text-xs">
+                  {{ formatCurrency(selectedDay.maintenances.reduce((sum, m) => sum + m.cost, 0)) }}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- Mensaje si no hay mantenimientos en el mes -->
-    <div 
-      v-if="resourcesProject && resourcesProject.length > 0 && maintenanceSchedule.length === 0" 
+    <!-- Mensaje si no hay contenido -->
+    <div
+      v-if="resourcesProject && resourcesProject.length > 0 && maintenanceSchedule.length === 0 && calendarEvents.length === 0"
       class="alert alert-info"
     >
       <i class="las la-info-circle text-2xl"></i>
-      <span>No hay mantenimientos programados para este mes.</span>
+      <span>No hay mantenimientos ni eventos programados para este mes.</span>
     </div>
   </div>
+
+  <!-- Modal de Evento -->
+  <Modal
+    :isOpen="showEventModal"
+    :title="editingEvent ? 'Editar Evento' : 'Nuevo Evento'"
+    size="xl"
+    @close="closeEventModal"
+  >
+    <CalendarEventForm
+      :event="editingEvent"
+      :defaultDate="defaultEventDate"
+      @saved="onEventSaved"
+      @close="closeEventModal"
+    />
+  </Modal>
   <!-- FIN CALENDARIO -->
 </template>
