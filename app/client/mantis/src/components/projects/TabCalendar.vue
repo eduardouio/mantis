@@ -569,6 +569,125 @@ watch(currentMonthOffset, () => {
     </div>
   </div>
 
+  <!-- Modal de Detalles del Día -->
+  <Modal
+    :isOpen="showDayModal"
+    :title="selectedDayFormatted"
+    size="xl"
+    @close="closeDayModal"
+  >
+    <template v-if="selectedDay">
+      <!-- Botón Nuevo Evento -->
+      <div class="flex justify-end mb-3">
+        <button
+          @click="closeDayModal(); openCreateEvent(selectedDay.dateStr)"
+          class="btn btn-sm btn-primary"
+        >
+          <i class="las la-plus"></i> Nuevo Evento
+        </button>
+      </div>
+
+      <!-- Eventos Confirmados -->
+      <div v-if="selectedDay.hasEvents" class="mb-4">
+        <h4 class="text-sm font-semibold text-blue-700 mb-2">
+          <i class="las la-calendar-check"></i> Eventos Confirmados
+        </h4>
+        <div class="space-y-2">
+          <div
+            v-for="evt in selectedDay.events"
+            :key="'modal-evt-' + evt.id"
+            class="flex items-center justify-between p-2 rounded-lg border"
+            :style="{ borderLeftColor: evt.color || '#10B981', borderLeftWidth: '4px' }"
+          >
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <span class="font-medium text-sm">{{ evt.title }}</span>
+                <span class="badge badge-xs" :class="getPriorityColor(evt.priority)">
+                  {{ evt.priority_display }}
+                </span>
+                <span class="badge badge-xs badge-outline">
+                  {{ evt.event_type_display }}
+                </span>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">
+                <span v-if="evt.responsible_technical_name">
+                  <i class="las la-user"></i> {{ evt.responsible_technical_name }}
+                </span>
+                <span v-if="evt.start_time" class="ml-2">
+                  <i class="las la-clock"></i> {{ evt.start_time }}
+                  <span v-if="evt.end_time"> - {{ evt.end_time }}</span>
+                </span>
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <button
+                @click="closeDayModal(); openEditEvent(evt)"
+                class="btn btn-xs btn-ghost"
+                title="Editar"
+              >
+                <i class="las la-edit"></i>
+              </button>
+              <button
+                @click="confirmDeleteEvent(evt)"
+                class="btn btn-xs btn-ghost text-error"
+                title="Eliminar"
+              >
+                <i class="las la-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mantenimientos Planificados -->
+      <div v-if="selectedDay.hasMaintenances">
+        <h4 class="text-sm font-semibold text-gray-600 mb-2">
+          <i class="las la-wrench"></i> Mantenimientos Planificados
+        </h4>
+        <div class="overflow-x-auto">
+          <table class="table table-sm">
+            <thead>
+              <tr class="bg-lime-50">
+                <th class="text-xs">Código</th>
+                <th class="text-xs">Recurso</th>
+                <th class="text-xs">Descripción</th>
+                <th class="text-xs">Frecuencia</th>
+                <th class="text-xs text-right">Costo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="m in selectedDay.maintenances"
+                :key="'modal-m-' + m.resource_id"
+                class="hover:bg-lime-50"
+              >
+                <td class="text-xs">
+                  <span class="badge badge-outline badge-sm">{{ m.resource_code }}</span>
+                </td>
+                <td class="text-xs font-medium">{{ m.resource_name }}</td>
+                <td class="text-xs text-gray-600">{{ m.description || '-' }}</td>
+                <td class="text-xs">
+                  <span class="badge badge-sm" :class="getFrequencyBadgeColor(m.frequency_type)">
+                    {{ getFrequencyLabel(m) }}
+                  </span>
+                </td>
+                <td class="text-xs text-right font-semibold">{{ formatCurrency(m.cost) }}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="bg-lime-100 font-semibold">
+                <td colspan="4" class="text-right text-xs">Total del día:</td>
+                <td class="text-right text-xs">
+                  {{ formatCurrency(selectedDay.maintenances.reduce((sum, m) => sum + m.cost, 0)) }}
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </template>
+  </Modal>
+
   <!-- Modal de Evento -->
   <Modal
     :isOpen="showEventModal"
