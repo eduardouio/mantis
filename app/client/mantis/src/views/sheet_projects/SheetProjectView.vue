@@ -14,6 +14,7 @@ const router = useRouter();
 const projectStore = UseProjectStore();
 const sheetProjectsStore = UseSheetProjectsStore();
 const maintenanceStore = UseMaintenanceSheetStore();
+const activeTab = ref('custody');
 
 // Obtener el ID de la planilla desde la ruta
 const sheetId = computed(() => parseInt(route.params.id));
@@ -340,20 +341,12 @@ onMounted(async () => {
     <div class="bg-white rounded-2xl shadow-md border border-blue-300 border-t-[15px] border-t-blue-300 p-6 mb-6">
       <div class="flex justify-between items-center border-b-blue-500 border-b pb-3 mb-4">
         <h1 class="text-xl font-semibold text-blue-500">
-          <i class="las la-link text-2xl"></i>
-          Cadenas de Custodia - Planilla {{ sheetProject?.series_code || 'N/A' }}
+          <i class="las la-file-invoice text-2xl"></i>
+          Planilla {{ sheetProject?.series_code || 'N/A' }}
         </h1>
         <div class="flex gap-3">
-          <button 
-            v-if="sheetProject?.status === 'IN_PROGRESS' && !isSheetClosed"
-            @click="createNewCustodyChain" 
-            class="btn btn-primary btn-sm"
-          >
-            <i class="las la-plus"></i>
-            Nueva Cadena de Custodia
-          </button>
           <div 
-            v-else-if="isCustodyLocked"
+            v-if="isCustodyLocked"
             class="text-orange-700 badge bg-orange-100 px-4 py-3"
           >
             <i class="las la-lock"></i>
@@ -537,12 +530,45 @@ onMounted(async () => {
       </div>
     </div>
 
-    <!-- Tabla de Cadenas de Custodia -->
+    <!-- Tabs con colores -->
     <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6">
-      <h2 class="font-semibold text-lg mb-4 flex items-center gap-2 text-gray-800">
-        <i class="las la-list text-blue-600"></i>
-        Listado de Cadenas de Custodia ({{ custodyChains.length }})
-      </h2>
+      <div class="flex gap-1 mb-4 border-b border-gray-200">
+        <button type="button"
+          class="px-5 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-2"
+          :class="activeTab === 'custody'
+            ? 'bg-blue-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600'"
+          @click="activeTab = 'custody'">
+          <i class="las la-link"></i> Cadenas de Custodia
+          <span class="badge badge-xs ml-1" :class="activeTab === 'custody' ? 'badge-ghost text-white' : 'badge-primary'">{{ custodyChains.length }}</span>
+        </button>
+        <button type="button"
+          class="px-5 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-2"
+          :class="activeTab === 'maintenance'
+            ? 'bg-emerald-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600'"
+          @click="activeTab = 'maintenance'">
+          <i class="las la-tools"></i> Hojas de Mantenimiento
+          <span class="badge badge-xs ml-1" :class="activeTab === 'maintenance' ? 'badge-ghost text-white' : 'badge-primary'">{{ maintenanceSheets.length }}</span>
+        </button>
+      </div>
+
+      <!-- ═══ Tab: Cadenas de Custodia ═══ -->
+      <div v-show="activeTab === 'custody'">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="font-semibold text-lg flex items-center gap-2 text-gray-800">
+            <i class="las la-list text-blue-600"></i>
+            Listado de Cadenas de Custodia ({{ custodyChains.length }})
+          </h2>
+          <button 
+            v-if="sheetProject?.status === 'IN_PROGRESS' && !isSheetClosed"
+            @click="createNewCustodyChain" 
+            class="btn btn-primary btn-sm"
+          >
+            <i class="las la-plus"></i>
+            Nueva Cadena de Custodia
+          </button>
+        </div>
 
       <TableControls :tableFilter="custodyTableFilter" position="top" searchPlaceholder="Buscar cadena de custodia..." />
 
@@ -664,29 +690,27 @@ onMounted(async () => {
         </table>
       </div>
 
-      <TableControls :tableFilter="custodyTableFilter" position="bottom" />
-    </div>
-
-    <!-- ══════════════════════════════════════════════════════ -->
-    <!-- Tabla de Hojas de Mantenimiento -->
-    <!-- ══════════════════════════════════════════════════════ -->
-    <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 mt-6">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="font-semibold text-lg flex items-center gap-2 text-gray-800">
-          <i class="las la-tools text-sky-600"></i>
-          Hojas de Mantenimiento ({{ maintenanceSheets.length }})
-        </h2>
-        <button
-          v-if="sheetProject?.status === 'IN_PROGRESS' && !isSheetClosed"
-          @click="createNewMaintenanceSheet"
-          class="btn btn-primary btn-sm"
-        >
-          <i class="las la-plus"></i>
-          Nueva Hoja de Mantenimiento
-        </button>
+        <TableControls :tableFilter="custodyTableFilter" position="bottom" />
       </div>
 
-      <TableControls :tableFilter="maintenanceTableFilter" position="top" searchPlaceholder="Buscar hoja de mantenimiento..." />
+      <!-- ═══ Tab: Hojas de Mantenimiento ═══ -->
+      <div v-show="activeTab === 'maintenance'">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="font-semibold text-lg flex items-center gap-2 text-gray-800">
+            <i class="las la-tools text-emerald-600"></i>
+            Hojas de Mantenimiento ({{ maintenanceSheets.length }})
+          </h2>
+          <button
+            v-if="sheetProject?.status === 'IN_PROGRESS' && !isSheetClosed"
+            @click="createNewMaintenanceSheet"
+            class="btn btn-primary btn-sm"
+          >
+            <i class="las la-plus"></i>
+            Nueva Hoja de Mantenimiento
+          </button>
+        </div>
+
+        <TableControls :tableFilter="maintenanceTableFilter" position="top" searchPlaceholder="Buscar hoja de mantenimiento..." />
 
       <div class="overflow-x-auto">
         <table class="table table-zebra w-full">
@@ -780,7 +804,8 @@ onMounted(async () => {
         </table>
       </div>
 
-      <TableControls :tableFilter="maintenanceTableFilter" position="bottom" />
+        <TableControls :tableFilter="maintenanceTableFilter" position="bottom" />
+      </div>
     </div>
 
     <!-- Estadísticas Resumen -->

@@ -23,6 +23,7 @@ const projectResourceStore = UseProjectResourceStore()
 const router = useRouter()
 const route = useRoute()
 const isLoading = ref(false)
+const activeTab = ref('general')
 const showTechnicalModal = ref(false)
 const showVehicleModal = ref(false)
 const showDuplicateWarning = ref(false)
@@ -696,20 +697,20 @@ const currentStatusBadge = computed(() => {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto p-4">
+  <div class="max-w-7xl mx-auto p-3">
     <!-- Título dinámico según modo -->
-    <div class="bg-white rounded-lg p-4 mb-4 border border-gray-200 shadow-sm">
+    <div class="bg-white rounded-lg p-3 mb-2 border border-gray-200 shadow-sm">
       <div class="flex justify-between items-center">
         <div>
-          <h2 class="text-xl font-semibold text-gray-800">
+          <h2 class="text-lg font-semibold text-gray-800">
             <i class="las la-link text-blue-600"></i>
             {{ isEditMode ? `${!canEdit ? 'Ver' : 'Editar'} Cadena de Custodia #${custodyChainId}` : 'Nueva Cadena de Custodia' }}
           </h2>
-          <p class="text-sm text-gray-600 mt-1">
+          <p class="text-xs text-gray-600 mt-0.5">
             {{ !canEdit ? (isSheetClosed || isSheetStatusLocked ? sheetLockMessage + ' - No se permiten modificaciones' : 'Esta cadena de custodia está cerrada y no puede ser modificada') : (isEditMode ? 'Modifique los datos de la cadena de custodia' : 'Complete los datos para crear una nueva cadena de custodia') }}
           </p>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <!-- Selector de Estado -->
           <div class="form-control">
             <label class="label py-0 mb-1">
@@ -749,7 +750,7 @@ const currentStatusBadge = computed(() => {
       </div>
       
       <!-- Mensaje informativo sobre el estado -->
-      <div v-if="isEditMode" class="mt-3 pt-3 border-t border-gray-200">
+      <div v-if="isEditMode" class="mt-2 pt-2 border-t border-gray-200">
         <div v-if="!canEdit && custodyChain.status === 'DRAFT'" class="flex items-center gap-2 text-sm text-amber-600">
           <i class="las la-info-circle text-lg"></i>
           <span>La cadena de custodia está en estado <strong>BORRADOR</strong> y puede ser modificada libremente.</span>
@@ -766,14 +767,13 @@ const currentStatusBadge = computed(() => {
     </div>
 
     <!-- Alertas de Validación -->
-    <div v-if="hasValidationIssues" class="mb-6 space-y-3">
-      <!-- Alertas del Técnico -->
-      <div v-if="technicalValidation.hasErrors" class="alert alert-error shadow-lg">
+    <div v-if="hasValidationIssues" class="mb-3 space-y-2">
+      <div v-if="technicalValidation.hasErrors" class="alert alert-error shadow-sm py-2">
         <div class="flex items-start w-full">
-          <i class="las la-exclamation-circle text-2xl"></i>
+          <i class="las la-exclamation-circle text-xl"></i>
           <div class="flex-1">
-            <h3 class="font-bold">Problemas críticos con el técnico seleccionado</h3>
-            <ul class="text-sm mt-2 space-y-1">
+            <h3 class="font-bold text-sm">Problemas críticos con el técnico seleccionado</h3>
+            <ul class="text-xs mt-1 space-y-0.5">
               <li v-for="(issue, idx) in technicalValidation.issues.filter(i => i.type === 'error')" :key="idx">
                 <strong>{{ issue.field }}:</strong> {{ issue.message }}
               </li>
@@ -782,12 +782,12 @@ const currentStatusBadge = computed(() => {
         </div>
       </div>
 
-      <div v-if="technicalValidation.hasWarnings && !technicalValidation.hasErrors" class="alert alert-warning shadow-lg">
+      <div v-if="technicalValidation.hasWarnings && !technicalValidation.hasErrors" class="alert alert-warning shadow-sm py-2">
         <div class="flex items-start w-full">
-          <i class="las la-exclamation-triangle text-2xl"></i>
+          <i class="las la-exclamation-triangle text-xl"></i>
           <div class="flex-1">
-            <h3 class="font-bold">Advertencias del técnico seleccionado</h3>
-            <ul class="text-sm mt-2 space-y-1">
+            <h3 class="font-bold text-sm">Advertencias del técnico seleccionado</h3>
+            <ul class="text-xs mt-1 space-y-0.5">
               <li v-for="(issue, idx) in technicalValidation.issues.filter(i => i.type === 'warning')" :key="idx">
                 <strong>{{ issue.field }}:</strong> {{ issue.message }}
               </li>
@@ -796,13 +796,12 @@ const currentStatusBadge = computed(() => {
         </div>
       </div>
 
-      <!-- Alertas del Vehículo -->
-      <div v-if="vehicleValidation.hasErrors" class="alert alert-error shadow-lg">
+      <div v-if="vehicleValidation.hasErrors" class="alert alert-error shadow-sm py-2">
         <div class="flex items-start w-full">
-          <i class="las la-exclamation-circle text-2xl"></i>
+          <i class="las la-exclamation-circle text-xl"></i>
           <div class="flex-1">
-            <h3 class="font-bold">Problemas críticos con el vehículo seleccionado</h3>
-            <ul class="text-sm mt-2 space-y-1">
+            <h3 class="font-bold text-sm">Problemas críticos con el vehículo seleccionado</h3>
+            <ul class="text-xs mt-1 space-y-0.5">
               <li v-for="(issue, idx) in vehicleValidation.issues.filter(i => i.type === 'error')" :key="idx">
                 <strong>{{ issue.field }}:</strong> {{ issue.message }}
               </li>
@@ -811,12 +810,12 @@ const currentStatusBadge = computed(() => {
         </div>
       </div>
 
-      <div v-if="vehicleValidation.hasWarnings && !vehicleValidation.hasErrors" class="alert alert-warning shadow-lg">
+      <div v-if="vehicleValidation.hasWarnings && !vehicleValidation.hasErrors" class="alert alert-warning shadow-sm py-2">
         <div class="flex items-start w-full">
-          <i class="las la-exclamation-triangle text-2xl"></i>
+          <i class="las la-exclamation-triangle text-xl"></i>
           <div class="flex-1">
-            <h3 class="font-bold">Advertencias del vehículo seleccionado</h3>
-            <ul class="text-sm mt-2 space-y-1">
+            <h3 class="font-bold text-sm">Advertencias del vehículo seleccionado</h3>
+            <ul class="text-xs mt-1 space-y-0.5">
               <li v-for="(issue, idx) in vehicleValidation.issues.filter(i => i.type === 'warning')" :key="idx">
                 <strong>{{ issue.field }}:</strong> {{ issue.message }}
               </li>
@@ -826,596 +825,597 @@ const currentStatusBadge = computed(() => {
       </div>
     </div>
 
-    <form @submit.prevent="checkDuplicatesAndSubmit" class="space-y-6">
-      <!-- Información General -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información General</h6>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Técnico -->
-          <div class="form-control w-full">
-            <label class="label" for="technical">
-              <span class="label-text font-medium">
-                Técnico *
-                <span v-if="technicalValidation.hasErrors" class="badge badge-error badge-sm ml-1">
-                  <i class="las la-exclamation-circle"></i>
+    <form @submit.prevent="checkDuplicatesAndSubmit">
+      <!-- Tabs con colores -->
+      <div class="flex gap-1 mb-3 border-b border-gray-200">
+        <button type="button"
+          class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+          :class="activeTab === 'general'
+            ? 'bg-blue-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600'"
+          @click="activeTab = 'general'">
+          <i class="las la-info-circle"></i> General
+        </button>
+        <button type="button"
+          class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+          :class="activeTab === 'transport'
+            ? 'bg-emerald-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600'"
+          @click="activeTab = 'transport'">
+          <i class="las la-truck"></i> Transporte y Contacto
+        </button>
+        <button type="button"
+          class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+          :class="activeTab === 'resources'
+            ? 'bg-amber-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-600'"
+          @click="activeTab = 'resources'">
+          <i class="las la-water"></i> Recursos y Residuos
+          <span class="badge badge-xs ml-1" :class="activeTab === 'resources' ? 'bg-white text-amber-700' : 'badge-primary'">{{ selectedResources.length }}</span>
+        </button>
+      </div>
+
+      <!-- ═══ Tab 1: General ═══ -->
+      <div v-show="activeTab === 'general'" class="space-y-3">
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Información General</h6>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <!-- Técnico -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">
+                  Técnico *
+                  <span v-if="technicalValidation.hasErrors" class="badge badge-error badge-sm ml-1">
+                    <i class="las la-exclamation-circle"></i>
+                  </span>
+                  <span v-else-if="technicalValidation.hasWarnings" class="badge badge-warning badge-sm ml-1">
+                    <i class="las la-exclamation-triangle"></i>
+                  </span>
                 </span>
-                <span v-else-if="technicalValidation.hasWarnings" class="badge badge-warning badge-sm ml-1">
-                  <i class="las la-exclamation-triangle"></i>
+              </label>
+              <div class="flex gap-2">
+                <select 
+                  id="technical"
+                  v-model.number="custodyChain.technical"
+                  :disabled="!canEdit"
+                  required
+                  class="select select-bordered w-full flex-1"
+                  :class="{ 'select-error': technicalValidation.hasErrors, 'select-warning': technicalValidation.hasWarnings && !technicalValidation.hasErrors }"
+                >
+                  <option :value="null" disabled>Seleccione un técnico</option>
+                  <option v-for="tech in technicals" :key="tech.id" :value="tech.id">
+                    {{ tech.display }}
+                  </option>
+                </select>
+                <button
+                  v-if="selectedTechnicalData"
+                  type="button"
+                  class="btn btn-outline btn-square btn-sm"
+                  @click="openTechnicalModal"
+                  title="Ver detalles del técnico"
+                >
+                  <i class="las la-eye text-lg"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Vehículo -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">
+                  Vehículo *
+                  <span v-if="vehicleValidation.hasErrors" class="badge badge-error badge-sm ml-1">
+                    <i class="las la-exclamation-circle"></i>
+                  </span>
+                  <span v-else-if="vehicleValidation.hasWarnings" class="badge badge-warning badge-sm ml-1">
+                    <i class="las la-exclamation-triangle"></i>
+                  </span>
                 </span>
-              </span>
-            </label>
-            <div class="flex gap-2">
+              </label>
+              <div class="flex gap-2">
+                <select 
+                  id="vehicle"
+                  v-model.number="custodyChain.vehicle"
+                  :disabled="!canEdit"
+                  required
+                  class="select select-bordered w-full flex-1"
+                  :class="{ 'select-error': vehicleValidation.hasErrors, 'select-warning': vehicleValidation.hasWarnings && !vehicleValidation.hasErrors }"
+                >
+                  <option :value="null" disabled>Seleccione un vehículo</option>
+                  <option v-for="vehicle in vehicles" :key="vehicle.id" :value="vehicle.id">
+                    {{ vehicle.display }}
+                  </option>
+                </select>
+                <button
+                  v-if="selectedVehicleData"
+                  type="button"
+                  class="btn btn-outline btn-square btn-sm"
+                  @click="openVehicleModal"
+                  title="Ver detalles del vehículo"
+                >
+                  <i class="las la-eye text-lg"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Consecutivo -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Consecutivo</span>
+              </label>
+              <input 
+                type="text"
+                id="consecutive"
+                v-model="custodyChain.consecutive"
+                :disabled="!canEdit"
+                placeholder="Se generará automáticamente"
+                class="input input-bordered w-full"
+                maxlength="7"
+              />
+            </div>
+
+            <!-- Logística -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">¿Tiene Logística? *</span>
+              </label>
               <select 
-                id="technical"
-                v-model.number="custodyChain.technical"
+                id="have_logistic"
+                v-model="custodyChain.have_logistic"
                 :disabled="!canEdit"
                 required
-                class="select select-bordered w-full flex-1"
-                :class="{ 'select-error': technicalValidation.hasErrors, 'select-warning': technicalValidation.hasWarnings && !technicalValidation.hasErrors }"
+                class="select select-bordered w-full"
               >
-                <option :value="null" disabled>Seleccione un técnico</option>
-                <option v-for="tech in technicals" :key="tech.id" :value="tech.id">
-                  {{ tech.display }}
-                </option>
+                <option value="SI">SÍ</option>
+                <option value="NO">NO</option>
+                <option value="NA">NO APLICA</option>
               </select>
-              <button
-                v-if="selectedTechnicalData"
-                type="button"
-                class="btn btn-outline btn-square"
-                @click="openTechnicalModal"
-                title="Ver detalles del técnico"
-              >
-                <i class="las la-eye text-lg"></i>
-              </button>
             </div>
-          </div>
 
-          <!-- Vehículo -->
-          <div class="form-control w-full">
-            <label class="label" for="vehicle">
-              <span class="label-text font-medium">
-                Vehículo *
-                <span v-if="vehicleValidation.hasErrors" class="badge badge-error badge-sm ml-1">
-                  <i class="las la-exclamation-circle"></i>
-                </span>
-                <span v-else-if="vehicleValidation.hasWarnings" class="badge badge-warning badge-sm ml-1">
-                  <i class="las la-exclamation-triangle"></i>
-                </span>
-              </span>
-            </label>
-            <div class="flex gap-2">
-              <select 
-                id="vehicle"
-                v-model.number="custodyChain.vehicle"
+            <!-- Fecha de Actividad -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Fecha de Actividad *</span>
+              </label>
+              <input
+                type="date"
+                id="activity_date"
+                v-model="custodyChain.activity_date"
                 :disabled="!canEdit"
+                :min="sheetDateMin"
+                :max="sheetDateMax"
                 required
-                class="select select-bordered w-full flex-1"
-                :class="{ 'select-error': vehicleValidation.hasErrors, 'select-warning': vehicleValidation.hasWarnings && !vehicleValidation.hasErrors }"
-              >
-                <option :value="null" disabled>Seleccione un vehículo</option>
-                <option v-for="vehicle in vehicles" :key="vehicle.id" :value="vehicle.id">
-                  {{ vehicle.display }}
-                </option>
-              </select>
-              <button
-                v-if="selectedVehicleData"
-                type="button"
-                class="btn btn-outline btn-square"
-                @click="openVehicleModal"
-                title="Ver detalles del vehículo"
-              >
-                <i class="las la-eye text-lg"></i>
-              </button>
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <!-- Fecha de Emisión -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Fecha de Emisión</span>
+              </label>
+              <input
+                type="date"
+                id="issue_date"
+                v-model="custodyChain.issue_date"
+                :disabled="!canEdit"
+                :min="sheetDateMin"
+                :max="sheetDateMax"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <!-- Ubicación -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Ubicación</span>
+              </label>
+              <input 
+                type="text"
+                id="location"
+                v-model="custodyChain.location"
+                :disabled="!canEdit"
+                placeholder="Ej: Bloque 31"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <!-- Duración (readonly) -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Duración (Horas)</span>
+              </label>
+              <input 
+                type="number"
+                id="time_duration"
+                v-model="custodyChain.time_duration"
+                step="0.01"
+                readonly
+                class="input input-bordered w-full bg-gray-100"
+              />
+            </div>
+
+            <!-- Hora de Inicio -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Hora de Inicio</span>
+              </label>
+              <input 
+                type="time"
+                id="start_time"
+                v-model="custodyChain.start_time"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+                :class="{ 'input-error': !timeValidation.isValid }"
+              />
+            </div>
+
+            <!-- Hora de Fin -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Hora de Fin</span>
+              </label>
+              <input 
+                type="time"
+                id="end_time"
+                v-model="custodyChain.end_time"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+                :class="{ 'input-error': !timeValidation.isValid }"
+              />
+              <label v-if="!timeValidation.isValid" class="label">
+                <span class="label-text-alt text-error">
+                  <i class="las la-exclamation-circle"></i>
+                  {{ timeValidation.message }}
+                </span>
+              </label>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- Consecutivo -->
-          <div class="form-control w-full">
-            <label class="label" for="consecutive">
-              <span class="label-text font-medium">Consecutivo</span>
-            </label>
-            <input 
-              type="text"
-              id="consecutive"
-              v-model="custodyChain.consecutive"
-              :disabled="!canEdit"
-              placeholder="Se generará automáticamente"
-              class="input input-bordered w-full"
-              maxlength="7"
-            />
+      <!-- ═══ Tab 2: Transporte y Contacto ═══ -->
+      <div v-show="activeTab === 'transport'" class="space-y-3">
+        <!-- Información del Transportista -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Información del Transportista</h6>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Nombre de Transportista</span>
+              </label>
+              <input 
+                type="text"
+                id="driver_name"
+                v-model="custodyChain.driver_name"
+                :disabled="!canEdit"
+                placeholder="Nombre completo"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Cédula de Transportista</span>
+              </label>
+              <input 
+                type="text"
+                id="dni_driver"
+                v-model="custodyChain.dni_driver"
+                :disabled="!canEdit"
+                placeholder="Número de identificación"
+                maxlength="15"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Cargo de Transportista</span>
+              </label>
+              <input 
+                type="text"
+                id="driver_position"
+                v-model="custodyChain.driver_position"
+                :disabled="!canEdit"
+                placeholder="Ej: Conductor"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Fecha de Transportista</span>
+              </label>
+              <input
+                type="date"
+                id="driver_date"
+                v-model="custodyChain.driver_date"
+                :disabled="!canEdit"
+                :min="sheetDateMin"
+                :max="sheetDateMax"
+                class="input input-bordered w-full"
+              />
+            </div>
           </div>
+        </div>
 
-          <!-- Fecha de Actividad -->
-          <div class="form-control w-full">
-            <label class="label" for="activity_date">
-              <span class="label-text font-medium">Fecha de Actividad *</span>
-            </label>
-            <input
-              type="date"
-              id="activity_date"
-              v-model="custodyChain.activity_date"
-              :disabled="!canEdit"
-              :min="sheetDateMin"
-              :max="sheetDateMax"
-              required
-              class="input input-bordered w-full"
-            />
+        <!-- Información de Contacto -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Información de Contacto</h6>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Nombre de Contacto</span>
+              </label>
+              <input 
+                type="text"
+                id="contact_name"
+                v-model="custodyChain.contact_name"
+                :disabled="!canEdit"
+                placeholder="Nombre completo"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Cédula de Contacto</span>
+              </label>
+              <input 
+                type="text"
+                id="dni_contact"
+                v-model="custodyChain.dni_contact"
+                :disabled="!canEdit"
+                placeholder="Número de identificación"
+                maxlength="15"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Cargo de Contacto</span>
+              </label>
+              <input 
+                type="text"
+                id="contact_position"
+                v-model="custodyChain.contact_position"
+                :disabled="!canEdit"
+                placeholder="Ej: Maquinista"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Fecha de Contacto</span>
+              </label>
+              <input
+                type="date"
+                id="date_contact"
+                v-model="custodyChain.date_contact"
+                :disabled="!canEdit"
+                :min="sheetDateMin"
+                :max="sheetDateMax"
+                class="input input-bordered w-full"
+              />
+            </div>
           </div>
+        </div>
 
-          <!-- Ubicación -->
+        <!-- Notas -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Notas</h6>
           <div class="form-control w-full">
-            <label class="label" for="location">
-              <span class="label-text font-medium">Ubicación</span>
-            </label>
-            <input 
-              type="text"
-              id="location"
-              v-model="custodyChain.location"
+            <textarea 
+              id="notes"
+              v-model="custodyChain.notes"
               :disabled="!canEdit"
-              placeholder="Ej: Bloque 31"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <!-- Fecha de Emisión -->
-          <div class="form-control w-full">
-            <label class="label" for="issue_date">
-              <span class="label-text font-medium">Fecha de Emisión</span>
-            </label>
-            <input
-              type="date"
-              id="issue_date"
-              v-model="custodyChain.issue_date"
-              :disabled="!canEdit"
-              :min="sheetDateMin"
-              :max="sheetDateMax"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <!-- Hora de Inicio -->
-          <div class="form-control w-full">
-            <label class="label" for="start_time">
-              <span class="label-text font-medium">Hora de Inicio</span>
-            </label>
-            <input 
-              type="time"
-              id="start_time"
-              v-model="custodyChain.start_time"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-              :class="{ 'input-error': !timeValidation.isValid }"
-            />
-          </div>
-
-          <!-- Hora de Fin -->
-          <div class="form-control w-full">
-            <label class="label" for="end_time">
-              <span class="label-text font-medium">Hora de Fin</span>
-            </label>
-            <input 
-              type="time"
-              id="end_time"
-              v-model="custodyChain.end_time"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-              :class="{ 'input-error': !timeValidation.isValid }"
-            />
-            <label v-if="!timeValidation.isValid" class="label">
-              <span class="label-text-alt text-error">
-                <i class="las la-exclamation-circle"></i>
-                {{ timeValidation.message }}
-              </span>
-            </label>
-          </div>
-
-          <!-- Duración -->
-          <div class="form-control w-full">
-            <label class="label" for="time_duration">
-              <span class="label-text font-medium">Duración (Horas)</span>
-            </label>
-            <input 
-              type="number"
-              id="time_duration"
-              v-model="custodyChain.time_duration"
-              step="0.01"
-              readonly
-              class="input input-bordered w-full bg-gray-100"
-            />
-          </div>
-
-          <!-- Logística -->
-          <div class="form-control w-full">
-            <label class="label" for="have_logistic">
-              <span class="label-text font-medium">¿Tiene Logística? *</span>
-            </label>
-            <select 
-              id="have_logistic"
-              v-model="custodyChain.have_logistic"
-              :disabled="!canEdit"
-              required
-              class="select select-bordered w-full"
-            >
-              <option value="SI">SÍ</option>
-              <option value="NO">NO</option>
-              <option value="NA">NO APLICA</option>
-            </select>
+              rows="3"
+              placeholder="Observaciones o notas adicionales..."
+              class="textarea textarea-bordered w-full"
+            ></textarea>
           </div>
         </div>
       </div>
 
-      <!-- Información del Transportista -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información del Transportista</h6>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label" for="driver_name">
-              <span class="label-text font-medium">Nombre de Transportista</span>
-            </label>
-            <input 
-              type="text"
-              id="driver_name"
-              v-model="custodyChain.driver_name"
-              :disabled="!canEdit"
-              placeholder="Nombre completo"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="dni_driver">
-              <span class="label-text font-medium">Cédula de Transportista</span>
-            </label>
-            <input 
-              type="text"
-              id="dni_driver"
-              v-model="custodyChain.dni_driver"
-              :disabled="!canEdit"
-              placeholder="Número de identificación"
-              maxlength="15"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="driver_position">
-              <span class="label-text font-medium">Cargo de Transportista</span>
-            </label>
-            <input 
-              type="text"
-              id="driver_position"
-              v-model="custodyChain.driver_position"
-              :disabled="!canEdit"
-              placeholder="Ej: Conductor"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="driver_date">
-              <span class="label-text font-medium">Fecha de Transportista</span>
-            </label>
-            <input
-              type="date"
-              id="driver_date"
-              v-model="custodyChain.driver_date"
-              :disabled="!canEdit"
-              :min="sheetDateMin"
-              :max="sheetDateMax"
-              class="input input-bordered w-full"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Información de Contacto -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información de Contacto</h6>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label" for="contact_name">
-              <span class="label-text font-medium">Nombre de Contacto</span>
-            </label>
-            <input 
-              type="text"
-              id="contact_name"
-              v-model="custodyChain.contact_name"
-              :disabled="!canEdit"
-              placeholder="Nombre completo"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="dni_contact">
-              <span class="label-text font-medium">Cédula de Contacto</span>
-            </label>
-            <input 
-              type="text"
-              id="dni_contact"
-              v-model="custodyChain.dni_contact"
-              :disabled="!canEdit"
-              placeholder="Número de identificación"
-              maxlength="15"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="contact_position">
-              <span class="label-text font-medium">Cargo de Contacto</span>
-            </label>
-            <input 
-              type="text"
-              id="contact_position"
-              v-model="custodyChain.contact_position"
-              :disabled="!canEdit"
-              placeholder="Ej: Maquinista"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="date_contact">
-              <span class="label-text font-medium">Fecha de Contacto</span>
-            </label>
-            <input
-              type="date"
-              id="date_contact"
-              v-model="custodyChain.date_contact"
-              :disabled="!canEdit"
-              :min="sheetDateMin"
-              :max="sheetDateMax"
-              class="input input-bordered w-full"
-            />
+      <!-- ═══ Tab 3: Recursos y Residuos ═══ -->
+      <div v-show="activeTab === 'resources'" class="space-y-3">
+        <!-- Recursos del Proyecto -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">
+            Recursos de la Planilla
+            <span class="badge badge-sm badge-primary ml-2">{{ selectedResources.length }} seleccionados</span>
+          </h6>
+          
+          <div class="overflow-x-auto">
+            <table class="table table-zebra w-full table-sm">
+              <thead>
+                <tr class="bg-gray-500 text-white">
+                  <th class="border border-gray-300 w-24 text-center">
+                    <input type="checkbox" class="checkbox checkbox-sm" :disabled="!canEdit" />
+                  </th>
+                  <th class="border border-gray-300">#</th>
+                  <th class="border border-gray-300">Código</th>
+                  <th class="border border-gray-300">Descripción</th>
+                  <th class="border border-gray-300 text-right">Costo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr 
+                  v-for="(resource, index) in availableResources" 
+                  :key="resource.id"
+                  :class="{ 
+                    'bg-blue-100': resource.selected,
+                    'cursor-pointer hover:bg-blue-50': !isChainClosed && (resource.type !== 'SERVIC' || resource.is_active),
+                    'opacity-60': isChainClosed,
+                    'opacity-50 bg-gray-100': resource.type === 'SERVIC' && !resource.is_active,
+                    'cursor-not-allowed': resource.type === 'SERVIC' && !resource.is_active
+                  }"
+                  @click="!isChainClosed && toggleResourceSelection(resource.id)"
+                  :title="resource.type === 'SERVIC' && !resource.is_active ? 'Recurso inactivo - no se puede seleccionar' : ''"
+                >
+                  <td class="border border-gray-300">
+                    <div class="flex items-center justify-between px-2">
+                      <span 
+                        v-if="resource.is_active" 
+                        class="badge badge-success badge-sm gap-1" 
+                        title="Recurso activo"
+                      >
+                        <i class="las la-check-circle"></i>
+                      </span>
+                      <span 
+                        v-else 
+                        class="badge badge-error badge-sm gap-1" 
+                        title="Recurso inactivo"
+                      >
+                        <i class="las la-times-circle"></i>
+                      </span>
+                      <input 
+                        type="checkbox" 
+                        class="checkbox checkbox-sm checkbox-primary"
+                        :checked="resource.selected"
+                        :disabled="isChainClosed || (resource.type === 'SERVIC' && !resource.is_active)"
+                        @click.stop="!isChainClosed && toggleResourceSelection(resource.id)"
+                      />
+                    </div>
+                  </td>
+                  <td class="border border-gray-300">{{ index + 1 }}</td>
+                  <td class="border border-gray-300">{{ resource.resource_item_code }}</td>
+                  <td class="border border-gray-300">{{ resource.detailed_description }}</td>
+                  <td class="border border-gray-300 text-right font-mono">${{ resource.cost }}</td>
+                </tr>
+                <tr v-if="availableResources.length === 0">
+                  <td colspan="5" class="text-center text-gray-500 py-8">
+                    <i class="las la-inbox text-4xl"></i>
+                    <p>No hay recursos disponibles</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
 
-      <!-- Recursos del Proyecto -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">
-          Recursos de la Planilla
-          <span class="badge badge-primary ml-2">{{ selectedResources.length }} seleccionados</span>
-        </h6>
-        
-        <div class="overflow-x-auto">
-          <table class="table table-zebra w-full table-sm">
-            <thead>
-              <tr class="bg-gray-500 text-white">
-                <th class="border border-gray-300 w-24 text-center">
-                  <input type="checkbox" class="checkbox checkbox-sm" :disabled="!canEdit" />
-                </th>
-                <th class="border border-gray-300">#</th>
-                <th class="border border-gray-300">Código</th>
-                <th class="border border-gray-300">Descripción</th>
-                <th class="border border-gray-300 text-right">Costo</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr 
-                v-for="(resource, index) in availableResources" 
-                :key="resource.id"
-                :class="{ 
-                  'bg-blue-100': resource.selected,
-                  'cursor-pointer hover:bg-blue-50': !isChainClosed && (resource.type !== 'SERVIC' || resource.is_active),
-                  'opacity-60': isChainClosed,
-                  'opacity-50 bg-gray-100': resource.type === 'SERVIC' && !resource.is_active,
-                  'cursor-not-allowed': resource.type === 'SERVIC' && !resource.is_active
-                }"
-                @click="!isChainClosed && toggleResourceSelection(resource.id)"
-                :title="resource.type === 'SERVIC' && !resource.is_active ? 'Recurso inactivo - no se puede seleccionar' : ''"
-              >
-                <td class="border border-gray-300">
-                  <div class="flex items-center justify-between px-2">
-                    <span 
-                      v-if="resource.is_active" 
-                      class="badge badge-success badge-sm gap-1" 
-                      title="Recurso activo"
-                    >
-                      <i class="las la-check-circle"></i>
-                    </span>
-                    <span 
-                      v-else 
-                      class="badge badge-error badge-sm gap-1" 
-                      title="Recurso inactivo"
-                    >
-                      <i class="las la-times-circle"></i>
-                    </span>
-                    <input 
-                      type="checkbox" 
-                      class="checkbox checkbox-sm checkbox-primary"
-                      :checked="resource.selected"
-                      :disabled="isChainClosed || (resource.type === 'SERVIC' && !resource.is_active)"
-                      @click.stop="!isChainClosed && toggleResourceSelection(resource.id)"
-                    />
-                  </div>
-                </td>
-                <td class="border border-gray-300">{{ index + 1 }}</td>
-                <td class="border border-gray-300">{{ resource.resource_item_code }}</td>
-                <td class="border border-gray-300">{{ resource.detailed_description }}</td>
-                <td class="border border-gray-300 text-right font-mono">${{ resource.cost }}</td>
-              </tr>
-              <tr v-if="availableResources.length === 0">
-                <td colspan="5" class="text-center text-gray-500 py-8">
-                  <i class="las la-inbox text-4xl"></i>
-                  <p>No hay recursos disponibles</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Tipo de Residuos -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Tipo de Residuos / Aguas</h6>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="form-control">
-            <label class="label cursor-pointer justify-start gap-3">
-              <input 
-                type="checkbox" 
-                v-model="custodyChain.black_water"
-                :disabled="!canEdit"
-                class="checkbox checkbox-primary"
-              />
-              <span class="label-text font-medium">Aguas Negras</span>
-            </label>
-          </div>
-
-          <div class="form-control">
-            <label class="label cursor-pointer justify-start gap-3">
-              <input 
-                type="checkbox" 
-                v-model="custodyChain.grey_water"
-                :disabled="!canEdit"
-                class="checkbox checkbox-primary"
-              />
-              <span class="label-text font-medium">Aguas Grises</span>
-            </label>
-          </div>
-
-          <div class="form-control">
-            <label class="label cursor-pointer justify-start gap-3">
-              <input 
-                type="checkbox" 
-                v-model="custodyChain.clean_water"
-                :disabled="!canEdit"
-                class="checkbox checkbox-primary"
-              />
-              <span class="label-text font-medium">Aguas Limpias</span>
-            </label>
-          </div>
-
-          <div class="form-control">
-            <label class="label cursor-pointer justify-start gap-3">
-              <input 
-                type="checkbox" 
-                v-model="custodyChain.activated_sludge"
-                :disabled="!canEdit"
-                class="checkbox checkbox-primary"
-              />
-              <span class="label-text font-medium">Lodos Activados</span>
-            </label>
-          </div>
-
-          <div class="form-control">
-            <label class="label cursor-pointer justify-start gap-3">
-              <input 
-                type="checkbox" 
-                v-model="custodyChain.treated_wastewater"
-                :disabled="!canEdit"
-                class="checkbox checkbox-primary"
-              />
-              <span class="label-text font-medium">Aguas Residuales Tratadas</span>
-            </label>
-          </div>
-
-          <div class="form-control">
-            <label class="label cursor-pointer justify-start gap-3">
-              <input 
-                type="checkbox" 
-                v-model="custodyChain.organic_grease"
-                :disabled="!canEdit"
-                class="checkbox checkbox-primary"
-              />
-              <span class="label-text font-medium">Grasa Orgánica</span>
-            </label>
+        <!-- Tipo de Residuos -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Tipo de Residuos / Aguas</h6>
+          
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div class="form-control">
+              <label class="label cursor-pointer justify-start gap-2">
+                <input type="checkbox" v-model="custodyChain.black_water" :disabled="!canEdit" class="checkbox checkbox-primary checkbox-sm" />
+                <span class="label-text font-medium text-sm">Aguas Negras</span>
+              </label>
+            </div>
+            <div class="form-control">
+              <label class="label cursor-pointer justify-start gap-2">
+                <input type="checkbox" v-model="custodyChain.grey_water" :disabled="!canEdit" class="checkbox checkbox-primary checkbox-sm" />
+                <span class="label-text font-medium text-sm">Aguas Grises</span>
+              </label>
+            </div>
+            <div class="form-control">
+              <label class="label cursor-pointer justify-start gap-2">
+                <input type="checkbox" v-model="custodyChain.clean_water" :disabled="!canEdit" class="checkbox checkbox-primary checkbox-sm" />
+                <span class="label-text font-medium text-sm">Aguas Limpias</span>
+              </label>
+            </div>
+            <div class="form-control">
+              <label class="label cursor-pointer justify-start gap-2">
+                <input type="checkbox" v-model="custodyChain.activated_sludge" :disabled="!canEdit" class="checkbox checkbox-primary checkbox-sm" />
+                <span class="label-text font-medium text-sm">Lodos Activados</span>
+              </label>
+            </div>
+            <div class="form-control">
+              <label class="label cursor-pointer justify-start gap-2">
+                <input type="checkbox" v-model="custodyChain.treated_wastewater" :disabled="!canEdit" class="checkbox checkbox-primary checkbox-sm" />
+                <span class="label-text font-medium text-sm">Aguas Residuales</span>
+              </label>
+            </div>
+            <div class="form-control">
+              <label class="label cursor-pointer justify-start gap-2">
+                <input type="checkbox" v-model="custodyChain.organic_grease" :disabled="!canEdit" class="checkbox checkbox-primary checkbox-sm" />
+                <span class="label-text font-medium text-sm">Grasa Orgánica</span>
+              </label>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Totales -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">
-          Totales
-          <span class="text-xs text-gray-500 ml-2">(Los valores se convierten automáticamente)</span>
-        </h6>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="form-control w-full">
-            <label class="label" for="total_gallons">
-              <span class="label-text font-medium">Total Galones</span>
-            </label>
-            <input 
-              type="number"
-              id="total_gallons"
-              v-model.number="custodyChain.total_gallons"
-              @input="handleGallonsInput"
-              :disabled="!canEdit"
-              min="0"
-              step="0.01"
-              class="input input-bordered w-full"
-              placeholder="0.00"
-            />
+        <!-- Totales -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">
+            Totales
+            <span class="text-xs text-gray-500 ml-2">(Los valores se convierten automáticamente)</span>
+          </h6>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Total Galones</span>
+              </label>
+              <input 
+                type="number"
+                id="total_gallons"
+                v-model.number="custodyChain.total_gallons"
+                @input="handleGallonsInput"
+                :disabled="!canEdit"
+                min="0"
+                step="0.01"
+                class="input input-bordered w-full"
+                placeholder="0.00"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Total Barriles</span>
+              </label>
+              <input 
+                type="number"
+                id="total_barrels"
+                v-model.number="custodyChain.total_barrels"
+                @input="handleBarrelsInput"
+                :disabled="!canEdit"
+                min="0"
+                step="0.01"
+                class="input input-bordered w-full"
+                placeholder="0.00"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Total Metros Cúbicos</span>
+              </label>
+              <input 
+                type="number"
+                id="total_cubic_meters"
+                v-model.number="custodyChain.total_cubic_meters"
+                @input="handleCubicMetersInput"
+                :disabled="!canEdit"
+                min="0"
+                step="0.01"
+                class="input input-bordered w-full"
+                placeholder="0.00"
+              />
+            </div>
           </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="total_barrels">
-              <span class="label-text font-medium">Total Barriles</span>
-            </label>
-            <input 
-              type="number"
-              id="total_barrels"
-              v-model.number="custodyChain.total_barrels"
-              @input="handleBarrelsInput"
-              :disabled="!canEdit"
-              min="0"
-              step="0.01"
-              class="input input-bordered w-full"
-              placeholder="0.00"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="total_cubic_meters">
-              <span class="label-text font-medium">Total Metros Cúbicos</span>
-            </label>
-            <input 
-              type="number"
-              id="total_cubic_meters"
-              v-model.number="custodyChain.total_cubic_meters"
-              @input="handleCubicMetersInput"
-              :disabled="!canEdit"
-              min="0"
-              step="0.01"
-              class="input input-bordered w-full"
-              placeholder="0.00"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Notas -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Notas</h6>
-        
-        <div class="form-control w-full">
-          <textarea 
-            id="notes"
-            v-model="custodyChain.notes"
-            :disabled="!canEdit"
-            rows="4"
-            placeholder="Observaciones o notas adicionales..."
-            class="textarea textarea-bordered w-full"
-          ></textarea>
         </div>
       </div>
 
       <!-- Botones -->
-      <div class="flex gap-3 justify-end mt-6">
-        <button type="button" class="btn btn-outline" @click="cancelForm" :disabled="isLoading">
+      <div class="flex gap-2 justify-end mt-3">
+        <button type="button" class="btn btn-outline btn-sm" @click="cancelForm" :disabled="isLoading">
           <i class="las la-times"></i>
           {{ !canEdit ? 'Cerrar' : 'Cancelar' }}
         </button>
         <button 
           v-if="canEdit"
           type="submit" 
-          class="btn btn-primary" 
+          class="btn btn-primary btn-sm" 
           :disabled="isLoading"
         >
           <i v-if="!isLoading" class="las la-save"></i>

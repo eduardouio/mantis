@@ -311,34 +311,49 @@ const deleteMaintenanceFile = async () => {
     </div>
 
     <form @submit.prevent="submitForm">
-      <!-- Tabs -->
-      <div class="tabs tabs-bordered mb-2">
-        <a class="tab tab-sm" :class="{ 'tab-active': activeTab === 'general' }" @click="activeTab = 'general'">
-          <i class="las la-cog mr-1"></i> General y Costos
-        </a>
-        <a class="tab tab-sm" :class="{ 'tab-active': activeTab === 'maintenance' }" @click="activeTab = 'maintenance'">
-          <i class="las la-wrench mr-1"></i> Mantenimiento
-        </a>
-        <a class="tab tab-sm" :class="{ 'tab-active': activeTab === 'details' }" @click="activeTab = 'details'">
-          <i class="las la-clipboard-check mr-1"></i> Observaciones y Responsables
-        </a>
+      <!-- Tabs con colores -->
+      <div class="flex gap-1 mb-3 border-b border-gray-200">
+        <button type="button"
+          class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+          :class="activeTab === 'general'
+            ? 'bg-blue-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600'"
+          @click="activeTab = 'general'">
+          <i class="las la-cog"></i> General y Costos
+        </button>
+        <button type="button"
+          class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+          :class="activeTab === 'maintenance'
+            ? 'bg-emerald-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600'"
+          @click="activeTab = 'maintenance'">
+          <i class="las la-wrench"></i> Mantenimiento
+        </button>
+        <button type="button"
+          class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+          :class="activeTab === 'details'
+            ? 'bg-amber-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-600'"
+          @click="activeTab = 'details'">
+          <i class="las la-clipboard-check"></i> Observaciones y Responsables
+        </button>
       </div>
 
       <!-- Tab: General y Costos -->
-      <div v-show="activeTab === 'general'" class="space-y-2">
-        <div class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-          <h6 class="font-semibold text-sm mb-2 text-gray-700 border-b pb-1">Datos Generales del Mantenimiento</h6>
+      <div v-show="activeTab === 'general'" class="space-y-3">
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Datos Generales del Mantenimiento</h6>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <!-- Técnico Responsable -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Técnico Responsable</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Técnico Responsable</span>
               </label>
               <select
                 v-model.number="sheet.responsible_technical_id"
                 :disabled="!canEdit"
-                class="select select-bordered select-sm w-full"
+                class="select select-bordered w-full"
               >
                 <option :value="null">Seleccione un técnico (opcional)</option>
                 <option v-for="tech in technicals" :key="tech.id" :value="tech.id">
@@ -349,41 +364,41 @@ const deleteMaintenanceFile = async () => {
 
             <!-- Solicitado Por -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Solicitado Por</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Solicitado Por</span>
               </label>
               <input
                 type="text"
                 v-model="sheet.requested_by"
                 placeholder="Nombre de quien solicita"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
 
             <!-- RIG -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">RIG</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">RIG</span>
               </label>
               <input
                 type="text"
                 v-model="sheet.rig"
                 placeholder="Ej: 125"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
 
             <!-- Equipo -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Equipo</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Equipo</span>
               </label>
               <select
                 v-model.number="sheet.resource_item_id"
                 :disabled="!canEdit"
-                class="select select-bordered select-sm w-full"
+                class="select select-bordered w-full"
               >
                 <option :value="null">Seleccione un equipo (opcional)</option>
                 <option v-for="equip in availableEquipments" :key="equip.resource_item_id" :value="equip.resource_item_id">
@@ -394,41 +409,41 @@ const deleteMaintenanceFile = async () => {
 
             <!-- Código -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Código</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Código</span>
               </label>
               <input
                 type="text"
                 v-model="sheet.code"
                 placeholder="Código del equipo"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
 
             <!-- Ubicación -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Ubicación</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Ubicación</span>
               </label>
               <input
                 type="text"
                 v-model="sheet.location"
                 placeholder="Ubicación del equipo"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
 
             <!-- Tipo de Mantenimiento -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Tipo de Mantenimiento *</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Tipo de Mantenimiento *</span>
               </label>
               <select
                 v-model="sheet.maintenance_type"
                 :disabled="!canEdit"
-                class="select select-bordered select-sm w-full"
+                class="select select-bordered w-full"
                 required
               >
                 <option value="PREVENTIVO">PREVENTIVO</option>
@@ -438,49 +453,49 @@ const deleteMaintenanceFile = async () => {
 
             <!-- Fecha de Inicio -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Fecha de Inicio *</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Fecha de Inicio *</span>
               </label>
               <input
                 type="date"
                 v-model="sheet.start_date"
                 required
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
 
             <!-- Fecha de Finalización -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Fecha de Finalización</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Fecha de Finalización</span>
               </label>
               <input
                 type="date"
                 v-model="sheet.end_date"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
 
             <!-- Total Días -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Total Días</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Total Días</span>
               </label>
               <input
                 type="number"
                 v-model.number="sheet.total_days"
                 min="0"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
 
             <!-- Costo Día -->
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Costo Día</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Costo Día</span>
               </label>
               <input
                 type="number"
@@ -488,20 +503,20 @@ const deleteMaintenanceFile = async () => {
                 min="0"
                 step="0.01"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
           </div>
         </div>
 
         <!-- Costos -->
-        <div class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-          <h6 class="font-semibold text-sm mb-2 text-gray-700 border-b pb-1">Costos</h6>
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Costos</h6>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Costo Total</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Costo Total</span>
               </label>
               <input
                 type="number"
@@ -509,26 +524,26 @@ const deleteMaintenanceFile = async () => {
                 min="0"
                 step="0.01"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
 
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Concepto de Mantenimiento</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Concepto de Mantenimiento</span>
               </label>
               <input
                 type="text"
                 v-model="sheet.sheet_project_maintenance_concept"
                 placeholder="Ej: SERVICIO TÉCNICO ESPECIALIZADO"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
 
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Costo Logístico</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Costo Logístico</span>
               </label>
               <input
                 type="number"
@@ -536,20 +551,20 @@ const deleteMaintenanceFile = async () => {
                 min="0"
                 step="0.01"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
 
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Concepto Logístico</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Concepto Logístico</span>
               </label>
               <input
                 type="text"
                 v-model="sheet.sheet_project_logistics_concept"
                 placeholder="Concepto logístico (opcional)"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
           </div>
@@ -557,137 +572,137 @@ const deleteMaintenanceFile = async () => {
       </div>
 
       <!-- Tab: Mantenimiento -->
-      <div v-show="activeTab === 'maintenance'" class="space-y-2">
-        <div class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-          <h6 class="font-semibold text-sm mb-2 text-gray-700 border-b pb-1">Descripción del Mantenimiento</h6>
+      <div v-show="activeTab === 'maintenance'" class="space-y-3">
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Descripción del Mantenimiento</h6>
           <textarea
             v-model="sheet.maintenance_description"
-            rows="3"
+            rows="4"
             placeholder="Describa las actividades realizadas..."
             :disabled="!canEdit"
-            class="textarea textarea-bordered textarea-sm w-full"
+            class="textarea textarea-bordered w-full"
           ></textarea>
         </div>
 
-        <div class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-          <h6 class="font-semibold text-sm mb-2 text-gray-700 border-b pb-1">Falla y Posibles Causas</h6>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Falla y Posibles Causas</h6>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Descripción de la Falla</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Descripción de la Falla</span>
               </label>
               <textarea
                 v-model="sheet.fault_description"
-                rows="3"
+                rows="4"
                 placeholder="Describa la falla encontrada..."
                 :disabled="!canEdit"
-                class="textarea textarea-bordered textarea-sm w-full"
+                class="textarea textarea-bordered w-full"
               ></textarea>
             </div>
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Posibles Causas</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Posibles Causas</span>
               </label>
               <textarea
                 v-model="sheet.possible_causes"
-                rows="3"
+                rows="4"
                 placeholder="Posibles causas de la falla..."
                 :disabled="!canEdit"
-                class="textarea textarea-bordered textarea-sm w-full"
+                class="textarea textarea-bordered w-full"
               ></textarea>
             </div>
           </div>
         </div>
 
-        <div class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-          <h6 class="font-semibold text-sm mb-2 text-gray-700 border-b pb-1">Repuestos y/o Accesorios Reemplazados</h6>
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Repuestos y/o Accesorios Reemplazados</h6>
           <textarea
             v-model="sheet.replaced_parts"
-            rows="2"
+            rows="3"
             placeholder="Detalle los repuestos o accesorios reemplazados..."
             :disabled="!canEdit"
-            class="textarea textarea-bordered textarea-sm w-full"
+            class="textarea textarea-bordered w-full"
           ></textarea>
         </div>
       </div>
 
       <!-- Tab: Observaciones y Responsables -->
-      <div v-show="activeTab === 'details'" class="space-y-2">
-        <div class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-          <h6 class="font-semibold text-sm mb-2 text-gray-700 border-b pb-1">Observaciones y Recomendaciones</h6>
+      <div v-show="activeTab === 'details'" class="space-y-3">
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Observaciones y Recomendaciones</h6>
           <textarea
             v-model="sheet.observations"
-            rows="2"
+            rows="3"
             placeholder="Observaciones y recomendaciones..."
             :disabled="!canEdit"
-            class="textarea textarea-bordered textarea-sm w-full"
+            class="textarea textarea-bordered w-full"
           ></textarea>
         </div>
 
-        <div class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-          <h6 class="font-semibold text-sm mb-2 text-gray-700 border-b pb-1">Responsables</h6>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Responsables</h6>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Realizado Por</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Realizado Por</span>
               </label>
               <input
                 type="text"
                 v-model="sheet.performed_by"
                 placeholder="Nombre de quien realizó"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Cargo</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Cargo</span>
               </label>
               <input
                 type="text"
                 v-model="sheet.performed_by_position"
                 placeholder="Cargo de quien realizó"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Aprobado Por</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Aprobado Por</span>
               </label>
               <input
                 type="text"
                 v-model="sheet.approved_by"
                 placeholder="Nombre de quien aprobó"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
             <div class="form-control w-full">
-              <label class="label py-0.5">
-                <span class="label-text text-xs font-medium">Cargo</span>
+              <label class="label py-1">
+                <span class="label-text font-medium">Cargo</span>
               </label>
               <input
                 type="text"
                 v-model="sheet.approved_by_position"
                 placeholder="Cargo de quien aprobó"
                 :disabled="!canEdit"
-                class="input input-bordered input-sm w-full"
+                class="input input-bordered w-full"
               />
             </div>
           </div>
         </div>
 
         <!-- Archivo PDF -->
-        <div v-if="isEditMode" class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-          <h6 class="font-semibold text-sm mb-2 text-gray-700 border-b pb-1">
+        <div v-if="isEditMode" class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">
             <i class="las la-file-pdf text-red-500"></i>
             Archivo PDF de la Hoja
           </h6>
 
-          <div v-if="maintenanceFileUrl" class="flex items-center gap-2 mb-2 p-2 bg-green-50 border border-green-200 rounded">
+          <div v-if="maintenanceFileUrl" class="flex items-center gap-2 mb-3 p-2 bg-green-50 border border-green-200 rounded">
             <i class="las la-check-circle text-success text-lg"></i>
-            <span class="flex-1 text-xs">
+            <span class="flex-1 text-sm">
               <strong>Archivo cargado:</strong> {{ maintenanceFileName }}
             </span>
             <a :href="maintenanceFileUrl" target="_blank" class="btn btn-xs btn-ghost text-blue-500">
@@ -703,9 +718,9 @@ const deleteMaintenanceFile = async () => {
             </button>
           </div>
 
-          <div v-else class="flex items-center gap-2 mb-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
+          <div v-else class="flex items-center gap-2 mb-3 p-2 bg-yellow-50 border border-yellow-200 rounded">
             <i class="las la-exclamation-circle text-warning text-lg"></i>
-            <span class="text-xs text-gray-600">No se ha cargado un archivo PDF para esta hoja.</span>
+            <span class="text-sm text-gray-600">No se ha cargado un archivo PDF para esta hoja.</span>
           </div>
 
           <div v-if="canEdit" class="flex items-center gap-2">
@@ -719,20 +734,20 @@ const deleteMaintenanceFile = async () => {
             <span v-if="uploadingFile" class="loading loading-spinner loading-sm text-primary"></span>
           </div>
 
-          <div v-if="uploadFileMsg" class="mt-1 text-xs" :class="uploadFileMsgType === 'success' ? 'text-success' : 'text-error'">
+          <div v-if="uploadFileMsg" class="mt-1 text-sm" :class="uploadFileMsgType === 'success' ? 'text-success' : 'text-error'">
             {{ uploadFileMsg }}
           </div>
         </div>
 
         <!-- Notas -->
-        <div class="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-          <h6 class="font-semibold text-sm mb-2 text-gray-700 border-b pb-1">Notas</h6>
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Notas</h6>
           <textarea
             v-model="sheet.notes"
-            rows="2"
+            rows="3"
             placeholder="Notas adicionales..."
             :disabled="!canEdit"
-            class="textarea textarea-bordered textarea-sm w-full"
+            class="textarea textarea-bordered w-full"
           ></textarea>
         </div>
       </div>

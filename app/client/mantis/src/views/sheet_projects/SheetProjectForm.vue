@@ -14,6 +14,7 @@ const sheetProjectStore = UseSheetProjectsStore();
 const projectStore = UseProjectStore();
 const projectResourceStore = UseProjectResourceStore();
 const isSubmitting = ref(false);
+const activeTab = ref('general');
 
 const project = computed(() => projectStore.project);
 const resources = computed(() => projectResourceStore.resourcesProject || []);
@@ -936,271 +937,305 @@ watch(selectedEquipmentResources, () => {
           </div>
         </div>
 
-        <div class="divider">Información de la Planilla</div>
+        <!-- ═══ TABS CON COLORES ═══ -->
+        <div class="flex gap-1 mb-3 border-b border-gray-200">
+          <button type="button"
+            class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+            :class="activeTab === 'general'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600'"
+            @click="activeTab = 'general'">
+            <i class="las la-info-circle"></i> Información General
+          </button>
+          <button type="button"
+            class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+            :class="activeTab === 'resources'
+              ? 'bg-emerald-600 text-white shadow-sm'
+              : 'bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600'"
+            @click="activeTab = 'resources'">
+            <i class="las la-cubes"></i> Recursos
+            <span class="badge badge-xs ml-1" :class="activeTab === 'resources' ? 'badge-ghost text-white' : 'badge-primary'">{{ selectedResources.length }}/{{ activeResources.length }}</span>
+          </button>
+          <button type="button"
+            class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+            :class="activeTab === 'notes'
+              ? 'bg-amber-600 text-white shadow-sm'
+              : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-600'"
+            @click="activeTab = 'notes'">
+            <i class="las la-sticky-note"></i> Notas y Totales
+          </button>
+        </div>
 
-        <!-- Fila 1: Fechas + Estado + Tipo Servicio (4 columnas) -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Fecha Emisión</span>
-            </label>
-            <input v-model="formData.issue_date" type="date" class="input input-bordered w-full" :disabled="isHeadersLocked" />
+        <!-- ═══ Tab 1: Información General ═══ -->
+        <div v-show="activeTab === 'general'" class="space-y-4">
+          <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+            <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Fechas y Estado</h6>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div class="form-control w-full">
+                <label class="label py-1">
+                  <span class="label-text font-medium">Fecha Emisión</span>
+                </label>
+                <input v-model="formData.issue_date" type="date" class="input input-bordered w-full" :disabled="isHeadersLocked" />
+              </div>
+              <div class="form-control w-full">
+                <label class="label py-1">
+                  <span class="label-text font-medium">Inicio Período *</span>
+                </label>
+                <input 
+                  v-model="formData.period_start" 
+                  type="date" 
+                  class="input input-bordered w-full" 
+                  :class="{ 'input-error': !formData.period_start || periodDatesError }" 
+                  required 
+                  :disabled="isHeadersLocked"
+                />
+                <label v-if="periodDatesError && formData.period_start" class="label">
+                  <span class="label-text-alt text-error">{{ periodDatesError }}</span>
+                </label>
+              </div>
+              <div class="form-control w-full">
+                <label class="label py-1">
+                  <span class="label-text font-medium">Fin Período *</span>
+                </label>
+                <input 
+                  v-model="formData.period_end" 
+                  type="date" 
+                  class="input input-bordered w-full" 
+                  :class="{ 'input-error': !formData.period_end || periodDatesError }" 
+                  required 
+                  :disabled="isHeadersLocked"
+                />
+                <label v-if="periodDatesError && formData.period_end" class="label">
+                  <span class="label-text-alt text-error">{{ periodDatesError }}</span>
+                </label>
+              </div>
+              <div class="form-control w-full">
+                <label class="label py-1">
+                  <span class="label-text font-medium">Estado</span>
+                </label>
+                <select v-model="formData.status" class="select select-bordered w-full" :disabled="isHeadersLocked">
+                  <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Inicio Período *</span>
-            </label>
-            <input 
-              v-model="formData.period_start" 
-              type="date" 
-              class="input input-bordered w-full" 
-              :class="{ 'input-error': !formData.period_start || periodDatesError }" 
-              required 
-              :disabled="isHeadersLocked"
-            />
-            <label v-if="periodDatesError && formData.period_start" class="label">
-              <span class="label-text-alt text-error">{{ periodDatesError }}</span>
-            </label>
+
+          <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+            <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Tipo de Servicio y Contacto</h6>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div class="form-control w-full">
+                <label class="label py-1">
+                  <span class="label-text font-medium">Tipo Servicio *</span>
+                </label>
+                <select v-model="formData.service_type" class="select select-bordered w-full" required :disabled="isHeadersLocked">
+                  <option v-for="opt in serviceTypeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+                </select>
+              </div>
+              <div class="form-control w-full">
+                <label class="label py-1">
+                  <span class="label-text font-medium">Contacto</span>
+                </label>
+                <input v-model="formData.contact_reference" type="text" class="input input-bordered w-full" placeholder="Nombre contacto" :disabled="isHeadersLocked" />
+              </div>
+              <div class="form-control w-full">
+                <label class="label py-1">
+                  <span class="label-text font-medium">Teléfono</span>
+                </label>
+                <input v-model="formData.contact_phone_reference" type="text" class="input input-bordered w-full" placeholder="+593..." :disabled="isHeadersLocked" />
+              </div>
+              <div class="form-control w-full">
+                <label class="label py-1">
+                  <span class="label-text font-medium">PO Cliente</span>
+                </label>
+                <input v-model="formData.client_po_reference" type="text" class="input input-bordered w-full" placeholder="PO-2026-001" :disabled="isHeadersLocked" />
+              </div>
+            </div>
           </div>
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Fin Período *</span>
-            </label>
-            <input 
-              v-model="formData.period_end" 
-              type="date" 
-              class="input input-bordered w-full" 
-              :class="{ 'input-error': !formData.period_end || periodDatesError }" 
-              required 
-              :disabled="isHeadersLocked"
-            />
-            <label v-if="periodDatesError && formData.period_end" class="label">
-              <span class="label-text-alt text-error">{{ periodDatesError }}</span>
-            </label>
-          </div>
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Estado</span>
-            </label>
-            <select v-model="formData.status" class="select select-bordered w-full" :disabled="isHeadersLocked">
-              <option v-for="opt in statusOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-            </select>
+
+          <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+            <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Referencias Adicionales</h6>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div class="form-control w-full">
+                <label class="label py-1">
+                  <span class="label-text font-medium">Ref. Factura</span>
+                </label>
+                <input v-model="formData.invoice_reference" type="text" class="input input-bordered w-full" placeholder="FAC-2026-001" :disabled="isHeadersLocked" />
+              </div>
+              <div class="form-control w-full md:col-span-3">
+                <label class="label py-1">
+                  <span class="label-text font-medium">Disposición Final</span>
+                </label>
+                <input v-model="formData.final_disposition_reference" type="text" class="input input-bordered w-full" placeholder="Planta de Tratamiento" :disabled="isHeadersLocked" />
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="divider">Tipo de Servicio y Contacto</div>
+        <!-- ═══ Tab 2: Recursos ═══ -->
+        <div v-show="activeTab === 'resources'">
+          <!-- Badge informativo -->
+          <div class="alert mb-3" :class="selectedResources.length > 0 ? 'alert-info' : 'alert-warning'">
+            <i class="las text-xl" :class="selectedResources.length > 0 ? 'la-info-circle' : 'la-exclamation-triangle'"></i>
+            <div>
+              <h3 class="font-bold">Recursos Seleccionados</h3>
+              <p class="text-sm">
+                {{ selectedResources.length > 0 
+                  ? `Has seleccionado ${selectedResources.length} de ${activeResources.length} recurso(s) activos para esta planilla.` 
+                  : 'Selecciona al menos un recurso activo para incluir en la planilla.' 
+                }}
+              </p>
+            </div>
+          </div>
 
-        <!-- Fila 3: Tipo Servicio + Contacto + Teléfono + PO (4 columnas) -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Tipo Servicio *</span>
-            </label>
-            <select v-model="formData.service_type" class="select select-bordered w-full" required :disabled="isHeadersLocked">
-              <option v-for="opt in serviceTypeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-            </select>
-          </div>
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Contacto</span>
-            </label>
-            <input v-model="formData.contact_reference" type="text" class="input input-bordered w-full" placeholder="Nombre contacto" :disabled="isHeadersLocked" />
-          </div>
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Teléfono</span>
-            </label>
-            <input v-model="formData.contact_phone_reference" type="text" class="input input-bordered w-full" placeholder="+593..." :disabled="isHeadersLocked" />
-          </div>
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">PO Cliente</span>
-            </label>
-            <input v-model="formData.client_po_reference" type="text" class="input input-bordered w-full" placeholder="PO-2026-001" :disabled="isHeadersLocked" />
-          </div>
-        </div>
-
-        <div class="divider">Referencias Adicionales</div>
-
-        <!-- Fila 4: Ref. Factura + Disposición Final (4 columnas, dejando 2 vacías) -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="form-control w-full">
-            <label class="label">
-              <span class="label-text font-semibold">Ref. Factura</span>
-            </label>
-            <input v-model="formData.invoice_reference" type="text" class="input input-bordered w-full" placeholder="FAC-2026-001" :disabled="isHeadersLocked" />
-          </div>
-          <div class="form-control w-full md:col-span-3">
-            <label class="label">
-              <span class="label-text font-semibold">Disposición Final</span>
-            </label>
-            <input v-model="formData.final_disposition_reference" type="text" class="input input-bordered w-full" placeholder="Planta de Tratamiento" :disabled="isHeadersLocked" />
-          </div>
-        </div>
-
-        <div class="divider">Recursos Asignados al Proyecto</div>
-
-        <!-- Badge informativo -->
-        <div class="alert" :class="selectedResources.length > 0 ? 'alert-info' : 'alert-warning'">
-          <i class="las text-xl" :class="selectedResources.length > 0 ? 'la-info-circle' : 'la-exclamation-triangle'"></i>
-          <div>
-            <h3 class="font-bold">Recursos Seleccionados</h3>
-            <p class="text-sm">
-              {{ selectedResources.length > 0 
-                ? `Has seleccionado ${selectedResources.length} de ${activeResources.length} recurso(s) activos para esta planilla.` 
-                : 'Selecciona al menos un recurso activo para incluir en la planilla.' 
-              }}
-            </p>
-          </div>
-        </div>
-
-        <!-- Tabla de Recursos -->
-        <div class="overflow-x-auto">
-          <table class="table table-zebra w-full">
-            <thead>
-              <tr class="bg-lime-800 text-white text-center">
-                <th class="border">
-                  <input 
-                    type="checkbox" 
-                    class="checkbox checkbox-sm" 
-                    :checked="allSelected"
-                    @change="toggleSelectAll"
-                  />
-                </th>
-                <th class="border">#</th>
-                <th class="border">Código</th>
-                <th class="border">Nombre</th>
-                <th class="border">Tipo</th>
-                <th class="border">Costo</th>
-                <th class="border">Fecha Inicio</th>
-                <th class="border">Estado</th>
-                <th v-if="isEditMode && selectedEquipmentResources.length > 0" class="border">Días</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-if="activeResources.length === 0">
-                <td :colspan="isEditMode && selectedEquipmentResources.length > 0 ? 9 : 8" class="text-center py-4 text-gray-500">
-                  No hay recursos activos asignados al proyecto
-                </td>
-              </tr>
-              <tr v-for="(resource, index) in activeResources" :key="resource.id">
-                <td class="border text-center">
-                  <div class="tooltip" :data-tip="hasCustodyChain(resource) ? 'Tiene cadena de custodia' : ''">
+          <!-- Tabla de Recursos -->
+          <div class="overflow-x-auto">
+            <table class="table table-zebra w-full">
+              <thead>
+                <tr class="bg-lime-800 text-white text-center">
+                  <th class="border">
                     <input 
                       type="checkbox" 
                       class="checkbox checkbox-sm" 
-                      :checked="resource.is_selected"
-                      :disabled="isDetailsLocked || (hasCustodyChain(resource) && resource.is_selected)"
-                      @change="isDetailsLocked ? null : toggleResourceSelection(resource)"
+                      :checked="allSelected"
+                      @change="toggleSelectAll"
                     />
-                  </div>
-                </td>
-                <td class="border text-center">{{ index + 1 }}</td>
-                <td class="border">
-                  {{ resource.resource_item_code || 'N/A' }}
-                  <i v-if="hasCustodyChain(resource)" class="las la-link text-warning ml-1" title="Tiene cadena de custodia"></i>
-                </td>
-                <td class="border">{{ resource.resource_item_name || 'N/A' }}</td>
-                <td class="border text-center">
-                  <span 
-                    class="badge badge-sm" 
-                    :class="resource.type_resource === 'EQUIPO' ? 'badge-primary' : 'badge-info'"
-                  >
-                    {{ resource.type_resource }}
-                  </span>
-                </td>
-                <td class="border text-right">${{ parseFloat(resource.cost || 0).toFixed(2) }}</td>
-                <td class="border text-center">
-                  {{ resource.operation_start_date ? formatDate(resource.operation_start_date) : 'N/A' }}
-                </td>
-                <td class="border text-center">
-                  <span 
-                    class="badge badge-sm" 
-                    :class="resource.is_active ? 'badge-success' : 'badge-error'"
-                  >
-                    {{ resource.is_active ? 'Activo' : 'Inactivo' }}
-                  </span>
-                </td>
-                <td v-if="isEditMode && selectedEquipmentResources.length > 0" class="border text-center">
-                  <button
-                    v-if="resource.type_resource === 'EQUIPO' && resource.is_selected && getEquipmentDetailForResource(resource)"
-                    type="button"
-                    class="btn btn-ghost btn-xs text-primary hover:bg-primary/10"
-                    @click.stop="openCalendarModal(getEquipmentDetailForResource(resource))"
-                    title="Configurar días de cobro"
-                  >
-                    <i class="las la-calendar-alt text-lg"></i>
-                    <span class="text-xs ml-1">{{ getSelectedDays(getEquipmentDetailForResource(resource).detail_id).length }}d</span>
-                  </button>
-                  <span v-else class="text-gray-300">—</span>
-                </td>
-              </tr>
-            </tbody>
-            <tfoot v-if="activeResources.length > 0">
-              <tr class="bg-gray-200 font-semibold">
-                <td class="border text-center">
-                  <span class="badge badge-sm badge-primary">{{ selectedResources.length }}</span>
-                </td>
-                <td colspan="4" class="border text-right">Total recursos seleccionados:</td>
-                <td class="border text-right">${{ selectedResources.reduce((s, r) => s + parseFloat(r.cost || 0), 0).toFixed(2) }}</td>
-                <td :colspan="isEditMode && selectedEquipmentResources.length > 0 ? 3 : 2" class="border text-center">{{ activeResources.length }} activos</td>
-              </tr>
-            </tfoot>
-          </table>
+                  </th>
+                  <th class="border">#</th>
+                  <th class="border">Código</th>
+                  <th class="border">Nombre</th>
+                  <th class="border">Tipo</th>
+                  <th class="border">Costo</th>
+                  <th class="border">Fecha Inicio</th>
+                  <th class="border">Estado</th>
+                  <th v-if="isEditMode && selectedEquipmentResources.length > 0" class="border">Días</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="activeResources.length === 0">
+                  <td :colspan="isEditMode && selectedEquipmentResources.length > 0 ? 9 : 8" class="text-center py-4 text-gray-500">
+                    No hay recursos activos asignados al proyecto
+                  </td>
+                </tr>
+                <tr v-for="(resource, index) in activeResources" :key="resource.id">
+                  <td class="border text-center">
+                    <div class="tooltip" :data-tip="hasCustodyChain(resource) ? 'Tiene cadena de custodia' : ''">
+                      <input 
+                        type="checkbox" 
+                        class="checkbox checkbox-sm" 
+                        :checked="resource.is_selected"
+                        :disabled="isDetailsLocked || (hasCustodyChain(resource) && resource.is_selected)"
+                        @change="isDetailsLocked ? null : toggleResourceSelection(resource)"
+                      />
+                    </div>
+                  </td>
+                  <td class="border text-center">{{ index + 1 }}</td>
+                  <td class="border">
+                    {{ resource.resource_item_code || 'N/A' }}
+                    <i v-if="hasCustodyChain(resource)" class="las la-link text-warning ml-1" title="Tiene cadena de custodia"></i>
+                  </td>
+                  <td class="border">{{ resource.resource_item_name || 'N/A' }}</td>
+                  <td class="border text-center">
+                    <span 
+                      class="badge badge-sm" 
+                      :class="resource.type_resource === 'EQUIPO' ? 'badge-primary' : 'badge-info'"
+                    >
+                      {{ resource.type_resource }}
+                    </span>
+                  </td>
+                  <td class="border text-right">${{ parseFloat(resource.cost || 0).toFixed(2) }}</td>
+                  <td class="border text-center">
+                    {{ resource.operation_start_date ? formatDate(resource.operation_start_date) : 'N/A' }}
+                  </td>
+                  <td class="border text-center">
+                    <span 
+                      class="badge badge-sm" 
+                      :class="resource.is_active ? 'badge-success' : 'badge-error'"
+                    >
+                      {{ resource.is_active ? 'Activo' : 'Inactivo' }}
+                    </span>
+                  </td>
+                  <td v-if="isEditMode && selectedEquipmentResources.length > 0" class="border text-center">
+                    <button
+                      v-if="resource.type_resource === 'EQUIPO' && resource.is_selected && getEquipmentDetailForResource(resource)"
+                      type="button"
+                      class="btn btn-ghost btn-xs text-primary hover:bg-primary/10"
+                      @click.stop="openCalendarModal(getEquipmentDetailForResource(resource))"
+                      title="Configurar días de cobro"
+                    >
+                      <i class="las la-calendar-alt text-lg"></i>
+                      <span class="text-xs ml-1">{{ getSelectedDays(getEquipmentDetailForResource(resource).detail_id).length }}d</span>
+                    </button>
+                    <span v-else class="text-gray-300">—</span>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot v-if="activeResources.length > 0">
+                <tr class="bg-gray-200 font-semibold">
+                  <td class="border text-center">
+                    <span class="badge badge-sm badge-primary">{{ selectedResources.length }}</span>
+                  </td>
+                  <td colspan="4" class="border text-right">Total recursos seleccionados:</td>
+                  <td class="border text-right">${{ selectedResources.reduce((s, r) => s + parseFloat(r.cost || 0), 0).toFixed(2) }}</td>
+                  <td :colspan="isEditMode && selectedEquipmentResources.length > 0 ? 3 : 2" class="border text-center">{{ activeResources.length }} activos</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </div>
 
-        <!-- Calendario inline eliminado - ahora es un modal popup -->
+        <!-- ═══ Tab 3: Notas y Totales ═══ -->
+        <div v-show="activeTab === 'notes'" class="space-y-4">
+          <!-- Campo de Notas -->
+          <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+            <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Notas Adicionales</h6>
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Notas</span>
+                <span class="label-text-alt text-gray-500">{{ (formData.notes || '').length }}/500</span>
+              </label>
+              <textarea 
+                v-model="formData.notes" 
+                class="textarea textarea-bordered w-full h-24" 
+                placeholder="Ingrese notas adicionales sobre la planilla..."
+                maxlength="500"
+                :disabled="isHeadersLocked"
+              ></textarea>
+            </div>
+          </div>
 
-        <div class="divider">Notas Adicionales</div>
-
-        <!-- Campo de Notas -->
-        <div class="form-control w-full">
-          <label class="label">
-            <span class="label-text font-semibold">Notas</span>
-            <span class="label-text-alt text-gray-500">{{ (formData.notes || '').length }}/500</span>
-          </label>
-          <textarea 
-            v-model="formData.notes" 
-            class="textarea textarea-bordered w-full h-24" 
-            placeholder="Ingrese notas adicionales sobre la planilla..."
-            maxlength="500"
-            :disabled="isHeadersLocked"
-          ></textarea>
-        </div>
-
-        <div class="divider"></div>
-
-        <!-- ===== PIE: Totales financieros + Botones ===== -->
-        <div class="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
           <!-- Totales financieros -->
-          <div class="flex gap-6 text-sm">
-            <div>
-              <span class="text-gray-600 font-medium">Subtotal:</span>
-              <span class="font-bold text-lg ml-2">${{ Number(stats.subtotal).toFixed(2) }}</span>
-            </div>
-            <div>
-              <span class="text-gray-600 font-medium">IVA:</span>
-              <span class="font-bold text-lg ml-2">${{ Number(stats.tax_amount).toFixed(2) }}</span>
-            </div>
-            <div>
-              <span class="text-gray-600 font-medium">Total:</span>
-              <span class="font-bold text-xl text-red-700 ml-2">${{ Number(stats.total).toFixed(2) }}</span>
+          <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+            <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Resumen Financiero</h6>
+            <div class="flex gap-6 text-sm items-center">
+              <div>
+                <span class="text-gray-600 font-medium">Subtotal:</span>
+                <span class="font-bold text-lg ml-2">${{ Number(stats.subtotal).toFixed(2) }}</span>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">IVA:</span>
+                <span class="font-bold text-lg ml-2">${{ Number(stats.tax_amount).toFixed(2) }}</span>
+              </div>
+              <div>
+                <span class="text-gray-600 font-medium">Total:</span>
+                <span class="font-bold text-xl text-red-700 ml-2">${{ Number(stats.total).toFixed(2) }}</span>
+              </div>
             </div>
           </div>
-          <!-- Botones -->
-          <div class="flex items-center gap-3">
-            <span v-if="isEditMode && selectedEquipmentResources.length > 0" class="text-xs text-gray-400 italic">
-              <i class="las la-info-circle"></i> Los días de equipo se guardan desde el ícono <i class="las la-calendar-alt text-primary"></i> en la tabla.
-            </span>
-            <RouterLink :to="{ name: 'projects-detail', query: { tab: 'planillas' } }" class="btn btn-ghost" :class="{ 'btn-disabled': isSubmitting }">
-              <i class="las la-arrow-left text-lg"></i> Volver
-            </RouterLink>
-            <button v-if="!isFullyLocked && !isProjectClosed" type="submit" class="btn btn-primary" :disabled="isSubmitting">
-              <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
-              <i v-else class="las la-save text-lg"></i>
-              {{ isSubmitting ? (isEditMode ? 'Guardando...' : 'Creando...') : (isEditMode ? 'Guardar Cambios' : 'Crear Planilla') }}
-            </button>
-          </div>
+        </div>
+
+        <!-- ═══ Botones (siempre visibles) ═══ -->
+        <div class="flex items-center justify-end gap-3 mt-4 pt-3 border-t border-gray-200">
+          <span v-if="isEditMode && selectedEquipmentResources.length > 0" class="text-xs text-gray-400 italic">
+            <i class="las la-info-circle"></i> Los días de equipo se guardan desde el ícono <i class="las la-calendar-alt text-primary"></i> en la tabla.
+          </span>
+          <RouterLink :to="{ name: 'projects-detail', query: { tab: 'planillas' } }" class="btn btn-ghost btn-sm" :class="{ 'btn-disabled': isSubmitting }">
+            <i class="las la-arrow-left text-lg"></i> Volver
+          </RouterLink>
+          <button v-if="!isFullyLocked && !isProjectClosed" type="submit" class="btn btn-primary btn-sm" :disabled="isSubmitting">
+            <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
+            <i v-else class="las la-save text-lg"></i>
+            {{ isSubmitting ? (isEditMode ? 'Guardando...' : 'Creando...') : (isEditMode ? 'Guardar Cambios' : 'Crear Planilla') }}
+          </button>
         </div>
 
       </div>

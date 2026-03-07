@@ -386,18 +386,33 @@ const deleteGuideFile = async () => {
     </div>
 
     <form @submit.prevent="submitForm">
-      <!-- Tabs -->
-      <div class="tabs tabs-bordered mb-3">
-        <a class="tab" :class="{ 'tab-active': activeTab === 'general' }" @click="activeTab = 'general'">
-          <i class="las la-info-circle mr-1"></i> General y Transporte
-        </a>
-        <a class="tab" :class="{ 'tab-active': activeTab === 'contacts' }" @click="activeTab = 'contacts'">
-          <i class="las la-users mr-1"></i> Contacto y Costos
-        </a>
-        <a class="tab" :class="{ 'tab-active': activeTab === 'items' }" @click="activeTab = 'items'">
-          <i class="las la-boxes mr-1"></i> Ítems y Notas
+      <!-- Tabs con colores -->
+      <div class="flex gap-1 mb-3 border-b border-gray-200">
+        <button type="button"
+          class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+          :class="activeTab === 'general'
+            ? 'bg-blue-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-blue-50 hover:text-blue-600'"
+          @click="activeTab = 'general'">
+          <i class="las la-info-circle"></i> General y Transporte
+        </button>
+        <button type="button"
+          class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+          :class="activeTab === 'contacts'
+            ? 'bg-emerald-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-600'"
+          @click="activeTab = 'contacts'">
+          <i class="las la-users"></i> Contacto y Costos
+        </button>
+        <button type="button"
+          class="px-4 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-1"
+          :class="activeTab === 'items'
+            ? 'bg-amber-600 text-white shadow-sm'
+            : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-600'"
+          @click="activeTab = 'items'">
+          <i class="las la-boxes"></i> Ítems y Notas
           <span class="badge badge-xs badge-primary ml-1">{{ details.length }}</span>
-        </a>
+        </button>
       </div>
 
       <!-- ═══ Tab 1: General y Transporte ═══ -->
