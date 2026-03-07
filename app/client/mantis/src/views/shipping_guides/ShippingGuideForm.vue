@@ -17,6 +17,9 @@ const router = useRouter()
 const route = useRoute()
 const isLoading = ref(false)
 
+// Tab activo
+const activeTab = ref('general')
+
 // ID de la guía desde la ruta
 const guideId = computed(() => {
   const id = parseInt(route.params.id)
@@ -333,24 +336,24 @@ const deleteGuideFile = async () => {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto p-4">
+  <div class="max-w-7xl mx-auto p-3">
     <!-- Título -->
-    <div class="bg-white rounded-lg p-4 mb-4 border border-gray-200 shadow-sm">
+    <div class="bg-white rounded-lg p-3 mb-2 border border-gray-200 shadow-sm">
       <div class="flex justify-between items-center">
         <div>
-          <h2 class="text-xl font-semibold text-gray-800">
+          <h2 class="text-lg font-semibold text-gray-800">
             <i class="las la-shipping-fast text-teal-600"></i>
             {{ isEditMode ? `Editar Guía de Remisión #${guideId}` : 'Nueva Guía de Remisión' }}
           </h2>
-          <p class="text-sm text-gray-600 mt-1">
+          <p class="text-xs text-gray-600 mt-0.5">
             {{ isEditMode ? 'Modifique los datos de la guía de remisión' : 'Complete los datos para generar una nueva guía de remisión' }}
           </p>
         </div>
-        <div class="flex items-center gap-3">
-          <span class="badge badge-lg badge-primary">
+        <div class="flex items-center gap-2">
+          <span class="badge badge-primary">
             Proyecto #{{ appConfig.idProject }}
           </span>
-          <span v-if="isEditMode" class="badge badge-lg" :class="{
+          <span v-if="isEditMode" class="badge" :class="{
             'badge-warning': guideStatus === 'DRAFT',
             'badge-success': guideStatus === 'CLOSED',
             'badge-error': guideStatus === 'VOID'
@@ -374,425 +377,559 @@ const deleteGuideFile = async () => {
       </div>
     </div>
 
-    <form @submit.prevent="submitForm" class="space-y-6">
-      <!-- Alerta de solo lectura -->
-      <div v-if="isEditMode && !canEdit" class="alert alert-warning shadow-sm mb-4">
-        <i class="las la-lock text-xl"></i>
-        <span>
-          Esta guía está en estado <strong>{{ guideStatus === 'CLOSED' ? 'CERRADA' : 'ANULADA' }}</strong> y no permite modificaciones.
-        </span>
+    <!-- Alerta de solo lectura -->
+    <div v-if="isEditMode && !canEdit" class="alert alert-warning shadow-sm mb-2 py-2">
+      <i class="las la-lock text-lg"></i>
+      <span class="text-sm">
+        Esta guía está en estado <strong>{{ guideStatus === 'CLOSED' ? 'CERRADA' : 'ANULADA' }}</strong> y no permite modificaciones.
+      </span>
+    </div>
+
+    <form @submit.prevent="submitForm">
+      <!-- Tabs -->
+      <div class="tabs tabs-bordered mb-3">
+        <a class="tab" :class="{ 'tab-active': activeTab === 'general' }" @click="activeTab = 'general'">
+          <i class="las la-info-circle mr-1"></i> General y Transporte
+        </a>
+        <a class="tab" :class="{ 'tab-active': activeTab === 'contacts' }" @click="activeTab = 'contacts'">
+          <i class="las la-users mr-1"></i> Contacto y Costos
+        </a>
+        <a class="tab" :class="{ 'tab-active': activeTab === 'items' }" @click="activeTab = 'items'">
+          <i class="las la-boxes mr-1"></i> Ítems y Notas
+          <span class="badge badge-xs badge-primary ml-1">{{ details.length }}</span>
+        </a>
       </div>
 
-      <!-- Información General -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información General</h6>
+      <!-- ═══ Tab 1: General y Transporte ═══ -->
+      <div v-show="activeTab === 'general'" class="space-y-3">
+        <!-- Información General -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Información General</h6>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Tipo de Guía -->
-          <div class="form-control w-full">
-            <label class="label" for="type_shipping_guide">
-              <span class="label-text font-medium">Tipo de Guía *</span>
-            </label>
-            <select
-              id="type_shipping_guide"
-              v-model="guide.type_shipping_guide"
-              :disabled="!canEdit"
-              class="select select-bordered w-full"
-            >
-              <option value="EXIT">SALIDA A PROYECTO</option>
-              <option value="IN">ENTRADA A BASE</option>
-              <option value="TRANSFER">TRANSFERENCIA ENTRE PROYECTOS</option>
-            </select>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <!-- Tipo de Guía -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Tipo de Guía *</span>
+              </label>
+              <select
+                id="type_shipping_guide"
+                v-model="guide.type_shipping_guide"
+                :disabled="!canEdit"
+                class="select select-bordered w-full"
+              >
+                <option value="EXIT">SALIDA A PROYECTO</option>
+                <option value="IN">ENTRADA A BASE</option>
+                <option value="TRANSFER">TRANSFERENCIA ENTRE PROYECTOS</option>
+              </select>
+            </div>
+
+            <!-- Fecha de Emisión -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Fecha de Emisión *</span>
+              </label>
+              <input
+                type="date"
+                id="issue_date"
+                v-model="guide.issue_date"
+                required
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <!-- Fecha Inicio Transporte -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Fecha Inicio Transporte</span>
+              </label>
+              <input
+                type="date"
+                id="start_date"
+                v-model="guide.start_date"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <!-- Fecha Fin Transporte -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Fecha Fin Transporte</span>
+              </label>
+              <input
+                type="date"
+                id="end_date"
+                v-model="guide.end_date"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <!-- Lugar de Origen -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Lugar de Origen</span>
+              </label>
+              <input
+                type="text"
+                id="origin_place"
+                v-model="guide.origin_place"
+                placeholder="Ej: Quito, Bodega Central"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <!-- Lugar de Destino -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Lugar de Destino</span>
+              </label>
+              <input
+                type="text"
+                id="destination_place"
+                v-model="guide.destination_place"
+                placeholder="Ej: Campamento Norte"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <!-- Motivo del Transporte -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Motivo del Transporte</span>
+              </label>
+              <select
+                id="reason_transport"
+                v-model="guide.reason_transport"
+                :disabled="!canEdit"
+                class="select select-bordered w-full"
+              >
+                <option value="">Seleccione un motivo (opcional)</option>
+                <option value="USE_IN_PROJECT">UTILIZACIÓN EN PROYECTO</option>
+                <option value="RENT">ALQUILER</option>
+                <option value="DEVOLUTION">DEVOLUCIÓN</option>
+                <option value="SALE">VENTA</option>
+              </select>
+            </div>
+
+            <!-- Vehículo -->
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Vehículo</span>
+              </label>
+              <select
+                id="vehicle_select"
+                v-model.number="selectedVehicleId"
+                :disabled="!canEdit"
+                class="select select-bordered w-full"
+              >
+                <option :value="null">Seleccione un vehículo (opcional)</option>
+                <option v-for="v in vehicles" :key="v.id" :value="v.id">
+                  {{ v.display }}
+                </option>
+              </select>
+            </div>
           </div>
+        </div>
 
-          <!-- Fecha de Emisión -->
-          <div class="form-control w-full">
-            <label class="label" for="issue_date">
-              <span class="label-text font-medium">Fecha de Emisión *</span>
-            </label>
-            <input
-              type="date"
-              id="issue_date"
-              v-model="guide.issue_date"
-              required
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
+        <!-- Información del Transportista -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Información del Transportista</h6>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Nombre del Transportista</span>
+              </label>
+              <input
+                type="text"
+                id="carrier_name"
+                v-model="guide.carrier_name"
+                placeholder="Nombre completo"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Cédula del Transportista</span>
+              </label>
+              <input
+                type="text"
+                id="carrier_ci"
+                v-model="guide.carrier_ci"
+                placeholder="Número de identificación"
+                maxlength="20"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Placa del Vehículo</span>
+              </label>
+              <input
+                type="text"
+                id="vehicle_plate"
+                v-model="guide.vehicle_plate"
+                placeholder="Ej: ABC-1234"
+                maxlength="20"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
           </div>
+        </div>
 
-          <!-- Fecha Inicio Transporte -->
-          <div class="form-control w-full">
-            <label class="label" for="start_date">
-              <span class="label-text font-medium">Fecha Inicio Transporte</span>
-            </label>
-            <input
-              type="date"
-              id="start_date"
-              v-model="guide.start_date"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
+        <!-- Despachador -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Despachador</h6>
 
-          <!-- Fecha Fin Transporte -->
-          <div class="form-control w-full">
-            <label class="label" for="end_date">
-              <span class="label-text font-medium">Fecha Fin Transporte</span>
-            </label>
-            <input
-              type="date"
-              id="end_date"
-              v-model="guide.end_date"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Nombre del Despachador</span>
+              </label>
+              <input
+                type="text"
+                id="dispatcher_name"
+                v-model="guide.dispatcher_name"
+                placeholder="Nombre completo"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
 
-          <!-- Lugar de Origen -->
-          <div class="form-control w-full">
-            <label class="label" for="origin_place">
-              <span class="label-text font-medium">Lugar de Origen</span>
-            </label>
-            <input
-              type="text"
-              id="origin_place"
-              v-model="guide.origin_place"
-              placeholder="Ej: Quito, Bodega Central"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <!-- Lugar de Destino -->
-          <div class="form-control w-full">
-            <label class="label" for="destination_place">
-              <span class="label-text font-medium">Lugar de Destino</span>
-            </label>
-            <input
-              type="text"
-              id="destination_place"
-              v-model="guide.destination_place"
-              placeholder="Ej: Campamento Norte"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <!-- Motivo del Transporte -->
-          <div class="form-control w-full">
-            <label class="label" for="reason_transport">
-              <span class="label-text font-medium">Motivo del Transporte</span>
-            </label>
-            <select
-              id="reason_transport"
-              v-model="guide.reason_transport"
-              :disabled="!canEdit"
-              class="select select-bordered w-full"
-            >
-              <option value="">Seleccione un motivo (opcional)</option>
-              <option value="USE_IN_PROJECT">UTILIZACIÓN EN PROYECTO</option>
-              <option value="RENT">ALQUILER</option>
-              <option value="DEVOLUTION">DEVOLUCIÓN</option>
-              <option value="SALE">VENTA</option>
-            </select>
-          </div>
-
-          <!-- Vehículo -->
-          <div class="form-control w-full">
-            <label class="label" for="vehicle_select">
-              <span class="label-text font-medium">Vehículo</span>
-            </label>
-            <select
-              id="vehicle_select"
-              v-model.number="selectedVehicleId"
-              :disabled="!canEdit"
-              class="select select-bordered w-full"
-            >
-              <option :value="null">Seleccione un vehículo (opcional)</option>
-              <option v-for="v in vehicles" :key="v.id" :value="v.id">
-                {{ v.display }}
-              </option>
-            </select>
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Cédula del Despachador</span>
+              </label>
+              <input
+                type="text"
+                id="dispatcher_ci"
+                v-model="guide.dispatcher_ci"
+                placeholder="Número de identificación"
+                maxlength="20"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Información del Transportista -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Información del Transportista</h6>
+      <!-- ═══ Tab 2: Contacto y Costos ═══ -->
+      <div v-show="activeTab === 'contacts'" class="space-y-3">
+        <!-- Contacto en el Proyecto -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Contacto en el Proyecto</h6>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div class="form-control w-full">
-            <label class="label" for="carrier_name">
-              <span class="label-text font-medium">Nombre del Transportista</span>
-            </label>
-            <input
-              type="text"
-              id="carrier_name"
-              v-model="guide.carrier_name"
-              placeholder="Nombre completo"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Nombre de Contacto</span>
+              </label>
+              <input
+                type="text"
+                id="contact_name"
+                v-model="guide.contact_name"
+                placeholder="Nombre completo"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Teléfono de Contacto</span>
+              </label>
+              <input
+                type="text"
+                id="contact_phone"
+                v-model="guide.contact_phone"
+                placeholder="Teléfono"
+                maxlength="15"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
           </div>
+        </div>
 
-          <div class="form-control w-full">
-            <label class="label" for="carrier_ci">
-              <span class="label-text font-medium">Cédula del Transportista</span>
-            </label>
-            <input
-              type="text"
-              id="carrier_ci"
-              v-model="guide.carrier_ci"
-              placeholder="Número de identificación"
-              maxlength="20"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
+        <!-- Recepción -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Recepción</h6>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Recibido Por</span>
+              </label>
+              <input
+                type="text"
+                id="recibed_by"
+                v-model="guide.recibed_by"
+                placeholder="Nombre de quien recibe"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Cédula de Quien Recibe</span>
+              </label>
+              <input
+                type="text"
+                id="recibed_ci"
+                v-model="guide.recibed_ci"
+                placeholder="Número de identificación"
+                maxlength="20"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
           </div>
+        </div>
 
-          <div class="form-control w-full">
-            <label class="label" for="vehicle_plate">
-              <span class="label-text font-medium">Placa del Vehículo</span>
-            </label>
-            <input
-              type="text"
-              id="vehicle_plate"
-              v-model="guide.vehicle_plate"
-              placeholder="Ej: ABC-1234"
-              maxlength="20"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
+        <!-- Costos y Conceptos -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Costos y Conceptos</h6>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Costo del Transporte</span>
+              </label>
+              <input
+                type="number"
+                id="cost_transport"
+                v-model.number="guide.cost_transport"
+                min="0"
+                step="0.01"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Concepto Logístico</span>
+              </label>
+              <input
+                type="text"
+                id="sheet_project_logistics_concept"
+                v-model="guide.sheet_project_logistics_concept"
+                placeholder="Concepto logístico (opcional)"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Costo de Estiba</span>
+              </label>
+              <input
+                type="number"
+                id="cost_stowage"
+                v-model.number="guide.cost_stowage"
+                min="0"
+                step="0.01"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
+
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Concepto de Estiba</span>
+              </label>
+              <input
+                type="text"
+                id="sheet_project_stowage_concept"
+                v-model="guide.sheet_project_stowage_concept"
+                placeholder="Concepto de estiba (opcional)"
+                :disabled="!canEdit"
+                class="input input-bordered w-full"
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Despachador -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Despachador</h6>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label" for="dispatcher_name">
-              <span class="label-text font-medium">Nombre del Despachador</span>
-            </label>
-            <input
-              type="text"
-              id="dispatcher_name"
-              v-model="guide.dispatcher_name"
-              placeholder="Nombre completo"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="dispatcher_ci">
-              <span class="label-text font-medium">Cédula del Despachador</span>
-            </label>
-            <input
-              type="text"
-              id="dispatcher_ci"
-              v-model="guide.dispatcher_ci"
-              placeholder="Número de identificación"
-              maxlength="20"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Contacto en el Proyecto -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Contacto en el Proyecto</h6>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label" for="contact_name">
-              <span class="label-text font-medium">Nombre de Contacto</span>
-            </label>
-            <input
-              type="text"
-              id="contact_name"
-              v-model="guide.contact_name"
-              placeholder="Nombre completo"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="contact_phone">
-              <span class="label-text font-medium">Teléfono de Contacto</span>
-            </label>
-            <input
-              type="text"
-              id="contact_phone"
-              v-model="guide.contact_phone"
-              placeholder="Teléfono"
-              maxlength="15"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Recibido por -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Recepción</h6>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="form-control w-full">
-            <label class="label" for="recibed_by">
-              <span class="label-text font-medium">Recibido Por</span>
-            </label>
-            <input
-              type="text"
-              id="recibed_by"
-              v-model="guide.recibed_by"
-              placeholder="Nombre de quien recibe"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <div class="form-control w-full">
-            <label class="label" for="recibed_ci">
-              <span class="label-text font-medium">Cédula de Quien Recibe</span>
-            </label>
-            <input
-              type="text"
-              id="recibed_ci"
-              v-model="guide.recibed_ci"
-              placeholder="Número de identificación"
-              maxlength="20"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Costos y Conceptos -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Costos y Conceptos</h6>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Costo del Transporte -->
-          <div class="form-control w-full">
-            <label class="label" for="cost_transport">
-              <span class="label-text font-medium">Costo del Transporte</span>
-            </label>
-            <input
-              type="number"
-              id="cost_transport"
-              v-model.number="guide.cost_transport"
-              min="0"
-              step="0.01"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <!-- Concepto Logístico -->
-          <div class="form-control w-full">
-            <label class="label" for="sheet_project_logistics_concept">
-              <span class="label-text font-medium">Concepto Logístico</span>
-            </label>
-            <input
-              type="text"
-              id="sheet_project_logistics_concept"
-              v-model="guide.sheet_project_logistics_concept"
-              placeholder="Concepto logístico (opcional)"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <!-- Costo de Estiba -->
-          <div class="form-control w-full">
-            <label class="label" for="cost_stowage">
-              <span class="label-text font-medium">Costo de Estiba</span>
-            </label>
-            <input
-              type="number"
-              id="cost_stowage"
-              v-model.number="guide.cost_stowage"
-              min="0"
-              step="0.01"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-
-          <!-- Concepto de Estiba -->
-          <div class="form-control w-full">
-            <label class="label" for="sheet_project_stowage_concept">
-              <span class="label-text font-medium">Concepto de Estiba</span>
-            </label>
-            <input
-              type="text"
-              id="sheet_project_stowage_concept"
-              v-model="guide.sheet_project_stowage_concept"
-              placeholder="Concepto de estiba (opcional)"
-              :disabled="!canEdit"
-              class="input input-bordered w-full"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Detalle de Ítems -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">
-          Detalle de Ítems
-          <span class="badge badge-primary ml-2">{{ details.length }} ítems</span>
-        </h6>
-
-        <!-- Agregar desde recursos del proyecto -->
-        <div v-if="canEdit" class="mb-4">
-          <h6 class="text-sm font-semibold text-gray-600 mb-2">
-            <i class="las la-toolbox text-teal-500"></i>
-            Agregar desde Equipos del Proyecto
+      <!-- ═══ Tab 3: Ítems y Notas ═══ -->
+      <div v-show="activeTab === 'items'" class="space-y-3">
+        <!-- Detalle de Ítems -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">
+            Detalle de Ítems
+            <span class="badge badge-sm badge-primary ml-2">{{ details.length }} ítems</span>
           </h6>
-          <div class="overflow-x-auto max-h-48 border rounded border-gray-200">
+
+          <!-- Agregar desde recursos del proyecto -->
+          <div v-if="canEdit" class="mb-3">
+            <h6 class="text-sm font-semibold text-gray-600 mb-2">
+              <i class="las la-toolbox text-teal-500"></i>
+              Agregar desde Equipos del Proyecto
+            </h6>
+            <div class="overflow-x-auto max-h-48 border rounded border-gray-200">
+              <table class="table table-sm table-zebra w-full">
+                <thead class="sticky top-0">
+                  <tr class="bg-gray-500 text-white">
+                    <th class="border border-gray-300">#</th>
+                    <th class="border border-gray-300">Equipo / Recurso</th>
+                    <th class="border border-gray-300">Tipo</th>
+                    <th class="border border-gray-300 text-right">Costo</th>
+                    <th class="border border-gray-300 w-24 text-center">Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(resource, idx) in availableResources" :key="resource.id" class="hover:bg-teal-50">
+                    <td class="border border-gray-300">{{ idx + 1 }}</td>
+                    <td class="border border-gray-300">{{ resource.resource_item_code }} / {{ resource.type_equipment_display || resource.resource_item_name }}</td>
+                    <td class="border border-gray-300">
+                      <span class="badge badge-sm badge-info">
+                        {{ resource.type_equipment_display || resource.type_resource }}
+                      </span>
+                    </td>
+                    <td class="border border-gray-300 text-right font-mono">${{ parseFloat(resource.cost || 0).toFixed(2) }}</td>
+                    <td class="border border-gray-300 text-center">
+                      <button
+                        type="button"
+                        class="btn btn-xs btn-primary"
+                        @click="addResourceAsDetail(resource)"
+                        title="Agregar a la guía"
+                      >
+                        <i class="las la-plus"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr v-if="availableResources.length === 0">
+                    <td colspan="5" class="text-center py-4 text-gray-500">
+                      No hay recursos asignados al proyecto
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Agregar ítem manual -->
+          <div v-if="canEdit" class="mb-3 p-3 bg-gray-50 rounded border border-gray-200">
+            <h6 class="text-sm font-semibold text-gray-600 mb-2">
+              <i class="las la-pen text-teal-500"></i>
+              Agregar Ítem Manual
+            </h6>
+            <div class="flex gap-2 items-end">
+              <div class="form-control flex-1">
+                <label class="label py-0">
+                  <span class="label-text text-xs">Descripción</span>
+                </label>
+                <input
+                  type="text"
+                  v-model="newDetail.description"
+                  placeholder="Descripción del ítem"
+                  class="input input-bordered input-sm w-full"
+                  @keyup.enter="addManualDetail"
+                />
+              </div>
+              <div class="form-control w-24">
+                <label class="label py-0">
+                  <span class="label-text text-xs">Cantidad</span>
+                </label>
+                <input
+                  type="number"
+                  v-model.number="newDetail.quantity"
+                  min="1"
+                  class="input input-bordered input-sm w-full"
+                />
+              </div>
+              <div class="form-control w-28">
+                <label class="label py-0">
+                  <span class="label-text text-xs">Unidad</span>
+                </label>
+                <input
+                  type="text"
+                  v-model="newDetail.unit"
+                  placeholder="Ej: UND, KG, M3"
+                  class="input input-bordered input-sm w-full"
+                />
+              </div>
+              <button
+                type="button"
+                class="btn btn-sm btn-primary"
+                @click="addManualDetail"
+                :disabled="!newDetail.description.trim()"
+              >
+                <i class="las la-plus"></i>
+                Agregar
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabla de ítems agregados -->
+          <div class="overflow-x-auto">
             <table class="table table-sm table-zebra w-full">
-              <thead class="sticky top-0">
-                <tr class="bg-gray-500 text-white">
-                  <th class="border border-gray-300">#</th>
-                  <th class="border border-gray-300">Equipo / Recurso</th>
-                  <th class="border border-gray-300">Tipo</th>
-                  <th class="border border-gray-300 text-right">Costo</th>
-                  <th class="border border-gray-300 w-24 text-center">Acción</th>
+              <thead>
+                <tr class="bg-teal-600 text-white">
+                  <th class="border border-gray-300 w-10 text-center">#</th>
+                  <th class="border border-gray-300">Descripción</th>
+                  <th class="border border-gray-300 w-24 text-center">Cantidad</th>
+                  <th class="border border-gray-300 w-28 text-right">Unidad</th>
+                  <th v-if="canEdit" class="border border-gray-300 w-20 text-center">Acción</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(resource, idx) in availableResources" :key="resource.id" class="hover:bg-teal-50">
-                  <td class="border border-gray-300">{{ idx + 1 }}</td>
-                  <td class="border border-gray-300">{{ resource.resource_item_code }} / {{ resource.type_equipment_display || resource.resource_item_name }}</td>
+                <tr v-for="(detail, index) in details" :key="index" class="hover:bg-yellow-50">
+                  <td class="border border-gray-300 text-center">{{ index + 1 }}</td>
                   <td class="border border-gray-300">
-                    <span class="badge badge-sm badge-info">
-                      {{ resource.type_equipment_display || resource.type_resource }}
-                    </span>
+                    <input
+                      type="text"
+                      v-model="detail.description"
+                      :disabled="!canEdit"
+                      class="input input-bordered input-sm w-full"
+                    />
                   </td>
-                  <td class="border border-gray-300 text-right font-mono">${{ parseFloat(resource.cost || 0).toFixed(2) }}</td>
-                  <td class="border border-gray-300 text-center">
+                  <td class="border border-gray-300">
+                    <input
+                      type="number"
+                      v-model.number="detail.quantity"
+                      min="1"
+                      :disabled="!canEdit"
+                      class="input input-bordered input-sm w-full text-center"
+                    />
+                  </td>
+                  <td class="border border-gray-300">
+                    <input
+                      type="text"
+                      v-model="detail.unit"
+                      placeholder="Ej: UND, KG, M3"
+                      :disabled="!canEdit"
+                      class="input input-bordered input-sm w-full"
+                    />
+                  </td>
+                  <td v-if="canEdit" class="border border-gray-300 text-center">
                     <button
                       type="button"
-                      class="btn btn-xs btn-primary"
-                      @click="addResourceAsDetail(resource)"
-                      title="Agregar a la guía"
+                      class="btn btn-xs btn-error"
+                      @click="removeDetail(index)"
+                      title="Eliminar ítem"
                     >
-                      <i class="las la-plus"></i>
+                      <i class="las la-trash"></i>
                     </button>
                   </td>
                 </tr>
-                <tr v-if="availableResources.length === 0">
-                  <td colspan="5" class="text-center py-4 text-gray-500">
-                    No hay recursos asignados al proyecto
+                <tr v-if="details.length === 0">
+                  <td colspan="5" class="text-center py-8 text-gray-500">
+                    <i class="las la-inbox text-4xl"></i>
+                    <p class="mt-2">No hay ítems agregados. Use los equipos del proyecto o agregue manualmente.</p>
                   </td>
                 </tr>
               </tbody>
@@ -800,199 +937,80 @@ const deleteGuideFile = async () => {
           </div>
         </div>
 
-        <!-- Agregar ítem manual -->
-        <div v-if="canEdit" class="mb-4 p-3 bg-gray-50 rounded border border-gray-200">
-          <h6 class="text-sm font-semibold text-gray-600 mb-2">
-            <i class="las la-pen text-teal-500"></i>
-            Agregar Ítem Manual
+        <!-- Archivo PDF de la Guía -->
+        <div v-if="isEditMode" class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">
+            <i class="las la-file-pdf text-red-500"></i>
+            Archivo PDF de la Guía
           </h6>
-          <div class="flex gap-2 items-end">
-            <div class="form-control flex-1">
-              <label class="label py-0">
-                <span class="label-text text-xs">Descripción</span>
-              </label>
-              <input
-                type="text"
-                v-model="newDetail.description"
-                placeholder="Descripción del ítem"
-                class="input input-bordered input-sm w-full"
-                @keyup.enter="addManualDetail"
-              />
-            </div>
-            <div class="form-control w-24">
-              <label class="label py-0">
-                <span class="label-text text-xs">Cantidad</span>
-              </label>
-              <input
-                type="number"
-                v-model.number="newDetail.quantity"
-                min="1"
-                class="input input-bordered input-sm w-full"
-              />
-            </div>
-            <div class="form-control w-28">
-              <label class="label py-0">
-                <span class="label-text text-xs">Unidad</span>
-              </label>
-              <input
-                type="text"
-                v-model="newDetail.unit"
-                placeholder="Ej: UND, KG, M3"
-                class="input input-bordered input-sm w-full"
-              />
-            </div>
+
+          <div v-if="shippingGuideFileUrl" class="flex items-center gap-3 mb-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <i class="las la-check-circle text-success text-2xl"></i>
+            <span class="flex-1 text-sm">
+              <strong>Archivo cargado:</strong> {{ shippingGuideFileName }}
+            </span>
+            <a :href="shippingGuideFileUrl" target="_blank" class="btn btn-sm btn-ghost text-blue-500" title="Ver PDF">
+              <i class="las la-eye text-lg"></i> Ver
+            </a>
             <button
+              v-if="canEdit"
               type="button"
-              class="btn btn-sm btn-primary"
-              @click="addManualDetail"
-              :disabled="!newDetail.description.trim()"
+              class="btn btn-sm btn-ghost text-error"
+              @click="deleteGuideFile"
+              title="Eliminar archivo"
             >
-              <i class="las la-plus"></i>
-              Agregar
+              <i class="las la-trash text-lg"></i> Eliminar
             </button>
+          </div>
+
+          <div v-else class="flex items-center gap-3 mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <i class="las la-exclamation-circle text-warning text-2xl"></i>
+            <span class="text-sm text-gray-600">No se ha cargado un archivo PDF para esta guía.</span>
+          </div>
+
+          <div v-if="canEdit" class="flex items-center gap-3">
+            <input
+              type="file"
+              accept=".pdf,application/pdf"
+              class="file-input file-input-bordered file-input-sm flex-1"
+              @change="onFileChange"
+              :disabled="uploadingFile"
+            />
+            <span v-if="uploadingFile" class="loading loading-spinner loading-sm text-primary"></span>
+          </div>
+
+          <div v-if="uploadFileMsg" class="mt-2 text-sm" :class="uploadFileMsgType === 'success' ? 'text-success' : 'text-error'">
+            {{ uploadFileMsg }}
           </div>
         </div>
 
-        <!-- Tabla de ítems agregados -->
-        <div class="overflow-x-auto">
-          <table class="table table-sm table-zebra w-full">
-            <thead>
-              <tr class="bg-teal-600 text-white">
-                <th class="border border-gray-300 w-10 text-center">#</th>
-                <th class="border border-gray-300">Descripción</th>
-                <th class="border border-gray-300 w-24 text-center">Cantidad</th>
-                <th class="border border-gray-300 w-28 text-right">Unidad</th>
-                <th v-if="canEdit" class="border border-gray-300 w-20 text-center">Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(detail, index) in details" :key="index" class="hover:bg-yellow-50">
-                <td class="border border-gray-300 text-center">{{ index + 1 }}</td>
-                <td class="border border-gray-300">
-                  <input
-                    type="text"
-                    v-model="detail.description"
-                    :disabled="!canEdit"
-                    class="input input-bordered input-sm w-full"
-                  />
-                </td>
-                <td class="border border-gray-300">
-                  <input
-                    type="number"
-                    v-model.number="detail.quantity"
-                    min="1"
-                    :disabled="!canEdit"
-                    class="input input-bordered input-sm w-full text-center"
-                  />
-                </td>
-                <td class="border border-gray-300">
-                  <input
-                    type="text"
-                    v-model="detail.unit"
-                    placeholder="Ej: UND, KG, M3"
-                    :disabled="!canEdit"
-                    class="input input-bordered input-sm w-full"
-                  />
-                </td>
-                <td v-if="canEdit" class="border border-gray-300 text-center">
-                  <button
-                    type="button"
-                    class="btn btn-xs btn-error"
-                    @click="removeDetail(index)"
-                    title="Eliminar ítem"
-                  >
-                    <i class="las la-trash"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr v-if="details.length === 0">
-                <td colspan="5" class="text-center py-8 text-gray-500">
-                  <i class="las la-inbox text-4xl"></i>
-                  <p class="mt-2">No hay ítems agregados. Use los equipos del proyecto o agregue manualmente.</p>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+        <!-- Notas -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Observaciones</h6>
 
-      <!-- Archivo PDF de la Guía -->
-      <div v-if="isEditMode" class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">
-          <i class="las la-file-pdf text-red-500"></i>
-          Archivo PDF de la Guía
-        </h6>
-
-        <!-- Archivo actual -->
-        <div v-if="shippingGuideFileUrl" class="flex items-center gap-3 mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <i class="las la-check-circle text-success text-2xl"></i>
-          <span class="flex-1 text-sm">
-            <strong>Archivo cargado:</strong> {{ shippingGuideFileName }}
-          </span>
-          <a :href="shippingGuideFileUrl" target="_blank" class="btn btn-sm btn-ghost text-blue-500" title="Ver PDF">
-            <i class="las la-eye text-lg"></i> Ver
-          </a>
-          <button
-            v-if="canEdit"
-            type="button"
-            class="btn btn-sm btn-ghost text-error"
-            @click="deleteGuideFile"
-            title="Eliminar archivo"
-          >
-            <i class="las la-trash text-lg"></i> Eliminar
-          </button>
-        </div>
-
-        <!-- Sin archivo -->
-        <div v-else class="flex items-center gap-3 mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <i class="las la-exclamation-circle text-warning text-2xl"></i>
-          <span class="text-sm text-gray-600">No se ha cargado un archivo PDF para esta guía.</span>
-        </div>
-
-        <!-- Input de subida -->
-        <div v-if="canEdit" class="flex items-center gap-3">
-          <input
-            type="file"
-            accept=".pdf,application/pdf"
-            class="file-input file-input-bordered file-input-sm flex-1"
-            @change="onFileChange"
-            :disabled="uploadingFile"
-          />
-          <span v-if="uploadingFile" class="loading loading-spinner loading-sm text-primary"></span>
-        </div>
-
-        <!-- Mensaje -->
-        <div v-if="uploadFileMsg" class="mt-2 text-sm" :class="uploadFileMsgType === 'success' ? 'text-success' : 'text-error'">
-          {{ uploadFileMsg }}
-        </div>
-      </div>
-
-      <!-- Notas -->
-      <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-        <h6 class="font-semibold text-lg mb-4 text-gray-700 border-b pb-2">Observaciones</h6>
-
-        <div class="form-control w-full">
-          <textarea
-            id="notes"
-            v-model="guide.notes"
-            rows="3"
-            placeholder="Observaciones o notas adicionales..."
-            :disabled="!canEdit"
-            class="textarea textarea-bordered w-full"
-          ></textarea>
+          <div class="form-control w-full">
+            <textarea
+              id="notes"
+              v-model="guide.notes"
+              rows="3"
+              placeholder="Observaciones o notas adicionales..."
+              :disabled="!canEdit"
+              class="textarea textarea-bordered w-full"
+            ></textarea>
+          </div>
         </div>
       </div>
 
       <!-- Botones -->
-      <div class="flex gap-3 justify-end mt-6">
-        <button type="button" class="btn btn-outline" @click="cancelForm" :disabled="isLoading">
+      <div class="flex gap-2 justify-end mt-3">
+        <button type="button" class="btn btn-outline btn-sm" @click="cancelForm" :disabled="isLoading">
           <i class="las la-times"></i>
           Volver
         </button>
         <button
           v-if="canEdit"
           type="submit"
-          class="btn btn-primary"
+          class="btn btn-primary btn-sm"
           :disabled="isLoading || isProjectClosed"
         >
           <i v-if="!isLoading" class="las la-save"></i>

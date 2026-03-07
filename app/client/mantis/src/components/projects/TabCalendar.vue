@@ -1,17 +1,12 @@
 <script setup>
 import { computed, ref, onMounted, watch } from 'vue';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
-import { UseCalendarEventStore } from '@/stores/CalendarEventStore';
 import { generateMaintenanceSchedule, getMaintenanceSummary } from '@/utils/scheduler';
-import { appConfig } from '@/AppConfig';
 import { storeToRefs } from 'pinia';
 import Modal from '@/components/common/Modal.vue';
-import CalendarEventForm from '@/components/projects/CalendarEventForm.vue';
 
 const projectResourceStore = UseProjectResourceStore();
-const calendarEventStore = UseCalendarEventStore();
 const { resourcesProject } = storeToRefs(projectResourceStore);
-const { events: calendarEvents } = storeToRefs(calendarEventStore);
 
 // Estado de carga
 const isLoading = ref(true);
@@ -25,15 +20,6 @@ const currentMonthOffset = ref(0);
 // Modal de detalles del día
 const showDayModal = ref(false);
 const selectedDay = ref(null);
-
-// Modal de evento
-const showEventModal = ref(false);
-const editingEvent = ref(null);
-const defaultEventDate = ref(null);
-
-// Drag and drop
-const draggedEvent = ref(null);
-const dropTargetDate = ref(null);
 
 // Calcular el primer y último día del mes actual
 const currentMonth = computed(() => {
@@ -75,11 +61,6 @@ const maintenanceByDate = computed(() => {
   return byDate;
 });
 
-// Agrupar eventos confirmados por fecha
-const eventsByDate = computed(() => {
-  return calendarEventStore.eventsByDate;
-});
-
 // Generar la estructura del calendario
 const calendarWeeks = computed(() => {
   const { firstDay, daysInMonth, year, month } = currentMonth.value;
@@ -95,17 +76,14 @@ const calendarWeeks = computed(() => {
   for (let day = 1; day <= daysInMonth; day++) {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     const maintenances = maintenanceByDate.value[dateStr] || [];
-    const events = eventsByDate.value[dateStr] || [];
 
     currentWeek.push({
       day,
       dateStr,
       maintenances,
-      events,
       isToday: isToday(year, month, day),
       hasMaintenances: maintenances.length > 0,
-      hasEvents: events.length > 0,
-      hasContent: maintenances.length > 0 || events.length > 0
+      hasContent: maintenances.length > 0
     });
 
     if (currentWeek.length === 7) {
@@ -183,78 +161,7 @@ const selectedDayFormatted = computed(() => {
   });
 });
 
-// ── Modal de Eventos ──────────────────────────────────────────
-const openCreateEvent = (dateStr) => {
-  editingEvent.value = null;
-  defaultEventDate.value = dateStr;
-  showEventModal.value = true;
-};
 
-const openEditEvent = (event) => {
-  editingEvent.value = event;
-  defaultEventDate.value = null;
-  showEventModal.value = true;
-};
-
-const closeEventModal = () => {
-  showEventModal.value = false;
-  editingEvent.value = null;
-  defaultEventDate.value = null;
-};
-
-const onEventSaved = () => {
-  closeEventModal();
-  loadCalendarEvents();
-};
-
-const confirmDeleteEvent = async (event) => {
-  if (!confirm(`¿Eliminar el evento "${event.title}"?`)) return;
-  try {
-    await calendarEventStore.deleteEvent(event.id);
-  } catch (error) {
-    alert('Error al eliminar: ' + error.message);
-  }
-};
-
-// ── Drag and Drop ──────────────────────────────────────────
-const onDragStart = (event, calEvent) => {
-  draggedEvent.value = calEvent;
-  event.dataTransfer.effectAllowed = 'move';
-  event.dataTransfer.setData('text/plain', calEvent.id.toString());
-  event.target.classList.add('opacity-50');
-};
-
-const onDragEnd = (event) => {
-  event.target.classList.remove('opacity-50');
-  draggedEvent.value = null;
-  dropTargetDate.value = null;
-};
-
-const onDragOver = (event, dateStr) => {
-  event.preventDefault();
-  event.dataTransfer.dropEffect = 'move';
-  dropTargetDate.value = dateStr;
-};
-
-const onDragLeave = () => {
-  dropTargetDate.value = null;
-};
-
-const onDrop = async (event, dateStr) => {
-  event.preventDefault();
-  dropTargetDate.value = null;
-
-  if (!draggedEvent.value) return;
-  if (draggedEvent.value.start_date === dateStr) return;
-
-  try {
-    await calendarEventStore.moveEvent(draggedEvent.value.id, dateStr);
-  } catch (error) {
-    alert('Error al mover evento: ' + error.message);
-  }
-
-  draggedEvent.value = null;
-};
 
 // ── Utilidades ──────────────────────────────────────────────
 const formatCurrency = (value) => {
@@ -295,41 +202,11 @@ const getFrequencyLabel = (maintenance) => {
   }
 };
 
-const getPriorityColor = (priority) => {
-  const colors = {
-    'LOW': 'badge-info',
-    'MEDIUM': 'badge-warning',
-    'HIGH': 'badge-error',
-    'URGENT': 'badge-error'
-  };
-  return colors[priority] || 'badge-ghost';
-};
-
-const getStatusIcon = (status) => {
-  const icons = {
-    'SCHEDULED': 'la-clock',
-    'IN_PROGRESS': 'la-spinner',
-    'COMPLETED': 'la-check-circle',
-    'CANCELLED': 'la-times-circle'
-  };
-  return icons[status] || 'la-calendar';
-};
-
 // ── Carga de datos ──────────────────────────────────────────
-const loadCalendarEvents = async () => {
-  const { year, month } = currentMonth.value;
-  try {
-    await calendarEventStore.fetchEventsByMonth(appConfig.idProject, year, month + 1);
-  } catch (error) {
-    console.error('Error loading calendar events:', error);
-  }
-};
-
 onMounted(async () => {
   if (!resourcesProject.value || resourcesProject.value.length === 0) {
     await projectResourceStore.fetchResourcesProject();
   }
-  await loadCalendarEvents();
   isLoading.value = false;
 });
 
@@ -338,11 +215,6 @@ watch(resourcesProject, (newVal) => {
     isLoading.value = false;
   }
 }, { immediate: true });
-
-// Recargar eventos al cambiar de mes
-watch(currentMonthOffset, () => {
-  loadCalendarEvents();
-});
 </script>
 
 <template>
@@ -385,14 +257,10 @@ watch(currentMonthOffset, () => {
       </div>
 
       <!-- Resumen Rápido -->
-      <div class="grid grid-cols-4 gap-2 mt-3">
+      <div class="grid grid-cols-3 gap-2 mt-3">
         <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
           <p class="text-gray-500 text-xs">Planificados</p>
           <p class="text-gray-800 font-bold text-2xl">{{ summary.total_maintenances }}</p>
-        </div>
-        <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
-          <p class="text-gray-500 text-xs">Eventos</p>
-          <p class="text-blue-600 font-bold text-2xl">{{ calendarEvents.length }}</p>
         </div>
         <div class="bg-white rounded-lg p-3 text-center border border-gray-200">
           <p class="text-gray-500 text-xs">Recursos</p>
@@ -417,10 +285,6 @@ watch(currentMonthOffset, () => {
         <div class="flex items-center gap-1">
           <span class="w-3 h-3 rounded-full bg-orange-500"></span>
           <span class="text-white text-xs">Días mes</span>
-        </div>
-        <div class="flex items-center gap-1 border-l border-slate-600 pl-3">
-          <span class="w-3 h-3 rounded bg-emerald-500"></span>
-          <span class="text-white text-xs">Evento confirmado</span>
         </div>
       </div>
     </div>
@@ -460,13 +324,9 @@ watch(currentMonthOffset, () => {
             'bg-gray-50': !dayInfo,
             'bg-lime-50 hover:bg-lime-100 cursor-pointer': dayInfo?.hasContent,
             'bg-white': dayInfo && !dayInfo.hasContent,
-            'ring-2 ring-lime-500 ring-inset': dayInfo?.isToday,
-            'bg-blue-50 ring-2 ring-blue-300 ring-inset': dropTargetDate === dayInfo?.dateStr
+            'ring-2 ring-lime-500 ring-inset': dayInfo?.isToday
           }"
           @click="selectDay(dayInfo)"
-          @dragover="dayInfo && onDragOver($event, dayInfo.dateStr)"
-          @dragleave="onDragLeave"
-          @drop="dayInfo && onDrop($event, dayInfo.dateStr)"
         >
           <template v-if="dayInfo">
             <!-- Cabecera del día -->
@@ -489,46 +349,6 @@ watch(currentMonthOffset, () => {
                 >
                   {{ dayInfo.maintenances.length }}
                 </span>
-                <span
-                  v-if="dayInfo.hasEvents"
-                  class="badge badge-xs badge-primary"
-                  :title="`${dayInfo.events.length} eventos`"
-                >
-                  {{ dayInfo.events.length }}
-                </span>
-                <!-- Botón agregar evento -->
-                <button
-                  @click.stop="openCreateEvent(dayInfo.dateStr)"
-                  class="btn btn-circle btn-ghost btn-xs opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity"
-                  :class="{ 'opacity-40': true }"
-                  title="Agregar evento"
-                >
-                  <i class="las la-plus text-xs"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- Eventos confirmados (draggables) -->
-            <div v-if="dayInfo.hasEvents" class="space-y-0.5 mb-1">
-              <div
-                v-for="evt in dayInfo.events.slice(0, 2)"
-                :key="'evt-' + evt.id"
-                class="flex items-center gap-1 rounded px-1 py-0.5 cursor-grab active:cursor-grabbing text-white text-xs truncate"
-                :style="{ backgroundColor: evt.color || '#10B981' }"
-                draggable="true"
-                @dragstart="onDragStart($event, evt)"
-                @dragend="onDragEnd"
-                @click.stop="openEditEvent(evt)"
-                :title="evt.title"
-              >
-                <i class="las text-xs" :class="getStatusIcon(evt.status)"></i>
-                <span class="truncate">{{ evt.title }}</span>
-              </div>
-              <div
-                v-if="dayInfo.events.length > 2"
-                class="text-xs text-blue-600 pl-1 font-medium"
-              >
-                +{{ dayInfo.events.length - 2 }} más
               </div>
             </div>
 
@@ -561,11 +381,11 @@ watch(currentMonthOffset, () => {
 
     <!-- Mensaje si no hay contenido -->
     <div
-      v-if="resourcesProject && resourcesProject.length > 0 && maintenanceSchedule.length === 0 && calendarEvents.length === 0"
+      v-if="resourcesProject && resourcesProject.length > 0 && maintenanceSchedule.length === 0"
       class="alert alert-info"
     >
       <i class="las la-info-circle text-2xl"></i>
-      <span>No hay mantenimientos ni eventos programados para este mes.</span>
+      <span>No hay mantenimientos programados para este mes.</span>
     </div>
   </div>
 
@@ -577,68 +397,6 @@ watch(currentMonthOffset, () => {
     @close="closeDayModal"
   >
     <template v-if="selectedDay">
-      <!-- Botón Nuevo Evento -->
-      <div class="flex justify-end mb-3">
-        <button
-          @click="closeDayModal(); openCreateEvent(selectedDay.dateStr)"
-          class="btn btn-sm btn-primary"
-        >
-          <i class="las la-plus"></i> Nuevo Evento
-        </button>
-      </div>
-
-      <!-- Eventos Confirmados -->
-      <div v-if="selectedDay.hasEvents" class="mb-4">
-        <h4 class="text-sm font-semibold text-blue-700 mb-2">
-          <i class="las la-calendar-check"></i> Eventos Confirmados
-        </h4>
-        <div class="space-y-2">
-          <div
-            v-for="evt in selectedDay.events"
-            :key="'modal-evt-' + evt.id"
-            class="flex items-center justify-between p-2 rounded-lg border"
-            :style="{ borderLeftColor: evt.color || '#10B981', borderLeftWidth: '4px' }"
-          >
-            <div class="flex-1">
-              <div class="flex items-center gap-2">
-                <span class="font-medium text-sm">{{ evt.title }}</span>
-                <span class="badge badge-xs" :class="getPriorityColor(evt.priority)">
-                  {{ evt.priority_display }}
-                </span>
-                <span class="badge badge-xs badge-outline">
-                  {{ evt.event_type_display }}
-                </span>
-              </div>
-              <div class="text-xs text-gray-500 mt-1">
-                <span v-if="evt.responsible_technical_name">
-                  <i class="las la-user"></i> {{ evt.responsible_technical_name }}
-                </span>
-                <span v-if="evt.start_time" class="ml-2">
-                  <i class="las la-clock"></i> {{ evt.start_time }}
-                  <span v-if="evt.end_time"> - {{ evt.end_time }}</span>
-                </span>
-              </div>
-            </div>
-            <div class="flex items-center gap-1">
-              <button
-                @click="closeDayModal(); openEditEvent(evt)"
-                class="btn btn-xs btn-ghost"
-                title="Editar"
-              >
-                <i class="las la-edit"></i>
-              </button>
-              <button
-                @click="confirmDeleteEvent(evt)"
-                class="btn btn-xs btn-ghost text-error"
-                title="Eliminar"
-              >
-                <i class="las la-trash"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Mantenimientos Planificados -->
       <div v-if="selectedDay.hasMaintenances">
         <h4 class="text-sm font-semibold text-gray-600 mb-2">
@@ -686,21 +444,6 @@ watch(currentMonthOffset, () => {
         </div>
       </div>
     </template>
-  </Modal>
-
-  <!-- Modal de Evento -->
-  <Modal
-    :isOpen="showEventModal"
-    :title="editingEvent ? 'Editar Evento' : 'Nuevo Evento'"
-    size="xl"
-    @close="closeEventModal"
-  >
-    <CalendarEventForm
-      :event="editingEvent"
-      :defaultDate="defaultEventDate"
-      @saved="onEventSaved"
-      @close="closeEventModal"
-    />
   </Modal>
   <!-- FIN CALENDARIO -->
 </template>
