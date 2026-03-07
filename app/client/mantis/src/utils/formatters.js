@@ -37,14 +37,23 @@ export const formatNumber = (value) => {
 
 export const formatDate = (date) => {
   if (!date) return '--';
-  
-  // Parsear la fecha como local en lugar de UTC
-  const [year, month, day] = date.split('-');
+
+  // Tomar solo la parte YYYY-MM-DD (ignorar tiempo/zona horaria si viene)
+  const dateOnly = String(date).split('T')[0];
+  const [year, month, day] = dateOnly.split('-');
   const localDate = new Date(year, month - 1, day);
-  
-  return new Intl.DateTimeFormat('es-GT', {
+
+  return new Intl.DateTimeFormat('es-EC', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
   }).format(localDate);
+};
+
+export const getLocalDateString = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 };

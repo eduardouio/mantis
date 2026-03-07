@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseMaintenanceSheetStore } from '@/stores/MaintenanceSheetStore'
 import { appConfig } from '@/AppConfig'
+import { formatDate } from '@/utils/formatters'
 
 const projectStore = UseProjectStore()
 const maintenanceStore = UseMaintenanceSheetStore()
@@ -16,11 +17,6 @@ onMounted(async () => {
 
 const sheets = computed(() => maintenanceStore.sheets || [])
 const isProjectClosed = computed(() => projectStore.project?.is_closed === true)
-
-const formatDate = (date) => {
-  if (!date) return 'N/A'
-  return new Date(date).toLocaleDateString('es-ES')
-}
 
 const goBack = () => {
   router.push({ name: 'projects-detail', query: { tab: 'planillas' } })

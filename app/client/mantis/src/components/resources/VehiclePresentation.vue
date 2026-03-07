@@ -1,5 +1,6 @@
 <script setup>
 import { defineProps, computed } from 'vue'
+import { formatDate } from '@/utils/formatters'
 
 const props = defineProps({
   vehicle: {
@@ -7,12 +8,6 @@ const props = defineProps({
     default: null
   }
 })
-
-// Función auxiliar para formatear fechas
-const formatDate = (date) => {
-  if (!date) return 'N/A'
-  return new Date(date).toLocaleDateString('es-ES')
-}
 
 // Determinar clase de badge según estado
 const getStatusBadgeClass = (status) => {

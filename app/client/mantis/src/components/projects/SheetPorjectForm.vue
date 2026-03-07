@@ -1,6 +1,7 @@
 <script setup>
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { UseProjectStore } from '@/stores/ProjectStore';
+import { formatDate } from '@/utils/formatters';
 import { onMounted, computed, ref, defineEmits, defineProps, watch } from 'vue';
 
 const props = defineProps({
@@ -102,11 +103,6 @@ const handleSubmit = async (e) => {
 
 const handleCancel = () => {
   emit('close');
-};
-
-const formatDate = (date) => {
-  if (!date) return 'N/A';
-  return new Intl.DateTimeFormat('es-GT').format(new Date(date));
 };
 
 const getStatusBadge = (status) => {

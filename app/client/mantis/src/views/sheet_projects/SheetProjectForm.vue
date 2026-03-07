@@ -4,6 +4,7 @@ import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore';
 import { appConfig } from '@/AppConfig';
+import { formatDate } from '@/utils/formatters';
 import { onMounted, computed, ref, watch } from 'vue';
 
 
@@ -430,22 +431,22 @@ const handleSubmit = async () => {
     
     // Validar que las fechas no excedan la fecha de fin del proyecto
     if (project.value.end_date) {
-      const projectEndDate = new Date(project.value.end_date);
-      const periodStart = new Date(formData.value.period_start);
-      const periodEnd = new Date(formData.value.period_end);
-      
+      const projectEndDate = new Date(project.value.end_date + 'T00:00:00');
+      const periodStart = new Date(formData.value.period_start + 'T00:00:00');
+      const periodEnd = new Date(formData.value.period_end + 'T00:00:00');
+
       if (periodStart > projectEndDate) {
-        throw new Error(`La fecha de inicio del período no puede ser posterior a la fecha de fin del proyecto (${new Date(project.value.end_date).toLocaleDateString('es-EC')})`);
+        throw new Error(`La fecha de inicio del período no puede ser posterior a la fecha de fin del proyecto (${formatDate(project.value.end_date)})`);
       }
-      
+
       if (periodEnd > projectEndDate) {
-        throw new Error(`La fecha de fin del período no puede ser posterior a la fecha de fin del proyecto (${new Date(project.value.end_date).toLocaleDateString('es-EC')})`);
+        throw new Error(`La fecha de fin del período no puede ser posterior a la fecha de fin del proyecto (${formatDate(project.value.end_date)})`);
       }
     }
     
     // Validar que las fechas no sean iguales y que la fecha de inicio sea menor que la de fin
-    const periodStart = new Date(formData.value.period_start);
-    const periodEnd = new Date(formData.value.period_end);
+    const periodStart = new Date(formData.value.period_start + 'T00:00:00');
+    const periodEnd = new Date(formData.value.period_end + 'T00:00:00');
     
     // Comparar solo las fechas (ignorar horas)
     periodStart.setHours(0, 0, 0, 0);
@@ -1110,7 +1111,7 @@ watch(selectedEquipmentResources, () => {
                 </td>
                 <td class="border text-right">${{ parseFloat(resource.cost || 0).toFixed(2) }}</td>
                 <td class="border text-center">
-                  {{ resource.operation_start_date ? new Date(resource.operation_start_date).toLocaleDateString('es-EC') : 'N/A' }}
+                  {{ resource.operation_start_date ? formatDate(resource.operation_start_date) : 'N/A' }}
                 </td>
                 <td class="border text-center">
                   <span 
@@ -1259,15 +1260,15 @@ watch(selectedEquipmentResources, () => {
           <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
             <span>
               <i class="las la-sign-in-alt text-green-600"></i>
-              Entrada: <strong>{{ calendarModalEquipment.operation_start_date ? new Date(calendarModalEquipment.operation_start_date + 'T00:00:00').toLocaleDateString('es-EC') : 'N/A' }}</strong>
+              Entrada: <strong>{{ calendarModalEquipment.operation_start_date ? formatDate(calendarModalEquipment.operation_start_date) : 'N/A' }}</strong>
             </span>
             <span v-if="calendarModalEquipment.is_retired && calendarModalEquipment.retirement_date">
               <i class="las la-sign-out-alt text-red-600"></i>
-              Retiro: <strong class="text-red-600">{{ new Date(calendarModalEquipment.retirement_date + 'T00:00:00').toLocaleDateString('es-EC') }}</strong>
+              Retiro: <strong class="text-red-600">{{ formatDate(calendarModalEquipment.retirement_date) }}</strong>
             </span>
             <span v-else-if="calendarModalEquipment.operation_end_date">
               <i class="las la-sign-out-alt text-orange-600"></i>
-              Fin Op.: <strong>{{ new Date(calendarModalEquipment.operation_end_date + 'T00:00:00').toLocaleDateString('es-EC') }}</strong>
+              Fin Op.: <strong>{{ formatDate(calendarModalEquipment.operation_end_date) }}</strong>
             </span>
             <span v-else>
               <i class="las la-infinity text-blue-500"></i>

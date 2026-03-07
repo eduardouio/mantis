@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { appConfig } from "@/AppConfig";
+import { getLocalDateString } from "@/utils/formatters";
 import { UseProjectStore } from "./ProjectStore";
 
 export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
@@ -242,7 +243,7 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 await this.updateSheetProject({
                     ...sheet,
                     status: "INVOICED",
-                    period_end: new Date().toISOString().split('T')[0]
+                    period_end: getLocalDateString()
                 });
                 
                 return true;
@@ -296,7 +297,7 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
             this.newSheetProject = {
                 id: null,
                 project: project.id,
-                issue_date: new Date().toISOString().split('T')[0],
+                issue_date: getLocalDateString(),
                 period_start: null,
                 period_end: null,
                 status: "IN_PROGRESS",

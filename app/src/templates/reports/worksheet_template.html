@@ -361,8 +361,8 @@
             <!-- Segunda fila -->
             <tr>
                 <td>{{ sheet_project.get_service_type_display }}</td>
-                <td>{{ period_start|date:"n/j/Y" }}</td>
-                <td>{{ period_end|date:"n/j/Y" }}</td>
+                <td>{{ period_start|date:"d/m/Y" }}</td>
+                <td>{{ period_end|date:"d/m/Y" }}</td>
                 <td colspan="2">{{ month_name }}</td>
                 <td>{{ project.location|default:"CAMPAMENTO CSSFD" }}</td>
             </tr>

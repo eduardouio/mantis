@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseShippingGuideStore } from '@/stores/ShippingGuideStore'
 import { appConfig } from '@/AppConfig'
+import { formatDate } from '@/utils/formatters'
 import { useTableFilter } from '@/composables/useTableFilter'
 import TableControls from '@/components/common/TableControls.vue'
 
@@ -23,15 +24,6 @@ const tableFilter = useTableFilter(guides, {
 onMounted(async () => {
   await shippingGuideStore.fetchGuidesByProject()
 })
-
-const formatDate = (date) => {
-  if (!date) return 'N/A'
-  return new Intl.DateTimeFormat('es-EC', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  }).format(new Date(date))
-}
 
 const openGuideForm = () => {
   router.push({ name: 'shipping-guide-form' })

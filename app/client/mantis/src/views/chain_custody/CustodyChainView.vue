@@ -5,6 +5,7 @@ import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
 import { UseVehicleStore } from '@/stores/VehicleStore'
 import { appConfig } from '@/AppConfig'
+import { formatDate } from '@/utils/formatters'
 import Modal from '@/components/common/Modal.vue'
 import TechnicalPresentation from '@/components/resources/TechnicalPresentation.vue'
 import VehiclePresentation from '@/components/resources/VehiclePresentation.vue'
@@ -58,10 +59,6 @@ const formatTime = (time) => {
   return time.substring(0, 5) // HH:MM
 }
 
-const formatDate = (date) => {
-  if (!date) return 'N/A'
-  return new Date(date).toLocaleDateString('es-ES')
-}
 
 const viewCustodyChainPDF = (id) => {
   const pdfUrl = appConfig.PDFCustodyChainReport.replace('${id}', id)

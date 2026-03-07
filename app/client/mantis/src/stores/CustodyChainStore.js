@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { appConfig } from "@/AppConfig";
+import { getLocalDateString } from "@/utils/formatters";
 
 
 export const UseCustodyChainStore = defineStore("custodyChainStore", {
@@ -56,9 +57,9 @@ export const UseCustodyChainStore = defineStore("custodyChainStore", {
             this.newCustodyChain = {
                 id: null,
                 id_sheet_project: null,
-                issue_date: new Date().toISOString().split('T')[0],
+                issue_date: getLocalDateString(),
                 consecutive: "00000",
-                activity_date: new Date().toISOString().split('T')[0],
+                activity_date: getLocalDateString(),
                 location: null,
                 total_gallons: 0.0,
                 duration_hours: 0.0,

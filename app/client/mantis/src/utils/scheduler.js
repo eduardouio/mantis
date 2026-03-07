@@ -153,7 +153,7 @@ export function generateMaintenanceSchedule(resources, daysAhead = 90, fromDate 
         weekdays: resource.weekdays,
         monthdays: resource.monthdays,
         operation_start_date: resource.operation_start_date,
-        scheduled_date: maintenanceDate.toISOString().split('T')[0],
+        scheduled_date: `${maintenanceDate.getFullYear()}-${String(maintenanceDate.getMonth() + 1).padStart(2, '0')}-${String(maintenanceDate.getDate()).padStart(2, '0')}`,
         day_of_week: maintenanceDate.toLocaleDateString('es-GT', { weekday: 'long' }),
         week_number: getWeekNumber(maintenanceDate),
         days_until: Math.ceil((maintenanceDate - today) / (1000 * 60 * 60 * 24))

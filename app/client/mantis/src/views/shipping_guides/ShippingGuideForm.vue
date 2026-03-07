@@ -6,6 +6,7 @@ import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 import { UseShippingGuideStore } from '@/stores/ShippingGuideStore'
 import { UseVehicleStore } from '@/stores/VehicleStore'
+import { getLocalDateString } from '@/utils/formatters'
 
 const projectStore = UseProjectStore()
 const projectResourceStore = UseProjectResourceStore()
@@ -36,7 +37,7 @@ const guide = ref({
   project_id: appConfig.idProject,
   type_shipping_guide: 'EXIT',
   guide_number: null,
-  issue_date: new Date().toISOString().split('T')[0],
+  issue_date: getLocalDateString(),
   start_date: '',
   end_date: '',
   origin_place: '',

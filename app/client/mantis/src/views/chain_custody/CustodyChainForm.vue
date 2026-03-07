@@ -12,6 +12,7 @@ import TechnicalPresentation from '@/components/resources/TechnicalPresentation.
 import VehiclePresentation from '@/components/resources/VehiclePresentation.vue'
 import { validateTechnical, validateVehicle } from '@/utils/validates.js'
 import { fromGallons, fromBarrels, fromCubicMeters } from '@/utils/volumenConverter.js'
+import { getLocalDateString } from '@/utils/formatters'
 
 const projectStore = UseProjectStore()
 const technicalStore = UseTechnicalStore()
@@ -41,9 +42,9 @@ const custodyChain = ref({
   vehicle: null,
   sheet_project: null,
   consecutive: '',
-  activity_date: new Date().toISOString().split('T')[0],
+  activity_date: getLocalDateString(),
   location: '',
-  issue_date: new Date().toISOString().split('T')[0],
+  issue_date: getLocalDateString(),
   status: 'DRAFT',
   start_time: '',
   end_time: '',
@@ -51,11 +52,11 @@ const custodyChain = ref({
   contact_name: '',
   dni_contact: '',
   contact_position: '',
-  date_contact: new Date().toISOString().split('T')[0],
+  date_contact: getLocalDateString(),
   driver_name: '',
   dni_driver: '',
   driver_position: '',
-  driver_date: new Date().toISOString().split('T')[0],
+  driver_date: getLocalDateString(),
   total_gallons: 0,
   total_barrels: 0,
   total_cubic_meters: 0,
@@ -162,7 +163,7 @@ const loadCustodyChainData = async () => {
         consecutive: chain.consecutive,
         activity_date: chain.activity_date,
         location: chain.location,
-        issue_date: chain.issue_date || new Date().toISOString().split('T')[0],
+        issue_date: chain.issue_date || getLocalDateString(),
         status: chain.status || 'DRAFT',
         start_time: chain.start_time || '',
         end_time: chain.end_time || '',
@@ -170,11 +171,11 @@ const loadCustodyChainData = async () => {
         contact_name: chain.contact_name || '',
         dni_contact: chain.dni_contact || '',
         contact_position: chain.contact_position || '',
-        date_contact: chain.date_contact || new Date().toISOString().split('T')[0],
+        date_contact: chain.date_contact || getLocalDateString(),
         driver_name: chain.driver_name || '',
         dni_driver: chain.dni_driver || '',
         driver_position: chain.driver_position || '',
-        driver_date: chain.driver_date || new Date().toISOString().split('T')[0],
+        driver_date: chain.driver_date || getLocalDateString(),
         total_gallons: parseFloat(chain.total_gallons) || 0,
         total_barrels: parseFloat(chain.total_barrels) || 0,
         total_cubic_meters: parseFloat(chain.total_cubic_meters) || 0,
@@ -627,7 +628,7 @@ watch(() => custodyChain.value.technical, (newTechnicalId) => {
       custodyChain.value.driver_name = `${selectedTech.first_name} ${selectedTech.last_name}`
       custodyChain.value.dni_driver = selectedTech.dni
       custodyChain.value.driver_position = selectedTech.work_area_display || selectedTech.work_area
-      custodyChain.value.driver_date = new Date().toISOString().split('T')[0]
+      custodyChain.value.driver_date = getLocalDateString()
     }
   }
 })

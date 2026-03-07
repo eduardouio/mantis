@@ -6,6 +6,7 @@ import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 import { UseMaintenanceSheetStore } from '@/stores/MaintenanceSheetStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
+import { getLocalDateString } from '@/utils/formatters'
 
 const projectStore = UseProjectStore()
 const projectResourceStore = UseProjectResourceStore()
@@ -44,7 +45,7 @@ const sheet = ref({
   code: '',
   location: '',
   maintenance_type: 'PREVENTIVO',
-  start_date: new Date().toISOString().split('T')[0],
+  start_date: getLocalDateString(),
   end_date: '',
   total_days: 0,
   cost_day: 0,

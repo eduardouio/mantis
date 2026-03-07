@@ -5,6 +5,7 @@ import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { UseMaintenanceSheetStore } from '@/stores/MaintenanceSheetStore';
 import { appConfig } from '@/AppConfig';
+import { formatDate } from '@/utils/formatters';
 import { useTableFilter } from '@/composables/useTableFilter';
 import TableControls from '@/components/common/TableControls.vue';
 
@@ -73,16 +74,6 @@ const lockMessage = computed(() => {
   if (status === 'CANCELLED') return 'PLANILLA CANCELADA - SOLO LECTURA';
   return '';
 });
-
-const formatDate = (date) => {
-  if (!date) return 'N/A';
-  return new Intl.DateTimeFormat('es-EC', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    timeZone: 'UTC'
-  }).format(new Date(date));
-};
 
 const formatTime = (time) => {
   if (!time) return '--:--';
