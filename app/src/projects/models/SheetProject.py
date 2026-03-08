@@ -155,6 +155,13 @@ class SheetProject(BaseModel):
         blank=True,
         null=True
     )
+    laboratory_analysis_file = models.FileField(
+        upload_to='projects/laboratory_analysis/',
+        verbose_name='Archivo de Análisis de Laboratorio',
+        validators=[validate_pdf_file],
+        blank=True,
+        null=True
+    ),
     is_closed = models.BooleanField(
         'Planilla Cerrada',
         default=False,
