@@ -53,6 +53,10 @@ class CustodyChainReportView(TemplateView):
                 'detail_count': len(chunk),
             })
 
+        consecutive_formatted = '00000000'
+        if custody_chain.consecutive:
+            consecutive_formatted = str(custody_chain.consecutive).zfill(8)
+
         context.update(
             {
                 "custody_chain": custody_chain,
@@ -64,6 +68,7 @@ class CustodyChainReportView(TemplateView):
                 "technical": custody_chain.technical,
                 "vehicle": custody_chain.vehicle,
                 "time_duration_hours": time_duration_hours,
+                "consecutive_formatted": consecutive_formatted,
             }
         )
 
