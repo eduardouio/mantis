@@ -67,6 +67,7 @@ FIELD_LABELS = {
     'sheet_project_file': 'Archivo de Planilla',
     'certificate_final_disposition_file': 'Certificado Disposición Final',
     'invoice_file': 'Archivo de Factura',
+    'laboratory_analysis_file': 'Análisis de Laboratorio',
     'shipping_guide_file': 'Guía de Remisión',
     'resource_image': 'Imagen del Equipo',
     'resource_image_2': 'Imagen del Equipo 2',
@@ -206,7 +207,7 @@ class DocumentTreeApiView(View):
                     'type': 'sheet_project',
                     'files': _build_file_fields(
                         sheet,
-                        ['sheet_project_file', 'certificate_final_disposition_file', 'invoice_file'],
+                        ['sheet_project_file', 'certificate_final_disposition_file', 'invoice_file', 'laboratory_analysis_file'],
                         'sheet_project',
                     ),
                     'children': [],

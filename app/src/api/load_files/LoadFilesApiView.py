@@ -49,7 +49,7 @@ MODEL_FILE_REGISTRY = {
     },
     'sheet_project': {
         'model': SheetProject,
-        'fields': ['sheet_project_file', 'certificate_final_disposition_file', 'invoice_file'],
+        'fields': ['sheet_project_file', 'certificate_final_disposition_file', 'invoice_file', 'laboratory_analysis_file'],
     },
     'shipping_guide': {
         'model': ShippingGuide,

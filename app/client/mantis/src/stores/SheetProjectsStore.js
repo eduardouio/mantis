@@ -317,14 +317,15 @@ export const UseSheetProjectsStore = defineStore("sheetProjectsStore", {
                 notes: '',
                 sheet_project_file: null,
                 certificate_final_disposition_file: null,
-                invoice_file: null
+                invoice_file: null,
+                laboratory_analysis_file: null
             };
         },
         
         /**
-         * Subir archivo de planilla, certificado o factura
+         * Subir archivo de planilla, certificado, factura o análisis de laboratorio
          * @param {number} sheetId - ID de la planilla
-         * @param {string} fieldName - 'sheet_project_file', 'certificate_final_disposition_file' o 'invoice_file'
+         * @param {string} fieldName - 'sheet_project_file', 'certificate_final_disposition_file', 'invoice_file' o 'laboratory_analysis_file'
          * @param {File} file - Archivo a subir
          * @param {Object} extraData - Datos adicionales (ej: { invoice_reference: '...' })
          */

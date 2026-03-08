@@ -6,8 +6,9 @@ GET /api/load_files/sheet/<sheet_id>/merge-generated/
 Orden de los documentos:
     1. Planilla de cantidades (generada por el sistema)
     2. Certificado de disposición final (generado por el sistema)
-    3. Factura de venta (adjuntada a la planilla)
-    4. Cadenas de custodia (generadas por el sistema)
+    3. Certificado de disposición final (archivo adjunto)
+    4. Factura de venta (adjuntada a la planilla)
+    5. Cadenas de custodia (generadas por el sistema)
 """
 
 import io
@@ -75,7 +76,7 @@ def _add_file_to_writer(writer, file_path):
 
 
 def _generate_merge_in_thread(cookies, sheet_id, sheet_series_code,
-                               invoice_path, chain_ids):
+                               certificate_path, invoice_path, chain_ids):
     """
     Ejecuta toda la generación de PDFs con Playwright en un hilo separado.
     Esto evita el error 'You cannot call this from an async context'.
@@ -110,11 +111,15 @@ def _generate_merge_in_thread(cookies, sheet_id, sheet_series_code,
         except Exception:
             pass
 
-        # 3. Factura de venta (archivo adjunto)
+        # 3. Certificado de disposición final (archivo adjunto)
+        if _add_file_to_writer(writer, certificate_path):
+            docs_added += 1
+
+        # 4. Factura de venta (archivo adjunto)
         if _add_file_to_writer(writer, invoice_path):
             docs_added += 1
 
-        # 4. Cadenas de custodia (generadas)
+        # 5. Cadenas de custodia (generadas)
         for chain_id in chain_ids:
             try:
                 url = f"{settings.BASE_URL}{reverse('custody-chain-report', kwargs={'id_custody_chain': chain_id})}"
@@ -142,8 +147,9 @@ class SheetMergeGeneratedApiView(View):
     Orden:
         1. Planilla de cantidades (generada)
         2. Certificado de disposición final (generado)
-        3. Factura de venta (adjunta)
-        4. Cadenas de custodia (generadas)
+        3. Certificado de disposición final (adjunto)
+        4. Factura de venta (adjunta)
+        5. Cadenas de custodia (generadas)
     """
 
     def get(self, request, sheet_id):
@@ -155,6 +161,14 @@ class SheetMergeGeneratedApiView(View):
             )
 
             cookies = _get_cookies(request)
+
+            # Obtener la ruta del certificado de disposición final si existe
+            certificate_path = None
+            if sheet.certificate_final_disposition_file and sheet.certificate_final_disposition_file.name:
+                try:
+                    certificate_path = sheet.certificate_final_disposition_file.path
+                except Exception:
+                    pass
 
             # Obtener la ruta de la factura si existe
             invoice_path = None
@@ -180,6 +194,7 @@ class SheetMergeGeneratedApiView(View):
                     cookies,
                     sheet.id,
                     sheet.series_code,
+                    certificate_path,
                     invoice_path,
                     chain_ids,
                 )

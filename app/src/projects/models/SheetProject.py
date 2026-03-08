@@ -161,7 +161,7 @@ class SheetProject(BaseModel):
         validators=[validate_pdf_file],
         blank=True,
         null=True
-    ),
+    )
     is_closed = models.BooleanField(
         'Planilla Cerrada',
         default=False,

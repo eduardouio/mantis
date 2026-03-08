@@ -212,7 +212,7 @@ const getShippingGuideStatusBadge = (status) => {
   return statusConfig[status] || { text: status, class: 'badge-ghost' };
 };
 
-const getMaintenanceStatusBadge = (status) => {
+const getMaintenanceStatusBadge = (status) => {z
   const statusConfig = {
     'DRAFT': { text: 'BORRADOR', class: 'badge-warning' },
     'CLOSED': { text: 'CERRADO', class: 'badge-success' },
@@ -225,12 +225,15 @@ const getMaintenanceStatusBadge = (status) => {
 const sheetFileInput = ref(null);
 const certificateFileInput = ref(null);
 const invoiceFileInput = ref(null);
+const labAnalysisFileInput = ref(null);
 const sheetFileInfo = ref(null);
 const certificateFileInfo = ref(null);
 const invoiceFileInfo = ref(null);
+const labAnalysisFileInfo = ref(null);
 const isUploadingSheet = ref(false);
 const isUploadingCertificate = ref(false);
 const isUploadingInvoice = ref(false);
+const isUploadingLabAnalysis = ref(false);
 const showInvoiceModal = ref(false);
 const invoiceReference = ref('');
 const fileMessage = ref('');
@@ -305,6 +308,37 @@ const onCertificateFileSelected = async (event) => {
   }
 };
 
+const handleAttachLabAnalysisFile = () => {
+  if (isHeadersLocked.value && labAnalysisFileInfo.value?.has_file) return;
+  labAnalysisFileInput.value?.click();
+};
+
+const onLabAnalysisFileSelected = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.type !== 'application/pdf') {
+    fileMessage.value = 'Solo se permiten archivos PDF';
+    fileMessageType.value = 'error';
+    setTimeout(() => { fileMessage.value = ''; }, 4000);
+    return;
+  }
+  isUploadingLabAnalysis.value = true;
+  try {
+    const result = await sheetProjectsStore.uploadSheetFile(sheetId.value, 'laboratory_analysis_file', file);
+    labAnalysisFileInfo.value = result;
+    fileMessage.value = 'Análisis de laboratorio subido correctamente';
+    fileMessageType.value = 'success';
+    setTimeout(() => { fileMessage.value = ''; }, 3000);
+  } catch (error) {
+    fileMessage.value = error.message || 'Error al subir el análisis de laboratorio';
+    fileMessageType.value = 'error';
+    setTimeout(() => { fileMessage.value = ''; }, 4000);
+  } finally {
+    isUploadingLabAnalysis.value = false;
+    event.target.value = '';
+  }
+};
+
 const handleAttachInvoiceFile = () => {
   if (isHeadersLocked.value && invoiceFileInfo.value?.has_file) return;
   invoiceReference.value = '';
@@ -354,14 +388,16 @@ const openFile = (fileInfo) => {
 
 const loadFileInfo = async () => {
   try {
-    const [sheetInfo, certInfo, invoiceInfo] = await Promise.all([
+    const [sheetInfo, certInfo, invoiceInfo, labInfo] = await Promise.all([
       sheetProjectsStore.getSheetFileInfo(sheetId.value, 'sheet_project_file'),
       sheetProjectsStore.getSheetFileInfo(sheetId.value, 'certificate_final_disposition_file'),
-      sheetProjectsStore.getSheetFileInfo(sheetId.value, 'invoice_file')
+      sheetProjectsStore.getSheetFileInfo(sheetId.value, 'invoice_file'),
+      sheetProjectsStore.getSheetFileInfo(sheetId.value, 'laboratory_analysis_file')
     ]);
     sheetFileInfo.value = sheetInfo;
     certificateFileInfo.value = certInfo;
     invoiceFileInfo.value = invoiceInfo;
+    labAnalysisFileInfo.value = labInfo;
   } catch (error) {
     console.error('Error consultando archivos:', error);
   }
@@ -428,6 +464,8 @@ onMounted(async () => {
           <input type="file" ref="sheetFileInput" accept=".pdf" class="hidden" @change="onSheetFileSelected" />
           <!-- Input oculto para certificado PDF -->
           <input type="file" ref="certificateFileInput" accept=".pdf" class="hidden" @change="onCertificateFileSelected" />
+          <!-- Input oculto para análisis de laboratorio PDF -->
+          <input type="file" ref="labAnalysisFileInput" accept=".pdf" class="hidden" @change="onLabAnalysisFileSelected" />
 
           <!-- Botón Planilla PDF -->
           <div class="flex items-center gap-1">
@@ -479,6 +517,33 @@ onMounted(async () => {
               <i class="las la-eye text-lg text-warning"></i>
             </button>
             <span v-if="certificateFileInfo?.has_file" class="badge badge-success badge-sm gap-1">
+              <i class="las la-check-circle"></i> PDF
+            </span>
+          </div>
+
+          <!-- Botón Análisis de Laboratorio -->
+          <div class="flex items-center gap-1">
+            <button 
+              type="button" 
+              @click="handleAttachLabAnalysisFile" 
+              class="btn btn-secondary btn-sm gap-1"
+              :class="{ 'btn-disabled': isUploadingLabAnalysis || (isHeadersLocked && labAnalysisFileInfo?.has_file) }"
+              :disabled="isUploadingLabAnalysis || (isHeadersLocked && labAnalysisFileInfo?.has_file)"
+            >
+              <span v-if="isUploadingLabAnalysis" class="loading loading-spinner loading-xs"></span>
+              <i v-else class="las la-flask text-lg"></i>
+              {{ labAnalysisFileInfo?.has_file ? (isHeadersLocked ? 'Lab. (Bloqueado)' : 'Actualizar Lab.') : 'Adjuntar Lab.' }}
+            </button>
+            <button 
+              v-if="labAnalysisFileInfo?.has_file" 
+              type="button" 
+              @click="openFile(labAnalysisFileInfo)" 
+              class="btn btn-ghost btn-sm btn-circle"
+              title="Ver análisis de laboratorio"
+            >
+              <i class="las la-eye text-lg text-secondary"></i>
+            </button>
+            <span v-if="labAnalysisFileInfo?.has_file" class="badge badge-success badge-sm gap-1">
               <i class="las la-check-circle"></i> PDF
             </span>
           </div>
