@@ -538,40 +538,76 @@ const selectedEquipmentResources = computed(() => {
     }));
 });
 
-// Generar los días del período de la planilla para un equipo considerando entradas/salidas
+// Generar los días del período de la planilla como objetos {day, month, year, dateStr}
+// para soportar períodos que abarcan más de un mes
 const getDaysInPeriod = computed(() => {
   if (!formData.value.period_start || !formData.value.period_end) return [];
-  
+
   const start = new Date(formData.value.period_start + 'T00:00:00');
   const end = new Date(formData.value.period_end + 'T00:00:00');
   const days = [];
-  
+
   const current = new Date(start);
   while (current <= end) {
-    days.push(current.getDate());
+    days.push({
+      day: current.getDate(),
+      month: current.getMonth(),
+      year: current.getFullYear(),
+      dateStr: current.toISOString().split('T')[0], // YYYY-MM-DD para identificación única
+    });
     current.setDate(current.getDate() + 1);
   }
-  
+
   return days;
 });
 
+// Agrupar los días del período por mes para mostrar correctamente cuando cruzan meses
+const monthNamesList = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+const groupedDaysByMonth = computed(() => {
+  const groups = [];
+  let currentGroup = null;
+
+  for (const dayObj of getDaysInPeriod.value) {
+    const key = `${dayObj.year}-${dayObj.month}`;
+    if (!currentGroup || currentGroup.key !== key) {
+      currentGroup = {
+        key,
+        label: `${monthNamesList[dayObj.month]} ${dayObj.year}`,
+        days: [],
+      };
+      groups.push(currentGroup);
+    }
+    currentGroup.days.push(dayObj);
+  }
+
+  return groups;
+});
+
 // Verificar si un día está dentro del rango efectivo del equipo
-const isDayInEquipmentRange = (equipment, day) => {
+// dayObj puede ser un objeto {day, month, year, dateStr} o un número (legacy)
+const isDayInEquipmentRange = (equipment, dayObj) => {
   if (!formData.value.period_start || !formData.value.period_end) return false;
-  
+
   const periodStart = new Date(formData.value.period_start + 'T00:00:00');
   const periodEnd = new Date(formData.value.period_end + 'T00:00:00');
-  
-  // Construir fecha real del día dentro del mes del período
-  const dayDate = new Date(periodStart.getFullYear(), periodStart.getMonth(), day);
-  
+
+  // Construir fecha real del día
+  let dayDate;
+  if (typeof dayObj === 'object' && dayObj.dateStr) {
+    dayDate = new Date(dayObj.dateStr + 'T00:00:00');
+  } else {
+    // Fallback legacy: solo número de día, usar mes del periodStart
+    dayDate = new Date(periodStart.getFullYear(), periodStart.getMonth(), dayObj);
+  }
+
   // Fecha efectiva de inicio del equipo
   let effectiveStart = periodStart;
   if (equipment.operation_start_date) {
     const opStart = new Date(equipment.operation_start_date + 'T00:00:00');
     if (opStart > effectiveStart) effectiveStart = opStart;
   }
-  
+
   // Fecha efectiva de fin del equipo
   let effectiveEnd = periodEnd;
   if (equipment.is_retired && equipment.retirement_date) {
@@ -581,7 +617,7 @@ const isDayInEquipmentRange = (equipment, day) => {
     const opEnd = new Date(equipment.operation_end_date + 'T00:00:00');
     if (opEnd < effectiveEnd) effectiveEnd = opEnd;
   }
-  
+
   return dayDate >= effectiveStart && dayDate <= effectiveEnd;
 };
 
@@ -590,45 +626,48 @@ const getSelectedDays = (detailId) => {
   return equipmentDaysMap.value[detailId] || [];
 };
 
-// Último día clickeado por detalle (para Shift+Click de rango)
-const lastClickedDay = ref({});
+// Último día clickeado por detalle (para Shift+Click de rango) - almacena el índice en getDaysInPeriod
+const lastClickedDayIndex = ref({});
 
 // Toggle un día para un detalle de equipo (soporta Shift+Click para rango)
-const toggleEquipmentDay = (detailId, day, event, equipment) => {
+// dayObj es un objeto {day, month, year, dateStr}
+const toggleEquipmentDay = (detailId, dayObj, event, equipment) => {
   if (isDetailsLocked.value) return;
-  
+
   if (!equipmentDaysMap.value[detailId]) {
     equipmentDaysMap.value[detailId] = [];
   }
-  
+
   const days = equipmentDaysMap.value[detailId];
-  
+  const allPeriodDays = getDaysInPeriod.value;
+  const currentIndex = allPeriodDays.findIndex(d => d.dateStr === dayObj.dateStr);
+
   // Shift+Click: seleccionar rango desde el último día clickeado
-  if (event && event.shiftKey && lastClickedDay.value[detailId] !== undefined) {
-    const from = Math.min(lastClickedDay.value[detailId], day);
-    const to = Math.max(lastClickedDay.value[detailId], day);
-    
-    for (let d = from; d <= to; d++) {
-      // Solo agregar días válidos que estén en el período y en el rango del equipo
-      if (getDaysInPeriod.value.includes(d) && (!equipment || isDayInEquipmentRange(equipment, d))) {
-        if (!days.includes(d)) {
-          days.push(d);
+  if (event && event.shiftKey && lastClickedDayIndex.value[detailId] !== undefined) {
+    const fromIdx = Math.min(lastClickedDayIndex.value[detailId], currentIndex);
+    const toIdx = Math.max(lastClickedDayIndex.value[detailId], currentIndex);
+
+    for (let i = fromIdx; i <= toIdx; i++) {
+      const d = allPeriodDays[i];
+      if (!equipment || isDayInEquipmentRange(equipment, d)) {
+        if (!days.includes(d.day)) {
+          days.push(d.day);
         }
       }
     }
   } else {
     // Click normal: toggle individual
-    const index = days.indexOf(day);
+    const index = days.indexOf(dayObj.day);
     if (index === -1) {
-      days.push(day);
+      days.push(dayObj.day);
     } else {
       days.splice(index, 1);
     }
   }
-  
-  // Guardar último día clickeado
-  lastClickedDay.value[detailId] = day;
-  
+
+  // Guardar último índice clickeado
+  lastClickedDayIndex.value[detailId] = currentIndex;
+
   // Ordenar
   equipmentDaysMap.value[detailId] = [...days].sort((a, b) => a - b);
 };
@@ -641,16 +680,16 @@ const countValidDays = (equipment) => {
 // Seleccionar/deseleccionar todos los días válidos de un equipo
 const toggleAllEquipmentDays = (equipment) => {
   if (isDetailsLocked.value) return;
-  
+
   const currentDays = getSelectedDays(equipment.detail_id);
-  const validDays = getDaysInPeriod.value.filter(d => isDayInEquipmentRange(equipment, d));
-  
-  if (currentDays.length === validDays.length) {
+  const validDayObjects = getDaysInPeriod.value.filter(d => isDayInEquipmentRange(equipment, d));
+
+  if (currentDays.length === validDayObjects.length) {
     // Deseleccionar todos
     equipmentDaysMap.value[equipment.detail_id] = [];
   } else {
-    // Seleccionar todos los válidos
-    equipmentDaysMap.value[equipment.detail_id] = [...validDays];
+    // Seleccionar todos los válidos (extraer solo los números de día)
+    equipmentDaysMap.value[equipment.detail_id] = validDayObjects.map(d => d.day);
   }
 };
 
@@ -1349,24 +1388,29 @@ watch(selectedEquipmentResources, () => {
           </button>
         </div>
 
-        <!-- Grid de días -->
-        <div class="grid grid-cols-7 sm:grid-cols-8 gap-1.5">
-          <button
-            v-for="day in getDaysInPeriod"
-            :key="day"
-            type="button"
-            class="btn btn-sm w-full h-10 p-0 text-sm font-semibold"
-            :class="{
-              'btn-primary': getSelectedDays(calendarModalEquipment.detail_id).includes(day) && isDayInEquipmentRange(calendarModalEquipment, day),
-              'btn-outline': !getSelectedDays(calendarModalEquipment.detail_id).includes(day) && isDayInEquipmentRange(calendarModalEquipment, day),
-              'btn-disabled bg-gray-100 text-gray-300 cursor-not-allowed': !isDayInEquipmentRange(calendarModalEquipment, day)
-            }"
-            :disabled="isDetailsLocked || !isDayInEquipmentRange(calendarModalEquipment, day)"
-            @click.stop="isDayInEquipmentRange(calendarModalEquipment, day) ? toggleEquipmentDay(calendarModalEquipment.detail_id, day, $event, calendarModalEquipment) : null"
-          >
-            {{ day }}
-          </button>
-        </div>
+        <!-- Grid de días agrupados por mes -->
+        <template v-for="(monthGroup, groupIndex) in groupedDaysByMonth" :key="groupIndex">
+          <div class="text-xs font-bold text-gray-500 uppercase mt-2 mb-1 border-b pb-1" v-if="groupedDaysByMonth.length > 1">
+            {{ monthGroup.label }}
+          </div>
+          <div class="grid grid-cols-7 sm:grid-cols-8 gap-1.5 mb-2">
+            <button
+              v-for="dayObj in monthGroup.days"
+              :key="dayObj.dateStr"
+              type="button"
+              class="btn btn-sm w-full h-10 p-0 text-sm font-semibold"
+              :class="{
+                'btn-primary': getSelectedDays(calendarModalEquipment.detail_id).includes(dayObj.day) && isDayInEquipmentRange(calendarModalEquipment, dayObj),
+                'btn-outline': !getSelectedDays(calendarModalEquipment.detail_id).includes(dayObj.day) && isDayInEquipmentRange(calendarModalEquipment, dayObj),
+                'btn-disabled bg-gray-100 text-gray-300 cursor-not-allowed': !isDayInEquipmentRange(calendarModalEquipment, dayObj)
+              }"
+              :disabled="isDetailsLocked || !isDayInEquipmentRange(calendarModalEquipment, dayObj)"
+              @click.stop="isDayInEquipmentRange(calendarModalEquipment, dayObj) ? toggleEquipmentDay(calendarModalEquipment.detail_id, dayObj, $event, calendarModalEquipment) : null"
+            >
+              {{ dayObj.day }}
+            </button>
+          </div>
+        </template>
 
         <!-- Footer del modal -->
         <div class="modal-action mt-4">

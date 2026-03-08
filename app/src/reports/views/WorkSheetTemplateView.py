@@ -1,9 +1,8 @@
 from django.views.generic import TemplateView
 from django.shortcuts import get_object_or_404
 from projects.models.SheetProject import SheetProject, SheetProjectDetail
-from calendar import monthrange
 from common.WorkSheetBuilder import WorkSheetBuilder
-from datetime import date
+from datetime import timedelta
 
 
 EQUIPMENT_SHORT_NAMES = {
@@ -57,15 +56,6 @@ class WorkSheetTemplateView(TemplateView):
                 "Por favor configure las fechas de inicio y fin del período."
             )
 
-        if period_start and period_end:
-            year = period_start.year
-            month = period_start.month
-            days_in_month = monthrange(year, month)[1]
-        else:
-            days_in_month = 31
-            month = 1
-            year = 2026
-
         month_names = {
             1: "ENERO",
             2: "FEBRERO",
@@ -80,7 +70,42 @@ class WorkSheetTemplateView(TemplateView):
             11: "NOVIEMBRE",
             12: "DICIEMBRE",
         }
-        month_name = month_names.get(month, "")
+
+        # Generar lista de fechas del período para soportar rangos que cruzan meses
+        period_dates = []
+        if period_start and period_end:
+            current_date = period_start
+            while current_date <= period_end:
+                period_dates.append(current_date)
+                current_date += timedelta(days=1)
+
+        num_period_days = len(period_dates) if period_dates else 31
+
+        if period_start and period_end:
+            days_in_month = num_period_days
+
+            # Determinar nombre del mes (puede cruzar meses)
+            start_month = period_start.month
+            end_month = period_end.month
+            if start_month == end_month:
+                month_name = month_names.get(start_month, "")
+            else:
+                month_name = f"{month_names.get(start_month, '')} - {month_names.get(end_month, '')}"
+        else:
+            days_in_month = 31
+            month_name = ""
+
+        # Generar headers de días basados en las fechas del período
+        day_headers = []
+        for dt in period_dates:
+            day_headers.append({
+                'day': dt.day,
+                'month': dt.month,
+                'is_new_month': len(day_headers) > 0 and dt.month != period_dates[len(day_headers) - 1].month,
+            })
+        # Rellenar hasta 31 columnas si hay menos días
+        while len(day_headers) < 31:
+            day_headers.append({'day': '', 'month': 0, 'is_new_month': False})
 
         # Leer los datos desde SheetProjectDetail (ya actualizados si estaba en IN_PROGRESS)
         items_list = []
@@ -93,14 +118,21 @@ class WorkSheetTemplateView(TemplateView):
 
         for sheet_detail in sheet_details:
             resource_item = sheet_detail.resource_item
-            
-            # Construir la lista de días del mes
-            days_list = ["" for d in range(1, 32)]
+
+            # Construir la lista de días basada en posiciones del período
+            days_list = ["" for _ in range(31)]
             monthdays = sheet_detail.monthdays_apply_cost or []
-            
-            for day in monthdays:
-                if 1 <= day <= 31:
-                    days_list[day - 1] = "1"
+
+            if period_dates:
+                # Mapear días del período a posiciones en la tabla
+                for i, dt in enumerate(period_dates):
+                    if i < 31 and dt.day in monthdays:
+                        days_list[i] = "1"
+            else:
+                # Fallback: mapeo directo por día del mes
+                for day in monthdays:
+                    if 1 <= day <= 31:
+                        days_list[day - 1] = "1"
             
             detail_text = sheet_detail.detail or f"ALQUILER DE {resource_item.name} {resource_item.code}"
             
@@ -151,6 +183,7 @@ class WorkSheetTemplateView(TemplateView):
                 "days_in_month": days_in_month,
                 "days_range": range(1, days_in_month + 1),
                 "all_days_range": range(1, 32),
+                "day_headers": day_headers,
                 "items": items_list,
                 "subtotal": subtotal,
                 "tax_amount": tax_amount,

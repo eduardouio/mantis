@@ -154,6 +154,21 @@ class CustodyChain(BaseModel):
         default='NA',
         max_length=2
     )
+    # este costo va en la planilla cuando una planilla tiene logistica
+    logistic_cost = models.DecimalField(
+        'Costo Logística',
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+    # este es el concepto que sale en la planilla
+    sheet_project_concept = models.CharField(
+        'Concepto de Planilla',
+        max_length=255,
+        blank=True,
+        null=True,
+        default=None
+    )
     custody_chain_file = models.FileField(
         upload_to='projects/custody_chains/',
         verbose_name='Archivo de Cadena de Custodia',

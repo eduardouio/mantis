@@ -68,7 +68,18 @@ class BaseModel(models.Model):
         null=True,
         help_text='Identificador del usuario actualizador del registro.'
     )
-
+    siganture_name = models.CharField(
+        'Nombre Firmante',
+        max_length=100,
+        blank=True,
+        null=True
+    )
+    siganture_role = models.CharField(
+        'Rol Firmante',
+        blank=True,
+        null=True,
+        default=None
+    )
     history = HistoricalRecords(
         inherit=True,
         history_change_reason_field=models.TextField(null=True)
