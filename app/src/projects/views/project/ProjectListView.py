@@ -14,33 +14,44 @@ class ProjectListView(LoginRequiredMixin, ListView):
         return Project.objects.annotate(
             sheets_count=Count(
                 'sheetproject',
-                filter=Q(sheetproject__is_deleted=False),
+                filter=Q(
+                    sheetproject__is_deleted=False,
+                    sheetproject__is_active=True,
+                ),
+                distinct=True,
             ),
             equipos_count=Count(
                 'projectresourceitem',
                 filter=Q(
                     projectresourceitem__type_resource='EQUIPO',
                     projectresourceitem__is_deleted=False,
+                    projectresourceitem__is_active=True,
                 ),
+                distinct=True,
             ),
             servicios_count=Count(
                 'projectresourceitem',
                 filter=Q(
                     projectresourceitem__type_resource='SERVICIO',
                     projectresourceitem__is_deleted=False,
+                    projectresourceitem__is_active=True,
                 ),
+                distinct=True,
             ),
             has_active_sheet=Count(
                 'sheetproject',
                 filter=Q(
                     sheetproject__status='IN_PROGRESS',
                     sheetproject__is_deleted=False,
+                    sheetproject__is_active=True,
                 ),
+                distinct=True,
             ),
             last_sheet_id=Subquery(
                 SheetProject.objects.filter(
                     project=OuterRef('pk'),
                     is_deleted=False,
+                    is_active=True,
                 ).order_by('-id').values('id')[:1]
             ),
         ).select_related('partner')
