@@ -24,7 +24,8 @@ class BaseModelAdmin(SimpleHistoryAdmin):
         'id_user_created', 'id_user_updated'
     )
     readonly_fields = (
-        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+        'siganture_name', 'siganture_role'
     )
 
     def get_list_display(self, request):
@@ -57,7 +58,8 @@ class PartnerAdmin(BaseModelAdmin):
         }),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ),
             'classes': ('collapse',)
         })
@@ -90,7 +92,8 @@ class ProjectAdmin(BaseModelAdmin):
         }),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ),
             'classes': ('collapse',)
         })
@@ -130,7 +133,8 @@ class ProjectResourceItemAdmin(BaseModelAdmin):
         }),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ), 'classes': ('collapse',)
         })
     )
@@ -170,7 +174,7 @@ class SheetProjectAdmin(BaseModelAdmin):
             'fields': ('notes',), 'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'), 'classes': ('collapse',)
+            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated', 'siganture_name', 'siganture_role'), 'classes': ('collapse',)
         })
     )
 
@@ -199,7 +203,7 @@ class SheetProjectDetailAdmin(BaseModelAdmin):
             'fields': ('notes',), 'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated', 'siganture_name', 'siganture_role'),
             'classes': ('collapse',)
         })
     )
@@ -254,7 +258,8 @@ class CustodyChainAdmin(BaseModelAdmin):
         ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ), 'classes': ('collapse',)
         })
     )
@@ -290,7 +295,7 @@ class ChainCustodyDetailAdmin(BaseModelAdmin):
         }),
         ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'), 'classes': ('collapse',)
+            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated', 'siganture_name', 'siganture_role'), 'classes': ('collapse',)
         })
     )
 
@@ -333,7 +338,8 @@ class FinalDispositionCertificateAdmin(BaseModelAdmin):
         ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ), 'classes': ('collapse',)
         })
     )
@@ -364,7 +370,8 @@ class FinalDispositionCertificateDetailAdmin(BaseModelAdmin):
         ('Notas', {'fields': ('notes',), 'classes': ('collapse',)}),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ), 'classes': ('collapse',)
         })
     )
@@ -425,7 +432,8 @@ class SheetMaintenanceAdmin(BaseModelAdmin):
         }),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ), 'classes': ('collapse',)
         })
     )
@@ -475,7 +483,8 @@ class CalendarEventAdmin(BaseModelAdmin):
         }),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ), 'classes': ('collapse',)
         })
     )
@@ -505,7 +514,8 @@ class CalendarEventDetailAdmin(BaseModelAdmin):
         }),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ), 'classes': ('collapse',)
         })
     )
@@ -555,7 +565,8 @@ class ShippingGuideAdmin(BaseModelAdmin):
         }),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ), 'classes': ('collapse',)
         })
     )
@@ -583,7 +594,8 @@ class ShippingGuideDetailAdmin(BaseModelAdmin):
         }),
         ('Auditoría', {
             'fields': (
-                'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ), 'classes': ('collapse',)
         })
     )

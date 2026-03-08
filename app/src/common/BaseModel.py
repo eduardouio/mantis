@@ -122,6 +122,8 @@ class BaseModel(models.Model):
 
         if not self.pk:
             self.id_user_created = user.pk
+            self.siganture_name = getattr(user, 'siganture_name', None)
+            self.siganture_role = getattr(user, 'siganture_role', None)
 
         self.id_user_updated = user.pk
         return super().save(*args, **kwargs)

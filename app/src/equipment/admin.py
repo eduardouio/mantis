@@ -117,7 +117,8 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
         ('Auditoría', {
             'fields': (
                 'created_at', 'updated_at',
-                'id_user_created', 'id_user_updated'
+                'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             ),
             'classes': ('collapse',)
         })
@@ -126,6 +127,7 @@ class ResourceItemAdmin(SimpleHistoryAdmin):
     readonly_fields = (
         'created_at', 'updated_at',
         'id_user_created', 'id_user_updated',
+        'siganture_name', 'siganture_role',
         'capacity_display'
     )
 
@@ -199,13 +201,14 @@ class VehicleAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated', 'siganture_name', 'siganture_role'),
             'classes': ('collapse',)
         })
     )
 
     readonly_fields = ('created_at', 'updated_at',
-                       'id_user_created', 'id_user_updated')
+                       'id_user_created', 'id_user_updated',
+                       'siganture_name', 'siganture_role')
 
     date_hierarchy = 'created_at'
 
@@ -253,13 +256,14 @@ class CertificationVehicleAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated', 'siganture_name', 'siganture_role'),
             'classes': ('collapse',)
         })
     )
 
     readonly_fields = ('created_at', 'updated_at',
-                       'id_user_created', 'id_user_updated')
+                       'id_user_created', 'id_user_updated',
+                       'siganture_name', 'siganture_role')
 
     date_hierarchy = 'date_start'
 
@@ -305,13 +309,14 @@ class PassVehicleAdmin(SimpleHistoryAdmin):
             'classes': ('collapse',)
         }),
         ('Auditoría', {
-            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated'),
+            'fields': ('created_at', 'updated_at', 'id_user_created', 'id_user_updated', 'siganture_name', 'siganture_role'),
             'classes': ('collapse',)
         })
     )
 
     readonly_fields = ('created_at', 'updated_at',
-                       'id_user_created', 'id_user_updated')
+                       'id_user_created', 'id_user_updated',
+                       'siganture_name', 'siganture_role')
 
     date_hierarchy = 'fecha_caducidad'
 

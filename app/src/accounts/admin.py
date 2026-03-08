@@ -108,7 +108,8 @@ class LicenseAdmin(SimpleHistoryAdmin):
         }),
         ('BaseModel Fields', {
             'fields': (
-                'notes', 'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'notes', 'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             )
         }),
     )
@@ -136,7 +137,8 @@ class LicenseAdmin(SimpleHistoryAdmin):
     search_fields = ('license_key', 'user__first_name',
                      'user__last_name', 'enterprise')
     readonly_fields = ('created_at', 'updated_at',
-                       'id_user_created', 'id_user_updated')
+                       'id_user_created', 'id_user_updated',
+                       'siganture_name', 'siganture_role')
     ordering = ('-created_at',)
 
 
@@ -177,7 +179,8 @@ class TechnicalAdmin(SimpleHistoryAdmin):
         }),
         ('BaseModel Fields', {
             'fields': (
-                'notes', 'is_active', 'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+                'notes', 'is_active', 'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             )
         }),
     )
@@ -209,7 +212,8 @@ class TechnicalAdmin(SimpleHistoryAdmin):
         'first_name', 'last_name', 'email', 'dni', 'quest_ncst_code', 'file_number', 'medical_record_number'
     )
     readonly_fields = (
-        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+        'siganture_name', 'siganture_role'
     )
     ordering = ('-created_at',)
 
@@ -232,7 +236,8 @@ class VaccinationRecordAdmin(SimpleHistoryAdmin):
         ('BaseModel Fields', {
             'fields': (
                 'notes', 'is_active', 'created_at', 'updated_at',
-                'id_user_created', 'id_user_updated'
+                'id_user_created', 'id_user_updated',
+                'siganture_name', 'siganture_role'
             )
         }),
     )
@@ -264,7 +269,8 @@ class VaccinationRecordAdmin(SimpleHistoryAdmin):
 
     autocomplete_fields = ['technical']
     readonly_fields = (
-        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+        'siganture_name', 'siganture_role'
     )
     ordering = ('-application_date',)
 
@@ -291,7 +297,7 @@ class PassTechnicalAdmin(SimpleHistoryAdmin):
         ('Auditoría', {
             'fields': (
                 'created_at', 'updated_at', 'id_user_created',
-                'id_user_updated'
+                'id_user_updated', 'siganture_name', 'siganture_role'
             ),
             'classes': ('collapse',)
         }),
@@ -323,7 +329,8 @@ class PassTechnicalAdmin(SimpleHistoryAdmin):
     autocomplete_fields = ['technical']
     ordering = ('-fecha_caducidad', '-created_at')
     readonly_fields = (
-        'created_at', 'updated_at', 'id_user_created', 'id_user_updated'
+        'created_at', 'updated_at', 'id_user_created', 'id_user_updated',
+        'siganture_name', 'siganture_role'
     )
 
 
