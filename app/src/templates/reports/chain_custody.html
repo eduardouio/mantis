@@ -133,7 +133,7 @@
       <td style="text-align: left; width: 50%;"><strong>FECHA:</strong> {% if custody_chain.activity_date %}{{ custody_chain.activity_date|date:"d/m/Y" }}{% endif %}</td>
       <td style="text-align: left; width: 35%;"><strong>PLACAS:</strong> {% if custody_chain.vehicle %}{{ custody_chain.vehicle.no_plate }}{% endif %}</td>
       <td style="text-align: right; width: 15%;">
-       <strong style="font-size:18px;color:#cc0000;font-family:monospace;font-weight:900;">No. {% if custody_chain.consecutive %}{{ custody_chain.consecutive }}{% else %}0000000{% endif %}</strong>
+       <strong style="font-size:18px;color:#cc0000;font-family:monospace;font-weight:900;">No. {% if custody_chain.consecutive %}{{ custody_chain.consecutive|stringformat:"06d" }}{% else %}000000{% endif %}</strong>
       </td>
     </tr>
     <tr>

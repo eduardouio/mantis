@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from projects.models.CustodyChain import CustodyChain, ChainCustodyDetail
 from common.AppLoggin import loggin_event
 
-CUSTODY_ROWS_PER_PAGE = 10
+CUSTODY_ROWS_PER_PAGE = 9
 
 
 class CustodyChainReportView(TemplateView):
