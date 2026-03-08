@@ -144,8 +144,12 @@ class WorkSheetBuilder:
         Construye o actualiza todos los detalles de la planilla (SheetProjectDetail).
         
         Procesa cada recurso del proyecto:
-        - Equipos: calcula días según frecuencia configurada
-        - Servicios: calcula días según cadenas de custodia
+        - Equipos: calcula días según frecuencia configurada.
+          Cuando un mismo equipo tiene múltiples asignaciones (reasignaciones
+          tras retiro y reincorporación) se combinan todos los días en un
+          único SheetProjectDetail.
+        - Servicios: calcula días según cadenas de custodia (un detalle por
+          cada ProjectResourceItem).
         
         Returns:
             list: Lista de instancias SheetProjectDetail creadas/actualizadas
@@ -159,27 +163,63 @@ class WorkSheetBuilder:
             project=self.project,
             is_active=True,
         ).select_related("resource_item").order_by("type_resource", "id")
-        
-        for project_resource in project_resources:
-            resource_item = project_resource.resource_item
-            
-            # Si el equipo fue retirado antes del inicio del período, omitirlo
-            if project_resource.is_retired and project_resource.retirement_date:
-                if project_resource.retirement_date < self.period_start:
+
+        # -----------------------------------------------------------
+        # Agrupar equipos por resource_item para combinar días de
+        # múltiples asignaciones (reasignaciones) en un solo detalle.
+        # -----------------------------------------------------------
+        equipment_groups = {}   # resource_item.id → [ProjectResourceItem, ...]
+        service_resources = []  # Servicios se procesan individualmente
+
+        for pr in project_resources:
+            # Omitir recursos retirados antes del inicio del período
+            if pr.is_retired and pr.retirement_date:
+                if pr.retirement_date < self.period_start:
                     continue
-            
-            # Calcular días según tipo de recurso
-            if project_resource.type_resource == "EQUIPO":
-                days_dict = self.calculate_rental_days(project_resource)
-                # Para equipos, extraer lista de días del diccionario
-                monthdays_list = sorted([day for day, count in days_dict.items() if count > 0])
-                quantity = sum(days_dict.values())
-            else:  # SERVICIO
-                # Para servicios, obtener lista de días desde cadenas de custodia
-                monthdays_list = self.calculate_service_days(project_resource)
-                quantity = len(monthdays_list)
-            
-            # Obtener o crear detalle
+
+            if pr.type_resource == "EQUIPO":
+                equipment_groups.setdefault(pr.resource_item_id, []).append(pr)
+            else:
+                service_resources.append(pr)
+
+        # ----- Procesar EQUIPOS (agrupados por resource_item) -----
+        for resource_item_id, pr_list in equipment_groups.items():
+            combined_days = set()
+            # Elegir el ProjectResourceItem representativo: el activo
+            # (no retirado), o el último retirado si todos lo están.
+            representative = pr_list[-1]
+            representative_cost = representative.cost
+            for pr in pr_list:
+                if not pr.is_retired:
+                    representative = pr
+                    representative_cost = pr.cost
+                    break
+
+            resource_item = representative.resource_item
+
+            for pr in pr_list:
+                days_dict = self.calculate_rental_days(pr)
+                combined_days.update(
+                    day for day, count in days_dict.items() if count > 0
+                )
+
+            monthdays_list = sorted(combined_days)
+            quantity = len(monthdays_list)
+
+            detail = self._upsert_equipment_detail(
+                resource_item=resource_item,
+                project_resource=representative,
+                monthdays_list=monthdays_list,
+                quantity=quantity,
+            )
+            details.append(detail)
+
+        # ----- Procesar SERVICIOS (uno a uno) -----
+        for project_resource in service_resources:
+            resource_item = project_resource.resource_item
+            monthdays_list = self.calculate_service_days(project_resource)
+            quantity = len(monthdays_list)
+
             detail, created = SheetProjectDetail.objects.get_or_create(
                 sheet_project=self.sheet_project,
                 resource_item=resource_item,
@@ -193,38 +233,69 @@ class WorkSheetBuilder:
                     'id_reference_document': project_resource.id,
                 }
             )
-            
-            # Actualizar si ya existía
+
             if not created:
                 detail.quantity = Decimal(str(quantity))
                 detail.unit_price = project_resource.cost
                 detail.detail = project_resource.detailed_description or f"ALQUILER DE {resource_item.name} {resource_item.code}"
                 detail.reference_document = 'ResourceItem'
                 detail.id_reference_document = project_resource.id
-            
-            # Guardar días del mes en el campo monthdays_apply_cost
-            if project_resource.type_resource == "SERVICIO":
-                # Para servicios, siempre recalcular desde cadenas de custodia
-                detail.monthdays_apply_cost = monthdays_list
-            else:
-                # Para equipos: si ya tiene días configurados manualmente, respetarlos.
-                # Solo asignar los días calculados si es un registro nuevo (recién creado)
-                # o si no tiene días configurados aún.
-                if created or not detail.monthdays_apply_cost:
-                    detail.monthdays_apply_cost = monthdays_list
-                else:
-                    # Ya tiene días manuales, recalcular quantity desde ellos
-                    monthdays_list = detail.monthdays_apply_cost
-                    quantity = len(monthdays_list)
-                    detail.quantity = Decimal(str(quantity))
-            
-            # Calcular totales de línea
+
+            # Servicios: siempre recalcular desde cadenas de custodia
+            detail.monthdays_apply_cost = monthdays_list
             detail.total_line = detail.quantity * detail.unit_price
-            
             detail.save()
             details.append(detail)
             
         return details
+
+    def _upsert_equipment_detail(
+        self, resource_item, project_resource, monthdays_list, quantity
+    ):
+        """
+        Crea o actualiza un SheetProjectDetail para un equipo,
+        buscando primero por resource_item (para combinar reasignaciones).
+        """
+        # Buscar un detalle existente para este equipo en esta planilla
+        detail = SheetProjectDetail.objects.filter(
+            sheet_project=self.sheet_project,
+            resource_item=resource_item,
+            reference_document='ResourceItem',
+        ).first()
+
+        if detail is None:
+            detail = SheetProjectDetail.objects.create(
+                sheet_project=self.sheet_project,
+                resource_item=resource_item,
+                project_resource_item=project_resource,
+                item_unity='DIAS',
+                unit_price=project_resource.cost,
+                quantity=Decimal(str(quantity)),
+                detail=project_resource.detailed_description or f"ALQUILER DE {resource_item.name} {resource_item.code}",
+                reference_document='ResourceItem',
+                id_reference_document=project_resource.id,
+                monthdays_apply_cost=monthdays_list,
+                total_line=Decimal(str(quantity)) * project_resource.cost,
+            )
+        else:
+            # Actualizar detalle existente: vincular al representativo
+            detail.project_resource_item = project_resource
+            detail.unit_price = project_resource.cost
+            detail.detail = project_resource.detailed_description or f"ALQUILER DE {resource_item.name} {resource_item.code}"
+            detail.reference_document = 'ResourceItem'
+            detail.id_reference_document = project_resource.id
+
+            # Si ya tiene días configurados manualmente, respetarlos.
+            if detail.monthdays_apply_cost:
+                monthdays_list = detail.monthdays_apply_cost
+                quantity = len(monthdays_list)
+
+            detail.monthdays_apply_cost = monthdays_list
+            detail.quantity = Decimal(str(quantity))
+            detail.total_line = detail.quantity * detail.unit_price
+            detail.save()
+
+        return detail
 
     def build_maintenance_details(self):
         """

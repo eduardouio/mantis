@@ -108,7 +108,7 @@ class TestDeleteResourceProjectAPI:
         """Test que no se puede eliminar recurso con cadena de custodia"""
         # Mock para simular que existe cadena de custodia
         mocker.patch(
-            'api.projects.DeleteResourceProject.ChainCustodyDetail.get_by_resource_id',
+            'common.EquipmentManager.ChainCustodyDetail.get_by_resource_id',
             return_value=True
         )
         

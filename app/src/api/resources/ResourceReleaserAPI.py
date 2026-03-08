@@ -1,9 +1,8 @@
 from django.http import JsonResponse
 from django.views import View
-from django.utils import timezone
 import json
 
-from projects.models.Project import ProjectResourceItem
+from common.EquipmentManager import EquipmentManager, EquipmentManagerError
 
 
 class ResourceReleaserAPI(View):
@@ -20,82 +19,26 @@ class ResourceReleaserAPI(View):
                     {"error": "ID del recurso es requerido."}, status=400
                 )
 
-            project_resource = ProjectResourceItem.get_ignore_deleted(project_resource_id)
-            if not project_resource:
-                return JsonResponse(
-                    {"error": "Recurso del proyecto no encontrado."}, status=404
-                )
+            retirement_reason = data.get("retirement_reason")
 
-            if project_resource.is_retired:
-                return JsonResponse(
-                    {"error": "El recurso ya se encuentra retirado."},
-                    status=400,
-                )
+            result = EquipmentManager.retire_from_project(
+                project_resource_id, retirement_reason=retirement_reason
+            )
 
-            today = timezone.now().date()
+            project_resource = result["project_resource"]
 
-            if project_resource.type_resource == "SERVICIO":
+            return JsonResponse(
+                {
+                    "message": result["message"],
+                    "data": self._serialize(project_resource),
+                    "related_services_released": result["related_services_released"],
+                    "related_services_count": len(result["related_services_released"]),
+                },
+                status=200,
+            )
 
-                project_resource.is_retired = True
-                project_resource.retirement_date = today
-                project_resource.save()
-
-                return JsonResponse(
-                    {
-                        "message": "Servicio liberado correctamente.",
-                        "data": self._serialize(project_resource),
-                    },
-                    status=200,
-                )
-
-            elif project_resource.type_resource == "EQUIPO":
-
-                resource_item = project_resource.resource_item
-
-                resource_item.stst_release_date = None
-                resource_item.stst_commitment_date = None
-                resource_item.stst_current_project_id = None
-                resource_item.stst_current_location = None
-                resource_item.stst_status_disponibility = "DISPONIBLE"
-                resource_item.save()
-
-                project_resource.is_retired = True
-                project_resource.retirement_date = today
-                project_resource.save()
-
-                equipment_id = project_resource.resource_item.id
-                related_codes = {equipment_id}
-                physical_code = project_resource.physical_equipment_code
-                if physical_code and physical_code > 0:
-                    related_codes.add(physical_code)
-
-                related_services = ProjectResourceItem.objects.filter(
-                    project=project_resource.project,
-                    type_resource="SERVICIO",
-                    physical_equipment_code__in=list(related_codes),
-                    is_retired=False,
-                )
-
-                released_services = []
-                for service in related_services:
-                    service.is_retired = True
-                    service.retirement_date = today
-                    service.save()
-                    released_services.append(service.id)
-
-                return JsonResponse(
-                    {
-                        "message": "Equipo liberado correctamente.",
-                        "data": self._serialize(project_resource),
-                        "related_services_released": released_services,
-                        "related_services_count": len(released_services),
-                    },
-                    status=200,
-                )
-
-            else:
-                return JsonResponse({"error": "Tipo de recurso no válido."}, status=400)
-
+        except EquipmentManagerError as e:
+            return JsonResponse({"error": str(e)}, status=400)
         except Exception as e:
             return JsonResponse(
                 {"error": f"Error al liberar el recurso: {str(e)}"}, status=500
