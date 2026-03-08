@@ -406,6 +406,14 @@ onMounted(async () => {
             <i class="las la-lock-open"></i>
             Abrir Planilla
           </button>
+          <button
+            v-if="sheetProject?.status === 'IN_PROGRESS' && !isSheetClosed"
+            @click="router.push({ name: 'sheet-project-form', params: { id: sheetId } })"
+            class="btn btn-primary btn-sm"
+          >
+            <i class="las la-edit"></i>
+            Editar Planilla
+          </button>
           <button @click="goBack" class="btn btn-outline btn-sm">
             <i class="las la-arrow-left"></i>
             Volver
