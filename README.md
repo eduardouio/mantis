@@ -46,13 +46,13 @@ python manage.py dumpdata \
   --exclude auth.permission \
   --exclude contenttypes \
   --exclude admin.logentry \
-  > data.json
+  > /home/eduardo/Downloads/back_prod/data08032026.json
 
 ## importar datos desde json, especificar la ruta
 
 ``` bash
 python manage.py loaddata data.json
-./manage.py loaddata ../../docs/sql/data_ccpl_07022026.json -v 3  
+./manage.py loaddata /home/eduardo/Downloads/back_prod/data08032026.json -v 3  
 
 
 ```python
