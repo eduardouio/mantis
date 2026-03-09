@@ -180,13 +180,6 @@ class Technical(BaseModel):
             blank=True,
             null=True
     )
-    vaccine_certificate_file = models.FileField(
-        upload_to='technicals/vaccine_certificates/',
-        verbose_name='Archivo de certificado de vacunación',
-        validators=[validate_pdf_file],
-        blank=True,
-        null=True
-    )
 
     @classmethod
     def get_by_dni(cls, id):

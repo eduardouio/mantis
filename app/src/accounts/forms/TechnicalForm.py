@@ -11,7 +11,8 @@ class TechnicalForm(forms.ModelForm):
     class Meta:
         model = Technical
         fields = [
-            'first_name', 'last_name', 'email', 'dni', 'birth_date', 'sex',
+            'first_name', 'last_name', 'email', 'dni', 'image_profile',
+            'birth_date', 'sex',
             'nro_phone', 'work_area', 'date_joined',
             'file_number', 'medical_record_number',
             'license_issue_date', 'license_expiry_date',
@@ -40,6 +41,10 @@ class TechnicalForm(forms.ModelForm):
             'dni': forms.TextInput(attrs={
                 'class': 'input input-bordered w-full',
                 'placeholder': '0123456789'
+            }),
+            'image_profile': forms.ClearableFileInput(attrs={
+                'class': 'file-input file-input-bordered w-full',
+                'accept': 'image/*'
             }),
             'sex': forms.Select(attrs={
                 'class': 'select select-bordered w-full'
@@ -136,6 +141,7 @@ class TechnicalForm(forms.ModelForm):
             'last_name': 'Apellidos *',
             'email': 'Correo Electrónico',
             'dni': 'Cédula *',
+            'image_profile': 'Foto de Perfil',
             'birth_date': 'Fecha de Nacimiento',
             'nro_phone': 'Número de Celular *',
             'work_area': 'Área de Trabajo',

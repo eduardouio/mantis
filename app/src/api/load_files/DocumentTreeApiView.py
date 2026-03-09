@@ -53,6 +53,7 @@ def _build_file_fields(instance, field_names, model_type):
 
 # ── Etiquetas legibles para los campos ───────────────────────────────
 FIELD_LABELS = {
+    'image_profile': 'Foto de Perfil',
     'dni_file': 'Cédula',
     'license_file': 'Licencia',
     'vaccine_certificate_file': 'Certificado de Vacunas',
@@ -111,7 +112,11 @@ class DocumentTreeApiView(View):
                 'label': f'{t.last_name} {t.first_name}',
                 'dni': t.dni,
                 'detail_url': f'/tecnicos/{t.pk}/',
-                'files': _build_file_fields(t, ['dni_file', 'license_file', 'vaccine_certificate_file'], 'technical'),
+                'files': _build_file_fields(
+                    t,
+                    ['image_profile', 'dni_file', 'license_file', 'vaccine_certificate_file'],
+                    'technical'
+                ),
                 'children': [],
             }
 

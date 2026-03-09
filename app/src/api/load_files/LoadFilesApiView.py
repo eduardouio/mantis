@@ -21,7 +21,10 @@ from equipment.models.ResourceItem import ResourceItem
 MODEL_FILE_REGISTRY = {
     'technical': {
         'model': Technical,
-        'fields': ['dni_file', 'license_file', 'vaccine_certificate_file'],
+        'fields': [
+            'image_profile', 'dni_file', 'license_file',
+            'vaccine_certificate_file'
+        ],
     },
     'vaccination_record': {
         'model': VaccinationRecord,

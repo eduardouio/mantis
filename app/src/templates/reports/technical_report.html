@@ -20,6 +20,10 @@
         .company-name { font-size: 9pt; color: #3e5f6f; font-weight: bold; margin-top: 2px; }
         .section { margin-bottom: 10px; page-break-inside: avoid; }
         .section-title { background-color: #f8f8f8; color: #3e5f6f; padding: 5px 8px; font-size: 9pt; font-weight: bold; margin-bottom: 6px; border-left: 4px solid #9cb536; border-top: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; border-right: 1px solid #e0e0e0; }
+        .personal-wrapper { display: flex; gap: 10px; align-items: flex-start; }
+        .technical-photo { flex: 0 0 120px; width: 120px; height: 140px; border: 2px solid #3e5f6f; border-radius: 4px; overflow: hidden; background: #f0f5e8; display: flex; align-items: center; justify-content: center; }
+        .technical-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .technical-photo .placeholder { color: #999; font-size: 7pt; text-align: center; }
         .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 12px; border: 1px solid #e0e0e0; padding: 8px; background-color: #ffffff; }
         .info-item { display: flex; flex-direction: column; }
         .info-label { font-weight: bold; color: #3e5f6f; font-size: 7pt; margin-bottom: 2px; }
@@ -60,30 +64,39 @@
             <!-- Información Personal -->
             <div class="section">
                 <div class="section-title">INFORMACIÓN PERSONAL</div>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <span class="info-label">Cédula:</span>
-                        <span class="info-value">{{ technical.dni }}</span>
+                <div class="personal-wrapper">
+                    <div class="info-grid" style="flex: 1;">
+                        <div class="info-item">
+                            <span class="info-label">Cédula:</span>
+                            <span class="info-value">{{ technical.dni }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Teléfono:</span>
+                            <span class="info-value">{{ technical.nro_phone|default:"No especificado" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">{{ technical.email|default:"No especificado" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha de Nacimiento:</span>
+                            <span class="info-value">{{ technical.birth_date|date:"d/m/Y"|default:"No especificada" }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Área de Trabajo:</span>
+                            <span class="info-value">{{ technical.get_work_area_display }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha de Ingreso:</span>
+                            <span class="info-value">{{ technical.date_joined|date:"d/m/Y"|default:"No especificada" }}</span>
+                        </div>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Teléfono:</span>
-                        <span class="info-value">{{ technical.nro_phone|default:"No especificado" }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Email:</span>
-                        <span class="info-value">{{ technical.email|default:"No especificado" }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Fecha de Nacimiento:</span>
-                        <span class="info-value">{{ technical.birth_date|date:"d/m/Y"|default:"No especificada" }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Área de Trabajo:</span>
-                        <span class="info-value">{{ technical.get_work_area_display }}</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Fecha de Ingreso:</span>
-                        <span class="info-value">{{ technical.date_joined|date:"d/m/Y"|default:"No especificada" }}</span>
+                    <div class="technical-photo">
+                        {% if technical.image_profile %}
+                            <img src="{{ technical.image_profile.url }}" alt="Foto de {{ technical.first_name }} {{ technical.last_name }}">
+                        {% else %}
+                            <div class="placeholder">Sin foto</div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

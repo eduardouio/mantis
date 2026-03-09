@@ -21,7 +21,7 @@
     </div>
   </div>
 
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     
     <!-- Mostrar errores del formulario -->
@@ -104,6 +104,24 @@
             {% if form.dni.errors %}
               <label class="label">
                 <span class="label-text-alt text-error">{{ form.dni.errors.0 }}</span>
+              </label>
+            {% endif %}
+          </div>
+
+          <!-- Foto de Perfil -->
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">{{ form.image_profile.label }}</span>
+            </label>
+            {% if object.pk and object.image_profile %}
+            <div class="mb-2">
+              <img src="{{ object.image_profile.url }}" alt="Foto de perfil actual" class="w-24 h-24 rounded-full object-cover border border-gray-300">
+            </div>
+            {% endif %}
+            {{ form.image_profile }}
+            {% if form.image_profile.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">{{ form.image_profile.errors.0 }}</span>
               </label>
             {% endif %}
           </div>

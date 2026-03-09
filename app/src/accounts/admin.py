@@ -164,7 +164,8 @@ class TechnicalAdmin(SimpleHistoryAdmin):
         }),
         ('Archivos', {
             'fields': (
-                'dni_file', 'license_file', 'vaccine_certificate_file'
+                'image_profile', 'dni_file', 'license_file',
+                'vaccine_certificate_file'
             )
         }),
         ('Seguros y Afiliaciones', {

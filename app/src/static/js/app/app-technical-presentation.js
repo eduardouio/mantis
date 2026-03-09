@@ -314,17 +314,31 @@
 		btns.forEach(b => { b.disabled = loading; if(loading) b.classList.add('opacity-50'); else b.classList.remove('opacity-50'); });
 	}
 
+	function getRowAccept(row){
+		if(row.dataset.fileAccept){
+			return row.dataset.fileAccept;
+		}
+		return row.dataset.fieldName === 'image_profile' ? 'image/*' : '.pdf';
+	}
+
+	function isImageRow(row){
+		return row.dataset.fileKind === 'image' || getRowAccept(row).includes('image');
+	}
+
 	function rebuildRowButtons(row, fileUrl, fileName){
 		const actionsDiv = row.querySelector('.flex.items-center.gap-1');
 		if(!actionsDiv) return;
 		actionsDiv.innerHTML = '';
+		const imageRow = isImageRow(row);
+		const accept = getRowAccept(row);
 
 		if(fileUrl){
-			// Botón descargar
+			// Botón ver/descargar según tipo
 			const link = document.createElement('a');
 			link.href = fileUrl; link.target = '_blank';
-			link.className = 'btn btn-xs btn-primary'; link.title = 'Descargar';
-			link.innerHTML = '<i class="las la-download"></i>';
+			link.className = imageRow ? 'btn btn-xs btn-info' : 'btn btn-xs btn-primary';
+			link.title = imageRow ? 'Ver imagen' : 'Descargar';
+			link.innerHTML = imageRow ? '<i class="las la-eye"></i>' : '<i class="las la-download"></i>';
 			actionsDiv.appendChild(link);
 
 			// Botón eliminar
@@ -337,8 +351,9 @@
 
 		// Botón subir (siempre)
 		const label = document.createElement('label');
-		label.className = 'btn btn-xs btn-success btn-file-upload'; label.title = 'Subir archivo';
-		label.innerHTML = '<i class="las la-upload"></i><input type="file" accept=".pdf" class="hidden file-input-hidden">';
+		label.className = 'btn btn-xs btn-success btn-file-upload';
+		label.title = imageRow ? 'Subir imagen' : 'Subir archivo';
+		label.innerHTML = `<i class="las la-upload"></i><input type="file" accept="${accept}" class="hidden file-input-hidden">`;
 		actionsDiv.appendChild(label);
 
 		// Re-bind events en esta fila
@@ -361,7 +376,7 @@
 			const resp = await fetch(UPLOAD_API, { method: 'POST', body: formData, credentials: 'same-origin' });
 			const data = await resp.json();
 			if(!resp.ok || !data.success) throw new Error(data.error || 'Error al subir');
-			showGlobalMsg('Archivo subido correctamente');
+			showGlobalMsg(isImageRow(row) ? 'Imagen subida correctamente' : 'Archivo subido correctamente');
 			rebuildRowButtons(row, data.data.file_url, data.data.file_name);
 		} catch(err){
 			showGlobalMsg(err.message, false);
@@ -375,7 +390,7 @@
 		const objectId = row.dataset.objectId;
 		const fieldName = row.dataset.fieldName;
 
-		if(!confirm('¿Eliminar este archivo?')) return;
+		if(!confirm(isImageRow(row) ? '¿Eliminar esta imagen?' : '¿Eliminar este archivo?')) return;
 
 		setRowLoading(row, true);
 		try {
@@ -383,7 +398,7 @@
 			const resp = await fetch(url, { method: 'DELETE', credentials: 'same-origin' });
 			const data = await resp.json();
 			if(!resp.ok || !data.success) throw new Error(data.error || 'Error al eliminar');
-			showGlobalMsg('Archivo eliminado correctamente');
+			showGlobalMsg(isImageRow(row) ? 'Imagen eliminada correctamente' : 'Archivo eliminado correctamente');
 			rebuildRowButtons(row, null, null);
 		} catch(err){
 			showGlobalMsg(err.message, false);
