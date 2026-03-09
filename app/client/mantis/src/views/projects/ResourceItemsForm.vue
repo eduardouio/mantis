@@ -255,7 +255,7 @@
   })
 </script>
 <template>
-  <div class="container mx-auto p-4">
+  <div class="w-[90%] mx-auto p-4">
     <!-- Mensaje de Error -->
     <div v-if="errorMessage" class="alert alert-error shadow-lg mb-4">
       <div>

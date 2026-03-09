@@ -336,7 +336,7 @@ const deleteGuideFile = async () => {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto p-3">
+  <div class="w-[90%] mx-auto p-3">
     <!-- Título -->
     <div class="bg-white rounded-lg p-3 mb-2 border border-gray-200 shadow-sm">
       <div class="flex justify-between items-center">
