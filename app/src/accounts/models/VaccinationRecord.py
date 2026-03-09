@@ -1,6 +1,5 @@
 from django.db import models
 from common.BaseModel import BaseModel
-from common.validators import validate_pdf_file
 from .Technical import Technical
 
 

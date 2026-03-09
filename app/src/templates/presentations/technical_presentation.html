@@ -681,50 +681,6 @@
           </div>
         </div>
 
-        <!-- Documentos de Vacunaciones -->
-        <div class="p-4 bg-gray-50 rounded-lg border border-blue-200 md:col-span-2">
-          <h4 class="font-medium text-blue-700 mb-3 flex items-center gap-2">
-            <i class="las la-syringe text-xl"></i>
-            Registros de Vacunación
-          </h4>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-64 overflow-y-auto">
-            {% if vaccination_records %}
-              {% for vaccine in vaccination_records %}
-                <div class="file-upload-row flex items-center justify-between p-2 bg-white rounded border border-gray-200"
-                     data-model-type="vaccination_record" data-object-id="{{ vaccine.id }}" data-field-name="vaccine_file">
-                  <div class="flex-1">
-                    <div class="flex items-center gap-2">
-                      <i class="las la-vial text-purple-600"></i>
-                      <span class="text-sm font-medium">{{ vaccine.get_vaccine_type_display }}</span>
-                    </div>
-                    <div class="text-xs text-gray-500 ml-6">
-                      Aplicada: {{ vaccine.application_date|date:"d/m/Y" }}
-                      {% if vaccine.dose_number %}
-                        - Dosis {{ vaccine.dose_number }}
-                      {% endif %}
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-1">
-                    {% if vaccine.vaccine_file %}
-                      <a href="{{ vaccine.vaccine_file.url }}" target="_blank" class="btn btn-xs btn-primary" title="Descargar">
-                        <i class="las la-download"></i>
-                      </a>
-                      <button type="button" class="btn btn-xs btn-error btn-file-delete" title="Eliminar archivo">
-                        <i class="las la-trash"></i>
-                      </button>
-                    {% endif %}
-                    <label class="btn btn-xs btn-success btn-file-upload" title="Subir archivo">
-                      <i class="las la-upload"></i>
-                      <input type="file" accept=".pdf" class="hidden file-input-hidden">
-                    </label>
-                  </div>
-                </div>
-              {% endfor %}
-            {% else %}
-              <p class="text-sm text-gray-500 text-center py-4 col-span-2">No hay registros de vacunación</p>
-            {% endif %}
-          </div>
-        </div>
       </div>
       
       <!-- Resumen de documentos -->
@@ -748,12 +704,6 @@
               Pases: 
               <span class="font-semibold">
                 {{ pass_technical|length|default:0 }}
-              </span>
-            </span>
-            <span class="text-gray-600">
-              Vacunas: 
-              <span class="font-semibold">
-                {{ vaccination_records|length|default:0 }}
               </span>
             </span>
           </div>

@@ -6,7 +6,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 
 from accounts.models.Technical import Technical
-from accounts.models.VaccinationRecord import VaccinationRecord
 from accounts.models.PassTechnical import PassTechnical
 from equipment.models.CertificationVehicle import CertificationVehicle
 from equipment.models.PassVehicle import PassVehicle
@@ -25,10 +24,6 @@ MODEL_FILE_REGISTRY = {
             'image_profile', 'dni_file', 'license_file',
             'vaccine_certificate_file'
         ],
-    },
-    'vaccination_record': {
-        'model': VaccinationRecord,
-        'fields': ['vaccine_file'],
     },
     'pass_technical': {
         'model': PassTechnical,

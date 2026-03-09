@@ -11,7 +11,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from accounts.models.Technical import Technical
-from accounts.models.VaccinationRecord import VaccinationRecord
 from accounts.models.PassTechnical import PassTechnical
 from equipment.models.CertificationVehicle import CertificationVehicle
 from equipment.models.PassVehicle import PassVehicle
@@ -57,7 +56,6 @@ FIELD_LABELS = {
     'dni_file': 'Cédula',
     'license_file': 'Licencia',
     'vaccine_certificate_file': 'Certificado de Vacunas',
-    'vaccine_file': 'Vacuna',
     'pass_file': 'Pase',
     'certification_file': 'Certificación',
     'vehicle_image': 'Imagen del Vehículo',
@@ -105,7 +103,6 @@ class DocumentTreeApiView(View):
         result = []
         for t in technicals:
             passes = PassTechnical.objects.filter(technical=t, is_active=True)
-            vaccines = VaccinationRecord.objects.filter(technical=t, is_active=True)
 
             tech_node = {
                 'id': t.pk,
@@ -126,14 +123,6 @@ class DocumentTreeApiView(View):
                     'label': f'Pase - {p.bloque}' if hasattr(p, 'bloque') and p.bloque else f'Pase #{p.pk}',
                     'type': 'pass_technical',
                     'files': _build_file_fields(p, ['pass_file'], 'pass_technical'),
-                })
-
-            for v in vaccines:
-                tech_node['children'].append({
-                    'id': v.pk,
-                    'label': f'Vacuna - {v.get_vaccine_type_display()}' if hasattr(v, 'get_vaccine_type_display') else f'Vacuna #{v.pk}',
-                    'type': 'vaccination_record',
-                    'files': _build_file_fields(v, ['vaccine_file'], 'vaccination_record'),
                 })
 
             result.append(tech_node)

@@ -10,7 +10,6 @@ Orden de los documentos:
     4. Licencia (adjunta)
     5. Certificado de vacunación (adjunto)
     6. Pases técnicos (adjuntos)
-    7. Registros de vacunación (adjuntos)
 """
 
 import io
@@ -28,7 +27,7 @@ from django.urls import reverse
 from playwright.sync_api import sync_playwright
 from pypdf import PdfWriter, PdfReader
 
-from accounts.models import Technical, PassTechnical, VaccinationRecord
+from accounts.models import Technical, PassTechnical
 
 
 def _get_cookies(request):
@@ -79,7 +78,7 @@ def _add_file_to_writer(writer, file_path):
 def _generate_technical_merge_in_thread(cookies, technical_id,
                                          dni_path, license_path,
                                          vaccine_cert_path,
-                                         pass_paths, vaccination_paths):
+                                         pass_paths):
     """
     Ejecuta toda la generación de PDFs con Playwright en un hilo separado.
     Retorna los bytes del PDF combinado o None.
@@ -131,11 +130,6 @@ def _generate_technical_merge_in_thread(cookies, technical_id,
         if _add_file_to_writer(writer, pass_path):
             docs_added += 1
 
-    # 7. Registros de vacunación (archivos adjuntos)
-    for vacc_path in vaccination_paths:
-        if _add_file_to_writer(writer, vacc_path):
-            docs_added += 1
-
     if docs_added == 0:
         return None
 
@@ -156,7 +150,6 @@ class TechnicalMergeGeneratedApiView(View):
         4. Licencia (adjunta)
         5. Certificado de vacunación (adjunto)
         6. Pases técnicos (adjuntos)
-        7. Registros de vacunación (adjuntos)
     """
 
     def _get_file_path(self, file_field):
@@ -188,15 +181,6 @@ class TechnicalMergeGeneratedApiView(View):
                 for p in passes
             ]
 
-            # Obtener rutas de registros de vacunación
-            vaccinations = VaccinationRecord.get_all_by_technical(
-                technical_id=technical.id
-            )
-            vaccination_paths = [
-                self._get_file_path(v.vaccine_file)
-                for v in vaccinations
-            ]
-
             # Ejecutar Playwright en un hilo separado
             from datetime import datetime
 
@@ -209,7 +193,6 @@ class TechnicalMergeGeneratedApiView(View):
                     license_path,
                     vaccine_cert_path,
                     pass_paths,
-                    vaccination_paths,
                 )
                 merged_bytes = future.result(timeout=120)
 

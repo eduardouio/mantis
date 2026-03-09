@@ -231,9 +231,6 @@ class VaccinationRecordAdmin(SimpleHistoryAdmin):
                 'application_date', 'next_dose_date'
             )
         }),
-        ('Archivos', {
-            'fields': ('vaccine_file',)
-        }),
         ('BaseModel Fields', {
             'fields': (
                 'notes', 'is_active', 'created_at', 'updated_at',
