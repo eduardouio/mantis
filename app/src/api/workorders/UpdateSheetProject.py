@@ -346,10 +346,13 @@ class UpdateSheetProjectAPI(View):
                         "error": f"No se puede eliminar el detalle '{resource_code}' porque tiene cadenas de custodia registradas en esta planilla"
                     }
 
-        # 5. Eliminar detalles desmarcados (soft delete o hard delete según BaseModel)
+        # 5. Soft-delete de detalles desmarcados (marcar como inactivos para que el
+        #    WorkSheetBuilder los respete y no los vuelva a crear al regenerar el reporte)
         for detail_id in details_to_delete:
             detail = existing_details_map[detail_id]
-            detail.delete()
+            detail.is_active = False
+            detail.is_deleted = True
+            detail.save()
 
         # 6. Crear detalles nuevos (misma lógica que CreateWorkSheetProjectAPI)
         created_details = []

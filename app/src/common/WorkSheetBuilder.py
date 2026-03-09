@@ -212,39 +212,62 @@ class WorkSheetBuilder:
                 monthdays_list=monthdays_list,
                 quantity=quantity,
             )
-            details.append(detail)
+            if detail is not None:
+                details.append(detail)
 
         # ----- Procesar SERVICIOS (uno a uno) -----
         for project_resource in service_resources:
             resource_item = project_resource.resource_item
-            monthdays_list = self.calculate_service_days(project_resource)
-            quantity = len(monthdays_list)
 
-            detail, created = SheetProjectDetail.objects.get_or_create(
+            # Buscar primero si existe un detalle activo para este recurso
+            detail = SheetProjectDetail.objects.filter(
                 sheet_project=self.sheet_project,
                 resource_item=resource_item,
                 project_resource_item=project_resource,
-                defaults={
-                    'item_unity': 'DIAS',
-                    'unit_price': project_resource.cost,
-                    'quantity': Decimal(str(quantity)),
-                    'detail': project_resource.detailed_description or f"ALQUILER DE {resource_item.name} {resource_item.code}",
-                    'reference_document': 'ResourceItem',
-                    'id_reference_document': project_resource.id,
-                }
-            )
+                is_active=True,
+            ).first()
 
-            if not created:
+            if detail is None:
+                # Sin detalle activo: verificar si fue eliminado manualmente (soft-delete).
+                # Si es así, respetar esa decisión y no recrearlo.
+                was_removed = SheetProjectDetail.objects.filter(
+                    sheet_project=self.sheet_project,
+                    resource_item=resource_item,
+                    project_resource_item=project_resource,
+                    is_deleted=True,
+                ).exists()
+                if was_removed:
+                    continue
+
+                # No existe ni activo ni eliminado: crear nuevo detalle
+                monthdays_list = self.calculate_service_days(project_resource)
+                quantity = len(monthdays_list)
+                detail = SheetProjectDetail.objects.create(
+                    sheet_project=self.sheet_project,
+                    resource_item=resource_item,
+                    project_resource_item=project_resource,
+                    item_unity='DIAS',
+                    unit_price=project_resource.cost,
+                    quantity=Decimal(str(quantity)),
+                    detail=project_resource.detailed_description or f"ALQUILER DE {resource_item.name} {resource_item.code}",
+                    reference_document='ResourceItem',
+                    id_reference_document=project_resource.id,
+                    monthdays_apply_cost=monthdays_list,
+                    total_line=Decimal(str(quantity)) * project_resource.cost,
+                )
+            else:
+                # Detalle activo encontrado: actualizar días y costos
+                monthdays_list = self.calculate_service_days(project_resource)
+                quantity = len(monthdays_list)
                 detail.quantity = Decimal(str(quantity))
                 detail.unit_price = project_resource.cost
                 detail.detail = project_resource.detailed_description or f"ALQUILER DE {resource_item.name} {resource_item.code}"
                 detail.reference_document = 'ResourceItem'
                 detail.id_reference_document = project_resource.id
+                detail.monthdays_apply_cost = monthdays_list
+                detail.total_line = detail.quantity * detail.unit_price
+                detail.save()
 
-            # Servicios: siempre recalcular desde cadenas de custodia
-            detail.monthdays_apply_cost = monthdays_list
-            detail.total_line = detail.quantity * detail.unit_price
-            detail.save()
             details.append(detail)
             
         return details
@@ -255,13 +278,26 @@ class WorkSheetBuilder:
         """
         Crea o actualiza un SheetProjectDetail para un equipo,
         buscando primero por resource_item (para combinar reasignaciones).
+        Retorna None si el detalle fue eliminado manualmente (soft-delete).
         """
-        # Buscar un detalle existente para este equipo en esta planilla
+        # Buscar primero si existe un detalle activo para este equipo en esta planilla
         detail = SheetProjectDetail.objects.filter(
             sheet_project=self.sheet_project,
             resource_item=resource_item,
             reference_document='ResourceItem',
+            is_active=True,
         ).first()
+
+        # Sin detalle activo: verificar si fue eliminado manualmente (soft-delete)
+        if detail is None:
+            was_removed = SheetProjectDetail.objects.filter(
+                sheet_project=self.sheet_project,
+                resource_item=resource_item,
+                reference_document='ResourceItem',
+                is_deleted=True,
+            ).exists()
+            if was_removed:
+                return None
 
         if detail is None:
             detail = SheetProjectDetail.objects.create(
