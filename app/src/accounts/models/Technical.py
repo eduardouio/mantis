@@ -48,6 +48,12 @@ class Technical(BaseModel):
         max_length=15,
         unique=True
     )
+    image_profile = models.ImageField(
+        upload_to='technicals/',
+        verbose_name='Foto de Perfil',
+        blank=True,
+        null=True
+    )
     nro_phone = models.CharField(
         'Número de Celular',
         max_length=15
