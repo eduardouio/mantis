@@ -49,8 +49,15 @@ class Technical(BaseModel):
         unique=True
     )
     image_profile = models.ImageField(
-        upload_to='technicals/',
+        upload_to='technicals/profile_images/',
         verbose_name='Foto de Perfil',
+        blank=True,
+        null=True
+    )
+    vaccine_certificate_file = models.FileField(
+        upload_to='technicals/vaccine_certificates/',
+        verbose_name='Archivo de certificado de vacunación',
+        validators=[validate_pdf_file],
         blank=True,
         null=True
     )
