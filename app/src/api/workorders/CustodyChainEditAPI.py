@@ -163,6 +163,12 @@ class CustodyChainEditAPI(View):
                 if "have_logistic" in chain_data:
                     instance.have_logistic = chain_data["have_logistic"]
 
+                if "logistic_cost" in chain_data:
+                    instance.logistic_cost = parse_decimal(chain_data["logistic_cost"])
+
+                if "sheet_project_concept" in chain_data:
+                    instance.sheet_project_concept = chain_data["sheet_project_concept"] or None
+
                 if "contact_name" in chain_data:
                     instance.contact_name = chain_data["contact_name"]
 

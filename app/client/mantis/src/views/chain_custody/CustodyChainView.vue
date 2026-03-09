@@ -254,6 +254,16 @@ const viewCustodyChainPDF = (id) => {
                   Barriles:
                   <span class="text-xl text-primary ml-5">{{ chain.total_barrels }}</span>
                 </div>
+                <div class="p-3 border rounded border-gray-200" :class="{ 'border-green-400 bg-green-50': chain.have_logistic === 'SI' }">
+                  Logística:
+                  <span class="font-semibold ml-2" :class="{ 'text-green-600': chain.have_logistic === 'SI', 'text-gray-500': chain.have_logistic !== 'SI' }">
+                    {{ chain.have_logistic === 'SI' ? 'SÍ' : chain.have_logistic === 'NO' ? 'NO' : 'N/A' }}
+                  </span>
+                  <template v-if="chain.have_logistic === 'SI'">
+                    <span class="ml-3 text-green-700 font-mono">${{ chain.logistic_cost?.toFixed(2) || '0.00' }}</span>
+                    <span v-if="chain.sheet_project_concept" class="ml-2 text-xs text-green-600 italic">— {{ chain.sheet_project_concept }}</span>
+                  </template>
+                </div>
               </div>
               <div class="flex-1 border rounded p-3 border-gray-200">
                 <span class="font-semibold">Notas:</span>

@@ -545,6 +545,63 @@ class WorkSheetBuilder:
             'total_cubic_meters': total_cubic_meters,
         }
     
+    def build_custody_chain_logistic_details(self):
+        """
+        Construye las líneas de logística de cadenas de custodia en la planilla.
+
+        Para cada cadena de custodia con have_logistic='SI' y logistic_cost > 0,
+        crea una línea en SheetProjectDetail usando sheet_project_concept como concepto.
+
+        Returns:
+            list: Lista de instancias SheetProjectDetail creadas
+        """
+        details = []
+
+        # Eliminar detalles previos de logística de cadenas de custodia para recalcular
+        SheetProjectDetail.objects.filter(
+            sheet_project=self.sheet_project,
+            reference_document='CustodyChain'
+        ).delete()
+
+        chains = CustodyChain.objects.filter(
+            sheet_project=self.sheet_project,
+            have_logistic='SI',
+            is_active=True,
+        ).exclude(status='CANCELLED')
+
+        for chain in chains:
+            if not chain.logistic_cost or chain.logistic_cost <= 0:
+                continue
+
+            # Obtener el resource_item del primer detalle activo de la cadena
+            first_detail = ChainCustodyDetail.objects.filter(
+                custody_chain=chain,
+                is_active=True,
+            ).select_related('project_resource__resource_item').first()
+
+            if not first_detail or not first_detail.project_resource or not first_detail.project_resource.resource_item:
+                continue
+
+            resource_item = first_detail.project_resource.resource_item
+            monthdays = [chain.activity_date.day] if chain.activity_date else []
+
+            detail = SheetProjectDetail.objects.create(
+                sheet_project=self.sheet_project,
+                resource_item=resource_item,
+                project_resource_item=None,
+                reference_document='CustodyChain',
+                id_reference_document=chain.id,
+                item_unity='UNIDAD',
+                unit_price=chain.logistic_cost,
+                quantity=Decimal('1'),
+                detail=chain.sheet_project_concept or "LOGÍSTICA",
+                monthdays_apply_cost=monthdays,
+                total_line=chain.logistic_cost * Decimal('1'),
+            )
+            details.append(detail)
+
+        return details
+
     def build(self):
         """
         Construye la planilla completa: detalles y totales.
@@ -559,10 +616,11 @@ class WorkSheetBuilder:
         details = self.build_details()
         maintenance_details = self.build_maintenance_details()
         shipping_details = self.build_shipping_guide_details()
+        logistic_details = self.build_custody_chain_logistic_details()
         totals = self.calculate_totals()
         
         return {
             'sheet_project': self.sheet_project,
-            'details_count': len(details) + len(maintenance_details) + len(shipping_details),
+            'details_count': len(details) + len(maintenance_details) + len(shipping_details) + len(logistic_details),
             'totals': totals,
         }

@@ -203,6 +203,8 @@ class CreateCustodyChainAPI(View):
             treated_wastewater=data.get("treated_wastewater", False),
             organic_grease=data.get("organic_grease", False),
             have_logistic=data.get("have_logistic", "NA"),
+            logistic_cost=float(data.get("logistic_cost", 0)),
+            sheet_project_concept=data.get("sheet_project_concept") or None,
             notes=data.get("notes", "")
         )
         custody_chain.save()
@@ -247,6 +249,8 @@ class CreateCustodyChainAPI(View):
                 "end_time": self.serialize_date(custody_chain.end_time),
                 "time_duration": float(custody_chain.time_duration) if custody_chain.time_duration is not None else None,
                 "have_logistic": custody_chain.have_logistic,
+                "logistic_cost": float(custody_chain.logistic_cost) if custody_chain.logistic_cost is not None else 0.0,
+                "sheet_project_concept": custody_chain.sheet_project_concept,
                 "contact_name": custody_chain.contact_name,
                 "dni_contact": custody_chain.dni_contact,
                 "contact_position": custody_chain.contact_position,

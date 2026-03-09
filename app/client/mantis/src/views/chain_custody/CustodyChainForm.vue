@@ -74,7 +74,9 @@ const custodyChain = ref({
   vehicle_plate: '',
   vehicle_brand: '',
   vehicle_model: '',
-  have_logistic: 'NA'
+  have_logistic: 'NA',
+  logistic_cost: 0,
+  sheet_project_concept: ''
 })
 
 const selectedResourceIds = ref([])
@@ -193,7 +195,9 @@ const loadCustodyChainData = async () => {
         vehicle_plate: vehicle?.no_plate || '',
         vehicle_brand: vehicle?.brand || '',
         vehicle_model: vehicle?.model || '',
-        have_logistic: chain.have_logistic || 'NA'
+        have_logistic: chain.have_logistic || 'NA',
+        logistic_cost: parseFloat(chain.logistic_cost) || 0,
+        sheet_project_concept: chain.sheet_project_concept || ''
       }
       
       // Cargar IDs de recursos seleccionados
@@ -438,6 +442,8 @@ const submitForm = async () => {
         treated_wastewater: custodyChain.value.treated_wastewater,
         organic_grease: custodyChain.value.organic_grease,
         have_logistic: custodyChain.value.have_logistic,
+        logistic_cost: parseFloat(custodyChain.value.logistic_cost) || 0,
+        sheet_project_concept: custodyChain.value.sheet_project_concept || null,
         meta: {
           notes: custodyChain.value.notes,
           id_user_updated: appConfig.userId || 1
@@ -497,6 +503,8 @@ const submitForm = async () => {
         treated_wastewater: custodyChain.value.treated_wastewater,
         organic_grease: custodyChain.value.organic_grease,
         have_logistic: custodyChain.value.have_logistic,
+        logistic_cost: parseFloat(custodyChain.value.logistic_cost) || 0,
+        sheet_project_concept: custodyChain.value.sheet_project_concept || null,
         notes: custodyChain.value.notes,
         resources: selectedResourceIds.value
       }
@@ -971,6 +979,37 @@ const currentStatusBadge = computed(() => {
                 <option value="NO">NO</option>
                 <option value="NA">NO APLICA</option>
               </select>
+            </div>
+
+            <!-- Costo Logística (solo si have_logistic === 'SI') -->
+            <div v-if="custodyChain.have_logistic === 'SI'" class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Costo Logística *</span>
+              </label>
+              <input
+                type="number"
+                v-model.number="custodyChain.logistic_cost"
+                :disabled="!canEdit"
+                min="0"
+                step="0.01"
+                class="input input-bordered w-full"
+                placeholder="0.00"
+              />
+            </div>
+
+            <!-- Concepto Planilla (solo si have_logistic === 'SI') -->
+            <div v-if="custodyChain.have_logistic === 'SI'" class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Concepto Planilla *</span>
+              </label>
+              <input
+                type="text"
+                v-model="custodyChain.sheet_project_concept"
+                :disabled="!canEdit"
+                placeholder="Ej: FLETE"
+                class="input input-bordered w-full"
+                maxlength="255"
+              />
             </div>
 
             <!-- Fecha de Actividad -->
