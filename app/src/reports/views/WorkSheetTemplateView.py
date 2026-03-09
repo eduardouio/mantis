@@ -109,7 +109,6 @@ class WorkSheetTemplateView(TemplateView):
 
         # Leer los datos desde SheetProjectDetail (ya actualizados si estaba en IN_PROGRESS)
         items_list = []
-        item_number = 0
 
         sheet_details = SheetProjectDetail.objects.filter(
             sheet_project=sheet_project,
@@ -133,9 +132,9 @@ class WorkSheetTemplateView(TemplateView):
                 for day in monthdays:
                     if 1 <= day <= 31:
                         days_list[day - 1] = "1"
-            
+
             detail_text = sheet_detail.detail or f"ALQUILER DE {resource_item.name} {resource_item.code}"
-            
+
             # Determinar tipo de recurso y nombre de equipo desde project_resource_item
             pri = sheet_detail.project_resource_item
             if sheet_detail.reference_document == 'SheetMaintenance':
@@ -144,15 +143,16 @@ class WorkSheetTemplateView(TemplateView):
             elif sheet_detail.reference_document == 'ShippingGuide':
                 type_resource = "GUIA_ENVIO"
                 equipment_name = "LOGISTICA"
+            elif sheet_detail.reference_document == 'CustodyChain':
+                type_resource = "LOGISTICA_CUSTODIA"
+                equipment_name = "LOGISTICA"
             else:
                 type_resource = pri.type_resource if pri else "EQUIPO"
                 equipment_name = self.get_short_equipment_name(resource_item)
-            
-            item_number += 1
-            
+
             items_list.append(
                 {
-                    "item_number": item_number,
+                    "item_number": 0,  # se reasigna después de ordenar
                     "equipment_name": equipment_name,
                     "detail": detail_text,
                     "quantity": int(sheet_detail.quantity),
@@ -161,8 +161,38 @@ class WorkSheetTemplateView(TemplateView):
                     "unit_price": sheet_detail.unit_price,
                     "total_cost": sheet_detail.total_line,
                     "type_resource": type_resource,
+                    "resource_item_id": resource_item.id if resource_item else None,
                 }
             )
+
+        # --- Ordenar items: alquileres → servicios (con logística interleada) → mantenimiento → guías ---
+        rentals = [i for i in items_list if i["type_resource"] == "EQUIPO"]
+        services = [i for i in items_list if i["type_resource"] not in (
+            "EQUIPO", "MANTENIMIENTO", "GUIA_ENVIO", "LOGISTICA_CUSTODIA"
+        )]
+        logistics = [i for i in items_list if i["type_resource"] == "LOGISTICA_CUSTODIA"]
+        maintenance = [i for i in items_list if i["type_resource"] == "MANTENIMIENTO"]
+        shipping = [i for i in items_list if i["type_resource"] == "GUIA_ENVIO"]
+
+        # Intercalar cada servicio con su logística de cadena de custodia
+        services_with_logistics = []
+        matched_log_ids = set()
+        for service in services:
+            services_with_logistics.append(service)
+            for log in logistics:
+                log_key = id(log)
+                if log_key not in matched_log_ids and log["resource_item_id"] == service["resource_item_id"]:
+                    services_with_logistics.append(log)
+                    matched_log_ids.add(log_key)
+
+        # Logísticas sin servicio correspondiente van al final del bloque de servicios
+        unmatched_logistics = [l for l in logistics if id(l) not in matched_log_ids]
+
+        items_list = rentals + services_with_logistics + unmatched_logistics + maintenance + shipping
+
+        # Reasignar números de ítem en el orden final
+        for i, item in enumerate(items_list, 1):
+            item["item_number"] = i
 
         # Usar los totales ya calculados en la cabecera
         subtotal = sheet_project.subtotal
