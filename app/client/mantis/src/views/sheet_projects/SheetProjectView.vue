@@ -442,6 +442,15 @@ onMounted(async () => {
             <i class="las la-lock-open"></i>
             Abrir Planilla
           </button>
+          <a
+            :href="appConfig.URLWorkSheetReport.replace('${id}', sheetId)"
+            target="_blank"
+            class="btn btn-success btn-sm"
+            title="Descargar reporte PDF de la planilla"
+          >
+            <i class="las la-file-pdf"></i>
+            Descargar PDF
+          </a>
           <button
             v-if="sheetProject?.status === 'IN_PROGRESS' && !isSheetClosed"
             @click="router.push({ name: 'sheet-project-form', params: { id: sheetId } })"
