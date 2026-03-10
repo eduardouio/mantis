@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.views import View
 import json
+from datetime import date
 
 from common.EquipmentManager import EquipmentManager, EquipmentManagerError
 
@@ -21,8 +22,18 @@ class ResourceReleaserAPI(View):
 
             retirement_reason = data.get("retirement_reason")
 
+            retirement_date = None
+            raw_date = data.get("retirement_date")
+            if raw_date:
+                try:
+                    retirement_date = date.fromisoformat(raw_date)
+                except ValueError:
+                    pass
+
             result = EquipmentManager.retire_from_project(
-                project_resource_id, retirement_reason=retirement_reason
+                project_resource_id,
+                retirement_reason=retirement_reason,
+                retirement_date=retirement_date,
             )
 
             project_resource = result["project_resource"]

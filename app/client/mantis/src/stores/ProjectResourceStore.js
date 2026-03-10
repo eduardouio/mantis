@@ -192,12 +192,14 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 throw error
             }
         },
-        async releaseResourceProject(id_project_resource) {
+        async releaseResourceProject(id_project_resource, retirement_date = null) {
             try {
+                const body = { id: id_project_resource }
+                if (retirement_date) body.retirement_date = retirement_date
                 const response = await fetch(appConfig.URLReleaseResource, {
                     method: "PUT",
                     headers: appConfig.headers,
-                    body: JSON.stringify({ id: id_project_resource })
+                    body: JSON.stringify(body)
                 })
 
                 const responseData = await response.json()
@@ -210,6 +212,9 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 const index = this.resourcesProject.findIndex(r => r.id === id_project_resource)
                 if (index !== -1) {
                     this.resourcesProject[index].is_retired = true
+                    if (retirement_date) {
+                        this.resourcesProject[index].retirement_date = retirement_date
+                    }
                 }
 
                 // Si se liberaron servicios relacionados, marcarlos también
@@ -239,7 +244,9 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 const responseData = await response.json()
 
                 if (!response.ok) {
-                    throw new Error(responseData.error || "Error al reactivar el recurso")
+                    const err = new Error(responseData.error || "Error al reactivar el recurso")
+                    err.active_project_id = responseData.active_project_id || null
+                    throw err
                 }
 
                 // Actualizar el recurso en el store marcándolo como activo

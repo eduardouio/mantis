@@ -28,7 +28,10 @@ const projectResources = computed(() => {
 
 const selectedResources= []
 const confirmDeleteId = ref(null)
- const confirmReactivateId = ref(null)
+const confirmReactivateId = ref(null)
+const confirmRetireId = ref(null)
+const reactivateError = ref(null)  // { message, projectId }
+const retireError = ref(null)
 
 // Tabla con filtrado, búsqueda y paginación
 const tableFilter = useTableFilter(projectResources, {
@@ -62,18 +65,41 @@ const handleDeleteResource = async (resource) => {
 }
 
 const handleReactivateResource = async (resource) => {
+  reactivateError.value = null
   if (confirmReactivateId.value === resource.id) {
     try {
       await projectResourceStore.reactivateResourceProject(resource.id)
       confirmReactivateId.value = null
     } catch (error) {
       console.error('Error al reactivar recurso:', error)
-      alert(error.message || 'Error al reactivar el recurso')
+      reactivateError.value = {
+        message: error.message || 'Error al reactivar el recurso',
+        projectId: error.active_project_id || null
+      }
       confirmReactivateId.value = null
     }
   } else {
     confirmReactivateId.value = resource.id
     confirmDeleteId.value = null
+    confirmRetireId.value = null
+  }
+}
+
+const handleRetireResource = async (resource) => {
+  retireError.value = null
+  if (confirmRetireId.value === resource.id) {
+    try {
+      await projectResourceStore.releaseResourceProject(resource.id, resource.operation_end_date)
+      confirmRetireId.value = null
+    } catch (error) {
+      console.error('Error al retirar recurso:', error)
+      retireError.value = error.message || 'Error al retirar el recurso'
+      confirmRetireId.value = null
+    }
+  } else {
+    confirmRetireId.value = resource.id
+    confirmDeleteId.value = null
+    confirmReactivateId.value = null
   }
 }
 </script>
@@ -81,10 +107,34 @@ const handleReactivateResource = async (resource) => {
 <template>
   <div class="space-y-3">
     <div class="flex justify-between items-center mb-4">
-      <h2 class="font-semibold text-gray-800 flex items-center gap-2">
-        <i class="las la-tools text-blue-600"></i>
-        Recursos Asignados
-      </h2>
+      <div class="flex items-center gap-3 flex-wrap">
+        <h2 class="font-semibold text-gray-800 flex items-center gap-2">
+          <i class="las la-tools text-blue-600"></i>
+          Recursos Asignados
+        </h2>
+        <div v-if="reactivateError" class="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-300 rounded px-3 py-1">
+          <i class="las la-exclamation-triangle"></i>
+          <span>{{ reactivateError.message }}</span>
+          <a
+            v-if="reactivateError.projectId"
+            :href="`/projects/${reactivateError.projectId}/`"
+            class="underline font-semibold text-red-700 hover:text-red-900 whitespace-nowrap"
+            target="_blank"
+          >
+            Ver proyecto #{{ reactivateError.projectId }}
+          </a>
+          <button class="ml-1 text-red-400 hover:text-red-700" @click="reactivateError = null" title="Cerrar">
+            <i class="las la-times"></i>
+          </button>
+        </div>
+        <div v-if="retireError" class="flex items-center gap-2 text-sm text-orange-600 bg-orange-50 border border-orange-300 rounded px-3 py-1">
+          <i class="las la-exclamation-triangle"></i>
+          <span>{{ retireError }}</span>
+          <button class="ml-1 text-orange-400 hover:text-orange-700" @click="retireError = null" title="Cerrar">
+            <i class="las la-times"></i>
+          </button>
+        </div>
+      </div>
       <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'resource-form' }">
         <i class="las la-plus"></i>
         Asignar Recursos
@@ -179,6 +229,16 @@ const handleReactivateResource = async (resource) => {
                 >
                   <i class="las la-redo-alt"></i>
                   {{ confirmReactivateId === resource.id ? 'CONFIRMAR' : 'REACTIVAR' }}
+                </button>
+                <button
+                  v-if="!resource.is_retired && resource.operation_end_date"
+                  class="btn btn-xs btn-ghost border border-orange-400 text-orange-600"
+                  :class="{ 'bg-orange-100': confirmRetireId === resource.id }"
+                  :title="confirmRetireId === resource.id ? 'Haz clic nuevamente para confirmar el retiro' : `Retirar recurso (fecha fin: ${resource.operation_end_date})`"
+                  @click="handleRetireResource(resource)"
+                >
+                  <i class="las la-hand-paper"></i>
+                  {{ confirmRetireId === resource.id ? 'CONFIRMAR' : 'RETIRAR' }}
                 </button>
                 <button
                   class="btn btn-xs btn-ghost border border-base-300 text-red-500"

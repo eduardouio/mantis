@@ -188,7 +188,7 @@ class EquipmentManager:
 
     @classmethod
     @transaction.atomic
-    def retire_from_project(cls, project_resource_id, retirement_reason=None):
+    def retire_from_project(cls, project_resource_id, retirement_reason=None, retirement_date=None):
         """
         Retira un recurso de un proyecto.
 
@@ -199,6 +199,8 @@ class EquipmentManager:
         Args:
             project_resource_id: ID del ``ProjectResourceItem``.
             retirement_reason: Motivo del retiro (opcional).
+            retirement_date: Fecha de retiro (date). Si se omite se usa hoy.
+                Usar ``operation_end_date`` del recurso cuando está disponible.
 
         Returns:
             dict con ``project_resource``, ``related_services_released``
@@ -213,7 +215,7 @@ class EquipmentManager:
         if project_resource.is_retired:
             raise EquipmentManagerError("El recurso ya se encuentra retirado.")
 
-        today = timezone.now().date()
+        today = retirement_date or timezone.now().date()
 
         project_resource.is_retired = True
         project_resource.retirement_date = today
@@ -516,6 +518,7 @@ class EquipmentManager:
                     "type_resource": project_resource.type_resource,
                     "resource_item_code": project_resource.resource_item.code,
                     "related_services": [],
+                    "active_project_id": active_elsewhere.project_id,
                 }
 
             related_services = cls._find_retired_related_services(project_resource)

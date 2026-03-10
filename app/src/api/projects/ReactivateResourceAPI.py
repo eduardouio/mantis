@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.views import View
 import json
-from datetime import date
+from datetime import date, datetime
 
 from common.EquipmentManager import EquipmentManager, EquipmentManagerError
 
@@ -67,6 +67,17 @@ class ReactivateResourceAPI(View):
                         {"error": "Formato de fecha inválido. Use YYYY-MM-DD."},
                         status=400,
                     )
+
+            # Validar primero para devolver datos estructurados al frontend
+            check = EquipmentManager.check_reactivation(project_resource_id)
+            if not check["can_reactivate"]:
+                return JsonResponse(
+                    {
+                        "error": check["reason"],
+                        "active_project_id": check.get("active_project_id"),
+                    },
+                    status=400,
+                )
 
             result = EquipmentManager.reactivate_in_project(
                 project_resource_id, new_start_date=new_start_date
