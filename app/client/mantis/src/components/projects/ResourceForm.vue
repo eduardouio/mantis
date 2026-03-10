@@ -21,10 +21,6 @@ const projectStore = UseProjectStore()
 const isSubmitting = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
-const showReleaseConfirm = ref(false)
-const releaseReason = ref('')
-const isReleasing = ref(false)
-const releaseConfirmationStep = ref(false)
 
 const frequencyTypes = [
   { value: 'DAY', label: 'Por intervalo de días' },
@@ -287,52 +283,6 @@ const submitForm = async () => {
   }
 }
 
-const handleReleaseResource = () => {
-  // Si ya está en paso de confirmación, proceder con la liberación
-  if (releaseConfirmationStep.value) {
-    confirmRelease()
-  } else {
-    // Primer clic: activar confirmación
-    errorMessage.value = ''
-    releaseConfirmationStep.value = true
-  }
-}
-
-const cancelRelease = () => {
-  showReleaseConfirm.value = false
-  releaseReason.value = ''
-  releaseConfirmationStep.value = false
-}
-
-const confirmRelease = async () => {
-  isReleasing.value = true
-  errorMessage.value = ''
-
-  try {
-    // Primero actualizar las fechas
-    const updatePayload = {
-      id: formData.value.id,
-      operation_start_date: formData.value.operation_start_date,
-      operation_end_date: formData.value.operation_end_date
-    }
-    
-    await projectResourceStore.updateResourceProject(updatePayload)
-    
-    // Luego liberar el recurso
-    await projectResourceStore.releaseResourceProject(formData.value.id)
-
-    projectResourceStore.fetchResourcesProject()
-    emit('close')
-    return
-  } catch (error) {
-    console.error('Error al liberar recurso:', error)
-    errorMessage.value = error.message || 'Error al liberar el recurso'
-    releaseConfirmationStep.value = false
-  } finally {
-    isReleasing.value = false
-  }
-}
-
 onMounted(() => {
   if (!isEditMode.value) {
     formData.value.operation_start_date = projectStore.project?.start_date || null
@@ -566,32 +516,20 @@ onMounted(() => {
         </div>
 
       <!-- Botones de Acción -->
-      <div class="flex justify-between items-center pt-4">
-        <div>
-          <button 
-            v-if="isEditMode && !formData.is_retired && formData.operation_end_date"
-            type="button" 
-            :class="releaseConfirmationStep ? 'btn btn-error btn-sm' : 'btn btn-warning btn-sm'"
-            @click="handleReleaseResource"
-            :disabled="isSubmitting || isReleasing"
-          >
-            <i :class="releaseConfirmationStep ? 'las la-exclamation-triangle' : 'las la-hand-paper'"></i>
-            {{ releaseConfirmationStep ? 'CONFIRMAR LIBERACIÓN' : 'Liberar Recurso' }}
-          </button>
-        </div>
+      <div class="flex justify-end items-center pt-4">
         <div class="flex gap-3">
           <button 
             type="button" 
             class="btn btn-ghost" 
             @click="emit('close')"
-            :disabled="isSubmitting || isReleasing"
+            :disabled="isSubmitting"
           >
             Cancelar
           </button>
           <button 
             type="submit" 
             class="btn btn-primary"
-            :disabled="isSubmitting || isReleasing"
+            :disabled="isSubmitting"
           >
             <span v-if="isSubmitting" class="loading loading-spinner loading-sm"></span>
             <span v-else>{{ isEditMode ? 'Actualizar' : 'Guardar' }}</span>
@@ -599,56 +537,5 @@ onMounted(() => {
         </div>
       </div>
     </form>
-
-    <!-- Modal de Confirmación de Liberación -->
-    <div v-if="showReleaseConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
-        <h3 class="text-lg font-semibold mb-4 text-warning">
-          <i class="las la-exclamation-triangle"></i>
-          Confirmar Liberación de Equipo
-        </h3>
-        
-        <div class="space-y-4">
-          <p class="text-sm text-gray-600">
-            ¿Está seguro que desea liberar este equipo del proyecto?
-          </p>
-          
-          <div>
-            <label class="block text-sm font-semibold mb-2">
-              Motivo de liberación <span class="text-error">*</span>
-            </label>
-            <textarea 
-              class="textarea textarea-bordered w-full h-24" 
-              v-model="releaseReason"
-              placeholder="Ingrese el motivo por el cual se libera el equipo..."
-              :disabled="isReleasing"
-            ></textarea>
-          </div>
-
-          <div class="flex justify-end gap-3">
-            <button 
-              type="button" 
-              class="btn btn-ghost btn-sm"
-              @click="cancelRelease"
-              :disabled="isReleasing"
-            >
-              Cancelar
-            </button>
-            <button 
-              type="button" 
-              class="btn btn-warning btn-sm"
-              @click="confirmRelease"
-              :disabled="isReleasing"
-            >
-              <span v-if="isReleasing" class="loading loading-spinner loading-sm"></span>
-              <span v-else>
-                <i class="las la-check"></i>
-                Confirmar Liberación
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
