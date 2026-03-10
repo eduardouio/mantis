@@ -215,6 +215,13 @@ class WorkSheetBuilder:
             if detail is not None:
                 details.append(detail)
 
+        # Cleanup: desactivar detalles de alquiler que ya no aplican al período
+        # (recursos omitidos porque se retiraron antes del período o no pertenecen al proyecto)
+        self._cleanup_stale_rental_details(
+            processed_equipment_ids=set(equipment_groups.keys()),
+            processed_service_pri_ids={pr.id for pr in service_resources},
+        )
+
         # ----- Procesar SERVICIOS (uno a uno) -----
         for project_resource in service_resources:
             resource_item = project_resource.resource_item
@@ -272,6 +279,38 @@ class WorkSheetBuilder:
             
         return details
 
+    def _cleanup_stale_rental_details(self, processed_equipment_ids, processed_service_pri_ids):
+        """
+        Desactiva (soft-delete) SheetProjectDetail de tipo alquiler cuyos recursos
+        ya no aplican al período de la planilla: recursos retirados antes del período
+        de la planilla o que ya no existen en el proyecto.
+
+        No toca detalles de mantenimiento, guías de envío ni cadenas de custodia.
+        """
+        _SPECIAL_DOCS = ['SheetMaintenance', 'ShippingGuide', 'CustodyChain']
+
+        existing = SheetProjectDetail.objects.filter(
+            sheet_project=self.sheet_project,
+            is_active=True,
+        ).exclude(
+            reference_document__in=_SPECIAL_DOCS
+        ).select_related('project_resource_item')
+
+        for detail in existing:
+            pri = detail.project_resource_item
+            if pri is None:
+                continue
+
+            if pri.type_resource == 'EQUIPO':
+                should_remove = pri.resource_item_id not in processed_equipment_ids
+            else:
+                should_remove = pri.id not in processed_service_pri_ids
+
+            if should_remove:
+                detail.is_active = False
+                detail.is_deleted = True
+                detail.save(update_fields=['is_active', 'is_deleted'])
+
     def _upsert_equipment_detail(
         self, resource_item, project_resource, monthdays_list, quantity
     ):
@@ -280,22 +319,34 @@ class WorkSheetBuilder:
         buscando primero por resource_item (para combinar reasignaciones).
         Retorna None si el detalle fue eliminado manualmente (soft-delete).
         """
-        # Buscar primero si existe un detalle activo para este equipo en esta planilla
-        detail = SheetProjectDetail.objects.filter(
+        # Tipos de documento especiales que no corresponden a alquileres de recursos
+        _SPECIAL_DOCS = ['SheetMaintenance', 'ShippingGuide', 'CustodyChain']
+
+        # Buscar detalles activos para este equipo en esta planilla (reference_document=ResourceItem
+        # o None/vacío, es decir cualquier detalle de alquiler, no de mantenimiento/guía/custodia)
+        existing_qs = SheetProjectDetail.objects.filter(
             sheet_project=self.sheet_project,
             resource_item=resource_item,
-            reference_document='ResourceItem',
             is_active=True,
-        ).first()
+        ).exclude(reference_document__in=_SPECIAL_DOCS).order_by('id')
 
-        # Sin detalle activo: verificar si fue eliminado manualmente (soft-delete)
+        existing_list = list(existing_qs)
+
+        # Si hay duplicados, eliminar los extras conservando solo el último
+        if len(existing_list) > 1:
+            for dup in existing_list[:-1]:
+                dup.delete()
+            existing_list = existing_list[-1:]
+
+        detail = existing_list[0] if existing_list else None
+
+        # Sin detalle activo: verificar si fue eliminado manualmente (soft-delete).
         if detail is None:
             was_removed = SheetProjectDetail.objects.filter(
                 sheet_project=self.sheet_project,
                 resource_item=resource_item,
-                reference_document='ResourceItem',
                 is_deleted=True,
-            ).exists()
+            ).exclude(reference_document__in=_SPECIAL_DOCS).exists()
             if was_removed:
                 return None
 

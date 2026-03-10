@@ -601,13 +601,29 @@ class EquipmentManager:
             detail.monthdays_apply_cost = monthdays_list
             detail.quantity = Decimal(str(quantity))
             detail.total_line = detail.quantity * detail.unit_price
-            detail.save(
-                update_fields=[
-                    "monthdays_apply_cost",
-                    "quantity",
-                    "total_line",
-                ]
-            )
+
+            if quantity == 0:
+                # El recurso no tiene días en este período (se retiró antes del inicio).
+                # Desactivar el detalle para que no aparezca en la planilla.
+                detail.is_active = False
+                detail.is_deleted = True
+                detail.save(
+                    update_fields=[
+                        "monthdays_apply_cost",
+                        "quantity",
+                        "total_line",
+                        "is_active",
+                        "is_deleted",
+                    ]
+                )
+            else:
+                detail.save(
+                    update_fields=[
+                        "monthdays_apply_cost",
+                        "quantity",
+                        "total_line",
+                    ]
+                )
 
     @classmethod
     def _validate_can_delete(cls, project_resource):
