@@ -412,6 +412,19 @@ const submitForm = async () => {
       return
     }
 
+    if (custodyChain.value.have_logistic === 'SI') {
+      if (!custodyChain.value.logistic_cost || custodyChain.value.logistic_cost <= 0) {
+        alert('El Costo Logística es obligatorio cuando hay logística')
+        activeTab.value = 'resources'
+        return
+      }
+      if (!custodyChain.value.sheet_project_concept || custodyChain.value.sheet_project_concept.trim() === '') {
+        alert('El Concepto de Planilla es obligatorio cuando hay logística')
+        activeTab.value = 'resources'
+        return
+      }
+    }
+
     const payload = {
       custody_chain: {
         technical_id: custodyChain.value.technical,
@@ -963,55 +976,6 @@ const currentStatusBadge = computed(() => {
               />
             </div>
 
-            <!-- Logística -->
-            <div class="form-control w-full">
-              <label class="label py-1">
-                <span class="label-text font-medium">¿Tiene Logística? *</span>
-              </label>
-              <select 
-                id="have_logistic"
-                v-model="custodyChain.have_logistic"
-                :disabled="!canEdit"
-                required
-                class="select select-bordered w-full"
-              >
-                <option value="SI">SÍ</option>
-                <option value="NO">NO</option>
-                <option value="NA">NO APLICA</option>
-              </select>
-            </div>
-
-            <!-- Costo Logística (solo si have_logistic === 'SI') -->
-            <div v-if="custodyChain.have_logistic === 'SI'" class="form-control w-full">
-              <label class="label py-1">
-                <span class="label-text font-medium">Costo Logística *</span>
-              </label>
-              <input
-                type="number"
-                v-model.number="custodyChain.logistic_cost"
-                :disabled="!canEdit"
-                min="0"
-                step="0.01"
-                class="input input-bordered w-full"
-                placeholder="0.00"
-              />
-            </div>
-
-            <!-- Concepto Planilla (solo si have_logistic === 'SI') -->
-            <div v-if="custodyChain.have_logistic === 'SI'" class="form-control w-full">
-              <label class="label py-1">
-                <span class="label-text font-medium">Concepto Planilla *</span>
-              </label>
-              <input
-                type="text"
-                v-model="custodyChain.sheet_project_concept"
-                :disabled="!canEdit"
-                placeholder="Ej: FLETE"
-                class="input input-bordered w-full"
-                maxlength="255"
-              />
-            </div>
-
             <!-- Fecha de Actividad -->
             <div class="form-control w-full">
               <label class="label py-1">
@@ -1439,6 +1403,63 @@ const currentStatusBadge = computed(() => {
                 step="0.01"
                 class="input input-bordered w-full"
                 placeholder="0.00"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Logística -->
+        <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+          <h6 class="font-semibold text-sm mb-3 text-gray-700 border-b pb-1">Logística</h6>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">¿Tiene Logística? *</span>
+              </label>
+              <select 
+                id="have_logistic"
+                v-model="custodyChain.have_logistic"
+                :disabled="!canEdit"
+                required
+                class="select select-bordered w-full"
+              >
+                <option value="SI">SÍ</option>
+                <option value="NO">NO</option>
+                <option value="NA">NO APLICA</option>
+              </select>
+            </div>
+
+            <!-- Costo Logística (solo si have_logistic === 'SI') -->
+            <div v-if="custodyChain.have_logistic === 'SI'" class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Costo Logística *</span>
+              </label>
+              <input
+                type="number"
+                v-model.number="custodyChain.logistic_cost"
+                :disabled="!canEdit"
+                min="0"
+                step="0.01"
+                class="input input-bordered w-full"
+                :class="{ 'input-error': custodyChain.have_logistic === 'SI' && !custodyChain.logistic_cost }"
+                placeholder="0.00"
+              />
+            </div>
+
+            <!-- Concepto Planilla (solo si have_logistic === 'SI') -->
+            <div v-if="custodyChain.have_logistic === 'SI'" class="form-control w-full">
+              <label class="label py-1">
+                <span class="label-text font-medium">Concepto de Planilla *</span>
+              </label>
+              <input
+                type="text"
+                v-model="custodyChain.sheet_project_concept"
+                :disabled="!canEdit"
+                placeholder="Ej: FLETE"
+                class="input input-bordered w-full"
+                :class="{ 'input-error': custodyChain.have_logistic === 'SI' && !custodyChain.sheet_project_concept }"
+                maxlength="255"
               />
             </div>
           </div>
