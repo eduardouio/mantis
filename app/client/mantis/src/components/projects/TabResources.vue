@@ -28,6 +28,7 @@ const projectResources = computed(() => {
 
 const selectedResources= []
 const confirmDeleteId = ref(null)
+ const confirmReactivateId = ref(null)
 
 // Tabla con filtrado, búsqueda y paginación
 const tableFilter = useTableFilter(projectResources, {
@@ -57,6 +58,22 @@ const handleDeleteResource = async (resource) => {
   } else {
     // Primera vez haciendo clic - pedir confirmación
     confirmDeleteId.value = resource.id
+  }
+}
+
+const handleReactivateResource = async (resource) => {
+  if (confirmReactivateId.value === resource.id) {
+    try {
+      await projectResourceStore.reactivateResourceProject(resource.id)
+      confirmReactivateId.value = null
+    } catch (error) {
+      console.error('Error al reactivar recurso:', error)
+      alert(error.message || 'Error al reactivar el recurso')
+      confirmReactivateId.value = null
+    }
+  } else {
+    confirmReactivateId.value = resource.id
+    confirmDeleteId.value = null
   }
 }
 </script>
@@ -152,6 +169,16 @@ const handleDeleteResource = async (resource) => {
                 >
                   <i class="las la-edit"></i>
                   EDITAR
+                </button>
+                <button
+                  v-if="resource.is_retired"
+                  class="btn btn-xs btn-ghost border border-green-400 text-green-600"
+                  :class="{ 'bg-green-100': confirmReactivateId === resource.id }"
+                  :title="confirmReactivateId === resource.id ? 'Haz clic nuevamente para confirmar' : 'Reactivar recurso en el proyecto'"
+                  @click="handleReactivateResource(resource)"
+                >
+                  <i class="las la-redo-alt"></i>
+                  {{ confirmReactivateId === resource.id ? 'CONFIRMAR' : 'REACTIVAR' }}
                 </button>
                 <button
                   class="btn btn-xs btn-ghost border border-base-300 text-red-500"

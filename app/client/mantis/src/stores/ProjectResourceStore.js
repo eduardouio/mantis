@@ -227,6 +227,47 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                 console.error("Error releasing project resource:", error)
                 throw error
             }
+        },
+        async reactivateResourceProject(id_project_resource) {
+            try {
+                const response = await fetch(appConfig.URLReactivateResource, {
+                    method: "PUT",
+                    headers: appConfig.headers,
+                    body: JSON.stringify({ id: id_project_resource })
+                })
+
+                const responseData = await response.json()
+
+                if (!response.ok) {
+                    throw new Error(responseData.error || "Error al reactivar el recurso")
+                }
+
+                // Actualizar el recurso en el store marcándolo como activo
+                const index = this.resourcesProject.findIndex(r => r.id === id_project_resource)
+                if (index !== -1) {
+                    this.resourcesProject[index] = {
+                        ...this.resourcesProject[index],
+                        ...responseData.data
+                    }
+                }
+
+                // Si se reactivaron servicios relacionados, actualizarlos también
+                if (responseData.related_services_reactivated) {
+                    responseData.related_services_reactivated.forEach(serviceId => {
+                        const sIndex = this.resourcesProject.findIndex(r => r.id === serviceId)
+                        if (sIndex !== -1) {
+                            this.resourcesProject[sIndex].is_retired = false
+                            this.resourcesProject[sIndex].retirement_date = null
+                            this.resourcesProject[sIndex].retirement_reason = null
+                        }
+                    })
+                }
+
+                return responseData
+            } catch (error) {
+                console.error("Error reactivating project resource:", error)
+                throw error
+            }
         }
     }
 })
