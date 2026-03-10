@@ -459,6 +459,177 @@ class EquipmentManager:
         return history
 
     # ------------------------------------------------------------------
+    # Reactivación
+    # ------------------------------------------------------------------
+
+    @classmethod
+    def check_reactivation(cls, project_resource_id):
+        """
+        Verifica si un recurso retirado puede ser reactivado en su proyecto.
+
+        Para equipos físicos: valida que no esté activo en otro proyecto.
+        Para servicios: siempre pueden reactivarse si están retirados.
+
+        Args:
+            project_resource_id: ID del ``ProjectResourceItem`` retirado.
+
+        Returns:
+            dict con ``can_reactivate`` (bool), ``reason`` (str),
+            ``project_resource_id``, ``type_resource``, ``resource_item_code``
+            y ``related_services`` (lista de IDs de servicios retirados).
+
+        Raises:
+            EquipmentManagerError: Si el recurso no existe.
+        """
+        project_resource = cls._get_project_resource(project_resource_id)
+
+        if not project_resource.is_retired:
+            return {
+                "can_reactivate": False,
+                "reason": "El recurso no está retirado; ya se encuentra activo en el proyecto.",
+                "project_resource_id": project_resource.id,
+                "type_resource": project_resource.type_resource,
+                "resource_item_code": project_resource.resource_item.code,
+                "related_services": [],
+            }
+
+        related_service_ids = []
+
+        if project_resource.type_resource == "EQUIPO":
+            active_elsewhere = ProjectResourceItem.objects.filter(
+                resource_item=project_resource.resource_item,
+                type_resource="EQUIPO",
+                is_active=True,
+                is_retired=False,
+                project__is_closed=False,
+            ).exclude(id=project_resource.id).first()
+
+            if active_elsewhere:
+                return {
+                    "can_reactivate": False,
+                    "reason": (
+                        f"El equipo {project_resource.resource_item.code} está "
+                        f"activo en el proyecto {active_elsewhere.project_id}. "
+                        "Debe retirarlo primero."
+                    ),
+                    "project_resource_id": project_resource.id,
+                    "type_resource": project_resource.type_resource,
+                    "resource_item_code": project_resource.resource_item.code,
+                    "related_services": [],
+                }
+
+            related_services = cls._find_retired_related_services(project_resource)
+            related_service_ids = [s.id for s in related_services]
+
+        return {
+            "can_reactivate": True,
+            "reason": "El recurso puede reactivarse.",
+            "project_resource_id": project_resource.id,
+            "type_resource": project_resource.type_resource,
+            "resource_item_code": project_resource.resource_item.code,
+            "resource_item_name": project_resource.resource_item.name,
+            "related_services": related_service_ids,
+        }
+
+    @classmethod
+    @transaction.atomic
+    def reactivate_in_project(cls, project_resource_id, new_start_date=None):
+        """
+        Reactiva un recurso previamente retirado dentro del mismo proyecto.
+
+        En lugar de crear un nuevo ``ProjectResourceItem``, limpia los campos
+        de retiro del existente y lo deja operativo de nuevo. Esto evita
+        duplicados en las planillas.
+
+        - Si es EQUIPO: valida disponibilidad, restaura stst_* del
+          ``ResourceItem`` y reactiva los servicios asociados retirados.
+        - Si es SERVICIO: solo limpia campos de retiro.
+
+        En ambos casos recalcula las planillas activas.
+
+        Args:
+            project_resource_id: ID del ``ProjectResourceItem`` retirado.
+            new_start_date: Nueva fecha de inicio de operaciones (date).
+                Si se omite se conserva la ``operation_start_date`` original.
+
+        Returns:
+            dict con ``project_resource``, ``related_services_reactivated``
+            y ``message``.
+
+        Raises:
+            EquipmentManagerError: Si el recurso no está retirado, no existe,
+            o el equipo está activo en otro proyecto.
+        """
+        project_resource = cls._get_project_resource(project_resource_id)
+
+        if not project_resource.is_retired:
+            raise EquipmentManagerError(
+                "El recurso no está retirado; ya se encuentra activo en el proyecto."
+            )
+
+        reactivated_services = []
+
+        if project_resource.type_resource == "EQUIPO":
+            # Validar que no está activo en otro proyecto
+            active_elsewhere = ProjectResourceItem.objects.filter(
+                resource_item=project_resource.resource_item,
+                type_resource="EQUIPO",
+                is_active=True,
+                is_retired=False,
+                project__is_closed=False,
+            ).exclude(id=project_resource.id).first()
+
+            if active_elsewhere:
+                raise EquipmentManagerError(
+                    f"El equipo {project_resource.resource_item.code} está activo "
+                    f"en el proyecto {active_elsewhere.project_id}. "
+                    "Debe retirarlo antes de reactivarlo aquí."
+                )
+
+            # Restaurar estado del equipo físico
+            resource_item = project_resource.resource_item
+            resource_item.stst_status_disponibility = "RENTADO"
+            resource_item.stst_current_project_id = project_resource.project.id
+            resource_item.stst_current_location = project_resource.project.location
+            resource_item.save(
+                update_fields=[
+                    "stst_status_disponibility",
+                    "stst_current_project_id",
+                    "stst_current_location",
+                ]
+            )
+
+            # Reactivar servicios relacionados retirados
+            reactivated_services = cls._reactivate_related_services(
+                project_resource, new_start_date
+            )
+
+        # Limpiar campos de retiro
+        update_fields = ["is_retired", "retirement_date", "retirement_reason"]
+        project_resource.is_retired = False
+        project_resource.retirement_date = None
+        project_resource.retirement_reason = None
+
+        if new_start_date:
+            project_resource.operation_start_date = new_start_date
+            update_fields.append("operation_start_date")
+
+        project_resource.save(update_fields=update_fields)
+
+        # Recalcular planillas activas
+        cls._recalculate_active_sheets(project_resource)
+
+        return {
+            "project_resource": project_resource,
+            "related_services_reactivated": [s.id for s in reactivated_services],
+            "message": (
+                "Equipo reactivado correctamente."
+                if project_resource.type_resource == "EQUIPO"
+                else "Servicio reactivado correctamente."
+            ),
+        }
+
+    # ------------------------------------------------------------------
     # Métodos internos
     # ------------------------------------------------------------------
 
@@ -676,3 +847,45 @@ class EquipmentManager:
             except ResourceItem.DoesNotExist:
                 pass
         return f"SERVICIO / {resource_item.code} / {resource_item.name.upper()}"
+
+    @classmethod
+    def _find_retired_related_services(cls, project_resource):
+        """
+        Encuentra servicios retirados asociados a un equipo en el mismo
+        proyecto, para reactivarlos junto con el equipo.
+
+        La vinculación se hace por ``physical_equipment_code`` que almacena
+        el ``resource_item.id`` del equipo físico.
+        """
+        equipment_id = project_resource.resource_item.id
+        related_codes = {equipment_id}
+
+        physical_code = project_resource.physical_equipment_code
+        if physical_code and physical_code > 0:
+            related_codes.add(physical_code)
+
+        return list(
+            ProjectResourceItem.objects.filter(
+                project=project_resource.project,
+                type_resource="SERVICIO",
+                physical_equipment_code__in=list(related_codes),
+                is_retired=True,
+                is_active=True,
+            )
+        )
+
+    @classmethod
+    def _reactivate_related_services(cls, project_resource, new_start_date=None):
+        """Reactiva servicios retirados asociados a un equipo."""
+        related = cls._find_retired_related_services(project_resource)
+        for service in related:
+            service.is_retired = False
+            service.retirement_date = None
+            service.retirement_reason = None
+            update_fields = ["is_retired", "retirement_date", "retirement_reason"]
+            if new_start_date and new_start_date > service.operation_start_date:
+                service.operation_start_date = new_start_date
+                update_fields.append("operation_start_date")
+            service.save(update_fields=update_fields)
+            cls._recalculate_active_sheets(service)
+        return related

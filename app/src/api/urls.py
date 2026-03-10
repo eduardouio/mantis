@@ -19,6 +19,7 @@ from api.projects import (
     AddResourceProjectAPI,
     DeleteResourceProjectAPI,
     ResourcesAvailableAPI,
+    ReactivateResourceAPI,
 )
 from api.projects.CloseProjectAPI import CloseProjectAPI
 
@@ -75,6 +76,7 @@ urlpatterns = [
     path('projects/resources/update/', UpdateResourceItemAPI.as_view(), name='api_update_resource_item'),
     path('projects/resources/delete/<int:id_project_resource>/', DeleteResourceProjectAPI.as_view(), name='api_delete_resource_project'),
 	path('projects/resources/release/', ResourceReleaserAPI.as_view(), name='api_release_resource_project'),
+    path('projects/resources/reactivate/', ReactivateResourceAPI.as_view(), name='api_reactivate_resource_project'),
     path('projects/<int:project_id>/resources/', ProjectResources.as_view(), name='api_project_resources'),
     path('projects/all-info/<int:project_id>/', AllInfoProjectAPI.as_view(), name='api_all_info_project'),
     path('projects/<int:project_id>/close/', CloseProjectAPI.as_view(), name='api_close_project'),

@@ -1,4 +1,4 @@
-const idProject = window.djangoConfig?.projectId ?? 60
+const idProject = window.djangoConfig?.projectId ?? 2
 const apiBaseUrl = window.djangoConfig?.baseUrl ?? "http://localhost:8000"
 const csrfToken = window.djangoConfig?.csrfToken ?? "falsocsrf"
 
@@ -32,6 +32,8 @@ export const appConfig = {
     "PDFCertFinalDisposition" : apiBaseUrl + "/reports/final-disposition/${id}/",
     "URLWorkSheetReport": apiBaseUrl + "/reports/worksheet/${id}/",
     "URLReleaseResource": apiBaseUrl + "/api/projects/resources/release/",
+    "URLCheckReactivateResource": apiBaseUrl + "/api/projects/resources/reactivate/",
+    "URLReactivateResource": apiBaseUrl + "/api/projects/resources/reactivate/",
     "URLLoadFiles": apiBaseUrl + "/api/load_files/",
     "URLProjectDocTree": apiBaseUrl + "/api/load_files/project/" + idProject + "/tree/",
     "URLProjectDocMerge": apiBaseUrl + "/api/load_files/project/" + idProject + "/merge/",
