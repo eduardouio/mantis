@@ -7,7 +7,11 @@ from django.views.generic import DetailView
 
 from common.StatusResourceItem import StatusResourceItem
 from equipment.models import ResourceItem
-from projects.models import ProjectResourceItem, SheetMaintenance
+from projects.models import (
+    ProjectResourceItem, SheetMaintenance,
+    CustodyChain, ChainCustodyDetail,
+    ShippingGuide, ShippingGuideDetail,
+)
 
 
 class ResourceItemDetailView(LoginRequiredMixin, DetailView):
@@ -49,6 +53,12 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
 
         # Información de estado y mantenimiento
         context.update(self._get_maintenance_information(equipment, project_information))
+
+        # Historial de cadenas de custodia vinculadas al equipo
+        context['equipment_custody_chains_summary'] = self._get_equipment_custody_chains_summary(equipment)
+
+        # Historial de guías de remisión vinculadas al equipo
+        context['equipment_shipping_guides_summary'] = self._get_equipment_shipping_guides_summary(equipment)
 
         # Metadatos del sistema
         context.update(self._get_system_metadata(equipment))
@@ -437,6 +447,131 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
                 maintenance_history[0]['start_date'] if maintenance_history else None
             ),
             'maintenance_history': maintenance_history,
+        }
+
+    def _get_equipment_custody_chains_summary(self, equipment):
+        """Obtiene las cadenas de custodia vinculadas al equipo físico.
+
+        Busca en dos vías:
+        1. ProjectResourceItem donde resource_item=equipment (asignaciones directas del equipo)
+        2. ProjectResourceItem donde physical_equipment_code=equipment.id (servicios vinculados)
+        """
+        from django.db.models import Q
+
+        linked_pri_ids = list(
+            ProjectResourceItem.objects.filter(
+                Q(resource_item=equipment) | Q(physical_equipment_code=equipment.id),
+                is_deleted=False,
+            ).values_list('id', flat=True)
+        )
+
+        if not linked_pri_ids:
+            return {
+                'total_chains': 0,
+                'chains_history': [],
+            }
+
+        details = (
+            ChainCustodyDetail.objects.filter(
+                is_active=True,
+                project_resource_id__in=linked_pri_ids,
+            )
+            .select_related(
+                'custody_chain',
+                'custody_chain__sheet_project',
+                'custody_chain__sheet_project__project',
+                'custody_chain__sheet_project__project__partner',
+                'custody_chain__technical',
+                'project_resource',
+                'project_resource__resource_item',
+            )
+            .order_by('-custody_chain__activity_date', '-custody_chain__id')
+        )
+
+        seen_chain_ids = set()
+        chains_history = []
+        for detail in details:
+            chain = detail.custody_chain
+            if chain.id in seen_chain_ids:
+                continue
+            seen_chain_ids.add(chain.id)
+
+            project = chain.sheet_project.project
+            partner = getattr(project, 'partner', None)
+            technical = chain.technical
+
+            chains_history.append({
+                'chain_id': chain.id,
+                'consecutive': chain.consecutive,
+                'activity_date': chain.activity_date,
+                'status': chain.status,
+                'status_display': dict(CustodyChain._meta.get_field('status').choices).get(chain.status, chain.status),
+                'location': chain.location or detail.custody_chain.sheet_project.project.location,
+                'project_id': project.id,
+                'project_name': partner.name if partner else f'Proyecto {project.id}',
+                'project_url': reverse('project_detail', kwargs={'pk': project.id}),
+                'technical_name': f'{technical.first_name} {technical.last_name}' if technical else None,
+                'resource_name': detail.project_resource.resource_item.name if detail.project_resource else None,
+                'resource_code': detail.project_resource.resource_item.code if detail.project_resource else None,
+                'equipment_label': detail.equipment,
+                'code_equipment_label': detail.code_equipment,
+            })
+
+        return {
+            'total_chains': len(chains_history),
+            'chains_history': chains_history,
+        }
+
+    def _get_equipment_shipping_guides_summary(self, equipment):
+        """Obtiene las guías de remisión vinculadas directamente al equipo."""
+        details = (
+            ShippingGuideDetail.objects.filter(
+                is_active=True,
+                id_resource_item=equipment,
+            )
+            .select_related(
+                'shipping_guide',
+                'shipping_guide__project',
+                'shipping_guide__project__partner',
+            )
+            .order_by('-shipping_guide__issue_date', '-shipping_guide__id')
+        )
+
+        seen_guide_ids = set()
+        guides_history = []
+        for detail in details:
+            guide = detail.shipping_guide
+            if guide.id in seen_guide_ids:
+                continue
+            seen_guide_ids.add(guide.id)
+
+            project = guide.project
+            partner = getattr(project, 'partner', None)
+            status_choices = dict(ShippingGuide._meta.get_field('status').choices)
+            type_choices = dict(ShippingGuide._meta.get_field('type_shipping_guide').choices)
+
+            guides_history.append({
+                'guide_id': guide.id,
+                'guide_number': guide.guide_number,
+                'issue_date': guide.issue_date,
+                'type_shipping_guide': guide.type_shipping_guide,
+                'type_display': type_choices.get(guide.type_shipping_guide, guide.type_shipping_guide),
+                'status': guide.status,
+                'status_display': status_choices.get(guide.status, guide.status),
+                'origin_place': guide.origin_place,
+                'destination_place': guide.destination_place,
+                'project_id': project.id,
+                'project_name': partner.name if partner else f'Proyecto {project.id}',
+                'project_url': reverse('project_detail', kwargs={'pk': project.id}),
+                'carrier_name': guide.carrier_name,
+                'vehicle_plate': guide.vehicle_plate,
+                'description': detail.description,
+                'quantity': detail.quantity,
+            })
+
+        return {
+            'total_guides': len(guides_history),
+            'guides_history': guides_history,
         }
 
     def _get_status_class(self, status):

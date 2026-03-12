@@ -244,7 +244,7 @@
           </span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <div class="bg-white p-4 rounded-lg border border-slate-200">
             <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Dónde está ahora</div>
             <div class="font-semibold text-slate-900">{{ equipment_current_trace.location }}</div>
@@ -290,6 +290,26 @@
             </div>
             <p class="text-sm text-gray-600 mt-2">
               {{ equipment_maintenance_summary.linked_services_count }} servicio{{ equipment_maintenance_summary.linked_services_count|pluralize }} enlazado{{ equipment_maintenance_summary.linked_services_count|pluralize }} por código físico.
+            </p>
+          </div>
+
+          <div class="bg-white p-4 rounded-lg border border-slate-200">
+            <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Cadenas de custodia</div>
+            <div class="font-semibold text-slate-900">
+              {{ equipment_custody_chains_summary.total_chains }} cadena{{ equipment_custody_chains_summary.total_chains|pluralize }}
+            </div>
+            <p class="text-sm text-gray-600 mt-2">
+              Registros de actividad vinculados al equipo.
+            </p>
+          </div>
+
+          <div class="bg-white p-4 rounded-lg border border-slate-200">
+            <div class="text-xs uppercase tracking-wide text-gray-500 mb-1">Guías de remisión</div>
+            <div class="font-semibold text-slate-900">
+              {{ equipment_shipping_guides_summary.total_guides }} guía{{ equipment_shipping_guides_summary.total_guides|pluralize }}
+            </div>
+            <p class="text-sm text-gray-600 mt-2">
+              Movimientos de entrada/salida del equipo.
             </p>
           </div>
         </div>
@@ -489,6 +509,156 @@
             </div>
           {% endif %}
         </div>
+      </div>
+
+      <!-- Historial de Cadenas de Custodia -->
+      <div class="p-4 bg-white rounded-lg border border-amber-200 shadow-sm mb-6">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <h4 class="font-medium text-amber-700 flex items-center gap-2">
+            <i class="las la-link text-lg"></i>
+            Historial de Cadenas de Custodia
+          </h4>
+          <span class="badge badge-outline">{{ equipment_custody_chains_summary.total_chains }} cadena{{ equipment_custody_chains_summary.total_chains|pluralize }}</span>
+        </div>
+
+        {% if equipment_custody_chains_summary.chains_history %}
+          <div class="overflow-x-auto">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Consecutivo</th>
+                  <th>Estado</th>
+                  <th>Proyecto</th>
+                  <th>Ubicación</th>
+                  <th>Técnico</th>
+                  <th>Recurso</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for chain in equipment_custody_chains_summary.chains_history %}
+                  <tr>
+                    <td>
+                      <div class="font-medium">{{ chain.activity_date|date:'d/m/Y' }}</div>
+                    </td>
+                    <td>
+                      <span class="font-mono text-sm">{{ chain.consecutive|default:'-' }}</span>
+                    </td>
+                    <td>
+                      <span class="badge 
+                        {% if chain.status == 'CLOSE' %}badge-success
+                        {% elif chain.status == 'DRAFT' %}badge-warning
+                        {% elif chain.status == 'INVOICE' %}badge-info
+                        {% else %}badge-error{% endif %}">
+                        {{ chain.status_display }}
+                      </span>
+                    </td>
+                    <td>
+                      <a href="{{ chain.project_url }}" class="link link-primary font-medium">
+                        {{ chain.project_name }}
+                      </a>
+                    </td>
+                    <td>
+                      <div class="text-sm">{{ chain.location|default:'Sin ubicación' }}</div>
+                    </td>
+                    <td>
+                      <div class="text-sm">{{ chain.technical_name|default:'Sin técnico' }}</div>
+                    </td>
+                    <td>
+                      {% if chain.resource_code %}
+                        <div class="font-medium">{{ chain.resource_code }}</div>
+                        <div class="text-xs text-gray-500">{{ chain.resource_name }}</div>
+                      {% else %}
+                        <div class="text-sm text-gray-500">{{ chain.resource_name|default:'-' }}</div>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-sm text-gray-500">
+            No hay cadenas de custodia vinculadas a este equipo.
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Historial de Guías de Remisión -->
+      <div class="p-4 bg-white rounded-lg border border-violet-200 shadow-sm mb-6">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <h4 class="font-medium text-violet-700 flex items-center gap-2">
+            <i class="las la-truck text-lg"></i>
+            Historial de Guías de Remisión
+          </h4>
+          <span class="badge badge-outline">{{ equipment_shipping_guides_summary.total_guides }} guía{{ equipment_shipping_guides_summary.total_guides|pluralize }}</span>
+        </div>
+
+        {% if equipment_shipping_guides_summary.guides_history %}
+          <div class="overflow-x-auto">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>N° Guía</th>
+                  <th>Tipo</th>
+                  <th>Estado</th>
+                  <th>Proyecto</th>
+                  <th>Origen → Destino</th>
+                  <th>Transportista</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for guide in equipment_shipping_guides_summary.guides_history %}
+                  <tr>
+                    <td>
+                      <div class="font-medium">{{ guide.issue_date|date:'d/m/Y' }}</div>
+                    </td>
+                    <td>
+                      <span class="font-mono text-sm font-semibold">{{ guide.guide_number|default:'-' }}</span>
+                    </td>
+                    <td>
+                      <span class="badge 
+                        {% if guide.type_shipping_guide == 'EXIT' %}badge-primary
+                        {% elif guide.type_shipping_guide == 'IN' %}badge-success
+                        {% else %}badge-warning{% endif %} badge-sm">
+                        {{ guide.type_display }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge 
+                        {% if guide.status == 'CLOSED' %}badge-success
+                        {% elif guide.status == 'DRAFT' %}badge-warning
+                        {% else %}badge-error{% endif %} badge-sm">
+                        {{ guide.status_display }}
+                      </span>
+                    </td>
+                    <td>
+                      <a href="{{ guide.project_url }}" class="link link-primary font-medium">
+                        {{ guide.project_name }}
+                      </a>
+                    </td>
+                    <td>
+                      <div class="text-sm">
+                        {{ guide.origin_place|default:'—' }} → {{ guide.destination_place|default:'—' }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="text-sm">{{ guide.carrier_name|default:'Sin transportista' }}</div>
+                      {% if guide.vehicle_plate %}
+                        <div class="text-xs text-gray-500">{{ guide.vehicle_plate }}</div>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-sm text-gray-500">
+            No hay guías de remisión vinculadas a este equipo.
+          </div>
+        {% endif %}
       </div>
 
       <!-- Análisis de Completitud y Consistencia (depende de StatusResourceItem) -->
