@@ -47,6 +47,12 @@ class CustomUserModel(AbstractUser):
         blank=True,
         null=True
     )
+    siganture_dni = models.CharField(
+        'DNI Firmante',
+        blank=True,
+        null=True,
+        default=None
+    )
     siganture_role = models.CharField(
         'Rol Firmante',
         blank=True,

@@ -12,7 +12,7 @@ class CustomUserForm(forms.ModelForm):
     
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'picture', 'notes', 'siganture_name', 'siganture_role']
+        fields = ['first_name', 'last_name', 'email', 'picture', 'notes', 'siganture_name', 'siganture_dni', 'siganture_role']
         widgets = {
             'first_name': forms.TextInput(attrs={
                 'class': 'input input-bordered w-full',
@@ -40,6 +40,10 @@ class CustomUserForm(forms.ModelForm):
                 'class': 'input input-bordered w-full',
                 'placeholder': 'Nombre para firmar documentos'
             }),
+            'siganture_dni': forms.TextInput(attrs={
+                'class': 'input input-bordered w-full',
+                'placeholder': 'DNI para firmar documentos'
+            }),
             'siganture_role': forms.TextInput(attrs={
                 'class': 'input input-bordered w-full',
                 'placeholder': 'Rol para firmar documentos'
@@ -52,6 +56,7 @@ class CustomUserForm(forms.ModelForm):
             'picture': 'Foto de Perfil',
             'notes': 'Notas',
             'siganture_name': 'Nombre Firmante',
+            'siganture_dni': 'DNI Firmante',
             'siganture_role': 'Rol Firmante',
         }
         help_texts = {
