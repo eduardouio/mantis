@@ -1,9 +1,13 @@
-from django.views.generic import DetailView
+from decimal import Decimal
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 from django.utils import timezone
-from equipment.models import ResourceItem
-from projects.models import ProjectResourceItem
+from django.views.generic import DetailView
+
 from common.StatusResourceItem import StatusResourceItem
+from equipment.models import ResourceItem
+from projects.models import ProjectResourceItem, SheetMaintenance
 
 
 class ResourceItemDetailView(LoginRequiredMixin, DetailView):
@@ -35,14 +39,16 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
             return context
 
         # Para equipos: información completa
+        project_information = self._get_project_information(equipment)
+
         # Estadísticas de uso del equipo
-        context.update(self._get_equipment_statistics(equipment))
+        context.update(self._get_equipment_statistics(project_information))
 
         # Información de proyectos asociados
-        context.update(self._get_project_information(equipment))
+        context.update(project_information)
 
         # Información de estado y mantenimiento
-        context.update(self._get_maintenance_information(equipment))
+        context.update(self._get_maintenance_information(equipment, project_information))
 
         # Metadatos del sistema
         context.update(self._get_system_metadata(equipment))
@@ -61,17 +67,15 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
 
         return context
 
-    def _get_equipment_statistics(self, equipment):
+    def _get_equipment_statistics(self, project_information):
         """Calcula estadísticas del equipo basadas en sus asignaciones."""
-        project_assignments = ProjectResourceItem.objects.filter(
-            resource_item=equipment,
-            is_deleted=False
-        ).select_related('project')
+        project_assignments = project_information['project_assignments']
+        equipment_project_timeline = project_information['equipment_project_timeline']
         
         # Calcular totales usando el campo 'cost' en lugar de 'rent_cost'
         total_cost = sum(
-            assignment.cost for assignment in project_assignments
-            if assignment.cost)
+            (assignment.cost or Decimal('0.00')) for assignment in project_assignments
+        )
         
         # Si hay campo de mantenimiento, usarlo, sino asumir 0
         total_maintenance = 0
@@ -82,40 +86,74 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
             )
         
         return {
-            'total_projects': project_assignments.count(),
-            'active_projects': project_assignments.filter(is_retired=False).count(),
-            'historical_projects': project_assignments.filter(is_retired=True).count(),
+            'total_projects': len(project_assignments),
+            'active_projects': sum(
+                1 for assignment_data in equipment_project_timeline
+                if assignment_data['is_current']
+            ),
+            'historical_projects': sum(
+                1 for assignment_data in equipment_project_timeline
+                if assignment_data['is_historical']
+            ),
             'total_cost': total_cost,
             'total_maintenance_cost': total_maintenance,
             'total_revenue': total_cost + total_maintenance,
         }
 
     def _get_project_information(self, equipment):
-        """Obtener información de proyectos asociados"""
-        project_assignments = ProjectResourceItem.objects.filter(
-            resource_item=equipment
-        ).select_related(
-            'project', 'project__partner'
-        ).order_by('-operation_start_date')
+        """Obtiene el historial completo y la ubicación actual del equipo."""
+        today = timezone.now().date()
+        project_assignments = list(
+            ProjectResourceItem.objects.filter(
+                resource_item=equipment,
+                is_deleted=False,
+            ).select_related(
+                'project', 'project__partner'
+            ).order_by('-operation_start_date', '-id')
+        )
 
-        current_assignment = project_assignments.filter(is_active=True).first()
-        recent_assignments = project_assignments[:5]  # Últimos 5 proyectos
+        equipment_project_timeline = [
+            self._build_assignment_timeline_entry(assignment, today)
+            for assignment in project_assignments
+        ]
+        current_timeline_entries = [
+            assignment_data for assignment_data in equipment_project_timeline
+            if assignment_data['is_current']
+        ]
+        future_timeline_entries = sorted(
+            (
+                assignment_data for assignment_data in equipment_project_timeline
+                if assignment_data['is_future']
+            ),
+            key=lambda assignment_data: assignment_data['operation_start_date'] or today,
+        )
+        current_assignment = (
+            current_timeline_entries[0]['assignment']
+            if current_timeline_entries else None
+        )
 
         return {
             'current_assignment': current_assignment,
-            'recent_assignments': recent_assignments,
+            'current_assignments': [
+                assignment_data['assignment'] for assignment_data in current_timeline_entries
+            ],
+            'recent_assignments': project_assignments[:5],
             'project_assignments': project_assignments,
+            'equipment_project_timeline': equipment_project_timeline,
+            'equipment_current_trace': self._build_current_trace(
+                equipment,
+                current_timeline_entries,
+                future_timeline_entries,
+                equipment_project_timeline,
+            ),
         }
 
-    def _get_maintenance_information(self, equipment):
+    def _get_maintenance_information(self, equipment, project_information):
         """Obtener información de mantenimiento y estado"""
         today = timezone.now().date()
 
         # Verificar si hay información de mantenimiento programado
-        active_assignments = ProjectResourceItem.objects.filter(
-            resource_item=equipment,
-            is_active=True
-        )
+        active_assignments = project_information['current_assignments']
 
         maintenance_alerts = []
         for assignment in active_assignments:
@@ -145,6 +183,260 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         return {
             'maintenance_alerts': maintenance_alerts,
             'status_info': status_info,
+            'equipment_maintenance_summary': self._get_equipment_maintenance_summary(equipment),
+        }
+
+    def _is_assignment_current(self, assignment, today):
+        """Determina si una asignación está vigente en la fecha de consulta."""
+        if assignment.operation_start_date and assignment.operation_start_date > today:
+            return False
+
+        if assignment.operation_end_date and assignment.operation_end_date < today:
+            return False
+
+        if assignment.is_retired:
+            if assignment.retirement_date and assignment.retirement_date > today:
+                return True
+            return False
+
+        return True
+
+    def _get_assignment_status(self, assignment, today):
+        """Genera un estado legible para el historial operativo."""
+        if assignment.operation_start_date and assignment.operation_start_date > today:
+            return 'PROGRAMADO'
+
+        if assignment.is_retired:
+            if assignment.retirement_date and assignment.retirement_date > today:
+                return 'RETIRO PROGRAMADO'
+            return 'RETIRADO'
+
+        if assignment.operation_end_date and assignment.operation_end_date < today:
+            return 'FINALIZADO'
+
+        return 'EN OPERACION'
+
+    def _get_assignment_badge_class(self, status):
+        """Mapa simple de badges para el historial operativo."""
+        badge_map = {
+            'EN OPERACION': 'badge-info',
+            'FINALIZADO': 'badge-success',
+            'RETIRADO': 'badge-warning',
+            'RETIRO PROGRAMADO': 'badge-warning',
+            'PROGRAMADO': 'badge-neutral',
+        }
+        return badge_map.get(status, 'badge-neutral')
+
+    def _build_assignment_timeline_entry(self, assignment, today):
+        """Serializa una asignación para la vista de análisis."""
+        status = self._get_assignment_status(assignment, today)
+        project = assignment.project
+        partner = getattr(project, 'partner', None)
+
+        return {
+            'assignment': assignment,
+            'project': project,
+            'project_id': assignment.project_id,
+            'project_name': (
+                partner.name if partner else f'Proyecto {assignment.project_id}'
+            ),
+            'project_location': project.location if project else None,
+            'project_is_closed': project.is_closed if project else False,
+            'project_url': reverse('project_detail', kwargs={'pk': assignment.project_id}),
+            'status': status,
+            'status_badge': self._get_assignment_badge_class(status),
+            'is_current': self._is_assignment_current(assignment, today),
+            'is_future': bool(
+                assignment.operation_start_date
+                and assignment.operation_start_date > today
+            ),
+            'is_historical': not self._is_assignment_current(assignment, today) and not bool(
+                assignment.operation_start_date
+                and assignment.operation_start_date > today
+            ),
+            'operation_start_date': assignment.operation_start_date,
+            'operation_end_date': assignment.operation_end_date,
+            'is_retired': assignment.is_retired,
+            'retirement_date': assignment.retirement_date,
+            'retirement_reason': assignment.retirement_reason,
+            'cost': assignment.cost,
+        }
+
+    def _build_current_trace(
+        self,
+        equipment,
+        current_timeline_entries,
+        future_timeline_entries,
+        equipment_project_timeline,
+    ):
+        """Resume dónde está el equipo al momento de la consulta."""
+        fallback_location = getattr(equipment, 'stst_current_location', None)
+
+        if current_timeline_entries:
+            current_data = current_timeline_entries[0]
+            state = 'EN PROYECTO'
+            badge = 'badge-info'
+            message = 'Ubicación obtenida desde la asignación operativa vigente.'
+
+            if len(current_timeline_entries) > 1:
+                state = 'MULTIPROYECTO'
+                badge = 'badge-error'
+                message = (
+                    f"El equipo aparece en {len(current_timeline_entries)} "
+                    'proyectos vigentes. Revisar consistencia.'
+                )
+
+            return {
+                'state': state,
+                'badge': badge,
+                'message': message,
+                'project_id': current_data['project_id'],
+                'project_name': current_data['project_name'],
+                'project_url': current_data['project_url'],
+                'location': (
+                    current_data['project_location']
+                    or fallback_location
+                    or 'Ubicación no registrada'
+                ),
+                'operation_start_date': current_data['operation_start_date'],
+                'expected_end_date': current_data['operation_end_date'],
+                'retirement_date': current_data['retirement_date'],
+                'current_project_count': len(current_timeline_entries),
+            }
+
+        if future_timeline_entries:
+            next_assignment = future_timeline_entries[0]
+            return {
+                'state': 'PROGRAMADO',
+                'badge': 'badge-warning',
+                'message': 'Sin asignación activa hoy, pero ya tiene una próxima salida registrada.',
+                'project_id': next_assignment['project_id'],
+                'project_name': next_assignment['project_name'],
+                'project_url': next_assignment['project_url'],
+                'location': fallback_location or 'Disponible',
+                'operation_start_date': next_assignment['operation_start_date'],
+                'expected_end_date': next_assignment['operation_end_date'],
+                'retirement_date': next_assignment['retirement_date'],
+                'current_project_count': 0,
+            }
+
+        last_assignment = next(
+            (
+                assignment_data for assignment_data in equipment_project_timeline
+                if assignment_data['is_historical']
+            ),
+            None,
+        )
+        if last_assignment:
+            return {
+                'state': 'DISPONIBLE',
+                'badge': 'badge-success',
+                'message': 'No tiene una asignación operativa vigente en la fecha consultada.',
+                'project_id': last_assignment['project_id'],
+                'project_name': last_assignment['project_name'],
+                'project_url': last_assignment['project_url'],
+                'location': (
+                    fallback_location
+                    or last_assignment['project_location']
+                    or 'Ubicación no registrada'
+                ),
+                'operation_start_date': last_assignment['operation_start_date'],
+                'expected_end_date': last_assignment['operation_end_date'],
+                'retirement_date': last_assignment['retirement_date'],
+                'current_project_count': 0,
+            }
+
+        return {
+            'state': 'SIN HISTORIAL',
+            'badge': 'badge-neutral',
+            'message': 'El equipo todavía no tiene proyectos asociados registrados.',
+            'project_id': None,
+            'project_name': None,
+            'project_url': None,
+            'location': fallback_location or 'Sin ubicación registrada',
+            'operation_start_date': None,
+            'expected_end_date': None,
+            'retirement_date': None,
+            'current_project_count': 0,
+        }
+
+    def _get_equipment_maintenance_summary(self, equipment):
+        """Cruza las hojas de mantenimiento de servicios con el equipo físico."""
+        linked_service_assignments = list(
+            ProjectResourceItem.objects.filter(
+                physical_equipment_code=equipment.id,
+                is_deleted=False,
+                type_resource='SERVICIO',
+            ).select_related(
+                'resource_item', 'project', 'project__partner'
+            ).order_by('-operation_start_date', '-id')
+        )
+        assignment_pairs = {
+            (assignment.project_id, assignment.resource_item_id)
+            for assignment in linked_service_assignments
+            if assignment.project_id and assignment.resource_item_id
+        }
+        service_ids = {
+            assignment.resource_item_id for assignment in linked_service_assignments
+            if assignment.resource_item_id
+        }
+        project_ids = {
+            assignment.project_id for assignment in linked_service_assignments
+            if assignment.project_id
+        }
+
+        maintenance_history = []
+        total_cost = Decimal('0.00')
+
+        if service_ids and project_ids:
+            maintenance_queryset = SheetMaintenance.objects.filter(
+                is_deleted=False,
+                resource_item_id__in=service_ids,
+                id_sheet_project__project_id__in=project_ids,
+            ).select_related(
+                'resource_item',
+                'id_sheet_project',
+                'id_sheet_project__project',
+                'id_sheet_project__project__partner',
+            ).order_by('-start_date', '-sheet_number', '-id')
+
+            for maintenance in maintenance_queryset:
+                project = maintenance.id_sheet_project.project
+                pair = (project.id, maintenance.resource_item_id)
+                if pair not in assignment_pairs:
+                    continue
+
+                maintenance_history.append(
+                    {
+                        'sheet_id': maintenance.id,
+                        'sheet_number': maintenance.sheet_number,
+                        'project_id': project.id,
+                        'project_name': project.partner.name,
+                        'project_url': reverse('project_detail', kwargs={'pk': project.id}),
+                        'service_name': maintenance.resource_item.name,
+                        'service_code': maintenance.resource_item.code,
+                        'maintenance_type': maintenance.maintenance_type,
+                        'maintenance_type_display': maintenance.get_maintenance_type_display(),
+                        'start_date': maintenance.start_date,
+                        'end_date': maintenance.end_date,
+                        'status': maintenance.status,
+                        'location': maintenance.location,
+                        'total_days': maintenance.total_days,
+                        'cost_total': maintenance.cost_total,
+                        'cost_logistics': maintenance.cost_logistics,
+                        'maintenance_description': maintenance.maintenance_description,
+                    }
+                )
+                total_cost += maintenance.cost_total or Decimal('0.00')
+
+        return {
+            'linked_services_count': len(assignment_pairs),
+            'total_maintenances': len(maintenance_history),
+            'total_cost': total_cost,
+            'last_maintenance_date': (
+                maintenance_history[0]['start_date'] if maintenance_history else None
+            ),
+            'maintenance_history': maintenance_history,
         }
 
     def _get_status_class(self, status):

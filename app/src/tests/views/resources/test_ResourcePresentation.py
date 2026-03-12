@@ -2,7 +2,13 @@ import pytest
 from django.urls import reverse
 from django.utils import timezone
 from equipment.models import ResourceItem
-from projects.models import Project, ProjectResourceItem, Partner
+from projects.models import (
+    Partner,
+    Project,
+    ProjectResourceItem,
+    SheetMaintenance,
+    SheetProject,
+)
 from accounts.models import CustomUserModel
 from tests.BaseTestView import BaseTestView
 
@@ -59,6 +65,22 @@ class TestResourceItemDetailView(BaseTestView):
         equipment.id_user_updated = test_user.pk
         equipment.save()
         return equipment
+
+    @pytest.fixture
+    def sample_service(self, test_user):
+
+        service = ResourceItem(
+            name="Servicio Técnico Especializado",
+            code="SERV001",
+            type_equipment="SERVIC",
+            stst_status_equipment="FUNCIONANDO",
+            is_active=True,
+        )
+
+        service.id_user_created = test_user.pk
+        service.id_user_updated = test_user.pk
+        service.save()
+        return service
 
     @pytest.fixture
     def sample_equipment_with_assignment(self, sample_equipment, sample_project, test_user):
@@ -171,6 +193,11 @@ class TestResourceItemDetailView(BaseTestView):
             if current is not None:
                 assert current.project == sample_project
 
+        trace = response.context['equipment_current_trace']
+        assert trace['state'] == 'EN PROYECTO'
+        assert trace['project_id'] == sample_project.id
+        assert reverse('project_detail', kwargs={'pk': sample_project.id}).encode() in response.content
+
     def test_detail_view_context_maintenance_information(self, client_logged, sample_equipment_with_assignment):
         url_detail = reverse('resource_detail', kwargs={
                              'pk': sample_equipment_with_assignment.pk})
@@ -184,6 +211,9 @@ class TestResourceItemDetailView(BaseTestView):
         if 'status_info' in response.context:
             status_info = response.context['status_info']
             assert isinstance(status_info, dict)
+
+        assert 'equipment_maintenance_summary' in response.context
+        assert isinstance(response.context['equipment_maintenance_summary'], dict)
 
     def test_detail_view_maintenance_alert_near_end_date(
         self, client_logged, sample_equipment, sample_project, test_user
@@ -271,6 +301,7 @@ class TestResourceItemDetailView(BaseTestView):
         assert response.context["active_projects"] == 0
         assert response.context["current_assignment"] is None
         assert len(response.context["recent_assignments"]) == 0
+        assert response.context["equipment_current_trace"]["state"] == "SIN HISTORIAL"
 
     def test_detail_view_no_maintenance_alerts(
         self, client_logged, sample_equipment, sample_project, test_user
@@ -300,6 +331,97 @@ class TestResourceItemDetailView(BaseTestView):
         response_no_assign = client_logged.get(url_detail)
         assert response_no_assign.status_code == 200
         assert len(response_no_assign.context["maintenance_alerts"]) == 0
+
+    def test_detail_view_builds_project_timeline_from_operation_dates(
+        self, client_logged, sample_equipment_with_assignment, sample_project
+    ):
+        url_detail = reverse(
+            "resource_detail", kwargs={"pk": sample_equipment_with_assignment.pk}
+        )
+        response = client_logged.get(url_detail)
+        assert response.status_code == 200
+
+        timeline = response.context["equipment_project_timeline"]
+        assert len(timeline) == 2
+        assert timeline[0]["project_id"] == sample_project.id
+        assert timeline[0]["status"] == "EN OPERACION"
+        assert timeline[0]["is_current"] is True
+        assert any(item["status"] == "FINALIZADO" for item in timeline)
+
+    def test_detail_view_links_maintenances_by_physical_equipment_code(
+        self,
+        client_logged,
+        sample_equipment,
+        sample_project,
+        sample_service,
+        test_user,
+    ):
+        today = timezone.now().date()
+
+        equipment_assignment = ProjectResourceItem(
+            project=sample_project,
+            resource_item=sample_equipment,
+            type_resource="EQUIPO",
+            operation_start_date=today - timezone.timedelta(days=8),
+            operation_end_date=today + timezone.timedelta(days=15),
+            cost=400.00,
+            frequency_type="DAY",
+            interval_days=2,
+        )
+        equipment_assignment.id_user_created = test_user.pk
+        equipment_assignment.id_user_updated = test_user.pk
+        equipment_assignment.save()
+
+        service_assignment = ProjectResourceItem(
+            project=sample_project,
+            resource_item=sample_service,
+            type_resource="SERVICIO",
+            physical_equipment_code=sample_equipment.id,
+            operation_start_date=today - timezone.timedelta(days=8),
+            operation_end_date=today + timezone.timedelta(days=15),
+            cost=180.00,
+            frequency_type="DAY",
+            interval_days=7,
+        )
+        service_assignment.id_user_created = test_user.pk
+        service_assignment.id_user_updated = test_user.pk
+        service_assignment.save()
+
+        sheet_project = SheetProject(
+            project=sample_project,
+            issue_date=today,
+            period_start=today - timezone.timedelta(days=10),
+            period_end=today,
+            service_type="MANTENIMIENTO",
+        )
+        sheet_project.id_user_created = test_user.pk
+        sheet_project.id_user_updated = test_user.pk
+        sheet_project.save()
+
+        sheet_maintenance = SheetMaintenance(
+            id_sheet_project=sheet_project,
+            resource_item=sample_service,
+            start_date=today - timezone.timedelta(days=3),
+            end_date=today - timezone.timedelta(days=2),
+            maintenance_type="CORRECTIVO",
+            cost_total=250.00,
+            maintenance_description="Cambio de bomba y ajuste general",
+        )
+        sheet_maintenance.id_user_created = test_user.pk
+        sheet_maintenance.id_user_updated = test_user.pk
+        sheet_maintenance.save()
+
+        url_detail = reverse("resource_detail", kwargs={"pk": sample_equipment.pk})
+        response = client_logged.get(url_detail)
+        assert response.status_code == 200
+
+        maintenance_summary = response.context["equipment_maintenance_summary"]
+        assert maintenance_summary["linked_services_count"] == 1
+        assert maintenance_summary["total_maintenances"] == 1
+        assert str(maintenance_summary["total_cost"]) == "250.00"
+        assert maintenance_summary["maintenance_history"][0]["project_id"] == sample_project.id
+        assert maintenance_summary["maintenance_history"][0]["service_code"] == sample_service.code
+        assert reverse("project_detail", kwargs={"pk": sample_project.id}).encode() in response.content
 
     def test_detail_view_equipment_not_found(self, client_logged):
         url_non_existent = reverse("resource_detail", kwargs={"pk": 99999})
