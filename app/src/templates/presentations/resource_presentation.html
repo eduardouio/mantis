@@ -226,6 +226,10 @@
     {% if not is_service %}
     <input type="radio" name="res_tabs" class="tab" aria-label="Estado y Análisis" />
     <div class="tab-content bg-base-100 border-base-300 p-6">
+
+      <!-- Trazabilidad Operativa (siempre visible para equipos) -->
+      {% include "presentations/partials/_equipment_trace.html" %}
+
       {% if status_analysis %}
         <!-- Resumen del Estado General -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
