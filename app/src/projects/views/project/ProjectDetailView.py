@@ -10,11 +10,22 @@ class ProjectDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
+
         context['title_section'] = 'Detalle del Proyecto {}'.format(
             self.object.partner
         )
         context['title_page'] = 'Detalle del Proyecto {}'.format(
             self.object.partner
         )
+        context['user_data'] = {
+            'id': user.id,
+            'username': None,
+            'email': user.email,
+            'role': getattr(user, 'role', None),
+            'siganture_name': getattr(user, 'siganture_name', None),
+            'siganture_dni': getattr(user, 'siganture_dni', None),
+            'siganture_role': getattr(user, 'siganture_role', None),
+        }
         context['popup_window'] = False
         return context

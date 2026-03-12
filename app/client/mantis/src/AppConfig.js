@@ -1,11 +1,21 @@
 const idProject = window.djangoConfig?.projectId ?? 17
 const apiBaseUrl = window.djangoConfig?.baseUrl ?? "http://localhost:8000"
 const csrfToken = window.djangoConfig?.csrfToken ?? "falsocsrf"
+const userData = window.djangoConfig?.userData ?? {
+    id: null,
+    username: "Anonymous",
+    email: "",
+    role: null,
+    siganture_name: null,
+    siganture_dni: null,
+    siganture_role: null,
+}
 
 export const appConfig = {
     "apiBaseUrl": apiBaseUrl,
     "csrfToken": csrfToken,
     "idProject": idProject,
+    "userData": userData,
     "urlLogo": apiBaseUrl + "/static/img/logo.png",
     "headers": {
         "Accept": "application/json",
