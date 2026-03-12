@@ -315,6 +315,26 @@
         </div>
       </div>
 
+      <!-- Alerta de inconsistencia: RENTADO sin proyecto activo -->
+      {% if can_release_equipment %}
+      <div class="mb-6 p-4 bg-orange-50 rounded-lg border border-orange-300 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <h4 class="font-medium text-orange-800 flex items-center gap-2">
+            <i class="las la-exclamation-triangle text-lg"></i>
+            Inconsistencia Detectada
+          </h4>
+          <p class="text-sm text-orange-700 mt-1">
+            Este equipo está marcado como <strong>RENTADO</strong> en la base de datos, pero no tiene ningún proyecto activo asignado.
+          </p>
+        </div>
+        <button type="button" id="btnReleaseEquipment" class="btn btn-warning btn-sm whitespace-nowrap"
+                data-equipment-id="{{ equipment.id }}">
+          <i class="las la-unlock text-lg"></i>
+          Liberar Equipo
+        </button>
+      </div>
+      {% endif %}
+
       <!-- Proyecto Actual y Fechas -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="p-4 bg-gray-50 rounded-lg shadow-sm border border-blue-200">
@@ -1004,6 +1024,55 @@ function updateEquipmentStatus(equipmentId) {
         });
     }
 }
+
+// Liberar equipo: corregir inconsistencia RENTADO sin proyecto activo
+document.addEventListener('DOMContentLoaded', function() {
+    const btnRelease = document.getElementById('btnReleaseEquipment');
+    if (!btnRelease) return;
+
+    btnRelease.addEventListener('click', function() {
+        if (!confirm('¿Está seguro de marcar este equipo como DISPONIBLE?\n\nEsto corregirá la inconsistencia: el equipo figura como RENTADO pero no tiene ningún proyecto activo.')) {
+            return;
+        }
+
+        const container = document.querySelector('[data-equipment-id]');
+        const equipmentId = container.getAttribute('data-equipment-id');
+        const apiUrl = container.getAttribute('data-api-update');
+
+        btnRelease.disabled = true;
+        btnRelease.innerHTML = '<span class="loading loading-spinner loading-xs"></span> Liberando...';
+
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id: parseInt(equipmentId),
+                stst_status_disponibility: 'DISPONIBLE',
+                stst_current_project_id: null,
+                stst_current_location: null,
+                stst_commitment_date: null,
+                stst_release_date: null,
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Equipo liberado correctamente. El estado se actualizó a DISPONIBLE.');
+                location.reload();
+            } else {
+                alert('Error al liberar el equipo: ' + (data.error || 'Error desconocido'));
+                btnRelease.disabled = false;
+                btnRelease.innerHTML = '<i class="las la-unlock text-lg"></i> Liberar Equipo';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error de conexión al liberar el equipo.');
+            btnRelease.disabled = false;
+            btnRelease.innerHTML = '<i class="las la-unlock text-lg"></i> Liberar Equipo';
+        });
+    });
+});
 </script>
 {% endblock %}
 {% endblock %}

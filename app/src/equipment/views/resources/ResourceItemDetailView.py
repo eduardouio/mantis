@@ -75,6 +75,14 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
         # Información de estado del equipo usando StatusResourceItem
         context.update(self._get_equipment_status_analysis(equipment))
 
+        # Detectar inconsistencia: marcado como RENTADO pero sin proyecto activo
+        trace_state = context.get('equipment_current_trace', {}).get('state', '')
+        db_disponibility = getattr(equipment, 'stst_status_disponibility', None)
+        context['can_release_equipment'] = (
+            db_disponibility == 'RENTADO'
+            and trace_state in ('DISPONIBLE', 'SIN HISTORIAL')
+        )
+
         return context
 
     def _get_equipment_statistics(self, project_information):
