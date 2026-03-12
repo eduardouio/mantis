@@ -6,12 +6,14 @@ import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 import { UseShippingGuideStore } from '@/stores/ShippingGuideStore'
 import { UseVehicleStore } from '@/stores/VehicleStore'
+import { UseTechnicalStore } from '@/stores/TechnicalStore'
 import { getLocalDateString } from '@/utils/formatters'
 
 const projectStore = UseProjectStore()
 const projectResourceStore = UseProjectResourceStore()
 const shippingGuideStore = UseShippingGuideStore()
 const vehicleStore = UseVehicleStore()
+const technicalStore = UseTechnicalStore()
 
 const router = useRouter()
 const route = useRoute()
@@ -100,6 +102,24 @@ watch(selectedVehicleId, (newId) => {
   }
 })
 
+// Lista de técnicos para autocompletar nombre del transportista
+const technicalOptions = computed(() => {
+  return (technicalStore.technicals || []).map(t => ({
+    id: t.id,
+    fullName: `${t.first_name} ${t.last_name}`.trim(),
+    dni: t.dni || '',
+  }))
+})
+
+// Cuando cambia el nombre del transportista, verificar si coincide con un técnico
+watch(() => guide.value.carrier_name, (newName) => {
+  if (!newName) return
+  const match = technicalOptions.value.find(t => t.fullName === newName)
+  if (match) {
+    guide.value.carrier_ci = match.dni
+  }
+})
+
 // Cargar datos en modo edición
 const loadGuideData = async () => {
   if (!isEditMode.value) return
@@ -175,6 +195,7 @@ onMounted(async () => {
   await projectStore.fetchProjectData()
   await projectResourceStore.fetchResourcesProject()
   await vehicleStore.fetchVehicles()
+  await technicalStore.fetchTechnicalsAvailable()
 
   // Inicializar con datos del proyecto
   if (!isEditMode.value) {
@@ -564,10 +585,15 @@ const deleteGuideFile = async () => {
                 type="text"
                 id="carrier_name"
                 v-model="guide.carrier_name"
-                placeholder="Nombre completo"
+                list="carrier-technicals-list"
+                placeholder="Seleccione o escriba un nombre"
+                autocomplete="off"
                 :disabled="!canEdit"
                 class="input input-bordered w-full"
               />
+              <datalist id="carrier-technicals-list">
+                <option v-for="t in technicalOptions" :key="t.id" :value="t.fullName" />
+              </datalist>
             </div>
 
             <div class="form-control w-full">
