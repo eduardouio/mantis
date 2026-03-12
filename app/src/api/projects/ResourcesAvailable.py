@@ -43,7 +43,7 @@ class ResourcesAvailableAPI(View):
 
     def _serialize(self, resource, projects_map):
         """Serializar ResourceItem a JSON."""
-        display_name = f"{resource.name} - {resource.get_type_equipment_display()}"
+        display_name = f"{resource.code} - {resource.name}"
 
         # Los servicios siempre se muestran como disponibles
         is_service = resource.type_equipment == "SERVIC"

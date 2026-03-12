@@ -43,10 +43,10 @@ const filteredResources = computed(() => {
     resources = resources.filter(resource => !props.excludeIds.includes(resource.id));
   }
 
-  // Filtrar por búsqueda
+  // Filtrar por búsqueda (por código de equipo)
   if (searchQuery.value) {
     resources = resources.filter((resource) =>
-      (resource.display_name || resource.title || '')
+      (resource.code || '')
         .toLowerCase()
         .includes(searchQuery.value.toLowerCase())
     );

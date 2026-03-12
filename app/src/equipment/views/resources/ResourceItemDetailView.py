@@ -759,7 +759,7 @@ class ResourceItemDetailView(LoginRequiredMixin, DetailView):
     def _get_status_analysis_classes(self, status_report):
         """Obtener clases CSS para los diferentes estados"""
         completeness = status_report['completeness']
-        inconsistencies = status_report['inconsistencias']
+        inconsistencies = status_report['inconsistencies']
         availability = status_report['availability']['status']
         
         classes = {
