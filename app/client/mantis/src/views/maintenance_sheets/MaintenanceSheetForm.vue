@@ -61,8 +61,8 @@ const sheet = ref({
   possible_causes: '',
   replaced_parts: '',
   observations: '',
-  performed_by: '',
-  performed_by_position: '',
+  performed_by: appConfig.userData.siganture_name || '',
+  performed_by_position: appConfig.userData.siganture_role || '',
   approved_by: '',
   approved_by_position: '',
   notes: '',
@@ -650,8 +650,8 @@ const deleteMaintenanceFile = async () => {
                 type="text"
                 v-model="sheet.performed_by"
                 placeholder="Nombre de quien realizó"
-                :disabled="!canEdit"
-                class="input input-bordered w-full"
+                disabled
+                class="input input-bordered w-full bg-gray-100"
               />
             </div>
             <div class="form-control w-full">
@@ -662,8 +662,8 @@ const deleteMaintenanceFile = async () => {
                 type="text"
                 v-model="sheet.performed_by_position"
                 placeholder="Cargo de quien realizó"
-                :disabled="!canEdit"
-                class="input input-bordered w-full"
+                disabled
+                class="input input-bordered w-full bg-gray-100"
               />
             </div>
             <div class="form-control w-full">

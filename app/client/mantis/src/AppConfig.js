@@ -2,13 +2,13 @@ const idProject = window.djangoConfig?.projectId ?? 17
 const apiBaseUrl = window.djangoConfig?.baseUrl ?? "http://localhost:8000"
 const csrfToken = window.djangoConfig?.csrfToken ?? "falsocsrf"
 const userData = window.djangoConfig?.userData ?? {
-    id: null,
-    username: "Anonymous",
-    email: "",
-    role: null,
-    siganture_name: null,
-    siganture_dni: null,
-    siganture_role: null,
+    id: 1,
+    username: "developer@dev-7.com",
+    email: "developer@dev-7.com",
+    role: "Developer",
+    siganture_name: "Developer Name",
+    siganture_dni: "12345678",
+    siganture_role: "Developer",
 }
 
 export const appConfig = {

@@ -50,8 +50,8 @@ const guide = ref({
   carrier_name: '',
   carrier_ci: '',
   vehicle_plate: '',
-  dispatcher_name: '',
-  dispatcher_ci: '',
+  dispatcher_name: appConfig.userData.siganture_name || '',
+  dispatcher_ci: appConfig.userData.siganture_dni || '',
   contact_name: '',
   contact_phone: '',
   recibed_by: '',
@@ -642,8 +642,8 @@ const deleteGuideFile = async () => {
                 id="dispatcher_name"
                 v-model="guide.dispatcher_name"
                 placeholder="Nombre completo"
-                :disabled="!canEdit"
-                class="input input-bordered w-full"
+                disabled
+                class="input input-bordered w-full bg-gray-100"
               />
             </div>
 
@@ -657,8 +657,8 @@ const deleteGuideFile = async () => {
                 v-model="guide.dispatcher_ci"
                 placeholder="Número de identificación"
                 maxlength="20"
-                :disabled="!canEdit"
-                class="input input-bordered w-full"
+                disabled
+                class="input input-bordered w-full bg-gray-100"
               />
             </div>
           </div>
