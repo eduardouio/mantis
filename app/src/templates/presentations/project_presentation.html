@@ -5,12 +5,14 @@
 <div id="vue-app"></div>
 {% endblock %}
 {% block script %}
+{{ user_data|json_script:"project-user-data" }}
 <script>
   window.djangoConfig = {
     projectId: {{ project.id }},
-    cardinalPoint: "{{ project.cardinal_point|default:'' }}",
+    cardinalPoint: "{{ project.cardinal_point|default:''|escapejs }}",
     baseUrl: "",
-    csrfToken: "{{ csrf_token }}"
+    csrfToken: "{{ csrf_token }}",
+    userData: JSON.parse(document.getElementById("project-user-data").textContent)
   };
 </script>
 <script src="{% static 'js/app/app-projects.js' %}"></script>

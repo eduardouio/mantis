@@ -190,6 +190,24 @@
                             {% endif %}
                         </div>
 
+                        <!-- DNI Firmante -->
+                        <div class="form-control">
+                            <label for="{{ form.siganture_dni.id_for_label }}" class="label">
+                                <span class="label-text font-medium">{{ form.siganture_dni.label }}</span>
+                            </label>
+                            {{ form.siganture_dni }}
+                            {% if form.siganture_dni.help_text %}
+                                <label class="label">
+                                    <span class="label-text-alt">{{ form.siganture_dni.help_text }}</span>
+                                </label>
+                            {% endif %}
+                            {% if form.siganture_dni.errors %}
+                                <label class="label">
+                                    <span class="label-text-alt text-error">{{ form.siganture_dni.errors.0 }}</span>
+                                </label>
+                            {% endif %}
+                        </div>
+
                         <!-- Rol Firmante -->
                         <div class="form-control">
                             <label for="{{ form.siganture_role.id_for_label }}" class="label">
