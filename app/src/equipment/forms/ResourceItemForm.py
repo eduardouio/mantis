@@ -10,10 +10,8 @@ class ResourceItemForm(forms.ModelForm):
             'serial_number', 'date_purchase', 'height', 'width',
             'depth', 'weight', 'capacity_gallons', 'plant_capacity',
             # Estado y disponibilidad
-            'stst_status_disponibility',
-            'stst_repair_reason', 'stst_current_location',
-            'stst_current_project_id', 'stst_commitment_date',
-            'stst_release_date',
+            'stst_status_equipment',
+            'stst_repair_reason',
             # Características de lavamanos
             'have_foot_pumps', 'have_soap_dispenser', 'have_paper_towels',
             # Características de baterías sanitarias
@@ -57,17 +55,9 @@ class ResourceItemForm(forms.ModelForm):
                 attrs={'class': 'input input-bordered input-md w-full', 'step': '0.01'}
             ),
             'plant_capacity': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
-            'stst_status_disponibility': forms.Select(attrs={'class': 'select select-bordered select-md w-full'}),
+            'stst_status_equipment': forms.Select(attrs={'class': 'select select-bordered select-md w-full'}),
             'stst_repair_reason': forms.Textarea(
                 attrs={'class': 'textarea textarea-bordered textarea-md w-full', 'rows': 3}
-            ),
-            'stst_current_location': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
-            'stst_current_project_id': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
-            'stst_commitment_date': forms.DateInput(
-                attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}
-            ),
-            'stst_release_date': forms.DateInput(
-                attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}
             ),
             # Componentes de equipos
             'blower_brand': forms.TextInput(attrs={'class': 'input input-bordered input-md w-full'}),
@@ -112,9 +102,6 @@ class ResourceItemForm(forms.ModelForm):
         self.fields['capacity_gallons'].required = False
         self.fields['plant_capacity'].required = False
         self.fields['stst_repair_reason'].required = False
-        self.fields['stst_current_project_id'].required = False
-        self.fields['stst_commitment_date'].required = False
-        self.fields['stst_release_date'].required = False
         if 'notes' in self.fields:
             self.fields['notes'].required = False
 
@@ -193,16 +180,6 @@ class ResourceItemForm(forms.ModelForm):
                 'Los urinarios solo están permitidos en baterías sanitarias para hombres'
             )
 
-        # Validar fechas de compromiso y liberación
-        commitment_date = cleaned_data.get('stst_commitment_date')
-        release_date = cleaned_data.get('stst_release_date')
-        
-        if commitment_date and release_date and release_date < commitment_date:
-            self.add_error(
-                'stst_release_date',
-                'La fecha de liberación no puede ser anterior a la fecha de compromiso'
-            )
-
         # Validar campos condicionales
         self._validate_conditional_fields(cleaned_data)
 
@@ -224,9 +201,4 @@ class ResourceItemForm(forms.ModelForm):
             if not cleaned_data.get('engine_model'):
                 self.add_error('engine_model', 'Debe especificar el modelo del motor')
         
-        # Validar que si se especifica un proyecto, se proporcione la ubicación
-        if cleaned_data.get('stst_current_project_id') and not cleaned_data.get('stst_current_location'):
-            self.add_error(
-                'stst_current_location',
-                'Debe especificar la ubicación actual del equipo'
-            )
+

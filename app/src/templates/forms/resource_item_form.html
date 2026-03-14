@@ -24,7 +24,7 @@
       <div>
         <div class="space-y-4">
           {% for field in form %}
-              {% if field.field.widget.input_type != 'checkbox' and field.name != 'notes' %}
+              {% if field.field.widget.input_type != 'checkbox' and field.name != 'notes' and field.name != 'stst_status_equipment' %}
               <div class="form-control field-row" data-field-name="{{ field.name }}">
                 <label class="label">
                   <span class="label-text text-sm font-medium">{{ field.label }}</span>
@@ -41,9 +41,23 @@
         </div>
       </div>
 
-      <!-- Columna derecha: SOLO checkboxes -->
+      <!-- Columna derecha: status + checkboxes -->
       <div>
         <div class="space-y-2">
+          {# Status del equipo en la parte superior #}
+          {% if form.stst_status_equipment %}
+          <div class="form-control field-row mb-4" data-field-name="stst_status_equipment">
+            <label class="label">
+              <span class="label-text text-sm font-medium">{{ form.stst_status_equipment.label }}</span>
+            </label>
+            {{ form.stst_status_equipment }}
+            {% if form.stst_status_equipment.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">{{ form.stst_status_equipment.errors.0 }}</span>
+              </label>
+            {% endif %}
+          </div>
+          {% endif %}
           {% for field in form %}
             {% if field.field.widget.input_type == 'checkbox' %}
               <div class="form-control field-row" data-field-name="{{ field.name }}">
