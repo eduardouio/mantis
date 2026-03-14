@@ -42,7 +42,11 @@ class FinalDispositionCertificate(BaseModel):
         max_length=50,
         blank=True,
         null=True,
-        help_text='PSL-CDF-20250731-00305'
+        help_text='PSL-CDF-20250731-00001'
+    )
+    consecutive = models.PositiveIntegerField(
+        'Número consecutivo',
+        default=0
     )
     date = models.DateField(
         'Fecha',

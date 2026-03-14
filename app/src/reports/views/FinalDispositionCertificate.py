@@ -20,7 +20,7 @@ class FinalDispositionCertificateView(TemplateView):
         if not sheet_project_id:
             # Si no hay ID, retornar datos vacíos
             context.update({
-                "certificate": {"reference_number": "242PSL-CDF-00000000-00000"},
+                "certificate": {"reference_number": "PSL-CDF-00000000-00000"},
                 "partner": {"name": "", "ruc": ""},
                 "project": {"name": "", "location": ""},
                 "details": [],
