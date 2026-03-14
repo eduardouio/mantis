@@ -44,6 +44,24 @@ class FinalDispositionCertificate(BaseModel):
         null=True,
         help_text='PSL-CDF-20250731-00001'
     )
+    customer = models.CharField(
+        'Cliente',
+        max_length=255,
+        blank=True,
+        null=True
+    )
+    customer_ruc = models.CharField(
+        'RUC del cliente',
+        max_length=50,
+        blank=True,
+        null=True
+    )
+    location =  models.CharField(
+        'Ubicación del proyecto',
+        max_length=255,
+        blank=True,
+        null=True
+    )   
     consecutive = models.PositiveIntegerField(
         'Número consecutivo',
         default=0
@@ -91,20 +109,45 @@ class FinalDispositionCertificateDetail(BaseModel):
         CustodyChain,
         on_delete=models.PROTECT
     )
+    date = models.DateField(
+        'Fecha',
+        blank=True,
+        null=True
+    )
+    descritpion = models.CharField(
+        'Descripción',
+        max_length=255,
+        blank=True,
+        null=True,
+        default='AGUAS NEGRAS Y GRISES'
+    )
+    treatment_type = models.CharField(
+        'Tipo de Tratamiento',
+        max_length=255,
+        blank=True,
+        null=True,
+        default='TB3'
+    )
     detail = models.CharField(
         'detalle',
         max_length=255,
         default='AGUAS NEGRAS Y GRISES'
     )
-    quantity_bbl = models.PositiveSmallIntegerField(
+    quantity_bbl = models.DecimalField(
         'Barriles',
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
-    quantity_gallons = models.PositiveSmallIntegerField(
+    quantity_gallons = models.DecimalField(
         'Galones',
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
-    quantity_m3 = models.PositiveSmallIntegerField(
+    quantity_m3 = models.DecimalField(
         'Metros Cúbicos',
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
