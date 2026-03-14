@@ -1,60 +1,37 @@
-from django.http import HttpResponse
-from django.views import View
-from playwright.sync_api import sync_playwright
-from django.urls import reverse
-from django.conf import settings
+import os
+
 from datetime import datetime
+
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.views import View
+from weasyprint import HTML
+
+from reports.views.FinalDispositionCertificate import FinalDispositionCertificateView
 
 
 class PDFFinalDispositionCertificateView(View):
-    def render_pdf_to_bytes(self, url, cookies=None):
-        """Renderiza la página con Playwright y devuelve el PDF como bytes."""
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
-            context = browser.new_context(ignore_https_errors=True)
-            
-            if cookies:
-                context.add_cookies(cookies)
-            
-            page = context.new_page()
-            page.goto(url)
-
-            page.wait_for_load_state("networkidle")
-
-            pdf_bytes = page.pdf(
-                format="A4",
-                landscape=False,  # Vertical (portrait)
-                margin={
-                    "top": "1cm",
-                    "right": "1cm",
-                    "bottom": "1cm",
-                    "left": "1cm",
-                },
-                print_background=True,
-            )
-            browser.close()
-            return pdf_bytes
+    def _build_context(self, request, sheet_project_id):
+        """Reutiliza la lógica de FinalDispositionCertificateView para obtener el contexto."""
+        view = FinalDispositionCertificateView()
+        view.request = request
+        view.kwargs = {"id": sheet_project_id}
+        return view.get_context_data()
 
     def get(self, request, *args, **kwargs):
-        """Genera un PDF del certificado de disposición final y lo devuelve como respuesta."""
-        # Obtener el ID del worksheet desde los parámetros de URL
+        """Genera un PDF del certificado de disposición final con WeasyPrint."""
         sheet_project_id = kwargs.get('id')
-        
-        certificate_path = reverse("final-disposition-certificate", kwargs={'id': sheet_project_id})
-        target_url = f"{settings.BASE_URL}{certificate_path}"
 
-        cookies = []
-        for name, value in request.COOKIES.items():
-            cookies.append(
-                {
-                    "name": name,
-                    "value": value,
-                    "domain": settings.BASE_URL.split("://")[1].split(":")[0],
-                    "path": "/",
-                }
-            )
+        context = self._build_context(request, sheet_project_id)
+        html_string = render_to_string(
+            "reports/final_disposition_certificate.html", context, request=request
+        )
 
-        pdf_bytes = self.render_pdf_to_bytes(target_url, cookies)
+        base_url = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+            "static",
+        )
+        pdf_bytes = HTML(string=html_string, base_url=base_url).write_pdf()
 
         filename = f"CertificadoDisposicionFinal-{sheet_project_id}-{datetime.now().strftime('%Y%m%d')}.pdf"
 
