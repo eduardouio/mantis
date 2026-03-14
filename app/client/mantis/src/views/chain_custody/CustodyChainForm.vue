@@ -115,10 +115,16 @@ const isSheetStatusLocked = computed(() => {
   return ['LIQUIDATED', 'INVOICED', 'CANCELLED'].includes(sheet.status)
 })
 
-// Computed para verificar si se puede editar
+// Computed para verificar si se puede editar (los campos del formulario)
 const canEdit = computed(() => {
   const projectClosed = projectStore.project?.is_closed === true
   return !isChainClosed.value && !isSheetClosed.value && !isSheetStatusLocked.value && !projectClosed
+})
+
+// Computed para verificar si se puede cambiar el estado (siempre permitido salvo proyecto cerrado o planilla bloqueada)
+const canChangeStatus = computed(() => {
+  const projectClosed = projectStore.project?.is_closed === true
+  return !projectClosed && !isSheetClosed.value && !isSheetStatusLocked.value
 })
 
 // Mensaje de bloqueo de la planilla
@@ -728,7 +734,7 @@ const currentStatusBadge = computed(() => {
             {{ isEditMode ? `${!canEdit ? 'Ver' : 'Editar'} Cadena de Custodia #${custodyChainId}` : 'Nueva Cadena de Custodia' }}
           </h2>
           <p class="text-xs text-gray-600 mt-0.5">
-            {{ !canEdit ? (isSheetClosed || isSheetStatusLocked ? sheetLockMessage + ' - No se permiten modificaciones' : 'Esta cadena de custodia está cerrada y no puede ser modificada') : (isEditMode ? 'Modifique los datos de la cadena de custodia' : 'Complete los datos para crear una nueva cadena de custodia') }}
+            {{ !canEdit ? (isSheetClosed || isSheetStatusLocked ? sheetLockMessage + ' - No se permiten modificaciones' : 'Esta cadena de custodia está cerrada. Puede cambiar el estado para volver a editarla.') : (isEditMode ? 'Modifique los datos de la cadena de custodia' : 'Complete los datos para crear una nueva cadena de custodia') }}
           </p>
         </div>
         <div class="flex items-center gap-2">
@@ -739,7 +745,7 @@ const currentStatusBadge = computed(() => {
             </label>
             <select 
               v-model="custodyChain.status"
-              :disabled="!canEdit"
+              :disabled="!canChangeStatus"
               class="select select-bordered select-sm"
               :class="{
                 'select-warning': custodyChain.status === 'DRAFT',
@@ -778,7 +784,7 @@ const currentStatusBadge = computed(() => {
         </div>
         <div v-else-if="!canEdit" class="flex items-center gap-2 text-sm text-red-600">
           <i class="las la-lock text-lg"></i>
-          <span>{{ isSheetClosed || isSheetStatusLocked ? sheetLockMessage + '. No se permiten modificaciones.' : 'La cadena está <strong>CERRADA</strong>. No se pueden realizar modificaciones.' }}</span>
+          <span>{{ isSheetClosed || isSheetStatusLocked ? sheetLockMessage + '. No se permiten modificaciones.' : 'La cadena está CERRADA. Cambie el estado a BORRADOR para poder editarla.' }}</span>
         </div>
         <div v-else class="flex items-center gap-2 text-sm text-green-600">
           <i class="las la-check-circle text-lg"></i>
@@ -1470,10 +1476,10 @@ const currentStatusBadge = computed(() => {
       <div class="flex gap-2 justify-end mt-3">
         <button type="button" class="btn btn-outline btn-sm" @click="cancelForm" :disabled="isLoading">
           <i class="las la-times"></i>
-          {{ !canEdit ? 'Cerrar' : 'Cancelar' }}
+          {{ !canEdit && !canChangeStatus ? 'Cerrar' : 'Cancelar' }}
         </button>
         <button 
-          v-if="canEdit"
+          v-if="canEdit || canChangeStatus"
           type="submit" 
           class="btn btn-primary btn-sm" 
           :disabled="isLoading"

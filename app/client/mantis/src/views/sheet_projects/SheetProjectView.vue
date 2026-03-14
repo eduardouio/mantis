@@ -717,9 +717,6 @@ onMounted(async () => {
               <th class="p-2 border border-gray-100 text-center">Consecutivo</th>
               <th class="p-2 border border-gray-100 text-center">Estado</th>
               <th class="p-2 border border-gray-100 text-center">Fecha Actividad</th>
-              <th class="p-2 border border-gray-100 text-center">Hora Inicio</th>
-              <th class="p-2 border border-gray-100 text-center">Hora Fin</th>
-              <th class="p-2 border border-gray-100 text-center">Minutos</th>
               <th class="p-2 border border-gray-100 text-center">Ubicación</th>
               <th class="p-2 border border-gray-100 text-center">Técnico</th>
               <th class="p-2 border border-gray-100 text-center">Vehículo</th>
@@ -733,7 +730,7 @@ onMounted(async () => {
           <tbody>
             <template v-if="custodyChains.length === 0">
               <tr>
-                <td colspan="15" class="text-center text-gray-500 py-8">
+                <td colspan="12" class="text-center text-gray-500 py-8">
                   <i class="las la-inbox text-4xl"></i>
                   <p>No hay cadenas de custodia registradas para esta planilla</p>
                 </td>
@@ -741,7 +738,7 @@ onMounted(async () => {
             </template>
             <template v-else-if="custodyTableFilter.paginatedData.value.length === 0">
               <tr>
-                <td colspan="15" class="text-center text-gray-500 py-8">
+                <td colspan="12" class="text-center text-gray-500 py-8">
                   <i class="las la-search text-4xl"></i>
                   <p>No se encontraron resultados para "{{ custodyTableFilter.searchQuery.value }}"</p>
                 </td>
@@ -757,9 +754,6 @@ onMounted(async () => {
                   </span>
                 </td>
                 <td class="p-2 border border-gray-300 text-center">{{ formatDate(cc.activity_date) }}</td>
-                <td class="p-2 border border-gray-300 text-center font-mono">{{ formatTime(cc.start_time) }}</td>
-                <td class="p-2 border border-gray-300 text-center font-mono">{{ formatTime(cc.end_time) }}</td>
-                <td class="p-2 border border-gray-300 text-center font-semibold">{{ cc.time_duration || 0 }}</td>
                 <td class="p-2 border border-gray-300">{{ cc.location || 'N/A' }}</td>
                 <td class="p-2 border border-gray-300">
                   <div class="text-xs" v-if="cc.technical">
@@ -799,14 +793,12 @@ onMounted(async () => {
                       PDF
                     </button>
                     <button 
-                      @click="cc.status === 'DRAFT' && !isCustodyLocked ? router.push({ name: 'custody-chain-form', params: { id: cc.id } }) : null"
+                      @click="router.push({ name: 'custody-chain-form', params: { id: cc.id } })"
                       class="btn btn-xs border-orange-500 text-orange-500 bg-white"
-                      :class="{ 'btn-disabled opacity-50 cursor-not-allowed': cc.status !== 'DRAFT' || isCustodyLocked }"
-                      :title="isCustodyLocked ? 'No se puede editar - ' + lockMessage : (cc.status === 'DRAFT' ? 'Editar cadena' : 'No se puede editar una cadena cerrada')"
-                      :disabled="cc.status !== 'DRAFT' || isCustodyLocked"
+                      title="Ver/Editar cadena"
                     >
                       <i class="las la-edit"></i>
-                      EDITAR
+                      {{ cc.status === 'CLOSE' ? 'VER/EDITAR' : 'EDITAR' }}
                     </button>
                   </div>
                 </td>
@@ -815,9 +807,7 @@ onMounted(async () => {
           </tbody>
           <tfoot v-if="custodyChains.length > 0">
             <tr class="bg-gray-500 font-bold text-white">
-              <td colspan="6" class="p-2 border border-gray-300 text-right">TOTALES:</td>
-              <td class="p-2 border border-gray-300 text-center">{{ totalHours }} Mins</td>
-              <td colspan="3" class="p-2 border border-gray-300"></td>
+              <td colspan="7" class="p-2 border border-gray-300 text-right">TOTALES:</td>
               <td class="p-2 border border-gray-300 text-right font-mono">{{ totalGallons.toFixed(2) }}</td>
               <td class="p-2 border border-gray-300 text-right font-mono">{{ totalBarrels.toFixed(2) }}</td>
               <td class="p-2 border border-gray-300 text-right font-mono">{{ totalCubicMeters.toFixed(2) }}</td>
