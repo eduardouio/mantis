@@ -473,26 +473,34 @@ class ResourceItem(BaseModel):
         null=True,
         default=None
     )
-    height = models.PositiveSmallIntegerField(
+    height = models.DecimalField(
         'Altura (cm)',
+        max_digits=10,
+        decimal_places=2,
         blank=True,
         null=True,
         default=None
     )
-    width = models.PositiveSmallIntegerField(
+    width = models.DecimalField(
         'Ancho (cm)',
+        max_digits=10,
+        decimal_places=2,
         blank=True,
         null=True,
         default=None
     )
-    depth = models.PositiveSmallIntegerField(
+    depth = models.DecimalField(
         'Profundidad (cm)',
+        max_digits=10,
+        decimal_places=2,
         blank=True,
         null=True,
         default=None
     )
-    weight = models.PositiveSmallIntegerField(
+    weight = models.DecimalField(
         'Peso (kg)',
+        max_digits=10,
+        decimal_places=2,
         blank=True,
         null=True,
         default=None

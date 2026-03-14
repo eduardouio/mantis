@@ -47,10 +47,18 @@ class ResourceItemForm(forms.ModelForm):
             'date_purchase': forms.DateInput(
                 attrs={'class': 'input input-bordered input-md w-full', 'type': 'date'}
             ),
-            'height': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
-            'width': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
-            'depth': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
-            'weight': forms.NumberInput(attrs={'class': 'input input-bordered input-md w-full'}),
+            'height': forms.NumberInput(
+                attrs={'class': 'input input-bordered input-md w-full', 'step': '0.01'}
+            ),
+            'width': forms.NumberInput(
+                attrs={'class': 'input input-bordered input-md w-full', 'step': '0.01'}
+            ),
+            'depth': forms.NumberInput(
+                attrs={'class': 'input input-bordered input-md w-full', 'step': '0.01'}
+            ),
+            'weight': forms.NumberInput(
+                attrs={'class': 'input input-bordered input-md w-full', 'step': '0.01'}
+            ),
             'capacity_gallons': forms.NumberInput(
                 attrs={'class': 'input input-bordered input-md w-full', 'step': '0.01'}
             ),

@@ -22,10 +22,10 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
       <!-- Columna izquierda: campos NO checkbox -->
       <div>
-        <div class="space-y-4">
-          {% for field in form %}
-              {% if field.field.widget.input_type != 'checkbox' and field.name != 'notes' and field.name != 'stst_status_equipment' %}
-              <div class="form-control field-row" data-field-name="{{ field.name }}">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for field in form %}
+              {% if field.field.widget.input_type != 'checkbox' and field.name != 'notes' and field.name != 'stst_status_equipment' and field.name != 'stst_repair_reason' %}
+              <div class="form-control field-row {% if field.name == 'height' or field.name == 'width' or field.name == 'depth' or field.name == 'weight' or field.name == 'capacity_gallons' %}md:col-span-1{% else %}md:col-span-2{% endif %}" data-field-name="{{ field.name }}">
                 <label class="label">
                   <span class="label-text text-sm font-medium">{{ field.label }}</span>
                 </label>
@@ -58,6 +58,22 @@
             {% endif %}
           </div>
           {% endif %}
+
+          {# Motivo de reparación debajo del status (visibilidad controlada por JS) #}
+          {% if form.stst_repair_reason %}
+          <div class="form-control field-row mb-4" data-field-name="stst_repair_reason">
+            <label class="label">
+              <span id="label_stst_repair_reason" class="label-text text-sm font-medium">{{ form.stst_repair_reason.label }}</span>
+            </label>
+            {{ form.stst_repair_reason }}
+            {% if form.stst_repair_reason.errors %}
+              <label class="label">
+                <span class="label-text-alt text-error">{{ form.stst_repair_reason.errors.0 }}</span>
+              </label>
+            {% endif %}
+          </div>
+          {% endif %}
+
           {% for field in form %}
             {% if field.field.widget.input_type == 'checkbox' %}
               <div class="form-control field-row" data-field-name="{{ field.name }}">
@@ -125,17 +141,43 @@
       if (name) fieldRowByName[name] = row;
     });
 
-    // Select de tipo
+    // Selects de control
     const typeSelect = document.getElementById('id_type_equipment');
+    const statusSelect = document.getElementById('id_stst_status_equipment');
+
+    function shouldShowRepairReason(allowed) {
+      if (!allowed.has('stst_repair_reason') || !statusSelect) return false;
+      const statusValue = (statusSelect.value || '').toUpperCase();
+      return statusValue === 'DAÑADO' || statusValue === 'EN REPARACION';
+    }
+
+    function updateRepairReasonStyles(allowed) {
+      const repairReasonInput = document.getElementById('id_stst_repair_reason');
+      const repairReasonLabel = document.getElementById('label_stst_repair_reason');
+      if (!repairReasonInput || !repairReasonLabel) return;
+
+      const highlight = shouldShowRepairReason(allowed);
+      repairReasonInput.classList.toggle('border-red-500', highlight);
+      repairReasonInput.classList.toggle('focus:border-red-500', highlight);
+      repairReasonInput.classList.toggle('focus:outline-red-500', highlight);
+      repairReasonLabel.classList.toggle('text-red-600', highlight);
+    }
 
     function showOnly(fields) {
       const allowed = new Set(fields);
       fieldRows.forEach(row => {
         const name = row.getAttribute('data-field-name');
         // Siempre mostrar 'name' y 'code' como mínimos
-    const mustShow = allowed.has(name) || name === 'name' || name === 'code' || name === 'type_equipment' || name === 'notes';
+        const mustShow = allowed.has(name) || name === 'name' || name === 'code' || name === 'type_equipment' || name === 'notes';
         row.style.display = mustShow ? '' : 'none';
       });
+
+      const repairReasonRow = fieldRowByName['stst_repair_reason'];
+      if (repairReasonRow) {
+        repairReasonRow.style.display = shouldShowRepairReason(allowed) ? '' : 'none';
+      }
+
+      updateRepairReasonStyles(allowed);
     }
 
     function applyType(typeVal) {
@@ -151,6 +193,13 @@
     } else {
       // Fallback
       applyType(initialType);
+    }
+
+    if (statusSelect) {
+      statusSelect.addEventListener('change', () => {
+        const currentType = typeSelect ? (typeSelect.value || initialType) : initialType;
+        applyType(currentType);
+      });
     }
   })();
   </script>
