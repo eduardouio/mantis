@@ -1,6 +1,7 @@
 import os
 
 from datetime import datetime
+from pathlib import Path
 
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -8,6 +9,20 @@ from django.views import View
 from weasyprint import HTML
 
 from reports.views.FinalDispositionCertificate import FinalDispositionCertificateView
+
+# Directorio raíz del proyecto Django (app/src/)
+_APP_SRC = Path(__file__).resolve().parent.parent.parent
+_STATIC_DIR = _APP_SRC / "static"
+
+
+def _url_fetcher(url):
+    """Resuelve URLs /static/… a archivos locales para que WeasyPrint cargue imágenes."""
+    from weasyprint import default_url_fetcher
+
+    if url.startswith("/static/"):
+        local_path = _STATIC_DIR / url[len("/static/"):]
+        return default_url_fetcher("file://" + str(local_path))
+    return default_url_fetcher(url)
 
 
 class PDFFinalDispositionCertificateView(View):
@@ -27,11 +42,11 @@ class PDFFinalDispositionCertificateView(View):
             "reports/final_disposition_certificate.html", context, request=request
         )
 
-        base_url = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-            "static",
-        )
-        pdf_bytes = HTML(string=html_string, base_url=base_url).write_pdf()
+        pdf_bytes = HTML(
+            string=html_string,
+            base_url=str(_STATIC_DIR),
+            url_fetcher=_url_fetcher,
+        ).write_pdf()
 
         filename = f"CertificadoDisposicionFinal-{sheet_project_id}-{datetime.now().strftime('%Y%m%d')}.pdf"
 
