@@ -19,8 +19,9 @@ def _url_fetcher(url):
     """Resuelve URLs /static/… a archivos locales para que WeasyPrint cargue imágenes."""
     from weasyprint import default_url_fetcher
 
-    if url.startswith("/static/"):
-        local_path = _STATIC_DIR / url[len("/static/"):]
+    if "/static/" in url:
+        rel = url[url.index("/static/") + len("/static/"):]
+        local_path = _STATIC_DIR / rel
         return default_url_fetcher("file://" + str(local_path))
     return default_url_fetcher(url)
 
