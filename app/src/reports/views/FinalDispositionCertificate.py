@@ -108,9 +108,9 @@ class FinalDispositionCertificateView(TemplateView):
             customer_ruc=partner.business_tax_id,
             location=location,
             text_document="CERTIFICADO DE TRATAMIENTO Y DISPOSICION FINAL",
-            total_bbl=0,
-            total_gallons=0,
-            total_m3=0,
+            total_bbl=0.0,
+            total_gallons=0.0,
+            total_m3=0.0,
         )
 
         self._sync_certificate_details(certificate, sheet_project)
