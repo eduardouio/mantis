@@ -224,11 +224,15 @@ function onBulkFileChange(e) {
 
 async function countPDFPages(file) {
   try {
-    const buffer = await file.arrayBuffer()
-    const bytes = new Uint8Array(buffer)
-    const text = new TextDecoder('latin1').decode(bytes)
-    const matches = text.match(/\/Type\s*\/Page(?!s)/g)
-    bulkPageCount.value = matches ? matches.length : 0
+    const fd = new FormData()
+    fd.append('file', file)
+    const res = await fetch(appConfig.URLPdfPageCount, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': appConfig.csrfToken },
+      body: fd,
+    })
+    const data = await res.json()
+    bulkPageCount.value = data.success ? data.pages : 0
   } catch {
     bulkPageCount.value = 0
   }
