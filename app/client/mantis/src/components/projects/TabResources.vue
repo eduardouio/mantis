@@ -149,7 +149,7 @@ const handleRetireResource = async (resource) => {
           <tr class="bg-gray-500 text-white">
             <th class="p-2 border border-gray-100 text-center">#</th>
             <th class="p-2 border border-gray-100 text-center">Tipo</th>
-            <th class="p-2 border border-gray-100 text-center">Código</th>
+            <th class="p-2 border border-gray-100 text-center">Estado</th>
             <th class="p-2 border border-gray-100 text-center">Descripción</th>
             <th class="p-2 border border-gray-100 text-center">Costo</th>
             <th class="p-2 border border-gray-100 text-center">Frecuencia</th>
@@ -188,7 +188,6 @@ const handleRetireResource = async (resource) => {
                     <span v-if="!resource.is_retired" class="badge badge-success badge-sm w-24 justify-center">ACTIVO</span>
                     <span v-else class="badge badge-error badge-sm w-24 justify-center">RETIRADO</span>
                     <span v-if="isResourceInSheet(resource.id)" class="badge badge-info badge-sm" title="Este recurso está asignado a una planilla de trabajo">EN USO</span>
-                    {{ resource.resource_item_code }}
                 </div>
               </td>
               <td class="p-2 border border-gray-300">
