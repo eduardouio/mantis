@@ -12,6 +12,15 @@ class AddResourceProjectAPI(View):
 
     def post(self, request):
         """Agregar uno o varios recursos al proyecto."""
+        try:
+            return self._process_post(request)
+        except EquipmentManagerError as e:
+            return JsonResponse({"error": str(e)}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=400)
+
+    def _process_post(self, request):
+        """Lógica interna del POST."""
         data = json.loads(request.body)
 
         project = Project.get_by_id(data[0]["project_id"])
