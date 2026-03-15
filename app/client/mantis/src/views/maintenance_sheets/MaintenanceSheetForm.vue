@@ -5,12 +5,14 @@ import { appConfig } from '@/AppConfig.js'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 import { UseMaintenanceSheetStore } from '@/stores/MaintenanceSheetStore'
+import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
 import { getLocalDateString } from '@/utils/formatters'
 
 const projectStore = UseProjectStore()
 const projectResourceStore = UseProjectResourceStore()
 const maintenanceStore = UseMaintenanceSheetStore()
+const sheetProjectsStore = UseSheetProjectsStore()
 const technicalStore = UseTechnicalStore()
 
 const router = useRouter()
@@ -66,6 +68,30 @@ const sheet = ref({
   approved_by: '',
   approved_by_position: '',
   notes: '',
+})
+
+// Obtener la planilla padre para restricción de fechas
+const parentSheet = computed(() => {
+  const spId = sheetProjectId.value
+  if (!spId) return null
+  return sheetProjectsStore.getSheetProjectById(spId)
+})
+
+// Rango de fechas permitido (período de la planilla)
+const minDate = computed(() => parentSheet.value?.period_start || '')
+const maxDate = computed(() => parentSheet.value?.period_end || '')
+
+// Validación de fechas fuera del rango de la planilla
+const dateRangeError = computed(() => {
+  if (!minDate.value || !maxDate.value) return ''
+  const errors = []
+  if (sheet.value.start_date && (sheet.value.start_date < minDate.value || sheet.value.start_date > maxDate.value)) {
+    errors.push('La fecha de inicio está fuera del período de la planilla')
+  }
+  if (sheet.value.end_date && (sheet.value.end_date < minDate.value || sheet.value.end_date > maxDate.value)) {
+    errors.push('La fecha de finalización está fuera del período de la planilla')
+  }
+  return errors.join('. ')
 })
 
 // Técnicos disponibles
@@ -158,6 +184,11 @@ const submitForm = async () => {
 
     if (!sheet.value.start_date) {
       alert('La fecha de inicio es requerida')
+      return
+    }
+
+    if (dateRangeError.value) {
+      alert(dateRangeError.value)
       return
     }
 
@@ -460,9 +491,15 @@ const deleteMaintenanceFile = async () => {
                 type="date"
                 v-model="sheet.start_date"
                 required
+                :min="minDate"
+                :max="maxDate"
                 :disabled="!canEdit"
                 class="input input-bordered w-full"
+                :class="{ 'input-error': sheet.start_date && minDate && maxDate && (sheet.start_date < minDate || sheet.start_date > maxDate) }"
               />
+              <label v-if="sheet.start_date && minDate && maxDate && (sheet.start_date < minDate || sheet.start_date > maxDate)" class="label py-0">
+                <span class="label-text-alt text-error">Debe estar entre {{ minDate }} y {{ maxDate }}</span>
+              </label>
             </div>
 
             <!-- Fecha de Finalización -->
@@ -473,9 +510,15 @@ const deleteMaintenanceFile = async () => {
               <input
                 type="date"
                 v-model="sheet.end_date"
+                :min="minDate"
+                :max="maxDate"
                 :disabled="!canEdit"
                 class="input input-bordered w-full"
+                :class="{ 'input-error': sheet.end_date && minDate && maxDate && (sheet.end_date < minDate || sheet.end_date > maxDate) }"
               />
+              <label v-if="sheet.end_date && minDate && maxDate && (sheet.end_date < minDate || sheet.end_date > maxDate)" class="label py-0">
+                <span class="label-text-alt text-error">Debe estar entre {{ minDate }} y {{ maxDate }}</span>
+              </label>
             </div>
 
             <!-- Total Días -->

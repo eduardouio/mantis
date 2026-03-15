@@ -5,6 +5,7 @@ import { appConfig } from '@/AppConfig.js'
 import { UseProjectStore } from '@/stores/ProjectStore'
 import { UseProjectResourceStore } from '@/stores/ProjectResourceStore'
 import { UseShippingGuideStore } from '@/stores/ShippingGuideStore'
+import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore'
 import { UseVehicleStore } from '@/stores/VehicleStore'
 import { UseTechnicalStore } from '@/stores/TechnicalStore'
 import { getLocalDateString } from '@/utils/formatters'
@@ -12,6 +13,7 @@ import { getLocalDateString } from '@/utils/formatters'
 const projectStore = UseProjectStore()
 const projectResourceStore = UseProjectResourceStore()
 const shippingGuideStore = UseShippingGuideStore()
+const sheetProjectsStore = UseSheetProjectsStore()
 const vehicleStore = UseVehicleStore()
 const technicalStore = UseTechnicalStore()
 
@@ -36,6 +38,32 @@ const guideStatus = ref('DRAFT')
 
 // Determina si la guía es editable (solo en BORRADOR)
 const canEdit = computed(() => guideStatus.value === 'DRAFT')
+
+// Obtener la planilla activa (IN_PROGRESS) para restricción de fechas
+const activeSheet = computed(() => {
+  const sheets = sheetProjectsStore.sheetProjects || []
+  return sheets.find(s => s.status === 'IN_PROGRESS') || null
+})
+
+// Rango de fechas permitido (período de la planilla activa)
+const minDate = computed(() => activeSheet.value?.period_start || '')
+const maxDate = computed(() => activeSheet.value?.period_end || '')
+
+// Validación de fechas fuera del rango de la planilla
+const dateRangeError = computed(() => {
+  if (!minDate.value || !maxDate.value) return ''
+  const errors = []
+  if (guide.value.issue_date && (guide.value.issue_date < minDate.value || guide.value.issue_date > maxDate.value)) {
+    errors.push('La fecha de emisión está fuera del período de la planilla activa')
+  }
+  if (guide.value.start_date && (guide.value.start_date < minDate.value || guide.value.start_date > maxDate.value)) {
+    errors.push('La fecha de inicio está fuera del período de la planilla activa')
+  }
+  if (guide.value.end_date && (guide.value.end_date < minDate.value || guide.value.end_date > maxDate.value)) {
+    errors.push('La fecha fin está fuera del período de la planilla activa')
+  }
+  return errors.join('. ')
+})
 
 // Datos del formulario
 const guide = ref({
@@ -245,6 +273,11 @@ const submitForm = async () => {
 
     if (!guide.value.issue_date) {
       alert('La fecha de emisión es requerida')
+      return
+    }
+
+    if (dateRangeError.value) {
+      alert(dateRangeError.value)
       return
     }
 
@@ -470,9 +503,15 @@ const deleteGuideFile = async () => {
                 id="issue_date"
                 v-model="guide.issue_date"
                 required
+                :min="minDate"
+                :max="maxDate"
                 :disabled="!canEdit"
                 class="input input-bordered w-full"
+                :class="{ 'input-error': guide.issue_date && minDate && maxDate && (guide.issue_date < minDate || guide.issue_date > maxDate) }"
               />
+              <label v-if="guide.issue_date && minDate && maxDate && (guide.issue_date < minDate || guide.issue_date > maxDate)" class="label py-0">
+                <span class="label-text-alt text-error">Debe estar entre {{ minDate }} y {{ maxDate }}</span>
+              </label>
             </div>
 
             <!-- Fecha Inicio Transporte -->
@@ -484,9 +523,15 @@ const deleteGuideFile = async () => {
                 type="date"
                 id="start_date"
                 v-model="guide.start_date"
+                :min="minDate"
+                :max="maxDate"
                 :disabled="!canEdit"
                 class="input input-bordered w-full"
+                :class="{ 'input-error': guide.start_date && minDate && maxDate && (guide.start_date < minDate || guide.start_date > maxDate) }"
               />
+              <label v-if="guide.start_date && minDate && maxDate && (guide.start_date < minDate || guide.start_date > maxDate)" class="label py-0">
+                <span class="label-text-alt text-error">Debe estar entre {{ minDate }} y {{ maxDate }}</span>
+              </label>
             </div>
 
             <!-- Fecha Fin Transporte -->
@@ -498,9 +543,15 @@ const deleteGuideFile = async () => {
                 type="date"
                 id="end_date"
                 v-model="guide.end_date"
+                :min="minDate"
+                :max="maxDate"
                 :disabled="!canEdit"
                 class="input input-bordered w-full"
+                :class="{ 'input-error': guide.end_date && minDate && maxDate && (guide.end_date < minDate || guide.end_date > maxDate) }"
               />
+              <label v-if="guide.end_date && minDate && maxDate && (guide.end_date < minDate || guide.end_date > maxDate)" class="label py-0">
+                <span class="label-text-alt text-error">Debe estar entre {{ minDate }} y {{ maxDate }}</span>
+              </label>
             </div>
 
             <!-- Lugar de Origen -->
