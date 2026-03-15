@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { appConfig } from '@/AppConfig.js'
 import { UseProjectStore } from '@/stores/ProjectStore'
@@ -70,6 +70,35 @@ const sheet = ref({
   notes: '',
 })
 
+// Flag para evitar cálculos automáticos al cargar datos en edición
+const isLoadingData = ref(false)
+
+// Calcular total_days automáticamente cuando cambian las fechas
+watch(
+  [() => sheet.value.start_date, () => sheet.value.end_date],
+  ([startDate, endDate]) => {
+    if (isLoadingData.value) return
+    if (startDate && endDate && endDate >= startDate) {
+      const start = new Date(startDate + 'T00:00:00')
+      const end = new Date(endDate + 'T00:00:00')
+      const diffMs = end.getTime() - start.getTime()
+      const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24)) + 1
+      sheet.value.total_days = diffDays
+    }
+  }
+)
+
+// Calcular cost_total automáticamente cuando cambia cost_day o total_days
+watch(
+  [() => sheet.value.cost_day, () => sheet.value.total_days],
+  ([costDay, totalDays]) => {
+    if (isLoadingData.value) return
+    if (costDay > 0 && totalDays > 0) {
+      sheet.value.cost_total = parseFloat((totalDays * costDay).toFixed(2))
+    }
+  }
+)
+
 // Obtener la planilla padre para restricción de fechas
 const parentSheet = computed(() => {
   const spId = sheetProjectId.value
@@ -110,6 +139,7 @@ const loadSheetData = async () => {
 
   try {
     isLoading.value = true
+    isLoadingData.value = true
     const data = await maintenanceStore.fetchSheetDetail(sheetId.value)
 
     if (data) {
@@ -160,6 +190,7 @@ const loadSheetData = async () => {
     goBackToSheet()
   } finally {
     isLoading.value = false
+    isLoadingData.value = false
   }
 }
 

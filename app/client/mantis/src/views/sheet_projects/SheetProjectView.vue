@@ -212,7 +212,7 @@ const getShippingGuideStatusBadge = (status) => {
   return statusConfig[status] || { text: status, class: 'badge-ghost' };
 };
 
-const getMaintenanceStatusBadge = (status) => {z
+const getMaintenanceStatusBadge = (status) => {
   const statusConfig = {
     'DRAFT': { text: 'BORRADOR', class: 'badge-warning' },
     'CLOSED': { text: 'CERRADO', class: 'badge-success' },
