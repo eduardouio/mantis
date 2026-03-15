@@ -85,9 +85,9 @@ class FinalDispositionCertificateView(TemplateView):
         if detail_rows:
             FinalDispositionCertificateDetail.objects.bulk_create(detail_rows)
 
-        certificate.total_bbl = int(total_bbl.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-        certificate.total_gallons = int(total_gallons.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
-        certificate.total_m3 = int(total_m3.quantize(Decimal("1"), rounding=ROUND_HALF_UP))
+        certificate.total_bbl = total_bbl.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        certificate.total_gallons = total_gallons.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        certificate.total_m3 = total_m3.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         certificate.save()
 
     def _create_certificate(self, sheet_project):
