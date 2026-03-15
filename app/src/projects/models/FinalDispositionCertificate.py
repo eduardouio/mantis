@@ -76,16 +76,22 @@ class FinalDispositionCertificate(BaseModel):
         blank=True,
         null=True
     )
-    total_bbl = models.PositiveSmallIntegerField(
+    total_bbl = models.DecimalField(
         'Total de Barriles',
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
-    total_gallons = models.PositiveSmallIntegerField(
+    total_gallons = models.DecimalField(
         'Total de Galones',
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
-    total_m3 = models.PositiveSmallIntegerField(
+    total_m3 = models.DecimalField(
         'Total Metros Cubicos',
+        max_digits=10,
+        decimal_places=2,
         default=0
     )
 
