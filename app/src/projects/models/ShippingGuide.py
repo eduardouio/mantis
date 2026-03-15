@@ -7,8 +7,6 @@ from common.validators import validate_pdf_file
 
 
 class ShippingGuide(BaseModel):
-	BASE_PLACE = 'BASE PEISOL'
-
 	id = models.AutoField(
 		primary_key=True
 	)
@@ -177,41 +175,7 @@ class ShippingGuide(BaseModel):
 		verbose_name = 'Guía de Envío'
 		verbose_name_plural = 'Guías de Envío'
 
-	def get_project_location(self):
-		if not self.project_id or not self.project:
-			return None
-		return self.project.location or None
-
-	def get_effective_origin_place(self):
-		project_location = self.get_project_location()
-
-		if self.type_shipping_guide == 'EXIT':
-			return self.BASE_PLACE
-		if self.type_shipping_guide == 'IN':
-			return project_location
-		if self.type_shipping_guide == 'TRANSFER':
-			return project_location
-
-		return self.origin_place
-
-	def get_effective_destination_place(self):
-		project_location = self.get_project_location()
-
-		if self.type_shipping_guide == 'EXIT':
-			return project_location
-		if self.type_shipping_guide == 'IN':
-			return self.BASE_PLACE
-		if self.type_shipping_guide == 'TRANSFER':
-			return None
-
-		return self.destination_place
-
-	def normalize_places(self):
-		self.origin_place = self.get_effective_origin_place()
-		self.destination_place = self.get_effective_destination_place()
-
 	def save(self, *args, **kwargs):
-		self.normalize_places()
 		if not self.guide_number:
 			max_number = ShippingGuide.objects.aggregate(
 				max_num=Max('guide_number')

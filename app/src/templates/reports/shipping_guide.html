@@ -221,7 +221,7 @@
 						<td><span class="label">FECHA FINALIZACION DEL TRASLADO:</span> {{ guide.end_date|date:"d/m/Y"|default:"" }}</td>
 					</tr>
 					<tr>
-						<td><span class="label">LUGAR DE ORIGEN:</span> {{ guide_origin_place|default:"" }}</td>
+						<td><span class="label">LUGAR DE ORIGEN:</span> {{ guide.origin_place|default:"" }}</td>
 						<td><span class="label">TRANSPORTISTA:</span> {{ guide.carrier_name|default:"" }}</td>
 					</tr>
 					<tr>
@@ -253,7 +253,7 @@
 						<td><span class="label">CONTACTO:</span> {{ guide.contact_name|default:"" }}</td>
 					</tr>
 					<tr>
-						<td><span class="label">PUNTO DE LLEGADA:</span> {{ guide_destination_place|default:"" }}</td>
+						<td><span class="label">PUNTO DE LLEGADA:</span> {{ guide.destination_place|default:"" }}</td>
 						<td><span class="label">TELEFONO:</span> {{ guide.contact_phone|default:"" }}</td>
 					</tr>
 				</table>

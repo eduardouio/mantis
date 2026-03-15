@@ -75,7 +75,7 @@ class TestShippingGuidePlaces:
             'details': [],
         }
 
-    def test_create_exit_guide_normalizes_places(self, client_logged, test_project):
+    def test_create_exit_guide_preserves_manual_places(self, client_logged, test_project):
         response = client_logged.post(
             '/api/shipping/guides/',
             data=json.dumps(self._build_payload(test_project, 'EXIT')),
@@ -86,12 +86,12 @@ class TestShippingGuidePlaces:
         payload = response.json()['data']
         guide = ShippingGuide.objects.get(pk=payload['id'])
 
-        assert payload['origin_place'] == ShippingGuide.BASE_PLACE
-        assert payload['destination_place'] == test_project.location
-        assert guide.origin_place == ShippingGuide.BASE_PLACE
-        assert guide.destination_place == test_project.location
+        assert payload['origin_place'] == 'ORIGEN MANUAL'
+        assert payload['destination_place'] == 'DESTINO MANUAL'
+        assert guide.origin_place == 'ORIGEN MANUAL'
+        assert guide.destination_place == 'DESTINO MANUAL'
 
-    def test_create_in_guide_normalizes_places(self, client_logged, test_project):
+    def test_create_in_guide_preserves_manual_places(self, client_logged, test_project):
         response = client_logged.post(
             '/api/shipping/guides/',
             data=json.dumps(self._build_payload(test_project, 'IN')),
@@ -102,12 +102,12 @@ class TestShippingGuidePlaces:
         payload = response.json()['data']
         guide = ShippingGuide.objects.get(pk=payload['id'])
 
-        assert payload['origin_place'] == test_project.location
-        assert payload['destination_place'] == ShippingGuide.BASE_PLACE
-        assert guide.origin_place == test_project.location
-        assert guide.destination_place == ShippingGuide.BASE_PLACE
+        assert payload['origin_place'] == 'ORIGEN MANUAL'
+        assert payload['destination_place'] == 'DESTINO MANUAL'
+        assert guide.origin_place == 'ORIGEN MANUAL'
+        assert guide.destination_place == 'DESTINO MANUAL'
 
-    def test_create_transfer_guide_leaves_destination_blank(self, client_logged, test_project):
+    def test_create_transfer_guide_preserves_manual_places(self, client_logged, test_project):
         response = client_logged.post(
             '/api/shipping/guides/',
             data=json.dumps(self._build_payload(test_project, 'TRANSFER')),
@@ -118,29 +118,25 @@ class TestShippingGuidePlaces:
         payload = response.json()['data']
         guide = ShippingGuide.objects.get(pk=payload['id'])
 
-        assert payload['origin_place'] == test_project.location
-        assert not payload['destination_place']
-        assert guide.origin_place == test_project.location
-        assert guide.destination_place is None
+        assert payload['origin_place'] == 'ORIGEN MANUAL'
+        assert payload['destination_place'] == 'DESTINO MANUAL'
+        assert guide.origin_place == 'ORIGEN MANUAL'
+        assert guide.destination_place == 'DESTINO MANUAL'
 
-    def test_report_uses_effective_places_even_with_stale_db_values(self, client_logged, test_project):
+    def test_report_uses_saved_places(self, client_logged, test_project):
         guide = ShippingGuide.objects.create(
             project=test_project,
             type_shipping_guide='EXIT',
             issue_date=date.today(),
-            id_user_created=test_project.id_user_created,
-            id_user_updated=test_project.id_user_updated,
-        )
-        ShippingGuide.objects.filter(pk=guide.pk).update(
             origin_place='BODEGA TEMPORAL',
             destination_place='DESTINO INCORRECTO',
+            id_user_created=test_project.id_user_created,
+            id_user_updated=test_project.id_user_updated,
         )
 
         response = client_logged.get(f'/reports/template-shipping-guide/{guide.id}/')
         content = response.content.decode('utf-8')
 
         assert response.status_code == 200
-        assert ShippingGuide.BASE_PLACE in content
-        assert test_project.location in content
-        assert 'BODEGA TEMPORAL' not in content
-        assert 'DESTINO INCORRECTO' not in content
+        assert 'BODEGA TEMPORAL' in content
+        assert 'DESTINO INCORRECTO' in content

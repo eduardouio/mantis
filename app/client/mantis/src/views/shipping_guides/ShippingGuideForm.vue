@@ -122,11 +122,11 @@ const derivedGuidePlaces = computed(() => {
 const placeHelpText = computed(() => {
   switch (guide.value.type_shipping_guide) {
     case 'EXIT':
-      return 'Origen fijo en BASE PEISOL y destino en la ubicación del proyecto.'
+      return 'Sugerido: origen BASE PEISOL y destino en la ubicación del proyecto.'
     case 'IN':
-      return 'Origen en la ubicación del proyecto y destino fijo en BASE PEISOL.'
+      return 'Sugerido: origen en la ubicación del proyecto y destino BASE PEISOL.'
     case 'TRANSFER':
-      return 'Origen en la ubicación del proyecto y destino en blanco.'
+      return 'Sugerido: origen en la ubicación del proyecto y destino en blanco.'
     default:
       return ''
   }
@@ -192,14 +192,6 @@ watch(() => guide.value.carrier_name, (newName) => {
     guide.value.carrier_ci = match.dni
   }
 })
-
-watch(
-  () => [guide.value.type_shipping_guide, projectLocation.value],
-  () => {
-    applyDerivedPlaces()
-  },
-  { immediate: true }
-)
 
 // Cargar datos en modo edición
 const loadGuideData = async () => {
@@ -282,6 +274,7 @@ onMounted(async () => {
   if (!isEditMode.value) {
     guide.value.contact_name = projectStore.project?.contact_name || ''
     guide.value.contact_phone = projectStore.project?.contact_phone || ''
+    applyDerivedPlaces()
   }
 
   if (isEditMode.value) {
@@ -538,6 +531,7 @@ const deleteGuideFile = async () => {
               <select
                 id="type_shipping_guide"
                 v-model="guide.type_shipping_guide"
+                @change="applyDerivedPlaces"
                 :disabled="!canEdit"
                 class="select select-bordered w-full"
               >
@@ -619,7 +613,6 @@ const deleteGuideFile = async () => {
                 v-model="guide.origin_place"
                 placeholder="Ej: Quito, Bodega Central"
                 :disabled="!canEdit"
-                readonly
                 class="input input-bordered w-full"
               />
               <label class="label py-0">
@@ -638,11 +631,10 @@ const deleteGuideFile = async () => {
                 v-model="guide.destination_place"
                 placeholder="Ej: Campamento Norte"
                 :disabled="!canEdit"
-                readonly
                 class="input input-bordered w-full"
               />
               <label class="label py-0">
-                <span class="label-text-alt text-gray-500">Se calcula automáticamente según el tipo de guía.</span>
+                <span class="label-text-alt text-gray-500">Se autocompleta al cambiar el tipo, pero puedes modificarlo.</span>
               </label>
             </div>
 
