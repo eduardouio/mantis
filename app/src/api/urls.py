@@ -45,7 +45,7 @@ from api.workorders.UpdateSheetProject import UpdateSheetProjectAPI
 from api.workorders.UpdateSheetDetailDays import UpdateSheetDetailDaysAPI
 from api.workorders.ReopenSheetProject import ReopenSheetProjectAPI
 from api.load_files import LoadFilesApiView, ModelFileFieldsApiView, DocumentTreeApiView
-from api.load_files import ProjectDocumentTreeApiView, ProjectDocumentMergeApiView, BulkCustodyUploadApiView
+from api.load_files import ProjectDocumentTreeApiView, ProjectDocumentMergeApiView, BulkCustodyUploadApiView, PdfPageCountApiView
 from api.load_files.SheetMergeGeneratedApiView import SheetMergeGeneratedApiView
 from api.load_files.VehicleMergeGeneratedApiView import VehicleMergeGeneratedApiView
 from api.load_files.TechnicalMergeGeneratedApiView import TechnicalMergeGeneratedApiView
@@ -102,6 +102,7 @@ urlpatterns = [
     path('load_files/project/<int:project_id>/tree/', ProjectDocumentTreeApiView.as_view(), name='api_project_document_tree'),
     path('load_files/project/<int:project_id>/merge/', ProjectDocumentMergeApiView.as_view(), name='api_project_document_merge'),
     path('load_files/project/<int:project_id>/bulk_custody/', BulkCustodyUploadApiView.as_view(), name='api_bulk_custody_upload'),
+    path('load_files/pdf_page_count/', PdfPageCountApiView.as_view(), name='api_pdf_page_count'),
     path('load_files/sheet/<int:sheet_id>/merge-generated/', SheetMergeGeneratedApiView.as_view(), name='api_sheet_merge_generated'),
     path('load_files/vehicle/<int:vehicle_id>/merge-generated/', VehicleMergeGeneratedApiView.as_view(), name='api_vehicle_merge_generated'),
     path('load_files/technical/<int:technical_id>/merge-generated/', TechnicalMergeGeneratedApiView.as_view(), name='api_technical_merge_generated'),

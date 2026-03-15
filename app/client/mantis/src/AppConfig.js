@@ -48,6 +48,7 @@ export const appConfig = {
     "URLProjectDocTree": apiBaseUrl + "/api/load_files/project/" + idProject + "/tree/",
     "URLProjectDocMerge": apiBaseUrl + "/api/load_files/project/" + idProject + "/merge/",
     "URLProjectBulkCustody": apiBaseUrl + "/api/load_files/project/" + idProject + "/bulk_custody/",
+    "URLPdfPageCount": apiBaseUrl + "/api/load_files/pdf_page_count/",
     "URLCloseProject": apiBaseUrl + "/api/projects/" + idProject + "/close/",
     "URLShippingGuides": apiBaseUrl + "/api/shipping/guides/",
     "URLShippingGuideDetail": apiBaseUrl + "/api/shipping/guides/${id}/",

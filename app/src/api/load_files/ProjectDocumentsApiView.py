@@ -420,3 +420,35 @@ class BulkCustodyUploadApiView(View):
             return JsonResponse({
                 'success': False, 'error': str(e)
             }, status=500)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class PdfPageCountApiView(View):
+    """POST /api/load_files/pdf_page_count/
+
+    Recibe un PDF y retorna la cantidad de páginas.
+    Body (multipart/form-data):  file – Archivo PDF
+    """
+
+    def post(self, request):
+        pdf_file = request.FILES.get('file')
+        if not pdf_file:
+            return JsonResponse(
+                {'success': False, 'error': 'No se recibió ningún archivo.'},
+                status=400,
+            )
+
+        if not pdf_file.name.lower().endswith('.pdf'):
+            return JsonResponse(
+                {'success': False, 'error': 'El archivo debe ser un PDF.'},
+                status=400,
+            )
+
+        try:
+            reader = PdfReader(pdf_file)
+            return JsonResponse({'success': True, 'pages': len(reader.pages)})
+        except Exception:
+            return JsonResponse(
+                {'success': False, 'error': 'El archivo no es un PDF válido o está corrupto.'},
+                status=400,
+            )
