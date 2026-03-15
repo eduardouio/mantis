@@ -230,7 +230,7 @@
 					</tr>
 					<tr>
 						<td><span class="label">DESPACHADO POR:</span> {{ guide.dispatcher_name|default:"" }}</td>
-						<td><span class="label">PROYECTO:</span> Proyecto {{ guide.project.id }}</td>
+						<td><span class="label">PROYECTO:</span> {{ guide.project.location|default:"" }}</td>
 					</tr>
 				</table>
 			</div>
