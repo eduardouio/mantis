@@ -65,12 +65,8 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                         physical_equipment_code: physicalEquipmentCode
                     }
                     
-                    // Si es un servicio, enviar maintenance_cost; si es equipo, enviar cost
-                    if (isService) {
-                        baseData.maintenance_cost = resource.maintenance_cost || 0
-                    } else {
-                        baseData.cost = resource.cost || 0
-                    }
+                    // Siempre enviar cost para el recurso principal (equipo o servicio)
+                    baseData.cost = resource.cost || 0
                     
                     // Solo enviar los datos del intervalo correspondiente al tipo seleccionado
                     switch (resource.frequency_type) {

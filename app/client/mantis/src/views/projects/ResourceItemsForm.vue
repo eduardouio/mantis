@@ -67,7 +67,7 @@
       cost: 0,
       maintenance_cost: 0,
       operation_start_date: projectStore.project?.start_date || null,
-      include_maintenance: isService,
+      include_maintenance: false,
       physical_equipment_code: null,
       // Campos específicos para el mantenimiento
       maintenance_frequency_type: 'DAY',
@@ -339,7 +339,6 @@
                   </td>
                   <td class="border border-gray-300">
                     <input 
-                      v-if="resource.resource?.type_equipment_display !== 'SERVICIO'"
                       type="number" 
                       step="0.01" 
                       min="0"
@@ -348,14 +347,56 @@
                       @focus="handleCostFocus(resource)"
                       placeholder="0.00"
                     />
-                    <span v-else class="text-gray-400 text-sm">N/A</span>
                   </td>
                   <!-- Frecuencia del Alquiler -->
                   <td class="border border-gray-300">
-                    <span v-if="resource.resource?.type_equipment_display !== 'SERVICIO'" class="text-sm font-medium text-gray-600">
+                    <div v-if="resource.resource?.type_equipment_display !== 'SERVICIO'" class="text-sm font-medium text-gray-600">
                       Diario
-                    </span>
-                    <span v-else class="text-gray-400 text-sm">N/A</span>
+                    </div>
+                    <div v-else class="space-y-2">
+                      <select 
+                        class="select select-sm select-bordered w-full"
+                        v-model="resource.frequency_type"
+                        @change="handleFrequencyTypeChange(resource)"
+                      >
+                        <option v-for="ft in frequencyTypes" :key="ft.value" :value="ft.value">
+                          {{ ft.label }}
+                        </option>
+                      </select>
+                      <div v-if="resource.frequency_type === 'DAY'">
+                        <input 
+                          type="number" 
+                          min="1"
+                          class="input input-sm input-bordered w-full" 
+                          v-model="resource.interval_days"
+                          placeholder="Días"
+                        />
+                      </div>
+                      <div v-else-if="resource.frequency_type === 'WEEK'" class="flex flex-wrap gap-1">
+                        <button
+                          v-for="day in weekdayOptions"
+                          :key="day.value"
+                          type="button"
+                          class="btn btn-xs"
+                          :class="resource.weekdays?.includes(day.value) ? 'btn-primary' : 'btn-outline'"
+                          @click="toggleWeekday(resource, day.value)"
+                        >
+                          {{ day.label.substring(0, 3) }}
+                        </button>
+                      </div>
+                      <div v-else-if="resource.frequency_type === 'MONTH'" class="grid grid-cols-7 gap-1">
+                        <button
+                          v-for="day in 31"
+                          :key="day"
+                          type="button"
+                          class="btn btn-xs"
+                          :class="resource.monthdays?.includes(day) ? 'btn-primary' : 'btn-outline'"
+                          @click="toggleMonthday(resource, day)"
+                        >
+                          {{ day }}
+                        </button>
+                      </div>
+                    </div>
                   </td>
                   <td class="border border-gray-300 text-center">
                     <input 
