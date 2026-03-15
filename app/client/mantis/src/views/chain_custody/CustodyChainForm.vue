@@ -340,6 +340,22 @@ const selectedResources = computed(() => {
   return availableResources.value.filter(r => r.selected)
 })
 
+const selectableResources = computed(() => {
+  return availableResources.value.filter(resource => resource.type !== 'SERVIC' || resource.is_active)
+})
+
+const selectableResourceIds = computed(() => {
+  return selectableResources.value.map(resource => resource.id)
+})
+
+const allSelectableResourcesSelected = computed(() => {
+  return selectableResourceIds.value.length > 0 && selectableResourceIds.value.every(id => selectedResourceIds.value.includes(id))
+})
+
+const someSelectableResourcesSelected = computed(() => {
+  return !allSelectableResourcesSelected.value && selectableResourceIds.value.some(id => selectedResourceIds.value.includes(id))
+})
+
 const technicals = computed(() => {
   return technicalStore.technicals.map(tech => ({
     id: tech.id,
@@ -357,6 +373,10 @@ const vehicles = computed(() => {
 })
 
 const toggleResourceSelection = (resourceId) => {
+  if (!canEdit.value) {
+    return
+  }
+
   // Buscar el recurso
   const resource = availableResources.value.find(r => r.id === resourceId)
   
@@ -371,6 +391,22 @@ const toggleResourceSelection = (resourceId) => {
   } else {
     selectedResourceIds.value.push(resourceId)
   }
+}
+
+const toggleAllSelectableResources = () => {
+  if (!canEdit.value || selectableResourceIds.value.length === 0) {
+    return
+  }
+
+  const selectableIds = new Set(selectableResourceIds.value)
+
+  if (allSelectableResourcesSelected.value) {
+    selectedResourceIds.value = selectedResourceIds.value.filter(id => !selectableIds.has(id))
+    return
+  }
+
+  const preservedIds = selectedResourceIds.value.filter(id => !selectableIds.has(id))
+  selectedResourceIds.value = [...preservedIds, ...selectableResourceIds.value]
 }
 
 const calculateDuration = () => {
@@ -1245,8 +1281,20 @@ const currentStatusBadge = computed(() => {
             <table class="table table-zebra w-full table-sm">
               <thead>
                 <tr class="bg-gray-500 text-white">
-                  <th class="border border-gray-300 w-24 text-center">
-                    <input type="checkbox" class="checkbox checkbox-sm" :disabled="!canEdit" />
+                  <th
+                    class="border border-gray-300 w-24 text-center select-none"
+                    :class="canEdit ? 'cursor-pointer' : 'cursor-not-allowed opacity-70'"
+                    @click="toggleAllSelectableResources"
+                    title="Seleccionar o deseleccionar todos los recursos"
+                  >
+                    <input
+                      type="checkbox"
+                      class="checkbox checkbox-sm"
+                      :checked="allSelectableResourcesSelected"
+                      :indeterminate="someSelectableResourcesSelected"
+                      :disabled="!canEdit || selectableResourceIds.length === 0"
+                      @click.stop="toggleAllSelectableResources"
+                    />
                   </th>
                   <th class="border border-gray-300">#</th>
                   <th class="border border-gray-300">Código</th>
@@ -1260,12 +1308,12 @@ const currentStatusBadge = computed(() => {
                   :key="resource.id"
                   :class="{ 
                     'bg-blue-100': resource.selected,
-                    'cursor-pointer hover:bg-blue-50': !isChainClosed && (resource.type !== 'SERVIC' || resource.is_active),
-                    'opacity-60': isChainClosed,
+                    'cursor-pointer hover:bg-blue-50': canEdit && (resource.type !== 'SERVIC' || resource.is_active),
+                    'opacity-60': !canEdit,
                     'opacity-50 bg-gray-100': resource.type === 'SERVIC' && !resource.is_active,
                     'cursor-not-allowed': resource.type === 'SERVIC' && !resource.is_active
                   }"
-                  @click="!isChainClosed && toggleResourceSelection(resource.id)"
+                  @click="toggleResourceSelection(resource.id)"
                   :title="resource.type === 'SERVIC' && !resource.is_active ? 'Recurso inactivo - no se puede seleccionar' : ''"
                 >
                   <td class="border border-gray-300">
@@ -1288,8 +1336,8 @@ const currentStatusBadge = computed(() => {
                         type="checkbox" 
                         class="checkbox checkbox-sm checkbox-primary"
                         :checked="resource.selected"
-                        :disabled="isChainClosed || (resource.type === 'SERVIC' && !resource.is_active)"
-                        @click.stop="!isChainClosed && toggleResourceSelection(resource.id)"
+                        :disabled="!canEdit || (resource.type === 'SERVIC' && !resource.is_active)"
+                        @click.stop="toggleResourceSelection(resource.id)"
                       />
                     </div>
                   </td>
