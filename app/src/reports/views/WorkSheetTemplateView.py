@@ -165,30 +165,16 @@ class WorkSheetTemplateView(TemplateView):
                 }
             )
 
-        # --- Ordenar items: alquileres → servicios (con logística interleada) → mantenimiento → guías ---
+        # --- Ordenar items: alquileres → cadenas custodia (mantenimiento) → cadenas custodia (logística) → guías de remisión → hojas de mantenimiento ---
         rentals = [i for i in items_list if i["type_resource"] == "EQUIPO"]
         services = [i for i in items_list if i["type_resource"] not in (
             "EQUIPO", "MANTENIMIENTO", "GUIA_ENVIO", "LOGISTICA_CUSTODIA"
         )]
         logistics = [i for i in items_list if i["type_resource"] == "LOGISTICA_CUSTODIA"]
-        maintenance = [i for i in items_list if i["type_resource"] == "MANTENIMIENTO"]
         shipping = [i for i in items_list if i["type_resource"] == "GUIA_ENVIO"]
+        maintenance = [i for i in items_list if i["type_resource"] == "MANTENIMIENTO"]
 
-        # Intercalar cada servicio con su logística de cadena de custodia
-        services_with_logistics = []
-        matched_log_ids = set()
-        for service in services:
-            services_with_logistics.append(service)
-            for log in logistics:
-                log_key = id(log)
-                if log_key not in matched_log_ids and log["resource_item_id"] == service["resource_item_id"]:
-                    services_with_logistics.append(log)
-                    matched_log_ids.add(log_key)
-
-        # Logísticas sin servicio correspondiente van al final del bloque de servicios
-        unmatched_logistics = [l for l in logistics if id(l) not in matched_log_ids]
-
-        items_list = rentals + services_with_logistics + unmatched_logistics + maintenance + shipping
+        items_list = rentals + services + logistics + shipping + maintenance
 
         # Reasignar números de ítem en el orden final
         for i, item in enumerate(items_list, 1):
