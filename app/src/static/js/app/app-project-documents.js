@@ -564,30 +564,29 @@
     const file = fileInput.files[0];
     document.getElementById('bulkFileName').textContent = file.name;
 
-    // Leer el PDF para contar páginas en el cliente
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      const data = new Uint8Array(e.target.result);
-      const pageCount = countPDFPages(data);
-      document.getElementById('bulkPageCount').textContent = pageCount;
-      infoDiv.classList.remove('hidden');
-      infoDiv.dataset.pages = pageCount;
-      validateBulkReady();
-    };
-    reader.readAsArrayBuffer(file);
+    // Enviar el PDF al backend para contar páginas con pypdf
+    const fd = new FormData();
+    fd.append('file', file);
+    fetch('/api/load_files/pdf_page_count/', {
+      method: 'POST',
+      headers: { 'X-CSRFToken': CSRF },
+      body: fd,
+    })
+      .then(r => r.json())
+      .then(data => {
+        const pageCount = data.success ? data.pages : 0;
+        document.getElementById('bulkPageCount').textContent = pageCount;
+        infoDiv.classList.remove('hidden');
+        infoDiv.dataset.pages = pageCount;
+        validateBulkReady();
+      })
+      .catch(() => {
+        document.getElementById('bulkPageCount').textContent = '?';
+        infoDiv.classList.remove('hidden');
+        infoDiv.dataset.pages = 0;
+        validateBulkReady();
+      });
   };
-
-  /**
-   * Cuenta páginas de un PDF de forma básica buscando /Type /Page
-   * (sin dependencias externas). Es una aproximación.
-   */
-  function countPDFPages(data) {
-    // Buscar en el PDF la cantidad de /Page entries
-    // Método simple: buscar /Type /Page o /Type/Page
-    const text = new TextDecoder('latin1').decode(data);
-    const matches = text.match(/\/Type\s*\/Page(?!s)/g);
-    return matches ? matches.length : 0;
-  }
 
   /** Valida si todo está listo para el envío */
   function validateBulkReady() {
