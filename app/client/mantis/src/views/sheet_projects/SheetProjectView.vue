@@ -4,7 +4,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { UseProjectStore } from '@/stores/ProjectStore';
 import { UseSheetProjectsStore } from '@/stores/SheetProjectsStore';
 import { UseMaintenanceSheetStore } from '@/stores/MaintenanceSheetStore';
-import { UseShippingGuideStore } from '@/stores/ShippingGuideStore';
 import { appConfig } from '@/AppConfig';
 import { formatDate } from '@/utils/formatters';
 import { useTableFilter } from '@/composables/useTableFilter';
@@ -15,7 +14,6 @@ const router = useRouter();
 const projectStore = UseProjectStore();
 const sheetProjectsStore = UseSheetProjectsStore();
 const maintenanceStore = UseMaintenanceSheetStore();
-const shippingGuideStore = UseShippingGuideStore();
 const activeTab = ref('custody');
 
 // Obtener el ID de la planilla desde la ruta
@@ -51,26 +49,6 @@ const custodyTableFilter = useTableFilter(custodyChains, {
 // Tabla con filtrado para hojas de mantenimiento
 const maintenanceTableFilter = useTableFilter(maintenanceSheets, {
   searchFields: ['sheet_number', 'status', 'maintenance_type', 'resource_item_name', 'responsible_technical_name'],
-  pageSize: 10
-});
-
-// Guías de remisión filtradas por período de la planilla
-const shippingGuides = computed(() => {
-  const guides = shippingGuideStore.shippingGuides || [];
-  const sheet = sheetProject.value;
-  if (!sheet?.period_start || !sheet?.period_end) return guides;
-  const start = new Date(sheet.period_start + 'T00:00:00');
-  const end = new Date(sheet.period_end + 'T00:00:00');
-  return guides.filter(g => {
-    if (!g.issue_date) return false;
-    const issueDate = new Date(g.issue_date + 'T00:00:00');
-    return issueDate >= start && issueDate <= end;
-  });
-});
-
-// Tabla con filtrado para guías de remisión
-const shippingGuideTableFilter = useTableFilter(shippingGuides, {
-  searchFields: ['guide_number', 'status', 'origin_place', 'destination_place', 'carrier_name'],
   pageSize: 10
 });
 
@@ -188,28 +166,6 @@ const viewMaintenanceSheetDetail = (id) => {
 const viewMaintenanceSheetPDF = (id) => {
   const pdfUrl = appConfig.URLMaintenanceSheetDownload.replace('${id}', id);
   window.open(pdfUrl, '_blank');
-};
-
-// ── Guías de Remisión ──
-const viewShippingGuideDetail = (id) => {
-  router.push({
-    name: 'shipping-guide-form',
-    params: { id }
-  });
-};
-
-const viewShippingGuidePDF = (id) => {
-  const pdfUrl = appConfig.URLShippingGuideDownload.replace('${id}', id);
-  window.open(pdfUrl, '_blank');
-};
-
-const getShippingGuideStatusBadge = (status) => {
-  const statusConfig = {
-    'DRAFT': { text: 'BORRADOR', class: 'badge-warning' },
-    'CLOSED': { text: 'CERRADO', class: 'badge-success' },
-    'VOID': { text: 'ANULADO', class: 'badge-error' }
-  };
-  return statusConfig[status] || { text: status, class: 'badge-ghost' };
 };
 
 const getMaintenanceStatusBadge = (status) => {
@@ -410,8 +366,6 @@ onMounted(async () => {
   }
   // Cargar hojas de mantenimiento de esta planilla
   await maintenanceStore.fetchSheetsBySheetProject(sheetId.value);
-  // Cargar guías de remisión del proyecto (se filtran por período en el computed)
-  await shippingGuideStore.fetchGuidesByProject();
   // Cargar información de archivos adjuntos
   await loadFileInfo();
 });
@@ -679,15 +633,6 @@ onMounted(async () => {
           <i class="las la-tools"></i> Hojas de Mantenimiento
           <span class="badge badge-xs ml-1" :class="activeTab === 'maintenance' ? 'badge-ghost text-white' : 'badge-primary'">{{ maintenanceSheets.length }}</span>
         </button>
-        <button type="button"
-          class="px-5 py-2.5 rounded-t-lg font-semibold text-sm transition-all flex items-center gap-2"
-          :class="activeTab === 'shipping'
-            ? 'bg-amber-600 text-white shadow-sm'
-            : 'bg-gray-100 text-gray-600 hover:bg-amber-50 hover:text-amber-600'"
-          @click="activeTab = 'shipping'">
-          <i class="las la-truck"></i> Guías de Remisión
-          <span class="badge badge-xs ml-1" :class="activeTab === 'shipping' ? 'badge-ghost text-white' : 'badge-primary'">{{ shippingGuides.length }}</span>
-        </button>
       </div>
 
       <!-- ═══ Tab: Cadenas de Custodia ═══ -->
@@ -934,97 +879,6 @@ onMounted(async () => {
         <TableControls :tableFilter="maintenanceTableFilter" position="bottom" />
       </div>
 
-      <!-- ═══ Tab: Guías de Remisión ═══ -->
-      <div v-show="activeTab === 'shipping'">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="font-semibold text-lg flex items-center gap-2 text-gray-800">
-            <i class="las la-truck text-amber-600"></i>
-            Guías de Remisión en el Período ({{ shippingGuides.length }})
-          </h2>
-        </div>
-
-        <TableControls :tableFilter="shippingGuideTableFilter" position="top" searchPlaceholder="Buscar guía de remisión..." />
-
-        <div class="overflow-x-auto">
-          <table class="table table-zebra w-full">
-            <thead>
-              <tr class="bg-amber-600 text-white">
-                <th class="p-2 border border-amber-400 text-center">#</th>
-                <th class="p-2 border border-amber-400 text-center">Nro. Guía</th>
-                <th class="p-2 border border-amber-400 text-center">Estado</th>
-                <th class="p-2 border border-amber-400 text-center">Tipo</th>
-                <th class="p-2 border border-amber-400 text-center">Fecha Emisión</th>
-                <th class="p-2 border border-amber-400 text-center">Origen</th>
-                <th class="p-2 border border-amber-400 text-center">Destino</th>
-                <th class="p-2 border border-amber-400 text-center">Transportista</th>
-                <th class="p-2 border border-amber-400 text-center">C. Transporte</th>
-                <th class="p-2 border border-amber-400 text-center">C. Estiba</th>
-                <th class="p-2 border border-amber-400 text-center">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-if="shippingGuides.length === 0">
-                <tr>
-                  <td colspan="11" class="text-center text-gray-500 py-8">
-                    <i class="las la-inbox text-4xl"></i>
-                    <p>No hay guías de remisión en el período de esta planilla</p>
-                  </td>
-                </tr>
-              </template>
-              <template v-else-if="shippingGuideTableFilter.paginatedData.value.length === 0">
-                <tr>
-                  <td colspan="11" class="text-center text-gray-500 py-8">
-                    <i class="las la-search text-4xl"></i>
-                    <p>No se encontraron resultados para "{{ shippingGuideTableFilter.searchQuery.value }}"</p>
-                  </td>
-                </tr>
-              </template>
-              <template v-else>
-                <tr v-for="sg in shippingGuideTableFilter.paginatedData.value" :key="sg.id">
-                  <td class="p-2 border border-gray-300 text-center">{{ sg.id }}</td>
-                  <td class="p-2 border border-gray-300 font-mono font-bold text-center">{{ sg.guide_number }}</td>
-                  <td class="p-2 border border-gray-300 text-center">
-                    <span class="badge" :class="getShippingGuideStatusBadge(sg.status).class">
-                      {{ getShippingGuideStatusBadge(sg.status).text }}
-                    </span>
-                  </td>
-                  <td class="p-2 border border-gray-300 text-center">
-                    <span class="badge badge-outline badge-sm">{{ sg.type_shipping_guide }}</span>
-                  </td>
-                  <td class="p-2 border border-gray-300 text-center">{{ formatDate(sg.issue_date) }}</td>
-                  <td class="p-2 border border-gray-300">{{ sg.origin_place || 'N/A' }}</td>
-                  <td class="p-2 border border-gray-300">{{ sg.destination_place || 'N/A' }}</td>
-                  <td class="p-2 border border-gray-300">{{ sg.carrier_name || 'N/A' }}</td>
-                  <td class="p-2 border border-gray-300 text-right font-mono">${{ parseFloat(sg.cost_transport || 0).toFixed(2) }}</td>
-                  <td class="p-2 border border-gray-300 text-right font-mono">${{ parseFloat(sg.cost_stowage || 0).toFixed(2) }}</td>
-                  <td class="p-2 border border-gray-300 text-end">
-                    <div class="flex gap-2 justify-end">
-                      <button
-                        @click="viewShippingGuideDetail(sg.id)"
-                        class="btn btn-xs border-blue-500 text-teal-500 bg-white"
-                        title="Ver detalle"
-                      >
-                        <i class="las la-eye"></i>
-                        VER
-                      </button>
-                      <button
-                        @click="viewShippingGuidePDF(sg.id)"
-                        class="btn btn-xs border-red-500 text-red-500 bg-white"
-                        title="Generar PDF"
-                      >
-                        <i class="las la-file-pdf"></i>
-                        PDF
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
-
-        <TableControls :tableFilter="shippingGuideTableFilter" position="bottom" />
-      </div>
     </div>
 
     <!-- Estadísticas Resumen -->
@@ -1063,12 +917,6 @@ onMounted(async () => {
         <div class="stat-title">Hojas Mantenimiento</div>
         <div class="stat-value text-sky-600">{{ maintenanceSheets.length }}</div>
         <div class="stat-desc">Registradas</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-title">Guías Remisión</div>
-        <div class="stat-value text-amber-600">{{ shippingGuides.length }}</div>
-        <div class="stat-desc">En el período</div>
       </div>
     </div>
 
