@@ -31,7 +31,6 @@ class AddResourceProjectAPI(View):
         resource_map = ResourceItem.objects.in_bulk(resource_ids)
 
         created_resources = []
-        serv_resource_item = None
         maintenance_instances = []
 
         for resource_data in data:
@@ -51,16 +50,8 @@ class AddResourceProjectAPI(View):
             operation_start_date = resource_data.get("operation_start_date")
 
             if is_maintenance:
-                # ---- Mantenimiento: lógica original (no la maneja EquipmentManager) ----
+                # ---- Mantenimiento: usar el resource_id del payload ----
                 resource_cost = resource_data.get("maintenance_cost", 0.00)
-
-                if serv_resource_item is None:
-                    serv_resource_item = ResourceItem.get_by_code("PEISOL-SERV00")
-                    if not serv_resource_item:
-                        raise Exception(
-                            "Recurso de servicio para mantenimiento general "
-                            "PEISOL-SERV00 no encontrado. Contacte al administrador."
-                        )
 
                 detailed_description = ""
                 if physical_equipment_code and physical_equipment_code != 0:
@@ -80,7 +71,7 @@ class AddResourceProjectAPI(View):
                 maintenance_instances.append(
                     ProjectResourceItem(
                         project=project,
-                        resource_item=serv_resource_item,
+                        resource_item=resource_item,
                         type_resource="SERVICIO",
                         detailed_description=detailed_description,
                         physical_equipment_code=physical_equipment_code,

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia"
 import { appConfig } from "@/AppConfig"
+import { UseResourcesStore } from "@/stores/ResourcesStore"
 
 export const UseProjectResourceStore = defineStore("projectResourcesStore", {
     state: () => ({
@@ -88,9 +89,15 @@ export const UseProjectResourceStore = defineStore("projectResourcesStore", {
                     
                     // Si incluye mantenimiento y NO es un servicio, agregar un segundo registro para el mantenimiento
                     if (resource.include_maintenance && !isService) {
+                        // Buscar el recurso de servicio PEISOL-SERV01 en el store de resources
+                        const resourcesStore = UseResourcesStore()
+                        const serviceResource = resourcesStore.resources.find(r => r.code === 'PEISOL-SERV01')
+                        if (!serviceResource) {
+                            throw new Error('Recurso de servicio PEISOL-SERV01 no encontrado. Contacte al administrador.')
+                        }
                         const maintenanceData = {
                             project_id: appConfig.idProject,
-                            resource_id: resource.resource_id,
+                            resource_id: serviceResource.id,
                             detailed_description: `Mantenimiento - ${resource.detailed_description}`,
                             maintenance_cost: resource.maintenance_cost || 0,  // Usar maintenance_cost para que el backend lo identifique
                             operation_start_date: resource.operation_start_date,
