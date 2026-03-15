@@ -16,6 +16,7 @@ class ResourceItemListView(LoginRequiredMixin, ListView):
         # Optimización: solo traer campos necesarios para la tabla
         queryset = ResourceItem.get_all().only(
             'id',
+            'name',
             'code',
             'type_equipment',
             'serial_number',

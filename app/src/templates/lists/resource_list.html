@@ -90,7 +90,8 @@
                 <td class="text-left hidden md:table-cell px-2 py-1">{{ forloop.counter }}</td>
                 <td class="text-left px-2 py-1">
                     <a href="{% url 'resource_detail' item.id %}" class="link link-hover text-primary md:hidden font-semibold">{{ item.code }}</a>
-                    <span class="hidden md:inline">{{ item.code }}</span>
+                    <span class="hidden md:inline">{{ item.name }}</span>
+                    <small class="text-blue-600 badge">{{ item.code }}</small>
                 </td>
                 <td class="text-left hidden md:table-cell px-2 py-1">
                     {% if item.type_equipment %}
