@@ -172,6 +172,13 @@ class SheetMaintenanceCreateUpdateAPI(View):
                 'error': 'Hoja de proyecto no encontrada'
             }, status=404)
 
+        if sheet_project.status != 'IN_PROGRESS':
+            return JsonResponse({
+                'success': False,
+                'error': f'No se pueden crear hojas de mantenimiento en una planilla en estado '
+                         f'{sheet_project.get_status_display()}. Solo planillas EN EJECUCIÓN son editables.'
+            }, status=400)
+
         start_date = self._parse_datetime(data['start_date'])
         if start_date is None:
             return JsonResponse({
@@ -259,6 +266,14 @@ class SheetMaintenanceCreateUpdateAPI(View):
                     f'No se puede editar una hoja en estado {sheet.get_status_display()}. '
                     'Solo hojas en BORRADOR son editables.'
                 )
+            }, status=400)
+
+        # Verificar que la planilla asociada esté en progreso
+        if sheet.id_sheet_project.status != 'IN_PROGRESS':
+            return JsonResponse({
+                'success': False,
+                'error': f'No se puede editar una hoja de mantenimiento de una planilla en estado '
+                         f'{sheet.id_sheet_project.get_status_display()}.'
             }, status=400)
 
         # Hoja de proyecto

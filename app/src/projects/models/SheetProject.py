@@ -213,7 +213,9 @@ class SheetProjectDetail(BaseModel):
     )
     resource_item = models.ForeignKey(
         ResourceItem,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
     )
     reference_document = models.CharField(
         'Documento de Referencia',

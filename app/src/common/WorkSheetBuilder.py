@@ -412,9 +412,7 @@ class WorkSheetBuilder:
         ).exclude(status='VOID')
 
         for maintenance in maintenance_sheets:
-            resource_item = maintenance.resource_item
-            if not resource_item:
-                continue
+            resource_item = maintenance.resource_item  # puede ser None
 
             # Fecha del documento para marcar en el calendario
             doc_date = maintenance.start_date
@@ -464,9 +462,7 @@ class WorkSheetBuilder:
         - Línea de transporte (si cost_transport > 0)
         - Línea de estiba (si cost_stowage > 0)
 
-        Si alguno de los rubros es cero, esa línea no se incluye.
-        La fecha del documento es issue_date. El resource_item se toma
-        del primer detalle de la guía.
+        El resource_item se toma del primer detalle de la guía que tenga uno asignado.
 
         Returns:
             list: Lista de instancias SheetProjectDetail creadas
@@ -491,21 +487,17 @@ class WorkSheetBuilder:
         ).exclude(status='VOID')
 
         for guide in shipping_guides:
-            # Obtener el resource_item del primer detalle de la guía
-            first_detail = ShippingGuideDetail.objects.filter(
-                shipping_guide=guide,
-                is_active=True,
-                id_resource_item__isnull=False
-            ).select_related('id_resource_item').first()
-
-            if not first_detail or not first_detail.id_resource_item:
-                continue
-
-            resource_item = first_detail.id_resource_item
-
             # Fecha del documento para marcar en el calendario
             doc_date = guide.issue_date
             monthdays = [doc_date.day] if doc_date else []
+
+            # Intentar obtener un resource_item del primer detalle de la guía
+            first_detail = ShippingGuideDetail.objects.filter(
+                shipping_guide=guide,
+                is_active=True,
+                id_resource_item__isnull=False,
+            ).select_related('id_resource_item').first()
+            resource_item = first_detail.id_resource_item if first_detail else None
 
             # Línea de costo de transporte
             if guide.cost_transport and guide.cost_transport > 0:
@@ -520,7 +512,7 @@ class WorkSheetBuilder:
                     quantity=Decimal('1'),
                     detail=guide.sheet_project_logistics_concept or "TRANSPORTE",
                     monthdays_apply_cost=monthdays,
-                    total_line=guide.cost_transport * Decimal('1'),
+                    total_line=guide.cost_transport,
                 )
                 details.append(detail)
 
@@ -537,7 +529,7 @@ class WorkSheetBuilder:
                     quantity=Decimal('1'),
                     detail=guide.sheet_project_stowage_concept or "ESTIBA",
                     monthdays_apply_cost=monthdays,
-                    total_line=guide.cost_stowage * Decimal('1'),
+                    total_line=guide.cost_stowage,
                 )
                 details.append(detail)
 

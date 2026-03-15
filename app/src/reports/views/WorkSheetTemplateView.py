@@ -133,7 +133,9 @@ class WorkSheetTemplateView(TemplateView):
                     if 1 <= day <= 31:
                         days_list[day - 1] = "1"
 
-            detail_text = sheet_detail.detail or f"ALQUILER DE {resource_item.name} {resource_item.code}"
+            detail_text = sheet_detail.detail or (
+                f"ALQUILER DE {resource_item.name} {resource_item.code}" if resource_item else ""
+            )
 
             # Determinar tipo de recurso y nombre de equipo desde project_resource_item
             pri = sheet_detail.project_resource_item
@@ -148,7 +150,7 @@ class WorkSheetTemplateView(TemplateView):
                 equipment_name = "LOGISTICA"
             else:
                 type_resource = pri.type_resource if pri else "EQUIPO"
-                equipment_name = self.get_short_equipment_name(resource_item)
+                equipment_name = self.get_short_equipment_name(resource_item) if resource_item else "SERVICIO"
 
             items_list.append(
                 {

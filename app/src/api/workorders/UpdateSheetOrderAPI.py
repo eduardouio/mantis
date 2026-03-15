@@ -51,6 +51,21 @@ class UpdateSheetOrderAPI(View):
                 status=400,
             )
 
+        # Si está LIQUIDATED, solo se permite cambiar el estado (transiciones de estado)
+        if sheet.status == "LIQUIDATED":
+            allowed_fields = {"status", "invoice_reference", "final_disposition_reference"}
+            content_fields = {"issue_date", "period_start", "period_end", "service_type",
+                              "contact_reference", "contact_phone_reference", "client_po_reference"}
+            if any(f in data for f in content_fields):
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": "La planilla está liquidada y es de solo lectura. "
+                                 "Use 'Reabrir planilla' para hacer modificaciones.",
+                    },
+                    status=400,
+                )
+
         # Actualizar campos permitidos
         if "issue_date" in data:
             try:

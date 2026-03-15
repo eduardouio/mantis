@@ -59,12 +59,13 @@ class UpdateSheetDetailDaysAPI(View):
                 status=400,
             )
 
-        # Validar que no esté en estado final
-        if sheet.status in ("INVOICED", "CANCELLED"):
+        # Validar que esté en progreso
+        if sheet.status != "IN_PROGRESS":
             return JsonResponse(
                 {
                     "success": False,
-                    "error": f"No se puede modificar una planilla en estado {sheet.status}",
+                    "error": f"No se puede modificar una planilla en estado {sheet.get_status_display()}. "
+                             "Solo planillas EN EJECUCIÓN son editables.",
                 },
                 status=400,
             )

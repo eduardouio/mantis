@@ -168,18 +168,22 @@ class UpdateSheetProjectAPI(View):
                 status=400
             )
 
-        # Validar que no esté facturada o cancelada
-        if sheet.status in ("INVOICED", "CANCELLED"):
-            return JsonResponse(
-                {
-                    "success": False,
-                    "error": "No se puede actualizar una hoja de trabajo en estado " + sheet.get_status_display()
-                },
-                status=400
-            )
+        # Validar que esté en progreso (solo IN_PROGRESS permite modificaciones de contenido)
+        if sheet.status != "IN_PROGRESS":
+            # Permitir solo el cambio de estado cuando está LIQUIDATED
+            if sheet.status == "LIQUIDATED" and set(data.keys()) <= {"status", "id"}:
+                pass  # permitir transición de estado
+            else:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": f"La planilla está en estado {sheet.get_status_display()} y es de solo lectura. "
+                                 "Use 'Reabrir planilla' para hacer modificaciones."
+                    },
+                    status=400
+                )
 
-        # Si está LIQUIDATED, solo se permiten modificar cabeceras (no detalles)
-        is_liquidated = sheet.status == "LIQUIDATED"
+        is_liquidated = False  # no se usa más, pero se mantiene para no romper el flujo
 
         # Actualizar campos permitidos
         if "period_start" in data:
