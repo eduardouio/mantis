@@ -93,12 +93,12 @@ class CreateWorkSheetProjectAPI(View):
                     status=400,
                 )
 
-        # Generar series_code y extraer componentes
-        series_code = SheetProject.get_next_series_code()
+        # Usar series_code definido por el usuario o generar automáticamente
+        series_code = data.get("series_code") or SheetProject.get_next_series_code()
         parts = series_code.split("-")
         secuence_prefix = f"{parts[0]}-{parts[1]}"
-        secuence_year = int(parts[2])
-        secuence_number = int(parts[3])
+        secuence_number = int(parts[2])
+        secuence_year = 2000 + int(parts[3])
 
         # Determinar status: usar el del JSON o por defecto IN_PROGRESS
         status = data.get("status", "IN_PROGRESS")

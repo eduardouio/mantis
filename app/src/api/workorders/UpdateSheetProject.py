@@ -115,15 +115,18 @@ class UpdateSheetProjectAPI(View):
                     status=400,
                 )
         
-        series_code = SheetProject.get_next_series_code()
+        # Usar series_code definido por el usuario o generar automáticamente
+        series_code = data.get("series_code") or SheetProject.get_next_series_code()
+        parts = series_code.split("-")
         sheet = SheetProject(
             project=project,
             period_start=period_start,
             period_end=period_end,
             status="IN_PROGRESS",
             series_code=series_code,
-            secuence_year=int(series_code.split("-")[2]),
-            secuence_number=int(series_code.split("-")[3]),
+            secuence_prefix=f"{parts[0]}-{parts[1]}",
+            secuence_year=2000 + int(parts[3]),
+            secuence_number=int(parts[2]),
             service_type=data.get("service_type"),
             contact_reference=data.get("contact_reference"),
             contact_phone_reference=data.get("contact_phone_reference")
@@ -240,6 +243,10 @@ class UpdateSheetProjectAPI(View):
 
         if "series_code" in data and data["series_code"]:
             sheet.series_code = data["series_code"]
+            parts = data["series_code"].split("-")
+            sheet.secuence_prefix = f"{parts[0]}-{parts[1]}"
+            sheet.secuence_number = int(parts[2])
+            sheet.secuence_year = 2000 + int(parts[3])
 
         new_status = data.get("status")
         if new_status and new_status in ["IN_PROGRESS", "LIQUIDATED", "INVOICED", "CANCELLED"]:

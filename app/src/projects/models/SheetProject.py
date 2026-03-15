@@ -43,7 +43,7 @@ class SheetProject(BaseModel):
     series_code = models.CharField(
         "Serie",
         max_length=50,
-        default="PSL-PS-0000-0000"
+        default="PSL-PS-000000-00"
     )
     secuence_prefix = models.CharField(
         "Prefijo de Secuencia",
@@ -179,11 +179,11 @@ class SheetProject(BaseModel):
     @classmethod
     def get_next_series_code(cls):
         """
-        Formato: PSL-PS-YYYY-NNNN
+        Formato: PSL-PS-NNNNNN-YY
         Donde:
             - PSL-PS: Prefijo fijo
-            - YYYY: Año actual
-            - NNNN: Consecutivo de 4 dígitos empezando en 1000
+            - NNNNNN: Consecutivo de 6 dígitos con ceros a la izquierda
+            - YY: Últimos 2 dígitos del año actual
         """
         current_year = datetime.now().year
 
@@ -198,9 +198,9 @@ class SheetProject(BaseModel):
         if last_sheet:
             next_number = last_sheet.secuence_number + 1
         else:
-            next_number = 1000
+            next_number = 1
 
-        return f"PSL-PS-{current_year}-{next_number:04d}"
+        return f"PSL-PS-{next_number:06d}-{current_year % 100:02d}"
 
 
 class SheetProjectDetail(BaseModel):
