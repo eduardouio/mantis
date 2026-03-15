@@ -37,6 +37,8 @@ class ShippingGuideReportView(TemplateView):
 			})
 
 		context["guide"] = guide
+		context["guide_origin_place"] = guide.get_effective_origin_place()
+		context["guide_destination_place"] = guide.get_effective_destination_place()
 		context["pages"] = pages
 		context["total_pages"] = total_pages
 		return context

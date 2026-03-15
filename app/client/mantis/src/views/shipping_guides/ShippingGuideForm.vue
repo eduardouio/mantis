@@ -20,6 +20,7 @@ const technicalStore = UseTechnicalStore()
 const router = useRouter()
 const route = useRoute()
 const isLoading = ref(false)
+const BASE_PLACE = 'BASE PEISOL'
 
 // Tab activo
 const activeTab = ref('general')
@@ -38,6 +39,7 @@ const guideStatus = ref('DRAFT')
 
 // Determina si la guía es editable (solo en BORRADOR)
 const canEdit = computed(() => guideStatus.value === 'DRAFT')
+const projectLocation = computed(() => projectStore.project?.location || '')
 
 // Obtener la planilla activa (IN_PROGRESS) para restricción de fechas
 const activeSheet = computed(() => {
@@ -91,6 +93,49 @@ const guide = ref({
   sheet_project_stowage_concept: '',
   notes: '',
 })
+
+const derivedGuidePlaces = computed(() => {
+  switch (guide.value.type_shipping_guide) {
+    case 'EXIT':
+      return {
+        origin_place: BASE_PLACE,
+        destination_place: projectLocation.value,
+      }
+    case 'IN':
+      return {
+        origin_place: projectLocation.value,
+        destination_place: BASE_PLACE,
+      }
+    case 'TRANSFER':
+      return {
+        origin_place: projectLocation.value,
+        destination_place: '',
+      }
+    default:
+      return {
+        origin_place: guide.value.origin_place || '',
+        destination_place: guide.value.destination_place || '',
+      }
+  }
+})
+
+const placeHelpText = computed(() => {
+  switch (guide.value.type_shipping_guide) {
+    case 'EXIT':
+      return 'Origen fijo en BASE PEISOL y destino en la ubicación del proyecto.'
+    case 'IN':
+      return 'Origen en la ubicación del proyecto y destino fijo en BASE PEISOL.'
+    case 'TRANSFER':
+      return 'Origen en la ubicación del proyecto y destino en blanco.'
+    default:
+      return ''
+  }
+})
+
+const applyDerivedPlaces = () => {
+  guide.value.origin_place = derivedGuidePlaces.value.origin_place
+  guide.value.destination_place = derivedGuidePlaces.value.destination_place
+}
 
 // Detalles (ítems de la guía)
 const details = ref([])
@@ -147,6 +192,14 @@ watch(() => guide.value.carrier_name, (newName) => {
     guide.value.carrier_ci = match.dni
   }
 })
+
+watch(
+  () => [guide.value.type_shipping_guide, projectLocation.value],
+  () => {
+    applyDerivedPlaces()
+  },
+  { immediate: true }
+)
 
 // Cargar datos en modo edición
 const loadGuideData = async () => {
@@ -229,7 +282,6 @@ onMounted(async () => {
   if (!isEditMode.value) {
     guide.value.contact_name = projectStore.project?.contact_name || ''
     guide.value.contact_phone = projectStore.project?.contact_phone || ''
-    guide.value.origin_place = projectStore.project?.location || ''
   }
 
   if (isEditMode.value) {
@@ -285,6 +337,8 @@ const submitForm = async () => {
       ...guide.value,
       project_id: appConfig.idProject,
       guide_number: guide.value.guide_number || null,
+      origin_place: derivedGuidePlaces.value.origin_place,
+      destination_place: derivedGuidePlaces.value.destination_place,
       details: details.value.map(d => ({
         id_resource_item: d.id_resource_item || null,
         description: d.description,
@@ -565,8 +619,12 @@ const deleteGuideFile = async () => {
                 v-model="guide.origin_place"
                 placeholder="Ej: Quito, Bodega Central"
                 :disabled="!canEdit"
+                readonly
                 class="input input-bordered w-full"
               />
+              <label class="label py-0">
+                <span class="label-text-alt text-gray-500">{{ placeHelpText }}</span>
+              </label>
             </div>
 
             <!-- Lugar de Destino -->
@@ -580,8 +638,12 @@ const deleteGuideFile = async () => {
                 v-model="guide.destination_place"
                 placeholder="Ej: Campamento Norte"
                 :disabled="!canEdit"
+                readonly
                 class="input input-bordered w-full"
               />
+              <label class="label py-0">
+                <span class="label-text-alt text-gray-500">Se calcula automáticamente según el tipo de guía.</span>
+              </label>
             </div>
 
             <!-- Motivo del Transporte -->
