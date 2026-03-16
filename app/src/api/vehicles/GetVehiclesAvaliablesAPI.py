@@ -54,7 +54,6 @@ class GetVehiclesAvaliablesAPI(View):
                 {
                     "id": c.id,
                     "name": c.name,
-                    "name_display": c.get_name_display(),
                     "date_start": serialize_date(c.date_start),
                     "date_end": serialize_date(c.date_end),
                     "description": c.description,

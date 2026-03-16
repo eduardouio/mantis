@@ -34,7 +34,6 @@ class CertVehicleDeleteAPI(View):
                     'id': certification.id,
                     'vehicle_plate': certification.vehicle.no_plate if certification.vehicle else None,
                     'name': certification.name,
-                    'name_display': certification.get_name_display()
                 }
             })
             
@@ -74,7 +73,6 @@ class CertVehicleDeleteAPI(View):
                         'id': certification.id,
                         'vehicle_plate': certification.vehicle.no_plate if certification.vehicle else None,
                         'name': certification.name,
-                        'name_display': certification.get_name_display()
                     })
                 except Exception as e:
                     errors.append({
