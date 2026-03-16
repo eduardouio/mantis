@@ -125,25 +125,25 @@ class TestPassVehicleCreateUpdateAPI:
         assert data['success'] is False
         assert 'Formato de fecha inválido' in data['error']
     
-    def test_create_pass_invalid_bloque(self, client_logged, test_vehicle):
-        """Test crear pase con bloque inválido"""
+    def test_create_pass_custom_bloque(self, client_logged, test_vehicle):
+        """Test crear pase con bloque personalizado (texto libre)"""
         url = '/api/vehicles/pass_vehicle/'
-        invalid_data = {
+        custom_data = {
             'vehicle_id': test_vehicle.id,
-            'bloque': 'BLOQUE_INEXISTENTE',  # Bloque no válido
+            'bloque': 'MI BLOQUE PERSONALIZADO',
             'fecha_caducidad': (date.today() + timedelta(days=365)).strftime('%Y-%m-%d'),
         }
         
         response = client_logged.post(
             url,
-            data=json.dumps(invalid_data),
+            data=json.dumps(custom_data),
             content_type='application/json'
         )
         
-        assert response.status_code == 400
+        assert response.status_code == 200
         data = json.loads(response.content)
-        assert data['success'] is False
-        assert 'Bloque inválido' in data['error']
+        assert data['success'] is True
+        assert data['data']['bloque'] == 'MI BLOQUE PERSONALIZADO'
     
     def test_update_pass_success(self, client_logged, test_vehicle):
         """Test actualizar pase exitosamente"""
@@ -275,12 +275,10 @@ class TestPassVehicleCreateUpdateAPI:
         assert 'JSON inválido' in data['error']
     
     def test_valid_bloque_choices(self, client_logged, test_vehicle):
-        """Test con todas las opciones válidas de bloque"""
+        """Test con diferentes valores de bloque (ahora acepta texto libre)"""
         valid_bloques = [
-            'PETROECUADOR', 'SHAYA', 'CONSORCIO SHUSHUFINDI', 'ENAP SIPEC',
-            'ORION', 'ANDES PETROLEUM', 'PARDALIS SERVICES', 'FRONTERA ENERGY',
-            'GRAN TIERRA', 'PCR', 'HALLIBURTON', 'GENTE OIL', 'TRIBIOL GAS',
-            'ADICO', 'CUYAVENO PETRO', 'GEOPARK'
+            'PETROECUADOR', 'SHAYA', 'CONSORCIO SHUSHUFINDI',
+            'NUEVO BLOQUE PERSONALIZADO'
         ]
         
         url = '/api/vehicles/pass_vehicle/'

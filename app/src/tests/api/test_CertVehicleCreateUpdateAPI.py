@@ -142,24 +142,24 @@ class TestCertVehicleCreateUpdateAPI:
         assert data["success"] is False
         assert "La fecha de fin debe ser posterior" in data["error"]
 
-    def test_create_certification_invalid_name(self, client_logged, test_vehicle):
-        """Test crear certificación con nombre inválido"""
+    def test_create_certification_custom_name(self, client_logged, test_vehicle):
+        """Test crear certificación con nombre personalizado (texto libre)"""
         url = "/api/vehicles/cert_vehicle/"
-        invalid_data = {
+        custom_data = {
             "vehicle_id": test_vehicle.id,
-            "name": "CERTIFICACION_INEXISTENTE",
+            "name": "MI CERTIFICACION PERSONALIZADA",
             "date_start": date.today().strftime("%Y-%m-%d"),
             "date_end": (date.today() + timedelta(days=365)).strftime("%Y-%m-%d"),
         }
 
         response = client_logged.post(
-            url, data=json.dumps(invalid_data), content_type="application/json"
+            url, data=json.dumps(custom_data), content_type="application/json"
         )
 
-        assert response.status_code == 400
+        assert response.status_code == 200
         data = json.loads(response.content)
-        assert data["success"] is False
-        assert "Nombre de certificación inválido" in data["error"]
+        assert data["success"] is True
+        assert data["data"]["name"] == "MI CERTIFICACION PERSONALIZADA"
 
     def test_update_certification_success(self, client_logged, test_vehicle):
         """Test actualizar certificación exitosamente"""

@@ -40,10 +40,10 @@ class TestCertificationVehicle:
             date_start=date(2024, 6, 1),
             date_end=date(2025, 6, 1)
         )
-        expected_str = 'Medición de Espesores - XYZ789'
+        expected_str = 'MEDICION DE ESPESORES - XYZ789'
         assert str(certification) == expected_str
 
-    def test_certification_name_choices(self):
+    def test_certification_name_free_text(self):
         vehicle = Vehicle.objects.create(
             brand='Ford',
             model='Ranger',
@@ -51,7 +51,7 @@ class TestCertificationVehicle:
             no_plate='FOR123'
         )
 
-        for cert_code, _ in CertificationVehicle.CERTIFICATION_NAME_CHOICES:
+        for cert_code in ['INSPECCION VOLUMETRICA', 'MEDICION DE ESPESORES', 'Mi Nueva Certificación']:
             certification = CertificationVehicle.objects.create(
                 vehicle=vehicle,
                 name=cert_code,
@@ -59,7 +59,30 @@ class TestCertificationVehicle:
                 date_end=date(2024, 12, 31)
             )
             assert certification.name == cert_code
-            certification.delete()  # Clean up
+            certification.delete()
+
+    def test_get_unique_names(self):
+        vehicle = Vehicle.objects.create(
+            brand='Ford',
+            model='Ranger',
+            type_vehicle='CAMIONETA',
+            no_plate='FOR124'
+        )
+        CertificationVehicle.objects.create(
+            vehicle=vehicle,
+            name='INSPECCION VOLUMETRICA',
+            date_start=date(2024, 1, 1),
+            date_end=date(2024, 12, 31)
+        )
+        CertificationVehicle.objects.create(
+            vehicle=vehicle,
+            name='PRUEBA HIDROSTATICA',
+            date_start=date(2024, 1, 1),
+            date_end=date(2024, 12, 31)
+        )
+        names = CertificationVehicle.get_unique_names()
+        assert 'INSPECCION VOLUMETRICA' in names
+        assert 'PRUEBA HIDROSTATICA' in names
 
     def test_certification_dates(self):
         vehicle = Vehicle.objects.create(

@@ -76,12 +76,12 @@ class TestCreateUpdatePassTechnicalAPI:
 		data = json.loads(resp.content)
 		assert 'fecha_cad formato' in data['error']
 
-	def test_create_invalid_bloque(self, client_logged, valid_data):
-		valid_data['bloque'] = 'bloque_invalido'
+	def test_create_custom_bloque(self, client_logged, valid_data):
+		valid_data['bloque'] = 'mi_bloque_personalizado'
 		resp = client_logged.post(self.endpoint(), data=json.dumps(valid_data), content_type='application/json')
-		assert resp.status_code == 400
+		assert resp.status_code == 200
 		data = json.loads(resp.content)
-		assert 'bloque invalido' in data['error']
+		assert data['data']['bloque'] == 'mi_bloque_personalizado'
 
 	def test_update_success(self, client_logged, technical):
 		registro = PassTechnical.objects.create(

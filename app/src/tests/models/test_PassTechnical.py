@@ -46,7 +46,7 @@ class TestPassTechnical:
         result = PassTechnical.get_by_technical(999)  # Non-existing ID
         assert result is None
 
-    def test_bloque_choices(self):
+    def test_bloque_free_text(self):
         technical = Technical.objects.create(
             first_name='Carlos',
             last_name='Rodríguez',
@@ -54,12 +54,34 @@ class TestPassTechnical:
             nro_phone='0966555444'
         )
         
-        # Test different bloque choices
-        for bloque_code, _ in PassTechnical.BLOQUE_CHOICES:
+        # Test that bloque accepts any text (no longer restricted to choices)
+        bloques = ['Petroecuador', 'Shaya', 'Mi Nuevo Bloque']
+        for bloque in bloques:
             pass_tech = PassTechnical.objects.create(
                 technical=technical,
-                bloque=bloque_code,
+                bloque=bloque,
                 fecha_caducidad=date(2025, 12, 31)
             )
-            assert pass_tech.bloque == bloque_code
-            pass_tech.delete()  # Clean up for next iteration
+            assert pass_tech.bloque == bloque
+            pass_tech.delete()
+
+    def test_get_unique_bloques(self):
+        technical = Technical.objects.create(
+            first_name='Ana',
+            last_name='López',
+            dni='9988776655',
+            nro_phone='0955444333'
+        )
+        PassTechnical.objects.create(
+            technical=technical,
+            bloque='Petroecuador',
+            fecha_caducidad=date(2025, 12, 31)
+        )
+        PassTechnical.objects.create(
+            technical=technical,
+            bloque='Shaya',
+            fecha_caducidad=date(2025, 6, 30)
+        )
+        bloques = PassTechnical.get_unique_bloques()
+        assert 'Petroecuador' in bloques
+        assert 'Shaya' in bloques

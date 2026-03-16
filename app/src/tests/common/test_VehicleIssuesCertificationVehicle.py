@@ -346,7 +346,7 @@ class TestVehicleIssuesCertificationVehicle:
         
         label = issues[0]['label']
         assert 'Certificación' in label
-        assert cert_expired.get_name_display() in label
+        assert cert_expired.name in label
 
     def test_boundary_condition_exactly_10_days(self):
         """Test de condición límite: exactamente 10 días"""

@@ -86,7 +86,7 @@ class TestPassVehicle:
         passes = PassVehicle.get_by_vehicle(vehicle.id)
         assert len(passes) == 0
 
-    def test_bloque_choices(self):
+    def test_bloque_free_text(self):
         vehicle = Vehicle.objects.create(
             brand='Mazda',
             model='BT-50',
@@ -94,11 +94,33 @@ class TestPassVehicle:
             no_plate='MAZ789'
         )
         
-        for bloque_code, _ in PassVehicle.BLOQUE_CHOICES:
+        bloques = ['PETROECUADOR', 'SHAYA', 'MI NUEVO BLOQUE']
+        for bloque in bloques:
             pass_vehicle = PassVehicle.objects.create(
                 vehicle=vehicle,
-                bloque=bloque_code,
+                bloque=bloque,
                 fecha_caducidad=date(2025, 12, 31)
             )
-            assert pass_vehicle.bloque == bloque_code
-            pass_vehicle.delete()  # Clean up
+            assert pass_vehicle.bloque == bloque
+            pass_vehicle.delete()
+
+    def test_get_unique_bloques(self):
+        vehicle = Vehicle.objects.create(
+            brand='Mazda',
+            model='BT-50',
+            type_vehicle='CAMIONETA',
+            no_plate='MAZ790'
+        )
+        PassVehicle.objects.create(
+            vehicle=vehicle,
+            bloque='PETROECUADOR',
+            fecha_caducidad=date(2025, 12, 31)
+        )
+        PassVehicle.objects.create(
+            vehicle=vehicle,
+            bloque='SHAYA',
+            fecha_caducidad=date(2025, 6, 30)
+        )
+        bloques = PassVehicle.get_unique_bloques()
+        assert 'PETROECUADOR' in bloques
+        assert 'SHAYA' in bloques

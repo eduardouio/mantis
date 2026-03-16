@@ -108,7 +108,7 @@ class TestPassVehichleIssuesCheck:
         
         assert len(issues) == 1
         assert issues[0]['field'] == 'fecha_caducidad'
-        assert issues[0]['label'] == f"Pase {pass_expired.get_bloque_display()}"
+        assert issues[0]['label'] == f"Pase {pass_expired.bloque}"
         assert issues[0]['status'] == 'expired'
         assert issues[0]['days_left'] == -5
         assert issues[0]['pass_id'] == pass_expired.id
@@ -213,10 +213,10 @@ class TestPassVehichleIssuesCheck:
         
         assert issues[0]['expires_on'] == pass_expired.fecha_caducidad
 
-    def test_label_uses_display_value(self, pass_expired):
-        """Test que el label usa get_bloque_display()"""
+    def test_label_uses_bloque_value(self, pass_expired):
+        """Test que el label usa el valor de bloque directamente"""
         issues = PassVehichleIssuesCheck.issues_for(pass_expired)
-        expected_label = f"Pase {pass_expired.get_bloque_display()}"
+        expected_label = f"Pase {pass_expired.bloque}"
         
         assert issues[0]['label'] == expected_label
 
