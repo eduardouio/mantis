@@ -114,7 +114,7 @@
                         {% if vehicle.certifications.all %}
                             {% for cert in vehicle.certifications.all|slice:":3" %}
                             <div class="badge badge-xs {% if cert.is_active %}badge-success{% else %}badge-error{% endif %}">
-                                {{ cert.get_name_display|truncatechars:15 }}
+                                {{ cert.name|truncatechars:15 }}
                             </div>
                             {% endfor %}
                             {% if vehicle.certifications.all|length > 3 %}
@@ -130,7 +130,7 @@
                         {% if vehicle.passes.all %}
                             {% for pass in vehicle.passes.all|slice:":2" %}
                             <div class="badge badge-xs badge-warning">
-                                {{ pass.get_bloque_display|truncatechars:12 }}
+                                {{ pass.bloque|truncatechars:12 }}
                             </div>
                             {% endfor %}
                             {% if vehicle.passes.all|length > 2 %}

@@ -63,7 +63,7 @@ class VehiclesByStatusView(TemplateView):
                     days_to_expire = (cert.date_end - date.today()).days
                 certifications_list.append(
                     {
-                        "name": cert.get_name_display(),
+                        "name": cert.name,
                         "date_start": cert.date_start,
                         "date_end": cert.date_end,
                         "days_to_expire": days_to_expire,

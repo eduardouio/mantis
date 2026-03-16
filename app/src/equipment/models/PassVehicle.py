@@ -9,27 +9,8 @@ class PassVehicle(BaseModel):
         on_delete=models.CASCADE,
         verbose_name='Vehículo'
     )
-    BLOQUE_CHOICES = [
-        ('PETROECUADOR', 'PETROECUADOR'),
-        ('SHAYA', 'SHAYA'),
-        ('CONSORCIO SHUSHUFINDI', 'CONSORCIO SHUSHUFINDI'),
-        ('ENAP SIPEC', 'ENAP SIPEC'),
-        ('ORION', 'ORION'),
-        ('ANDES PETROLEUM', 'ANDES PETROLEUM'),
-        ('PARDALIS SERVICES', 'PARDALIS SERVICES'),
-        ('FRONTERA ENERGY', 'FRONTERA ENERGY'),
-        ('GRAN TIERRA', 'GRAN TIERRA'),
-        ('PCR', 'PCR'),
-        ('HALLIBURTON', 'HALLIBURTON'),
-        ('GENTE OIL', 'GENTE OIL'),
-        ('TRIBIOL GAS', 'TRIBIOL GAS'),
-        ('ADICO', 'ADICO'),
-        ('CUYAVENO PETRO', 'CUYAVENO PETRO'),
-        ('GEOPARK', 'GEOPARK'),
-    ]
     bloque = models.CharField(
-        max_length=32,
-        choices=BLOQUE_CHOICES,
+        max_length=100,
         verbose_name='Nombre de Bloque'
     )
     fecha_caducidad = models.DateField(
@@ -50,6 +31,18 @@ class PassVehicle(BaseModel):
         Obtiene los registros de pases de un vehículo específico.
         """
         return cls.objects.filter(vehicle_id=vehicle_id, is_active=True)
+
+    @classmethod
+    def get_unique_bloques(cls):
+        """Retorna los valores únicos de bloque registrados en la base de datos."""
+        return list(
+            cls.objects.filter(is_active=True)
+            .exclude(bloque__isnull=True)
+            .exclude(bloque__exact='')
+            .values_list('bloque', flat=True)
+            .distinct()
+            .order_by('bloque')
+        )
 
     def __str__(self):
         return f'{self.vehicle} - {self.bloque}'

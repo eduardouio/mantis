@@ -37,7 +37,7 @@ class VehicleIssuesCertificationVehicle:
             if status:
                 issues.append({
                     'field': 'date_end',
-                    'label': f"Certificación {cert.get_name_display()}",
+                    'label': f"Certificación {cert.name}",
                     'status': status,          # expired | due_10 | due_30
                     'days_left': days,
                     'expires_on': cert.date_end,

@@ -106,7 +106,7 @@ class VehicleStatusReport(DetailView):
         certifications_data = []
         for cert in certifications:
             cert_data = {
-                'name': cert.get_name_display(),
+                'name': cert.name,
                 'date_start': cert.date_start.strftime('%d/%m/%Y') if cert.date_start else 'N/A',
                 'date_end': cert.date_end.strftime('%d/%m/%Y') if cert.date_end else 'N/A',
                 'description': cert.description,

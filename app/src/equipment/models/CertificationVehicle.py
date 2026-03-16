@@ -4,13 +4,6 @@ from common.validators import validate_pdf_file
 
 
 class CertificationVehicle(BaseModel):
-    CERTIFICATION_NAME_CHOICES = (
-        ('INSPECCION VOLUMETRICA', 'Inspección Volumétrica'),
-        ('MEDICION DE ESPESORES', 'Medición de Espesores'),
-        ('INSPECCION DE SEGURIDAD', 'Inspección de Seguridad'),
-        ('PRUEBA HIDROSTATICA', 'Prueba Hidrostática'),
-    )
-
     vehicle = models.ForeignKey(
         'equipment.Vehicle',
         on_delete=models.CASCADE,
@@ -20,8 +13,7 @@ class CertificationVehicle(BaseModel):
     )
     name = models.CharField(
         'Nombre de Certificación',
-        max_length=50,
-        choices=CERTIFICATION_NAME_CHOICES
+        max_length=100
     )
     date_start = models.DateField(
         'Fecha de Inicio'
@@ -44,5 +36,17 @@ class CertificationVehicle(BaseModel):
         null=True
     )
 
+    @classmethod
+    def get_unique_names(cls):
+        """Retorna los valores únicos de nombre de certificación registrados en la base de datos."""
+        return list(
+            cls.objects.filter(is_active=True)
+            .exclude(name__isnull=True)
+            .exclude(name__exact='')
+            .values_list('name', flat=True)
+            .distinct()
+            .order_by('name')
+        )
+
     def __str__(self):
-        return f'{self.get_name_display()} - {self.vehicle.no_plate if self.vehicle else "Sin Vehículo"}'
+        return f'{self.name} - {self.vehicle.no_plate if self.vehicle else "Sin Vehículo"}'

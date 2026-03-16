@@ -92,14 +92,6 @@ class PassVehicleCreateUpdateAPI(View):
                 }, status=400)
             
             
-            valid_bloques = [choice[0] for choice in PassVehicle.BLOQUE_CHOICES]
-            if data['bloque'] not in valid_bloques:
-                return JsonResponse({
-                    'success': False,
-                    'error': f'Bloque inválido. Opciones válidas: {", ".join(valid_bloques)}'
-                }, status=400)
-            
-            
             if pass_id:
                 
                 pass_vehicle = get_object_or_404(PassVehicle, id=pass_id)

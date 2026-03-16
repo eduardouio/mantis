@@ -93,14 +93,6 @@ class CertVehicleCreateUpdateAPI(View):
                     'error': 'La fecha de fin debe ser posterior a la fecha de inicio'
                 }, status=400)
             
-            # Validar que el nombre de certificación sea válido
-            valid_names = [choice[0] for choice in CertificationVehicle.CERTIFICATION_NAME_CHOICES]
-            if data['name'] not in valid_names:
-                return JsonResponse({
-                    'success': False,
-                    'error': f'Nombre de certificación inválido. Opciones válidas: {", ".join(valid_names)}'
-                }, status=400)
-            
             # Crear o actualizar la certificación
             if cert_id:
                 # Actualizar certificación existente
@@ -135,7 +127,7 @@ class CertVehicleCreateUpdateAPI(View):
                     'vehicle_id': certification.vehicle.id if certification.vehicle else None,
                     'vehicle_plate': certification.vehicle.no_plate if certification.vehicle else None,
                     'name': certification.name,
-                    'name_display': certification.get_name_display(),
+                    'name_display': certification.name,
                     'date_start': certification.date_start.strftime('%Y-%m-%d'),
                     'date_end': certification.date_end.strftime('%Y-%m-%d'),
                     'description': certification.description,
@@ -169,7 +161,7 @@ class CertVehicleCreateUpdateAPI(View):
                     'vehicle_id': certification.vehicle.id if certification.vehicle else None,
                     'vehicle_plate': certification.vehicle.no_plate if certification.vehicle else None,
                     'name': certification.name,
-                    'name_display': certification.get_name_display(),
+                    'name_display': certification.name,
                     'date_start': certification.date_start.strftime('%Y-%m-%d'),
                     'date_end': certification.date_end.strftime('%Y-%m-%d'),
                     'description': certification.description,
@@ -191,7 +183,7 @@ class CertVehicleCreateUpdateAPI(View):
                         'vehicle_id': certification.vehicle.id if certification.vehicle else None,
                         'vehicle_plate': certification.vehicle.no_plate if certification.vehicle else None,
                         'name': certification.name,
-                        'name_display': certification.get_name_display(),
+                        'name_display': certification.name,
                         'date_start': certification.date_start.strftime('%Y-%m-%d'),
                         'date_end': certification.date_end.strftime('%Y-%m-%d'),
                         'description': certification.description,
@@ -210,7 +202,7 @@ class CertVehicleCreateUpdateAPI(View):
                         'vehicle_id': certification.vehicle.id if certification.vehicle else None,
                         'vehicle_plate': certification.vehicle.no_plate if certification.vehicle else None,
                         'name': certification.name,
-                        'name_display': certification.get_name_display(),
+                        'name_display': certification.name,
                         'date_start': certification.date_start.strftime('%Y-%m-%d'),
                         'date_end': certification.date_end.strftime('%Y-%m-%d'),
                         'description': certification.description,

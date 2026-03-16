@@ -319,7 +319,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           {% for cert in certifications %}
           <div class="p-2 bg-gray-50 rounded-lg shadow-sm border border-blue-200">
-            <p class="font-medium text-blue-700">{{ cert.get_name_display }}</p>
+            <p class="font-medium text-blue-700">{{ cert.name }}</p>
             <div class="text-sm border border-blue-200 rounded-lg p-2 bg-white">
               <div class="grid grid-cols-2 gap-1">
                 <div>
@@ -364,12 +364,12 @@
               <label for="pass_bloque" class="label">
                 <span class="label-text">Bloque</span>
               </label>
-              <select id="pass_bloque" class="select select-bordered w-full" required>
-                <option value="" disabled selected>Seleccione un bloque</option>
-                {% for value, label in pass_bloque_choices %}
-                  <option value="{{ value }}">{{ label }}</option>
+              <input id="pass_bloque" list="pass_bloque_suggestions" class="input input-bordered w-full" placeholder="Escriba o seleccione un bloque" required>
+              <datalist id="pass_bloque_suggestions">
+                {% for value in pass_bloque_choices %}
+                  <option value="{{ value }}">
                 {% endfor %}
-              </select>
+              </datalist>
             </div>
             
             <div class="form-control">
@@ -431,12 +431,12 @@
               <label for="cert_name" class="label">
                 <span class="label-text">Nombre del Certificado</span>
               </label>
-              <select id="cert_name" class="select select-bordered w-full" required>
-                <option value="">Seleccione un certificado</option>
+              <input id="cert_name" list="cert_name_suggestions" class="input input-bordered w-full" placeholder="Escriba o seleccione un certificado" required>
+              <datalist id="cert_name_suggestions">
                 {% for choice in certification_choices %}
-                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                <option value="{{ choice }}">
                 {% endfor %}
-              </select>
+              </datalist>
             </div>
             
             <div class="grid grid-cols-1 gap-3">
@@ -670,7 +670,7 @@
                   <div class="flex-1">
                     <div class="flex items-center gap-2">
                       <i class="las la-certificate text-amber-600"></i>
-                      <span class="text-sm font-medium">{{ cert.get_name_display }}</span>
+                      <span class="text-sm font-medium">{{ cert.name }}</span>
                     </div>
                     <div class="text-xs text-gray-500 mt-1">
                       Inicio: {{ cert.date_start|date:"d/m/Y" }}
