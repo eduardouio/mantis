@@ -52,24 +52,26 @@
 
 	// Guardar opciones originales de bloque para reconstruir
 	let originalBloqueOptions = null;
+	const passDatalist = document.getElementById('bloque_suggestions');
 	function cacheOriginalBloqueOptions(){
 		if(originalBloqueOptions) return; // ya cacheado
-		originalBloqueOptions = Array.from(passBloque.options).map(o=>({value:o.value, text:o.textContent}));
+		if(!passDatalist) return;
+		originalBloqueOptions = Array.from(passDatalist.options).map(o=>({value:o.value, text:o.value}));
 	}
 
 	function refreshPassBloqueOptions(currentEditingBloque=null){
-		if(!passBloque) return;
+		if(!passBloque || !passDatalist) return;
 		cacheOriginalBloqueOptions();
 		const used = new Set(state.passes.map(p=>p.bloque));
 		// Si estamos editando, permitir que el bloque actual siga visible
 		if(currentEditingBloque) used.delete(currentEditingBloque);
-		// Reconstruir
-		passBloque.innerHTML = '';
+		// Reconstruir datalist
+		passDatalist.innerHTML = '';
 		originalBloqueOptions.forEach(o=>{
 			if(o.value && used.has(o.value)) return; // ocultar usados
 			const opt = document.createElement('option');
-			opt.value = o.value; opt.textContent = o.text;
-			passBloque.appendChild(opt);
+			opt.value = o.value;
+			passDatalist.appendChild(opt);
 		});
 	}
 
