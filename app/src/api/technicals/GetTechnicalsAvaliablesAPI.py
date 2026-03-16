@@ -42,7 +42,6 @@ class GetTechnicalsAvaliablesAPI(View):
 				{
 					"id": p.id,
 					"bloque": p.bloque,
-					"bloque_display": p.get_bloque_display(),
 					"fecha_caducidad": serialize_date(p.fecha_caducidad),
 					"meta": serialize_meta(p),
 				}
@@ -74,6 +73,9 @@ class GetTechnicalsAvaliablesAPI(View):
 				"nro_phone": t.nro_phone,
 				"date_joined": serialize_date(t.date_joined),
 				"birth_date": serialize_date(t.birth_date),
+				"sex": t.sex,
+				"file_number": t.file_number,
+				"medical_record_number": t.medical_record_number,
 				"license_issue_date": serialize_date(t.license_issue_date),
 				"license_expiry_date": serialize_date(t.license_expiry_date),
 				"defensive_driving_certificate_issue_date": serialize_date(t.defensive_driving_certificate_issue_date),
