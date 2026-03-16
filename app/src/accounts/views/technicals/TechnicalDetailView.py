@@ -41,6 +41,9 @@ class TechnicalDetailView(LoginRequiredMixin, DetailView):
 
         context['pass_technical'] = pass_technical
 
+        # Opciones dinámicas para autocomplete de bloques
+        context['pass_bloque_choices'] = PassTechnical.get_unique_bloques()
+
         # Información de expiración de certificados
         context['license_expiry_details'] = self._get_expiry_status(
             self.object.license_expiry_date)

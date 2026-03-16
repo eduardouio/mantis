@@ -828,7 +828,13 @@ class Command(BaseCommand):
             print('No hay técnicos para asignar pases. Ejecute load_technical primero.')
             return
 
-        bloques = [choice[0] for choice in PassTechnical.BLOQUE_CHOICES]
+        bloques = [
+            'Petroecuador', 'Shaya', 'Consorcio Shushufindi',
+            'ENAP SIPEC', 'Tarjeta Orion', 'Andes Petroleum',
+            'Pardalis Services', 'Frontera Energy', 'Gran Tierra',
+            'PCR', 'Halliburton', 'Gente Oil', 'Tribiol Gas',
+            'Adico', 'Cuyaveno Petro', 'Geopark',
+        ]
 
         # Seleccionar aleatoriamente técnicos que tendrán pases (entre 60% y 80%)
         selected_technicals_count = int(
@@ -862,7 +868,13 @@ class Command(BaseCommand):
             print('No hay vehículos para asignar pases. Ejecute load_vehicle primero.')
             return
 
-        bloque_choices = [choice[0] for choice in PassVehicle.BLOQUE_CHOICES]
+        bloque_choices = [
+            'PETROECUADOR', 'SHAYA', 'CONSORCIO SHUSHUFINDI',
+            'ENAP SIPEC', 'ORION', 'ANDES PETROLEUM',
+            'PARDALIS SERVICES', 'FRONTERA ENERGY', 'GRAN TIERRA',
+            'PCR', 'HALLIBURTON', 'GENTE OIL', 'TRIBIOL GAS',
+            'ADICO', 'CUYAVENO PETRO', 'GEOPARK',
+        ]
 
         for vehicle in vehicles:
             # Decidir aleatoriamente si este vehículo tendrá pases (e.g., 70% de probabilidad)

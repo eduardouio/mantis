@@ -9,27 +9,8 @@ class PassTechnical(BaseModel):
         primary_key=True
     )
     technical = models.ForeignKey(Technical, on_delete=models.CASCADE)
-    BLOQUE_CHOICES = [
-        ('petroecuador', 'Tarjeta de Petroecuador'),
-        ('shaya', 'Shaya'),
-        ('consorcio_shushufindi', 'Consorcio Shushufindi'),
-        ('enap_sipec', 'ENAP SIPEC'),
-        ('orion', 'Tarjeta Orion'),
-        ('andes_petroleum', 'Andes Petroleum'),
-        ('pardalis_services', 'Pardalis Services'),
-        ('frontera_energy', 'Frontera Energy'),
-        ('gran_tierra', 'Gran Tierra'),
-        ('pcr', 'PCR'),
-        ('halliburton', 'Halliburton'),
-        ('gente_oil', 'Gente Oil'),
-        ('tribiol_gas', 'Tribiol Gas'),
-        ('adico', 'Adico'),
-        ('cuyaveno_petro', 'Cuyaveno Petro'),
-        ('geopark', 'Geopark'),
-    ]
     bloque = models.CharField(
-        max_length=32,
-        choices=BLOQUE_CHOICES,
+        max_length=100,
         verbose_name='Nombre de Bloque'
     )
     fecha_caducidad = models.DateField(
@@ -55,3 +36,15 @@ class PassTechnical(BaseModel):
             return cls.objects.get(technical_id=technical_id)
         except cls.DoesNotExist:
             return None
+
+    @classmethod
+    def get_unique_bloques(cls):
+        """Retorna los valores únicos de bloque registrados en la base de datos."""
+        return list(
+            cls.objects.filter(is_active=True)
+            .exclude(bloque__isnull=True)
+            .exclude(bloque__exact='')
+            .values_list('bloque', flat=True)
+            .distinct()
+            .order_by('bloque')
+        )
