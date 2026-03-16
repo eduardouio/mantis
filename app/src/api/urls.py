@@ -52,8 +52,11 @@ from api.load_files.TechnicalMergeGeneratedApiView import TechnicalMergeGenerate
 from api.shipping import ShippingGuideCreateUpdateAPI, ShippingGuideDeleteAPI
 from api.maintenance import SheetMaintenanceCreateUpdateAPI, SheetMaintenanceDeleteAPI
 from api.calendar import CalendarEventCreateUpdateAPI, CalendarEventDeleteAPI
+from api.AutocompleteAPI import AutocompleteAPI
 
 urlpatterns = [
+    # autocomplete
+    path('autocomplete/', AutocompleteAPI.as_view(), name='api_autocomplete'),
     # vehicles
     path('vehicles/cert_vehicle/', CertVehicleCreateUpdateAPI.as_view(), name='api_cert_vehicle_create_update'),
     path('vehicles/cert_vehicle/<int:pk>/', CertVehicleDeleteAPI.as_view(), name='api_cert_vehicle_delete'),
