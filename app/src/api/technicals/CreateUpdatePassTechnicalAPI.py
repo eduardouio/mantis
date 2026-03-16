@@ -71,9 +71,6 @@ class CreateUpdatePassTechnicalAPI(View):
 				).date()
 			except ValueError:
 				return JsonResponse({'success': False, 'error': 'fecha_cad formato'}, status=400)
-			valid_bloques = [c[0] for c in PassTechnical.BLOQUE_CHOICES]
-			if data['bloque'] not in valid_bloques:
-				return JsonResponse({'success': False, 'error': 'bloque invalido'}, status=400)
 			if pass_id:
 				registro = get_object_or_404(
 					PassTechnical, id=pass_id, is_active=True

@@ -27,7 +27,7 @@ class TechnicalPassIssuesCheck:
             return []
         return [{
             'field': 'fecha_caducidad',
-            'label': f"Pase {pass_record.get_bloque_display()}",
+            'label': f"Pase {pass_record.bloque}",
             'status': status,          # expired | due_10 | due_30
             'days_left': days,
             'expires_on': pass_record.fecha_caducidad,

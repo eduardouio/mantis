@@ -359,25 +359,12 @@
             <div class="grid grid-cols-12 items-center gap-2">
               <label for="pass_bloque" class="col-span-4 md:col-span-3 text-xs font-semibold text-gray-600">Bloque</label>
               <div class="col-span-8 md:col-span-9">
-                <select id="pass_bloque" class="select select-bordered select-sm w-full" required>
-                  <option value="">Seleccione</option>
-                  <option value="petroecuador">Petroecuador</option>
-                  <option value="shaya">Shaya</option>
-                  <option value="consorcio_shushufindi">Consorcio Shushufindi</option>
-                  <option value="enap_sipec">ENAP SIPEC</option>
-                  <option value="orion">Tarjeta Orion</option>
-                  <option value="andes_petroleum">Andes Petroleum</option>
-                  <option value="pardalis_services">Pardalis Services</option>
-                  <option value="frontera_energy">Frontera Energy</option>
-                  <option value="gran_tierra">Gran Tierra</option>
-                  <option value="pcr">PCR</option>
-                  <option value="halliburton">Halliburton</option>
-                  <option value="gente_oil">Gente Oil</option>
-                  <option value="tribiol_gas">Tribiol Gas</option>
-                  <option value="adico">Adico</option>
-                  <option value="cuyaveno_petro">Cuyaveno Petro</option>
-                  <option value="geopark">Geopark</option>
-                </select>
+                <input id="pass_bloque" list="bloque_suggestions" class="input input-bordered input-sm w-full" placeholder="Escriba o seleccione un bloque" required>
+                <datalist id="bloque_suggestions">
+                  {% for bloque in pass_bloque_choices %}
+                  <option value="{{ bloque }}">
+                  {% endfor %}
+                </datalist>
               </div>
             </div>
             <!-- Fila Fecha Caducidad -->
@@ -653,7 +640,7 @@
                   <div class="flex-1">
                     <div class="flex items-center gap-2">
                       <i class="las la-building text-green-600"></i>
-                      <span class="text-sm font-medium">{{ pass.get_bloque_display }}</span>
+                      <span class="text-sm font-medium">{{ pass.bloque }}</span>
                     </div>
                     <div class="text-xs text-gray-500 ml-6">
                       Vence: {{ pass.fecha_caducidad|date:"d/m/Y" }}
